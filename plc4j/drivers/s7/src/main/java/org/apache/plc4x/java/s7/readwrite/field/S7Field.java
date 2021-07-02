@@ -256,7 +256,7 @@ public class S7Field implements PlcField, Serializable {
             if (matcher.group(BIT_OFFSET) != null) {
                 bitOffset = Byte.parseByte(matcher.group(BIT_OFFSET));
             } else if (dataType == TransportSize.BOOL) {
-                throw new PlcInvalidFieldException("Expected bit offset for BOOL parameters.");
+                //throw new PlcInvalidFieldException("Expected bit offset for BOOL parameters.");
             }
             int numElements = 1;
             if (matcher.group(NUM_ELEMENTS) != null) {
