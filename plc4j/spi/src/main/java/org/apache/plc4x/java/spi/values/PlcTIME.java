@@ -25,8 +25,8 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
-import org.w3c.dom.Element;
 
+import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 
@@ -40,6 +40,10 @@ public class PlcTIME extends PlcSimpleValue<Duration> {
             return new PlcTIME(Duration.of((long) value, ChronoUnit.MILLIS));
         } else if (value instanceof Long) {
             return new PlcTIME(Duration.of((long) value, ChronoUnit.MILLIS));
+        } else if (value instanceof Number) {
+            return new PlcTIME(((Number) value).longValue());
+        } else if (value instanceof String) {
+            return new PlcTIME(new BigDecimal((String)value).longValue());
         }
         throw new PlcRuntimeException("Invalid value type");
     }
@@ -56,7 +60,11 @@ public class PlcTIME extends PlcSimpleValue<Duration> {
     public PlcTIME(@JsonProperty("value") Long value) {
         super(Duration.of(value, ChronoUnit.MILLIS), true);
     }
-
+    @Override
+    @JsonIgnore
+    public long getLong() {
+        return value.toMillis();
+    }
     @Override
     @JsonIgnore
     public boolean isString() {

@@ -26,9 +26,10 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
-import org.w3c.dom.Element;
 
 import java.time.*;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class PlcDATE_AND_TIME extends PlcSimpleValue<LocalDateTime> {
@@ -39,6 +40,37 @@ public class PlcDATE_AND_TIME extends PlcSimpleValue<LocalDateTime> {
         } else if (value instanceof Long) {
             return new PlcDATE_AND_TIME(LocalDateTime.ofInstant(
                 Instant.ofEpochSecond((long) value), ZoneId.of("UTC")));
+        }
+        if (value instanceof Instant) {
+            return new PlcDATE_AND_TIME(((Instant) value).toEpochMilli());
+        }
+        if (value instanceof LocalDate) {
+            return new PlcDATE_AND_TIME(((LocalDate) value).atStartOfDay(ZoneId.of("UTC")).toLocalDateTime());
+        } else if (value instanceof String) {
+            String strValue = (String) value;
+            LocalDateTime date;
+            try {
+                date = LocalDateTime.parse(strValue);
+            } catch (DateTimeParseException e) {
+                try {
+                    date = LocalDateTime.parse(strValue, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+                } catch (DateTimeParseException e1) {
+                    try {
+                        date = LocalDateTime.parse(strValue, DateTimeFormatter.ofPattern("yyyyMMdd HH:mm:ss"));
+                    } catch (DateTimeParseException e2) {
+                        try {
+                            date = LocalDateTime.parse(strValue, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+                        } catch (DateTimeParseException e3) {
+                            try {
+                                date = LocalDateTime.parse(strValue, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+                            } catch (DateTimeParseException e4) {
+                                date = LocalDateTime.parse(strValue, DateTimeFormatter.ofPattern("yyyyMMdd"));
+                            }
+                        }
+                    }
+                }
+            }
+            return new PlcDATE_AND_TIME(date);
         }
         throw new PlcRuntimeException("Invalid value type");
     }
@@ -52,6 +84,12 @@ public class PlcDATE_AND_TIME extends PlcSimpleValue<LocalDateTime> {
     public PlcDATE_AND_TIME(@JsonProperty("value") Long value) {
         super(LocalDateTime.ofInstant(
             Instant.ofEpochSecond(value), ZoneId.of("UTC")), true);
+    }
+
+    @Override
+    @JsonIgnore
+    public long getLong() {
+        return value.atZone(ZoneId.of("UTC")).toEpochSecond();
     }
 
     @Override

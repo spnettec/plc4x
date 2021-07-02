@@ -180,8 +180,12 @@ public class ${type.name}IO {
                     <#case "manual">
 
             // Manual Field (${field.name})
-            ${helper.getLanguageTypeNameForField(field)} ${field.name} = (${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(field, field.parseExpression, type.parserArguments)});
-                        <#if field.name == "value">
+            ${helper.getNonPrimitiveLanguageTypeNameForField(field)} ${field.name} = (${helper.getNonPrimitiveLanguageTypeNameForField(field)}) (${helper.toParseExpression(field, field.parseExpression, type.parserArguments)});
+                        <#if ((case.name == "DATE_AND_TIME") && ((field.name == "year") || (field.name == "month") || (field.name == "day") || (field.name == "hour") || (field.name == "minutes") || (field.name == "seconds"))) ||
+                        ((case.name == "DATE_AND_TIME") && (field.name == "secondsSinceEpoch")) ||
+                        ((case.name == "DATE") && ((field.name == "year") || (field.name == "month") || (field.name == "day"))) ||
+                        ((case.name == "TIME_OF_DAY") && ((field.name == "hour") || (field.name == "minutes") || (field.name == "seconds"))) ||
+                        field.name == "value">
                             <#assign valueDefined=true>
                         </#if>
                     <#break>

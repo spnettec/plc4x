@@ -26,7 +26,6 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
-import org.w3c.dom.Element;
 
 import java.time.LocalTime;
 
@@ -38,6 +37,8 @@ public class PlcTIME_OF_DAY extends PlcSimpleValue<LocalTime> {
             return new PlcTIME_OF_DAY((LocalTime) value);
         } else if (value instanceof Long) {
             return new PlcTIME_OF_DAY(LocalTime.ofSecondOfDay(((long) value) / 1000));
+        } else if (value instanceof Number) {
+            return new PlcTIME_OF_DAY(((Number) value).longValue());
         }
         throw new PlcRuntimeException("Invalid value type");
     }

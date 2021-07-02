@@ -38,6 +38,7 @@ import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import org.apache.plc4x.java.spi.utils.Serializable;
 
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -76,7 +77,7 @@ public class S7Field implements PlcField, Serializable {
     private static final String NUM_ELEMENTS = "numElements";
     private static final String MEMORY_AREA = "memoryArea";
 
-    private final TransportSize dataType;
+    private TransportSize dataType;
     private final MemoryArea memoryArea;
     private final int blockNumber;
     private final int byteOffset;
@@ -98,7 +99,11 @@ public class S7Field implements PlcField, Serializable {
     public TransportSize getDataType() {
         return dataType;
     }
+    public void setDataType(TransportSize dataType) {
+        this.dataType = dataType;
+    }
 
+    @Override
     public String getPlcDataType() {
         return dataType.toString();
     }
@@ -119,6 +124,7 @@ public class S7Field implements PlcField, Serializable {
         return bitOffset;
     }
 
+    @Override
     public int getNumberOfElements() {
         return numElements;
     }
@@ -140,18 +146,26 @@ public class S7Field implements PlcField, Serializable {
      */
     @Override
     public Class<?> getDefaultJavaType() {
-        switch (dataType) {
+        switch (dataType){
             case STRING:
+            case WSTRING:
                 return String.class;
+            case CHAR:
+            case WCHAR:
+                return char.class;
             case USINT:
             case SINT:
             case UINT:
             case INT:
             case DINT:
+            case BYTE:
+            case WORD:
                 return Integer.class;
             case UDINT:
             case ULINT:
             case LINT:
+            case DWORD:
+            case LWORD:
                 return Long.class;
             case BOOL:
                 return Boolean.class;
@@ -163,7 +177,9 @@ public class S7Field implements PlcField, Serializable {
             case DATE:
                 return LocalDate.class;
             case TIME_OF_DAY:
-                return LocalTime.class;
+            case TIME:
+            case LTIME:
+                return Duration.class;
             default:
                 throw new NotImplementedException("The response type for datatype " + dataType + " is not yet implemented");
         }
@@ -181,7 +197,7 @@ public class S7Field implements PlcField, Serializable {
             if (matcher.group(BIT_OFFSET) != null) {
                 bitOffset = Byte.parseByte(matcher.group(BIT_OFFSET));
             } else if (dataType == TransportSize.BOOL) {
-                throw new PlcInvalidFieldException("Expected bit offset for BOOL parameters.");
+                //throw new PlcInvalidFieldException("Expected bit offset for BOOL parameters.");
             }
             int numElements = 1;
             if (matcher.group(NUM_ELEMENTS) != null) {
@@ -218,7 +234,7 @@ public class S7Field implements PlcField, Serializable {
             if (matcher.group(BIT_OFFSET) != null) {
                 bitOffset = Byte.parseByte(matcher.group(BIT_OFFSET));
             } else if (dataType == TransportSize.BOOL) {
-                throw new PlcInvalidFieldException("Expected bit offset for BOOL parameters.");
+                //throw new PlcInvalidFieldException("Expected bit offset for BOOL parameters.");
             }
             int numElements = 1;
             if (matcher.group(NUM_ELEMENTS) != null) {
@@ -278,7 +294,7 @@ public class S7Field implements PlcField, Serializable {
             if (matcher.group(BIT_OFFSET) != null) {
                 bitOffset = Byte.parseByte(matcher.group(BIT_OFFSET));
             } else if (dataType == TransportSize.BOOL) {
-                throw new PlcInvalidFieldException("Expected bit offset for BOOL parameters.");
+                //throw new PlcInvalidFieldException("Expected bit offset for BOOL parameters.");
             }
             int numElements = 1;
             if (matcher.group(NUM_ELEMENTS) != null) {

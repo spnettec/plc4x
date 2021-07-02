@@ -106,6 +106,9 @@
               *
             </Import-Package>
             <Export-package>io.netty.bootstrap,*</Export-package>
+            <SPI-Consumer>
+              *
+            </SPI-Consumer>
           </instructions>
         </configuration>
       </plugin>

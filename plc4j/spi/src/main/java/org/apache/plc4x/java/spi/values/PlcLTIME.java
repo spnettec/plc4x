@@ -25,8 +25,8 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
-import org.w3c.dom.Element;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
@@ -41,6 +41,10 @@ public class PlcLTIME extends PlcSimpleValue<Duration> {
             return new PlcLTIME(Duration.of((long) value, ChronoUnit.MILLIS));
         } else if(value instanceof Long) {
             return new PlcLTIME(Duration.of((long) value, ChronoUnit.NANOS));
+        } else if (value instanceof Number) {
+            return new PlcLTIME(((Number) value).longValue());
+        } else if (value instanceof String) {
+            return new PlcLTIME(new BigDecimal((String)value).longValue());
         }
         throw new PlcRuntimeException("Invalid value type");
     }
@@ -61,7 +65,16 @@ public class PlcLTIME extends PlcSimpleValue<Duration> {
     public PlcLTIME(@JsonProperty("value") BigInteger value) {
         super(Duration.of(value.longValue(), ChronoUnit.NANOS), true);
     }
-
+    @Override
+    @JsonIgnore
+    public long getLong() {
+        return value.toNanos();
+    }
+    @Override
+    @JsonIgnore
+    public BigInteger getBigInteger() {
+        return BigInteger.valueOf(value.toNanos());
+    }
     @Override
     @JsonIgnore
     public boolean isString() {

@@ -23,31 +23,37 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.framework.wiring.BundleWiring;
 import org.apache.plc4x.java.spi.transport.Transport;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.ServiceLoader;
 
 public class TransportActivator implements BundleActivator {
-
-    private ServiceRegistration<Transport> reg;
+    private static final Logger LOGGER = LoggerFactory.getLogger(TransportActivator.class);
+    private List<ServiceRegistration<Transport>> regs = new ArrayList<>();
     private final String TRANSPORT_CODE ="org.apache.plc4x.transport.code";
     private final String TRANSPORT_NAME ="org.apache.plc4x.transport.name";
 
 
     @Override
-    public void start(BundleContext context) throws Exception {
+    public void start(BundleContext context) {
         ServiceLoader<Transport> transports = ServiceLoader.load(Transport.class, context.getBundle().adapt(BundleWiring.class).getClassLoader());
         for (Transport transport : transports) {
             Hashtable<String, String> props = new Hashtable<String, String>();
             props.put(TRANSPORT_CODE, transport.getTransportCode());
             props.put(TRANSPORT_NAME, transport.getTransportName());
-            reg = context.registerService(Transport.class, transport, props);
+            regs.add(context.registerService(Transport.class, transport, props));
+            LOGGER.info("register transport {}",transport.getTransportName());
         }
+        LOGGER.info("register {}  transports done",regs.size());
     }
 
     @Override
     public void stop(BundleContext context) {
-        reg.unregister();
+        regs.forEach(ServiceRegistration::unregister);
     }
 }
 

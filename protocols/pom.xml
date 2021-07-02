@@ -170,6 +170,9 @@
         <configuration>
           <instructions>
             <_removeheaders>Bnd-LastModified</_removeheaders>
+            <SPI-Provider>
+              *
+            </SPI-Provider>
           </instructions>
         </configuration>
       </plugin>
