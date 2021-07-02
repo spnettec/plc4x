@@ -174,6 +174,16 @@ public class Plc4XPollingConsumer implements PollingConsumer {
     }
 
     @Override
+    public Exchange createExchange(boolean autoRelease) {
+        return null;
+    }
+
+    @Override
+    public void releaseExchange(Exchange exchange, boolean autoRelease) {
+
+    }
+
+    @Override
     public void start() {
 
     }
