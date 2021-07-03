@@ -151,10 +151,14 @@
       <artifactId>plc4j-scraper</artifactId>
       <version>0.9.0-SNAPSHOT</version>
     </dependency>
-
     <dependency>
       <groupId>org.apache.camel</groupId>
-      <artifactId>camel-core-engine</artifactId>
+      <artifactId>camel-base-engine</artifactId>
+      <version>${camel.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.camel</groupId>
+      <artifactId>camel-core-model</artifactId>
       <version>${camel.version}</version>
     </dependency>
     <dependency>

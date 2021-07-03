@@ -20,6 +20,8 @@ package org.apache.plc4x.camel;
 
 import org.apache.camel.Component;
 import org.apache.camel.Processor;
+import org.apache.camel.component.mock.MockComponent;
+import org.apache.camel.impl.engine.SimpleCamelContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -34,7 +36,7 @@ public class Plc4XEndpointTest {
 
     @BeforeEach
     public void setUp() throws Exception {
-        SUT = new Plc4XEndpoint("plc4x:mock:10.10.10.1/1/1", mock(Component.class));
+        SUT = new Plc4XEndpoint("plc4x:mock:10.10.10.1/1/1", new MockComponent(new SimpleCamelContext()));
     }
 
     // TODO: figure out what this is
