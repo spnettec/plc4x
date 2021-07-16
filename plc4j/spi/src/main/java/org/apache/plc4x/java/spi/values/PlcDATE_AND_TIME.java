@@ -27,6 +27,7 @@ import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
+import java.nio.charset.StandardCharsets;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -148,7 +149,8 @@ public class PlcDATE_AND_TIME extends PlcSimpleValue<LocalDateTime> {
 
     @Override
     public void serialize(WriteBuffer writeBuffer) throws ParseException {
-        // TODO: Implement
+        String valueString = value.toString();
+        writeBuffer.writeString(getClass().getSimpleName(), valueString.getBytes(StandardCharsets.UTF_8).length*8,StandardCharsets.UTF_8.name(),valueString);
     }
 
 }

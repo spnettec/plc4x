@@ -95,7 +95,8 @@ public class PlcTIME extends PlcSimpleValue<Duration> {
 
     @Override
     public void serialize(WriteBuffer writeBuffer) throws ParseException {
-        // TODO: Implement
+        String valueString = value.toString();
+        writeBuffer.writeString(getClass().getSimpleName(), valueString.getBytes(StandardCharsets.UTF_8).length*8,StandardCharsets.UTF_8.name(),valueString);
     }
 
 }
