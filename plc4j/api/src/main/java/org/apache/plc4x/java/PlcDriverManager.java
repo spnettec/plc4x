@@ -70,7 +70,18 @@ public class PlcDriverManager {
      */
     public PlcConnection getConnection(String url) throws PlcConnectionException {
         PlcDriver driver = getDriverForUrl(url);
-        PlcConnection connection = driver.getConnection(url);
+        PlcConnection connection;
+        if (this.classLoader == null) {
+            connection = driver.getConnection(url);
+        } else {
+            final ClassLoader ccl = Thread.currentThread().getContextClassLoader();
+            Thread.currentThread().setContextClassLoader(classLoader);
+            try {
+                connection = driver.getConnection(url);
+            } finally {
+                Thread.currentThread().setContextClassLoader(ccl);
+            }
+        }
         connection.connect();
         return connection;
     }
