@@ -29,7 +29,9 @@ import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
+import org.apache.plc4x.java.s7.readwrite.field.S7PlcValueHandler;
 import org.apache.plc4x.java.spi.generation.*;
+import org.apache.plc4x.java.spi.values.PlcList;
 import org.apache.plc4x.java.spi.values.PlcNull;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.spi.values.IEC61131ValueHandler;
@@ -51,6 +53,8 @@ import org.apache.plc4x.java.spi.transaction.RequestTransactionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
