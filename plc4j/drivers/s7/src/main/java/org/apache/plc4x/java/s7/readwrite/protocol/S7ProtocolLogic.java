@@ -22,37 +22,35 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
-import org.apache.plc4x.java.api.messages.*;
+import org.apache.plc4x.java.api.messages.PlcReadRequest;
+import org.apache.plc4x.java.api.messages.PlcReadResponse;
+import org.apache.plc4x.java.api.messages.PlcResponse;
+import org.apache.plc4x.java.api.messages.PlcWriteRequest;
+import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
+import org.apache.plc4x.java.spi.generation.*;
+import org.apache.plc4x.java.spi.values.PlcNull;
 import org.apache.plc4x.java.api.value.PlcValue;
+import org.apache.plc4x.java.spi.values.IEC61131ValueHandler;
 import org.apache.plc4x.java.s7.readwrite.*;
 import org.apache.plc4x.java.s7.readwrite.context.S7DriverContext;
-import org.apache.plc4x.java.s7.readwrite.field.S7Field;
-import org.apache.plc4x.java.s7.readwrite.field.S7PlcValueHandler;
 import org.apache.plc4x.java.s7.readwrite.field.S7StringField;
 import org.apache.plc4x.java.s7.readwrite.io.DataItemIO;
 import org.apache.plc4x.java.s7.readwrite.types.*;
+import org.apache.plc4x.java.s7.readwrite.field.S7Field;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.context.DriverContext;
-import org.apache.plc4x.java.spi.generation.ParseException;
-import org.apache.plc4x.java.spi.generation.ReadBuffer;
-import org.apache.plc4x.java.spi.generation.ReadBufferByteBased;
-import org.apache.plc4x.java.spi.generation.WriteBufferByteBased;
 import org.apache.plc4x.java.spi.messages.DefaultPlcReadRequest;
 import org.apache.plc4x.java.spi.messages.DefaultPlcReadResponse;
 import org.apache.plc4x.java.spi.messages.DefaultPlcWriteRequest;
 import org.apache.plc4x.java.spi.messages.DefaultPlcWriteResponse;
 import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 import org.apache.plc4x.java.spi.transaction.RequestTransactionManager;
-import org.apache.plc4x.java.spi.values.PlcList;
-import org.apache.plc4x.java.spi.values.PlcNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -140,20 +138,20 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                         s7DriverContext.setMaxAmqCallee(setupCommunication.getMaxAmqCallee());
                         s7DriverContext.setPduSize(setupCommunication.getPduLength());
 
-                        // Update the number of concurrent requests to the negotiated number.
-                        // I have never seen anything else than equal values for caller and
-                        // callee, but if they were different, we're only limiting the outgoing
-                        // requests.
-                        tm.setNumberOfConcurrentRequests(s7DriverContext.getMaxAmqCallee());
+                            // Update the number of concurrent requests to the negotiated number.
+                            // I have never seen anything else than equal values for caller and
+                            // callee, but if they were different, we're only limiting the outgoing
+                            // requests.
+                            tm.setNumberOfConcurrentRequests(s7DriverContext.getMaxAmqCallee());
 
-                        // If the controller type is explicitly set, were finished with the login
-                        // process. If it's set to ANY, we have to query the serial number information
-                        // in order to detect the type of PLC.
-                        if (s7DriverContext.getControllerType() != S7ControllerType.ANY) {
-                            // Send an event that connection setup is complete.
-                            context.fireConnected();
-                            return;
-                        }
+                            // If the controller type is explicitly set, were finished with the login
+                            // process. If it's set to ANY, we have to query the serial number information
+                            // in order to detect the type of PLC.
+                            if (s7DriverContext.getControllerType() != S7ControllerType.ANY) {
+                                // Send an event that connection setup is complete.
+                                context.fireConnected();
+                                return;
+                            }
 
                         // Prepare a message to request the remote to identify itself.
                         logger.debug("Sending S7 Identification Request");
@@ -196,9 +194,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         return toPlcReadResponse(readRequest, readInternal(s7MessageRequest));
     }
 
-    /**
-     * Maps the S7ReadResponse of a PlcReadRequest to a PlcReadResponse
-     */
+    /** Maps the S7ReadResponse of a PlcReadRequest to a PlcReadResponse */
     private CompletableFuture<PlcReadResponse> toPlcReadResponse(PlcReadRequest readRequest, CompletableFuture<S7Message> response) {
         return response
             .thenApply(p -> {
@@ -213,7 +209,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
     /**
      * Sends one Read over the Wire and internally returns the Response
      * Do sending of normally sized single-message request.
-     * <p>
+     *
      * Assumes that the {@link S7MessageRequest} and its expected {@link S7MessageResponseData}
      * and does not further check that!
      */
@@ -221,7 +217,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         CompletableFuture<S7Message> future = new CompletableFuture<>();
         int tpduId = tpduGenerator.getAndIncrement();
         // If we've reached the max value for a 16 bit transaction identifier, reset back to 1
-        if (tpduGenerator.get() == 0xFFFF) {
+        if(tpduGenerator.get() == 0xFFFF) {
             tpduGenerator.set(1);
         }
 
@@ -237,7 +233,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
             .expectResponse(TPKTPacket.class, REQUEST_TIMEOUT)
             .check(p -> p.getPayload() instanceof COTPPacketData)
             .unwrap(p -> (COTPPacketData) p.getPayload())
-            .check(p -> p.getPayload() != null)
+            .check(p -> p.getPayload()  != null)
             .unwrap(COTPPacket::getPayload)
             .check(p -> p.getTpduReference() == tpduId)
             .handle(p -> {
@@ -262,7 +258,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         }
         final int tpduId = tpduGenerator.getAndIncrement();
         // If we've reached the max value for a 16 bit transaction identifier, reset back to 1
-        if (tpduGenerator.get() == 0xFFFF) {
+        if(tpduGenerator.get() == 0xFFFF) {
             tpduGenerator.set(1);
         }
 
@@ -329,10 +325,10 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
 
     private TPKTPacket createIdentifyRemoteMessage() {
         S7MessageUserData identifyRemoteMessage = new S7MessageUserData(1, new S7ParameterUserData(new S7ParameterUserDataItem[]{
-            new S7ParameterUserDataItemCPUFunctions((short) 0x11, (byte) 0x4, (byte) 0x4, (short) 0x01, (short) 0x00, null, null, null)
-        }), new S7PayloadUserData(new S7PayloadUserDataItem[]{
-            new S7PayloadUserDataItemCpuFunctionReadSzlRequest(DataTransportErrorCode.OK, DataTransportSize.OCTET_STRING, new SzlId(SzlModuleTypeClass.CPU, (byte) 0x00, SzlSublist.MODULE_IDENTIFICATION), 0x0000)
-        }));
+                new S7ParameterUserDataItemCPUFunctions((short) 0x11, (byte) 0x4, (byte) 0x4, (short) 0x01, (short) 0x00, null, null, null)
+            }), new S7PayloadUserData(new S7PayloadUserDataItem[]{
+                new S7PayloadUserDataItemCpuFunctionReadSzlRequest(DataTransportErrorCode.OK, DataTransportSize.OCTET_STRING, new SzlId(SzlModuleTypeClass.CPU, (byte) 0x00, SzlSublist.MODULE_IDENTIFICATION), 0x0000)
+            }));
         COTPPacketData cotpPacketData = new COTPPacketData(null, identifyRemoteMessage, true, (short) 2);
         return new TPKTPacket(cotpPacketData);
     }
@@ -344,7 +340,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                 s7DriverContext.setCalledTsapId(cotpParameterCalledTsap.getTsapId());
             } else if (parameter instanceof COTPParameterCallingTsap) {
                 COTPParameterCallingTsap cotpParameterCallingTsap = (COTPParameterCallingTsap) parameter;
-                if (cotpParameterCallingTsap.getTsapId() != s7DriverContext.getCallingTsapId()) {
+                if(cotpParameterCallingTsap.getTsapId() != s7DriverContext.getCallingTsapId()) {
                     s7DriverContext.setCallingTsapId(cotpParameterCallingTsap.getTsapId());
                     logger.warn("Switching calling TSAP id to '{}'", s7DriverContext.getCallingTsapId());
                 }
@@ -379,11 +375,11 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         Map<String, ResponseItem<PlcValue>> values = new HashMap<>();
         short errorClass;
         short errorCode;
-        if (responseMessage instanceof S7MessageResponseData) {
+        if(responseMessage instanceof S7MessageResponseData) {
             S7MessageResponseData messageResponseData = (S7MessageResponseData) responseMessage;
             errorClass = messageResponseData.getErrorClass();
             errorCode = messageResponseData.getErrorCode();
-        } else if (responseMessage instanceof S7MessageResponse) {
+        } else if(responseMessage instanceof S7MessageResponse) {
             S7MessageResponse messageResponse = (S7MessageResponse) responseMessage;
             errorClass = messageResponse.getErrorClass();
             errorCode = messageResponse.getErrorCode();
@@ -391,9 +387,9 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
             throw new PlcProtocolException("Unsupported message type " + responseMessage.getClass().getName());
         }
         // If the result contains any form of non-null error code, handle this instead.
-        if ((errorClass != 0) || (errorCode != 0)) {
+        if((errorClass != 0) || (errorCode != 0)) {
             // This is usually the case if PUT/GET wasn't enabled on the PLC
-            if ((errorClass == 129) && (errorCode == 4)) {
+            if((errorClass == 129) && (errorCode == 4)) {
                 logger.warn("Got an error response from the PLC. This particular response code usually indicates " +
                     "that PUT/GET is not enabled on the PLC.");
                 for (String fieldName : plcReadRequest.getFieldNames()) {
@@ -403,9 +399,9 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                 return new DefaultPlcReadResponse(plcReadRequest, values);
             } else {
                 logger.warn("Got an unknown error response from the PLC. Error Class: {}, Error Code {}. " +
-                        "We probably need to implement explicit handling for this, so please file a bug-report " +
-                        "on https://issues.apache.org/jira/projects/PLC4X and ideally attach a WireShark dump " +
-                        "containing a capture of the communication.",
+                    "We probably need to implement explicit handling for this, so please file a bug-report " +
+                    "on https://issues.apache.org/jira/projects/PLC4X and ideally attach a WireShark dump " +
+                    "containing a capture of the communication.",
                     errorClass, errorCode);
                 for (String fieldName : plcReadRequest.getFieldNames()) {
                     ResponseItem<PlcValue> result = new ResponseItem<>(PlcResponseCode.INTERNAL_ERROR, new PlcNull());
@@ -438,7 +434,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
             if (responseCode == PlcResponseCode.OK) {
                 try {
                     plcValue = parsePlcValue(field, data);
-                } catch (Exception e) {
+                } catch(Exception e) {
                     throw new PlcProtocolException("Error decoding PlcValue", e);
                 }
             }
@@ -454,11 +450,11 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         Map<String, PlcResponseCode> responses = new HashMap<>();
         short errorClass;
         short errorCode;
-        if (responseMessage instanceof S7MessageResponseData) {
+        if(responseMessage instanceof S7MessageResponseData) {
             S7MessageResponseData messageResponseData = (S7MessageResponseData) responseMessage;
             errorClass = messageResponseData.getErrorClass();
             errorCode = messageResponseData.getErrorCode();
-        } else if (responseMessage instanceof S7MessageResponse) {
+        } else if(responseMessage instanceof S7MessageResponse) {
             S7MessageResponse messageResponse = (S7MessageResponse) responseMessage;
             errorClass = messageResponse.getErrorClass();
             errorCode = messageResponse.getErrorCode();
@@ -466,9 +462,9 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
             throw new PlcProtocolException("Unsupported message type " + responseMessage.getClass().getName());
         }
         // If the result contains any form of non-null error code, handle this instead.
-        if ((errorClass != 0) || (errorCode != 0)) {
+        if((errorClass != 0) || (errorCode != 0)) {
             // This is usually the case if PUT/GET wasn't enabled on the PLC
-            if ((errorClass == 129) && (errorCode == 4)) {
+            if((errorClass == 129) && (errorCode == 4)) {
                 logger.warn("Got an error response from the PLC. This particular response code usually indicates " +
                     "that PUT/GET is not enabled on the PLC.");
                 for (String fieldName : plcWriteRequest.getFieldNames()) {
@@ -582,7 +578,6 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
     /**
      * Helper to convert the return codes returned from the S7 into one of our standard
      * PLC4X return codes
-     *
      * @param dataTransportErrorCode S7 return code
      * @return PLC4X return code.
      */
@@ -635,7 +630,6 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
     /**
      * Currently we only support the S7 Any type of addresses. This helper simply converts the S7Field
      * from PLC4X into S7Address objects.
-     *
      * @param field S7Field instance we need to convert into an S7Address
      * @return the S7Address
      */
@@ -648,35 +642,18 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         int numElements = s7Field.getNumberOfElements();
         // For these date-types we have to convert the requests to simple byte-array requests
         // As otherwise the S7 will deny them with "Data type not supported" replies.
-        if ((transportSize == TransportSize.TIME) /*|| (transportSize == TransportSize.S7_S5TIME)*/ ||
-            (transportSize == TransportSize.LINT) ||
-            (transportSize == TransportSize.ULINT) ||
-            (transportSize == TransportSize.LWORD) ||
-            (transportSize == TransportSize.LREAL) ||
-            (transportSize == TransportSize.REAL) ||
-            (transportSize == TransportSize.LTIME) ||
-            (transportSize == TransportSize.DATE) ||
-            (transportSize == TransportSize.TIME_OF_DAY) ||
-            (transportSize == TransportSize.DATE_AND_TIME)
-        ) {
+        if((transportSize == TransportSize.TIME) /*|| (transportSize == TransportSize.S7_S5TIME)*/ ||
+            (transportSize == TransportSize.LTIME) || (transportSize == TransportSize.DATE) ||
+            (transportSize == TransportSize.TIME_OF_DAY) || (transportSize == TransportSize.DATE_AND_TIME)) {
             numElements = numElements * transportSize.getSizeInBytes();
-            //((S7Field) field).setDataType(transportSize);
             transportSize = TransportSize.BYTE;
         }
-        if (transportSize == TransportSize.CHAR) {
-            transportSize = TransportSize.BYTE;
-            numElements = numElements * transportSize.getSizeInBytes();
-        }
-        if (transportSize == TransportSize.WCHAR) {
-            transportSize = TransportSize.BYTE;
-            numElements = numElements * transportSize.getSizeInBytes() * 2;
-        }
-        if (transportSize == TransportSize.STRING) {
-            transportSize = TransportSize.BYTE;
+        if(transportSize == TransportSize.STRING) {
+            transportSize = TransportSize.CHAR;
             int stringLength = (s7Field instanceof S7StringField) ? ((S7StringField) s7Field).getStringLength() : 254;
             numElements = numElements * (stringLength + 2);
-        } else if (transportSize == TransportSize.WSTRING) {
-            transportSize = TransportSize.BYTE;
+        } else if(transportSize == TransportSize.WSTRING) {
+            transportSize = TransportSize.CHAR;
             int stringLength = (s7Field instanceof S7StringField) ? ((S7StringField) s7Field).getStringLength() : 254;
             numElements = numElements * (stringLength + 2) * 2;
         }
