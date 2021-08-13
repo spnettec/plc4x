@@ -595,8 +595,11 @@ const (
 	KnxManufacturer_M_ALTEN_SW_GMBH                                      KnxManufacturer = 557
 	KnxManufacturer_M_V_Y_C_SRL                                          KnxManufacturer = 558
 	KnxManufacturer_M_TERMINUS_GROUP                                     KnxManufacturer = 559
-	KnxManufacturer_M_ABB___RESERVED                                     KnxManufacturer = 560
-	KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED                    KnxManufacturer = 561
+	KnxManufacturer_M_WONDERFUL_CITY_TECHNOLOGY                          KnxManufacturer = 560
+	KnxManufacturer_M_QBICTECHNOLOGY                                     KnxManufacturer = 561
+	KnxManufacturer_M_EMBEDDED_AUTOMATION_EQUIPMENT_SHANGHAI_KESSINGER   KnxManufacturer = 562
+	KnxManufacturer_M_ABB___RESERVED                                     KnxManufacturer = 563
+	KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED                    KnxManufacturer = 564
 )
 
 var KnxManufacturerValues []KnxManufacturer
@@ -1164,6 +1167,9 @@ func init() {
 		KnxManufacturer_M_ALTEN_SW_GMBH,
 		KnxManufacturer_M_V_Y_C_SRL,
 		KnxManufacturer_M_TERMINUS_GROUP,
+		KnxManufacturer_M_WONDERFUL_CITY_TECHNOLOGY,
+		KnxManufacturer_M_QBICTECHNOLOGY,
+		KnxManufacturer_M_EMBEDDED_AUTOMATION_EQUIPMENT_SHANGHAI_KESSINGER,
 		KnxManufacturer_M_ABB___RESERVED,
 		KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED,
 	}
@@ -3225,10 +3231,22 @@ func (e KnxManufacturer) Number() uint16 {
 		}
 	case 560:
 		{ /* '560' */
-			return 43954
+			return 617
 		}
 	case 561:
 		{ /* '561' */
+			return 618
+		}
+	case 562:
+		{ /* '562' */
+			return 619
+		}
+	case 563:
+		{ /* '563' */
+			return 43954
+		}
+	case 564:
+		{ /* '564' */
 			return 43959
 		}
 	case 57:
@@ -5491,10 +5509,22 @@ func (e KnxManufacturer) Name() string {
 		}
 	case 560:
 		{ /* '560' */
-			return "ABB - reserved"
+			return "Wonderful City Technology"
 		}
 	case 561:
 		{ /* '561' */
+			return "QbicTechnology"
+		}
+	case 562:
+		{ /* '562' */
+			return "Embedded Automation Equipment (Shanghai) Kessinger"
+		}
+	case 563:
+		{ /* '563' */
+			return "ABB - reserved"
+		}
+	case 564:
+		{ /* '564' */
 			return "Busch-Jaeger Elektro - reserved"
 		}
 	case 57:
@@ -6729,8 +6759,14 @@ func KnxManufacturerByValue(value uint16) KnxManufacturer {
 	case 56:
 		return KnxManufacturer_M_WALTHER_WERKE
 	case 560:
-		return KnxManufacturer_M_ABB___RESERVED
+		return KnxManufacturer_M_WONDERFUL_CITY_TECHNOLOGY
 	case 561:
+		return KnxManufacturer_M_QBICTECHNOLOGY
+	case 562:
+		return KnxManufacturer_M_EMBEDDED_AUTOMATION_EQUIPMENT_SHANGHAI_KESSINGER
+	case 563:
+		return KnxManufacturer_M_ABB___RESERVED
+	case 564:
 		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED
 	case 57:
 		return KnxManufacturer_M_ORAS
@@ -7858,6 +7894,12 @@ func KnxManufacturerByName(value string) KnxManufacturer {
 		return KnxManufacturer_M_TERMINUS_GROUP
 	case "M_WALTHER_WERKE":
 		return KnxManufacturer_M_WALTHER_WERKE
+	case "M_WONDERFUL_CITY_TECHNOLOGY":
+		return KnxManufacturer_M_WONDERFUL_CITY_TECHNOLOGY
+	case "M_QBICTECHNOLOGY":
+		return KnxManufacturer_M_QBICTECHNOLOGY
+	case "M_EMBEDDED_AUTOMATION_EQUIPMENT_SHANGHAI_KESSINGER":
+		return KnxManufacturer_M_EMBEDDED_AUTOMATION_EQUIPMENT_SHANGHAI_KESSINGER
 	case "M_ABB___RESERVED":
 		return KnxManufacturer_M_ABB___RESERVED
 	case "M_BUSCH_JAEGER_ELEKTRO___RESERVED":
@@ -9018,6 +9060,12 @@ func (e KnxManufacturer) name() string {
 		return "M_TERMINUS_GROUP"
 	case KnxManufacturer_M_WALTHER_WERKE:
 		return "M_WALTHER_WERKE"
+	case KnxManufacturer_M_WONDERFUL_CITY_TECHNOLOGY:
+		return "M_WONDERFUL_CITY_TECHNOLOGY"
+	case KnxManufacturer_M_QBICTECHNOLOGY:
+		return "M_QBICTECHNOLOGY"
+	case KnxManufacturer_M_EMBEDDED_AUTOMATION_EQUIPMENT_SHANGHAI_KESSINGER:
+		return "M_EMBEDDED_AUTOMATION_EQUIPMENT_SHANGHAI_KESSINGER"
 	case KnxManufacturer_M_ABB___RESERVED:
 		return "M_ABB___RESERVED"
 	case KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED:
