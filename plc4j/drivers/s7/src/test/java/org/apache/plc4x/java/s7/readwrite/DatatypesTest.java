@@ -30,9 +30,9 @@ public class DatatypesTest {
     private PlcReadResponse readResponse;
 
     public static void main(String[] args) throws Exception {
-        try (PlcConnection connection = new PlcDriverManager().getConnection("s7://10.166.11.62")) {
+        try (PlcConnection connection = new PlcDriverManager().getConnection("s7://10.110.20.130?controller-type=S7_300&local-group=1&local-rack=0&local-slot=0&remote-group=2&remote-rack=0&remote-slot=0")) {
             final PlcReadRequest.Builder builder = connection.readRequestBuilder();
-            builder.addItem("bool-value-1", "%DB4.DBX632.7:BOOL"); // true
+            builder.addItem("bool-value-1", "%DB1:24:REAL"); // true
 
             final PlcReadRequest readRequest = builder.build();
 
@@ -40,7 +40,7 @@ public class DatatypesTest {
             Object o = readResponse.getObject("bool-value-1");
             System.out.println(o);
 
-
+            /*
             final PlcWriteRequest.Builder rbuilder = connection.writeRequestBuilder();
             rbuilder.addItem("bool-value-1", "%DB4.DBX632.7:BOOL", "assssss"); // true
 
@@ -49,6 +49,8 @@ public class DatatypesTest {
             final PlcWriteResponse writeResponse = writeRequest.execute().get();
 
             System.out.println(writeResponse);
+            */
+
 
 
         }

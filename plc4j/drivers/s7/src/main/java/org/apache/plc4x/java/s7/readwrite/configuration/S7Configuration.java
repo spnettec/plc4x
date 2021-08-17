@@ -25,6 +25,9 @@ import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultVa
 import org.apache.plc4x.java.transport.tcp.TcpTransportConfiguration;
 
 public class S7Configuration implements Configuration, TcpTransportConfiguration {
+    @ConfigurationParameter("local-group")
+    @IntDefaultValue(3)
+    public int localGroup = 3;
 
     @ConfigurationParameter("local-rack")
     @IntDefaultValue(1)
@@ -34,6 +37,9 @@ public class S7Configuration implements Configuration, TcpTransportConfiguration
     @IntDefaultValue(1)
     public int localSlot = 1;
 
+    @ConfigurationParameter("remote-group")
+    @IntDefaultValue(1)
+    public int remoteGroup = 1;
     @ConfigurationParameter("remote-rack")
     @IntDefaultValue(0)
     public int remoteRack = 0;
@@ -56,6 +62,22 @@ public class S7Configuration implements Configuration, TcpTransportConfiguration
 
     @ConfigurationParameter("controller-type")
     public String controllerType;
+
+    public int getLocalGroup() {
+        return localGroup;
+    }
+
+    public void setLocalGroup(int localGroup) {
+        this.localGroup = localGroup;
+    }
+
+    public int getRemoteGroup() {
+        return remoteGroup;
+    }
+
+    public void setRemoteGroup(int remoteGroup) {
+        this.remoteGroup = remoteGroup;
+    }
 
     public int getLocalRack() {
         return localRack;
