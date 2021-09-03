@@ -51,6 +51,7 @@
 
 #include <stdbool.h>
 #include <stdint.h>
+#include <plc4c/driver_${protocolName}_static.h>
 #include <plc4c/spi/read_buffer.h>
 #include <plc4c/spi/write_buffer.h>
 #include <plc4c/utils/list.h>
@@ -116,7 +117,7 @@ ${helper.getCTypeName(type.name)}_discriminator ${helper.getCTypeName(type.name)
 <#if helper.getAllConstFields()?has_content>
 
 // Constant values.
-    <#list helper.getAllConstFields() as parentType, constField>
+    <#list helper.getAllConstFields() as constField, parentType>
 ${helper.getLanguageTypeNameForField(constField)} ${helper.getCTypeName(parentType.name)?upper_case}_${helper.camelCaseToSnakeCase(constField.name)?upper_case}();
     </#list>
 </#if>

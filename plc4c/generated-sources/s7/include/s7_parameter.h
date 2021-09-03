@@ -22,6 +22,7 @@
 
 #include <stdbool.h>
 #include <stdint.h>
+#include <plc4c/driver_s7_static.h>
 #include <plc4c/spi/read_buffer.h>
 #include <plc4c/spi/write_buffer.h>
 #include <plc4c/utils/list.h>
@@ -50,7 +51,8 @@ enum plc4c_s7_read_write_s7_parameter_type {
   plc4c_s7_read_write_s7_parameter_type_plc4c_s7_read_write_s7_parameter_read_var_response = 2,
   plc4c_s7_read_write_s7_parameter_type_plc4c_s7_read_write_s7_parameter_write_var_request = 3,
   plc4c_s7_read_write_s7_parameter_type_plc4c_s7_read_write_s7_parameter_write_var_response = 4,
-  plc4c_s7_read_write_s7_parameter_type_plc4c_s7_read_write_s7_parameter_user_data = 5};
+  plc4c_s7_read_write_s7_parameter_type_plc4c_s7_read_write_s7_parameter_user_data = 5,
+  plc4c_s7_read_write_s7_parameter_type_plc4c_s7_read_write_s7_parameter_mode_transition = 6};
 typedef enum plc4c_s7_read_write_s7_parameter_type plc4c_s7_read_write_s7_parameter_type;
 
 // Function to get the discriminator values for a given type.
@@ -80,6 +82,13 @@ struct plc4c_s7_read_write_s7_parameter {
     };
     struct { /* S7ParameterUserData */
       plc4c_list* s7_parameter_user_data_items;
+    };
+    struct { /* S7ParameterModeTransition */
+      uint8_t s7_parameter_mode_transition_method;
+      uint8_t s7_parameter_mode_transition_cpu_function_type : 4;
+      uint8_t s7_parameter_mode_transition_cpu_function_group : 4;
+      uint8_t s7_parameter_mode_transition_current_mode;
+      uint8_t s7_parameter_mode_transition_sequence_number;
     };
   };
 };

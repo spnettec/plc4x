@@ -74,4 +74,5 @@ public class JavaLanguageOutput extends FreemarkerLanguageOutput {
         return new JavaLanguageTemplateHelper(thisType, protocolName, flavorName, types, options);
     }
 
+
 }

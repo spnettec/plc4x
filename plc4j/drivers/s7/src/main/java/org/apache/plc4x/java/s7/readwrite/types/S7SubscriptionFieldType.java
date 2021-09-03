@@ -16,50 +16,17 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.plc4x.camel;
+package org.apache.plc4x.java.s7.readwrite.types;
 
-import org.junit.jupiter.api.Test;
-
-//TODO: implement me
-public class Plc4XPollingConsumerTest {
-
-    @Test
-    public void toStringTest() {
-    }
-
-    @Test
-    public void getEndpoint() {
-    }
-
-    @Test
-    public void getExceptionHandler() {
-    }
-
-    @Test
-    public void setExceptionHandler() {
-    }
-
-    @Test
-    public void receive() {
-    }
-
-    @Test
-    public void receiveNoWait() {
-    }
-
-    @Test
-    public void receive1() {
-    }
-
-    @Test
-    public void getReader() {
-    }
-
-    @Test
-    public void doStart() {
-    }
-
-    @Test
-    public void doStop() {
-    }
+/**
+ *
+ * @author cgarcia
+ */
+public enum S7SubscriptionFieldType {
+    EVENT_SUBSCRIPTION,
+    EVENT_UNSUBSCRIPTION,
+    ALARM_ACK,
+    ALARM_QUERY,
+    CYCLIC_SUBSCRIPTION,
+    CYCLIC_UNSUBSCRIPTION;    
 }
