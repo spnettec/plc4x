@@ -30,12 +30,11 @@ public class DatatypesTest {
     private PlcReadResponse readResponse;
 
     public static void main(String[] args) throws Exception {
-        try (PlcConnection connection = new PlcDriverManager().getConnection("s7://10.110.20.101?local-group=1&local-rack=0&local-slot=0&remote-group=2&remote-rack=0&remote-slot=2&controller-type=S7_400")) {
+        try (PlcConnection connection = new PlcDriverManager().getConnection("s7://10.110.20.101?local-group=1&local-rack=0&local-slot=0&remote-group=2&remote-rack=0&remote-slot=2&controller-type=S7_200")) {
             final PlcReadRequest.Builder builder = connection.readRequestBuilder();
             builder.addItem("bool-value-1", "%DB1.DBD224:REAL"); // true
 
             final PlcReadRequest readRequest = builder.build();
-
             final PlcReadResponse readResponse = readRequest.execute().get();
             Object o = readResponse.getObject("bool-value-1");
             System.out.println(o);
