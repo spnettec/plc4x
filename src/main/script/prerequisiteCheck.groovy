@@ -303,7 +303,7 @@ def checkPython() {
                 allConditionsMet = false
             }
         } else {
-            println "missing"
+            println "missing (Please install at least version 3.6.0)"
             allConditionsMet = false
         }
     } catch (Exception e) {
