@@ -35,6 +35,7 @@
   <build>
     <plugins>
       <!-- Fetch the master-data which will be used to translate manufacturer ids to readable names -->
+      <!--
       <plugin>
         <groupId>com.googlecode.maven-download-plugin</groupId>
         <artifactId>download-maven-plugin</artifactId>
@@ -56,7 +57,9 @@
           </execution>
         </executions>
       </plugin>
+      -->
       <!-- Fetch the master-data which will be used to translate manufacturer ids to readable names -->
+      <!--
       <plugin>
         <groupId>com.googlecode.maven-download-plugin</groupId>
         <artifactId>download-maven-plugin</artifactId>
@@ -114,7 +117,7 @@
           </execution>
         </executions>
       </plugin>
-
+      -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>xml-maven-plugin</artifactId>
@@ -131,7 +134,7 @@
         <configuration>
           <transformationSets>
             <transformationSet>
-              <dir>${project.build.directory}/downloads</dir>
+              <dir>${project.basedir}/downloads</dir>
               <includes>Opc.Ua.Types.bsd</includes>
               <stylesheet>src/main/xslt/opc-services.xsl</stylesheet>
               <outputDir>${project.build.outputDirectory}/protocols/opcua</outputDir>
@@ -147,7 +150,7 @@
                 </parameter>
                 <parameter>
                   <name>servicesEnum</name>
-                  <value>${project.build.directory}/downloads/Opc.Ua.NodeIds.Services.csv</value>
+                  <value>${project.basedir}/downloads/Opc.Ua.NodeIds.Services.csv</value>
                 </parameter>
               </parameters>
               <outputProperties>
@@ -158,7 +161,7 @@
               </outputProperties>
             </transformationSet>
             <transformationSet>
-              <dir>${project.build.directory}/downloads</dir>
+              <dir>${project.basedir}/downloads</dir>
               <includes>Opc.Ua.Types.bsd</includes>
               <stylesheet>src/main/xslt/opc-status.xsl</stylesheet>
               <outputDir>${project.build.outputDirectory}/protocols/opcua</outputDir>
@@ -174,7 +177,7 @@
                 </parameter>
                 <parameter>
                   <name>statusCodes</name>
-                  <value>${project.build.directory}/downloads/StatusCode.csv</value>
+                  <value>${project.basedir}/downloads/StatusCode.csv</value>
                 </parameter>
               </parameters>
               <outputProperties>
@@ -185,7 +188,7 @@
               </outputProperties>
             </transformationSet>
             <transformationSet>
-              <dir>${project.build.directory}/downloads</dir>
+              <dir>${project.basedir}/downloads</dir>
               <includes>Opc.Ua.Types.bsd</includes>
               <stylesheet>src/main/xslt/opc-manual.xsl</stylesheet>
               <outputDir>${project.build.outputDirectory}/protocols/opcua</outputDir>
@@ -201,7 +204,7 @@
                 </parameter>
                 <parameter>
                   <name>services</name>
-                  <value>${project.build.directory}/downloads/Opc.Ua.NodeSet2.Services.xml</value>
+                  <value>${project.basedir}/downloads/Opc.Ua.NodeSet2.Services.xml</value>
                 </parameter>
               </parameters>
               <outputProperties>
@@ -212,7 +215,7 @@
               </outputProperties>
             </transformationSet>
             <transformationSet>
-              <dir>${project.build.directory}/downloads</dir>
+              <dir>${project.basedir}/downloads</dir>
               <includes>Opc.Ua.Types.bsd</includes>
               <stylesheet>src/main/xslt/opc-types.xsl</stylesheet>
               <outputDir>${project.build.outputDirectory}/protocols/opcua</outputDir>
