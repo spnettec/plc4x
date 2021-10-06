@@ -77,12 +77,6 @@
               <outputFileName>StatusCode.csv</outputFileName>
             </configuration>
           </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>com.googlecode.maven-download-plugin</groupId>
-        <artifactId>download-maven-plugin</artifactId>
-        <executions>
           <execution>
             <id>fetch-opc-discriminators</id>
             <phase>generate-resources</phase>
@@ -96,12 +90,6 @@
               <outputFileName>Opc.Ua.NodeSet2.Services.xml</outputFileName>
             </configuration>
           </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>com.googlecode.maven-download-plugin</groupId>
-        <artifactId>download-maven-plugin</artifactId>
-        <executions>
           <execution>
             <id>fetch-opc-services-enum</id>
             <phase>generate-resources</phase>
@@ -134,7 +122,7 @@
         <configuration>
           <transformationSets>
             <transformationSet>
-              <dir>${project.basedir}/downloads</dir>
+              <dir>${project.build.directory}/downloads</dir>
               <includes>Opc.Ua.Types.bsd</includes>
               <stylesheet>src/main/xslt/opc-services.xsl</stylesheet>
               <outputDir>${project.build.outputDirectory}/protocols/opcua</outputDir>
@@ -150,7 +138,7 @@
                 </parameter>
                 <parameter>
                   <name>servicesEnum</name>
-                  <value>${project.basedir}/downloads/Opc.Ua.NodeIds.Services.csv</value>
+                  <value>${project.build.directory}/downloads/Opc.Ua.NodeIds.Services.csv</value>
                 </parameter>
               </parameters>
               <outputProperties>
@@ -161,7 +149,7 @@
               </outputProperties>
             </transformationSet>
             <transformationSet>
-              <dir>${project.basedir}/downloads</dir>
+              <dir>${project.build.directory}/downloads</dir>
               <includes>Opc.Ua.Types.bsd</includes>
               <stylesheet>src/main/xslt/opc-status.xsl</stylesheet>
               <outputDir>${project.build.outputDirectory}/protocols/opcua</outputDir>
@@ -177,7 +165,7 @@
                 </parameter>
                 <parameter>
                   <name>statusCodes</name>
-                  <value>${project.basedir}/downloads/StatusCode.csv</value>
+                  <value>${project.build.directory}/downloads/StatusCode.csv</value>
                 </parameter>
               </parameters>
               <outputProperties>
@@ -188,7 +176,7 @@
               </outputProperties>
             </transformationSet>
             <transformationSet>
-              <dir>${project.basedir}/downloads</dir>
+              <dir>${project.build.directory}/downloads</dir>
               <includes>Opc.Ua.Types.bsd</includes>
               <stylesheet>src/main/xslt/opc-manual.xsl</stylesheet>
               <outputDir>${project.build.outputDirectory}/protocols/opcua</outputDir>
@@ -204,7 +192,7 @@
                 </parameter>
                 <parameter>
                   <name>services</name>
-                  <value>${project.basedir}/downloads/Opc.Ua.NodeSet2.Services.xml</value>
+                  <value>${project.build.directory}/downloads/Opc.Ua.NodeSet2.Services.xml</value>
                 </parameter>
               </parameters>
               <outputProperties>
@@ -215,7 +203,7 @@
               </outputProperties>
             </transformationSet>
             <transformationSet>
-              <dir>${project.basedir}/downloads</dir>
+              <dir>${project.build.directory}/downloads</dir>
               <includes>Opc.Ua.Types.bsd</includes>
               <stylesheet>src/main/xslt/opc-types.xsl</stylesheet>
               <outputDir>${project.build.outputDirectory}/protocols/opcua</outputDir>
