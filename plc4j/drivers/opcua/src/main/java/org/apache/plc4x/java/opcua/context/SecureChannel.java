@@ -484,28 +484,24 @@ public class SecureChannel {
             e.printStackTrace();
         }
 
-        for (String hostEndpoints : endpoints) {
+        for (String hostEndpoint : endpoints) {
             for (ExtensionObjectDefinition extensionObject : sessionResponse.getServerEndpoints()) {
                 EndpointDescription endpointDescription = (EndpointDescription) extensionObject;
-                if (endpointDescription.getEndpointUrl().getStringValue().equals(hostEndpoints)) {
-                    for (ExtensionObjectDefinition userTokenCast : endpointDescription.getUserIdentityTokens()) {
-                        UserTokenPolicy identityToken = (UserTokenPolicy) userTokenCast;
-                        if ((identityToken.getTokenType() == UserTokenType.userTokenTypeAnonymous) && (this.username == null)) {
-                            LOGGER.info("Using Endpoint {} with security {}", endpointDescription.getEndpointUrl().getStringValue(), identityToken.getPolicyId().getStringValue());
-                            policyId = identityToken.getPolicyId();
-                            tokenType = identityToken.getTokenType();
-                        } else if ((identityToken.getTokenType() == UserTokenType.userTokenTypeUserName) && (this.username != null)) {
-                            LOGGER.info("Using Endpoint {} with security {}", endpointDescription.getEndpointUrl().getStringValue(), identityToken.getPolicyId().getStringValue());
-                            policyId = identityToken.getPolicyId();
-                            tokenType = identityToken.getTokenType();
-                        }
-                    }
+                if (endpointDescription.getEndpointUrl().getStringValue().equals(hostEndpoint)) {
+                    tokenType = getUserTokenTypeAndSetPolicyId(endpointDescription);
                 }
             }
         }
 
         if (this.policyId == null) {
-            throw new PlcRuntimeException("Unable to find endpoint - " + endpoints[1]);
+            if (sessionResponse.getServerEndpoints().length>0)
+            {
+                EndpointDescription endpointDescription = (EndpointDescription) sessionResponse.getServerEndpoints()[0];
+                tokenType = getUserTokenTypeAndSetPolicyId(endpointDescription);
+            }
+            if (this.policyId == null) {
+                throw new PlcRuntimeException("Unable to find endpoint - " + endpoints[1]);
+            }
         }
 
         ExtensionObject userIdentityToken = getIdentityToken(tokenType, policyId.getStringValue());
@@ -604,6 +600,25 @@ public class SecureChannel {
         } catch (ParseException e) {
             LOGGER.error("Unable to to Parse Activate Session Request");
         }
+    }
+
+    private UserTokenType getUserTokenTypeAndSetPolicyId(EndpointDescription endpointDescription) {
+        UserTokenType tokenType = null;
+        for (ExtensionObjectDefinition userTokenCast : endpointDescription.getUserIdentityTokens()) {
+            UserTokenPolicy identityToken = (UserTokenPolicy) userTokenCast;
+            if ((identityToken.getTokenType() == UserTokenType.userTokenTypeAnonymous) && (this.username == null)) {
+                LOGGER.info("Using Endpoint {} with security {}", endpointDescription.getEndpointUrl().getStringValue(), identityToken.getPolicyId().getStringValue());
+                policyId = identityToken.getPolicyId();
+                tokenType = identityToken.getTokenType();
+                break;
+            } else if ((identityToken.getTokenType() == UserTokenType.userTokenTypeUserName) && (this.username != null)) {
+                LOGGER.info("Using Endpoint {} with security {}", endpointDescription.getEndpointUrl().getStringValue(), identityToken.getPolicyId().getStringValue());
+                policyId = identityToken.getPolicyId();
+                tokenType = identityToken.getTokenType();
+                break;
+            }
+        }
+        return tokenType;
     }
 
     public void onDisconnect(ConversationContext<OpcuaAPU> context) {

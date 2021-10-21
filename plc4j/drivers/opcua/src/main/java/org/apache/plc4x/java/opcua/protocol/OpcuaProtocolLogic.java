@@ -457,7 +457,10 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
                 dataType = "INT";
             } else if (plcValueList.get(0).getObject() instanceof Integer) {
                 dataType = "DINT";
-            } else if (plcValueList.get(0).getObject() instanceof Long) {
+            } else if (plcValueList.get(0).getObject() instanceof BigInteger) {
+                dataType = "LINT";
+            }
+            else if (plcValueList.get(0).getObject() instanceof Long) {
                 dataType = "LINT";
             } else if (plcValueList.get(0).getObject() instanceof Float) {
                 dataType = "REAL";
