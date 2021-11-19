@@ -376,16 +376,16 @@
     [simple State        ackStateComing]
 ]
 
-[type 'AlarmMessageAckType'
-    [simple uint 8                    'functionId']
-    [simple uint 8                    'numberOfObjects']
-    [array  AlarmMessageObjectAckType 'messageObjects' count 'numberOfObjects' ]
+[type AlarmMessageAckType
+    [simple uint 8                    functionId]
+    [simple uint 8                    numberOfObjects]
+    [array  AlarmMessageObjectAckType messageObjects count 'numberOfObjects' ]
 ]
 
-[type 'AlarmMessageAckResponseType'
-    [simple uint 8 'functionId']
-    [simple uint 8 'numberOfObjects']
-    [array  uint 8 'messageObjects'  count 'numberOfObjects' ]
+[type AlarmMessageAckResponseType
+    [simple uint 8 functionId]
+    [simple uint 8 numberOfObjects]
+    [array  uint 8 messageObjects  count 'numberOfObjects' ]
 ]
 
 ////////////////////////////////////////////////////////////////
@@ -699,7 +699,7 @@
     ['0x0A' DINT             ['0x07'       , 'D'               , '4'                 , 'INT'                   , 'INTEGER'          , 'IEC61131_DINT'         , 'true'                , 'true'                , 'true'                 , 'true'                 , 'true'              ]]
     ['0x0B' UDINT            ['0x07'       , 'D'               , '4'                 , 'INT'                   , 'INTEGER'          , 'IEC61131_UDINT'        , 'false'               , 'false'               , 'true'                 , 'true'                 , 'true'              ]]
     ['0x0C' LINT             ['0x00'       , 'X'               , '8'                 , 'null'                  , 'BYTE_WORD_DWORD'  , 'IEC61131_LINT'         , 'false'               , 'false'               , 'false'                , 'true'                 , 'false'             ]]
-    ['0x0D' ULINT            ['0x00'       , 'X'               , '8'                 , 'null'                  , 'BYTE_WORD_DWORD'  , 'IEC61131_ULINT'        , 'false'               , 'false'               , 'false'                , 'true'                 , 'false'             ]]
+    ['0x0D' ULINT            ['0x00'       , 'X'               , '16'                , 'null'                  , 'BYTE_WORD_DWORD'  , 'IEC61131_ULINT'        , 'false'               , 'false'               , 'false'                , 'true'                 , 'false'             ]]
 
     // Floating point values
     ['0x0E' REAL             ['0x08'       , 'D'               , '4'                 , 'null'                  , 'BYTE_WORD_DWORD'  , 'IEC61131_REAL'         , 'true'                , 'true'                , 'true'                 , 'true'                 , 'true'              ]]

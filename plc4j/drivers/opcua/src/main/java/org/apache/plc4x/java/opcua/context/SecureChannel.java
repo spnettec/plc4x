@@ -460,9 +460,9 @@ public class SecureChannel {
         }
 
         if (this.policyId == null) {
-            if (sessionResponse.getServerEndpoints().length>0)
+            if (sessionResponse.getServerEndpoints().size()>0)
             {
-                EndpointDescription endpointDescription = (EndpointDescription) sessionResponse.getServerEndpoints()[0];
+                EndpointDescription endpointDescription = (EndpointDescription) sessionResponse.getServerEndpoints().get(0);
                 tokenType = getUserTokenTypeAndSetPolicyId(endpointDescription);
             }
             if (this.policyId == null) {
