@@ -479,7 +479,6 @@ public class SecureChannel {
         senderCertificate = sessionResponse.getServerCertificate().getStringValue();
         encryptionHandler.setServerCertificate(EncryptionHandler.getCertificateX509(senderCertificate));
         this.senderNonce = sessionResponse.getServerNonce().getStringValue();
-        UserTokenType tokenType = UserTokenType.userTokenTypeAnonymous;
         String[] endpoints = new String[3];
         try {
             InetAddress address = InetAddress.getByName(this.configuration.getHost());
@@ -490,25 +489,7 @@ public class SecureChannel {
             e.printStackTrace();
         }
 
-        for (String hostEndpoints : endpoints) {
-            for (ExtensionObjectDefinition extensionObject : sessionResponse.getServerEndpoints()) {
-                EndpointDescription endpointDescription = (EndpointDescription) extensionObject;
-                if (endpointDescription.getEndpointUrl().getStringValue().equals(hostEndpoints)) {
-                    for (ExtensionObjectDefinition userTokenCast : endpointDescription.getUserIdentityTokens()) {
-                        UserTokenPolicy identityToken = (UserTokenPolicy) userTokenCast;
-                        if ((identityToken.getTokenType() == UserTokenType.userTokenTypeAnonymous) && (this.username == null)) {
-                            LOGGER.info("Using Endpoint {} with security {}", endpointDescription.getEndpointUrl().getStringValue(), identityToken.getPolicyId().getStringValue());
-                            policyId = identityToken.getPolicyId();
-                            tokenType = identityToken.getTokenType();
-                        } else if ((identityToken.getTokenType() == UserTokenType.userTokenTypeUserName) && (this.username != null)) {
-                            LOGGER.info("Using Endpoint {} with security {}", endpointDescription.getEndpointUrl().getStringValue(), identityToken.getPolicyId().getStringValue());
-                            policyId = identityToken.getPolicyId();
-                            tokenType = identityToken.getTokenType();
-                        }
-                    }
-                }
-            }
-        }
+        selectEndpoint(sessionResponse);
 
         if (this.policyId == null) {
             throw new PlcRuntimeException("Unable to find endpoint - " + endpoints[1]);
