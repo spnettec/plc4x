@@ -16,29 +16,14 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.plc4x.java.opcua;
 
-[discriminatedType Request byteOrder='BIG_ENDIAN'
-    // TODO: Replace this with an discriminator field asap
-    [simple RequestType type]
-    [typeSwitch 'type'
-        ['RequestType.ReadRequest' 'ReadRequest'
-            [simple
-        ]
-        ['RequestType.ReadResponse' 'ReadResponse'
+import org.apache.plc4x.test.driver.DriverTestsuiteRunner;
 
-        ]
-        ['RequestType.WriteRequest' 'WriteRequest'
+public class OpcuaDriverIT extends DriverTestsuiteRunner {
 
-        ]
-        ['RequestType.WriteResponse' 'WriteResponse'
+    public OpcuaDriverIT() {
+        super("/protocols/opcua/DriverTestsuite.xml", true);
+    }
 
-        ]
-    ]
-]
-
-[enum uint 8 RequestType
-    ['0x01' ReadRequest]
-    ['0x02' ReadResponse]
-    ['0x03' WriteRequest]
-    ['0x04' WriteResponse]
-]
+}

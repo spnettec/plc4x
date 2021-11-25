@@ -19,6 +19,7 @@
 [![Maven central](https://img.shields.io/maven-central/v/org.apache.plc4x/plc4j-api.svg)](https://img.shields.io/maven-central/v/org.apache.plc4x/plc4j-api.svg)
 [![License](https://img.shields.io/github/license/apache/plc4x.svg)](http://www.apache.org/licenses/LICENSE-2.0)
 [![Last commit](https://img.shields.io/github/last-commit/apache/plc4x.svg)]()
+[![Platform compatibility](https://img.shields.io/github/workflow/status/apache/plc4x/Platform%20compatibility?label=Platform%20compatibility)](https://github.com/apache/plc4x/actions/workflows/ensure-platforms.yml)
 [![Twitter](https://img.shields.io/twitter/follow/ApachePLC4X.svg?label=Follow&style=social)](https://twitter.com/ApachePLC4X)
 
 
@@ -203,7 +204,7 @@ If you don't want to bother setting up the environment on your normal system and
 
 ### Getting Started
 
-You must have at least Java 8 installed on your system and connectivity to Maven Central
+You must have at least Java >=9 installed on your system and connectivity to Maven Central
 (for downloading external third party dependencies). However in order to build all parts
 of PLC4X exactly Java 11 is required. Maven 3.6 is required to build, so be sure it's installed and available on your system. 
 
