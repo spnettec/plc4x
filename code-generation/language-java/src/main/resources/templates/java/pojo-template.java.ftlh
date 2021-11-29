@@ -51,8 +51,6 @@ import static org.apache.plc4x.java.spi.generation.StaticHelper.*;
 import static org.apache.plc4x.java.spi.codegen.io.DataWriterFactory.*;
 import static org.apache.plc4x.java.spi.codegen.fields.FieldWriterFactory.*;
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 import org.apache.plc4x.java.api.value.*;
 import org.apache.plc4x.java.spi.codegen.io.DataWriterComplexDefault;
 import org.apache.plc4x.java.spi.codegen.io.DataWriterEnumDefault;
@@ -60,6 +58,7 @@ import org.apache.plc4x.java.spi.generation.Message;
 import org.apache.plc4x.java.spi.generation.MessageIO;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
+import org.apache.plc4x.java.spi.generation.WriteBufferBoxBased;
 import org.apache.plc4x.java.spi.generation.WithReaderWriterArgs;
 
 import java.time.*;
@@ -81,12 +80,17 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
     // Accessors for discriminator values.
     <#list discriminatedChildType.getDiscriminatorMap() as discriminatorName, discriminatorValue>
         <#-- If the discriminator name matches that of another field, suppress the methods generation -->
-        <#if !discriminatedChildType.isNonDiscriminatorField(discriminatorName)>
-    public ${helper.getLanguageTypeNameForTypeReference(helper.getDiscriminatorTypes()[discriminatorName])} get${discriminatorName?cap_first}() {
-            <#if !helper.isComplexTypeReference(helper.getDiscriminatorTypes()[discriminatorName])>
-        return <#if discriminatorValue??>${helper.adjustLiterals(helper.getLanguageTypeNameForTypeReference(helper.getDiscriminatorTypes()[discriminatorName]),discriminatorValue)}<#else>${helper.getNullValueForTypeReference(helper.getDiscriminatorTypes()[discriminatorName])}</#if>;
+        <#if !discriminatedChildType.isNonDiscriminatorField(discriminatorName)><#--&& !discriminatedChildType.isParserArgument(discriminatorName)-->
+            <#assign discriminatorType = helper.getDiscriminatorTypes()[discriminatorName]>
+    public ${helper.getLanguageTypeNameForTypeReference(discriminatorType)} get${discriminatorName?cap_first}() {
+            <#if discriminatorValue??>
+                <#if helper.isEnumTypeReference(discriminatorType)>
+        return ${helper.getLanguageTypeNameForTypeReference(discriminatorType)}.${helper.toParseExpression(null, discriminatorType, discriminatorValue, parserArguments)};
+                <#else>
+        return ${helper.toParseExpression(null, discriminatorType, discriminatorValue, parserArguments)};
+                </#if>
             <#else>
-        return <#if discriminatorValue??>${helper.getLanguageTypeNameForTypeReference(helper.getDiscriminatorTypes()[discriminatorName])}.${discriminatorValue}<#else>${helper.getLanguageTypeNameForTypeReference(helper.getDiscriminatorTypes()[discriminatorName])}.${helper.getNullValueForTypeReference(helper.getDiscriminatorTypes()[discriminatorName])}</#if>;
+        return ${helper.getNullValueForTypeReference(discriminatorType)};
             </#if>
     }
         </#if>
@@ -102,7 +106,7 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
     // Abstract accessors for discriminator values.
     <#list helper.discriminatorTypes as discriminatorName, discriminatorType>
         <#-- If the discriminator name matches that of another field, suppress the methods generation -->
-        <#if !type.isNonDiscriminatorField(discriminatorName)>
+        <#if !type.isNonDiscriminatorField(discriminatorName)><#-- && !type.isParserArgument(discriminatorName)-->
     public abstract ${helper.getLanguageTypeNameForTypeReference(discriminatorType)} get${discriminatorName?cap_first}();
         </#if>
     </#list>
@@ -112,7 +116,7 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
 
     // Constant values.
 <#list type.constFields as field>
-    public static final ${helper.getLanguageTypeNameForField(field)} ${field.name?upper_case} = <#if helper.getLanguageTypeNameForField(field) = 'float'>${field.referenceValue}f<#else>${field.referenceValue}</#if>;
+    public static final ${helper.getLanguageTypeNameForField(field)} ${field.name?upper_case} = ${helper.toParseExpression(field, field.type, field.referenceValue, parserArguments)};
 </#list>
 </#if>
 <#-- Property fields are fields that require a property in the pojo -->
@@ -510,24 +514,13 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
 
     @Override
     public String toString() {
-        return toString(ToStringStyle.SHORT_PREFIX_STYLE);
+        WriteBufferBoxBased writeBufferBoxBased = new WriteBufferBoxBased(true, true);
+        try {
+            serialize(writeBufferBoxBased);
+        } catch (SerializationException e) {
+            throw new RuntimeException(e);
+        }
+        return "\n" + writeBufferBoxBased.getBox().toString()+ "\n";
     }
-
-    public String toString(ToStringStyle style) {
-        return new ToStringBuilder(this, style)
-            <#if type.parentType??>
-            .appendSuper(super.toString(style))
-            </#if>
-            <#if type.propertyFields?has_content>
-            <#list type.propertyFields as field>
-            .append("${field.name}", get${field.name?cap_first}())
-            </#list>
-            </#if>
-            <#list type.virtualFields as field>
-            .append("${field.name}", get${field.name?cap_first}())
-            </#list>
-            .toString();
-    }
-
 }
 </#outputformat>

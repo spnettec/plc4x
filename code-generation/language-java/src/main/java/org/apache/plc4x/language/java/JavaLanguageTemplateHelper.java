@@ -34,10 +34,7 @@ import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
@@ -91,20 +88,8 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
         return getLanguageTypeNameForTypeReference(typeReference, false);
     }
 
-    public String adjustLiterals(String javaType, String value) {
-        switch (javaType) {
-            case "long":
-            case "Long":
-                return value + "L";
-            case "float":
-            case "Float":
-                return value + "F";
-            default:
-                return value;
-        }
-    }
-
     public String getLanguageTypeNameForTypeReference(TypeReference typeReference, boolean allowPrimitive) {
+        Objects.requireNonNull(typeReference);
         if (!(typeReference instanceof SimpleTypeReference)) {
             return ((ComplexTypeReference) typeReference).getName();
         }
@@ -493,11 +478,13 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
         }
     }
 
+    @Deprecated
     @Override
     public String getWriteBufferWriteMethodCall(SimpleTypeReference simpleTypeReference, String fieldName, TypedField field) {
-        return getWriteBufferWriteMethodCall("", simpleTypeReference, fieldName, field);
+        return "/*TODO: migrate me*/" + getWriteBufferWriteMethodCall("", simpleTypeReference, fieldName, field);
     }
 
+    @Deprecated
     public String getWriteBufferWriteMethodCall(String logicalName, SimpleTypeReference simpleTypeReference, String fieldName, TypedField field, String... writerArgs) {
         String writerArgsString = "";
         if (writerArgs.length > 0) {
@@ -505,47 +492,47 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
         }
         switch (simpleTypeReference.getBaseType()) {
             case BIT:
-                return "writeBuffer.writeBit(\"" + logicalName + "\", (boolean) " + fieldName + "" + writerArgsString + ")";
+                return "/*TODO: migrate me*/" + "writeBuffer.writeBit(\"" + logicalName + "\", (boolean) " + fieldName + "" + writerArgsString + ")";
             case BYTE:
                 ByteTypeReference byteTypeReference = (ByteTypeReference) simpleTypeReference;
-                return "writeBuffer.writeByte(\"" + logicalName + "\", ((Number) " + fieldName + ").byteValue()" + writerArgsString + ")";
+                return "/*TODO: migrate me*/" + "writeBuffer.writeByte(\"" + logicalName + "\", ((Number) " + fieldName + ").byteValue()" + writerArgsString + ")";
             case UINT:
                 IntegerTypeReference unsignedIntegerTypeReference = (IntegerTypeReference) simpleTypeReference;
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 4) {
-                    return "writeBuffer.writeUnsignedByte(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ", ((Number) " + fieldName + ").byteValue()" + writerArgsString + ")";
+                    return "/*TODO: migrate me*/" + "writeBuffer.writeUnsignedByte(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ", ((Number) " + fieldName + ").byteValue()" + writerArgsString + ")";
                 }
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 8) {
-                    return "writeBuffer.writeUnsignedShort(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ", ((Number) " + fieldName + ").shortValue()" + writerArgsString + ")";
+                    return "/*TODO: migrate me*/" + "writeBuffer.writeUnsignedShort(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ", ((Number) " + fieldName + ").shortValue()" + writerArgsString + ")";
                 }
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 16) {
-                    return "writeBuffer.writeUnsignedInt(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ", ((Number) " + fieldName + ").intValue()" + writerArgsString + ")";
+                    return "/*TODO: migrate me*/" + "writeBuffer.writeUnsignedInt(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ", ((Number) " + fieldName + ").intValue()" + writerArgsString + ")";
                 }
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 32) {
-                    return "writeBuffer.writeUnsignedLong(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ", ((Number) " + fieldName + ").longValue()" + writerArgsString + ")";
+                    return "/*TODO: migrate me*/" + "writeBuffer.writeUnsignedLong(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ", ((Number) " + fieldName + ").longValue()" + writerArgsString + ")";
                 }
-                return "writeBuffer.writeUnsignedBigInteger(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ", (BigInteger) " + fieldName + "" + writerArgsString + ")";
+                return "/*TODO: migrate me*/" + "writeBuffer.writeUnsignedBigInteger(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ", (BigInteger) " + fieldName + "" + writerArgsString + ")";
             case INT:
                 IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
                 if (integerTypeReference.getSizeInBits() <= 8) {
-                    return "writeBuffer.writeSignedByte(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", ((Number) " + fieldName + ").byteValue()" + writerArgsString + ")";
+                    return "/*TODO: migrate me*/" + "writeBuffer.writeSignedByte(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", ((Number) " + fieldName + ").byteValue()" + writerArgsString + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 16) {
-                    return "writeBuffer.writeShort(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", ((Number) " + fieldName + ").shortValue()" + writerArgsString + ")";
+                    return "/*TODO: migrate me*/" + "writeBuffer.writeShort(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", ((Number) " + fieldName + ").shortValue()" + writerArgsString + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 32) {
-                    return "writeBuffer.writeInt(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", ((Number) " + fieldName + ").intValue()" + writerArgsString + ")";
+                    return "/*TODO: migrate me*/" + "writeBuffer.writeInt(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", ((Number) " + fieldName + ").intValue()" + writerArgsString + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 64) {
-                    return "writeBuffer.writeLong(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", ((Number) " + fieldName + ").longValue()" + writerArgsString + ")";
+                    return "/*TODO: migrate me*/" + "writeBuffer.writeLong(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", ((Number) " + fieldName + ").longValue()" + writerArgsString + ")";
                 }
-                return "writeBuffer.writeBigInteger(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", BigInteger.valueOf( " + fieldName + ")" + writerArgsString + ")";
+                return "/*TODO: migrate me*/" + "writeBuffer.writeBigInteger(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", BigInteger.valueOf( " + fieldName + ")" + writerArgsString + ")";
             case FLOAT:
             case UFLOAT:
                 FloatTypeReference floatTypeReference = (FloatTypeReference) simpleTypeReference;
                 if (floatTypeReference.getSizeInBits() <= 32) {
-                    return "writeBuffer.writeFloat(\"" + logicalName + "\", " + floatTypeReference.getSizeInBits() + "," + fieldName + "" + writerArgsString + ")";
+                    return "/*TODO: migrate me*/" + "writeBuffer.writeFloat(\"" + logicalName + "\", " + floatTypeReference.getSizeInBits() + "," + fieldName + "" + writerArgsString + ")";
                 } else if (floatTypeReference.getSizeInBits() <= 64) {
-                    return "writeBuffer.writeDouble(\"" + logicalName + "\", " + floatTypeReference.getSizeInBits() + "," + fieldName + "" + writerArgsString + ")";
+                    return "/*TODO: migrate me*/" + "writeBuffer.writeDouble(\"" + logicalName + "\", " + floatTypeReference.getSizeInBits() + "," + fieldName + "" + writerArgsString + ")";
                 } else {
                     throw new RuntimeException("Unsupported float type");
                 }
@@ -561,7 +548,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                     VstringTypeReference vstringTypeReference = (VstringTypeReference) simpleTypeReference;
                     length = toSerializationExpression(field, INT_TYPE_REFERENCE, vstringTypeReference.getLengthExpression(), thisType.getParserArguments().orElse(Collections.emptyList()));
                 }
-                return "writeBuffer.writeString(\"" + logicalName + "\", " + length + ", \"" +
+                return "/*TODO: migrate me*/" + "writeBuffer.writeString(\"" + logicalName + "\", " + length + ", \"" +
                     encoding + "\", (String) " + fieldName + "" + writerArgsString + ")";
         }
         throw new FreemarkerException("Unmapped basetype" + simpleTypeReference.getBaseType());
@@ -628,7 +615,38 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             return tracer + Boolean.toString(((BooleanLiteral) literal).getValue());
         } else if (literal instanceof NumericLiteral) {
             tracer = tracer.dive("numeric literal instanceOf");
-            return tracer + ((NumericLiteral) literal).getNumber().toString();
+            final String numberString = ((NumericLiteral) literal).getNumber().toString();
+            if(resultType.isIntegerTypeReference()) {
+                final IntegerTypeReference integerTypeReference = resultType.asIntegerTypeReference().orElseThrow(RuntimeException::new);
+                if(integerTypeReference.getBaseType() == SimpleTypeReference.SimpleBaseType.UINT && integerTypeReference.getSizeInBits() >= 32) {
+                    tracer = tracer.dive("uint >= 32bit");
+                    return tracer + numberString + "L";
+                } else if(integerTypeReference.getBaseType() == SimpleTypeReference.SimpleBaseType.INT && integerTypeReference.getSizeInBits() > 32) {
+                    tracer = tracer.dive("int > 32bit");
+                    return tracer + numberString + "L";
+                }
+            } else if(resultType.isFloatTypeReference()) {
+                final FloatTypeReference floatTypeReference = resultType.asFloatTypeReference().orElseThrow(RuntimeException::new);
+                if(floatTypeReference.getSizeInBits() <= 32) {
+                    tracer = tracer.dive("float < 32bit");
+                    return tracer + numberString + "F";
+                }
+            }
+            return tracer + numberString;
+        } else if (literal instanceof HexadecimalLiteral) {
+            tracer = tracer.dive("hexadecimal literal instanceOf");
+            final String hexString = ((HexadecimalLiteral) literal).getHexString();
+            if(resultType.isIntegerTypeReference()) {
+                final IntegerTypeReference integerTypeReference = resultType.asIntegerTypeReference().orElseThrow(RuntimeException::new);
+                if(integerTypeReference.getBaseType() == SimpleTypeReference.SimpleBaseType.UINT && integerTypeReference.getSizeInBits() >= 32) {
+                    tracer = tracer.dive("uint >= 32bit");
+                    return tracer + hexString + "L";
+                } else if(integerTypeReference.getBaseType() == SimpleTypeReference.SimpleBaseType.INT && integerTypeReference.getSizeInBits() > 32) {
+                    tracer = tracer.dive("int > 32bit");
+                    return tracer + hexString + "L";
+                }
+            }
+            return tracer + hexString;
         } else if (literal instanceof StringLiteral) {
             tracer = tracer.dive("string literal instanceOf");
             return tracer + "\"" + ((StringLiteral) literal).getValue() + "\"";

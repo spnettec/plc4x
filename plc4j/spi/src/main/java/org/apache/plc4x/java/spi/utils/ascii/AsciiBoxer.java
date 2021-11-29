@@ -16,15 +16,19 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.plc4x.java.spi.codegen.fields;
 
-import org.apache.plc4x.java.spi.codegen.FieldCommons;
-import org.apache.plc4x.java.spi.codegen.io.DataWriter;
-import org.apache.plc4x.java.spi.generation.SerializationException;
-import org.apache.plc4x.java.spi.generation.WithWriterArgs;
+package org.apache.plc4x.java.spi.utils.ascii;
 
-public interface FieldWriter<T> extends FieldCommons {
-
-    void writeField(String logicalName, T value, DataWriter<T> dataWriter, WithWriterArgs... writerArgs) throws SerializationException;
-
+/**
+ * Packages strings into boxes.
+ */
+public interface AsciiBoxer {
+    /**
+     * Box where int param is the proposed width
+     *
+     * @param somethingToBox something that needs to be boxed
+     * @param charWidth      the desired with of chars
+     * @return a boxed string
+     */
+    AsciiBox box(String somethingToBox, int charWidth);
 }
