@@ -28,8 +28,9 @@ import (
 
 // The data-structure of this message
 type BACnetComplexTagEnumerated struct {
-	Data   []int8
-	Parent *BACnetComplexTag
+	*BACnetComplexTag
+	Data              []int8
+	ActualLengthInBit uint16
 }
 
 // The corresponding interface
@@ -46,23 +47,23 @@ func (m *BACnetComplexTagEnumerated) DataType() BACnetDataType {
 	return BACnetDataType_ENUMERATED
 }
 
-func (m *BACnetComplexTagEnumerated) InitializeParent(parent *BACnetComplexTag, tagNumber uint8, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, isPrimitiveAndNotBoolean bool, actualLength uint32) {
-	m.Parent.TagNumber = tagNumber
-	m.Parent.TagClass = tagClass
-	m.Parent.LengthValueType = lengthValueType
-	m.Parent.ExtTagNumber = extTagNumber
-	m.Parent.ExtLength = extLength
-	m.Parent.ExtExtLength = extExtLength
-	m.Parent.ExtExtExtLength = extExtExtLength
+func (m *BACnetComplexTagEnumerated) InitializeParent(parent *BACnetComplexTag, tagNumber uint8, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, actualLength uint32) {
+	m.TagNumber = tagNumber
+	m.TagClass = tagClass
+	m.LengthValueType = lengthValueType
+	m.ExtTagNumber = extTagNumber
+	m.ExtLength = extLength
+	m.ExtExtLength = extExtLength
+	m.ExtExtExtLength = extExtExtLength
 }
 
 func NewBACnetComplexTagEnumerated(data []int8, tagNumber uint8, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32) *BACnetComplexTag {
 	child := &BACnetComplexTagEnumerated{
-		Data:   data,
-		Parent: NewBACnetComplexTag(tagNumber, tagClass, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength),
+		Data:             data,
+		BACnetComplexTag: NewBACnetComplexTag(tagNumber, tagClass, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.BACnetComplexTag
 }
 
 func CastBACnetComplexTagEnumerated(structType interface{}) *BACnetComplexTagEnumerated {
@@ -93,7 +94,9 @@ func (m *BACnetComplexTagEnumerated) LengthInBits() uint16 {
 }
 
 func (m *BACnetComplexTagEnumerated) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
+
+	// A virtual field doesn't have any in- or output.
 
 	// Array field
 	if len(m.Data) > 0 {
@@ -107,10 +110,14 @@ func (m *BACnetComplexTagEnumerated) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetComplexTagEnumeratedParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType, lengthValueType uint8, extLength uint8) (*BACnetComplexTag, error) {
+func BACnetComplexTagEnumeratedParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType, actualLength uint32) (*BACnetComplexTag, error) {
 	if pullErr := readBuffer.PullContext("BACnetComplexTagEnumerated"); pullErr != nil {
 		return nil, pullErr
 	}
+
+	// Virtual field
+	_actualLengthInBit := uint16(actualLength) * uint16(uint16(8))
+	actualLengthInBit := uint16(_actualLengthInBit)
 
 	// Array field (data)
 	if pullErr := readBuffer.PullContext("data", utils.WithRenderAsList(true)); pullErr != nil {
@@ -118,14 +125,16 @@ func BACnetComplexTagEnumeratedParse(readBuffer utils.ReadBuffer, tagNumberArgum
 	}
 	// Length array
 	data := make([]int8, 0)
-	_dataLength := utils.InlineIf(bool(bool((lengthValueType) == (5))), func() interface{} { return uint16(extLength) }, func() interface{} { return uint16(lengthValueType) }).(uint16)
-	_dataEndPos := readBuffer.GetPos() + uint16(_dataLength)
-	for readBuffer.GetPos() < _dataEndPos {
-		_item, _err := readBuffer.ReadInt8("", 8)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'data' field")
+	{
+		_dataLength := actualLengthInBit
+		_dataEndPos := readBuffer.GetPos() + uint16(_dataLength)
+		for readBuffer.GetPos() < _dataEndPos {
+			_item, _err := readBuffer.ReadInt8("", 8)
+			if _err != nil {
+				return nil, errors.Wrap(_err, "Error parsing 'data' field")
+			}
+			data = append(data, _item)
 		}
-		data = append(data, _item)
 	}
 	if closeErr := readBuffer.CloseContext("data", utils.WithRenderAsList(true)); closeErr != nil {
 		return nil, closeErr
@@ -137,17 +146,22 @@ func BACnetComplexTagEnumeratedParse(readBuffer utils.ReadBuffer, tagNumberArgum
 
 	// Create a partially initialized instance
 	_child := &BACnetComplexTagEnumerated{
-		Data:   data,
-		Parent: &BACnetComplexTag{},
+		Data:              data,
+		ActualLengthInBit: actualLengthInBit,
+		BACnetComplexTag:  &BACnetComplexTag{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.BACnetComplexTag.Child = _child
+	return _child.BACnetComplexTag, nil
 }
 
 func (m *BACnetComplexTagEnumerated) Serialize(writeBuffer utils.WriteBuffer) error {
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetComplexTagEnumerated"); pushErr != nil {
 			return pushErr
+		}
+		// Virtual field (doesn't actually serialize anything, just makes the value available)
+		if _actualLengthInBitErr := writeBuffer.WriteVirtual("actualLengthInBit", m.ActualLengthInBit); _actualLengthInBitErr != nil {
+			return errors.Wrap(_actualLengthInBitErr, "Error serializing 'actualLengthInBit' field")
 		}
 
 		// Array Field (data)
@@ -171,7 +185,7 @@ func (m *BACnetComplexTagEnumerated) Serialize(writeBuffer utils.WriteBuffer) er
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *BACnetComplexTagEnumerated) String() string {

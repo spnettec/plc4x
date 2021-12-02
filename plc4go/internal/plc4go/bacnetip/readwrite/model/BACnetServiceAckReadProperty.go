@@ -35,12 +35,12 @@ const BACnetServiceAckReadProperty_CLOSINGTAG uint8 = 0x3F
 
 // The data-structure of this message
 type BACnetServiceAckReadProperty struct {
+	*BACnetServiceAck
 	ObjectType               uint16
 	ObjectInstanceNumber     uint32
 	PropertyIdentifierLength uint8
 	PropertyIdentifier       []int8
 	Value                    *BACnetTag
-	Parent                   *BACnetServiceAck
 }
 
 // The corresponding interface
@@ -67,10 +67,10 @@ func NewBACnetServiceAckReadProperty(objectType uint16, objectInstanceNumber uin
 		PropertyIdentifierLength: propertyIdentifierLength,
 		PropertyIdentifier:       propertyIdentifier,
 		Value:                    value,
-		Parent:                   NewBACnetServiceAck(),
+		BACnetServiceAck:         NewBACnetServiceAck(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.BACnetServiceAck
 }
 
 func CastBACnetServiceAckReadProperty(structType interface{}) *BACnetServiceAckReadProperty {
@@ -101,7 +101,7 @@ func (m *BACnetServiceAckReadProperty) LengthInBits() uint16 {
 }
 
 func (m *BACnetServiceAckReadProperty) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Const Field (objectIdentifierHeader)
 	lengthInBits += 8
@@ -154,16 +154,18 @@ func BACnetServiceAckReadPropertyParse(readBuffer utils.ReadBuffer) (*BACnetServ
 	}
 
 	// Simple Field (objectType)
-	objectType, _objectTypeErr := readBuffer.ReadUint16("objectType", 10)
+	_objectType, _objectTypeErr := readBuffer.ReadUint16("objectType", 10)
 	if _objectTypeErr != nil {
 		return nil, errors.Wrap(_objectTypeErr, "Error parsing 'objectType' field")
 	}
+	objectType := _objectType
 
 	// Simple Field (objectInstanceNumber)
-	objectInstanceNumber, _objectInstanceNumberErr := readBuffer.ReadUint32("objectInstanceNumber", 22)
+	_objectInstanceNumber, _objectInstanceNumberErr := readBuffer.ReadUint32("objectInstanceNumber", 22)
 	if _objectInstanceNumberErr != nil {
 		return nil, errors.Wrap(_objectInstanceNumberErr, "Error parsing 'objectInstanceNumber' field")
 	}
+	objectInstanceNumber := _objectInstanceNumber
 
 	// Const Field (propertyIdentifierHeader)
 	propertyIdentifierHeader, _propertyIdentifierHeaderErr := readBuffer.ReadUint8("propertyIdentifierHeader", 5)
@@ -175,10 +177,11 @@ func BACnetServiceAckReadPropertyParse(readBuffer utils.ReadBuffer) (*BACnetServ
 	}
 
 	// Simple Field (propertyIdentifierLength)
-	propertyIdentifierLength, _propertyIdentifierLengthErr := readBuffer.ReadUint8("propertyIdentifierLength", 3)
+	_propertyIdentifierLength, _propertyIdentifierLengthErr := readBuffer.ReadUint8("propertyIdentifierLength", 3)
 	if _propertyIdentifierLengthErr != nil {
 		return nil, errors.Wrap(_propertyIdentifierLengthErr, "Error parsing 'propertyIdentifierLength' field")
 	}
+	propertyIdentifierLength := _propertyIdentifierLength
 
 	// Array field (propertyIdentifier)
 	if pullErr := readBuffer.PullContext("propertyIdentifier", utils.WithRenderAsList(true)); pullErr != nil {
@@ -186,12 +189,14 @@ func BACnetServiceAckReadPropertyParse(readBuffer utils.ReadBuffer) (*BACnetServ
 	}
 	// Count array
 	propertyIdentifier := make([]int8, propertyIdentifierLength)
-	for curItem := uint16(0); curItem < uint16(propertyIdentifierLength); curItem++ {
-		_item, _err := readBuffer.ReadInt8("", 8)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'propertyIdentifier' field")
+	{
+		for curItem := uint16(0); curItem < uint16(propertyIdentifierLength); curItem++ {
+			_item, _err := readBuffer.ReadInt8("", 8)
+			if _err != nil {
+				return nil, errors.Wrap(_err, "Error parsing 'propertyIdentifier' field")
+			}
+			propertyIdentifier[curItem] = _item
 		}
-		propertyIdentifier[curItem] = _item
 	}
 	if closeErr := readBuffer.CloseContext("propertyIdentifier", utils.WithRenderAsList(true)); closeErr != nil {
 		return nil, closeErr
@@ -210,10 +215,11 @@ func BACnetServiceAckReadPropertyParse(readBuffer utils.ReadBuffer) (*BACnetServ
 	if pullErr := readBuffer.PullContext("value"); pullErr != nil {
 		return nil, pullErr
 	}
-	value, _valueErr := BACnetTagParse(readBuffer)
+	_value, _valueErr := BACnetTagParse(readBuffer)
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 	}
+	value := CastBACnetTag(_value)
 	if closeErr := readBuffer.CloseContext("value"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -238,10 +244,10 @@ func BACnetServiceAckReadPropertyParse(readBuffer utils.ReadBuffer) (*BACnetServ
 		PropertyIdentifierLength: propertyIdentifierLength,
 		PropertyIdentifier:       propertyIdentifier,
 		Value:                    CastBACnetTag(value),
-		Parent:                   &BACnetServiceAck{},
+		BACnetServiceAck:         &BACnetServiceAck{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.BACnetServiceAck.Child = _child
+	return _child.BACnetServiceAck, nil
 }
 
 func (m *BACnetServiceAckReadProperty) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -328,7 +334,7 @@ func (m *BACnetServiceAckReadProperty) Serialize(writeBuffer utils.WriteBuffer) 
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *BACnetServiceAckReadProperty) String() string {

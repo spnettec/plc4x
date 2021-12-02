@@ -153,6 +153,8 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
     public <#if field.loopType?? && field.type.isByteBased()>byte[]<#elseif field.loopType??>List<${helper.getNonPrimitiveLanguageTypeNameForField(field)}><#else>${helper.getLanguageTypeNameForField(field)}</#if> get${field.name?cap_first}() {
         <#if helper.getLanguageTypeNameForField(field) = 'String'>
         return ${helper.getLanguageTypeNameForField(field)}.valueOf(${helper.toSerializationExpression(field, field.type, field.valueExpression, parserArguments)});
+        <#elseif helper.getLanguageTypeNameForField(field) = 'BigInteger'>
+        return BigInteger.valueOf(${helper.toSerializationExpression(field, field.type, field.valueExpression, parserArguments)});
         <#else>
         return (${helper.getLanguageTypeNameForField(field)}) (${helper.toSerializationExpression(field, field.type, field.valueExpression, parserArguments)});
         </#if>
@@ -294,6 +296,7 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
 
                         // Virtual field (doesn't actually serialize anything, just makes the value available)
                         ${helper.getLanguageTypeNameForField(field)} ${namedField.name} = get${namedField.name?cap_first}();
+                        writeBuffer.writeVirtual("${namedField.name}", ${namedField.name});
                         <#break>
                 </#switch>
             </#list>

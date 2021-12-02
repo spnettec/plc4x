@@ -28,8 +28,14 @@ import (
 
 // The data-structure of this message
 type BACnetComplexTagUnsignedInteger struct {
-	Data   []int8
-	Parent *BACnetComplexTag
+	*BACnetComplexTag
+	ValueUint8  *uint8
+	ValueUint16 *uint16
+	ValueUint32 *uint32
+	IsUint8     bool
+	IsUint16    bool
+	IsUint32    bool
+	ActualValue uint32
 }
 
 // The corresponding interface
@@ -46,23 +52,25 @@ func (m *BACnetComplexTagUnsignedInteger) DataType() BACnetDataType {
 	return BACnetDataType_UNSIGNED_INTEGER
 }
 
-func (m *BACnetComplexTagUnsignedInteger) InitializeParent(parent *BACnetComplexTag, tagNumber uint8, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, isPrimitiveAndNotBoolean bool, actualLength uint32) {
-	m.Parent.TagNumber = tagNumber
-	m.Parent.TagClass = tagClass
-	m.Parent.LengthValueType = lengthValueType
-	m.Parent.ExtTagNumber = extTagNumber
-	m.Parent.ExtLength = extLength
-	m.Parent.ExtExtLength = extExtLength
-	m.Parent.ExtExtExtLength = extExtExtLength
+func (m *BACnetComplexTagUnsignedInteger) InitializeParent(parent *BACnetComplexTag, tagNumber uint8, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, actualLength uint32) {
+	m.TagNumber = tagNumber
+	m.TagClass = tagClass
+	m.LengthValueType = lengthValueType
+	m.ExtTagNumber = extTagNumber
+	m.ExtLength = extLength
+	m.ExtExtLength = extExtLength
+	m.ExtExtExtLength = extExtExtLength
 }
 
-func NewBACnetComplexTagUnsignedInteger(data []int8, tagNumber uint8, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32) *BACnetComplexTag {
+func NewBACnetComplexTagUnsignedInteger(valueUint8 *uint8, valueUint16 *uint16, valueUint32 *uint32, tagNumber uint8, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32) *BACnetComplexTag {
 	child := &BACnetComplexTagUnsignedInteger{
-		Data:   data,
-		Parent: NewBACnetComplexTag(tagNumber, tagClass, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength),
+		ValueUint8:       valueUint8,
+		ValueUint16:      valueUint16,
+		ValueUint32:      valueUint32,
+		BACnetComplexTag: NewBACnetComplexTag(tagNumber, tagClass, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.BACnetComplexTag
 }
 
 func CastBACnetComplexTagUnsignedInteger(structType interface{}) *BACnetComplexTagUnsignedInteger {
@@ -93,12 +101,30 @@ func (m *BACnetComplexTagUnsignedInteger) LengthInBits() uint16 {
 }
 
 func (m *BACnetComplexTagUnsignedInteger) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
-	// Array field
-	if len(m.Data) > 0 {
-		lengthInBits += 8 * uint16(len(m.Data))
+	// A virtual field doesn't have any in- or output.
+
+	// Optional Field (valueUint8)
+	if m.ValueUint8 != nil {
+		lengthInBits += 8
 	}
+
+	// A virtual field doesn't have any in- or output.
+
+	// Optional Field (valueUint16)
+	if m.ValueUint16 != nil {
+		lengthInBits += 16
+	}
+
+	// A virtual field doesn't have any in- or output.
+
+	// Optional Field (valueUint32)
+	if m.ValueUint32 != nil {
+		lengthInBits += 32
+	}
+
+	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
@@ -107,29 +133,60 @@ func (m *BACnetComplexTagUnsignedInteger) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetComplexTagUnsignedIntegerParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType, lengthValueType uint8, extLength uint8) (*BACnetComplexTag, error) {
+func BACnetComplexTagUnsignedIntegerParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType, actualLength uint32) (*BACnetComplexTag, error) {
 	if pullErr := readBuffer.PullContext("BACnetComplexTagUnsignedInteger"); pullErr != nil {
 		return nil, pullErr
 	}
 
-	// Array field (data)
-	if pullErr := readBuffer.PullContext("data", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
-	}
-	// Length array
-	data := make([]int8, 0)
-	_dataLength := utils.InlineIf(bool(bool((lengthValueType) == (5))), func() interface{} { return uint16(extLength) }, func() interface{} { return uint16(lengthValueType) }).(uint16)
-	_dataEndPos := readBuffer.GetPos() + uint16(_dataLength)
-	for readBuffer.GetPos() < _dataEndPos {
-		_item, _err := readBuffer.ReadInt8("", 8)
+	// Virtual field
+	_isUint8 := bool((actualLength) == (1))
+	isUint8 := bool(_isUint8)
+
+	// Optional Field (valueUint8) (Can be skipped, if a given expression evaluates to false)
+	var valueUint8 *uint8 = nil
+	if isUint8 {
+		_val, _err := readBuffer.ReadUint8("valueUint8", 8)
 		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'data' field")
+			return nil, errors.Wrap(_err, "Error parsing 'valueUint8' field")
 		}
-		data = append(data, _item)
+		valueUint8 = &_val
 	}
-	if closeErr := readBuffer.CloseContext("data", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+
+	// Virtual field
+	_isUint16 := bool((actualLength) == (2))
+	isUint16 := bool(_isUint16)
+
+	// Optional Field (valueUint16) (Can be skipped, if a given expression evaluates to false)
+	var valueUint16 *uint16 = nil
+	if isUint16 {
+		_val, _err := readBuffer.ReadUint16("valueUint16", 16)
+		if _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing 'valueUint16' field")
+		}
+		valueUint16 = &_val
 	}
+
+	// Virtual field
+	_isUint32 := bool((actualLength) == (3))
+	isUint32 := bool(_isUint32)
+
+	// Optional Field (valueUint32) (Can be skipped, if a given expression evaluates to false)
+	var valueUint32 *uint32 = nil
+	if isUint32 {
+		_val, _err := readBuffer.ReadUint32("valueUint32", 32)
+		if _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing 'valueUint32' field")
+		}
+		valueUint32 = &_val
+	}
+
+	// Virtual field
+	_actualValue := utils.InlineIf(isUint8, func() interface{} { return uint32((*valueUint8)) }, func() interface{} {
+		return uint32(uint32(utils.InlineIf(isUint16, func() interface{} { return uint32((*valueUint16)) }, func() interface{} {
+			return uint32(uint32(utils.InlineIf(isUint32, func() interface{} { return uint32((*valueUint32)) }, func() interface{} { return uint32(uint32(0)) }).(uint32)))
+		}).(uint32)))
+	}).(uint32)
+	actualValue := uint32(_actualValue)
 
 	if closeErr := readBuffer.CloseContext("BACnetComplexTagUnsignedInteger"); closeErr != nil {
 		return nil, closeErr
@@ -137,11 +194,17 @@ func BACnetComplexTagUnsignedIntegerParse(readBuffer utils.ReadBuffer, tagNumber
 
 	// Create a partially initialized instance
 	_child := &BACnetComplexTagUnsignedInteger{
-		Data:   data,
-		Parent: &BACnetComplexTag{},
+		ValueUint8:       valueUint8,
+		ValueUint16:      valueUint16,
+		ValueUint32:      valueUint32,
+		IsUint8:          isUint8,
+		IsUint16:         isUint16,
+		IsUint32:         isUint32,
+		ActualValue:      actualValue,
+		BACnetComplexTag: &BACnetComplexTag{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.BACnetComplexTag.Child = _child
+	return _child.BACnetComplexTag, nil
 }
 
 func (m *BACnetComplexTagUnsignedInteger) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -149,21 +212,51 @@ func (m *BACnetComplexTagUnsignedInteger) Serialize(writeBuffer utils.WriteBuffe
 		if pushErr := writeBuffer.PushContext("BACnetComplexTagUnsignedInteger"); pushErr != nil {
 			return pushErr
 		}
+		// Virtual field (doesn't actually serialize anything, just makes the value available)
+		if _isUint8Err := writeBuffer.WriteVirtual("isUint8", m.IsUint8); _isUint8Err != nil {
+			return errors.Wrap(_isUint8Err, "Error serializing 'isUint8' field")
+		}
 
-		// Array Field (data)
-		if m.Data != nil {
-			if pushErr := writeBuffer.PushContext("data", utils.WithRenderAsList(true)); pushErr != nil {
-				return pushErr
+		// Optional Field (valueUint8) (Can be skipped, if the value is null)
+		var valueUint8 *uint8 = nil
+		if m.ValueUint8 != nil {
+			valueUint8 = m.ValueUint8
+			_valueUint8Err := writeBuffer.WriteUint8("valueUint8", 8, *(valueUint8))
+			if _valueUint8Err != nil {
+				return errors.Wrap(_valueUint8Err, "Error serializing 'valueUint8' field")
 			}
-			for _, _element := range m.Data {
-				_elementErr := writeBuffer.WriteInt8("", 8, _element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'data' field")
-				}
+		}
+		// Virtual field (doesn't actually serialize anything, just makes the value available)
+		if _isUint16Err := writeBuffer.WriteVirtual("isUint16", m.IsUint16); _isUint16Err != nil {
+			return errors.Wrap(_isUint16Err, "Error serializing 'isUint16' field")
+		}
+
+		// Optional Field (valueUint16) (Can be skipped, if the value is null)
+		var valueUint16 *uint16 = nil
+		if m.ValueUint16 != nil {
+			valueUint16 = m.ValueUint16
+			_valueUint16Err := writeBuffer.WriteUint16("valueUint16", 16, *(valueUint16))
+			if _valueUint16Err != nil {
+				return errors.Wrap(_valueUint16Err, "Error serializing 'valueUint16' field")
 			}
-			if popErr := writeBuffer.PopContext("data", utils.WithRenderAsList(true)); popErr != nil {
-				return popErr
+		}
+		// Virtual field (doesn't actually serialize anything, just makes the value available)
+		if _isUint32Err := writeBuffer.WriteVirtual("isUint32", m.IsUint32); _isUint32Err != nil {
+			return errors.Wrap(_isUint32Err, "Error serializing 'isUint32' field")
+		}
+
+		// Optional Field (valueUint32) (Can be skipped, if the value is null)
+		var valueUint32 *uint32 = nil
+		if m.ValueUint32 != nil {
+			valueUint32 = m.ValueUint32
+			_valueUint32Err := writeBuffer.WriteUint32("valueUint32", 32, *(valueUint32))
+			if _valueUint32Err != nil {
+				return errors.Wrap(_valueUint32Err, "Error serializing 'valueUint32' field")
 			}
+		}
+		// Virtual field (doesn't actually serialize anything, just makes the value available)
+		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.ActualValue); _actualValueErr != nil {
+			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetComplexTagUnsignedInteger"); popErr != nil {
@@ -171,7 +264,7 @@ func (m *BACnetComplexTagUnsignedInteger) Serialize(writeBuffer utils.WriteBuffe
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *BACnetComplexTagUnsignedInteger) String() string {

@@ -35,13 +35,13 @@ const BACnetConfirmedServiceRequestWriteProperty_CLOSINGTAG uint8 = 0x3F
 
 // The data-structure of this message
 type BACnetConfirmedServiceRequestWriteProperty struct {
+	*BACnetConfirmedServiceRequest
 	ObjectType               uint16
 	ObjectInstanceNumber     uint32
 	PropertyIdentifierLength uint8
 	PropertyIdentifier       []int8
 	Value                    *BACnetTag
 	Priority                 *BACnetTag
-	Parent                   *BACnetConfirmedServiceRequest
 }
 
 // The corresponding interface
@@ -63,16 +63,16 @@ func (m *BACnetConfirmedServiceRequestWriteProperty) InitializeParent(parent *BA
 
 func NewBACnetConfirmedServiceRequestWriteProperty(objectType uint16, objectInstanceNumber uint32, propertyIdentifierLength uint8, propertyIdentifier []int8, value *BACnetTag, priority *BACnetTag) *BACnetConfirmedServiceRequest {
 	child := &BACnetConfirmedServiceRequestWriteProperty{
-		ObjectType:               objectType,
-		ObjectInstanceNumber:     objectInstanceNumber,
-		PropertyIdentifierLength: propertyIdentifierLength,
-		PropertyIdentifier:       propertyIdentifier,
-		Value:                    value,
-		Priority:                 priority,
-		Parent:                   NewBACnetConfirmedServiceRequest(),
+		ObjectType:                    objectType,
+		ObjectInstanceNumber:          objectInstanceNumber,
+		PropertyIdentifierLength:      propertyIdentifierLength,
+		PropertyIdentifier:            propertyIdentifier,
+		Value:                         value,
+		Priority:                      priority,
+		BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(),
 	}
-	child.Parent.Child = child
-	return child.Parent
+	child.Child = child
+	return child.BACnetConfirmedServiceRequest
 }
 
 func CastBACnetConfirmedServiceRequestWriteProperty(structType interface{}) *BACnetConfirmedServiceRequestWriteProperty {
@@ -103,7 +103,7 @@ func (m *BACnetConfirmedServiceRequestWriteProperty) LengthInBits() uint16 {
 }
 
 func (m *BACnetConfirmedServiceRequestWriteProperty) LengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+	lengthInBits := uint16(m.ParentLengthInBits())
 
 	// Const Field (objectIdentifierHeader)
 	lengthInBits += 8
@@ -163,16 +163,18 @@ func BACnetConfirmedServiceRequestWritePropertyParse(readBuffer utils.ReadBuffer
 	}
 
 	// Simple Field (objectType)
-	objectType, _objectTypeErr := readBuffer.ReadUint16("objectType", 10)
+	_objectType, _objectTypeErr := readBuffer.ReadUint16("objectType", 10)
 	if _objectTypeErr != nil {
 		return nil, errors.Wrap(_objectTypeErr, "Error parsing 'objectType' field")
 	}
+	objectType := _objectType
 
 	// Simple Field (objectInstanceNumber)
-	objectInstanceNumber, _objectInstanceNumberErr := readBuffer.ReadUint32("objectInstanceNumber", 22)
+	_objectInstanceNumber, _objectInstanceNumberErr := readBuffer.ReadUint32("objectInstanceNumber", 22)
 	if _objectInstanceNumberErr != nil {
 		return nil, errors.Wrap(_objectInstanceNumberErr, "Error parsing 'objectInstanceNumber' field")
 	}
+	objectInstanceNumber := _objectInstanceNumber
 
 	// Const Field (propertyIdentifierHeader)
 	propertyIdentifierHeader, _propertyIdentifierHeaderErr := readBuffer.ReadUint8("propertyIdentifierHeader", 5)
@@ -184,10 +186,11 @@ func BACnetConfirmedServiceRequestWritePropertyParse(readBuffer utils.ReadBuffer
 	}
 
 	// Simple Field (propertyIdentifierLength)
-	propertyIdentifierLength, _propertyIdentifierLengthErr := readBuffer.ReadUint8("propertyIdentifierLength", 3)
+	_propertyIdentifierLength, _propertyIdentifierLengthErr := readBuffer.ReadUint8("propertyIdentifierLength", 3)
 	if _propertyIdentifierLengthErr != nil {
 		return nil, errors.Wrap(_propertyIdentifierLengthErr, "Error parsing 'propertyIdentifierLength' field")
 	}
+	propertyIdentifierLength := _propertyIdentifierLength
 
 	// Array field (propertyIdentifier)
 	if pullErr := readBuffer.PullContext("propertyIdentifier", utils.WithRenderAsList(true)); pullErr != nil {
@@ -195,12 +198,14 @@ func BACnetConfirmedServiceRequestWritePropertyParse(readBuffer utils.ReadBuffer
 	}
 	// Count array
 	propertyIdentifier := make([]int8, propertyIdentifierLength)
-	for curItem := uint16(0); curItem < uint16(propertyIdentifierLength); curItem++ {
-		_item, _err := readBuffer.ReadInt8("", 8)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'propertyIdentifier' field")
+	{
+		for curItem := uint16(0); curItem < uint16(propertyIdentifierLength); curItem++ {
+			_item, _err := readBuffer.ReadInt8("", 8)
+			if _err != nil {
+				return nil, errors.Wrap(_err, "Error parsing 'propertyIdentifier' field")
+			}
+			propertyIdentifier[curItem] = _item
 		}
-		propertyIdentifier[curItem] = _item
 	}
 	if closeErr := readBuffer.CloseContext("propertyIdentifier", utils.WithRenderAsList(true)); closeErr != nil {
 		return nil, closeErr
@@ -219,10 +224,11 @@ func BACnetConfirmedServiceRequestWritePropertyParse(readBuffer utils.ReadBuffer
 	if pullErr := readBuffer.PullContext("value"); pullErr != nil {
 		return nil, pullErr
 	}
-	value, _valueErr := BACnetTagParse(readBuffer)
+	_value, _valueErr := BACnetTagParse(readBuffer)
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 	}
+	value := CastBACnetTag(_value)
 	if closeErr := readBuffer.CloseContext("value"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -240,16 +246,21 @@ func BACnetConfirmedServiceRequestWritePropertyParse(readBuffer utils.ReadBuffer
 	curPos = readBuffer.GetPos() - startPos
 	var priority *BACnetTag = nil
 	if bool((curPos) < ((len) - (1))) {
+		currentPos := readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("priority"); pullErr != nil {
 			return nil, pullErr
 		}
 		_val, _err := BACnetTagParse(readBuffer)
-		if _err != nil {
+		switch {
+		case _err != nil && _err != utils.ParseAssertError:
 			return nil, errors.Wrap(_err, "Error parsing 'priority' field")
-		}
-		priority = CastBACnetTag(_val)
-		if closeErr := readBuffer.CloseContext("priority"); closeErr != nil {
-			return nil, closeErr
+		case _err == utils.ParseAssertError:
+			readBuffer.SetPos(currentPos)
+		default:
+			priority = CastBACnetTag(_val)
+			if closeErr := readBuffer.CloseContext("priority"); closeErr != nil {
+				return nil, closeErr
+			}
 		}
 	}
 
@@ -259,16 +270,16 @@ func BACnetConfirmedServiceRequestWritePropertyParse(readBuffer utils.ReadBuffer
 
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceRequestWriteProperty{
-		ObjectType:               objectType,
-		ObjectInstanceNumber:     objectInstanceNumber,
-		PropertyIdentifierLength: propertyIdentifierLength,
-		PropertyIdentifier:       propertyIdentifier,
-		Value:                    CastBACnetTag(value),
-		Priority:                 CastBACnetTag(priority),
-		Parent:                   &BACnetConfirmedServiceRequest{},
+		ObjectType:                    objectType,
+		ObjectInstanceNumber:          objectInstanceNumber,
+		PropertyIdentifierLength:      propertyIdentifierLength,
+		PropertyIdentifier:            propertyIdentifier,
+		Value:                         CastBACnetTag(value),
+		Priority:                      CastBACnetTag(priority),
+		BACnetConfirmedServiceRequest: &BACnetConfirmedServiceRequest{},
 	}
-	_child.Parent.Child = _child
-	return _child.Parent, nil
+	_child.BACnetConfirmedServiceRequest.Child = _child
+	return _child.BACnetConfirmedServiceRequest, nil
 }
 
 func (m *BACnetConfirmedServiceRequestWriteProperty) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -371,7 +382,7 @@ func (m *BACnetConfirmedServiceRequestWriteProperty) Serialize(writeBuffer utils
 		}
 		return nil
 	}
-	return m.Parent.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(writeBuffer, m, ser)
 }
 
 func (m *BACnetConfirmedServiceRequestWriteProperty) String() string {
