@@ -23,6 +23,7 @@
     [implicit      uint 16 bvlcLength 'lengthInBytes']
     [typeSwitch bvlcFunction
         ['0x00' BVLCResult
+            [simple BVLCResultCode code]
         ]
         ['0x01' BVLCWideBroadcastDistributionTable
         ]
@@ -36,6 +37,7 @@
             [simple NPDU('bvlcLength - 10') npdu   ]
         ]
         ['0x05' BVLCRegisterForeignDevice
+            [simple uint 16 ttl]
         ]
         ['0x06' BVLCReadForeignDeviceTable
         ]
@@ -352,6 +354,7 @@
             [simple BACnetContextTagPropertyIdentifier('1', 'BACnetDataType.BACNET_PROPERTY_IDENTIFIER') propertyIdentifier ]
             // TODO: check if this is the right identifier type and size
             [optional uint 32 arrayIndex 'propertyIdentifier.value == BACnetPropertyIdentifier.VALUE_SOURCE_ARRAY']
+            // TODO: here comes data always starting with a BACnetContextTag number 3, value 6, then the data depending on the type and then a termination by BACnetContextTag number 3, value 7
         ]
         ['0x0E' BACnetServiceAckReadPropertyMultiple
 
@@ -698,6 +701,16 @@
             [simple BACnetDeviceState   state]
         ]
     ]
+]
+
+[enum uint 16 BVLCResultCode
+    ['0x0000' SUCCESSFUL_COMPLETION]
+    ['0x0010' WRITE_BROADCAST_DISTRIBUTION_TABLE_NAK]
+    ['0x0020' READ_BROADCAST_DISTRIBUTION_TABLE_NAK]
+    ['0x0030' REGISTER_FOREIGN_DEVICE_NAK]
+    ['0x0040' READ_FOREIGN_DEVICE_TABLE_NAK]
+    ['0x0050' DELETE_FOREIGN_DEVICE_TABLE_ENTRY_NAK]
+    ['0x0060' DISTRIBUTE_BROADCAST_TO_NETWORK_NAK]
 ]
 
 [enum uint 1 TagClass
