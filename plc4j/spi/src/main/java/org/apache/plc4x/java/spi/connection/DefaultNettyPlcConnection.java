@@ -121,6 +121,7 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
             channel = channelFactory.createChannel(getChannelHandler(sessionSetupCompleteFuture, sessionDisconnectCompleteFuture, sessionDiscoveredCompleteFuture));
             channel.closeFuture().addListener(future -> {
                 if (!sessionSetupCompleteFuture.isDone()) {
+                    channel.pipeline().fireUserEventTriggered(new CloseConnectionEvent());
                     sessionSetupCompleteFuture.completeExceptionally(
                         new PlcIoException("Connection terminated by remote"));
                 }
@@ -135,10 +136,12 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
 
             // Set the connection to "connected"
             connected = true;
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            throw new PlcConnectionException(e);
-        } catch (ExecutionException e) {
+        }  catch (Exception e) {
+            if(e instanceof InterruptedException)
+            {
+                Thread.currentThread().interrupt();
+            }
+            close();
             throw new PlcConnectionException(e);
         }
     }
@@ -150,6 +153,11 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
      */
     @Override
     public void close() throws PlcConnectionException {
+        if(channel == null)
+        {
+            connected = false;
+            return;
+        }
         logger.debug("Closing connection to PLC, await for disconnect = {}", awaitSessionDisconnectComplete);
         channel.pipeline().fireUserEventTriggered(new DisconnectEvent());
         try {
@@ -159,6 +167,8 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
         } catch (Exception e) {
             logger.error("Timeout while trying to close connection");
         }
+        channel.pipeline().fireUserEventTriggered(new DisconnectedEvent());
+        channel.disconnect().awaitUninterruptibly();
         channel.pipeline().fireUserEventTriggered(new CloseConnectionEvent());
         channel.close().awaitUninterruptibly();
 
@@ -210,9 +220,14 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
                         } else if (evt instanceof DisconnectedEvent) {
                             sessionDisconnectCompleteFuture.complete(null);
                             eventListeners.forEach(ConnectionStateListener::disconnected);
+                            super.userEventTriggered(ctx, evt);
                         } else if (evt instanceof DiscoveredEvent) {
                             sessionDiscoverCompleteFuture.complete(((DiscoveredEvent) evt).getConfiguration());
-                        } else {
+                        }
+                        else {
+                            if (evt instanceof ConnectEvent) {
+                                setProtocol(stackConfigurer.configurePipeline(configuration, pipeline, channelFactory.isPassive()));
+                            }
                             super.userEventTriggered(ctx, evt);
                         }
                     }
@@ -220,7 +235,7 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
                 // Initialize via Transport Layer
                 channelFactory.initializePipeline(pipeline);
                 // Initialize Protocol Layer
-                setProtocol(stackConfigurer.configurePipeline(configuration, pipeline, channelFactory.isPassive()));
+                //setProtocol(stackConfigurer.configurePipeline(configuration, pipeline, channelFactory.isPassive()));
             }
         };
     }
