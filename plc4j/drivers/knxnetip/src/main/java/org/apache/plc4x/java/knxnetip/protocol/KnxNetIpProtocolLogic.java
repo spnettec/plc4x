@@ -307,7 +307,7 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KnxNetIpMessage> im
                     // Check each item of the list, if it's also a byte.
                     List<? extends PlcValue> list = value.getList();
                     data = new byte[list.size() - 1];
-                    boolean allValuesAreBytes = !list.isEmpty();
+                    boolean allValuesAreBytes = true;
                     int numByte = 0;
                     for (PlcValue plcValue : list) {
                         if (numByte == 0) {

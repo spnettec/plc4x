@@ -77,7 +77,7 @@ public class S7ProtocolEventLogic implements PlcSubscriber {
     
     public void start() {
         processor.start();
-        dispacher.start();    
+        dispacher.start();
     }
     
     public void stop(){
@@ -158,7 +158,7 @@ public class S7ProtocolEventLogic implements PlcSubscriber {
                     Logger.getLogger(S7ProtocolEventLogic.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-            //System.out.println("ObjectProcessor Bye!");
+            logger.debug("ObjectProcessor Bye!");
         }
 
         public void doShutdown(){
@@ -207,7 +207,7 @@ public class S7ProtocolEventLogic implements PlcSubscriber {
                     Logger.getLogger(S7ProtocolEventLogic.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-           // System.out.println("EventDispacher Bye!");
+           logger.debug("EventDispacher Bye!");
         }
 
         public void doShutdown(){

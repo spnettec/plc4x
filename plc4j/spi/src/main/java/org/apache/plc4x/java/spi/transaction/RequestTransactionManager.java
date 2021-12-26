@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.spi.transaction;
 
+import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -25,11 +26,7 @@ import org.slf4j.MDC;
 import java.util.Objects;
 import java.util.Queue;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
@@ -48,7 +45,7 @@ public class RequestTransactionManager {
     private static final Logger logger = LoggerFactory.getLogger(RequestTransactionManager.class);
 
     /** Executor that performs all operations */
-    static final ExecutorService executor = Executors.newFixedThreadPool(4);
+    private final ExecutorService executor;
     private final Set<RequestTransaction> runningRequests;
     /** How many Transactions are allowed to run at the same time? */
     private int numberOfConcurrentRequests;
@@ -60,11 +57,23 @@ public class RequestTransactionManager {
     public RequestTransactionManager(int numberOfConcurrentRequests) {
         this.numberOfConcurrentRequests = numberOfConcurrentRequests;
         // Immutable Map
+        executor = new ThreadPoolExecutor(0, numberOfConcurrentRequests,
+            0L, TimeUnit.MILLISECONDS,
+            new LinkedBlockingQueue<>(1024),
+            new BasicThreadFactory.Builder().namingPattern("RequestTransactionManager-pool-%d").daemon(true).build(),
+            new ThreadPoolExecutor.AbortPolicy());;
         runningRequests = ConcurrentHashMap.newKeySet();
     }
 
     public RequestTransactionManager() {
         this(1);
+    }
+
+    public void shutDown()
+    {
+        runningRequests.clear();
+        workLog.clear();
+        this.executor.shutdown();
     }
 
     public int getNumberOfConcurrentRequests() {
@@ -100,7 +109,7 @@ public class RequestTransactionManager {
     }
 
     private void processWorklog() {
-        while (runningRequests.size() < getNumberOfConcurrentRequests() && !workLog.isEmpty()) {
+        while (runningRequests.size() < getNumberOfConcurrentRequests() && !workLog.isEmpty() && !executor.isShutdown()) {
             RequestTransaction next = workLog.remove();
             this.runningRequests.add(next);
             Future<?> completionFuture = executor.submit(next.operation);
@@ -180,8 +189,12 @@ public class RequestTransactionManager {
 
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
             RequestTransaction that = (RequestTransaction) o;
             return transactionId == that.transactionId;
         }

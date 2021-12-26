@@ -192,6 +192,18 @@
       <type>test-jar</type>
       <scope>test</scope>
     </dependency>
+      <dependency>
+          <groupId>org.apache.plc4x</groupId>
+          <artifactId>plc4j-connection-pool</artifactId>
+          <version>0.10.0-SNAPSHOT</version>
+          <scope>test</scope>
+      </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-connection-pool</artifactId>
+      <version>0.10.0-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
 </project>

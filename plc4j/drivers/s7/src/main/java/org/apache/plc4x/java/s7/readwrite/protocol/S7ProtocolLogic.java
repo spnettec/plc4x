@@ -118,7 +118,10 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         this.tm = new RequestTransactionManager(1);
         EventLogic.start();
     }
-
+    @Override
+    public void onDisconnect(ConversationContext<TPKTPacket> context) {
+        context.fireDisconnected();
+    }
     @Override
     public void onConnect(ConversationContext<TPKTPacket> context) {
         if (context.isPassive()) {
@@ -645,6 +648,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
     public void close(ConversationContext<TPKTPacket> context) {
         // TODO Implement Closing on Protocol Level
         EventLogic.stop();
+        this.tm.shutDown();
     }
 
     private void extractControllerTypeAndFireConnected(ConversationContext<TPKTPacket> context, S7PayloadUserData payloadUserData) {

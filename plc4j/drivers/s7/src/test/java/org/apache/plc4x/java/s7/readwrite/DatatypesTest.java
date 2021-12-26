@@ -24,33 +24,23 @@ import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
+import org.apache.plc4x.java.utils.connectionpool.PooledPlcDriverManager;
 
 public class DatatypesTest {
 
     private PlcReadResponse readResponse;
 
     public static void main(String[] args) throws Exception {
-        try (PlcConnection connection = new PlcDriverManager().getConnection("s7://10.110.20.101?local-group=1&local-rack=0&local-slot=0&remote-group=2&remote-rack=0&remote-slot=2&controller-type=S7_200")) {
+        PooledPlcDriverManager pooledPlcDriverManager = new PooledPlcDriverManager();
+
+        try (PlcConnection connection = pooledPlcDriverManager.getConnection("s7://10.110.20.64?controller-type=S7_300&remote-group=1&remote-rack=0&remote-slot=0")) {
             final PlcReadRequest.Builder builder = connection.readRequestBuilder();
-            builder.addItem("bool-value-1", "%DB1.DBD224:REAL"); // true
+            builder.addItem("bool-value-1", "%DB10.DBD150:REAL"); // true
 
             final PlcReadRequest readRequest = builder.build();
             final PlcReadResponse readResponse = readRequest.execute().get();
             Object o = readResponse.getObject("bool-value-1");
             System.out.println(o);
-
-            /*
-            final PlcWriteRequest.Builder rbuilder = connection.writeRequestBuilder();
-            rbuilder.addItem("bool-value-1", "%DB4.DBX632.7:BOOL", "assssss"); // true
-
-            final PlcWriteRequest writeRequest = rbuilder.build();
-
-            final PlcWriteResponse writeResponse = writeRequest.execute().get();
-
-            System.out.println(writeResponse);
-            */
-
-
 
         }
     }

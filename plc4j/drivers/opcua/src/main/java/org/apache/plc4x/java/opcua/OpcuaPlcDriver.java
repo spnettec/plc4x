@@ -119,6 +119,7 @@ public class OpcuaPlcDriver extends GeneratedDriverBase<OpcuaAPU> {
         return new IEC61131ValueHandler();
     }
 
+    @Override
     protected boolean awaitDisconnectComplete() {
         return true;
     }

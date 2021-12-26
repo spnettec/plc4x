@@ -167,8 +167,6 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
         } catch (Exception e) {
             logger.error("Timeout while trying to close connection");
         }
-        channel.pipeline().fireUserEventTriggered(new DisconnectedEvent());
-        channel.disconnect().awaitUninterruptibly();
         channel.pipeline().fireUserEventTriggered(new CloseConnectionEvent());
         channel.close().awaitUninterruptibly();
 
@@ -224,12 +222,16 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
                         } else if (evt instanceof DiscoveredEvent) {
                             sessionDiscoverCompleteFuture.complete(((DiscoveredEvent) evt).getConfiguration());
                         }
-                        else {
-                            if (evt instanceof ConnectEvent) {
+                        else if (evt instanceof ConnectEvent)
+                        {
+                            if(!sessionSetupCompleteFuture.isCompletedExceptionally()) {
                                 setProtocol(stackConfigurer.configurePipeline(configuration, pipeline, channelFactory.isPassive()));
+                                super.userEventTriggered(ctx, evt);
                             }
+                        } else {
                             super.userEventTriggered(ctx, evt);
                         }
+
                     }
                 });
                 // Initialize via Transport Layer
