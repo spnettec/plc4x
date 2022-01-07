@@ -32,6 +32,7 @@ type BACnetServiceAckReadProperty struct {
 	ObjectIdentifier   *BACnetContextTagObjectIdentifier
 	PropertyIdentifier *BACnetContextTagPropertyIdentifier
 	ArrayIndex         *uint32
+	Values             *BACnetConstructedData
 }
 
 // The corresponding interface
@@ -51,11 +52,12 @@ func (m *BACnetServiceAckReadProperty) ServiceChoice() uint8 {
 func (m *BACnetServiceAckReadProperty) InitializeParent(parent *BACnetServiceAck) {
 }
 
-func NewBACnetServiceAckReadProperty(objectIdentifier *BACnetContextTagObjectIdentifier, propertyIdentifier *BACnetContextTagPropertyIdentifier, arrayIndex *uint32) *BACnetServiceAck {
+func NewBACnetServiceAckReadProperty(objectIdentifier *BACnetContextTagObjectIdentifier, propertyIdentifier *BACnetContextTagPropertyIdentifier, arrayIndex *uint32, values *BACnetConstructedData) *BACnetServiceAck {
 	child := &BACnetServiceAckReadProperty{
 		ObjectIdentifier:   objectIdentifier,
 		PropertyIdentifier: propertyIdentifier,
 		ArrayIndex:         arrayIndex,
+		Values:             values,
 		BACnetServiceAck:   NewBACnetServiceAck(),
 	}
 	child.Child = child
@@ -101,6 +103,11 @@ func (m *BACnetServiceAckReadProperty) LengthInBitsConditional(lastItem bool) ui
 	// Optional Field (arrayIndex)
 	if m.ArrayIndex != nil {
 		lengthInBits += 32
+	}
+
+	// Optional Field (values)
+	if m.Values != nil {
+		lengthInBits += (*m.Values).LengthInBits()
 	}
 
 	return lengthInBits
@@ -151,6 +158,27 @@ func BACnetServiceAckReadPropertyParse(readBuffer utils.ReadBuffer) (*BACnetServ
 		arrayIndex = &_val
 	}
 
+	// Optional Field (values) (Can be skipped, if a given expression evaluates to false)
+	var values *BACnetConstructedData = nil
+	{
+		currentPos := readBuffer.GetPos()
+		if pullErr := readBuffer.PullContext("values"); pullErr != nil {
+			return nil, pullErr
+		}
+		_val, _err := BACnetTagParse(readBuffer)
+		switch {
+		case _err != nil && _err != utils.ParseAssertError:
+			return nil, errors.Wrap(_err, "Error parsing 'values' field")
+		case _err == utils.ParseAssertError:
+			readBuffer.Reset(currentPos)
+		default:
+			values = CastBACnetConstructedData(_val)
+			if closeErr := readBuffer.CloseContext("values"); closeErr != nil {
+				return nil, closeErr
+			}
+		}
+	}
+
 	if closeErr := readBuffer.CloseContext("BACnetServiceAckReadProperty"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -160,6 +188,7 @@ func BACnetServiceAckReadPropertyParse(readBuffer utils.ReadBuffer) (*BACnetServ
 		ObjectIdentifier:   CastBACnetContextTagObjectIdentifier(objectIdentifier),
 		PropertyIdentifier: CastBACnetContextTagPropertyIdentifier(propertyIdentifier),
 		ArrayIndex:         arrayIndex,
+		Values:             CastBACnetConstructedData(values),
 		BACnetServiceAck:   &BACnetServiceAck{},
 	}
 	_child.BACnetServiceAck.Child = _child
@@ -203,6 +232,22 @@ func (m *BACnetServiceAckReadProperty) Serialize(writeBuffer utils.WriteBuffer) 
 			_arrayIndexErr := writeBuffer.WriteUint32("arrayIndex", 32, *(arrayIndex))
 			if _arrayIndexErr != nil {
 				return errors.Wrap(_arrayIndexErr, "Error serializing 'arrayIndex' field")
+			}
+		}
+
+		// Optional Field (values) (Can be skipped, if the value is null)
+		var values *BACnetConstructedData = nil
+		if m.Values != nil {
+			if pushErr := writeBuffer.PushContext("values"); pushErr != nil {
+				return pushErr
+			}
+			values = m.Values
+			_valuesErr := values.Serialize(writeBuffer)
+			if popErr := writeBuffer.PopContext("values"); popErr != nil {
+				return popErr
+			}
+			if _valuesErr != nil {
+				return errors.Wrap(_valuesErr, "Error serializing 'values' field")
 			}
 		}
 

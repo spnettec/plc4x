@@ -30,15 +30,15 @@ func ReadPropertyIdentifier(readBuffer utils.ReadBuffer, actualLength uint32) (B
 	var err error
 	if bitsToRead <= 8 {
 		var readValue uint8
-		readValue, err = readBuffer.ReadUint8("", 8)
+		readValue, err = readBuffer.ReadUint8("propertyIdentifier", 8)
 		readUnsignedLong = uint32(readValue)
 	} else if bitsToRead <= 16 {
 		var readValue uint16
-		readValue, err = readBuffer.ReadUint16("", 16)
+		readValue, err = readBuffer.ReadUint16("propertyIdentifier", 16)
 		readUnsignedLong = uint32(readValue)
 	} else if bitsToRead <= 32 {
 		var readValue uint32
-		readValue, err = readBuffer.ReadUint32("", 32)
+		readValue, err = readBuffer.ReadUint32("propertyIdentifier", 32)
 		readUnsignedLong = uint32(readValue)
 	} else {
 		return 0, errors.Errorf("%d overflows", bitsToRead)
@@ -51,6 +51,7 @@ func ReadPropertyIdentifier(readBuffer utils.ReadBuffer, actualLength uint32) (B
 }
 
 func WritePropertyIdentifier(writeBuffer utils.WriteBuffer, value BACnetPropertyIdentifier) error {
+	// TODO: check if it's in the known range and if not return (==VENDOR_PROPRIETARY_VALUE)
 	var bitsToWrite uint8
 	valueValue := uint64(value)
 	if valueValue <= 0xff {
@@ -62,5 +63,76 @@ func WritePropertyIdentifier(writeBuffer utils.WriteBuffer, value BACnetProperty
 	} else {
 		bitsToWrite = 32
 	}
-	return writeBuffer.WriteUint32("", bitsToWrite, uint32(value), utils.WithAdditionalStringRepresentation(value.name()))
+	return writeBuffer.WriteUint32("propertyIdentifier", bitsToWrite, uint32(value), utils.WithAdditionalStringRepresentation(value.name()))
+}
+
+func WriteProprietaryPropertyIdentifier(writeBuffer utils.WriteBuffer, baCnetPropertyIdentifier BACnetPropertyIdentifier, value uint32) error {
+	if baCnetPropertyIdentifier != 0 && baCnetPropertyIdentifier != BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE {
+		return nil
+	}
+	var bitsToWrite uint8
+	if value <= 0xff {
+		bitsToWrite = 8
+	} else if value <= 0xffff {
+		bitsToWrite = 16
+	} else if value <= 0xffffffff {
+		bitsToWrite = 32
+	} else {
+		bitsToWrite = 32
+	}
+	return writeBuffer.WriteUint32("proprietaryPropertyIdentifier", bitsToWrite, value, utils.WithAdditionalStringRepresentation(BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE.name()))
+}
+
+func ReadProprietaryPropertyIdentifier(readBuffer utils.ReadBuffer, value BACnetPropertyIdentifier, actualLength uint32) (uint32, error) {
+	if value != 0 && value != BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE {
+		return 0, nil
+	}
+	// We need to reset our reader to the position we read before
+	readBuffer.Reset(readBuffer.GetPos() - uint16(actualLength))
+	bitsToRead := (uint8)(actualLength * 8)
+	return readBuffer.ReadUint32("proprietaryPropertyIdentifier", bitsToRead)
+}
+
+func OpeningClosingTerminate(instantTerminate bool, readBuffer utils.ReadBuffer, expectedTagNumber byte) bool {
+	if instantTerminate {
+		return true
+	}
+	oldPos := readBuffer.GetPos()
+	// TODO: add graceful exit if we know already that we are at the end (we might need to add available bytes to reader)
+	tagNumber, err := readBuffer.ReadUint8("", 4)
+	if err != nil {
+		return true
+	}
+	isContextTag, err := readBuffer.ReadBit("")
+	if err != nil {
+		return true
+	}
+	tagValue, err := readBuffer.ReadUint8("", 3)
+	if err != nil {
+		return true
+	}
+
+	foundOurClosingTag := isContextTag && tagNumber == expectedTagNumber && tagValue == 0x7
+	readBuffer.Reset(oldPos)
+	return foundOurClosingTag
+}
+
+func ParseTags(readBuffer utils.ReadBuffer) *BACnetTag {
+	tag, err := BACnetTagParse(readBuffer)
+	if err != nil {
+		panic(err)
+	}
+	return tag
+}
+
+func WriteTags(writeBuffer utils.WriteBuffer, value *BACnetTag) error {
+	return value.Serialize(writeBuffer)
+}
+
+func TagsLength(tags []*BACnetTag) uint16 {
+	var length uint16
+	for _, tag := range tags {
+		length += tag.LengthInBytes()
+	}
+	return length
 }

@@ -16,24 +16,22 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.plc4x.java.opcua;
 
-import java.util.regex.Pattern;
+package simulated
 
-import static org.junit.jupiter.api.Assertions.fail;
+import (
+	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
+	"github.com/apache/plc4x/plc4go/pkg/plc4go/values"
+)
 
-/**
- */
-public class UtilsTest {
-    public static void assertMatching(Pattern pattern, String match) {
-        if (!pattern.matcher(match).matches()) {
-            fail(pattern + "doesn't match " + match);
-        }
-    }
+type ValueHandler struct {
+}
 
-    public static void assertNoMatching(Pattern pattern, String match) {
-        if (pattern.matcher(match).matches()) {
-            fail(pattern + "does match " + match + " but should not");
-        }
-    }
+func NewValueHandler() ValueHandler {
+	return ValueHandler{}
+}
+
+func (v ValueHandler) NewPlcValue(field model.PlcField, value interface{}) (values.PlcValue, error) {
+	//TODO implement me
+	panic("implement me")
 }

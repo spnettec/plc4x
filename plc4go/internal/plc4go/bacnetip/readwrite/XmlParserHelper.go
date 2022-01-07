@@ -59,8 +59,6 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		return model.APDUParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), apduLength)
 	case "BACnetTag":
 		return model.BACnetTagParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "BACnetTagWithContent":
-		return model.BACnetTagWithContentParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetError":
 		return model.BACnetErrorParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "NLM":

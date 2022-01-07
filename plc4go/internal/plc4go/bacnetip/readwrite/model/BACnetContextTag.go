@@ -284,7 +284,7 @@ func (m *BACnetContextTag) SerializeParent(writeBuffer utils.WriteBuffer, child 
 			return errors.Wrap(_extTagNumberErr, "Error serializing 'extTagNumber' field")
 		}
 	}
-	// Virtual field (doesn't actually serialize anything, just makes the value available)
+	// Virtual field
 	if _actualTagNumberErr := writeBuffer.WriteVirtual("actualTagNumber", m.ActualTagNumber); _actualTagNumberErr != nil {
 		return errors.Wrap(_actualTagNumberErr, "Error serializing 'actualTagNumber' field")
 	}
@@ -318,7 +318,7 @@ func (m *BACnetContextTag) SerializeParent(writeBuffer utils.WriteBuffer, child 
 			return errors.Wrap(_extExtExtLengthErr, "Error serializing 'extExtExtLength' field")
 		}
 	}
-	// Virtual field (doesn't actually serialize anything, just makes the value available)
+	// Virtual field
 	if _actualLengthErr := writeBuffer.WriteVirtual("actualLength", m.ActualLength); _actualLengthErr != nil {
 		return errors.Wrap(_actualLengthErr, "Error serializing 'actualLength' field")
 	}

@@ -16,22 +16,5 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.plc4x.java.opcua.protocol;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-
-/**
- */
-public class OpcuaPlcFieldHandlerTest {
-
-
-    @BeforeEach
-    public void before() {
-    }
-
-    @AfterEach
-    public void after() {
-
-    }
-}
+package pool
