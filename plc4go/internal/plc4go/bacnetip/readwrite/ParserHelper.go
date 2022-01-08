@@ -47,8 +47,6 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		return model.APDUParse(io, apduLength)
 	case "BACnetTag":
 		return model.BACnetTagParse(io)
-	case "BACnetTagWithContent":
-		return model.BACnetTagWithContentParse(io)
 	case "BACnetError":
 		return model.BACnetErrorParse(io)
 	case "NLM":
