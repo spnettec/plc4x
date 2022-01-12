@@ -48,23 +48,30 @@
     [discriminator uint 16 packetType]
     [typeSwitch packetType
         ['0x0800' Ethernet_FramePayload_IPv4
-            [const    uint 4              version                         0x4                      ]
-            [const    uint 4              headerLength                    0x5                      ]
-            [const    uint 6              differentiatedServicesCodepoint 0x00                     ]
-            [const    uint 2              explicitCongestionNotification  0x0                      ]
-            [implicit uint 16             totalLength                     '20 + packet.lengthInBytes']
-            [simple   uint 15             identification                                             ]
-            [const    uint 3              flags                           0x00                     ]
-            [const    uint 13             fragmentOffset                  0x00                     ]
-            // Time to live: 64
-            [const    uint 8              timeToLive                      0x40                     ]
+            [const    uint 4              version                         0x4                        ]
+            // 5 = 5 x 32bit = 5 x 4byte = 20byte
+            [const    uint 4              headerLength                    0x5                        ]
+            [const    uint 6              differentiatedServicesCodepoint 0x00                       ]
+            [const    uint 2              explicitCongestionNotification  0x0                        ]
+            // Length of the header + payload
+            [implicit uint 16             totalLength                     '28 + payload.lengthInBytes']
+            [simple   uint 16             identification                                             ]
+            [const    uint 3              flags                           0x00                       ]
+            [const    uint 13             fragmentOffset                  0x00                       ]
+            [simple   uint 8              timeToLive                                                 ]
             // Protocol: UDP
-            [const    uint 8              protocol                        0x11                     ]
-            // TODO: Implement ...
-            //[checksum uint 16           'headerChecksum'                ''                         ]
+            [const    uint 8              protocol                        0x11                       ]
+            // It seems that modern NICs mess this up as they take care of the validation in dedicated hardware.
+            // This results in the wrong values being read. Using a 'checksum' field would fail most incoming packets.
+            [implicit uint 16             headerChecksum                 'STATIC_CALL("calculateIPv4Checksum", totalLength, identification, timeToLive, sourceAddress, destinationAddress)']
             [simple   IpAddress           sourceAddress                                              ]
             [simple   IpAddress           destinationAddress                                         ]
-            [simple   Udp_Packet          packet                                                     ]
+            // Begin of the UDP packet part
+            [simple   uint 16             sourcePort                                                 ]
+            [simple   uint 16             destinationPort                                            ]
+            [implicit uint 16             packetLength    'lengthInBytes'                            ]
+            //[implicit uint 16             headerChecksum  'STATIC_CALL("calculateUdpChecksum", sourceAddress, destinationAddress, sourcePort, destinationPort, packetLength)'                               ]
+            [simple   DceRpc_Packet       payload                                                    ]
         ]
         ['0x8100' Ethernet_FramePayload_VirtualLan
             [simple VirtualLanPriority    priority                                                   ]
@@ -76,15 +83,6 @@
             [simple PnDcp_Pdu             pdu                                                        ]
         ]
     ]
-]
-
-[type Udp_Packet
-    [simple   uint 16       sourcePort                                        ]
-    [simple   uint 16       destinationPort                                   ]
-    [implicit uint 16       packetLength     'lengthInBytes'                  ]
-    // TODO: Implement ...
-    //[checksum uint 16     'headerChecksum' ''                               ]
-    [simple   DceRpc_Packet payload                                           ]
 ]
 
 // 4.10.3.2
@@ -572,20 +570,28 @@
 [discriminatedType PnIoCm_Packet(DceRpc_PacketType packetType)
     [typeSwitch packetType
         ['REQUEST' PnIoCm_Packet_Req
-            [simple uint 32 argsMaximum                       ]
+            [simple uint 32      argsMaximum                          ]
+            [simple uint 32      argsLength                           ]
+            [simple uint 32      arrayMaximumCount                    ]
+            [simple uint 32      arrayOffset                          ]
+            [simple uint 32      arrayActualCount                     ]
+            [array  PnIoCm_Block blocks            length 'argsLength']
         ]
         ['RESPONSE' PnIoCm_Packet_Res
-            [simple uint 8  errorCode2                        ]
-            [simple uint 8  errorCode1                        ]
-            [simple uint 8  errorDecode                       ]
-            [simple uint 8  errorCode                         ]
+            [simple uint 8       errorCode2                           ]
+            [simple uint 8       errorCode1                           ]
+            [simple uint 8       errorDecode                          ]
+            [simple uint 8       errorCode                            ]
+            [simple uint 32      argsLength                           ]
+            [simple uint 32      arrayMaximumCount                    ]
+            [simple uint 32      arrayOffset                          ]
+            [simple uint 32      arrayActualCount                     ]
+            [array  PnIoCm_Block blocks            length 'argsLength']
+        ]
+        ['REJECT'   PnIoCm_Packet_Rej
+            [simple uint 32      status                               ]
         ]
     ]
-    [simple uint 32      argsLength                           ]
-    [simple uint 32      arrayMaximumCount                    ]
-    [simple uint 32      arrayOffset                          ]
-    [simple uint 32      arrayActualCount                     ]
-    [array  PnIoCm_Block blocks            length 'argsLength']
 ]
 
 // Big Endian

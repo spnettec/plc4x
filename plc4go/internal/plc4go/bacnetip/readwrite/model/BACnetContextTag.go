@@ -60,8 +60,8 @@ type IBACnetContextTagChild interface {
 	IBACnetContextTag
 }
 
-func NewBACnetContextTag(tagNumber uint8, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32) *BACnetContextTag {
-	return &BACnetContextTag{TagNumber: tagNumber, TagClass: tagClass, LengthValueType: lengthValueType, ExtTagNumber: extTagNumber, ExtLength: extLength, ExtExtLength: extExtLength, ExtExtExtLength: extExtExtLength}
+func NewBACnetContextTag(tagNumber uint8, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, actualLength uint32) *BACnetContextTag {
+	return &BACnetContextTag{TagNumber: tagNumber, TagClass: tagClass, LengthValueType: lengthValueType, ExtTagNumber: extTagNumber, ExtLength: extLength, ExtExtLength: extExtLength, ExtExtExtLength: extExtExtLength, ActualTagNumber: actualTagNumber, ActualLength: actualLength}
 }
 
 func CastBACnetContextTag(structType interface{}) *BACnetContextTag {
@@ -91,6 +91,9 @@ func (m *BACnetContextTag) LengthInBitsConditional(lastItem bool) uint16 {
 
 func (m *BACnetContextTag) ParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
+
+	// Simple field (tagNumber)
+	lengthInBits += 4
 
 	// Simple field (lengthValueType)
 	lengthInBits += 3
@@ -131,14 +134,12 @@ func BACnetContextTagParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8,
 		return nil, pullErr
 	}
 
-	// Assert Field (tagNumber) (Can be skipped, if a given expression evaluates to false)
-	tagNumber, _err := readBuffer.ReadUint8("tagNumber", 4)
-	if _err != nil {
-		return nil, errors.Wrap(_err, "Error parsing 'tagNumber' field")
+	// Simple Field (tagNumber)
+	_tagNumber, _tagNumberErr := readBuffer.ReadUint8("tagNumber", 4)
+	if _tagNumberErr != nil {
+		return nil, errors.Wrap(_tagNumberErr, "Error parsing 'tagNumber' field")
 	}
-	if tagNumber != tagNumberArgument {
-		return nil, utils.ParseAssertError
-	}
+	tagNumber := _tagNumber
 
 	// Assert Field (tagClass) (Can be skipped, if a given expression evaluates to false)
 	tagClass, _err := TagClassParse(readBuffer)
@@ -212,8 +213,6 @@ func BACnetContextTagParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8,
 	var _parent *BACnetContextTag
 	var typeSwitchError error
 	switch {
-	case dataType == BACnetDataType_NULL: // BACnetContextTagNull
-		_parent, typeSwitchError = BACnetContextTagNullParse(readBuffer, tagNumberArgument, dataType)
 	case dataType == BACnetDataType_BOOLEAN: // BACnetContextTagBoolean
 		_parent, typeSwitchError = BACnetContextTagBooleanParse(readBuffer, tagNumberArgument, dataType)
 	case dataType == BACnetDataType_UNSIGNED_INTEGER: // BACnetContextTagUnsignedInteger
@@ -240,8 +239,20 @@ func BACnetContextTagParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8,
 		_parent, typeSwitchError = BACnetContextTagObjectIdentifierParse(readBuffer, tagNumberArgument, dataType)
 	case dataType == BACnetDataType_BACNET_PROPERTY_IDENTIFIER: // BACnetContextTagPropertyIdentifier
 		_parent, typeSwitchError = BACnetContextTagPropertyIdentifierParse(readBuffer, tagNumberArgument, dataType, actualLength)
+	case dataType == BACnetDataType_EVENT_TYPE: // BACnetContextTagEventType
+		_parent, typeSwitchError = BACnetContextTagEventTypeParse(readBuffer, tagNumberArgument, dataType, actualLength)
+	case dataType == BACnetDataType_EVENT_STATE: // BACnetContextTagEventState
+		_parent, typeSwitchError = BACnetContextTagEventStateParse(readBuffer, tagNumberArgument, dataType, actualLength)
+	case dataType == BACnetDataType_NOTIFY_TYPE: // BACnetContextTagNotifyType
+		_parent, typeSwitchError = BACnetContextTagNotifyTypeParse(readBuffer, tagNumberArgument, dataType, actualLength)
 	case dataType == BACnetDataType_BACNET_DEVICE_STATE: // BACnetContextTagDeviceState
 		_parent, typeSwitchError = BACnetContextTagDeviceStateParse(readBuffer, tagNumberArgument, dataType)
+	case dataType == BACnetDataType_OPENING_TAG: // BACnetOpeningTag
+		_parent, typeSwitchError = BACnetOpeningTagParse(readBuffer, tagNumberArgument, dataType, lengthValueType)
+	case dataType == BACnetDataType_CLOSING_TAG: // BACnetClosingTag
+		_parent, typeSwitchError = BACnetClosingTagParse(readBuffer, tagNumberArgument, dataType, lengthValueType)
+	case true: // BACnetContextTagEmpty
+		_parent, typeSwitchError = BACnetContextTagEmptyParse(readBuffer, tagNumberArgument, dataType)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")
@@ -266,6 +277,13 @@ func (m *BACnetContextTag) Serialize(writeBuffer utils.WriteBuffer) error {
 func (m *BACnetContextTag) SerializeParent(writeBuffer utils.WriteBuffer, child IBACnetContextTag, serializeChildFunction func() error) error {
 	if pushErr := writeBuffer.PushContext("BACnetContextTag"); pushErr != nil {
 		return pushErr
+	}
+
+	// Simple Field (tagNumber)
+	tagNumber := uint8(m.TagNumber)
+	_tagNumberErr := writeBuffer.WriteUint8("tagNumber", 4, (tagNumber))
+	if _tagNumberErr != nil {
+		return errors.Wrap(_tagNumberErr, "Error serializing 'tagNumber' field")
 	}
 
 	// Simple Field (lengthValueType)

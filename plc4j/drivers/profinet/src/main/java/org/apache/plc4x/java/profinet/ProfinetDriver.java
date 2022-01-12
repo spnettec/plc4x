@@ -22,6 +22,7 @@ import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.api.messages.PlcDiscoveryRequest;
 import org.apache.plc4x.java.api.metadata.PlcDriverMetadata;
 import org.apache.plc4x.java.profinet.config.ProfinetConfiguration;
+import org.apache.plc4x.java.profinet.context.ProfinetDriverContext;
 import org.apache.plc4x.java.profinet.discovery.ProfinetPlcDiscoverer;
 import org.apache.plc4x.java.profinet.field.ProfinetField;
 import org.apache.plc4x.java.profinet.field.ProfinetFieldHandler;
@@ -126,7 +127,7 @@ public class ProfinetDriver extends GeneratedDriverBase<Ethernet_Frame> {
     protected ProtocolStackConfigurer<Ethernet_Frame> getStackConfigurer() {
         return SingleProtocolStackConfigurer.builder(Ethernet_Frame.class, Ethernet_FrameIO.class)
             .withProtocol(ProfinetProtocolLogic.class)
-            .withPacketSizeEstimator(ByteLengthEstimator.class)
+            .withDriverContext(ProfinetDriverContext.class)
             // Every incoming message is to be treated as a response.
             .withParserArgs(true)
             .build();

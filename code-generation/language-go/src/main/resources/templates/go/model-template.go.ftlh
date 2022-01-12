@@ -125,7 +125,28 @@ type I${type.name} interface {
 		<#-- If the discriminator name matches that of another field, suppress the methods generation -->
 		<#if !type.isNonDiscriminatorField(discriminatorName)>
 func (m *${type.name}) ${discriminatorName?cap_first}() ${helper.getLanguageTypeNameForTypeReference(helper.getDiscriminatorTypes()[discriminatorName])} {
-	return <#if discriminatorTerm??><#if helper.isComplexTypeReference(helper.getDiscriminatorTypes()[discriminatorName])><#if helper.isEnumTypeReference(helper.getDiscriminatorTypes()[discriminatorName])>${helper.getLanguageTypeNameForTypeReference(helper.getDiscriminatorTypes()[discriminatorName])}_${helper.toParseExpression(null, helper.getDiscriminatorTypes()[discriminatorName], discriminatorTerm, parserArguments)}<#else>${helper.toParseExpression(null, helper.getDiscriminatorTypes()[discriminatorName], discriminatorTerm, parserArguments)}</#if><#else>${helper.toParseExpression(null, helper.getDiscriminatorTypes()[discriminatorName], discriminatorTerm, parserArguments)}</#if><#else>${helper.getNullValueForTypeReference(helper.getDiscriminatorTypes()[discriminatorName])}</#if>
+			<@compress single_line=true>
+	return
+				<#if discriminatorTerm??>
+					<#if helper.isComplexTypeReference(helper.getDiscriminatorTypes()[discriminatorName])>
+						<#if helper.isEnumTypeReference(helper.getDiscriminatorTypes()[discriminatorName])>
+                            <#assign enumType=helper.getLanguageTypeNameForTypeReference(helper.getDiscriminatorTypes()[discriminatorName])>
+                            <#assign enumTypeWithoutTraces=tracer.removeTraces(enumType)>
+                            <#assign enumTypeTraces=tracer.extractTraces(enumType)>
+                            <#assign enumValue=helper.toParseExpression(null, helper.getDiscriminatorTypes()[discriminatorName], discriminatorTerm, parserArguments)>
+                            <#assign enumValueWithoutTraces=tracer.removeTraces(enumValue)>
+                            <#assign enumValueTraces=tracer.extractTraces(enumValue)>
+                            ${enumTypeTraces}${enumValueTraces}${enumTypeWithoutTraces}_${enumValueWithoutTraces}
+						<#else>
+							${helper.toParseExpression(null, helper.getDiscriminatorTypes()[discriminatorName], discriminatorTerm, parserArguments)}
+						</#if>
+					<#else>
+						${helper.toParseExpression(null, helper.getDiscriminatorTypes()[discriminatorName], discriminatorTerm, parserArguments)}
+					</#if>
+				<#else>
+					${helper.getNullValueForTypeReference(helper.getDiscriminatorTypes()[discriminatorName])}
+				</#if>
+			</@compress>
 }
 
 		</#if>
@@ -161,18 +182,44 @@ func (m *${type.name}) InitializeParent(parent *${type.parentType.name}<#if type
 }
 </#if>
 
-func New${type.name}(<#list type.getPropertyFields() as field>${field.name} <#if field.loopType??>[]</#if><#if helper.needsPointerAccess(field)>*</#if>${helper.getLanguageTypeNameForField(field)}<#sep>, </#sep></#list><#if type.parentType?has_content><#if type.getPropertyFields()?has_content && type.parentPropertyFields?has_content>, </#if><#list type.parentPropertyFields as parentField>${parentField.name} <#if parentField.loopType??>[]</#if><#if helper.needsPointerAccess(parentField)>*</#if>${helper.getLanguageTypeNameForField(parentField)}<#sep>, </#sep></#list></#if>) *<#if type.parentType?has_content>${type.parentType.name}<#else>${type.name}</#if> {
+<@compress single_line=true>
+func New${type.name}(
+	<#list type.propertyFields as field>
+		${field.name} <#if field.loopType??>[]</#if><#if helper.needsPointerAccess(field)>*</#if>${helper.getLanguageTypeNameForField(field)}
+		<#sep>, </#sep>
+	</#list>
+	<#if type.propertyFields?has_content && type.virtualFields?has_content>, </#if>
+	<#list type.virtualFields as field>
+		${field.name} <#if field.loopType??>[]</#if><#if helper.needsPointerAccess(field)>*</#if>${helper.getLanguageTypeNameForField(field)}<#sep>, </#sep>
+	</#list>
+	<#if type.parentType?has_content>
+		<#if (type.propertyFields?has_content || type.virtualFields?has_content ) && type.parentPropertyFields?has_content>, </#if>
+		<#list type.parentPropertyFields as parentField>
+			${parentField.name} <#if parentField.loopType??>[]</#if><#if helper.needsPointerAccess(parentField)>*</#if>${helper.getLanguageTypeNameForField(parentField)}
+			<#sep>, </#sep>
+		</#list>
+        <#if (type.propertyFields?has_content || type.virtualFields?has_content || type.parentPropertyFields?has_content) && type.parentType.asComplexTypeDefinition().orElseThrow().virtualFields?has_content>, </#if>
+        <#list type.parentType.asComplexTypeDefinition().orElseThrow().virtualFields as parentField>
+            ${parentField.name} <#if parentField.loopType??>[]</#if><#if helper.needsPointerAccess(parentField)>*</#if>${helper.getLanguageTypeNameForField(parentField)}
+            <#sep>, </#sep>
+        </#list>
+	</#if>
+	) *<#if type.parentType?has_content>${type.parentType.name}<#else>${type.name}</#if> {
+</@compress>
 <#if type.parentType?has_content>
 	child := &${type.name}{
-	<#list type.getPropertyFields() as field>
+	<#list type.propertyFields as field>
 		${field.name?cap_first}: ${field.name},
 	</#list>
-    	${type.parentType.name}: New${type.parentType.name}(<#list type.parentPropertyFields as parentField>${parentField.name}<#sep>, </#list>),
+	<#list type.virtualFields as field>
+		${field.name?cap_first}: ${field.name},
+	</#list>
+    	${type.parentType.name}: New${type.parentType.name}(<#list type.parentPropertyFields as parentField>${parentField.name}<#sep>, </#list><#if type.parentPropertyFields?has_content && type.parentType.asComplexTypeDefinition().orElseThrow().virtualFields?has_content>, </#if><#list type.parentType.asComplexTypeDefinition().orElseThrow().virtualFields as parentField>${parentField.name}<#sep>, </#list>),
 	}
 	child.Child = child
 	return child.${type.parentType.name}
 <#else>
-	return &${type.name}{<#list type.getPropertyFields() as field>${field.name?cap_first}: ${field.name}<#sep>, </#sep></#list>}
+	return &${type.name}{<#list type.propertyFields as field>${field.name?cap_first}: ${field.name}<#sep>, </#sep></#list><#if type.propertyFields?has_content && type.virtualFields?has_content>, </#if><#list type.virtualFields as field>${field.name?cap_first}: ${field.name}<#sep>, </#sep></#list>}
 </#if>
 }
 
@@ -1049,7 +1096,13 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 								<#if helper.discriminatorValueNeedsStringEqualityCheck(discriminatorExpression)>"${helper.toParseExpression(null, discriminatorType,discriminatorValueTerm, parserArguments)}"
 								<#elseif helper.isComplexTypeReference(discriminatorType)>
 									<#if helper.isEnumTypeReference(discriminatorType)>
-										${helper.getLanguageTypeNameForTypeReference(discriminatorType)}_${helper.toParseExpression(null, discriminatorType,discriminatorValueTerm, parserArguments)}
+										<#assign enumType=helper.getLanguageTypeNameForTypeReference(discriminatorType)>
+										<#assign enumTypeWithoutTraces=tracer.removeTraces(enumType)>
+										<#assign enumTypeTraces=tracer.extractTraces(enumType)>
+										<#assign enumValue=helper.toParseExpression(null, discriminatorType,discriminatorValueTerm, parserArguments)>
+										<#assign enumValueWithoutTraces=tracer.removeTraces(enumValue)>
+										<#assign enumValueTraces=tracer.extractTraces(enumValue)>
+										${enumTypeTraces}${enumValueTraces}${enumTypeWithoutTraces}_${enumValueWithoutTraces}
 									<#else>
 										${helper.toParseExpression(null, discriminatorType,discriminatorValueTerm, parserArguments)}
 									</#if>
@@ -1060,6 +1113,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 							</#list>
 						<#else>
 							<#assign defaultCaseOutput=true>
+							case true
 						</#if>: // ${case.name}
                     </@compress>
 
@@ -1091,6 +1145,58 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 	_${virtualField.name} := ${helper.toParseExpression(virtualField, virtualField.type, virtualField.valueExpression, parserArguments)}
 	${virtualField.name} := ${helper.getLanguageTypeNameForTypeReference(virtualField.type)}(_${virtualField.name})
 				<#break>
+            <#case "peek">
+                <#assign peekField = field.asPeekField().orElseThrow()>
+
+				// Peek Field (${peekField.name})
+                <#if helper.isSimpleTypeReference(peekField.type)>
+				currentPos := readBuffer.GetPos()
+				${peekField.name}, _err := ${helper.getReadBufferReadMethodCall(peekField.name, peekField.type.asSimpleTypeReference().orElseThrow(), peekField)}
+				if _err != nil {
+					return nil, errors.Wrap(_err, "Error parsing '${peekField.name}' field")<@emitImport import="github.com/pkg/errors" />
+				}
+                <#elseif helper.isEnumField(field)>
+				currentPos := readBuffer.GetPos()
+				if pullErr := readBuffer.PullContext("${peekField.name}"); pullErr != nil {
+					return nil, pullErr
+				}
+				${peekField.name}, _err := ${helper.getLanguageTypeNameForField(field)}Parse(readBuffer)
+				if _err != nil {
+					return nil, errors.Wrap(_err, "Error parsing '${peekField.name}' field")<@emitImport import="github.com/pkg/errors" />
+				}
+				if closeErr := readBuffer.CloseContext("${peekField.name}"); closeErr != nil {
+					return nil, closeErr
+				}
+                <#else>
+				currentPos := readBuffer.GetPos()
+				if pullErr := readBuffer.PullContext("${peekField.name}"); pullErr != nil {
+					return nil, pullErr
+				}
+                    <@compress single_line=true>
+                        <#assign complexTypeReference=peekField.type.asComplexTypeReference().orElseThrow()>
+                        <#assign typeName=complexTypeReference.name>
+                        <#assign typeDefinition=helper.getTypeDefinitionForTypeReference(complexTypeReference)>
+                        <#if typeDefinition.isDiscriminatedChildTypeDefinition()>
+                        <#-- Usually you don't use child directly unless they are parameterized #-->
+                            <#assign typeName=typeDefinition.parentType.name>
+                            <#assign typeDefinition=typeDefinition.parentType>
+                        </#if>
+                        <#assign hasRefParams=complexTypeReference.params.isPresent()>
+                        <#assign refParams>
+                            <#if hasRefParams>
+								,
+                                <#list complexTypeReference.params.orElseThrow() as parserArgument>
+                                    ${helper.toTypedParseExpression(peekField, helper.getArgumentType(peekField.type, parserArgument?index), parserArgument, parserArguments)}
+                                    <#sep>, </#sep>
+                                </#list>
+                            </#if>
+                        </#assign>
+				${peekField.name}, _ := ${typeName}Parse(readBuffer${refParams})
+                    </@compress>
+                </#if>
+
+				readBuffer.Reset(currentPos)
+                <#break>
 		</#switch>
 	</#list>
 

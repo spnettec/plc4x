@@ -22,4 +22,10 @@ import org.apache.plc4x.java.transport.pcap.PcapTransportConfiguration;
 
 public interface RawSocketTransportConfiguration extends PcapTransportConfiguration {
 
+    int NO_DEFAULT_PORT = -1;
+
+    default int getDefaultPort() {
+        return NO_DEFAULT_PORT;
+    }
+
 }

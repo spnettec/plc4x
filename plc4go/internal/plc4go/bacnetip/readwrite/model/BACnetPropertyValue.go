@@ -28,31 +28,21 @@ import (
 
 // The data-structure of this message
 type BACnetPropertyValue struct {
-	Child IBACnetPropertyValueChild
+	PropertyIdentifier *BACnetContextTagPropertyIdentifier
+	PropertyArrayIndex *BACnetContextTagUnsignedInteger
+	PropertyValue      *BACnetConstructedDataElement
+	Priority           *BACnetContextTagUnsignedInteger
 }
 
 // The corresponding interface
 type IBACnetPropertyValue interface {
-	Identifier() BACnetPropertyIdentifier
 	LengthInBytes() uint16
 	LengthInBits() uint16
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
-type IBACnetPropertyValueParent interface {
-	SerializeParent(writeBuffer utils.WriteBuffer, child IBACnetPropertyValue, serializeChildFunction func() error) error
-	GetTypeName() string
-}
-
-type IBACnetPropertyValueChild interface {
-	Serialize(writeBuffer utils.WriteBuffer) error
-	InitializeParent(parent *BACnetPropertyValue)
-	GetTypeName() string
-	IBACnetPropertyValue
-}
-
-func NewBACnetPropertyValue() *BACnetPropertyValue {
-	return &BACnetPropertyValue{}
+func NewBACnetPropertyValue(propertyIdentifier *BACnetContextTagPropertyIdentifier, propertyArrayIndex *BACnetContextTagUnsignedInteger, propertyValue *BACnetConstructedDataElement, priority *BACnetContextTagUnsignedInteger) *BACnetPropertyValue {
+	return &BACnetPropertyValue{PropertyIdentifier: propertyIdentifier, PropertyArrayIndex: propertyArrayIndex, PropertyValue: propertyValue, Priority: priority}
 }
 
 func CastBACnetPropertyValue(structType interface{}) *BACnetPropertyValue {
@@ -77,11 +67,25 @@ func (m *BACnetPropertyValue) LengthInBits() uint16 {
 }
 
 func (m *BACnetPropertyValue) LengthInBitsConditional(lastItem bool) uint16 {
-	return m.Child.LengthInBits()
-}
-
-func (m *BACnetPropertyValue) ParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
+
+	// Simple field (propertyIdentifier)
+	lengthInBits += m.PropertyIdentifier.LengthInBits()
+
+	// Optional Field (propertyArrayIndex)
+	if m.PropertyArrayIndex != nil {
+		lengthInBits += (*m.PropertyArrayIndex).LengthInBits()
+	}
+
+	// Optional Field (propertyValue)
+	if m.PropertyValue != nil {
+		lengthInBits += (*m.PropertyValue).LengthInBits()
+	}
+
+	// Optional Field (priority)
+	if m.Priority != nil {
+		lengthInBits += (*m.Priority).LengthInBits()
+	}
 
 	return lengthInBits
 }
@@ -90,52 +94,158 @@ func (m *BACnetPropertyValue) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetPropertyValueParse(readBuffer utils.ReadBuffer, identifier BACnetPropertyIdentifier, actualLength uint32) (*BACnetPropertyValue, error) {
+func BACnetPropertyValueParse(readBuffer utils.ReadBuffer) (*BACnetPropertyValue, error) {
 	if pullErr := readBuffer.PullContext("BACnetPropertyValue"); pullErr != nil {
 		return nil, pullErr
 	}
 
-	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	var _parent *BACnetPropertyValue
-	var typeSwitchError error
-	switch {
-	case identifier == BACnetPropertyIdentifier_OBJECT_TYPE: // BACnetPropertyValueObjectType
-		_parent, typeSwitchError = BACnetPropertyValueObjectTypeParse(readBuffer, identifier, actualLength)
-	case identifier == BACnetPropertyIdentifier_PRIORITY_ARRAY: // BACnetPropertyValuePriorityValue
-		_parent, typeSwitchError = BACnetPropertyValuePriorityValueParse(readBuffer, identifier, actualLength)
-	case identifier == BACnetPropertyIdentifier_PRESENT_VALUE: // BACnetPropertyValuePresentValue
-		_parent, typeSwitchError = BACnetPropertyValuePresentValueParse(readBuffer, identifier, actualLength)
-	case identifier == BACnetPropertyIdentifier_RELINQUISH_DEFAULT: // BACnetPropertyValueRelinquishDefault
-		_parent, typeSwitchError = BACnetPropertyValueRelinquishDefaultParse(readBuffer, identifier, actualLength)
-	default:
-		// TODO: return actual type
-		typeSwitchError = errors.New("Unmapped type")
+	// Simple Field (propertyIdentifier)
+	if pullErr := readBuffer.PullContext("propertyIdentifier"); pullErr != nil {
+		return nil, pullErr
 	}
-	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
+	_propertyIdentifier, _propertyIdentifierErr := BACnetContextTagParse(readBuffer, uint8(0), BACnetDataType_BACNET_PROPERTY_IDENTIFIER)
+	if _propertyIdentifierErr != nil {
+		return nil, errors.Wrap(_propertyIdentifierErr, "Error parsing 'propertyIdentifier' field")
+	}
+	propertyIdentifier := CastBACnetContextTagPropertyIdentifier(_propertyIdentifier)
+	if closeErr := readBuffer.CloseContext("propertyIdentifier"); closeErr != nil {
+		return nil, closeErr
+	}
+
+	// Optional Field (propertyArrayIndex) (Can be skipped, if a given expression evaluates to false)
+	var propertyArrayIndex *BACnetContextTagUnsignedInteger = nil
+	{
+		currentPos := readBuffer.GetPos()
+		if pullErr := readBuffer.PullContext("propertyArrayIndex"); pullErr != nil {
+			return nil, pullErr
+		}
+		_val, _err := BACnetContextTagParse(readBuffer, uint8(1), BACnetDataType_UNSIGNED_INTEGER)
+		switch {
+		case _err != nil && _err != utils.ParseAssertError:
+			return nil, errors.Wrap(_err, "Error parsing 'propertyArrayIndex' field")
+		case _err == utils.ParseAssertError:
+			readBuffer.Reset(currentPos)
+		default:
+			propertyArrayIndex = CastBACnetContextTagUnsignedInteger(_val)
+			if closeErr := readBuffer.CloseContext("propertyArrayIndex"); closeErr != nil {
+				return nil, closeErr
+			}
+		}
+	}
+
+	// Optional Field (propertyValue) (Can be skipped, if a given expression evaluates to false)
+	var propertyValue *BACnetConstructedDataElement = nil
+	{
+		currentPos := readBuffer.GetPos()
+		if pullErr := readBuffer.PullContext("propertyValue"); pullErr != nil {
+			return nil, pullErr
+		}
+		_val, _err := BACnetConstructedDataElementParse(readBuffer)
+		switch {
+		case _err != nil && _err != utils.ParseAssertError:
+			return nil, errors.Wrap(_err, "Error parsing 'propertyValue' field")
+		case _err == utils.ParseAssertError:
+			readBuffer.Reset(currentPos)
+		default:
+			propertyValue = CastBACnetConstructedDataElement(_val)
+			if closeErr := readBuffer.CloseContext("propertyValue"); closeErr != nil {
+				return nil, closeErr
+			}
+		}
+	}
+
+	// Optional Field (priority) (Can be skipped, if a given expression evaluates to false)
+	var priority *BACnetContextTagUnsignedInteger = nil
+	{
+		currentPos := readBuffer.GetPos()
+		if pullErr := readBuffer.PullContext("priority"); pullErr != nil {
+			return nil, pullErr
+		}
+		_val, _err := BACnetContextTagParse(readBuffer, uint8(3), BACnetDataType_UNSIGNED_INTEGER)
+		switch {
+		case _err != nil && _err != utils.ParseAssertError:
+			return nil, errors.Wrap(_err, "Error parsing 'priority' field")
+		case _err == utils.ParseAssertError:
+			readBuffer.Reset(currentPos)
+		default:
+			priority = CastBACnetContextTagUnsignedInteger(_val)
+			if closeErr := readBuffer.CloseContext("priority"); closeErr != nil {
+				return nil, closeErr
+			}
+		}
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyValue"); closeErr != nil {
 		return nil, closeErr
 	}
 
-	// Finish initializing
-	_parent.Child.InitializeParent(_parent)
-	return _parent, nil
+	// Create the instance
+	return NewBACnetPropertyValue(propertyIdentifier, propertyArrayIndex, propertyValue, priority), nil
 }
 
 func (m *BACnetPropertyValue) Serialize(writeBuffer utils.WriteBuffer) error {
-	return m.Child.Serialize(writeBuffer)
-}
-
-func (m *BACnetPropertyValue) SerializeParent(writeBuffer utils.WriteBuffer, child IBACnetPropertyValue, serializeChildFunction func() error) error {
 	if pushErr := writeBuffer.PushContext("BACnetPropertyValue"); pushErr != nil {
 		return pushErr
 	}
 
-	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-	if _typeSwitchErr := serializeChildFunction(); _typeSwitchErr != nil {
-		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
+	// Simple Field (propertyIdentifier)
+	if pushErr := writeBuffer.PushContext("propertyIdentifier"); pushErr != nil {
+		return pushErr
+	}
+	_propertyIdentifierErr := m.PropertyIdentifier.Serialize(writeBuffer)
+	if popErr := writeBuffer.PopContext("propertyIdentifier"); popErr != nil {
+		return popErr
+	}
+	if _propertyIdentifierErr != nil {
+		return errors.Wrap(_propertyIdentifierErr, "Error serializing 'propertyIdentifier' field")
+	}
+
+	// Optional Field (propertyArrayIndex) (Can be skipped, if the value is null)
+	var propertyArrayIndex *BACnetContextTagUnsignedInteger = nil
+	if m.PropertyArrayIndex != nil {
+		if pushErr := writeBuffer.PushContext("propertyArrayIndex"); pushErr != nil {
+			return pushErr
+		}
+		propertyArrayIndex = m.PropertyArrayIndex
+		_propertyArrayIndexErr := propertyArrayIndex.Serialize(writeBuffer)
+		if popErr := writeBuffer.PopContext("propertyArrayIndex"); popErr != nil {
+			return popErr
+		}
+		if _propertyArrayIndexErr != nil {
+			return errors.Wrap(_propertyArrayIndexErr, "Error serializing 'propertyArrayIndex' field")
+		}
+	}
+
+	// Optional Field (propertyValue) (Can be skipped, if the value is null)
+	var propertyValue *BACnetConstructedDataElement = nil
+	if m.PropertyValue != nil {
+		if pushErr := writeBuffer.PushContext("propertyValue"); pushErr != nil {
+			return pushErr
+		}
+		propertyValue = m.PropertyValue
+		_propertyValueErr := propertyValue.Serialize(writeBuffer)
+		if popErr := writeBuffer.PopContext("propertyValue"); popErr != nil {
+			return popErr
+		}
+		if _propertyValueErr != nil {
+			return errors.Wrap(_propertyValueErr, "Error serializing 'propertyValue' field")
+		}
+	}
+
+	// Optional Field (priority) (Can be skipped, if the value is null)
+	var priority *BACnetContextTagUnsignedInteger = nil
+	if m.Priority != nil {
+		if pushErr := writeBuffer.PushContext("priority"); pushErr != nil {
+			return pushErr
+		}
+		priority = m.Priority
+		_priorityErr := priority.Serialize(writeBuffer)
+		if popErr := writeBuffer.PopContext("priority"); popErr != nil {
+			return popErr
+		}
+		if _priorityErr != nil {
+			return errors.Wrap(_priorityErr, "Error serializing 'priority' field")
+		}
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetPropertyValue"); popErr != nil {
