@@ -97,13 +97,55 @@
     [discriminator uint 8  messageType]
     [optional      uint 16 vendorId '(messageType >= 128) && (messageType <= 255)']
     [typeSwitch messageType
-        ['0x0' NLMWhoIsRouterToNetwork(uint 8 messageType)
-            [array uint 16 destinationNetworkAddress length 'apduLength - (((messageType >= 128) && (messageType <= 255)) ? 3 : 1)']
+        ['0x00' NLMWhoIsRouterToNetwork(uint 8 messageType)
+            [array      uint 16     destinationNetworkAddress length 'apduLength - (((messageType >= 128) && (messageType <= 255)) ? 3 : 1)']
         ]
-        ['0x1' NLMIAmRouterToNetwork(uint 8 messageType)
-            [array uint 16 destinationNetworkAddress length 'apduLength - (((messageType >= 128) && (messageType <= 255)) ? 3 : 1)']
+        ['0x01' NLMIAmRouterToNetwork(uint 8 messageType)
+            [array      uint 16     destinationNetworkAddress length 'apduLength - (((messageType >= 128) && (messageType <= 255)) ? 3 : 1)']
+        ]
+        ['0x02' NLMICouldBeRouterToNetwork(uint 8 messageType)
+            [simple     uint 16     destinationNetworkAddress   ]
+            [simple     uint 8      performanceIndex            ]
+        ]
+        ['0x03' NLMRejectRouterToNetwork(uint 8 messageType)
+            [simple     uint 8      rejectReason                ] // TODO: introduce enum
+            [simple     uint 16     destinationNetworkAddress   ]
+        ]
+        ['0x04' NLMRouterBusyToNetwork(uint 8 messageType)
+            [array      uint 16     destinationNetworkAddress length 'apduLength - (((messageType >= 128) && (messageType <= 255)) ? 3 : 1)']
+        ]
+        ['0x05' NLMRouterAvailableToNetwork(uint 8 messageType)
+            [array      uint 16     destinationNetworkAddress length 'apduLength - (((messageType >= 128) && (messageType <= 255)) ? 3 : 1)']
+        ]
+        ['0x06' NLMInitalizeRoutingTable(uint 8 messageType)
+            [simple     uint 8      numberOfPorts                   ]
+            [array      NLMInitalizeRoutingTablePortMapping
+                                    portMappings
+                        count 'numberOfPorts'
+            ]
+        ]
+        ['0x07' NLMInitalizeRoutingTableAck(uint 8 messageType)
+            [simple     uint 8      numberOfPorts                   ]
+            [array      NLMInitalizeRoutingTablePortMapping
+                                    portMappings
+                        count 'numberOfPorts'
+            ]
+        ]
+        ['0x08' NLMEstablishConnectionToNetwork(uint 8 messageType)
+            [simple     uint 16     destinationNetworkAddress   ]
+            [simple     uint 8      terminationTime             ]
+        ]
+        ['0x09' NLMDisconnectConnectionToNetwork(uint 8 messageType)
+            [simple     uint 16     destinationNetworkAddress   ]
         ]
     ]
+]
+
+[type NLMInitalizeRoutingTablePortMapping
+    [simple     uint 16     destinationNetworkAddress       ]
+    [simple     uint 8      portId                          ]
+    [simple     uint 8      portInfoLength                  ]
+    [array      byte        portInfo count 'portInfoLength' ]
 ]
 
 [discriminatedType APDU(uint 16 apduLength)
@@ -168,6 +210,9 @@
             [simple   bit    server                 ]
             [simple   uint 8 originalInvokeId       ]
             [simple   uint 8 abortReason            ]
+        ]
+        [APDUUnknown
+            // TODO: find a way to slurp all remaining bytes for analysis
         ]
     ]
 ]
@@ -283,6 +328,8 @@
         ]
         ['0x1F' BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple
         ]
+        ['0x7F' BACnetConfirmedServiceRequestConfirmedUnknown
+        ]
     ]
 ]
 
@@ -290,33 +337,29 @@
     [discriminator uint 8 serviceChoice]
     [typeSwitch serviceChoice
         ['0x00' BACnetUnconfirmedServiceRequestIAm
-            [simple BACnetApplicationTagObjectIdentifier    deviceIdentifier                ]
-            [simple BACnetApplicationTagUnsignedInteger     maximumApduLengthAcceptedLength ]
-            [simple BACnetApplicationTagEnumerated          segmentationSupported ] // TODO: map to enum
-            [simple BACnetApplicationTagUnsignedInteger     vendorId ] // TODO: vendor list?
+            [simple     BACnetApplicationTagObjectIdentifier    deviceIdentifier                ]
+            [simple     BACnetApplicationTagUnsignedInteger     maximumApduLengthAcceptedLength ]
+            [simple     BACnetSegmentation                      segmentationSupported ] // TODO: map to enum
+            [simple     BACnetApplicationTagUnsignedInteger     vendorId ] // TODO: vendor list?
         ]
         ['0x01' BACnetUnconfirmedServiceRequestIHave
-            [simple BACnetApplicationTagObjectIdentifier    deviceIdentifier    ]
-            [simple BACnetApplicationTagObjectIdentifier    objectIdentifier    ]
-            [simple BACnetApplicationTagCharacterString     objectName          ]
+            [simple     BACnetApplicationTagObjectIdentifier    deviceIdentifier    ]
+            [simple     BACnetApplicationTagObjectIdentifier    objectIdentifier    ]
+            [simple     BACnetApplicationTagCharacterString     objectName          ]
         ]
         ['0x02' BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification
-            [simple BACnetContextTagUnsignedInteger('0', 'BACnetDataType.UNSIGNED_INTEGER')          subscriberProcessIdentifier ]
-            [simple BACnetContextTagObjectIdentifier('1', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER') monitoredDeviceIdentifier   ]
-            [simple BACnetContextTagObjectIdentifier('2', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER') monitoredObjectIdentifier   ]
-            [simple BACnetContextTagUnsignedInteger('3', 'BACnetDataType.UNSIGNED_INTEGER')          lifetimeInSeconds           ]
-            [simple BACnetPropertyValues('4')                                                        listOfValues                ]
+            [simple     BACnetContextTagUnsignedInteger('0', 'BACnetDataType.UNSIGNED_INTEGER')          subscriberProcessIdentifier ]
+            [simple     BACnetContextTagObjectIdentifier('1', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER') monitoredDeviceIdentifier   ]
+            [simple     BACnetContextTagObjectIdentifier('2', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER') monitoredObjectIdentifier   ]
+            [simple     BACnetContextTagUnsignedInteger('3', 'BACnetDataType.UNSIGNED_INTEGER')          lifetimeInSeconds           ]
+            [simple     BACnetPropertyValues('4')                                                        listOfValues                ]
         ]
         ['0x03' BACnetUnconfirmedServiceRequestUnconfirmedEventNotification
         ]
         ['0x04' BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer
-            [const uint 8 vendorIdHeader 0x09]
-            [simple uint 8 vendorId]
-            [const uint 8 serviceNumberHeader 0x1A]
-            [simple uint 16 serviceNumber]
-            [const uint 8 listOfValuesOpeningTag 0x2E]
-            [array int 8 values length 'len - 8']
-            [const uint 8 listOfValuesClosingTag 0x2F]
+            [simple     BACnetContextTagUnsignedInteger('1', 'BACnetDataType.UNSIGNED_INTEGER')          vendorId                    ]// TODO: vendor list?
+            [simple     BACnetContextTagUnsignedInteger('2', 'BACnetDataType.UNSIGNED_INTEGER')          serviceNumber               ]
+            [optional   BACnetPropertyValues('2')                                                        serviceParameters           ]
         ]
         ['0x05' BACnetUnconfirmedServiceRequestUnconfirmedTextMessage
         ]
@@ -341,6 +384,15 @@
         ['0x0B' BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple
         ]
     ]
+]
+
+// TODO: this is a enum so we should build a static call which maps a enum
+[type BACnetSegmentation
+    [simple BACnetApplicationTagEnumerated          rawData ]
+    [virtual    bit isSegmentedBoth           'rawData != null && COUNT(rawData.data) == 1 && rawData.data[0] == 0']
+    [virtual    bit isSegmentedTransmit       'rawData != null && COUNT(rawData.data) == 1 && rawData.data[0] == 1']
+    [virtual    bit isSegmentedReceive        'rawData != null && COUNT(rawData.data) == 1 && rawData.data[0] == 3']
+    [virtual    bit isNoSegmentation          'rawData != null && COUNT(rawData.data) == 1 && rawData.data[0] == 4']
 ]
 
 [discriminatedType BACnetServiceAck
@@ -414,6 +466,9 @@
         ['0x07' BACnetConfirmedServiceACKAtomicWriteFile
         ]
 
+        ['0x08' BACnetConfirmedServiceAddListElement
+        ]
+
         ['0x0A' BACnetConfirmedServiceACKCreateObject
         ]
         ['0x0C' BACnetConfirmedServiceACKReadProperty
@@ -441,54 +496,49 @@
 [discriminatedType BACnetError
     [discriminator uint 8 serviceChoice]
     [typeSwitch serviceChoice
+        ['0x00' BACnetErrorAcknowledgeAlarm
+        ]
         ['0x03' BACnetErrorGetAlarmSummary
         ]
         ['0x02' BACnetErrorConfirmedEventNotification
-            [simple BACnetApplicationTagEnumerated errorClass]
-            [simple BACnetApplicationTagEnumerated errorCode]
         ]
         ['0x04' BACnetErrorGetEnrollmentSummary
         ]
+        ['0x05' BACnetErrorDeviceCommunicationProtocol
+        ]
         ['0x1D' BACnetErrorGetEventInformation
         ]
-
         ['0x06' BACnetErrorAtomicReadFile
         ]
         ['0x07' BACnetErrorAtomicWriteFile
         ]
-
         ['0x0A' BACnetErrorCreateObject
         ]
         ['0x0C' BACnetErrorReadProperty
-            [simple BACnetApplicationTagEnumerated errorClass]
-            [simple BACnetApplicationTagEnumerated errorCode]
         ]
         ['0x0E' BACnetErrorReadPropertyMultiple
         ]
         ['0x0F' BACnetErrorWriteProperty
-            [simple BACnetApplicationTagEnumerated errorClass]
-            [simple BACnetApplicationTagEnumerated errorCode]
         ]
         ['0x1A' BACnetErrorReadRange
         ]
-
         ['0x12' BACnetErrorConfirmedPrivateTransfer
         ]
         ['0x14' BACnetErrorPasswordFailure
-            [simple BACnetApplicationTagEnumerated errorClass]
-            [simple BACnetApplicationTagEnumerated errorCode]
         ]
-
         ['0x15' BACnetErrorVTOpen
         ]
         ['0x17' BACnetErrorVTData
         ]
-
         ['0x18' BACnetErrorRemovedAuthenticate
         ]
         ['0x0D' BACnetErrorRemovedReadPropertyConditional
         ]
+        [BACnetErrorUnknown
+        ]
     ]
+    [simple BACnetApplicationTagEnumerated errorClass]
+    [simple BACnetApplicationTagEnumerated errorCode]
 ]
 
 [type BACnetNotificationParameters(uint 8 tagNumber)
@@ -715,6 +765,7 @@
     [virtual    bit outOfService    'rawBits.data[3]']
 ]
 
+// TODO: this is a enum so we should build a static call which maps a enum
 [type BACnetAction(uint 8 tagNumber)
     [optional   BACnetContextTagEnumerated('tagNumber', 'BACnetDataType.ENUMERATED')
                 rawData
@@ -841,10 +892,12 @@
             [optional   uint  8 valueUint8  'isUint8'           ]
             [virtual    bit     isUint16    'actualLength == 2' ]
             [optional   uint 16 valueUint16 'isUint16'          ]
-            [virtual    bit     isUint32    'actualLength == 3' ]
+            [virtual    bit     isUint24    'actualLength == 3' ]
+            [optional   uint 24 valueUint24 'isUint24'          ]
+            [virtual    bit     isUint32    'actualLength == 4' ]
             [optional   uint 32 valueUint32 'isUint32'          ]
             // TODO: we only go up to uint32 till we have the BigInteger stuff in java solved
-            [virtual    uint 32 actualValue 'isUint8?valueUint8:(isUint16?valueUint16:(isUint32?valueUint32:0))']
+            [virtual    uint 32 actualValue 'isUint8?valueUint8:(isUint16?valueUint16:(isUint24?valueUint24:(isUint32?valueUint32:0)))']
             /*
             [virtual    bit     isUint64    'actualLength == 4' ]
             [optional   uint 64 valueUint64 'isUint64'          ]
@@ -953,10 +1006,12 @@
             [optional   uint  8 valueUint8  'isUint8'           ]
             [virtual    bit     isUint16    'actualLength == 2' ]
             [optional   uint 16 valueUint16 'isUint16'          ]
-            [virtual    bit     isUint32    'actualLength == 3' ]
+            [virtual    bit     isUint24    'actualLength == 3' ]
+            [optional   uint 24 valueUint24 'isUint24'          ]
+            [virtual    bit     isUint32    'actualLength == 4' ]
             [optional   uint 32 valueUint32 'isUint32'          ]
             // TODO: we only go up to uint32 till we have the BigInteger stuff in java solved
-            [virtual    uint 32 actualValue 'isUint8?valueUint8:(isUint16?valueUint16:(isUint32?valueUint32:0))']
+            [virtual    uint 32 actualValue 'isUint8?valueUint8:(isUint16?valueUint16:(isUint24?valueUint24:(isUint32?valueUint32:0)))']
             /*
             [virtual    bit     isUint64    'actualLength == 4' ]
             [optional   uint 64 valueUint64 'isUint64'          ]
