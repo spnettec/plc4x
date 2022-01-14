@@ -51,6 +51,8 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 			return nil, errors.Wrap(err, "Error parsing")
 		}
 		return model.NLMParse(io, apduLength)
+	case "BACnetActionCommand":
+		return model.BACnetActionCommandParse(io)
 	case "BACnetNotificationParametersExtendedParameters":
 		tagNumber, err := utils.StrToUint8(arguments[0])
 		if err != nil {
@@ -63,6 +65,8 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 			return nil, errors.Wrap(err, "Error parsing")
 		}
 		return model.BACnetNotificationParametersChangeOfValueNewValueParse(io, tagNumber)
+	case "NPDUControl":
+		return model.NPDUControlParse(io)
 	case "BACnetPropertyStates":
 		tagNumber, err := utils.StrToUint8(arguments[0])
 		if err != nil {
@@ -152,6 +156,12 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		return model.NLMInitalizeRoutingTablePortMappingParse(io)
 	case "BACnetServiceAck":
 		return model.BACnetServiceAckParse(io)
+	case "BACnetBinaryPV":
+		tagNumber, err := utils.StrToUint8(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		return model.BACnetBinaryPVParse(io, tagNumber)
 	case "BACnetAction":
 		tagNumber, err := utils.StrToUint8(arguments[0])
 		if err != nil {

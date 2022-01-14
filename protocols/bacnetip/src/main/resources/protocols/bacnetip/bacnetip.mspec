@@ -80,27 +80,45 @@
 ]
 
 [type NPDU(uint 16 npduLength)
-    [simple   uint 8        protocolVersionNumber]
-    [simple   bit           messageTypeFieldPresent]
-    [reserved uint 1        '0']
-    [simple   bit           destinationSpecified]
-    [reserved uint 1        '0']
-    [simple   bit           sourceSpecified]
-    [simple   bit           expectingReply]
-    [simple   uint 2        networkPriority]
-    [optional uint 16       destinationNetworkAddress 'destinationSpecified']
-    [optional uint 8        destinationLength         'destinationSpecified']
-    [array    uint 8        destinationAddress count  'destinationSpecified ? destinationLength : 0']
-    [optional uint 16       sourceNetworkAddress      'sourceSpecified']
-    [optional uint 8        sourceLength              'sourceSpecified']
-    [array    uint 8        sourceAddress count       'sourceSpecified ? sourceLength : 0']
-    [optional uint 8        hopCount                  'destinationSpecified']
-    [optional NLM('npduLength - (2 + (sourceSpecified ? 3 + sourceLength : 0) + (destinationSpecified ? 3 + destinationLength: 0) + ((destinationSpecified || sourceSpecified) ? 1 : 0))')
-                            nlm                       'messageTypeFieldPresent'
+    [simple     uint 8      protocolVersionNumber                                                                   ]
+    [simple     NPDUControl control                                                                                 ]
+    [optional   uint 16     destinationNetworkAddress   'control.destinationSpecified'                              ]
+    [optional   uint 8      destinationLength           'control.destinationSpecified'                              ]
+    [array      uint 8      destinationAddress count    'control.destinationSpecified ? destinationLength : 0'      ]
+    [optional   uint 16     sourceNetworkAddress        'control.sourceSpecified'                                   ]
+    [optional   uint 8      sourceLength                'control.sourceSpecified'                                   ]
+    [array      uint 8      sourceAddress count         'control.sourceSpecified ? sourceLength : 0'                ]
+    [optional   uint 8      hopCount                    'control.destinationSpecified'                              ]
+    [virtual    uint 16     sourceLengthAddon           'control.sourceSpecified ? 3 + sourceLength : 0'            ]
+    [virtual    uint 16     destinationLengthAddon      'control.destinationSpecified ? 3 + destinationLength : 0'  ]
+    [virtual    uint 16     payloadSubtraction         '2 + (sourceLengthAddon + destinationLengthAddon + ((control.destinationSpecified || control.sourceSpecified) ? 1 : 0))'     ]
+    [optional   NLM('npduLength - payloadSubtraction')
+                            nlm
+                                                        'control.messageTypeFieldPresent'
     ]
-    [optional APDU('npduLength - (2 + (sourceSpecified ? 3 + sourceLength : 0) + (destinationSpecified ? 3 + destinationLength: 0) + ((destinationSpecified || sourceSpecified) ? 1 : 0))')
-                            apdu                      '!messageTypeFieldPresent'
+    [optional   APDU('npduLength - payloadSubtraction')
+                            apdu
+                                                        '!control.messageTypeFieldPresent'
     ]
+]
+
+[type NPDUControl
+    [simple     bit         messageTypeFieldPresent]
+    [reserved   uint 1      '0']
+    [simple     bit         destinationSpecified]
+    [reserved   uint 1      '0']
+    [simple     bit         sourceSpecified]
+    [simple     bit         expectingReply]
+    [simple     NPDUNetworkPriority
+                            networkPriority
+    ]
+]
+
+[enum uint 2 NPDUNetworkPriority
+    ['3' LIFE_SAVETY_MESSAGE        ]
+    ['2' CRITICAL_EQUIPMENT_MESSAGE ]
+    ['1' URGENT_MESSAGE             ]
+    ['0' NORMAL_MESSAGE             ]
 ]
 
 [discriminatedType NLM(uint 16 apduLength)
@@ -370,7 +388,7 @@
         ['0x04' BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer
             [simple     BACnetContextTagUnsignedInteger('1', 'BACnetDataType.UNSIGNED_INTEGER')          vendorId                    ]// TODO: vendor list?
             [simple     BACnetContextTagUnsignedInteger('2', 'BACnetDataType.UNSIGNED_INTEGER')          serviceNumber               ]
-            [optional   BACnetPropertyValues('2', 'BACnetObjectType.UNKNOWN')                              serviceParameters           ] //TODO: what should we use as object identifier here?
+            [optional   BACnetPropertyValues('2', 'BACnetObjectType.VENDOR_PROPRIETARY_VALUE')           serviceParameters           ] //TODO: what should we use as object identifier here?
         ]
         ['0x05' BACnetUnconfirmedServiceRequestUnconfirmedTextMessage
         ]
@@ -604,6 +622,46 @@
             ]
         ]
         // TODO: implement other cases
+        ['4' BACnetNotificationParametersFloatingLimit(uint 8 peekedTagNumber)
+            [simple BACnetOpeningTag('peekedTagNumber', 'BACnetDataType.OPENING_TAG')
+                            innerOpeningTag
+            ]
+            [simple BACnetContextTagReal('0', 'BACnetDataType.REAL')
+                    referenceValue
+            ]
+            [simple BACnetStatusFlags('1')
+                    statusFlags
+            ]
+            [simple BACnetContextTagReal('2', 'BACnetDataType.REAL')
+                    setPointValue
+            ]
+            [simple BACnetContextTagReal('3', 'BACnetDataType.REAL')
+                    errorLimit
+            ]
+            [simple BACnetClosingTag('peekedTagNumber', 'BACnetDataType.CLOSING_TAG')
+                    innerClosingTag
+            ]
+        ]
+        ['5' BACnetNotificationParametersOutOfRange(uint 8 peekedTagNumber)
+            [simple BACnetOpeningTag('peekedTagNumber', 'BACnetDataType.OPENING_TAG')
+                            innerOpeningTag
+            ]
+            [simple BACnetContextTagReal('0', 'BACnetDataType.REAL')
+                    exceedingValue
+            ]
+            [simple BACnetStatusFlags('1')
+                    statusFlags
+            ]
+            [simple BACnetContextTagReal('2', 'BACnetDataType.REAL')
+                    deadband
+            ]
+            [simple BACnetContextTagReal('3', 'BACnetDataType.REAL')
+                    exceededLimit
+            ]
+            [simple BACnetClosingTag('peekedTagNumber', 'BACnetDataType.CLOSING_TAG')
+                    innerClosingTag
+            ]
+        ]
         ['6' BACnetNotificationParametersComplexEventType(uint 8 peekedTagNumber)
             [simple     BACnetPropertyValues('peekedTagNumber', 'objectType')
                         listOfValues
@@ -785,6 +843,45 @@
     [virtual    bit isReverse        'rawData != null && COUNT(rawData.data) == 1 && rawData.data[0] == 1']
 ]
 
+[type BACnetActionCommand
+    [optional   BACnetContextTagObjectIdentifier('0', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')
+                    deviceIdentifier
+    ]
+    [simple     BACnetContextTagObjectIdentifier('1', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')
+                    objectIdentifier
+    ]
+    [simple     BACnetContextTagPropertyIdentifier('2', 'BACnetDataType.BACNET_PROPERTY_IDENTIFIER')
+                    propertyIdentifier
+    ]
+    [optional   BACnetContextTagUnsignedInteger('3', 'BACnetDataType.UNSIGNED_INTEGER')
+                    arrayIndex
+    ]
+    [optional   BACnetConstructedData('4', 'objectIdentifier.objectType', 'propertyIdentifier')
+                    propertyValue
+    ]
+    [optional     BACnetContextTagUnsignedInteger('5', 'BACnetDataType.UNSIGNED_INTEGER')
+                    priority
+    ]
+    [optional   BACnetContextTagBoolean('6', 'BACnetDataType.BOOLEAN')
+                    postDelay
+    ]
+    [simple   BACnetContextTagBoolean('7', 'BACnetDataType.BOOLEAN')
+                    quitOnFailure
+    ]
+    [simple   BACnetContextTagBoolean('8', 'BACnetDataType.BOOLEAN')
+                    writeSuccessful
+    ]
+]
+
+// TODO: this is a enum so we should build a static call which maps a enum
+[type BACnetBinaryPV(uint 8 tagNumber)
+    [optional   BACnetContextTagEnumerated('tagNumber', 'BACnetDataType.ENUMERATED')
+                rawData
+    ]
+    [virtual    bit isInactive         'rawData != null && COUNT(rawData.data) == 1 && rawData.data[0] == 0']
+    [virtual    bit isActive           'rawData != null && COUNT(rawData.data) == 1 && rawData.data[0] == 1']
+]
+
 [type BACnetPropertyStates(uint 8 tagNumber)
     [simple     BACnetOpeningTag('tagNumber', 'BACnetDataType.OPENING_TAG')
                 openingTag
@@ -797,6 +894,11 @@
         ['0' BACnetPropertyStatesBoolean(uint 8 peekedTagNumber)
             [optional   BACnetContextTagBoolean('peekedTagNumber', 'BACnetDataType.BOOLEAN')
                         booleanValue
+            ]
+        ]
+        ['1' BACnetPropertyStatesBinaryValue(uint 8 peekedTagNumber)
+            [optional   BACnetBinaryPV('peekedTagNumber')
+                        binaryValue
             ]
         ]
         // TODO: add missing type
@@ -989,8 +1091,10 @@
             [virtual bit    fractionalIsWildcard 'fractional == wildcard'   ]
         ]
         ['0xC' BACnetApplicationTagObjectIdentifier
-            [simple BACnetObjectType    objectType          ]
-            [simple uint 22             instanceNumber      ]
+            [manual     BACnetObjectType    objectType         'STATIC_CALL("readObjectType", readBuffer)' 'STATIC_CALL("writeObjectType", writeBuffer, objectType)' '_value.actualLength']
+            [manual     uint 10             proprietaryValue   'STATIC_CALL("readProprietaryObjectType", readBuffer, objectType)' 'STATIC_CALL("writeProprietaryObjectType", writeBuffer, objectType, proprietaryValue)' '_value.actualLength']
+            [virtual    bit                 isProprietary      'objectType == BACnetObjectType.VENDOR_PROPRIETARY_VALUE']
+            [simple     uint 22             instanceNumber  ]
         ]
     ]
 ]
@@ -1102,23 +1206,25 @@
             [virtual bit    fractionalIsWildcard 'fractional == wildcard'   ]
         ]
         ['BACNET_OBJECT_IDENTIFIER' BACnetContextTagObjectIdentifier
-            [simple BACnetObjectType    objectType      ]
-            [simple uint 22             instanceNumber  ]
+            [manual     BACnetObjectType    objectType         'STATIC_CALL("readObjectType", readBuffer)' 'STATIC_CALL("writeObjectType", writeBuffer, objectType)' '_value.actualLength']
+            [manual     uint 10             proprietaryValue   'STATIC_CALL("readProprietaryObjectType", readBuffer, objectType)' 'STATIC_CALL("writeProprietaryObjectType", writeBuffer, objectType, proprietaryValue)' '_value.actualLength']
+            [virtual    bit                 isProprietary      'objectType == BACnetObjectType.VENDOR_PROPRIETARY_VALUE']
+            [simple     uint 22             instanceNumber  ]
         ]
         ['BACNET_PROPERTY_IDENTIFIER' BACnetContextTagPropertyIdentifier(uint 32 actualLength)
-            [manual  BACnetPropertyIdentifier   value   'STATIC_CALL("readPropertyIdentifier", readBuffer, actualLength)' 'STATIC_CALL("writePropertyIdentifier", writeBuffer, value)' '_value.actualLength']
-            [manual  uint 32                    proprietaryValue   'STATIC_CALL("readProprietaryPropertyIdentifier", readBuffer, value, actualLength)' 'STATIC_CALL("writeProprietaryPropertyIdentifier", writeBuffer, value, proprietaryValue)' '_value.actualLength']
-            [virtual bit                        isProprietary      'value == BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE']
+            [manual     BACnetPropertyIdentifier   propertyIdentifier 'STATIC_CALL("readPropertyIdentifier", readBuffer, actualLength)' 'STATIC_CALL("writePropertyIdentifier", writeBuffer, propertyIdentifier)' '_value.actualLength']
+            [manual     uint 32                    proprietaryValue   'STATIC_CALL("readProprietaryPropertyIdentifier", readBuffer, propertyIdentifier, actualLength)' 'STATIC_CALL("writeProprietaryPropertyIdentifier", writeBuffer, propertyIdentifier, proprietaryValue)' '_value.actualLength']
+            [virtual    bit                        isProprietary      'propertyIdentifier == BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE']
         ]
         ['EVENT_TYPE' BACnetContextTagEventType(uint 32 actualLength)
-            [manual  BACnetEventType   value   'STATIC_CALL("readEventType", readBuffer, actualLength)' 'STATIC_CALL("writeEventType", writeBuffer, value)' '_value.actualLength']
-            [manual  uint 32                    proprietaryValue   'STATIC_CALL("readProprietaryEventType", readBuffer, value, actualLength)' 'STATIC_CALL("writeProprietaryEventType", writeBuffer, value, proprietaryValue)' '_value.actualLength']
-            [virtual bit                        isProprietary      'value == BACnetEventType.VENDOR_PROPRIETARY_VALUE']
+            [manual     BACnetEventType            eventType          'STATIC_CALL("readEventType", readBuffer, actualLength)' 'STATIC_CALL("writeEventType", writeBuffer, eventType)' '_value.actualLength']
+            [manual     uint 32                    proprietaryValue   'STATIC_CALL("readProprietaryEventType", readBuffer, eventType, actualLength)' 'STATIC_CALL("writeProprietaryEventType", writeBuffer, eventType, proprietaryValue)' '_value.actualLength']
+            [virtual    bit                        isProprietary      'eventType == BACnetEventType.VENDOR_PROPRIETARY_VALUE']
         ]
         ['EVENT_STATE' BACnetContextTagEventState(uint 32 actualLength)
-            [manual  BACnetEventState   value   'STATIC_CALL("readEventState", readBuffer, actualLength)' 'STATIC_CALL("writeEventState", writeBuffer, value)' '_value.actualLength']
-            [manual  uint 32                    proprietaryValue   'STATIC_CALL("readProprietaryEventState", readBuffer, value, actualLength)' 'STATIC_CALL("writeProprietaryEventState", writeBuffer, value, proprietaryValue)' '_value.actualLength']
-            [virtual bit                        isProprietary      'value == BACnetEventState.VENDOR_PROPRIETARY_VALUE']
+            [manual     BACnetEventState           eventState         'STATIC_CALL("readEventState", readBuffer, actualLength)' 'STATIC_CALL("writeEventState", writeBuffer, eventState)' '_value.actualLength']
+            [manual     uint 32                    proprietaryValue   'STATIC_CALL("readProprietaryEventState", readBuffer, eventState, actualLength)' 'STATIC_CALL("writeProprietaryEventState", writeBuffer, eventState, proprietaryValue)' '_value.actualLength']
+            [virtual    bit                        isProprietary      'eventState == BACnetEventState.VENDOR_PROPRIETARY_VALUE']
         ]
         ['NOTIFY_TYPE' BACnetContextTagNotifyType(uint 32 actualLength)
             [simple  BACnetNotifyType   value]
@@ -1138,18 +1244,31 @@
 ]
 
 [type BACnetConstructedData(uint 8 tagNumber, BACnetObjectType objectType, BACnetContextTagPropertyIdentifier propertyIdentifierArgument)
-    [optional       BACnetOpeningTag('tagNumber', 'BACnetDataType.OPENING_TAG')
+    [simple       BACnetOpeningTag('tagNumber', 'BACnetDataType.OPENING_TAG')
                         openingTag
     ]
     //TODO: maybe more array into sub types later
     [array          BACnetConstructedDataElement('objectType', 'propertyIdentifierArgument')
                         data
                     terminated
-                    'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, objectType == BACnetObjectType.LIFE_SAFETY_ZONE, tagNumber)'
+                    'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, objectType == BACnetObjectType.LIFE_SAFETY_ZONE || objectType == BACnetObjectType.COMMAND, tagNumber)'
     ]
     [virtual    bit     hasData 'COUNT(data) == 0']
     // TODO: maybe its better to typeswitch the elements
     [typeSwitch objectType, propertyIdentifierArgument
+        ['COMMAND' BACnetConstructedDataCommand
+            [simple       BACnetOpeningTag('0', 'BACnetDataType.OPENING_TAG')
+                                innerOpeningTag
+            ]
+            [array  BACnetActionCommand
+                        action
+                    terminated
+                    'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, 0)'
+            ]
+            [simple       BACnetClosingTag('0', 'BACnetDataType.CLOSING_TAG')
+                                innerClosingTag
+            ]
+        ]
         ['LIFE_SAFETY_ZONE' BACnetConstructedDataLifeSafetyZone
             [array  BACnetContextTagObjectIdentifier('1', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')
                         zones
@@ -1168,7 +1287,7 @@
             ]
         ]
     ]
-    [optional       BACnetClosingTag('tagNumber', 'BACnetDataType.CLOSING_TAG')
+    [simple       BACnetClosingTag('tagNumber', 'BACnetDataType.CLOSING_TAG')
                         closingTag
     ]
 ]
@@ -1401,7 +1520,7 @@
     ['27' TREND_LOG_MULTIPLE]
 
     // plc4x Value
-    ['0x3FF' UNKNOWN]
+    ['0x3FF' VENDOR_PROPRIETARY_VALUE]
 ]
 
 [enum uint 32 BACnetPropertyIdentifier
@@ -1862,5 +1981,7 @@
     ['320' ZONE_FROM]
     ['165' ZONE_MEMBERS]
     ['321' ZONE_TO]
+
+    // plc4x definition
     ['9999' VENDOR_PROPRIETARY_VALUE]
 ]
