@@ -46,13 +46,12 @@ func (m *BVLCOriginalUnicastNPDU) BvlcFunction() uint8 {
 	return 0x0A
 }
 
-func (m *BVLCOriginalUnicastNPDU) InitializeParent(parent *BVLC) {
-}
+func (m *BVLCOriginalUnicastNPDU) InitializeParent(parent *BVLC, bvlcPayloadLength uint16) {}
 
-func NewBVLCOriginalUnicastNPDU(npdu *NPDU) *BVLC {
+func NewBVLCOriginalUnicastNPDU(npdu *NPDU, bvlcPayloadLength uint16) *BVLC {
 	child := &BVLCOriginalUnicastNPDU{
 		Npdu: npdu,
-		BVLC: NewBVLC(),
+		BVLC: NewBVLC(bvlcPayloadLength),
 	}
 	child.Child = child
 	return child.BVLC
@@ -98,7 +97,7 @@ func (m *BVLCOriginalUnicastNPDU) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BVLCOriginalUnicastNPDUParse(readBuffer utils.ReadBuffer, bvlcLength uint16) (*BVLC, error) {
+func BVLCOriginalUnicastNPDUParse(readBuffer utils.ReadBuffer, bvlcPayloadLength uint16) (*BVLC, error) {
 	if pullErr := readBuffer.PullContext("BVLCOriginalUnicastNPDU"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -107,7 +106,7 @@ func BVLCOriginalUnicastNPDUParse(readBuffer utils.ReadBuffer, bvlcLength uint16
 	if pullErr := readBuffer.PullContext("npdu"); pullErr != nil {
 		return nil, pullErr
 	}
-	_npdu, _npduErr := NPDUParse(readBuffer, uint16(bvlcLength)-uint16(uint16(4)))
+	_npdu, _npduErr := NPDUParse(readBuffer, bvlcPayloadLength)
 	if _npduErr != nil {
 		return nil, errors.Wrap(_npduErr, "Error parsing 'npdu' field")
 	}

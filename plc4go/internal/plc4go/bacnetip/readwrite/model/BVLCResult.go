@@ -46,13 +46,12 @@ func (m *BVLCResult) BvlcFunction() uint8 {
 	return 0x00
 }
 
-func (m *BVLCResult) InitializeParent(parent *BVLC) {
-}
+func (m *BVLCResult) InitializeParent(parent *BVLC, bvlcPayloadLength uint16) {}
 
-func NewBVLCResult(code BVLCResultCode) *BVLC {
+func NewBVLCResult(code BVLCResultCode, bvlcPayloadLength uint16) *BVLC {
 	child := &BVLCResult{
 		Code: code,
-		BVLC: NewBVLC(),
+		BVLC: NewBVLC(bvlcPayloadLength),
 	}
 	child.Child = child
 	return child.BVLC

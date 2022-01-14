@@ -44,12 +44,12 @@ func (m *BVLCDeleteForeignDeviceTableEntry) BvlcFunction() uint8 {
 	return 0x08
 }
 
-func (m *BVLCDeleteForeignDeviceTableEntry) InitializeParent(parent *BVLC) {
+func (m *BVLCDeleteForeignDeviceTableEntry) InitializeParent(parent *BVLC, bvlcPayloadLength uint16) {
 }
 
-func NewBVLCDeleteForeignDeviceTableEntry() *BVLC {
+func NewBVLCDeleteForeignDeviceTableEntry(bvlcPayloadLength uint16) *BVLC {
 	child := &BVLCDeleteForeignDeviceTableEntry{
-		BVLC: NewBVLC(),
+		BVLC: NewBVLC(bvlcPayloadLength),
 	}
 	child.Child = child
 	return child.BVLC

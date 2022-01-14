@@ -46,13 +46,12 @@ func (m *BVLCDistributeBroadcastToNetwork) BvlcFunction() uint8 {
 	return 0x09
 }
 
-func (m *BVLCDistributeBroadcastToNetwork) InitializeParent(parent *BVLC) {
-}
+func (m *BVLCDistributeBroadcastToNetwork) InitializeParent(parent *BVLC, bvlcPayloadLength uint16) {}
 
-func NewBVLCDistributeBroadcastToNetwork(npdu *NPDU) *BVLC {
+func NewBVLCDistributeBroadcastToNetwork(npdu *NPDU, bvlcPayloadLength uint16) *BVLC {
 	child := &BVLCDistributeBroadcastToNetwork{
 		Npdu: npdu,
-		BVLC: NewBVLC(),
+		BVLC: NewBVLC(bvlcPayloadLength),
 	}
 	child.Child = child
 	return child.BVLC
@@ -98,7 +97,7 @@ func (m *BVLCDistributeBroadcastToNetwork) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BVLCDistributeBroadcastToNetworkParse(readBuffer utils.ReadBuffer, bvlcLength uint16) (*BVLC, error) {
+func BVLCDistributeBroadcastToNetworkParse(readBuffer utils.ReadBuffer, bvlcPayloadLength uint16) (*BVLC, error) {
 	if pullErr := readBuffer.PullContext("BVLCDistributeBroadcastToNetwork"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -107,7 +106,7 @@ func BVLCDistributeBroadcastToNetworkParse(readBuffer utils.ReadBuffer, bvlcLeng
 	if pullErr := readBuffer.PullContext("npdu"); pullErr != nil {
 		return nil, pullErr
 	}
-	_npdu, _npduErr := NPDUParse(readBuffer, uint16(bvlcLength)-uint16(uint16(4)))
+	_npdu, _npduErr := NPDUParse(readBuffer, bvlcPayloadLength)
 	if _npduErr != nil {
 		return nil, errors.Wrap(_npduErr, "Error parsing 'npdu' field")
 	}

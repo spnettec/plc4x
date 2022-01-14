@@ -48,15 +48,14 @@ func (m *BVLCForwardedNPDU) BvlcFunction() uint8 {
 	return 0x04
 }
 
-func (m *BVLCForwardedNPDU) InitializeParent(parent *BVLC) {
-}
+func (m *BVLCForwardedNPDU) InitializeParent(parent *BVLC, bvlcPayloadLength uint16) {}
 
-func NewBVLCForwardedNPDU(ip []uint8, port uint16, npdu *NPDU) *BVLC {
+func NewBVLCForwardedNPDU(ip []uint8, port uint16, npdu *NPDU, bvlcPayloadLength uint16) *BVLC {
 	child := &BVLCForwardedNPDU{
 		Ip:   ip,
 		Port: port,
 		Npdu: npdu,
-		BVLC: NewBVLC(),
+		BVLC: NewBVLC(bvlcPayloadLength),
 	}
 	child.Child = child
 	return child.BVLC
@@ -110,7 +109,7 @@ func (m *BVLCForwardedNPDU) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BVLCForwardedNPDUParse(readBuffer utils.ReadBuffer, bvlcLength uint16) (*BVLC, error) {
+func BVLCForwardedNPDUParse(readBuffer utils.ReadBuffer, bvlcPayloadLength uint16) (*BVLC, error) {
 	if pullErr := readBuffer.PullContext("BVLCForwardedNPDU"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -145,7 +144,7 @@ func BVLCForwardedNPDUParse(readBuffer utils.ReadBuffer, bvlcLength uint16) (*BV
 	if pullErr := readBuffer.PullContext("npdu"); pullErr != nil {
 		return nil, pullErr
 	}
-	_npdu, _npduErr := NPDUParse(readBuffer, uint16(bvlcLength)-uint16(uint16(10)))
+	_npdu, _npduErr := NPDUParse(readBuffer, uint16(bvlcPayloadLength)-uint16(uint16(6)))
 	if _npduErr != nil {
 		return nil, errors.Wrap(_npduErr, "Error parsing 'npdu' field")
 	}

@@ -44,12 +44,12 @@ func (m *BVLCReadBroadcastDistributionTableAck) BvlcFunction() uint8 {
 	return 0x03
 }
 
-func (m *BVLCReadBroadcastDistributionTableAck) InitializeParent(parent *BVLC) {
+func (m *BVLCReadBroadcastDistributionTableAck) InitializeParent(parent *BVLC, bvlcPayloadLength uint16) {
 }
 
-func NewBVLCReadBroadcastDistributionTableAck() *BVLC {
+func NewBVLCReadBroadcastDistributionTableAck(bvlcPayloadLength uint16) *BVLC {
 	child := &BVLCReadBroadcastDistributionTableAck{
-		BVLC: NewBVLC(),
+		BVLC: NewBVLC(bvlcPayloadLength),
 	}
 	child.Child = child
 	return child.BVLC

@@ -231,7 +231,10 @@ func ReadProprietaryEventType(readBuffer utils.ReadBuffer, value BACnetEventType
 	return readBuffer.ReadUint32("proprietaryEventType", bitsToRead)
 }
 
-func IsBACnetConstructedDataClosingTag(readBuffer utils.ReadBuffer, expectedTagNumber byte) bool {
+func IsBACnetConstructedDataClosingTag(readBuffer utils.ReadBuffer, instantTerminate bool, expectedTagNumber byte) bool {
+	if instantTerminate {
+		return true
+	}
 	oldPos := readBuffer.GetPos()
 	// TODO: add graceful exit if we know already that we are at the end (we might need to add available bytes to reader)
 	tagNumber, err := readBuffer.ReadUint8("", 4)
@@ -252,46 +255,7 @@ func IsBACnetConstructedDataClosingTag(readBuffer utils.ReadBuffer, expectedTagN
 	return foundOurClosingTag
 }
 
-func IsApplicationTag(peekedByte byte) bool {
-	return (peekedByte & (0b0000_1000)) == 0
-}
-
-func IsContextTag(peekedByte byte) bool {
-	return !IsApplicationTag(peekedByte)
-}
-
-func IsConstructedData(peekedByte byte) bool {
-	return IsOpeningTag(peekedByte)
-}
-
-func IsOpeningTag(peekedByte byte) bool {
-	return IsContextTag(peekedByte) && HasTagValue(peekedByte, 0x6)
-}
-
-func IsClosingTag(peekedByte byte) bool {
-	return IsContextTag(peekedByte) && HasTagValue(peekedByte, 0x7)
-}
-
-func HasTagValue(peekedByte byte, tagValue byte) bool {
-	return (peekedByte & 0b0000_0111) == tagValue
-}
-
-func Noop() error {
-	// NO-OP
-	return nil
-}
-
-func PeekByte(readBuffer utils.ReadBuffer) (byte, error) {
-	oldPos := readBuffer.GetPos()
-	aByte, err := readBuffer.ReadByte("")
-	readBuffer.Reset(oldPos)
-	if err != nil {
-		return 0, err
-	}
-	return aByte, nil
-}
-
-func GuessDataType() BACnetDataType {
+func GuessDataType(objectType BACnetObjectType) BACnetDataType {
 	// TODO: implement me
 	return BACnetDataType_BACNET_PROPERTY_IDENTIFIER
 }
