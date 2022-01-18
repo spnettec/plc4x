@@ -46,20 +46,19 @@ func (m *BACnetConstructedDataLifeSafetyZone) ObjectType() BACnetObjectType {
 	return BACnetObjectType_LIFE_SAFETY_ZONE
 }
 
-func (m *BACnetConstructedDataLifeSafetyZone) PropertyIdentifierArgument() IBACnetContextTagPropertyIdentifier {
-	return nil
+func (m *BACnetConstructedDataLifeSafetyZone) PropertyIdentifierEnum() BACnetPropertyIdentifier {
+	return 0
 }
 
-func (m *BACnetConstructedDataLifeSafetyZone) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, data []*BACnetConstructedDataElement, closingTag *BACnetClosingTag, hasData bool) {
+func (m *BACnetConstructedDataLifeSafetyZone) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, propertyIdentifierEnum BACnetPropertyIdentifier) {
 	m.OpeningTag = openingTag
-	m.Data = data
 	m.ClosingTag = closingTag
 }
 
-func NewBACnetConstructedDataLifeSafetyZone(zones []*BACnetContextTagObjectIdentifier, openingTag *BACnetOpeningTag, data []*BACnetConstructedDataElement, closingTag *BACnetClosingTag, hasData bool) *BACnetConstructedData {
+func NewBACnetConstructedDataLifeSafetyZone(zones []*BACnetContextTagObjectIdentifier, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, propertyIdentifierEnum BACnetPropertyIdentifier) *BACnetConstructedData {
 	child := &BACnetConstructedDataLifeSafetyZone{
 		Zones:                 zones,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, data, closingTag, hasData),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, propertyIdentifierEnum),
 	}
 	child.Child = child
 	return child.BACnetConstructedData

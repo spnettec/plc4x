@@ -59,17 +59,11 @@ func (m *BACnetContextTagDate) DataType() BACnetDataType {
 	return BACnetDataType_DATE
 }
 
-func (m *BACnetContextTagDate) InitializeParent(parent *BACnetContextTag, tagNumber uint8, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, actualLength uint32) {
-	m.TagNumber = tagNumber
-	m.TagClass = tagClass
-	m.LengthValueType = lengthValueType
-	m.ExtTagNumber = extTagNumber
-	m.ExtLength = extLength
-	m.ExtExtLength = extExtLength
-	m.ExtExtExtLength = extExtExtLength
+func (m *BACnetContextTagDate) InitializeParent(parent *BACnetContextTag, header *BACnetTagHeader, tagNumber uint8, actualLength uint32) {
+	m.Header = header
 }
 
-func NewBACnetContextTagDate(yearMinus1900 int8, month int8, dayOfMonth int8, dayOfWeek int8, wildcard int8, yearIsWildcard bool, monthIsWildcard bool, oddMonthWildcard bool, evenMonthWildcard bool, dayOfMonthIsWildcard bool, lastDayOfMonthWildcard bool, oddDayOfMonthWildcard bool, evenDayOfMonthWildcard bool, dayOfWeekIsWildcard bool, tagNumber uint8, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, actualLength uint32) *BACnetContextTag {
+func NewBACnetContextTagDate(yearMinus1900 int8, month int8, dayOfMonth int8, dayOfWeek int8, wildcard int8, yearIsWildcard bool, monthIsWildcard bool, oddMonthWildcard bool, evenMonthWildcard bool, dayOfMonthIsWildcard bool, lastDayOfMonthWildcard bool, oddDayOfMonthWildcard bool, evenDayOfMonthWildcard bool, dayOfWeekIsWildcard bool, header *BACnetTagHeader, tagNumber uint8, actualLength uint32) *BACnetContextTag {
 	child := &BACnetContextTagDate{
 		YearMinus1900:          yearMinus1900,
 		Month:                  month,
@@ -85,7 +79,7 @@ func NewBACnetContextTagDate(yearMinus1900 int8, month int8, dayOfMonth int8, da
 		OddDayOfMonthWildcard:  oddDayOfMonthWildcard,
 		EvenDayOfMonthWildcard: evenDayOfMonthWildcard,
 		DayOfWeekIsWildcard:    dayOfWeekIsWildcard,
-		BACnetContextTag:       NewBACnetContextTag(tagNumber, tagClass, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength, actualTagNumber, actualLength),
+		BACnetContextTag:       NewBACnetContextTag(header, tagNumber, actualLength),
 	}
 	child.Child = child
 	return child.BACnetContextTag
