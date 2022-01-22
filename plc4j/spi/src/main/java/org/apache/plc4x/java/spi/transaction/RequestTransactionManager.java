@@ -50,9 +50,9 @@ public class RequestTransactionManager {
     /** How many Transactions are allowed to run at the same time? */
     private int numberOfConcurrentRequests;
     /** Assigns each request a Unique Transaction Id, especially important for failure handling */
-    private AtomicInteger transactionId = new AtomicInteger(0);
+    private final AtomicInteger transactionId = new AtomicInteger(0);
     /** Important, this is a FIFO Queue for Fairness! */
-    private Queue<RequestTransaction> workLog = new ConcurrentLinkedQueue<>();
+    private final Queue<RequestTransaction> workLog = new ConcurrentLinkedQueue<>();
 
     public RequestTransactionManager(int numberOfConcurrentRequests) {
         this.numberOfConcurrentRequests = numberOfConcurrentRequests;
@@ -189,12 +189,8 @@ public class RequestTransactionManager {
 
         @Override
         public boolean equals(Object o) {
-            if (this == o) {
-                return true;
-            }
-            if (o == null || getClass() != o.getClass()) {
-                return false;
-            }
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
             RequestTransaction that = (RequestTransaction) o;
             return transactionId == that.transactionId;
         }
