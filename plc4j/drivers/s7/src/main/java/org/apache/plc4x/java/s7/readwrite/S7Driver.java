@@ -19,20 +19,20 @@
 package org.apache.plc4x.java.s7.readwrite;
 
 import io.netty.buffer.ByteBuf;
-import org.apache.plc4x.java.api.value.PlcValueHandler;
 import org.apache.plc4x.java.s7.readwrite.configuration.S7Configuration;
 import org.apache.plc4x.java.s7.readwrite.context.S7DriverContext;
 import org.apache.plc4x.java.s7.readwrite.field.S7Field;
-import org.apache.plc4x.java.s7.readwrite.field.S7PlcFieldHandler;
-import org.apache.plc4x.java.s7.readwrite.field.S7PlcValueHandler;
 import org.apache.plc4x.java.s7.readwrite.io.TPKTPacketIO;
 import org.apache.plc4x.java.s7.readwrite.optimizer.S7Optimizer;
 import org.apache.plc4x.java.s7.readwrite.protocol.S7ProtocolLogic;
+import org.apache.plc4x.java.s7.readwrite.field.S7PlcFieldHandler;
+import org.apache.plc4x.java.api.value.PlcValueHandler;
 import org.apache.plc4x.java.spi.configuration.Configuration;
-import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
+import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
+import org.apache.plc4x.java.spi.values.IEC61131ValueHandler;
 
 import java.util.function.Consumer;
 import java.util.function.ToIntFunction;
@@ -103,7 +103,7 @@ public class S7Driver extends GeneratedDriverBase<TPKTPacket> {
 
     @Override
     protected ProtocolStackConfigurer<TPKTPacket> getStackConfigurer() {
-        return SingleProtocolStackConfigurer.builder(TPKTPacket.class, TPKTPacketIO.class)
+        return SingleProtocolStackConfigurer.builder(TPKTPacket.class, TPKTPacket::staticParse)
             .withProtocol(S7ProtocolLogic.class)
             .withDriverContext(S7DriverContext.class)
             .withPacketSizeEstimator(ByteLengthEstimator.class)
