@@ -974,6 +974,7 @@ make -f demo/object/ai</value>
                         </BACnetServiceAckAtomicWriteFile>
                       </BACnetServiceAck>
                     </serviceAck>
+                    <segment dataType="byte" bitLength="0">0x</segment>
                   </APDUComplexAck>
                 </APDU>
               </apdu>
@@ -1211,6 +1212,7 @@ make -f awf.mak</value>
                         </BACnetServiceAckAtomicWriteFile>
                       </BACnetServiceAck>
                     </serviceAck>
+                    <segment dataType="byte" bitLength="0">0x</segment>
                   </APDUComplexAck>
                 </APDU>
               </apdu>
@@ -1451,6 +1453,7 @@ make -f bacstr.mak</value>
                         </BACnetServiceAckAtomicWriteFile>
                       </BACnetServiceAck>
                     </serviceAck>
+                    <segment dataType="byte" bitLength="0">0x</segment>
                   </APDUComplexAck>
                 </APDU>
               </apdu>
@@ -1688,6 +1691,7 @@ make -f crc.mak clean</value>
                         </BACnetServiceAckAtomicWriteFile>
                       </BACnetServiceAck>
                     </serviceAck>
+                    <segment dataType="byte" bitLength="0">0x</segment>
                   </APDUComplexAck>
                 </APDU>
               </apdu>
@@ -1926,6 +1930,7 @@ make -f demo/object/lsp.</value>
                         </BACnetServiceAckAtomicWriteFile>
                       </BACnetServiceAck>
                     </serviceAck>
+                    <segment dataType="byte" bitLength="0">0x</segment>
                   </APDUComplexAck>
                 </APDU>
               </apdu>
@@ -2167,6 +2172,7 @@ make</value>
                         </BACnetServiceAckAtomicWriteFile>
                       </BACnetServiceAck>
                     </serviceAck>
+                    <segment dataType="byte" bitLength="0">0x</segment>
                   </APDUComplexAck>
                 </APDU>
               </apdu>
@@ -2409,6 +2415,7 @@ make -f tsm.mak cle</value>
                         </BACnetServiceAckAtomicWriteFile>
                       </BACnetServiceAck>
                     </serviceAck>
+                    <segment dataType="byte" bitLength="0">0x</segment>
                   </APDUComplexAck>
                 </APDU>
               </apdu>
@@ -2644,6 +2651,7 @@ make -f wp.mak clean</value>
                         </BACnetServiceAckAtomicWriteFile>
                       </BACnetServiceAck>
                     </serviceAck>
+                    <segment dataType="byte" bitLength="0">0x</segment>
                   </APDUComplexAck>
                 </APDU>
               </apdu>
@@ -4550,6 +4558,7 @@ make -f wp.mak clean</value>
                         </BACnetServiceAckReadProperty>
                       </BACnetServiceAck>
                     </serviceAck>
+                    <segment dataType="byte" bitLength="0">0x</segment>
                   </APDUComplexAck>
                 </APDU>
               </apdu>
@@ -8057,6 +8066,7 @@ Test "BACnet Applicat</value>
                         </BACnetServiceAckAtomicReadFile>
                       </BACnetServiceAck>
                     </serviceAck>
+                    <segment dataType="byte" bitLength="0">0x</segment>
                   </APDUComplexAck>
                 </APDU>
               </apdu>
@@ -8376,6 +8386,7 @@ Test "BACnet I-Am":
                         </BACnetServiceAckAtomicReadFile>
                       </BACnetServiceAck>
                     </serviceAck>
+                    <segment dataType="byte" bitLength="0">0x</segment>
                   </APDUComplexAck>
                 </APDU>
               </apdu>
@@ -8692,6 +8703,7 @@ Test "BACnet ReadProperty":
                         </BACnetServiceAckAtomicReadFile>
                       </BACnetServiceAck>
                     </serviceAck>
+                    <segment dataType="byte" bitLength="0">0x</segment>
                   </APDUComplexAck>
                 </APDU>
               </apdu>
@@ -8997,6 +9009,7 @@ Test "BACnet WriteProperty":
                         </BACnetServiceAckAtomicReadFile>
                       </BACnetServiceAck>
                     </serviceAck>
+                    <segment dataType="byte" bitLength="0">0x</segment>
                   </APDUComplexAck>
                 </APDU>
               </apdu>
