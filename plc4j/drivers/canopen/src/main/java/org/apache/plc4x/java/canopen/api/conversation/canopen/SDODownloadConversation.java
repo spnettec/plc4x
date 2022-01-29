@@ -28,6 +28,7 @@ import org.apache.plc4x.java.spi.generation.ByteOrder;
 
 import java.util.concurrent.CompletableFuture;
 import org.apache.plc4x.java.spi.generation.SerializationException;
+import org.apache.plc4x.java.spi.generation.WriteBufferByteBased;
 
 public class SDODownloadConversation extends CANOpenConversationBase {
 
@@ -41,7 +42,9 @@ public class SDODownloadConversation extends CANOpenConversationBase {
         this.indexAddress = indexAddress;
 
         try {
-            data = DataItem.staticSerialize(value, type,  null, ByteOrder.LITTLE_ENDIAN).getData();
+            final WriteBufferByteBased writeBuffer = new WriteBufferByteBased(value.getLength(), ByteOrder.LITTLE_ENDIAN);
+            DataItem.staticSerialize(writeBuffer,value, type,  null);
+            data = writeBuffer.getBytes();
         } catch (SerializationException e) {
             throw new PlcRuntimeException("Could not serialize data", e);
         }

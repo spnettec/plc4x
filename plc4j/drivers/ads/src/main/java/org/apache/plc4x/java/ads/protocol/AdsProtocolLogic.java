@@ -427,10 +427,11 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
             }
         }
         try {
-            WriteBufferByteBased writeBuffer = DataItem.staticSerialize(plcValue,
-                plcField.getAdsDataType().getDataFormatName(), stringLength, ByteOrder.LITTLE_ENDIAN);
+            final WriteBufferByteBased writeBuffer = new WriteBufferByteBased(stringLength, ByteOrder.LITTLE_ENDIAN);
+            DataItem.staticSerialize(writeBuffer,plcValue,
+                plcField.getAdsDataType().getDataFormatName(), stringLength);
             AdsData adsData = new AdsWriteRequest(
-                directAdsField.getIndexGroup(), directAdsField.getIndexOffset(), writeBuffer.getData());
+                directAdsField.getIndexGroup(), directAdsField.getIndexOffset(), writeBuffer.getBytes());
             AmsPacket amsPacket = new AmsPacket(configuration.getTargetAmsNetId(), configuration.getTargetAmsPort(),
                 configuration.getSourceAmsNetId(), configuration.getSourceAmsPort(),
                 CommandId.ADS_WRITE, DEFAULT_COMMAND_STATE, 0, getInvokeId(), adsData);
@@ -485,11 +486,11 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                 }
             }
             try {
-                final WriteBufferByteBased itemWriteBuffer = DataItem.staticSerialize(plcValue,
-                    field.getAdsDataType().getDataFormatName(), stringLength, ByteOrder.LITTLE_ENDIAN);
-                assert itemWriteBuffer != null;
+                final WriteBufferByteBased itemWriteBuffer = new WriteBufferByteBased(stringLength, ByteOrder.LITTLE_ENDIAN);
+                DataItem.staticSerialize(itemWriteBuffer,plcValue,
+                    field.getAdsDataType().getDataFormatName(), stringLength);
                 int numBytes = itemWriteBuffer.getPos();
-                System.arraycopy(itemWriteBuffer.getData(), 0, writeBuffer, pos, numBytes);
+                System.arraycopy(itemWriteBuffer.getBytes(), 0, writeBuffer, pos, numBytes);
                 pos += numBytes;
             } catch (Exception e) {
                 throw new PlcRuntimeException("Error serializing data", e);

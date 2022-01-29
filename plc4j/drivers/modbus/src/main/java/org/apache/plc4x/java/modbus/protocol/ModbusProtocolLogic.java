@@ -423,11 +423,12 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
 
     private byte[] fromPlcValue(PlcField field, PlcValue plcValue) {
         ModbusDataType fieldDataType = ((ModbusField) field).getDataType();
+        int numBytes = ((ModbusField) field).getLengthBytes();
         try {
-            WriteBufferByteBased buffer;
+            WriteBufferByteBased buffer = new WriteBufferByteBased(numBytes, ByteOrder.BIG_ENDIAN);
             if(plcValue instanceof PlcList) {
-                buffer = DataItem.staticSerialize(plcValue, fieldDataType, plcValue.getLength(), ByteOrder.BIG_ENDIAN);
-                byte[] data = buffer.getData();
+                DataItem.staticSerialize(buffer,plcValue, fieldDataType, numBytes);
+                byte[] data = buffer.getBytes();
                 switch (((ModbusField) field).getDataType()) {
                     case BOOL:
                         //Reverse Bits in each byte as
@@ -441,12 +442,8 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
                         return data;
                 }
             } else {
-                buffer = DataItem.staticSerialize(plcValue, fieldDataType, plcValue.getLength(), ByteOrder.BIG_ENDIAN);
-                if (buffer != null) {
-                    return buffer.getData();
-                } else {
-                    throw new PlcRuntimeException("Unable to parse PlcValue :- " + ((ModbusField) field).getPlcDataType());
-                }
+                DataItem.staticSerialize(buffer,plcValue, fieldDataType, plcValue.getLength());
+                return buffer.getBytes();
             }
         } catch (SerializationException e) {
             throw new PlcRuntimeException("Unable to parse PlcValue :- " + e);

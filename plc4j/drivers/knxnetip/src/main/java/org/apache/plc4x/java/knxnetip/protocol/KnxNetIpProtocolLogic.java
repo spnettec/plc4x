@@ -284,9 +284,10 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KnxNetIpMessage> im
 
                 // Use the data in the ets5 model to correctly check and serialize the PlcValue
                 try {
-                    final WriteBufferByteBased writeBuffer = KnxDatapoint.staticSerialize(value,
+                    final WriteBufferByteBased writeBuffer = new WriteBufferByteBased(value.getLength(), ByteOrder.LITTLE_ENDIAN);
+                    KnxDatapoint.staticSerialize(writeBuffer,value,
                         groupAddress.getType());
-                    final byte[] serialized = writeBuffer.getData();
+                    final byte[] serialized = writeBuffer.getBytes();
                     dataFirstByte = serialized[0];
                     data = new byte[serialized.length - 1];
                     System.arraycopy(serialized, 1, data, 0, serialized.length - 1);

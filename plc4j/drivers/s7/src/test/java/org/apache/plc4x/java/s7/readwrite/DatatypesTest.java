@@ -33,7 +33,7 @@ public class DatatypesTest {
     public static void main(String[] args) throws Exception {
         PooledPlcDriverManager pooledPlcDriverManager = new PooledPlcDriverManager();
 
-        try (PlcConnection connection = pooledPlcDriverManager.getConnection("s7://10.110.20.64?controller-type=S7_300&remote-group=1&remote-rack=0&remote-slot=0")) {
+        try (PlcConnection connection = pooledPlcDriverManager.getConnection("s7://10.110.20.60?controller-type=S7_300&remote-group=2")) {
             final PlcReadRequest.Builder builder = connection.readRequestBuilder();
             builder.addItem("bool-value-1", "%DB10.DBD150:REAL"); // true
 
