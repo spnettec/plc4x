@@ -422,27 +422,25 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
 
     private byte[] fromPlcValue(PlcField field, PlcValue plcValue) {
         ModbusDataType fieldDataType = ((ModbusField) field).getDataType();
-        int numBytes = ((ModbusField) field).getLengthBytes();
         try {
-            WriteBufferByteBased buffer = new WriteBufferByteBased(numBytes, ByteOrder.BIG_ENDIAN);
             if(plcValue instanceof PlcList) {
-                DataItem.staticSerialize(buffer,plcValue, fieldDataType, numBytes);
-                byte[] data = buffer.getBytes();
-                switch (((ModbusField) field).getDataType()) {
-                    case BOOL:
-                        //Reverse Bits in each byte as
-                        //they should ordered like this: 8 7 6 5 4 3 2 1 | 0 0 0 0 0 0 0 9
-                        byte[] bytes = new byte[data.length];
-                        for (int i = 0; i < data.length; i++) {
-                            bytes[i] = reverseBitsOfByte(data[i]);
-                        }
-                        return bytes;
-                    default:
-                        return data;
+                WriteBufferByteBased writeBuffer = new WriteBufferByteBased(DataItem.getLengthInBytes(plcValue, fieldDataType, plcValue.getLength()));
+                DataItem.staticSerialize(writeBuffer, plcValue, fieldDataType, plcValue.getLength(), ByteOrder.BIG_ENDIAN);
+                byte[] data = writeBuffer.getData();
+                if (((ModbusField) field).getDataType() == ModbusDataType.BOOL) {
+                    //Reverse Bits in each byte as
+                    //they should be ordered like this: 8 7 6 5 4 3 2 1 | 0 0 0 0 0 0 0 9
+                    byte[] bytes = new byte[data.length];
+                    for (int i = 0; i < data.length; i++) {
+                        bytes[i] = reverseBitsOfByte(data[i]);
+                    }
+                    return bytes;
                 }
+                return data;
             } else {
-                DataItem.staticSerialize(buffer,plcValue, fieldDataType, plcValue.getLength());
-                return buffer.getBytes();
+                WriteBufferByteBased writeBuffer = new WriteBufferByteBased(DataItem.getLengthInBytes(plcValue, fieldDataType, plcValue.getLength()));
+                DataItem.staticSerialize(writeBuffer, plcValue, fieldDataType, plcValue.getLength(), ByteOrder.BIG_ENDIAN);
+                return writeBuffer.getBytes();
             }
         } catch (SerializationException e) {
             throw new PlcRuntimeException("Unable to parse PlcValue :- " + e);

@@ -427,9 +427,9 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
             }
         }
         try {
-            final WriteBufferByteBased writeBuffer = new WriteBufferByteBased(stringLength, ByteOrder.LITTLE_ENDIAN);
-            DataItem.staticSerialize(writeBuffer,plcValue,
-                plcField.getAdsDataType().getDataFormatName(), stringLength);
+            WriteBufferByteBased writeBuffer = new WriteBufferByteBased(DataItem.getLengthInBytes(plcValue,
+                plcField.getAdsDataType().getDataFormatName(), stringLength));
+            DataItem.staticSerialize(writeBuffer, plcValue, plcField.getAdsDataType().getDataFormatName(), stringLength, ByteOrder.LITTLE_ENDIAN);
             AdsData adsData = new AdsWriteRequest(
                 directAdsField.getIndexGroup(), directAdsField.getIndexOffset(), writeBuffer.getBytes());
             AmsPacket amsPacket = new AmsPacket(configuration.getTargetAmsNetId(), configuration.getTargetAmsPort(),
@@ -486,9 +486,10 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                 }
             }
             try {
-                final WriteBufferByteBased itemWriteBuffer = new WriteBufferByteBased(stringLength, ByteOrder.LITTLE_ENDIAN);
-                DataItem.staticSerialize(itemWriteBuffer,plcValue,
-                    field.getAdsDataType().getDataFormatName(), stringLength);
+                WriteBufferByteBased itemWriteBuffer = new WriteBufferByteBased(DataItem.getLengthInBytes(plcValue,
+                    field.getAdsDataType().getDataFormatName(), stringLength));
+                DataItem.staticSerialize(itemWriteBuffer, plcValue,
+                    field.getAdsDataType().getDataFormatName(), stringLength, ByteOrder.LITTLE_ENDIAN);
                 int numBytes = itemWriteBuffer.getPos();
                 System.arraycopy(itemWriteBuffer.getBytes(), 0, writeBuffer, pos, numBytes);
                 pos += numBytes;
