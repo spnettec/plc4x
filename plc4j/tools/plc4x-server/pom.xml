@@ -18,18 +18,19 @@
   under the License.
   -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
     <groupId>org.apache.plc4x</groupId>
-    <artifactId>plc4j-drivers</artifactId>
+    <artifactId>plc4j-tools</artifactId>
     <version>0.10.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>plc4j-driver-plc4x</artifactId>
-      
-  <name>PLC4J: Driver: PLC4X (Proxy-Protocol)</name>
-  <description>Implementation of a PLC4X driver for the PLC4X protocol, which is used for relaying PLC4X requests from one system to another.</description>
+  <artifactId>plc4j-plc4x-server</artifactId>
+
+  <name>PLC4J: Tools: Plc4x Server</name>
+  <description>Server that can be used by drivers of the 'plc4x' protocol to relay requests which are then executed on this machine.</description>
 
   <build>
     <plugins>
@@ -53,61 +54,12 @@
         </executions>
       </plugin>
       <plugin>
-        <groupId>org.apache.karaf.tooling</groupId>
-        <artifactId>karaf-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>generate-feature-xml</id>
-            <phase>compile</phase>
-            <goals>
-              <!-- Generate the feature.xml -->
-              <goal>features-generate-descriptor</goal>
-              <!-- Check the feature.xml -->
-              <goal>verify</goal>
-            </goals>
-            <configuration>
-              <enableGeneration>true</enableGeneration>
-              <aggregateFeatures>true</aggregateFeatures>
-            </configuration>
-          </execution>
-          <execution>
-            <id>build-kar</id>
-            <phase>package</phase>
-            <goals>
-              <!--
-                Build a kar archive (Jar containing the feature.xml
-                as well as the module content and it's dependencies.
-              -->
-              <goal>kar</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <extensions>true</extensions>
-        <configuration>
-          <instructions>
-            <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
-            <Bundle-Activator>org.apache.plc4x.java.osgi.DriverActivator</Bundle-Activator>
-            <Export-Service>org.apache.plc4x.java.api.PlcDriver,org.apache.plc4x.java.plc4x.readwrite.Plc4xDriver
-            </Export-Service>
-            <Import-Package>
-              com.fasterxml.jackson.annotation;resolution:=optional,
-              *
-            </Import-Package>
-            <SPI-consumer>*</SPI-consumer>            
-          </instructions>
-        </configuration>
-      </plugin>
-      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
         <configuration>
-          <usedDependencies combine.children="append">
-            <usedDependency>org.apache.plc4x:plc4x-code-generation-language-java</usedDependency>
-            <usedDependency>org.apache.plc4x:plc4x-protocols-plc4x</usedDependency>
+          <usedDependencies>
+            <usedDependency>ch.qos.logback:logback-core</usedDependency>
+            <usedDependency>org.slf4j:log4j-over-slf4j</usedDependency>
           </usedDependencies>
         </configuration>
       </plugin>
@@ -115,6 +67,7 @@
   </build>
 
   <dependencies>
+    <!-- PLC4X dependencies -->
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-api</artifactId>
@@ -123,12 +76,6 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-spi</artifactId>
-      <version>0.10.0-SNAPSHOT</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-transport-tcp</artifactId>
       <version>0.10.0-SNAPSHOT</version>
     </dependency>
 
@@ -145,19 +92,19 @@
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
     </dependency>
-
     <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-utils-test-utils</artifactId>
-      <version>0.10.0-SNAPSHOT</version>
-      <scope>test</scope>
+      <groupId>org.slf4j</groupId>
+      <artifactId>log4j-over-slf4j</artifactId>
     </dependency>
-
     <dependency>
-      <groupId>org.skyscreamer</groupId>
-      <artifactId>jsonassert</artifactId>
-      <version>1.5.0</version>
-      <scope>test</scope>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-core</artifactId>
+      <scope>compile</scope>
     </dependency>
 
     <dependency>
@@ -174,14 +121,6 @@
       <version>0.10.0-SNAPSHOT</version>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4x-protocols-plc4x</artifactId>
-      <version>0.10.0-SNAPSHOT</version>
-      <classifier>tests</classifier>
-      <type>test-jar</type>
-      <scope>test</scope>
     </dependency>
   </dependencies>
 
