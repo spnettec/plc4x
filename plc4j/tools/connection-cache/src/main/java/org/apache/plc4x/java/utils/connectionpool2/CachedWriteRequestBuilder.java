@@ -16,21 +16,31 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.plc4x.java.plc4x;
+package org.apache.plc4x.java.utils.connectionpool2;
 
-import org.apache.plc4x.java.PlcDriverManager;
-import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
-import org.apache.plc4x.java.api.messages.PlcReadResponse;
+import org.apache.plc4x.java.api.messages.PlcWriteRequest;
+import org.apache.plc4x.java.api.model.PlcField;
 
-public class Plc4xClient {
+public class CachedWriteRequestBuilder implements PlcWriteRequest.Builder {
 
-    public static void main(String[] args) throws Exception {
-        try (final PlcConnection connection = new PlcDriverManager().getConnection("plc4x://localhost?remote-connection-string=simulated%3A%2F%2Flocalhost")) {
-            final PlcReadRequest readRequest = connection.readRequestBuilder().addItem("lalala", "RANDOM/foo:INT").build();
-            final PlcReadResponse readResponse = readRequest.execute().get();
-            System.out.println(readResponse);
-        }
+    private final CachedPlcConnection parent;
+    private final PlcWriteRequest.Builder builder;
+
+    public CachedWriteRequestBuilder(CachedPlcConnection parent, PlcWriteRequest.Builder builder) {
+        this.parent = parent;
+        this.builder = builder;
+    }
+
+    @Override
+    public PlcWriteRequest.Builder addItem(String name, String fieldQuery, Object... values) {
+        builder.addItem(name, fieldQuery, values);
+        return this;
+    }
+
+    @Override
+    public PlcWriteRequest build() {
+        return new CachedWriteRequest(parent, builder.build());
     }
 
 }
