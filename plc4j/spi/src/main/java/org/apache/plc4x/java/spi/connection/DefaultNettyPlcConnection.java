@@ -234,6 +234,14 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
 
                     }
                 });
+                pipeline.addLast(new ChannelInboundHandlerAdapter() {
+                         @Override
+                         public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws PlcConnectionException {
+                             logger.error("unknown error, close the connection", cause);
+                             close();
+                         }
+                     }
+                );
                 // Initialize via Transport Layer
                 channelFactory.initializePipeline(pipeline);
                 // Initialize Protocol Layer
