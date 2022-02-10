@@ -880,7 +880,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                 DataItem.staticSerialize(writeBuffer, plcValue.getIndex(i), field.getDataType().getDataProtocolId(), stringLength);
                 // Allocate enough space for all items.
                 if (byteBuffer == null) {
-                    byteBuffer = ByteBuffer.allocate(writeBuffer.getData().length * field.getNumberOfElements());
+                    byteBuffer = ByteBuffer.allocate(lengthInBits / 8 * field.getNumberOfElements());
                 }
                 byteBuffer.put(writeBuffer.getBytes());
             }
@@ -988,18 +988,35 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         int numElements = s7Field.getNumberOfElements();
         // For these date-types we have to convert the requests to simple byte-array requests
         // As otherwise the S7 will deny them with "Data type not supported" replies.
-        if((transportSize == TransportSize.TIME) /*|| (transportSize == TransportSize.S7_S5TIME)*/ ||
-            (transportSize == TransportSize.LTIME) || (transportSize == TransportSize.DATE) ||
-            (transportSize == TransportSize.TIME_OF_DAY) || (transportSize == TransportSize.DATE_AND_TIME)) {
+        if ((transportSize == TransportSize.TIME) /*|| (transportSize == TransportSize.S7_S5TIME)*/ ||
+            (transportSize == TransportSize.LINT) ||
+            (transportSize == TransportSize.ULINT) ||
+            (transportSize == TransportSize.LWORD) ||
+            (transportSize == TransportSize.LREAL) ||
+            (transportSize == TransportSize.REAL) ||
+            (transportSize == TransportSize.LTIME) ||
+            (transportSize == TransportSize.DATE) ||
+            (transportSize == TransportSize.TIME_OF_DAY) ||
+            (transportSize == TransportSize.DATE_AND_TIME)
+        ) {
             numElements = numElements * transportSize.getSizeInBytes();
+            //((S7Field) field).setDataType(transportSize);
             transportSize = TransportSize.BYTE;
         }
-        if(transportSize == TransportSize.STRING) {
-            transportSize = TransportSize.CHAR;
+        if (transportSize == TransportSize.CHAR) {
+            transportSize = TransportSize.BYTE;
+            numElements = numElements * transportSize.getSizeInBytes();
+        }
+        if (transportSize == TransportSize.WCHAR) {
+            transportSize = TransportSize.BYTE;
+            numElements = numElements * transportSize.getSizeInBytes() * 2;
+        }
+        if (transportSize == TransportSize.STRING) {
+            transportSize = TransportSize.BYTE;
             int stringLength = (s7Field instanceof S7StringField) ? ((S7StringField) s7Field).getStringLength() : 254;
             numElements = numElements * (stringLength + 2);
-        } else if(transportSize == TransportSize.WSTRING) {
-            transportSize = TransportSize.CHAR;
+        } else if (transportSize == TransportSize.WSTRING) {
+            transportSize = TransportSize.BYTE;
             int stringLength = (s7Field instanceof S7StringField) ? ((S7StringField) s7Field).getStringLength() : 254;
             numElements = numElements * (stringLength + 2) * 2;
         }
