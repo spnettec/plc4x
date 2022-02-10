@@ -33,7 +33,7 @@ public class DatatypesTest {
     public static void main(String[] args) throws Exception {
         PooledPlcDriverManager pooledPlcDriverManager = new PooledPlcDriverManager();
 
-        try (PlcConnection connection = pooledPlcDriverManager.getConnection("s7://10.150.60.91?remote-rack=0&remote-slot=1")) {
+        try (PlcConnection connection = pooledPlcDriverManager.getConnection("s7://10.166.11.20?remote-rack=0&remote-slot=1")) {
             final PlcReadRequest.Builder builder = connection.readRequestBuilder();
             builder.addItem("CTray01_BarDiameter","%DB4:242:REAL");
             builder.addItem("CTray01_Length","%DB4:246:REAL");
@@ -77,14 +77,14 @@ public class DatatypesTest {
 
 
 
-            //final PlcWriteRequest.Builder rbuilder = connection.writeRequestBuilder();
-            //rbuilder.addItem("PMS1302_Template", "%DB132:124:STRING(40)", "bbbb"); // true
+            final PlcWriteRequest.Builder rbuilder = connection.writeRequestBuilder();
+            rbuilder.addItem("PMS1302_Template", "%DB132:124:STRING(40)", "bbbb"); // true
 
-            //final PlcWriteRequest writeRequest = rbuilder.build();
+            final PlcWriteRequest writeRequest = rbuilder.build();
 
-            //final PlcWriteResponse writeResponse = writeRequest.execute().get();
+            final PlcWriteResponse writeResponse = writeRequest.execute().get();
 
-            //System.out.println(writeResponse);
+            System.out.println(writeResponse);
 
 
         }

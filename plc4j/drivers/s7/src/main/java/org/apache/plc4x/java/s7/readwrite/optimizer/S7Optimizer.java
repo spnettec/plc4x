@@ -69,7 +69,7 @@ public class S7Optimizer extends BaseOptimizer {
             int length = 1;
             if(field instanceof S7StringField)
             {
-                length = ((S7StringField)field).getStringLength() * 8;
+                length = (((S7StringField)field).getStringLength() +2) * 8;
             }
             int readResponseItemSize = 4 + (field.getNumberOfElements() * field.getDataType().getSizeInBytes() * length);
             // If it's an odd number of bytes, add one to make it even
@@ -89,8 +89,10 @@ public class S7Optimizer extends BaseOptimizer {
             // If they would exceed, start a new request.
             else {
                 // Create a new PlcReadRequest containing the current field item.
-                processedRequests.add(new DefaultPlcReadRequest(
-                    ((DefaultPlcReadRequest) readRequest).getReader(), curFields));
+                if(!curFields.isEmpty()) {
+                    processedRequests.add(new DefaultPlcReadRequest(
+                        ((DefaultPlcReadRequest) readRequest).getReader(), curFields));
+                }
 
                 // Reset the size and item lists.
                 curRequestSize = EMPTY_READ_REQUEST_SIZE + readRequestItemSize;
@@ -136,7 +138,12 @@ public class S7Optimizer extends BaseOptimizer {
             if (field.getDataType() == TransportSize.BOOL) {
                 writeRequestItemSize += Math.ceil((double) field.getNumberOfElements() / 8);
             } else {
-                writeRequestItemSize += (field.getNumberOfElements() * field.getDataType().getSizeInBytes());
+                int length = 1;
+                if(field instanceof S7StringField)
+                {
+                    length = (((S7StringField)field).getStringLength() + 2) * 8;
+                }
+                writeRequestItemSize += (field.getNumberOfElements() * field.getDataType().getSizeInBytes() * length);
             }
             // If it's an odd number of bytes, add one to make it even
             if (writeRequestItemSize % 2 == 1) {
@@ -156,8 +163,10 @@ public class S7Optimizer extends BaseOptimizer {
             // If adding them would exceed, start a new request.
             else {
                 // Create a new PlcWriteRequest containing the current field item.
-                processedRequests.add(new DefaultPlcWriteRequest(
-                    ((DefaultPlcWriteRequest) writeRequest).getWriter(), curFields));
+                if(!curFields.isEmpty()) {
+                    processedRequests.add(new DefaultPlcWriteRequest(
+                        ((DefaultPlcWriteRequest) writeRequest).getWriter(), curFields));
+                }
 
                 // Reset the size and item lists.
                 curRequestSize = EMPTY_WRITE_REQUEST_SIZE + writeRequestItemSize;
