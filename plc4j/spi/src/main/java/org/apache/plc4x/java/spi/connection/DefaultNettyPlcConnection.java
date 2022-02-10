@@ -48,7 +48,7 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
      * a {@link HashedWheelTimer} shall be only instantiated once.
      */
     // TODO: maybe find a way to make this configurable per jvm
-    protected final static Timer timer = new HashedWheelTimer();
+    //protected final static Timer timer = new HashedWheelTimer();
     protected final static long DEFAULT_DISCONNECT_WAIT_TIME = 10000L;
     private static final Logger logger = LoggerFactory.getLogger(DefaultNettyPlcConnection.class);
 

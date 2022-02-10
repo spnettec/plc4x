@@ -27,6 +27,7 @@ import org.apache.plc4x.java.s7.readwrite.context.S7DriverContext;
 import org.apache.plc4x.java.s7.readwrite.field.S7Field;
 import org.apache.plc4x.java.s7.readwrite.MemoryArea;
 import org.apache.plc4x.java.s7.readwrite.TransportSize;
+import org.apache.plc4x.java.s7.readwrite.field.S7StringField;
 import org.apache.plc4x.java.spi.context.DriverContext;
 import org.apache.plc4x.java.spi.messages.DefaultPlcReadRequest;
 import org.apache.plc4x.java.spi.messages.DefaultPlcWriteRequest;
@@ -65,7 +66,12 @@ public class S7Optimizer extends BaseOptimizer {
             S7Field field = (S7Field) readRequest.getField(fieldName);
 
             int readRequestItemSize = S7_ADDRESS_ANY_SIZE;
-            int readResponseItemSize = 4 + (field.getNumberOfElements() * field.getDataType().getSizeInBytes());
+            int length = 1;
+            if(field instanceof S7StringField)
+            {
+                length = ((S7StringField)field).getStringLength() * 8;
+            }
+            int readResponseItemSize = 4 + (field.getNumberOfElements() * field.getDataType().getSizeInBytes() * length);
             // If it's an odd number of bytes, add one to make it even
             if (readResponseItemSize % 2 == 1) {
                 readResponseItemSize++;

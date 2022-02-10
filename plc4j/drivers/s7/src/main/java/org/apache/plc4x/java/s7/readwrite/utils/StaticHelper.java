@@ -35,8 +35,16 @@ import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.ReadBuffer;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
+import org.apache.plc4x.java.spi.values.PlcList;
+import org.apache.plc4x.java.spi.values.PlcWCHAR;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.UnsupportedEncodingException;
+import java.nio.ByteBuffer;
+import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
+import java.nio.charset.CharsetDecoder;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.LocalDate;
@@ -126,6 +134,72 @@ import java.util.regex.Pattern;
  */
 
 public class StaticHelper {
+    private static final String[] DEFAULTCHARSETS = {"ASCII", "UTF-8", "GBK", "GB2312", "BIG5", "GB18030"};
+
+    public static Charset detectCharset(byte[] bytes) {
+
+        Charset charset = null;
+
+        for (String charsetName : DEFAULTCHARSETS) {
+            charset = detectCharset(bytes, Charset.forName(charsetName), 0, bytes.length);
+            if (charset != null) {
+                break;
+            }
+        }
+
+        return charset;
+    }
+
+    private static Charset detectCharset(byte[] bytes, Charset charset, int offset, int length) {
+        try {
+            BufferedInputStream input = new BufferedInputStream(new ByteArrayInputStream(bytes, offset, length));
+
+            CharsetDecoder decoder = charset.newDecoder();
+            decoder.reset();
+
+            byte[] buffer = new byte[512];
+            boolean identified = false;
+            while (input.read(buffer) != -1 && !identified) {
+                identified = identify(buffer, decoder);
+            }
+
+            input.close();
+
+            if (identified) {
+                return charset;
+            } else {
+                return null;
+            }
+
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private static boolean identify(byte[] bytes, CharsetDecoder decoder) {
+        try {
+            decoder.decode(ByteBuffer.wrap(bytes));
+        } catch (CharacterCodingException e) {
+            return false;
+        }
+        return true;
+    }
+
+    public static Charset getEncoding(String str) {
+        if (str == null || str.trim().length() < 1) {
+            return null;
+        }
+        for (String encode : DEFAULTCHARSETS) {
+            try {
+                Charset charset = Charset.forName(encode);
+                if (str.equals(new String(str.getBytes(charset), charset))) {
+                    return charset;
+                }
+            } catch (Exception er) {
+            }
+        }
+        return null;
+    }
 
     public enum OB {
         FREE_CYC(0X0000, "OB1 Free cycle"),
@@ -1947,7 +2021,7 @@ public class StaticHelper {
                 short maxLength = io.readUnsignedShort(8);
                 // This is the total length of the string on the PLC (Not necessarily the number of characters read)
                 short totalStringLength = io.readUnsignedShort(8);
-
+                totalStringLength = (short) Math.min(maxLength, totalStringLength);
                 final byte[] byteArray = new byte[totalStringLength];
                 for (int i = 0; (i < stringLength) && io.hasMore(8); i++) {
                     final byte curByte = io.readByte();
@@ -1962,13 +2036,19 @@ public class StaticHelper {
                         break;
                     }
                 }
-                return new String(byteArray, StandardCharsets.UTF_8);
+                Charset charset = detectCharset(byteArray);
+                if (charset == null) {
+                    charset = StandardCharsets.US_ASCII;
+                }
+                String substr = new String(byteArray, charset);
+                substr = substr.replaceAll("[^\u0020-\u9FA5]", "");
+                return substr;
             } else if ("UTF-16".equalsIgnoreCase(encoding)) {
                 // This is the maximum number of bytes a string can be long.
                 int maxLength = io.readUnsignedInt(16);
                 // This is the total length of the string on the PLC (Not necessarily the number of characters read)
                 int totalStringLength = io.readUnsignedInt(16);
-
+                totalStringLength = Math.min(maxLength, totalStringLength);
                 final byte[] byteArray = new byte[totalStringLength * 2];
                 for (int i = 0; (i < stringLength) && io.hasMore(16); i++) {
                     final short curShort = io.readShort(16);
@@ -1997,11 +2077,28 @@ public class StaticHelper {
      * A variable of data type CHAR (character) occupies one byte.
      */
     public static void serializeS7Char(WriteBuffer io, PlcValue value, String encoding) {
-        // TODO: Need to implement the serialization or we can't write strings
+        if (value instanceof PlcList) {
+            PlcList list = (PlcList) value;
+            list.getList().forEach(v -> writeChar(io, v, encoding));
+        } else {
+            writeChar(io, value, encoding);
+        }
+    }
+    private static void writeChar(WriteBuffer io, PlcValue value, String encoding) {
         if ("UTF-8".equalsIgnoreCase(encoding)) {
-            //return io.readString(8, encoding);
+            try {
+                byte valueByte = value.getByte();
+                io.writeByte(valueByte);
+            } catch (SerializationException e) {
+                throw new PlcRuntimeException("writeChar error");
+            }
         } else if ("UTF-16".equalsIgnoreCase(encoding)) {
-            //return io.readString(16, encoding);
+            try {
+                byte[] bytes = ((PlcWCHAR) value).getBytes();
+                io.writeByteArray(bytes);
+            } catch (SerializationException e) {
+                throw new PlcRuntimeException("writeWChar error");
+            }
         } else {
             throw new PlcRuntimeException("Unsupported encoding");
         }
@@ -2032,22 +2129,37 @@ public class StaticHelper {
      * the String as char arrays from your application.
      */
     public static void serializeS7String(WriteBuffer io, PlcValue value, int stringLength, String encoding) {
-        byte k = (byte) ((stringLength > 250) ? 250 : stringLength);
-        byte m = (byte) value.getString().length();
-        m = (m > k) ? k : m;
-        byte[] chars = new byte[m];
-        for (int i = 0; i < m; ++i) {
-            char c = value.getString().charAt(i);
-            chars[i] = (byte) c;
+        String valueString = (String) value.getObject();
+        if ("UTF-8".equalsIgnoreCase(encoding)) {
+            valueString = valueString == null ? "" : valueString;
+            Charset charsetTemp = getEncoding(valueString);
+            if (charsetTemp == null) {
+                charsetTemp = StandardCharsets.UTF_8;
+            }
+            final byte[] raw = valueString.getBytes(charsetTemp);
+            try {
+                io.writeByte((byte) stringLength);
+                io.writeByte((byte) raw.length);
+                io.writeByteArray(raw);
+            }
+            catch (SerializationException ex) {
+                Logger.getLogger(StaticHelper.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else if ("UTF-16".equalsIgnoreCase(encoding)) {
+            try {
+                io.writeUnsignedInt(16, stringLength);
+                byte[] bytes = valueString.getBytes(StandardCharsets.UTF_16);
+                io.writeUnsignedInt(16, bytes.length / 2);
+
+                io.writeString(stringLength * 16, encoding, valueString);
+            }
+            catch (SerializationException ex) {
+                Logger.getLogger(StaticHelper.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else {
+            throw new PlcRuntimeException("Unsupported string encoding " + encoding);
         }
 
-        try {
-            io.writeByte(k);
-            io.writeByte(m);
-            io.writeByteArray(chars);
-        } catch (SerializationException ex) {
-            Logger.getLogger(StaticHelper.class.getName()).log(Level.SEVERE, null, ex);
-        }
     }
 
 }

@@ -48,7 +48,7 @@ public abstract class GeneratedDriverByteToMessageCodec<T extends Message> exten
         try {
             WriteBufferByteBased buffer = new WriteBufferByteBased(packet.getLengthInBytes(), byteOrder);
             packet.serialize(buffer);
-            byteBuf.writeBytes(buffer.getData());
+            byteBuf.writeBytes(buffer.getBytes());
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("Sending bytes to PLC for message {} as data {}", packet, Hex.encodeHexString(buffer.getData()));
             }

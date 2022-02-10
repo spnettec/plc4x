@@ -33,14 +33,59 @@ public class DatatypesTest {
     public static void main(String[] args) throws Exception {
         PooledPlcDriverManager pooledPlcDriverManager = new PooledPlcDriverManager();
 
-        try (PlcConnection connection = pooledPlcDriverManager.getConnection("s7://10.110.20.60?controller-type=S7_300&remote-group=2")) {
+        try (PlcConnection connection = pooledPlcDriverManager.getConnection("s7://10.150.60.91?remote-rack=0&remote-slot=1")) {
             final PlcReadRequest.Builder builder = connection.readRequestBuilder();
-            builder.addItem("bool-value-1", "%DB10.DBD150:REAL"); // true
+            builder.addItem("CTray01_BarDiameter","%DB4:242:REAL");
+            builder.addItem("CTray01_Length","%DB4:246:REAL");
+            builder.addItem("CTray01_Status","%DB4:250:REAL");
+            builder.addItem("CTray01_StickName","%DB4:200:STRING(40)");
+            builder.addItem("CTray02_BarDiameter","%DB4:342:REAL");
+            builder.addItem("CTray02_Length","%DB4:346:REAL");
+            builder.addItem("CTray02_Status","%DB4:350:REAL");
+            builder.addItem("CTray02_StickName","%DB4:300:STRING(40)");
+            builder.addItem("MTray01_BarDiameter","%DB4:42:REAL");
+            builder.addItem("MTray01_Length","%DB4:46:REAL");
+            builder.addItem("MTray01_Status","%DB4:50:REAL");
+            builder.addItem("MTray01_StickName","%DB4:0:STRING(40)");
+            builder.addItem("MTray02_BarDiameter","%DB4:142:REAL");
+            builder.addItem("MTray02_Length","%DB4:146:REAL");
+            builder.addItem("MTray02_Status","%DB4:150:REAL");
+            builder.addItem("MTray02_StickName","%DB4:100:STRING(40)");
+            builder.addItem("PMS1301_(P|G)EndPoint","%DB131:54:INT");
+            builder.addItem("PMS1301_BarDiameter","%DB131:56:REAL");
+            builder.addItem("PMS1301_JobNum","%DB131:60:STRING(20)");
+            builder.addItem("PMS1301_MeasurePoint","%DB131:166:STRING(200)");
+            builder.addItem("PMS1301_StickName","%DB131:82:STRING(40)");
+            builder.addItem("PMS1301_Template","%DB131:124:STRING(40)");
+            builder.addItem("PMS1302_(P|G)EndPoint","%DB132:54:INT");
+            builder.addItem("PMS1302_BarDiameter","%DB132:56:REAL");
+            builder.addItem("PMS1302_JobNum","%DB132:60:STRING(20)");
+            builder.addItem("PMS1302_StickName","%DB132:82:STRING(40)");
+            builder.addItem("PMS1302_Template","%DB132:124:STRING(40)");
+            builder.addItem("PMS1302_MeasurePoint","%DB132:166:STRING(200)");
+
+
+
+
 
             final PlcReadRequest readRequest = builder.build();
             final PlcReadResponse readResponse = readRequest.execute().get();
-            Object o = readResponse.getObject("bool-value-1");
-            System.out.println(o);
+            // Object o = readResponse.getObject("bool-value-1");
+            System.out.println(readResponse.getAsPlcValue());
+
+
+
+
+
+            //final PlcWriteRequest.Builder rbuilder = connection.writeRequestBuilder();
+            //rbuilder.addItem("PMS1302_Template", "%DB132:124:STRING(40)", "bbbb"); // true
+
+            //final PlcWriteRequest writeRequest = rbuilder.build();
+
+            //final PlcWriteResponse writeResponse = writeRequest.execute().get();
+
+            //System.out.println(writeResponse);
+
 
         }
     }

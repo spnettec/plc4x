@@ -871,9 +871,9 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                 DataItem.staticSerialize(writeBuffer, plcValue.getIndex(i), field.getDataType().getDataProtocolId(), stringLength);
                 // Allocate enough space for all items.
                 if(byteBuffer == null) {
-                    byteBuffer = ByteBuffer.allocate(writeBuffer.getData().length * field.getNumberOfElements());
+                    byteBuffer = ByteBuffer.allocate(lengthInBits / 8 * field.getNumberOfElements());
                 }
-                byteBuffer.put(writeBuffer.getData());
+                byteBuffer.put(writeBuffer.getBytes());
             }
             if(byteBuffer != null) {
                 byte[] data = byteBuffer.array();
