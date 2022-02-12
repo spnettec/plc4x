@@ -915,8 +915,14 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
             .unwrap(AdsReadWriteResponse.class::cast)
             .handle(responseAdsData -> {
                 if (responseAdsData.getResult() != ReturnCode.OK) {
-                    future.completeExceptionally(new PlcException("Couldn't retrieve handle for symbolic field " +
-                        symbolicAdsField.getSymbolicAddress() + " got return code " + responseAdsData.getResult().name()));
+                    if (responseAdsData.getResult() == null)
+                    {
+                        future.completeExceptionally(new PlcException("Couldn't retrieve handle for symbolic field " +
+                            symbolicAdsField.getSymbolicAddress()));
+                    } else {
+                        future.completeExceptionally(new PlcException("Couldn't retrieve handle for symbolic field " +
+                            symbolicAdsField.getSymbolicAddress() + ", got return code " +  responseAdsData.getResult().name()));
+                    }
                 } else {
                     ReadBuffer readBuffer = new ReadBufferByteBased(responseAdsData.getData(), ByteOrder.LITTLE_ENDIAN);
                     try {
