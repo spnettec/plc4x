@@ -68,14 +68,13 @@ public class ManualAdsDriverTest extends ManualTest {
     }
 
     public static void main(String[] args) throws Exception {
-        String ip = "10.211.55.4";
+        String ip = "127.0.0.1";
 
         String sourceAmsNetId = "10.211.55.4.1.1";
         int sourceAmsPort = 65534;
         String targetAmsNetId = "5.81.202.72.1.1";
         int targetAmsPort = 851;
         String connectionString = String.format("ads:tcp://%s?sourceAmsNetId=%s&sourceAmsPort=%d&targetAmsNetId=%s&targetAmsPort=%d", ip, sourceAmsNetId, sourceAmsPort, targetAmsNetId, targetAmsPort);
-        connectionString += "&ssh=true&username=heyoulin&password=h20010509&forwardHost=10.80.41.18";
         ManualAdsDriverTest test = new ManualAdsDriverTest(connectionString);
         test.addTestCase("GVLMES.sNewDrumID:STRING(20)", "");
         test.addTestCase("GVLMES.sDrumID:STRING(20)", "");
