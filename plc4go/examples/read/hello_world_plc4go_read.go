@@ -28,10 +28,16 @@ import (
 
 func main() {
 	driverManager := plc4go.NewPlcDriverManager()
-	drivers.RegisterModbusDriver(driverManager)
+	drivers.RegisterAdsDriver(driverManager)
+	var ip = "127.0.0.1"
 
+	var sourceAmsNetId = "10.80.41.10.1.1"
+	var sourceAmsPort = 65534
+	var targetAmsNetId = "5.81.202.72.1.1"
+	var targetAmsPort = 851
+	var connectionString = fmt.Sprintf("ads:tcp://%s?sourceAmsNetId=%s&sourceAmsPort=%d&targetAmsNetId=%s&targetAmsPort=%d", ip, sourceAmsNetId, sourceAmsPort, targetAmsNetId, targetAmsPort)
 	// Get a connection to a remote PLC
-	crc := driverManager.GetConnection("modbus:tcp://192.168.23.30")
+	crc := driverManager.GetConnection(connectionString)
 
 	// Wait for the driver to connect (or not)
 	connectionResult := <-crc
@@ -45,8 +51,8 @@ func main() {
 	defer connection.BlockingClose()
 
 	// Prepare a read-request
-	readRequest, err := connection.ReadRequestBuilder().
-		AddQuery("field", "holding-register:26:REAL").
+	readRequest, err := connection.WriteRequestBuilder().
+		AddQuery("field", "GVLMES.sNewDrumID:STRING(20)", "aaaaa").
 		Build()
 	if err != nil {
 		fmt.Printf("error preparing read-request: %s", connectionResult.GetErr().Error())
@@ -69,6 +75,6 @@ func main() {
 		return
 	}
 
-	value := rrr.GetResponse().GetValue("field")
-	fmt.Printf("Got result %f", value.GetFloat32())
+	//value := rrr.GetResponse().GetValue("field")
+	//fmt.Printf("Got result %s", value.GetString())
 }

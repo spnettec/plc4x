@@ -2130,22 +2130,28 @@ public class StaticHelper {
      */
     public static void serializeS7String(WriteBuffer io, PlcValue value, int stringLength, String encoding) {
         String valueString = (String) value.getObject();
+        valueString = valueString == null ? "" : valueString;
+        Charset charsetTemp = getEncoding(valueString);
         if ("UTF-8".equalsIgnoreCase(encoding)) {
-            valueString = valueString == null ? "" : valueString;
-            Charset charsetTemp = getEncoding(valueString);
             if (charsetTemp == null) {
                 charsetTemp = StandardCharsets.UTF_8;
             }
             final byte[] raw = valueString.getBytes(charsetTemp);
+            valueString = new String(raw,StandardCharsets.UTF_8);
             try {
                 io.writeByte((byte) stringLength);
                 io.writeByte((byte) raw.length);
-                io.writeByteArray(raw);
+                io.writeString(stringLength * 8, encoding, valueString);
             }
             catch (SerializationException ex) {
                 Logger.getLogger(StaticHelper.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else if ("UTF-16".equalsIgnoreCase(encoding)) {
+            if (charsetTemp == null) {
+                charsetTemp = StandardCharsets.UTF_16;
+            }
+            final byte[] raw = valueString.getBytes(charsetTemp);
+            valueString = new String(raw,StandardCharsets.UTF_16);
             try {
                 io.writeUnsignedInt(16, stringLength);
                 byte[] bytes = valueString.getBytes(StandardCharsets.UTF_16);

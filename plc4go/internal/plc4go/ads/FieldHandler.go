@@ -56,7 +56,7 @@ func NewFieldHandler() FieldHandler {
 	return FieldHandler{
 		directAdsStringField:   regexp.MustCompile(`^((0[xX](?P<indexGroupHex>[0-9a-fA-F]+))|(?P<indexGroup>\d+))/((0[xX](?P<indexOffsetHex>[0-9a-fA-F]+))|(?P<indexOffset>\d+)):(?P<adsDataType>STRING|WSTRING)\((?P<stringLength>\d{1,3})\)(\[(?P<numberOfElements>\d+)])?`),
 		directAdsField:         regexp.MustCompile(`^((0[xX](?P<indexGroupHex>[0-9a-fA-F]+))|(?P<indexGroup>\d+))/((0[xX](?P<indexOffsetHex>[0-9a-fA-F]+))|(?P<indexOffset>\d+)):(?P<adsDataType>\w+)(\[(?P<numberOfElements>\d+)])?`),
-		symbolicAdsStringField: regexp.MustCompile(`^(?P<symbolicAddress>.+):(?P<adsDataType>'STRING'|'WSTRING')\((?P<stringLength>\d{1,3})\)(\[(?P<numberOfElements>\d+)])?`),
+		symbolicAdsStringField: regexp.MustCompile(`^(?P<symbolicAddress>.+):(?P<adsDataType>STRING|WSTRING)\((?P<stringLength>\d{1,3})\)(\[(?P<numberOfElements>\d+)])?`),
 		symbolicAdsField:       regexp.MustCompile(`^(?P<symbolicAddress>.+):(?P<adsDataType>\w+)(\[(?P<numberOfElements>\d+)])?`),
 	}
 }
@@ -146,7 +146,8 @@ func (m FieldHandler) ParseQuery(query string) (apiModel.PlcField, error) {
 		}
 		numberOfElements, err := strconv.ParseUint(match["numberOfElements"], 10, 32)
 		if err != nil {
-			return nil, errors.Wrap(err, "Error decoding number of elements")
+			log.Trace().Msg("Falling back to number of elements 1")
+			numberOfElements = 1
 		}
 		return newAdsSymbolicPlcField(match["symbolicAddress"], model2.AdsDataTypeByName(match["adsDataType"]), int32(stringLength), uint32(numberOfElements))
 	} else if match := utils.GetSubgroupMatches(m.symbolicAdsField, query); match != nil {

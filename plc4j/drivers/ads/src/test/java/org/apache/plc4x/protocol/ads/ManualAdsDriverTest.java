@@ -18,6 +18,12 @@
  */
 package org.apache.plc4x.protocol.ads;
 
+import org.apache.plc4x.java.PlcDriverManager;
+import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.api.messages.PlcReadRequest;
+import org.apache.plc4x.java.api.messages.PlcReadResponse;
+import org.apache.plc4x.java.api.messages.PlcWriteRequest;
+import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.test.manual.ManualTest;
 
 import java.util.Arrays;
@@ -70,15 +76,31 @@ public class ManualAdsDriverTest extends ManualTest {
     public static void main(String[] args) throws Exception {
         String ip = "127.0.0.1";
 
-        String sourceAmsNetId = "10.211.55.4.1.1";
+        String sourceAmsNetId = "10.80.41.10.1.1";
         int sourceAmsPort = 65534;
         String targetAmsNetId = "5.81.202.72.1.1";
         int targetAmsPort = 851;
         String connectionString = String.format("ads:tcp://%s?sourceAmsNetId=%s&sourceAmsPort=%d&targetAmsNetId=%s&targetAmsPort=%d", ip, sourceAmsNetId, sourceAmsPort, targetAmsNetId, targetAmsPort);
-        ManualAdsDriverTest test = new ManualAdsDriverTest(connectionString);
-        test.addTestCase("GVLMES.sNewDrumID:STRING(20)", "");
-        test.addTestCase("GVLMES.sDrumID:STRING(20)", "");
-        test.run();
+        try (PlcConnection plcConnection = new PlcDriverManager().getConnection(connectionString)) {
+
+            final PlcReadRequest.Builder builder = plcConnection.readRequestBuilder();
+            builder.addItem("errorMsg","GVLMES.sErrorMessage:STRING(20)");
+           // builder.addItem("sDrumID","GVLMES.sDrumID:STRING(20)");
+            final PlcReadRequest readRequest = builder.build();
+            final PlcReadResponse readResponse = readRequest.execute().get();
+            System.out.println(readResponse.getAsPlcValue());
+
+
+            final PlcWriteRequest.Builder rbuilder = plcConnection.writeRequestBuilder();
+            rbuilder.addItem("errorMsg", "GVLMES.sErrorMessage:STRING(20)", "啊啊啊啊");
+
+            final PlcWriteRequest writeRequest = rbuilder.build();
+
+            final PlcWriteResponse writeResponse = writeRequest.execute().get();
+
+            System.out.println(writeResponse);
+        }
+
     }
 
 }
