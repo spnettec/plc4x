@@ -38,8 +38,21 @@ type BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification struct {
 
 // The corresponding interface
 type IBACnetUnconfirmedServiceRequestUnconfirmedCOVNotification interface {
+	// GetSubscriberProcessIdentifier returns SubscriberProcessIdentifier
+	GetSubscriberProcessIdentifier() *BACnetContextTagUnsignedInteger
+	// GetMonitoredDeviceIdentifier returns MonitoredDeviceIdentifier
+	GetMonitoredDeviceIdentifier() *BACnetContextTagObjectIdentifier
+	// GetMonitoredObjectIdentifier returns MonitoredObjectIdentifier
+	GetMonitoredObjectIdentifier() *BACnetContextTagObjectIdentifier
+	// GetLifetimeInSeconds returns LifetimeInSeconds
+	GetLifetimeInSeconds() *BACnetContextTagUnsignedInteger
+	// GetListOfValues returns ListOfValues
+	GetListOfValues() *BACnetPropertyValues
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -50,8 +63,39 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) ServiceChoic
 	return 0x02
 }
 
+func (m *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) GetServiceChoice() uint8 {
+	return 0x02
+}
+
 func (m *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) InitializeParent(parent *BACnetUnconfirmedServiceRequest) {
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) GetSubscriberProcessIdentifier() *BACnetContextTagUnsignedInteger {
+	return m.SubscriberProcessIdentifier
+}
+
+func (m *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) GetMonitoredDeviceIdentifier() *BACnetContextTagObjectIdentifier {
+	return m.MonitoredDeviceIdentifier
+}
+
+func (m *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) GetMonitoredObjectIdentifier() *BACnetContextTagObjectIdentifier {
+	return m.MonitoredObjectIdentifier
+}
+
+func (m *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) GetLifetimeInSeconds() *BACnetContextTagUnsignedInteger {
+	return m.LifetimeInSeconds
+}
+
+func (m *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) GetListOfValues() *BACnetPropertyValues {
+	return m.ListOfValues
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewBACnetUnconfirmedServiceRequestUnconfirmedCOVNotification(subscriberProcessIdentifier *BACnetContextTagUnsignedInteger, monitoredDeviceIdentifier *BACnetContextTagObjectIdentifier, monitoredObjectIdentifier *BACnetContextTagObjectIdentifier, lifetimeInSeconds *BACnetContextTagUnsignedInteger, listOfValues *BACnetPropertyValues) *BACnetUnconfirmedServiceRequest {
 	child := &BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification{
@@ -127,7 +171,7 @@ func BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationParse(readBuffer u
 	if pullErr := readBuffer.PullContext("subscriberProcessIdentifier"); pullErr != nil {
 		return nil, pullErr
 	}
-	_subscriberProcessIdentifier, _subscriberProcessIdentifierErr := BACnetContextTagParse(readBuffer, uint8(0), BACnetDataType_UNSIGNED_INTEGER)
+	_subscriberProcessIdentifier, _subscriberProcessIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType_UNSIGNED_INTEGER)
 	if _subscriberProcessIdentifierErr != nil {
 		return nil, errors.Wrap(_subscriberProcessIdentifierErr, "Error parsing 'subscriberProcessIdentifier' field")
 	}
@@ -140,7 +184,7 @@ func BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationParse(readBuffer u
 	if pullErr := readBuffer.PullContext("monitoredDeviceIdentifier"); pullErr != nil {
 		return nil, pullErr
 	}
-	_monitoredDeviceIdentifier, _monitoredDeviceIdentifierErr := BACnetContextTagParse(readBuffer, uint8(1), BACnetDataType_BACNET_OBJECT_IDENTIFIER)
+	_monitoredDeviceIdentifier, _monitoredDeviceIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType_BACNET_OBJECT_IDENTIFIER)
 	if _monitoredDeviceIdentifierErr != nil {
 		return nil, errors.Wrap(_monitoredDeviceIdentifierErr, "Error parsing 'monitoredDeviceIdentifier' field")
 	}
@@ -153,7 +197,7 @@ func BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationParse(readBuffer u
 	if pullErr := readBuffer.PullContext("monitoredObjectIdentifier"); pullErr != nil {
 		return nil, pullErr
 	}
-	_monitoredObjectIdentifier, _monitoredObjectIdentifierErr := BACnetContextTagParse(readBuffer, uint8(2), BACnetDataType_BACNET_OBJECT_IDENTIFIER)
+	_monitoredObjectIdentifier, _monitoredObjectIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(2)), BACnetDataType_BACNET_OBJECT_IDENTIFIER)
 	if _monitoredObjectIdentifierErr != nil {
 		return nil, errors.Wrap(_monitoredObjectIdentifierErr, "Error parsing 'monitoredObjectIdentifier' field")
 	}
@@ -166,7 +210,7 @@ func BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationParse(readBuffer u
 	if pullErr := readBuffer.PullContext("lifetimeInSeconds"); pullErr != nil {
 		return nil, pullErr
 	}
-	_lifetimeInSeconds, _lifetimeInSecondsErr := BACnetContextTagParse(readBuffer, uint8(3), BACnetDataType_UNSIGNED_INTEGER)
+	_lifetimeInSeconds, _lifetimeInSecondsErr := BACnetContextTagParse(readBuffer, uint8(uint8(3)), BACnetDataType_UNSIGNED_INTEGER)
 	if _lifetimeInSecondsErr != nil {
 		return nil, errors.Wrap(_lifetimeInSecondsErr, "Error parsing 'lifetimeInSeconds' field")
 	}
@@ -179,7 +223,7 @@ func BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationParse(readBuffer u
 	if pullErr := readBuffer.PullContext("listOfValues"); pullErr != nil {
 		return nil, pullErr
 	}
-	_listOfValues, _listOfValuesErr := BACnetPropertyValuesParse(readBuffer, uint8(4), monitoredObjectIdentifier.ObjectType)
+	_listOfValues, _listOfValuesErr := BACnetPropertyValuesParse(readBuffer, uint8(uint8(4)), monitoredObjectIdentifier.ObjectType)
 	if _listOfValuesErr != nil {
 		return nil, errors.Wrap(_listOfValuesErr, "Error parsing 'listOfValues' field")
 	}

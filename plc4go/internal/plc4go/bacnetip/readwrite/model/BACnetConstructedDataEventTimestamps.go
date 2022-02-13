@@ -36,8 +36,17 @@ type BACnetConstructedDataEventTimestamps struct {
 
 // The corresponding interface
 type IBACnetConstructedDataEventTimestamps interface {
+	// GetToOffnormal returns ToOffnormal
+	GetToOffnormal() *BACnetContextTagTime
+	// GetToFault returns ToFault
+	GetToFault() *BACnetContextTagUnsignedInteger
+	// GetToNormal returns ToNormal
+	GetToNormal() *BACnetDateTime
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -48,7 +57,15 @@ func (m *BACnetConstructedDataEventTimestamps) ObjectType() BACnetObjectType {
 	return 0
 }
 
+func (m *BACnetConstructedDataEventTimestamps) GetObjectType() BACnetObjectType {
+	return 0
+}
+
 func (m *BACnetConstructedDataEventTimestamps) PropertyIdentifierEnum() BACnetPropertyIdentifier {
+	return BACnetPropertyIdentifier_EVENT_TIME_STAMPS
+}
+
+func (m *BACnetConstructedDataEventTimestamps) GetPropertyIdentifierEnum() BACnetPropertyIdentifier {
 	return BACnetPropertyIdentifier_EVENT_TIME_STAMPS
 }
 
@@ -57,6 +74,25 @@ func (m *BACnetConstructedDataEventTimestamps) InitializeParent(parent *BACnetCo
 	m.BACnetConstructedData.ClosingTag = closingTag
 	m.BACnetConstructedData.PropertyIdentifierEnum = propertyIdentifierEnum
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetConstructedDataEventTimestamps) GetToOffnormal() *BACnetContextTagTime {
+	return m.ToOffnormal
+}
+
+func (m *BACnetConstructedDataEventTimestamps) GetToFault() *BACnetContextTagUnsignedInteger {
+	return m.ToFault
+}
+
+func (m *BACnetConstructedDataEventTimestamps) GetToNormal() *BACnetDateTime {
+	return m.ToNormal
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewBACnetConstructedDataEventTimestamps(toOffnormal *BACnetContextTagTime, toFault *BACnetContextTagUnsignedInteger, toNormal *BACnetDateTime, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, propertyIdentifierEnum BACnetPropertyIdentifier) *BACnetConstructedData {
 	child := &BACnetConstructedDataEventTimestamps{
@@ -124,7 +160,7 @@ func BACnetConstructedDataEventTimestampsParse(readBuffer utils.ReadBuffer, tagN
 	if pullErr := readBuffer.PullContext("toOffnormal"); pullErr != nil {
 		return nil, pullErr
 	}
-	_toOffnormal, _toOffnormalErr := BACnetContextTagParse(readBuffer, uint8(0), BACnetDataType_TIME)
+	_toOffnormal, _toOffnormalErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType_TIME)
 	if _toOffnormalErr != nil {
 		return nil, errors.Wrap(_toOffnormalErr, "Error parsing 'toOffnormal' field")
 	}
@@ -137,7 +173,7 @@ func BACnetConstructedDataEventTimestampsParse(readBuffer utils.ReadBuffer, tagN
 	if pullErr := readBuffer.PullContext("toFault"); pullErr != nil {
 		return nil, pullErr
 	}
-	_toFault, _toFaultErr := BACnetContextTagParse(readBuffer, uint8(1), BACnetDataType_UNSIGNED_INTEGER)
+	_toFault, _toFaultErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType_UNSIGNED_INTEGER)
 	if _toFaultErr != nil {
 		return nil, errors.Wrap(_toFaultErr, "Error parsing 'toFault' field")
 	}
@@ -150,7 +186,7 @@ func BACnetConstructedDataEventTimestampsParse(readBuffer utils.ReadBuffer, tagN
 	if pullErr := readBuffer.PullContext("toNormal"); pullErr != nil {
 		return nil, pullErr
 	}
-	_toNormal, _toNormalErr := BACnetDateTimeParse(readBuffer, uint8(2))
+	_toNormal, _toNormalErr := BACnetDateTimeParse(readBuffer, uint8(uint8(2)))
 	if _toNormalErr != nil {
 		return nil, errors.Wrap(_toNormalErr, "Error parsing 'toNormal' field")
 	}

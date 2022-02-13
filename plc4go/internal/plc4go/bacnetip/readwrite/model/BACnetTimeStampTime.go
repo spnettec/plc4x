@@ -34,8 +34,13 @@ type BACnetTimeStampTime struct {
 
 // The corresponding interface
 type IBACnetTimeStampTime interface {
+	// GetTimeValue returns TimeValue
+	GetTimeValue() *BACnetContextTagTime
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -46,12 +51,27 @@ func (m *BACnetTimeStampTime) PeekedTagNumber() uint8 {
 	return uint8(0)
 }
 
+func (m *BACnetTimeStampTime) GetPeekedTagNumber() uint8 {
+	return uint8(0)
+}
+
 func (m *BACnetTimeStampTime) InitializeParent(parent *BACnetTimeStamp, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, peekedTagNumber uint8) {
 	m.BACnetTimeStamp.OpeningTag = openingTag
 	m.BACnetTimeStamp.PeekedTagHeader = peekedTagHeader
 	m.BACnetTimeStamp.ClosingTag = closingTag
 	m.BACnetTimeStamp.PeekedTagNumber = peekedTagNumber
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetTimeStampTime) GetTimeValue() *BACnetContextTagTime {
+	return m.TimeValue
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewBACnetTimeStampTime(timeValue *BACnetContextTagTime, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, peekedTagNumber uint8) *BACnetTimeStamp {
 	child := &BACnetTimeStampTime{
@@ -111,7 +131,7 @@ func BACnetTimeStampTimeParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*BA
 	if pullErr := readBuffer.PullContext("timeValue"); pullErr != nil {
 		return nil, pullErr
 	}
-	_timeValue, _timeValueErr := BACnetContextTagParse(readBuffer, uint8(0), BACnetDataType_TIME)
+	_timeValue, _timeValueErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType_TIME)
 	if _timeValueErr != nil {
 		return nil, errors.Wrap(_timeValueErr, "Error parsing 'timeValue' field")
 	}

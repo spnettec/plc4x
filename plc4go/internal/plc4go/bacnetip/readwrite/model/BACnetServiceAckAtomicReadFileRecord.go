@@ -36,8 +36,17 @@ type BACnetServiceAckAtomicReadFileRecord struct {
 
 // The corresponding interface
 type IBACnetServiceAckAtomicReadFileRecord interface {
+	// GetFileStartRecord returns FileStartRecord
+	GetFileStartRecord() *BACnetApplicationTagSignedInteger
+	// GetReturnedRecordCount returns ReturnedRecordCount
+	GetReturnedRecordCount() *BACnetApplicationTagUnsignedInteger
+	// GetFileRecordData returns FileRecordData
+	GetFileRecordData() []*BACnetApplicationTagOctetString
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -48,12 +57,35 @@ func (m *BACnetServiceAckAtomicReadFileRecord) PeekedTagNumber() uint8 {
 	return 0x1
 }
 
+func (m *BACnetServiceAckAtomicReadFileRecord) GetPeekedTagNumber() uint8 {
+	return 0x1
+}
+
 func (m *BACnetServiceAckAtomicReadFileRecord) InitializeParent(parent *BACnetServiceAckAtomicReadFileStreamOrRecord, peekedTagHeader *BACnetTagHeader, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, peekedTagNumber uint8) {
 	m.BACnetServiceAckAtomicReadFileStreamOrRecord.PeekedTagHeader = peekedTagHeader
 	m.BACnetServiceAckAtomicReadFileStreamOrRecord.OpeningTag = openingTag
 	m.BACnetServiceAckAtomicReadFileStreamOrRecord.ClosingTag = closingTag
 	m.BACnetServiceAckAtomicReadFileStreamOrRecord.PeekedTagNumber = peekedTagNumber
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetServiceAckAtomicReadFileRecord) GetFileStartRecord() *BACnetApplicationTagSignedInteger {
+	return m.FileStartRecord
+}
+
+func (m *BACnetServiceAckAtomicReadFileRecord) GetReturnedRecordCount() *BACnetApplicationTagUnsignedInteger {
+	return m.ReturnedRecordCount
+}
+
+func (m *BACnetServiceAckAtomicReadFileRecord) GetFileRecordData() []*BACnetApplicationTagOctetString {
+	return m.FileRecordData
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewBACnetServiceAckAtomicReadFileRecord(fileStartRecord *BACnetApplicationTagSignedInteger, returnedRecordCount *BACnetApplicationTagUnsignedInteger, fileRecordData []*BACnetApplicationTagOctetString, peekedTagHeader *BACnetTagHeader, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, peekedTagNumber uint8) *BACnetServiceAckAtomicReadFileStreamOrRecord {
 	child := &BACnetServiceAckAtomicReadFileRecord{
@@ -153,9 +185,9 @@ func BACnetServiceAckAtomicReadFileRecordParse(readBuffer utils.ReadBuffer) (*BA
 		return nil, pullErr
 	}
 	// Count array
-	fileRecordData := make([]*BACnetApplicationTagOctetString, returnedRecordCount.ActualValue)
+	fileRecordData := make([]*BACnetApplicationTagOctetString, returnedRecordCount.Payload.ActualValue)
 	{
-		for curItem := uint16(0); curItem < uint16(returnedRecordCount.ActualValue); curItem++ {
+		for curItem := uint16(0); curItem < uint16(returnedRecordCount.Payload.ActualValue); curItem++ {
 			_item, _err := BACnetApplicationTagParse(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'fileRecordData' field")

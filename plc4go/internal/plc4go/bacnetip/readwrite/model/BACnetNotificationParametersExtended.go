@@ -38,8 +38,21 @@ type BACnetNotificationParametersExtended struct {
 
 // The corresponding interface
 type IBACnetNotificationParametersExtended interface {
+	// GetInnerOpeningTag returns InnerOpeningTag
+	GetInnerOpeningTag() *BACnetOpeningTag
+	// GetVendorId returns VendorId
+	GetVendorId() *BACnetContextTagUnsignedInteger
+	// GetExtendedEventType returns ExtendedEventType
+	GetExtendedEventType() *BACnetContextTagUnsignedInteger
+	// GetParameters returns Parameters
+	GetParameters() *BACnetNotificationParametersExtendedParameters
+	// GetInnerClosingTag returns InnerClosingTag
+	GetInnerClosingTag() *BACnetClosingTag
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -50,12 +63,43 @@ func (m *BACnetNotificationParametersExtended) PeekedTagNumber() uint8 {
 	return uint8(9)
 }
 
+func (m *BACnetNotificationParametersExtended) GetPeekedTagNumber() uint8 {
+	return uint8(9)
+}
+
 func (m *BACnetNotificationParametersExtended) InitializeParent(parent *BACnetNotificationParameters, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, peekedTagNumber uint8) {
 	m.BACnetNotificationParameters.OpeningTag = openingTag
 	m.BACnetNotificationParameters.PeekedTagHeader = peekedTagHeader
 	m.BACnetNotificationParameters.ClosingTag = closingTag
 	m.BACnetNotificationParameters.PeekedTagNumber = peekedTagNumber
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetNotificationParametersExtended) GetInnerOpeningTag() *BACnetOpeningTag {
+	return m.InnerOpeningTag
+}
+
+func (m *BACnetNotificationParametersExtended) GetVendorId() *BACnetContextTagUnsignedInteger {
+	return m.VendorId
+}
+
+func (m *BACnetNotificationParametersExtended) GetExtendedEventType() *BACnetContextTagUnsignedInteger {
+	return m.ExtendedEventType
+}
+
+func (m *BACnetNotificationParametersExtended) GetParameters() *BACnetNotificationParametersExtendedParameters {
+	return m.Parameters
+}
+
+func (m *BACnetNotificationParametersExtended) GetInnerClosingTag() *BACnetClosingTag {
+	return m.InnerClosingTag
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewBACnetNotificationParametersExtended(innerOpeningTag *BACnetOpeningTag, vendorId *BACnetContextTagUnsignedInteger, extendedEventType *BACnetContextTagUnsignedInteger, parameters *BACnetNotificationParametersExtendedParameters, innerClosingTag *BACnetClosingTag, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, peekedTagNumber uint8) *BACnetNotificationParameters {
 	child := &BACnetNotificationParametersExtended{
@@ -131,7 +175,7 @@ func BACnetNotificationParametersExtendedParse(readBuffer utils.ReadBuffer, tagN
 	if pullErr := readBuffer.PullContext("innerOpeningTag"); pullErr != nil {
 		return nil, pullErr
 	}
-	_innerOpeningTag, _innerOpeningTagErr := BACnetContextTagParse(readBuffer, peekedTagNumber, BACnetDataType_OPENING_TAG)
+	_innerOpeningTag, _innerOpeningTagErr := BACnetContextTagParse(readBuffer, uint8(peekedTagNumber), BACnetDataType_OPENING_TAG)
 	if _innerOpeningTagErr != nil {
 		return nil, errors.Wrap(_innerOpeningTagErr, "Error parsing 'innerOpeningTag' field")
 	}
@@ -144,7 +188,7 @@ func BACnetNotificationParametersExtendedParse(readBuffer utils.ReadBuffer, tagN
 	if pullErr := readBuffer.PullContext("vendorId"); pullErr != nil {
 		return nil, pullErr
 	}
-	_vendorId, _vendorIdErr := BACnetContextTagParse(readBuffer, uint8(0), BACnetDataType_UNSIGNED_INTEGER)
+	_vendorId, _vendorIdErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType_UNSIGNED_INTEGER)
 	if _vendorIdErr != nil {
 		return nil, errors.Wrap(_vendorIdErr, "Error parsing 'vendorId' field")
 	}
@@ -157,7 +201,7 @@ func BACnetNotificationParametersExtendedParse(readBuffer utils.ReadBuffer, tagN
 	if pullErr := readBuffer.PullContext("extendedEventType"); pullErr != nil {
 		return nil, pullErr
 	}
-	_extendedEventType, _extendedEventTypeErr := BACnetContextTagParse(readBuffer, uint8(1), BACnetDataType_UNSIGNED_INTEGER)
+	_extendedEventType, _extendedEventTypeErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType_UNSIGNED_INTEGER)
 	if _extendedEventTypeErr != nil {
 		return nil, errors.Wrap(_extendedEventTypeErr, "Error parsing 'extendedEventType' field")
 	}
@@ -170,7 +214,7 @@ func BACnetNotificationParametersExtendedParse(readBuffer utils.ReadBuffer, tagN
 	if pullErr := readBuffer.PullContext("parameters"); pullErr != nil {
 		return nil, pullErr
 	}
-	_parameters, _parametersErr := BACnetNotificationParametersExtendedParametersParse(readBuffer, uint8(2))
+	_parameters, _parametersErr := BACnetNotificationParametersExtendedParametersParse(readBuffer, uint8(uint8(2)))
 	if _parametersErr != nil {
 		return nil, errors.Wrap(_parametersErr, "Error parsing 'parameters' field")
 	}
@@ -183,7 +227,7 @@ func BACnetNotificationParametersExtendedParse(readBuffer utils.ReadBuffer, tagN
 	if pullErr := readBuffer.PullContext("innerClosingTag"); pullErr != nil {
 		return nil, pullErr
 	}
-	_innerClosingTag, _innerClosingTagErr := BACnetContextTagParse(readBuffer, peekedTagNumber, BACnetDataType_CLOSING_TAG)
+	_innerClosingTag, _innerClosingTagErr := BACnetContextTagParse(readBuffer, uint8(peekedTagNumber), BACnetDataType_CLOSING_TAG)
 	if _innerClosingTagErr != nil {
 		return nil, errors.Wrap(_innerClosingTagErr, "Error parsing 'innerClosingTag' field")
 	}

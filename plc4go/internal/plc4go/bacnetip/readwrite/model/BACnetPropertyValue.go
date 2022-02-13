@@ -37,10 +37,44 @@ type BACnetPropertyValue struct {
 
 // The corresponding interface
 type IBACnetPropertyValue interface {
+	// GetPropertyIdentifier returns PropertyIdentifier
+	GetPropertyIdentifier() *BACnetContextTagPropertyIdentifier
+	// GetPropertyArrayIndex returns PropertyArrayIndex
+	GetPropertyArrayIndex() *BACnetContextTagUnsignedInteger
+	// GetPropertyValue returns PropertyValue
+	GetPropertyValue() *BACnetConstructedDataElement
+	// GetPriority returns Priority
+	GetPriority() *BACnetContextTagUnsignedInteger
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetPropertyValue) GetPropertyIdentifier() *BACnetContextTagPropertyIdentifier {
+	return m.PropertyIdentifier
+}
+
+func (m *BACnetPropertyValue) GetPropertyArrayIndex() *BACnetContextTagUnsignedInteger {
+	return m.PropertyArrayIndex
+}
+
+func (m *BACnetPropertyValue) GetPropertyValue() *BACnetConstructedDataElement {
+	return m.PropertyValue
+}
+
+func (m *BACnetPropertyValue) GetPriority() *BACnetContextTagUnsignedInteger {
+	return m.Priority
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewBACnetPropertyValue(propertyIdentifier *BACnetContextTagPropertyIdentifier, propertyArrayIndex *BACnetContextTagUnsignedInteger, propertyValue *BACnetConstructedDataElement, priority *BACnetContextTagUnsignedInteger) *BACnetPropertyValue {
 	return &BACnetPropertyValue{PropertyIdentifier: propertyIdentifier, PropertyArrayIndex: propertyArrayIndex, PropertyValue: propertyValue, Priority: priority}
@@ -104,7 +138,7 @@ func BACnetPropertyValueParse(readBuffer utils.ReadBuffer, objectType BACnetObje
 	if pullErr := readBuffer.PullContext("propertyIdentifier"); pullErr != nil {
 		return nil, pullErr
 	}
-	_propertyIdentifier, _propertyIdentifierErr := BACnetContextTagParse(readBuffer, uint8(0), BACnetDataType_BACNET_PROPERTY_IDENTIFIER)
+	_propertyIdentifier, _propertyIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType_BACNET_PROPERTY_IDENTIFIER)
 	if _propertyIdentifierErr != nil {
 		return nil, errors.Wrap(_propertyIdentifierErr, "Error parsing 'propertyIdentifier' field")
 	}

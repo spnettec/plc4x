@@ -37,8 +37,19 @@ type BACnetNotificationParametersChangeOfValue struct {
 
 // The corresponding interface
 type IBACnetNotificationParametersChangeOfValue interface {
+	// GetInnerOpeningTag returns InnerOpeningTag
+	GetInnerOpeningTag() *BACnetOpeningTag
+	// GetNewValue returns NewValue
+	GetNewValue() *BACnetNotificationParametersChangeOfValueNewValue
+	// GetStatusFlags returns StatusFlags
+	GetStatusFlags() *BACnetStatusFlags
+	// GetInnerClosingTag returns InnerClosingTag
+	GetInnerClosingTag() *BACnetClosingTag
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -49,12 +60,39 @@ func (m *BACnetNotificationParametersChangeOfValue) PeekedTagNumber() uint8 {
 	return uint8(2)
 }
 
+func (m *BACnetNotificationParametersChangeOfValue) GetPeekedTagNumber() uint8 {
+	return uint8(2)
+}
+
 func (m *BACnetNotificationParametersChangeOfValue) InitializeParent(parent *BACnetNotificationParameters, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, peekedTagNumber uint8) {
 	m.BACnetNotificationParameters.OpeningTag = openingTag
 	m.BACnetNotificationParameters.PeekedTagHeader = peekedTagHeader
 	m.BACnetNotificationParameters.ClosingTag = closingTag
 	m.BACnetNotificationParameters.PeekedTagNumber = peekedTagNumber
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetNotificationParametersChangeOfValue) GetInnerOpeningTag() *BACnetOpeningTag {
+	return m.InnerOpeningTag
+}
+
+func (m *BACnetNotificationParametersChangeOfValue) GetNewValue() *BACnetNotificationParametersChangeOfValueNewValue {
+	return m.NewValue
+}
+
+func (m *BACnetNotificationParametersChangeOfValue) GetStatusFlags() *BACnetStatusFlags {
+	return m.StatusFlags
+}
+
+func (m *BACnetNotificationParametersChangeOfValue) GetInnerClosingTag() *BACnetClosingTag {
+	return m.InnerClosingTag
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewBACnetNotificationParametersChangeOfValue(innerOpeningTag *BACnetOpeningTag, newValue *BACnetNotificationParametersChangeOfValueNewValue, statusFlags *BACnetStatusFlags, innerClosingTag *BACnetClosingTag, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, peekedTagNumber uint8) *BACnetNotificationParameters {
 	child := &BACnetNotificationParametersChangeOfValue{
@@ -126,7 +164,7 @@ func BACnetNotificationParametersChangeOfValueParse(readBuffer utils.ReadBuffer,
 	if pullErr := readBuffer.PullContext("innerOpeningTag"); pullErr != nil {
 		return nil, pullErr
 	}
-	_innerOpeningTag, _innerOpeningTagErr := BACnetContextTagParse(readBuffer, peekedTagNumber, BACnetDataType_OPENING_TAG)
+	_innerOpeningTag, _innerOpeningTagErr := BACnetContextTagParse(readBuffer, uint8(peekedTagNumber), BACnetDataType_OPENING_TAG)
 	if _innerOpeningTagErr != nil {
 		return nil, errors.Wrap(_innerOpeningTagErr, "Error parsing 'innerOpeningTag' field")
 	}
@@ -139,7 +177,7 @@ func BACnetNotificationParametersChangeOfValueParse(readBuffer utils.ReadBuffer,
 	if pullErr := readBuffer.PullContext("newValue"); pullErr != nil {
 		return nil, pullErr
 	}
-	_newValue, _newValueErr := BACnetNotificationParametersChangeOfValueNewValueParse(readBuffer, uint8(0))
+	_newValue, _newValueErr := BACnetNotificationParametersChangeOfValueNewValueParse(readBuffer, uint8(uint8(0)))
 	if _newValueErr != nil {
 		return nil, errors.Wrap(_newValueErr, "Error parsing 'newValue' field")
 	}
@@ -152,7 +190,7 @@ func BACnetNotificationParametersChangeOfValueParse(readBuffer utils.ReadBuffer,
 	if pullErr := readBuffer.PullContext("statusFlags"); pullErr != nil {
 		return nil, pullErr
 	}
-	_statusFlags, _statusFlagsErr := BACnetStatusFlagsParse(readBuffer, uint8(1))
+	_statusFlags, _statusFlagsErr := BACnetStatusFlagsParse(readBuffer, uint8(uint8(1)))
 	if _statusFlagsErr != nil {
 		return nil, errors.Wrap(_statusFlagsErr, "Error parsing 'statusFlags' field")
 	}
@@ -165,7 +203,7 @@ func BACnetNotificationParametersChangeOfValueParse(readBuffer utils.ReadBuffer,
 	if pullErr := readBuffer.PullContext("innerClosingTag"); pullErr != nil {
 		return nil, pullErr
 	}
-	_innerClosingTag, _innerClosingTagErr := BACnetContextTagParse(readBuffer, peekedTagNumber, BACnetDataType_CLOSING_TAG)
+	_innerClosingTag, _innerClosingTagErr := BACnetContextTagParse(readBuffer, uint8(peekedTagNumber), BACnetDataType_CLOSING_TAG)
 	if _innerClosingTagErr != nil {
 		return nil, errors.Wrap(_innerClosingTagErr, "Error parsing 'innerClosingTag' field")
 	}

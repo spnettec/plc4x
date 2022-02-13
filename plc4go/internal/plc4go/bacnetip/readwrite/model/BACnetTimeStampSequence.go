@@ -34,8 +34,13 @@ type BACnetTimeStampSequence struct {
 
 // The corresponding interface
 type IBACnetTimeStampSequence interface {
+	// GetSequenceNumber returns SequenceNumber
+	GetSequenceNumber() *BACnetContextTagUnsignedInteger
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -46,12 +51,27 @@ func (m *BACnetTimeStampSequence) PeekedTagNumber() uint8 {
 	return uint8(1)
 }
 
+func (m *BACnetTimeStampSequence) GetPeekedTagNumber() uint8 {
+	return uint8(1)
+}
+
 func (m *BACnetTimeStampSequence) InitializeParent(parent *BACnetTimeStamp, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, peekedTagNumber uint8) {
 	m.BACnetTimeStamp.OpeningTag = openingTag
 	m.BACnetTimeStamp.PeekedTagHeader = peekedTagHeader
 	m.BACnetTimeStamp.ClosingTag = closingTag
 	m.BACnetTimeStamp.PeekedTagNumber = peekedTagNumber
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetTimeStampSequence) GetSequenceNumber() *BACnetContextTagUnsignedInteger {
+	return m.SequenceNumber
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewBACnetTimeStampSequence(sequenceNumber *BACnetContextTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, peekedTagNumber uint8) *BACnetTimeStamp {
 	child := &BACnetTimeStampSequence{
@@ -111,7 +131,7 @@ func BACnetTimeStampSequenceParse(readBuffer utils.ReadBuffer, tagNumber uint8) 
 	if pullErr := readBuffer.PullContext("sequenceNumber"); pullErr != nil {
 		return nil, pullErr
 	}
-	_sequenceNumber, _sequenceNumberErr := BACnetContextTagParse(readBuffer, uint8(1), BACnetDataType_UNSIGNED_INTEGER)
+	_sequenceNumber, _sequenceNumberErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType_UNSIGNED_INTEGER)
 	if _sequenceNumberErr != nil {
 		return nil, errors.Wrap(_sequenceNumberErr, "Error parsing 'sequenceNumber' field")
 	}

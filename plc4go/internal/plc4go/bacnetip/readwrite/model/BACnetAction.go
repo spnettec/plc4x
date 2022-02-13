@@ -36,9 +36,38 @@ type BACnetAction struct {
 
 // The corresponding interface
 type IBACnetAction interface {
+	// GetRawData returns RawData
+	GetRawData() *BACnetContextTagEnumerated
+	// GetIsDirect returns IsDirect
+	GetIsDirect() bool
+	// GetIsReverse returns IsReverse
+	GetIsReverse() bool
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetAction) GetRawData() *BACnetContextTagEnumerated {
+	return m.RawData
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetAction) GetIsDirect() bool {
+	// TODO: calculation should happen here instead accessing the stored field
+	return m.IsDirect
+}
+
+func (m *BACnetAction) GetIsReverse() bool {
+	// TODO: calculation should happen here instead accessing the stored field
+	return m.IsReverse
 }
 
 func NewBACnetAction(rawData *BACnetContextTagEnumerated, isDirect bool, isReverse bool) *BACnetAction {
@@ -112,11 +141,11 @@ func BACnetActionParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*BACnetAct
 	}
 
 	// Virtual field
-	_isDirect := bool(bool((rawData) != (nil))) && bool(bool(((*rawData).ActualValue) == (0)))
+	_isDirect := bool(bool((rawData) != (nil))) && bool(bool(((*rawData).Payload.ActualValue) == (0)))
 	isDirect := bool(_isDirect)
 
 	// Virtual field
-	_isReverse := bool(bool((rawData) != (nil))) && bool(bool(((*rawData).ActualValue) == (1)))
+	_isReverse := bool(bool((rawData) != (nil))) && bool(bool(((*rawData).Payload.ActualValue) == (1)))
 	isReverse := bool(_isReverse)
 
 	if closeErr := readBuffer.CloseContext("BACnetAction"); closeErr != nil {

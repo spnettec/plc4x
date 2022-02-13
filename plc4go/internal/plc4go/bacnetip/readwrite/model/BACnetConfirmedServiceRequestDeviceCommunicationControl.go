@@ -37,8 +37,17 @@ type BACnetConfirmedServiceRequestDeviceCommunicationControl struct {
 
 // The corresponding interface
 type IBACnetConfirmedServiceRequestDeviceCommunicationControl interface {
+	// GetTimeDuration returns TimeDuration
+	GetTimeDuration() *BACnetContextTagUnsignedInteger
+	// GetEnableDisable returns EnableDisable
+	GetEnableDisable() *BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable
+	// GetPassword returns Password
+	GetPassword() *BACnetContextTagCharacterString
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -49,8 +58,31 @@ func (m *BACnetConfirmedServiceRequestDeviceCommunicationControl) ServiceChoice(
 	return 0x11
 }
 
+func (m *BACnetConfirmedServiceRequestDeviceCommunicationControl) GetServiceChoice() uint8 {
+	return 0x11
+}
+
 func (m *BACnetConfirmedServiceRequestDeviceCommunicationControl) InitializeParent(parent *BACnetConfirmedServiceRequest) {
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetConfirmedServiceRequestDeviceCommunicationControl) GetTimeDuration() *BACnetContextTagUnsignedInteger {
+	return m.TimeDuration
+}
+
+func (m *BACnetConfirmedServiceRequestDeviceCommunicationControl) GetEnableDisable() *BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable {
+	return m.EnableDisable
+}
+
+func (m *BACnetConfirmedServiceRequestDeviceCommunicationControl) GetPassword() *BACnetContextTagCharacterString {
+	return m.Password
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewBACnetConfirmedServiceRequestDeviceCommunicationControl(timeDuration *BACnetContextTagUnsignedInteger, enableDisable *BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable, password *BACnetContextTagCharacterString) *BACnetConfirmedServiceRequest {
 	child := &BACnetConfirmedServiceRequestDeviceCommunicationControl{
@@ -143,7 +175,7 @@ func BACnetConfirmedServiceRequestDeviceCommunicationControlParse(readBuffer uti
 	if pullErr := readBuffer.PullContext("enableDisable"); pullErr != nil {
 		return nil, pullErr
 	}
-	_enableDisable, _enableDisableErr := BACnetConfirmedServiceRequestReinitializeDeviceEnableDisableParse(readBuffer, uint8(1))
+	_enableDisable, _enableDisableErr := BACnetConfirmedServiceRequestReinitializeDeviceEnableDisableParse(readBuffer, uint8(uint8(1)))
 	if _enableDisableErr != nil {
 		return nil, errors.Wrap(_enableDisableErr, "Error parsing 'enableDisable' field")
 	}

@@ -37,8 +37,17 @@ type BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer struct {
 
 // The corresponding interface
 type IBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer interface {
+	// GetVendorId returns VendorId
+	GetVendorId() *BACnetContextTagUnsignedInteger
+	// GetServiceNumber returns ServiceNumber
+	GetServiceNumber() *BACnetContextTagUnsignedInteger
+	// GetServiceParameters returns ServiceParameters
+	GetServiceParameters() *BACnetPropertyValues
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -49,8 +58,31 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) ServiceChoic
 	return 0x04
 }
 
+func (m *BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) GetServiceChoice() uint8 {
+	return 0x04
+}
+
 func (m *BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) InitializeParent(parent *BACnetUnconfirmedServiceRequest) {
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) GetVendorId() *BACnetContextTagUnsignedInteger {
+	return m.VendorId
+}
+
+func (m *BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) GetServiceNumber() *BACnetContextTagUnsignedInteger {
+	return m.ServiceNumber
+}
+
+func (m *BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) GetServiceParameters() *BACnetPropertyValues {
+	return m.ServiceParameters
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer(vendorId *BACnetContextTagUnsignedInteger, serviceNumber *BACnetContextTagUnsignedInteger, serviceParameters *BACnetPropertyValues) *BACnetUnconfirmedServiceRequest {
 	child := &BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer{
@@ -120,7 +152,7 @@ func BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferParse(readBuffer u
 	if pullErr := readBuffer.PullContext("vendorId"); pullErr != nil {
 		return nil, pullErr
 	}
-	_vendorId, _vendorIdErr := BACnetContextTagParse(readBuffer, uint8(1), BACnetDataType_UNSIGNED_INTEGER)
+	_vendorId, _vendorIdErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType_UNSIGNED_INTEGER)
 	if _vendorIdErr != nil {
 		return nil, errors.Wrap(_vendorIdErr, "Error parsing 'vendorId' field")
 	}
@@ -133,7 +165,7 @@ func BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferParse(readBuffer u
 	if pullErr := readBuffer.PullContext("serviceNumber"); pullErr != nil {
 		return nil, pullErr
 	}
-	_serviceNumber, _serviceNumberErr := BACnetContextTagParse(readBuffer, uint8(2), BACnetDataType_UNSIGNED_INTEGER)
+	_serviceNumber, _serviceNumberErr := BACnetContextTagParse(readBuffer, uint8(uint8(2)), BACnetDataType_UNSIGNED_INTEGER)
 	if _serviceNumberErr != nil {
 		return nil, errors.Wrap(_serviceNumberErr, "Error parsing 'serviceNumber' field")
 	}

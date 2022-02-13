@@ -37,9 +37,45 @@ type BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable struct {
 
 // The corresponding interface
 type IBACnetConfirmedServiceRequestReinitializeDeviceEnableDisable interface {
+	// GetRawData returns RawData
+	GetRawData() *BACnetContextTagEnumerated
+	// GetIsEnable returns IsEnable
+	GetIsEnable() bool
+	// GetIsDisable returns IsDisable
+	GetIsDisable() bool
+	// GetIsDisableInitiation returns IsDisableInitiation
+	GetIsDisableInitiation() bool
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable) GetRawData() *BACnetContextTagEnumerated {
+	return m.RawData
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable) GetIsEnable() bool {
+	// TODO: calculation should happen here instead accessing the stored field
+	return m.IsEnable
+}
+
+func (m *BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable) GetIsDisable() bool {
+	// TODO: calculation should happen here instead accessing the stored field
+	return m.IsDisable
+}
+
+func (m *BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable) GetIsDisableInitiation() bool {
+	// TODO: calculation should happen here instead accessing the stored field
+	return m.IsDisableInitiation
 }
 
 func NewBACnetConfirmedServiceRequestReinitializeDeviceEnableDisable(rawData *BACnetContextTagEnumerated, isEnable bool, isDisable bool, isDisableInitiation bool) *BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable {
@@ -115,15 +151,15 @@ func BACnetConfirmedServiceRequestReinitializeDeviceEnableDisableParse(readBuffe
 	}
 
 	// Virtual field
-	_isEnable := bool(bool((rawData) != (nil))) && bool(bool(((*rawData).ActualValue) == (0)))
+	_isEnable := bool(bool((rawData) != (nil))) && bool(bool(((*rawData).Payload.ActualValue) == (0)))
 	isEnable := bool(_isEnable)
 
 	// Virtual field
-	_isDisable := bool(bool((rawData) != (nil))) && bool(bool(((*rawData).ActualValue) == (1)))
+	_isDisable := bool(bool((rawData) != (nil))) && bool(bool(((*rawData).Payload.ActualValue) == (1)))
 	isDisable := bool(_isDisable)
 
 	// Virtual field
-	_isDisableInitiation := bool(bool((rawData) != (nil))) && bool(bool(((*rawData).ActualValue) == (2)))
+	_isDisableInitiation := bool(bool((rawData) != (nil))) && bool(bool(((*rawData).Payload.ActualValue) == (2)))
 	isDisableInitiation := bool(_isDisableInitiation)
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable"); closeErr != nil {

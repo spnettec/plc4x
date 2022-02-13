@@ -34,8 +34,13 @@ type BACnetServiceAckAtomicWriteFile struct {
 
 // The corresponding interface
 type IBACnetServiceAckAtomicWriteFile interface {
+	// GetFileStartPosition returns FileStartPosition
+	GetFileStartPosition() *BACnetContextTagSignedInteger
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -46,7 +51,22 @@ func (m *BACnetServiceAckAtomicWriteFile) ServiceChoice() uint8 {
 	return 0x07
 }
 
+func (m *BACnetServiceAckAtomicWriteFile) GetServiceChoice() uint8 {
+	return 0x07
+}
+
 func (m *BACnetServiceAckAtomicWriteFile) InitializeParent(parent *BACnetServiceAck) {}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetServiceAckAtomicWriteFile) GetFileStartPosition() *BACnetContextTagSignedInteger {
+	return m.FileStartPosition
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewBACnetServiceAckAtomicWriteFile(fileStartPosition *BACnetContextTagSignedInteger) *BACnetServiceAck {
 	child := &BACnetServiceAckAtomicWriteFile{
@@ -106,7 +126,7 @@ func BACnetServiceAckAtomicWriteFileParse(readBuffer utils.ReadBuffer) (*BACnetS
 	if pullErr := readBuffer.PullContext("fileStartPosition"); pullErr != nil {
 		return nil, pullErr
 	}
-	_fileStartPosition, _fileStartPositionErr := BACnetContextTagParse(readBuffer, uint8(0), BACnetDataType_SIGNED_INTEGER)
+	_fileStartPosition, _fileStartPositionErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType_SIGNED_INTEGER)
 	if _fileStartPositionErr != nil {
 		return nil, errors.Wrap(_fileStartPositionErr, "Error parsing 'fileStartPosition' field")
 	}

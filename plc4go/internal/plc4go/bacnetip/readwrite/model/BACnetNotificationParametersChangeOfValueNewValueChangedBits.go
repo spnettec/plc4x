@@ -34,8 +34,13 @@ type BACnetNotificationParametersChangeOfValueNewValueChangedBits struct {
 
 // The corresponding interface
 type IBACnetNotificationParametersChangeOfValueNewValueChangedBits interface {
+	// GetChangedBits returns ChangedBits
+	GetChangedBits() *BACnetContextTagBitString
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
@@ -46,12 +51,27 @@ func (m *BACnetNotificationParametersChangeOfValueNewValueChangedBits) PeekedTag
 	return uint8(0)
 }
 
+func (m *BACnetNotificationParametersChangeOfValueNewValueChangedBits) GetPeekedTagNumber() uint8 {
+	return uint8(0)
+}
+
 func (m *BACnetNotificationParametersChangeOfValueNewValueChangedBits) InitializeParent(parent *BACnetNotificationParametersChangeOfValueNewValue, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, peekedTagNumber uint8) {
 	m.BACnetNotificationParametersChangeOfValueNewValue.OpeningTag = openingTag
 	m.BACnetNotificationParametersChangeOfValueNewValue.PeekedTagHeader = peekedTagHeader
 	m.BACnetNotificationParametersChangeOfValueNewValue.ClosingTag = closingTag
 	m.BACnetNotificationParametersChangeOfValueNewValue.PeekedTagNumber = peekedTagNumber
 }
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetNotificationParametersChangeOfValueNewValueChangedBits) GetChangedBits() *BACnetContextTagBitString {
+	return m.ChangedBits
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
 
 func NewBACnetNotificationParametersChangeOfValueNewValueChangedBits(changedBits *BACnetContextTagBitString, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, peekedTagNumber uint8) *BACnetNotificationParametersChangeOfValueNewValue {
 	child := &BACnetNotificationParametersChangeOfValueNewValueChangedBits{
@@ -111,7 +131,7 @@ func BACnetNotificationParametersChangeOfValueNewValueChangedBitsParse(readBuffe
 	if pullErr := readBuffer.PullContext("changedBits"); pullErr != nil {
 		return nil, pullErr
 	}
-	_changedBits, _changedBitsErr := BACnetContextTagParse(readBuffer, uint8(0), BACnetDataType_BIT_STRING)
+	_changedBits, _changedBitsErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType_BIT_STRING)
 	if _changedBitsErr != nil {
 		return nil, errors.Wrap(_changedBitsErr, "Error parsing 'changedBits' field")
 	}

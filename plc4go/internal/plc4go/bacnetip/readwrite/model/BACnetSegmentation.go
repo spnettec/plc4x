@@ -37,9 +37,52 @@ type BACnetSegmentation struct {
 
 // The corresponding interface
 type IBACnetSegmentation interface {
+	// GetRawData returns RawData
+	GetRawData() *BACnetApplicationTagEnumerated
+	// GetIsSegmentedBoth returns IsSegmentedBoth
+	GetIsSegmentedBoth() bool
+	// GetIsSegmentedTransmit returns IsSegmentedTransmit
+	GetIsSegmentedTransmit() bool
+	// GetIsSegmentedReceive returns IsSegmentedReceive
+	GetIsSegmentedReceive() bool
+	// GetIsNoSegmentation returns IsNoSegmentation
+	GetIsNoSegmentation() bool
+	// LengthInBytes returns the length in bytes
 	LengthInBytes() uint16
+	// LengthInBits returns the length in bits
 	LengthInBits() uint16
+	// Serialize serializes this type
 	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for property fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetSegmentation) GetRawData() *BACnetApplicationTagEnumerated {
+	return m.RawData
+}
+
+///////////////////////////////////////////////////////////
+// Accessors for virtual fields.
+///////////////////////////////////////////////////////////
+func (m *BACnetSegmentation) GetIsSegmentedBoth() bool {
+	// TODO: calculation should happen here instead accessing the stored field
+	return m.IsSegmentedBoth
+}
+
+func (m *BACnetSegmentation) GetIsSegmentedTransmit() bool {
+	// TODO: calculation should happen here instead accessing the stored field
+	return m.IsSegmentedTransmit
+}
+
+func (m *BACnetSegmentation) GetIsSegmentedReceive() bool {
+	// TODO: calculation should happen here instead accessing the stored field
+	return m.IsSegmentedReceive
+}
+
+func (m *BACnetSegmentation) GetIsNoSegmentation() bool {
+	// TODO: calculation should happen here instead accessing the stored field
+	return m.IsNoSegmentation
 }
 
 func NewBACnetSegmentation(rawData *BACnetApplicationTagEnumerated, isSegmentedBoth bool, isSegmentedTransmit bool, isSegmentedReceive bool, isNoSegmentation bool) *BACnetSegmentation {
@@ -107,19 +150,19 @@ func BACnetSegmentationParse(readBuffer utils.ReadBuffer) (*BACnetSegmentation, 
 	}
 
 	// Virtual field
-	_isSegmentedBoth := bool(bool((rawData) != (nil))) && bool(bool((rawData.ActualValue) == (0)))
+	_isSegmentedBoth := bool(bool((rawData) != (nil))) && bool(bool((rawData.Payload.ActualValue) == (0)))
 	isSegmentedBoth := bool(_isSegmentedBoth)
 
 	// Virtual field
-	_isSegmentedTransmit := bool(bool((rawData) != (nil))) && bool(bool((rawData.ActualValue) == (1)))
+	_isSegmentedTransmit := bool(bool((rawData) != (nil))) && bool(bool((rawData.Payload.ActualValue) == (1)))
 	isSegmentedTransmit := bool(_isSegmentedTransmit)
 
 	// Virtual field
-	_isSegmentedReceive := bool(bool((rawData) != (nil))) && bool(bool((rawData.ActualValue) == (3)))
+	_isSegmentedReceive := bool(bool((rawData) != (nil))) && bool(bool((rawData.Payload.ActualValue) == (3)))
 	isSegmentedReceive := bool(_isSegmentedReceive)
 
 	// Virtual field
-	_isNoSegmentation := bool(bool((rawData) != (nil))) && bool(bool((rawData.ActualValue) == (4)))
+	_isNoSegmentation := bool(bool((rawData) != (nil))) && bool(bool((rawData.Payload.ActualValue) == (4)))
 	isNoSegmentation := bool(_isNoSegmentation)
 
 	if closeErr := readBuffer.CloseContext("BACnetSegmentation"); closeErr != nil {
