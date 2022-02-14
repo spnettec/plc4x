@@ -171,17 +171,19 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
         long size;
         if (directAdsField.getAdsDataType() == AdsDataType.STRING) {
             // If an explicit size is given with the string, use this, if not use 256
-            size = (directAdsField instanceof AdsStringField) ?
+            long stringLength = (directAdsField instanceof AdsStringField) ?
                 ((AdsStringField) directAdsField).getStringLength() : 256;
+            size = stringLength * 8;
         } else if (directAdsField.getAdsDataType() == AdsDataType.WSTRING) {
             // If an explicit size is given with the string, use this, if not use 512
-            size = (directAdsField instanceof AdsStringField) ?
+            long stringLength = (directAdsField instanceof AdsStringField) ?
                 ((long) ((AdsStringField) directAdsField).getStringLength() ) * 2 : 512;
+            size = stringLength * 8;
         } else {
             size = directAdsField.getAdsDataType().getNumBytes();
         }
         AdsData adsData = new AdsReadRequest(directAdsField.getIndexGroup(), directAdsField.getIndexOffset(),
-            size * 8 * directAdsField.getNumberOfElements());
+            size * directAdsField.getNumberOfElements());
         AmsPacket amsPacket = new AmsPacket(configuration.getTargetAmsNetId(), configuration.getTargetAmsPort(),
             configuration.getSourceAmsNetId(), configuration.getSourceAmsPort(),
             CommandId.ADS_READ, DEFAULT_COMMAND_STATE, 0, getInvokeId(), adsData);
@@ -221,11 +223,11 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                 if (field.getAdsDataType() == AdsDataType.STRING) {
                     // If an explicit size is given with the string, use this, if not use 256
                     size = (field instanceof AdsStringField) ?
-                        ((AdsStringField) field).getStringLength() + 1 : 256;
+                        ((AdsStringField) field).getStringLength() : 256;
                 } else if (field.getAdsDataType() == AdsDataType.WSTRING) {
                     // If an explicit size is given with the string, use this, if not use 512
                     size = (field instanceof AdsStringField) ?
-                        ((long) ((AdsStringField) field).getStringLength() + 1) * 2 : 512;
+                        ((long) ((AdsStringField) field).getStringLength()) * 2 : 512;
                 } else {
                     size = field.getAdsDataType().getNumBytes();
                 }
@@ -236,10 +238,24 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
         // With multi-requests, the index-group is fixed and the index offset indicates the number of elements.
         AdsData adsData = new AdsReadWriteRequest(
             ReservedIndexGroups.ADSIGRP_MULTIPLE_READ.getValue(), directAdsFields.size(), expectedResponseDataSize,
-            directAdsFields.stream().map(directAdsField -> new AdsMultiRequestItemRead(
-                    directAdsField.getIndexGroup(), directAdsField.getIndexOffset(),
-                    (directAdsField.getAdsDataType().getNumBytes() * directAdsField.getNumberOfElements())))
-                .collect(Collectors.toList()), null);
+            directAdsFields.stream().map(directAdsField -> {
+                    long size;
+                    if (directAdsField.getAdsDataType() == AdsDataType.STRING) {
+                        // If an explicit size is given with the string, use this, if not use 256
+                        size = (directAdsField instanceof AdsStringField) ?
+                            ((AdsStringField) directAdsField).getStringLength() : 256;
+                    } else if (directAdsField.getAdsDataType() == AdsDataType.WSTRING) {
+                        // If an explicit size is given with the string, use this, if not use 512
+                        size = (directAdsField instanceof AdsStringField) ?
+                            ((long) ((AdsStringField) directAdsField).getStringLength()) * 2 : 512;
+                    } else {
+                        size = directAdsField.getAdsDataType().getNumBytes();
+                    }
+
+                    return new AdsMultiRequestItemRead(directAdsField.getIndexGroup(), directAdsField.getIndexOffset(),
+                        (size * directAdsField.getNumberOfElements()));
+                }
+                ).collect(Collectors.toList()), null);
 
         AmsPacket amsPacket = new AmsPacket(configuration.getTargetAmsNetId(), configuration.getTargetAmsPort(),
             configuration.getSourceAmsNetId(), configuration.getSourceAmsPort(),
@@ -417,14 +433,14 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
         final AdsField plcField = (AdsField) writeRequest.getField(fieldName);
         final PlcValue plcValue = writeRequest.getPlcValue(fieldName);
         int stringLength;
-        if (directAdsField.getAdsDataType() == AdsDataType.STRING) {
+        if (plcField.getAdsDataType() == AdsDataType.STRING) {
             // If an explicit size is given with the string, use this, if not use 256
-            stringLength = (directAdsField instanceof AdsStringField) ?
-                ((AdsStringField) directAdsField).getStringLength() : 256;
-        } else if (directAdsField.getAdsDataType() == AdsDataType.WSTRING) {
+            stringLength = (plcField instanceof AdsStringField) ?
+                ((AdsStringField) plcField).getStringLength() : 256;
+        } else if (plcField.getAdsDataType() == AdsDataType.WSTRING) {
             // If an explicit size is given with the string, use this, if not use 512
-            stringLength = (directAdsField instanceof AdsStringField) ?
-                (((AdsStringField) directAdsField).getStringLength() ) * 2 : 512;
+            stringLength = (plcField instanceof AdsStringField) ?
+                (((AdsStringField) plcField).getStringLength() ) * 2 : 512;
         } else {
             stringLength = 0;
         }
@@ -471,42 +487,80 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
 
         // Calculate the size of all fields together.
         // Calculate the expected size of the response data.
-        int expectedRequestDataSize = directAdsFields.stream().mapToInt(
-            field -> field.getAdsDataType().getNumBytes() * field.getNumberOfElements()).sum();
-        byte[] writeBuffer = new byte[expectedRequestDataSize];
+        int expectedResponseDataSize = directAdsFields.stream().mapToInt(
+            field -> {
+                int size;
+                if (field.getAdsDataType() == AdsDataType.STRING) {
+                    // If an explicit size is given with the string, use this, if not use 256
+                    size = (field instanceof AdsStringField) ?
+                        ((AdsStringField) field).getStringLength() : 256;
+                } else if (field.getAdsDataType() == AdsDataType.WSTRING) {
+                    // If an explicit size is given with the string, use this, if not use 512
+                    size = (field instanceof AdsStringField) ?
+                        (((AdsStringField) field).getStringLength()) * 2 : 512;
+                } else {
+                    size = field.getAdsDataType().getNumBytes();
+                }
+                return size * field.getNumberOfElements();
+            }).sum();
+        byte[] writeBuffer = new byte[expectedResponseDataSize];
         int pos = 0;
         for (String fieldName : writeRequest.getFieldNames()) {
             final AdsField field = (AdsField) writeRequest.getField(fieldName);
             final PlcValue plcValue = writeRequest.getPlcValue(fieldName);
-            final int stringLength;
+            int stringLength;
             if (field.getAdsDataType() == AdsDataType.STRING) {
-                stringLength = plcValue.getString().length() + 1;
+                // If an explicit size is given with the string, use this, if not use 256
+                stringLength = (field instanceof AdsStringField) ?
+                    ((AdsStringField) field).getStringLength() : 256;
+            } else if (field.getAdsDataType() == AdsDataType.WSTRING) {
+                // If an explicit size is given with the string, use this, if not use 512
+                stringLength = (field instanceof AdsStringField) ?
+                    (((AdsStringField) field).getStringLength() ) * 2 : 512;
             } else {
-                if (field.getAdsDataType() == AdsDataType.WSTRING) {
-                    stringLength = (plcValue.getString().length() + 1) * 2;
-                } else {
-                    stringLength = 0;
-                }
+                stringLength = 0;
             }
             try {
                 WriteBufferByteBased itemWriteBuffer = new WriteBufferByteBased(DataItem.getLengthInBytes(plcValue,
-                    field.getAdsDataType().getDataFormatName(), stringLength));
+                    field.getAdsDataType().getDataFormatName(), stringLength * 8));
                 DataItem.staticSerialize(itemWriteBuffer, plcValue,
                     field.getAdsDataType().getDataFormatName(), stringLength, ByteOrder.LITTLE_ENDIAN);
                 int numBytes = itemWriteBuffer.getPos();
                 System.arraycopy(itemWriteBuffer.getBytes(), 0, writeBuffer, pos, numBytes);
                 pos += numBytes;
+                if( pos > expectedResponseDataSize)
+                {
+                    throw new PlcRuntimeException("Error serializing data, Data length too long");
+                }
             } catch (Exception e) {
                 throw new PlcRuntimeException("Error serializing data", e);
             }
         }
-
         // With multi-requests, the index-group is fixed and the index offset indicates the number of elements.
         AdsData adsData = new AdsReadWriteRequest(
             ReservedIndexGroups.ADSIGRP_MULTIPLE_WRITE.getValue(), directAdsFields.size(), (long) directAdsFields.size() * 4,
-            directAdsFields.stream().map(directAdsField -> new AdsMultiRequestItemWrite(
-                    directAdsField.getIndexGroup(), directAdsField.getIndexOffset(),
-                    ((long) directAdsField.getAdsDataType().getNumBytes() * directAdsField.getNumberOfElements())))
+            directAdsFields.stream().map(directAdsField -> {
+                    long stringLength;
+                    long size;
+                    if (directAdsField.getAdsDataType() == AdsDataType.STRING) {
+                        // If an explicit size is given with the string, use this, if not use 256
+                        stringLength = (directAdsField instanceof AdsStringField) ?
+                            ((AdsStringField) directAdsField).getStringLength() : 256;
+                        size = stringLength;
+                    } else if (directAdsField.getAdsDataType() == AdsDataType.WSTRING) {
+                        // If an explicit size is given with the string, use this, if not use 512
+                        stringLength = (directAdsField instanceof AdsStringField) ?
+                            ((long) ((AdsStringField) directAdsField).getStringLength() ) * 2 : 512;
+                        size = stringLength;
+                    } else {
+                        size = directAdsField.getAdsDataType().getNumBytes();
+                    }
+                    return new AdsMultiRequestItemWrite(
+                        directAdsField.getIndexGroup(), directAdsField.getIndexOffset(),
+                        (size * directAdsField.getNumberOfElements()));
+                    }
+
+                )
                 .collect(Collectors.toList()), writeBuffer);
 
         AmsPacket amsPacket = new AmsPacket(configuration.getTargetAmsNetId(), configuration.getTargetAmsPort(),
@@ -784,10 +838,11 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                         for (PlcSubscriptionHandle subscriptionHandle : registration.getSubscriptionHandles()) {
                             if (subscriptionHandle instanceof AdsSubscriptionHandle) {
                                 AdsSubscriptionHandle adsHandle = (AdsSubscriptionHandle) subscriptionHandle;
-                                if (adsHandle.getNotificationHandle() == handle)
+                                if (adsHandle.getNotificationHandle() == handle) {
                                     consumers.get(registration).accept(
                                         new DefaultPlcSubscriptionEvent(Instant.ofEpochMilli(unixEpochTimestamp),
                                             convertSampleToPlc4XResult(adsHandle, sample.getData())));
+                                }
                             }
                         }
                     }
@@ -1004,10 +1059,17 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                         if (returnCodes.get(symbolicAdsField) == 0) {
                             // Read the handle.
                             long handle = readBuffer.readUnsignedLong(32);
-
-                            DirectAdsField directAdsField = new DirectAdsField(
-                                ReservedIndexGroups.ADSIGRP_SYM_VALBYHND.getValue(), handle,
-                                symbolicAdsField.getAdsDataType(), symbolicAdsField.getNumberOfElements());
+                            final DirectAdsField directAdsField;
+                            if(symbolicAdsField instanceof AdsStringField)
+                            {
+                                directAdsField = new DirectAdsStringField(
+                                    ReservedIndexGroups.ADSIGRP_SYM_VALBYHND.getValue(), handle,
+                                    symbolicAdsField.getAdsDataType(),((AdsStringField)symbolicAdsField).getStringLength(), symbolicAdsField.getNumberOfElements());
+                            } else {
+                                directAdsField = new DirectAdsField(
+                                    ReservedIndexGroups.ADSIGRP_SYM_VALBYHND.getValue(), handle,
+                                    symbolicAdsField.getAdsDataType(), symbolicAdsField.getNumberOfElements());
+                            }
                             symbolicFieldMapping.put(symbolicAdsField, directAdsField);
                         } else {
                             // TODO: Handle the case of unsuccessful resolution ..

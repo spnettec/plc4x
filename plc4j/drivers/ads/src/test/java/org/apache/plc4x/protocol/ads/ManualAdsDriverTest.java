@@ -74,7 +74,7 @@ public class ManualAdsDriverTest extends ManualTest {
     }
 
     public static void main(String[] args) throws Exception {
-        String ip = "127.0.0.1";
+        String ip = "10.80.41.18";
 
         String sourceAmsNetId = "10.80.41.10.1.1";
         int sourceAmsPort = 65534;
@@ -85,6 +85,7 @@ public class ManualAdsDriverTest extends ManualTest {
 
             final PlcReadRequest.Builder builder = plcConnection.readRequestBuilder();
             builder.addItem("errorMsg","GVLMES.sErrorMessage:STRING(20)");
+            builder.addItem("sDrumID","GVLMES.sDrumID:STRING(20)");
            // builder.addItem("sDrumID","GVLMES.sDrumID:STRING(20)");
             final PlcReadRequest readRequest = builder.build();
             final PlcReadResponse readResponse = readRequest.execute().get();
@@ -92,7 +93,8 @@ public class ManualAdsDriverTest extends ManualTest {
 
 
             final PlcWriteRequest.Builder rbuilder = plcConnection.writeRequestBuilder();
-            rbuilder.addItem("errorMsg", "GVLMES.sErrorMessage:STRING(20)", "啊啊啊啊");
+            rbuilder.addItem("errorMsg", "GVLMES.sErrorMessage:STRING(20)", "aaaaaaa");
+           rbuilder.addItem("sDrumID", "GVLMES.sDrumID:STRING(20)", "bbbbbb");
 
             final PlcWriteRequest writeRequest = rbuilder.build();
 

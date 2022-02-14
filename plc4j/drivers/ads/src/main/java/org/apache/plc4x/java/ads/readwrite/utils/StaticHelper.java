@@ -167,6 +167,7 @@ public class StaticHelper {
             valueString = new String(raw,StandardCharsets.UTF_8);
             try {
                 io.writeString(stringLength * 8, encoding, valueString);
+                //io.writeByte((byte) 0x00);
             }
             catch (SerializationException ex) {
                 Logger.getLogger(StaticHelper.class.getName()).log(Level.SEVERE, null, ex);
@@ -179,6 +180,8 @@ public class StaticHelper {
             valueString = new String(raw,StandardCharsets.UTF_16);
             try {
                 io.writeString(stringLength * 16, encoding, valueString);
+                //io.writeByte((byte) 0x00);
+                //io.writeByte((byte) 0x00);
             }
             catch (SerializationException ex) {
                 Logger.getLogger(StaticHelper.class.getName()).log(Level.SEVERE, null, ex);
