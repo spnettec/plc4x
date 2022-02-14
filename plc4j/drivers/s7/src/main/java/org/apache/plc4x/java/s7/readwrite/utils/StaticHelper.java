@@ -2140,8 +2140,15 @@ public class StaticHelper {
             valueString = new String(raw,StandardCharsets.UTF_8);
             try {
                 io.writeByte((byte) stringLength);
-                io.writeByte((byte) raw.length);
-                io.writeString(stringLength * 8, encoding, valueString);
+                byte[] bytes = valueString.getBytes(StandardCharsets.UTF_8);
+                io.writeByte((byte) bytes.length);
+                for (int i = 0; i < stringLength; i++) {
+                    if (i >= bytes.length) {
+                        io.writeByte((byte) 0x00);
+                    } else {
+                        io.writeByte( bytes[i]);
+                    }
+                }
             }
             catch (SerializationException ex) {
                 Logger.getLogger(StaticHelper.class.getName()).log(Level.SEVERE, null, ex);
@@ -2156,8 +2163,13 @@ public class StaticHelper {
                 io.writeUnsignedInt(16, stringLength);
                 byte[] bytes = valueString.getBytes(StandardCharsets.UTF_16);
                 io.writeUnsignedInt(16, bytes.length / 2);
-
-                io.writeString(stringLength * 16, encoding, valueString);
+                for (int i = 0; i < stringLength * 2; i++) {
+                    if (i >= bytes.length) {
+                        io.writeByte((byte) 0x00);
+                    } else {
+                        io.writeByte( bytes[i]);
+                    }
+                }
             }
             catch (SerializationException ex) {
                 Logger.getLogger(StaticHelper.class.getName()).log(Level.SEVERE, null, ex);

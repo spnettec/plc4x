@@ -78,7 +78,7 @@ public class DatatypesTest {
 
 
             final PlcWriteRequest.Builder rbuilder = connection.writeRequestBuilder();
-            rbuilder.addItem("PMS1302_Template", "%DB132:124:STRING(40)", "啊啊啊啊"); // true
+            rbuilder.addItem("PMS1302_Template", "%DB132:124:STRING(40)", "啊啊啊啊11"); // true
 
             final PlcWriteRequest writeRequest = rbuilder.build();
 

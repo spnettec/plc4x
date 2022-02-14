@@ -166,8 +166,14 @@ public class StaticHelper {
             final byte[] raw = valueString.getBytes(charsetTemp);
             valueString = new String(raw,StandardCharsets.UTF_8);
             try {
-                io.writeString(stringLength * 8, encoding, valueString);
-                //io.writeByte((byte) 0x00);
+                byte[] bytes = valueString.getBytes(StandardCharsets.UTF_8);
+                for (int i = 0; i < stringLength; i++) {
+                    if (i >= bytes.length) {
+                        io.writeByte((byte) 0x00);
+                    } else {
+                        io.writeByte( bytes[i]);
+                    }
+                }
             }
             catch (SerializationException ex) {
                 Logger.getLogger(StaticHelper.class.getName()).log(Level.SEVERE, null, ex);
@@ -179,9 +185,14 @@ public class StaticHelper {
             final byte[] raw = valueString.getBytes(charsetTemp);
             valueString = new String(raw,StandardCharsets.UTF_16);
             try {
-                io.writeString(stringLength * 16, encoding, valueString);
-                //io.writeByte((byte) 0x00);
-                //io.writeByte((byte) 0x00);
+                byte[] bytes = valueString.getBytes(StandardCharsets.UTF_16);
+                for (int i = 0; i < stringLength * 2; i++) {
+                    if (i >= bytes.length) {
+                        io.writeByte((byte) 0x00);
+                    } else {
+                        io.writeByte( bytes[i]);
+                    }
+                }
             }
             catch (SerializationException ex) {
                 Logger.getLogger(StaticHelper.class.getName()).log(Level.SEVERE, null, ex);

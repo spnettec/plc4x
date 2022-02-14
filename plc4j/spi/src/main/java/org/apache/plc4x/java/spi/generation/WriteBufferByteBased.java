@@ -311,12 +311,13 @@ public class WriteBufferByteBased implements WriteBuffer {
         }
 
         try {
-            for (int i = 0; i < fixedByteLength; i++) {
-                if (i >= bytes.length) {
-                    bo.writeByte(false, 8, (byte) 0x00);
-                } else {
-                    bo.writeByte(false, 8, bytes[i]);
-                }
+            int offset = bytes.length - fixedByteLength;
+            while (offset < 0) {
+                bo.writeByte(false, 8, (byte) 0x00);
+                offset++;
+            }
+            for (int i = offset; i < bytes.length; i++) {
+                bo.writeByte(false, 8, bytes[i]);
             }
         } catch (IOException e) {
             throw new SerializationException("Error writing string", e);
