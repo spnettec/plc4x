@@ -168,17 +168,15 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
     protected CompletableFuture<PlcReadResponse> singleRead(PlcReadRequest readRequest, DirectAdsField directAdsField) {
         CompletableFuture<PlcReadResponse> future = new CompletableFuture<>();
 
-        long size;
+        final long size;
         if (directAdsField.getAdsDataType() == AdsDataType.STRING) {
             // If an explicit size is given with the string, use this, if not use 256
-            long stringLength = (directAdsField instanceof AdsStringField) ?
+            size = (directAdsField instanceof AdsStringField) ?
                 ((AdsStringField) directAdsField).getStringLength() : 256;
-            size = stringLength * 8;
         } else if (directAdsField.getAdsDataType() == AdsDataType.WSTRING) {
             // If an explicit size is given with the string, use this, if not use 512
-            long stringLength = (directAdsField instanceof AdsStringField) ?
-                ((long) ((AdsStringField) directAdsField).getStringLength() ) * 2 : 512;
-            size = stringLength * 8;
+            size = (directAdsField instanceof AdsStringField) ?
+                ((long) ((AdsStringField) directAdsField).getStringLength()) * 2 : 512;
         } else {
             size = directAdsField.getAdsDataType().getNumBytes();
         }
@@ -219,7 +217,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
         // Calculate the expected size of the response data.
         long expectedResponseDataSize = directAdsFields.stream().mapToLong(
             field -> {
-                long size;
+                final long size;
                 if (field.getAdsDataType() == AdsDataType.STRING) {
                     // If an explicit size is given with the string, use this, if not use 256
                     size = (field instanceof AdsStringField) ?
@@ -447,7 +445,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
 
         try {
             WriteBufferByteBased writeBuffer = new WriteBufferByteBased(DataItem.getLengthInBytes(plcValue,
-                plcField.getAdsDataType().getDataFormatName(), stringLength * 8));
+                plcField.getAdsDataType().getDataFormatName(), stringLength * 8), ByteOrder.LITTLE_ENDIAN);
             DataItem.staticSerialize(writeBuffer, plcValue, plcField.getAdsDataType().getDataFormatName(), stringLength, ByteOrder.LITTLE_ENDIAN);
             AdsData adsData = new AdsWriteRequest(
                 directAdsField.getIndexGroup(), directAdsField.getIndexOffset(), writeBuffer.getBytes());
@@ -522,7 +520,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
             }
             try {
                 WriteBufferByteBased itemWriteBuffer = new WriteBufferByteBased(DataItem.getLengthInBytes(plcValue,
-                    field.getAdsDataType().getDataFormatName(), stringLength * 8));
+                    field.getAdsDataType().getDataFormatName(), stringLength * 8), ByteOrder.LITTLE_ENDIAN);
                 DataItem.staticSerialize(itemWriteBuffer, plcValue,
                     field.getAdsDataType().getDataFormatName(), stringLength, ByteOrder.LITTLE_ENDIAN);
                 int numBytes = itemWriteBuffer.getPos();

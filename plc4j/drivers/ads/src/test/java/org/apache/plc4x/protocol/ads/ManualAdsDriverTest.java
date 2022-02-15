@@ -20,89 +20,88 @@ package org.apache.plc4x.protocol.ads;
 
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
-import org.apache.plc4x.java.api.messages.PlcReadRequest;
-import org.apache.plc4x.java.api.messages.PlcReadResponse;
-import org.apache.plc4x.java.api.messages.PlcWriteRequest;
-import org.apache.plc4x.java.api.messages.PlcWriteResponse;
+import org.apache.plc4x.java.api.messages.*;
+import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
+import org.apache.plc4x.java.api.value.PlcValue;
+import org.apache.plc4x.java.utils.connectionpool.PooledPlcDriverManager;
 import org.apache.plc4x.test.manual.ManualTest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
+import java.util.function.Consumer;
 
-public class ManualAdsDriverTest extends ManualTest {
-
-    /*
-     * Test program code on the PLC with the test-data.
-     *
-     * Located in "main"
-     *
-
-    hurz_BOOL  := TRUE;
-	hurz_BYTE  := 42;
-	hurz_WORD  := 42424;
-	hurz_DWORD := 4242442424;
-	hurz_LWORD := 4242442424242424242;
-	hurz_SINT  := -42;
-	hurz_USINT := 42;
-	hurz_INT   := -2424;
-	hurz_UINT  := 42424;
-	hurz_DINT  := -242442424;
-	hurz_UDINT := 4242442424;
-	hurz_LINT  := -4242442424242424242;
-	hurz_ULINT := 4242442424242424242;
-	hurz_REAL  := 3.14159265359;
-	hurz_LREAL := 2.71828182846;
-	hurz_TIME  := T#1S234MS;
-	hurz_LTIME := LTIME#1000D15H23M12S34MS2US44NS;
-	hurz_DATE  := D#1978-03-28;
-	//hurz_LDATE:LDATE;
-	hurz_TIME_OF_DAY 	:= TIME_OF_DAY#15:36:30.123;
-	hurz_TOD         	:= TOD#16:17:18.123;
-	//hurz_LTIME_OF_DAY:LTIME_OF_DAY;
-	//hurz_LTOD:LTOD;
-	hurz_DATE_AND_TIME 	:= DATE_AND_TIME#1996-05-06-15:36:30;
-	hurz_DT				:= DT#1972-03-29-00:00:00;
-	//hurz_LDATE_AND_TIME:LDATE_AND_TIME;
-	//hurz_LDT:LDT;
-	hurz_STRING			:= 'hurz';
-	hurz_WSTRING		:= "wolf";
-
-     *
-     */
-
-    public ManualAdsDriverTest(String connectionString) {
-        super(connectionString);
-    }
-
+public class ManualAdsDriverTest {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ManualAdsDriverTest.class);
     public static void main(String[] args) throws Exception {
-        String ip = "127.0.0.1";
+        String ip = "10.80.41.18";
 
         String sourceAmsNetId = "10.80.41.10.1.1";
         int sourceAmsPort = 65534;
         String targetAmsNetId = "5.81.202.72.1.1";
         int targetAmsPort = 851;
         String connectionString = String.format("ads:tcp://%s?sourceAmsNetId=%s&sourceAmsPort=%d&targetAmsNetId=%s&targetAmsPort=%d", ip, sourceAmsNetId, sourceAmsPort, targetAmsNetId, targetAmsPort);
-        try (PlcConnection plcConnection = new PlcDriverManager().getConnection(connectionString)) {
+        PooledPlcDriverManager pooledPlcDriverManager = new PooledPlcDriverManager();
+        try (PlcConnection plcConnection = pooledPlcDriverManager.getConnection(connectionString)) {
 
             final PlcReadRequest.Builder builder = plcConnection.readRequestBuilder();
             builder.addItem("errorMsg","GVLMES.sErrorMessage:STRING(20)");
             builder.addItem("sDrumID","GVLMES.sDrumID:STRING(20)");
-           // builder.addItem("sDrumID","GVLMES.sDrumID:STRING(20)");
+            builder.addItem("status","GVLMES.iConnectionStatus:INT");
             final PlcReadRequest readRequest = builder.build();
             final PlcReadResponse readResponse = readRequest.execute().get();
             System.out.println(readResponse.getAsPlcValue());
 
 
             final PlcWriteRequest.Builder rbuilder = plcConnection.writeRequestBuilder();
-            rbuilder.addItem("errorMsg", "GVLMES.sErrorMessage:STRING(20)", "aaaaaaa");
-           rbuilder.addItem("sDrumID", "GVLMES.sDrumID:STRING(20)", "bbbbbb");
-
+            rbuilder.addItem("errorMsg", "GVLMES.sErrorMessage:STRING(20)", "aaaaa");
+            rbuilder.addItem("sDrumID", "GVLMES.sDrumID:STRING(20)", "bbbbb");
+            rbuilder.addItem("status","GVLMES.iConnectionStatus:INT",2);
             final PlcWriteRequest writeRequest = rbuilder.build();
 
             final PlcWriteResponse writeResponse = writeRequest.execute().get();
 
             System.out.println(writeResponse);
+
+
+            final PlcSubscriptionRequest.Builder sbuilder = plcConnection.subscriptionRequestBuilder();
+            sbuilder.addChangeOfStateField("errorMsg", "GVLMES.sErrorMessage:STRING(20)");
+            sbuilder.addChangeOfStateField("sDrumID", "GVLMES.sDrumID:STRING(20)");
+            sbuilder.addChangeOfStateField("status", "GVLMES.iConnectionStatus:INT");
+            PlcSubscriptionRequest subscriptionRequest = sbuilder.build();
+            final PlcSubscriptionResponse subscriptionResponse = subscriptionRequest.execute().get();
+            for (String subscriptionName : subscriptionResponse.getFieldNames()) {
+                final PlcSubscriptionHandle subscriptionHandle = subscriptionResponse.getSubscriptionHandle(subscriptionName);
+                subscriptionHandle.register(new ValueChangeHandler());
+            }
+
         }
 
+    }
+    private static class ValueChangeHandler implements Consumer<PlcSubscriptionEvent> {
+
+        @Override
+        public void accept(PlcSubscriptionEvent plcSubscriptionEvent) {
+            LOGGER.info("Incoming event:");
+            for (String fieldName : plcSubscriptionEvent.getFieldNames()) {
+                final PlcValue plcValue = plcSubscriptionEvent.getPlcValue(fieldName);
+                if(plcValue.isList()) {
+                    StringBuilder sb = new StringBuilder(String.format("Field '%s' value:", fieldName));
+                    for (PlcValue value : plcValue.getList()) {
+                        sb.append(" ").append(value.getString());
+                    }
+                    LOGGER.info(sb.toString());
+                } else if (plcValue.isStruct()) {
+                    StringBuilder sb = new StringBuilder(String.format("Field '%s' value:", fieldName));
+                    plcValue.getStruct().forEach((name, value) ->
+                        sb.append(" ").append(name).append("=").append(value.getString())
+                    );
+                    LOGGER.info(sb.toString());
+                } else {
+                    LOGGER.info(String.format("Field '%s' value: %s", fieldName, plcValue.getString()));
+                }
+            }
+        }
     }
 
 }
