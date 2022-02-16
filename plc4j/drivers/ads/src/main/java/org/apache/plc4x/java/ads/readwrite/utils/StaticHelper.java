@@ -105,6 +105,7 @@ public class StaticHelper {
         return null;
     }
     public static String parseAmsString(ReadBuffer readBuffer, int stringLength, String encoding) {
+        stringLength = Math.min(stringLength, 256);
         try {
             if ("UTF-8".equalsIgnoreCase(encoding)) {
                 List<Byte> bytes = new ArrayList<>();
@@ -156,6 +157,7 @@ public class StaticHelper {
     }
 
     public static void serializeAmsString(WriteBuffer io, PlcValue value, int stringLength, String encoding) {
+        stringLength = Math.min(stringLength, 256);
         String valueString = (String) value.getObject();
         valueString = valueString == null ? "" : valueString;
         Charset charsetTemp = getEncoding(valueString);

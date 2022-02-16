@@ -430,22 +430,11 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
         final String fieldName = writeRequest.getFieldNames().iterator().next();
         final AdsField plcField = (AdsField) writeRequest.getField(fieldName);
         final PlcValue plcValue = writeRequest.getPlcValue(fieldName);
-        int stringLength;
-        if (plcField.getAdsDataType() == AdsDataType.STRING) {
-            // If an explicit size is given with the string, use this, if not use 256
-            stringLength = (plcField instanceof AdsStringField) ?
-                ((AdsStringField) plcField).getStringLength() : 256;
-        } else if (plcField.getAdsDataType() == AdsDataType.WSTRING) {
-            // If an explicit size is given with the string, use this, if not use 512
-            stringLength = (plcField instanceof AdsStringField) ?
-                (((AdsStringField) plcField).getStringLength() ) * 2 : 512;
-        } else {
-            stringLength = 0;
-        }
-
+        int stringLength = (plcField instanceof AdsStringField) ? ((AdsStringField) plcField).getStringLength() : 0;
+        stringLength = Math.min(stringLength, 256);
         try {
             WriteBufferByteBased writeBuffer = new WriteBufferByteBased(DataItem.getLengthInBytes(plcValue,
-                plcField.getAdsDataType().getDataFormatName(), stringLength * 8), ByteOrder.LITTLE_ENDIAN);
+                plcField.getAdsDataType().getDataFormatName(), stringLength), ByteOrder.LITTLE_ENDIAN);
             DataItem.staticSerialize(writeBuffer, plcValue, plcField.getAdsDataType().getDataFormatName(), stringLength, ByteOrder.LITTLE_ENDIAN);
             AdsData adsData = new AdsWriteRequest(
                 directAdsField.getIndexGroup(), directAdsField.getIndexOffset(), writeBuffer.getBytes());
@@ -485,44 +474,28 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
 
         // Calculate the size of all fields together.
         // Calculate the expected size of the response data.
-        int expectedResponseDataSize = directAdsFields.stream().mapToInt(
-            field -> {
-                int size;
-                if (field.getAdsDataType() == AdsDataType.STRING) {
-                    // If an explicit size is given with the string, use this, if not use 256
-                    size = (field instanceof AdsStringField) ?
-                        ((AdsStringField) field).getStringLength() : 256;
-                } else if (field.getAdsDataType() == AdsDataType.WSTRING) {
-                    // If an explicit size is given with the string, use this, if not use 512
-                    size = (field instanceof AdsStringField) ?
-                        (((AdsStringField) field).getStringLength()) * 2 : 512;
-                } else {
-                    size = field.getAdsDataType().getNumBytes();
-                }
-                return size * field.getNumberOfElements();
-            }).sum();
+        int expectedResponseDataSize = writeRequest.getFieldNames().stream().mapToInt(fieldName->{
+                final AdsField plcField = (AdsField) writeRequest.getField(fieldName);
+                final PlcValue plcValue = writeRequest.getPlcValue(fieldName);
+                int stringLength = (plcField instanceof AdsStringField) ? ((AdsStringField) plcField).getStringLength() : 0;
+                stringLength = Math.min(stringLength, 256);
+                final int lengthInBytes =  DataItem.getLengthInBytes(plcValue,
+                    plcField.getAdsDataType().getDataFormatName(), stringLength);
+                return lengthInBytes * plcField.getNumberOfElements();
+            }
+        ).sum();
         byte[] writeBuffer = new byte[expectedResponseDataSize];
         int pos = 0;
         for (String fieldName : writeRequest.getFieldNames()) {
-            final AdsField field = (AdsField) writeRequest.getField(fieldName);
+            final AdsField plcField = (AdsField) writeRequest.getField(fieldName);
             final PlcValue plcValue = writeRequest.getPlcValue(fieldName);
-            int stringLength;
-            if (field.getAdsDataType() == AdsDataType.STRING) {
-                // If an explicit size is given with the string, use this, if not use 256
-                stringLength = (field instanceof AdsStringField) ?
-                    ((AdsStringField) field).getStringLength() : 256;
-            } else if (field.getAdsDataType() == AdsDataType.WSTRING) {
-                // If an explicit size is given with the string, use this, if not use 512
-                stringLength = (field instanceof AdsStringField) ?
-                    (((AdsStringField) field).getStringLength() ) * 2 : 512;
-            } else {
-                stringLength = 0;
-            }
+            int stringLength = (plcField instanceof AdsStringField) ? ((AdsStringField) plcField).getStringLength() : 0;
+            stringLength = Math.min(stringLength, 256);
             try {
                 WriteBufferByteBased itemWriteBuffer = new WriteBufferByteBased(DataItem.getLengthInBytes(plcValue,
-                    field.getAdsDataType().getDataFormatName(), stringLength * 8), ByteOrder.LITTLE_ENDIAN);
+                    plcField.getAdsDataType().getDataFormatName(), stringLength), ByteOrder.LITTLE_ENDIAN);
                 DataItem.staticSerialize(itemWriteBuffer, plcValue,
-                    field.getAdsDataType().getDataFormatName(), stringLength, ByteOrder.LITTLE_ENDIAN);
+                    plcField.getAdsDataType().getDataFormatName(), stringLength, ByteOrder.LITTLE_ENDIAN);
                 int numBytes = itemWriteBuffer.getPos();
                 System.arraycopy(itemWriteBuffer.getBytes(), 0, writeBuffer, pos, numBytes);
                 pos += numBytes;

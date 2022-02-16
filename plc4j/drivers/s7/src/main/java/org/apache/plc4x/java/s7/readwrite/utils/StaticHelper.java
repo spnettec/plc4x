@@ -2129,6 +2129,7 @@ public class StaticHelper {
      * the String as char arrays from your application.
      */
     public static void serializeS7String(WriteBuffer io, PlcValue value, int stringLength, String encoding) {
+        stringLength = Math.min(stringLength, 256);
         String valueString = (String) value.getObject();
         valueString = valueString == null ? "" : valueString;
         Charset charsetTemp = getEncoding(valueString);
