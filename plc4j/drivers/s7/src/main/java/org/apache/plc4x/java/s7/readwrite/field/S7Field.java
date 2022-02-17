@@ -216,6 +216,10 @@ public class S7Field implements PlcField, Serializable {
             if (stringEncoding==null || "".equals(stringEncoding))
             {
                 stringEncoding = "UTF-8";
+                if (dataType == TransportSize.WSTRING || dataType == TransportSize.WCHAR)
+                {
+                    stringEncoding = "UTF-16";
+                }
             }
             return new S7StringField(dataType, memoryArea, blockNumber, byteOffset, bitOffset, numElements, stringLength, stringEncoding);
         } else if ((matcher = DATA_BLOCK_STRING_SHORT_PATTERN.matcher(fieldString)).matches()) {
@@ -233,6 +237,10 @@ public class S7Field implements PlcField, Serializable {
             if (stringEncoding==null || "".equals(stringEncoding))
             {
                 stringEncoding = "UTF-8";
+                if (dataType == TransportSize.WSTRING || dataType == TransportSize.WCHAR)
+                {
+                    stringEncoding = "UTF-16";
+                }
             }
             return new S7StringField(dataType, memoryArea, blockNumber,
                 byteOffset, bitOffset, numElements, stringLength, stringEncoding);
@@ -261,6 +269,10 @@ public class S7Field implements PlcField, Serializable {
             if (stringEncoding==null || "".equals(stringEncoding))
             {
                 stringEncoding = "UTF-8";
+                if (dataType == TransportSize.WSTRING || dataType == TransportSize.WCHAR)
+                {
+                    stringEncoding = "UTF-16";
+                }
             }
             return new S7Field(dataType, memoryArea, blockNumber, byteOffset, bitOffset, numElements, stringEncoding);
         } else if ((matcher = DATA_BLOCK_SHORT_PATTERN.matcher(fieldString)).matches()) {
@@ -282,6 +294,10 @@ public class S7Field implements PlcField, Serializable {
             if (stringEncoding==null || "".equals(stringEncoding))
             {
                 stringEncoding = "UTF-8";
+                if (dataType == TransportSize.WSTRING || dataType == TransportSize.WCHAR)
+                {
+                    stringEncoding = "UTF-16";
+                }
             }
             return new S7Field(dataType, memoryArea, blockNumber, byteOffset, bitOffset, numElements, stringEncoding);
         } else if ((matcher = PLC_PROXY_ADDRESS_PATTERN.matcher(fieldString)).matches()) {
@@ -299,6 +315,10 @@ public class S7Field implements PlcField, Serializable {
                     if (stringEncoding==null || "".equals(stringEncoding))
                     {
                         stringEncoding = "UTF-8";
+                        if (s7AddressAny.getTransportSize() == TransportSize.WSTRING || s7AddressAny.getTransportSize() == TransportSize.WCHAR)
+                        {
+                            stringEncoding = "UTF-16";
+                        }
                     }
                     return new S7Field(s7AddressAny.getTransportSize(), s7AddressAny.getArea(),
                         s7AddressAny.getDbNumber(), s7AddressAny.getByteAddress(),
@@ -336,6 +356,10 @@ public class S7Field implements PlcField, Serializable {
             if (stringEncoding==null || "".equals(stringEncoding))
             {
                 stringEncoding = "UTF-8";
+                if (dataType == TransportSize.WSTRING || dataType == TransportSize.WCHAR)
+                {
+                    stringEncoding = "UTF-16";
+                }
             }
             return new S7Field(dataType, memoryArea, (short) 0, byteOffset, bitOffset, numElements, stringEncoding);
         }
