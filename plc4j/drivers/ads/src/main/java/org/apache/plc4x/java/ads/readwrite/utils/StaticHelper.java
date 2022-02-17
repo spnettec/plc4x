@@ -44,7 +44,7 @@ public class StaticHelper {
     public static Charset detectCharset(String firstMaTch, byte[] bytes) {
 
         Charset charset = null;
-        if (firstMaTch!=null && !"".equals(firstMaTch) && Arrays.stream(DEFAULTCHARSETS).anyMatch(cs->cs.equalsIgnoreCase(firstMaTch)))
+        if (firstMaTch!=null && !"".equals(firstMaTch))
         {
             try {
                 charset = Charset.forName(firstMaTch.replaceAll("[^a-zA-Z0-9]", ""));
@@ -53,7 +53,7 @@ public class StaticHelper {
             return charset;
         }
         for (String charsetName : DEFAULTCHARSETS) {
-            charset = detectCharset(bytes, Charset.forName(charsetName), 0, bytes.length);
+            charset = detectCharset(bytes, Charset.forName(charsetName), bytes.length);
             if (charset != null) {
                 break;
             }
@@ -62,9 +62,9 @@ public class StaticHelper {
         return charset;
     }
 
-    private static Charset detectCharset(byte[] bytes, Charset charset, int offset, int length) {
+    private static Charset detectCharset(byte[] bytes, Charset charset, int length) {
         try {
-            BufferedInputStream input = new BufferedInputStream(new ByteArrayInputStream(bytes, offset, length));
+            BufferedInputStream input = new BufferedInputStream(new ByteArrayInputStream(bytes, 0, length));
 
             CharsetDecoder decoder = charset.newDecoder();
             decoder.reset();
@@ -101,7 +101,7 @@ public class StaticHelper {
             return null;
         }
         Charset charset = null;
-        if (firstMaTch!=null && !"".equals(firstMaTch) && Arrays.stream(DEFAULTCHARSETS).anyMatch(cs->cs.equalsIgnoreCase(firstMaTch)))
+        if (firstMaTch!=null && !"".equals(firstMaTch))
         {
             try {
                 charset = Charset.forName(firstMaTch.replaceAll("[^a-zA-Z0-9]", ""));
@@ -120,21 +120,7 @@ public class StaticHelper {
         }
         return null;
     }
-    public static Charset getEncoding(String str) {
-        if (str == null || str.trim().length() < 1) {
-            return null;
-        }
-        for (String encode : DEFAULTCHARSETS) {
-            try {
-                Charset charset = Charset.forName(encode);
-                if (str.equals(new String(str.getBytes(charset), charset))) {
-                    return charset;
-                }
-            } catch (Exception er) {
-            }
-        }
-        return null;
-    }
+
     public static String parseAmsString(ReadBuffer readBuffer, int stringLength, String encoding, String stringEncoding) {
         stringLength = Math.min(stringLength, 256);
         try {
@@ -214,6 +200,10 @@ public class StaticHelper {
         stringLength = Math.min(stringLength, 256);
         String valueString = (String) value.getObject();
         valueString = valueString == null ? "" : valueString;
+        if ("AUTO".equalsIgnoreCase(stringEncoding))
+        {
+            stringEncoding = null;
+        }
         Charset charsetTemp = getEncoding(stringEncoding,valueString);
         if ("UTF-8".equalsIgnoreCase(encoding)) {
             if (charsetTemp == null) {
