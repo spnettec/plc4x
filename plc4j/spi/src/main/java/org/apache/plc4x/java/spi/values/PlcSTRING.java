@@ -232,7 +232,7 @@ public class PlcSTRING extends PlcSimpleValue<String> {
 
     @Override
     public void serialize(WriteBuffer writeBuffer) throws SerializationException {
-        String valueString = value.toString();
+        String valueString = value;
         writeBuffer.writeString(getClass().getSimpleName(), valueString.getBytes(StandardCharsets.UTF_8).length*8,StandardCharsets.UTF_8.name(),valueString);
     }
 

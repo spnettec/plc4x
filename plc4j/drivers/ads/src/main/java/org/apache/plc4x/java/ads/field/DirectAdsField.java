@@ -20,7 +20,6 @@ package org.apache.plc4x.java.ads.field;
 
 import org.apache.plc4x.java.ads.readwrite.AdsDataType;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
-import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
@@ -35,7 +34,7 @@ import java.util.regex.Pattern;
  */
 public class DirectAdsField implements AdsField {
 
-    private static final Pattern RESOURCE_ADDRESS_PATTERN = Pattern.compile("^((0[xX](?<indexGroupHex>[0-9a-fA-F]+))|(?<indexGroup>\\d+))/((0[xX](?<indexOffsetHex>[0-9a-fA-F]+))|(?<indexOffset>\\d+)):(?<adsDataType>\\w+)(\\[(?<numberOfElements>\\d+)])?");
+    private static final Pattern RESOURCE_ADDRESS_PATTERN = Pattern.compile("^((0[xX](?<indexGroupHex>[0-9a-fA-F]+))|(?<indexGroup>\\d+))/((0[xX](?<indexOffsetHex>[0-9a-fA-F]+))|(?<indexOffset>\\d+)):(?<adsDataType>\\w+)(\\[(?<numberOfElements>\\d+)])?(\\|(?<stringEncoding>[a-z0-9A-Z_-]+))?");
 
     private final long indexGroup;
 
@@ -45,20 +44,23 @@ public class DirectAdsField implements AdsField {
 
     private final int numberOfElements;
 
-    public DirectAdsField(long indexGroup, long indexOffset, AdsDataType adsDataType, Integer numberOfElements) {
+    private final String stringEncoding;
+
+    public DirectAdsField(long indexGroup, long indexOffset, AdsDataType adsDataType, Integer numberOfElements, String stringEncoding) {
         //ByteValue.checkUnsignedBounds(indexGroup, 4);
         this.indexGroup = indexGroup;
         //ByteValue.checkUnsignedBounds(indexOffset, 4);
         this.indexOffset = indexOffset;
         this.adsDataType = Objects.requireNonNull(adsDataType);
         this.numberOfElements = numberOfElements != null ? numberOfElements : 1;
+        this.stringEncoding = stringEncoding;
         if (this.numberOfElements <= 0) {
             throw new IllegalArgumentException("numberOfElements must be greater then zero. Was " + this.numberOfElements);
         }
     }
 
-    public static DirectAdsField of(long indexGroup, long indexOffset, AdsDataType adsDataType, Integer numberOfElements) {
-        return new DirectAdsField(indexGroup, indexOffset, adsDataType, numberOfElements);
+    public static DirectAdsField of(long indexGroup, long indexOffset, AdsDataType adsDataType, Integer numberOfElements, String stringEncoding) {
+        return new DirectAdsField(indexGroup, indexOffset, adsDataType, numberOfElements, stringEncoding);
     }
 
     public static DirectAdsField of(String address) {
@@ -92,8 +94,16 @@ public class DirectAdsField implements AdsField {
 
         String numberOfElementsString = matcher.group("numberOfElements");
         Integer numberOfElements = numberOfElementsString != null ? Integer.valueOf(numberOfElementsString) : null;
-
-        return new DirectAdsField(indexGroup, indexOffset, adsDataType, numberOfElements);
+        String stringEncoding = matcher.group("stringEncoding");
+        if (stringEncoding==null || "".equals(stringEncoding))
+        {
+            stringEncoding = "UTF-8";
+            if ("IEC61131_WSTRING".equals(adsDataTypeString))
+            {
+                stringEncoding = "UTF-16";
+            }
+        }
+        return new DirectAdsField(indexGroup, indexOffset, adsDataType, numberOfElements, stringEncoding);
     }
 
     public static boolean matches(String address) {
@@ -106,6 +116,11 @@ public class DirectAdsField implements AdsField {
 
     public long getIndexOffset() {
         return indexOffset;
+    }
+
+    @Override
+    public String getStringEncoding() {
+        return stringEncoding;
     }
 
     @Override

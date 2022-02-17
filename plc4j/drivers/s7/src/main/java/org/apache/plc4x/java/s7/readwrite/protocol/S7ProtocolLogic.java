@@ -875,9 +875,9 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
             int stringLength = (field instanceof S7StringField) ? ((S7StringField) field).getStringLength() : 254;
             ByteBuffer byteBuffer = null;
             for (int i = 0; i < field.getNumberOfElements(); i++) {
-                final int lengthInBytes = DataItem.getLengthInBytes(plcValue.getIndex(i), field.getDataType().getDataProtocolId(), stringLength);
+                final int lengthInBytes = DataItem.getLengthInBytes(plcValue.getIndex(i), field.getDataType().getDataProtocolId(), stringLength, field.getStringEncoding());
                 final WriteBufferByteBased writeBuffer = new WriteBufferByteBased(lengthInBytes);
-                DataItem.staticSerialize(writeBuffer, plcValue.getIndex(i), field.getDataType().getDataProtocolId(), stringLength);
+                DataItem.staticSerialize(writeBuffer, plcValue.getIndex(i), field.getDataType().getDataProtocolId(), stringLength, field.getStringEncoding());
                 // Allocate enough space for all items.
                 if (byteBuffer == null) {
                     byteBuffer = ByteBuffer.allocate(lengthInBytes * field.getNumberOfElements());
@@ -900,13 +900,13 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
             int stringLength = (field instanceof S7StringField) ? ((S7StringField) field).getStringLength() : 254;
             if (field.getNumberOfElements() == 1) {
                 return DataItem.staticParse(readBuffer, field.getDataType().getDataProtocolId(),
-                    stringLength);
+                    stringLength, field.getStringEncoding());
             } else {
                 // Fetch all
                 final PlcValue[] resultItems = IntStream.range(0, field.getNumberOfElements()).mapToObj(i -> {
                     try {
                         return DataItem.staticParse(readBuffer, field.getDataType().getDataProtocolId(),
-                            stringLength);
+                            stringLength, field.getStringEncoding());
                     } catch (ParseException e) {
                         logger.warn("Error parsing field item of type: '{}' (at position {}})", field.getDataType().name(), i, e);
                     }

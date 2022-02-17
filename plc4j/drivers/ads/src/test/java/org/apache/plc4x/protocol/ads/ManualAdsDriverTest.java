@@ -45,7 +45,7 @@ public class ManualAdsDriverTest {
         try (PlcConnection plcConnection = pooledPlcDriverManager.getConnection(connectionString)) {
 
             final PlcReadRequest.Builder builder = plcConnection.readRequestBuilder();
-            builder.addItem("errorMsg","GVLMES.sErrorMessage:STRING(20)");
+            builder.addItem("errorMsg","GVLMES.sErrorMessage:STRING(20)|GBK");
             builder.addItem("sDrumID","GVLMES.sDrumID:STRING(20)");
             builder.addItem("status","GVLMES.iConnectionStatus:INT");
             final PlcReadRequest readRequest = builder.build();
@@ -54,7 +54,7 @@ public class ManualAdsDriverTest {
 
 
             final PlcWriteRequest.Builder rbuilder = plcConnection.writeRequestBuilder();
-            rbuilder.addItem("errorMsg", "GVLMES.sErrorMessage:STRING(20)", "aaaaa");
+            rbuilder.addItem("errorMsg", "GVLMES.sErrorMessage:STRING(20)|GBK", "啊啊啊啊");
             rbuilder.addItem("sDrumID", "GVLMES.sDrumID:STRING(20)", "bbbbb");
             rbuilder.addItem("status","GVLMES.iConnectionStatus:INT",2);
             final PlcWriteRequest writeRequest = rbuilder.build();

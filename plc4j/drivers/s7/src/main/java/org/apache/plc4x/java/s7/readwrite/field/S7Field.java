@@ -37,7 +37,6 @@ import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -46,23 +45,23 @@ public class S7Field implements PlcField, Serializable {
 
     //byteOffset theoretically can reach up to 2097151 ... see checkByteOffset() below --> 7digits
     private static final Pattern ADDRESS_PATTERN =
-        Pattern.compile("^%(?<memoryArea>.)(?<transferSizeCode>[XBWD]?)(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?:(?<dataType>[a-zA-Z_]+)(\\[(?<numElements>\\d+)])?");
+        Pattern.compile("^%(?<memoryArea>.)(?<transferSizeCode>[XBWD]?)(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?:(?<dataType>[a-zA-Z_]+)(\\[(?<numElements>\\d+)])?(\\|(?<stringEncoding>[a-z0-9A-Z_-]+))?");
 
     //blockNumber usually has its max hat around 64000 --> 5digits
     private static final Pattern DATA_BLOCK_ADDRESS_PATTERN =
-        Pattern.compile("^%DB(?<blockNumber>\\d{1,5}).DB(?<transferSizeCode>[XBWD]?)(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?:(?<dataType>[a-zA-Z_]+)(\\[(?<numElements>\\d+)])?");
+        Pattern.compile("^%DB(?<blockNumber>\\d{1,5}).DB(?<transferSizeCode>[XBWD]?)(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?:(?<dataType>[a-zA-Z_]+)(\\[(?<numElements>\\d+)])?(\\|(?<stringEncoding>[a-z0-9A-Z_-]+))?");
 
     private static final Pattern DATA_BLOCK_SHORT_PATTERN =
-        Pattern.compile("^%DB(?<blockNumber>\\d{1,5}):(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?:(?<dataType>[a-zA-Z_]+)(\\[(?<numElements>\\d+)])?");
+        Pattern.compile("^%DB(?<blockNumber>\\d{1,5}):(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?:(?<dataType>[a-zA-Z_]+)(\\[(?<numElements>\\d+)])?(\\|(?<stringEncoding>[a-z0-9A-Z_-]+))?");
 
     private static final Pattern DATA_BLOCK_STRING_ADDRESS_PATTERN =
-        Pattern.compile("^%DB(?<blockNumber>\\d{1,5}).DB(?<transferSizeCode>[XBWD]?)(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?:(?<dataType>STRING|WSTRING)\\((?<stringLength>\\d{1,3})\\)(\\[(?<numElements>\\d+)])?");
+        Pattern.compile("^%DB(?<blockNumber>\\d{1,5}).DB(?<transferSizeCode>[XBWD]?)(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?:(?<dataType>STRING|WSTRING)\\((?<stringLength>\\d{1,3})\\)(\\[(?<numElements>\\d+)])?(\\|(?<stringEncoding>[a-z0-9A-Z_-]+))?");
 
     private static final Pattern DATA_BLOCK_STRING_SHORT_PATTERN =
-        Pattern.compile("^%DB(?<blockNumber>\\d{1,5}):(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?:(?<dataType>STRING|WSTRING)\\((?<stringLength>\\d{1,3})\\)(\\[(?<numElements>\\d+)])?");
+        Pattern.compile("^%DB(?<blockNumber>\\d{1,5}):(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?:(?<dataType>STRING|WSTRING)\\((?<stringLength>\\d{1,3})\\)(\\[(?<numElements>\\d+)])?(\\|(?<stringEncoding>[a-z0-9A-Z_-]+))?");
 
     private static final Pattern PLC_PROXY_ADDRESS_PATTERN =
-        Pattern.compile("[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}");
+        Pattern.compile("[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}(\\|(?<stringEncoding>[a-z0-9A-Z_-]+))?");
 
     private static final String DATA_TYPE = "dataType";
     private static final String STRING_LENGTH = "stringLength";
@@ -72,6 +71,7 @@ public class S7Field implements PlcField, Serializable {
     private static final String BIT_OFFSET = "bitOffset";
     private static final String NUM_ELEMENTS = "numElements";
     private static final String MEMORY_AREA = "memoryArea";
+    private static final String STRING_ENCODING = "stringEncoding";
 
     private TransportSize dataType;
     private final MemoryArea memoryArea;
@@ -79,17 +79,20 @@ public class S7Field implements PlcField, Serializable {
     private final int byteOffset;
     private final byte bitOffset;
     private final int numElements;
+    private final String stringEncoding;
 
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
     protected S7Field(@JsonProperty("dataType") TransportSize dataType, @JsonProperty("memoryArea") MemoryArea memoryArea,
                       @JsonProperty("blockNumber") int blockNumber, @JsonProperty("byteOffset") int byteOffset,
-                      @JsonProperty("bitOffset") byte bitOffset, @JsonProperty("numElements") int numElements) {
+                      @JsonProperty("bitOffset") byte bitOffset, @JsonProperty("numElements") int numElements,
+                      @JsonProperty("stringEncoding") String stringEncoding) {
         this.dataType = dataType;
         this.memoryArea = memoryArea;
         this.blockNumber = blockNumber;
         this.byteOffset = byteOffset;
         this.bitOffset = bitOffset;
         this.numElements = numElements;
+        this.stringEncoding = stringEncoding;
     }
 
     public TransportSize getDataType() {
@@ -118,6 +121,10 @@ public class S7Field implements PlcField, Serializable {
 
     public byte getBitOffset() {
         return bitOffset;
+    }
+
+    public String getStringEncoding() {
+        return stringEncoding;
     }
 
     @Override
@@ -205,8 +212,16 @@ public class S7Field implements PlcField, Serializable {
                 throw new PlcInvalidFieldException("Transfer size code '" + transferSizeCode +
                     "' doesn't match specified data type '" + dataType.name() + "'");
             }
-
-            return new S7StringField(dataType, memoryArea, blockNumber, byteOffset, bitOffset, numElements, stringLength);
+            String stringEncoding = matcher.group(STRING_ENCODING);
+            if (stringEncoding==null || "".equals(stringEncoding))
+            {
+                stringEncoding = "UTF-8";
+                if (dataType == TransportSize.WSTRING || dataType == TransportSize.WCHAR)
+                {
+                    stringEncoding = "UTF-16";
+                }
+            }
+            return new S7StringField(dataType, memoryArea, blockNumber, byteOffset, bitOffset, numElements, stringLength, stringEncoding);
         } else if ((matcher = DATA_BLOCK_STRING_SHORT_PATTERN.matcher(fieldString)).matches()) {
             TransportSize dataType = TransportSize.valueOf(matcher.group(DATA_TYPE));
             int stringLength = Integer.parseInt(matcher.group(STRING_LENGTH));
@@ -218,9 +233,17 @@ public class S7Field implements PlcField, Serializable {
             if (matcher.group(NUM_ELEMENTS) != null) {
                 numElements = Integer.parseInt(matcher.group(NUM_ELEMENTS));
             }
-
+            String stringEncoding = matcher.group(STRING_ENCODING);
+            if (stringEncoding==null || "".equals(stringEncoding))
+            {
+                stringEncoding = "UTF-8";
+                if (dataType == TransportSize.WSTRING || dataType == TransportSize.WCHAR)
+                {
+                    stringEncoding = "UTF-16";
+                }
+            }
             return new S7StringField(dataType, memoryArea, blockNumber,
-                byteOffset, bitOffset, numElements, stringLength);
+                byteOffset, bitOffset, numElements, stringLength, stringEncoding);
         } else if ((matcher = DATA_BLOCK_ADDRESS_PATTERN.matcher(fieldString)).matches()) {
             TransportSize dataType = TransportSize.valueOf(matcher.group(DATA_TYPE));
             MemoryArea memoryArea = MemoryArea.DATA_BLOCKS;
@@ -242,8 +265,16 @@ public class S7Field implements PlcField, Serializable {
                 throw new PlcInvalidFieldException("Transfer size code '" + transferSizeCode +
                     "' doesn't match specified data type '" + dataType.name() + "'");
             }
-
-            return new S7Field(dataType, memoryArea, blockNumber, byteOffset, bitOffset, numElements);
+            String stringEncoding = matcher.group(STRING_ENCODING);
+            if (stringEncoding==null || "".equals(stringEncoding))
+            {
+                stringEncoding = "UTF-8";
+                if (dataType == TransportSize.WSTRING || dataType == TransportSize.WCHAR)
+                {
+                    stringEncoding = "UTF-16";
+                }
+            }
+            return new S7Field(dataType, memoryArea, blockNumber, byteOffset, bitOffset, numElements, stringEncoding);
         } else if ((matcher = DATA_BLOCK_SHORT_PATTERN.matcher(fieldString)).matches()) {
             TransportSize dataType = TransportSize.valueOf(matcher.group(DATA_TYPE));
             MemoryArea memoryArea = MemoryArea.DATA_BLOCKS;
@@ -259,9 +290,17 @@ public class S7Field implements PlcField, Serializable {
             if (matcher.group(NUM_ELEMENTS) != null) {
                 numElements = Integer.parseInt(matcher.group(NUM_ELEMENTS));
             }
-
-            return new S7Field(dataType, memoryArea, blockNumber, byteOffset, bitOffset, numElements);
-        } else if (PLC_PROXY_ADDRESS_PATTERN.matcher(fieldString).matches()) {
+            String stringEncoding = matcher.group(STRING_ENCODING);
+            if (stringEncoding==null || "".equals(stringEncoding))
+            {
+                stringEncoding = "UTF-8";
+                if (dataType == TransportSize.WSTRING || dataType == TransportSize.WCHAR)
+                {
+                    stringEncoding = "UTF-16";
+                }
+            }
+            return new S7Field(dataType, memoryArea, blockNumber, byteOffset, bitOffset, numElements, stringEncoding);
+        } else if ((matcher = PLC_PROXY_ADDRESS_PATTERN.matcher(fieldString)).matches()) {
             try {
                 byte[] addressData = Hex.decodeHex(fieldString.replaceAll("[-]", ""));
                 ReadBuffer rb = new ReadBufferByteBased(addressData);
@@ -272,10 +311,18 @@ public class S7Field implements PlcField, Serializable {
                     if ((s7AddressAny.getTransportSize() != TransportSize.BOOL) && s7AddressAny.getBitAddress() != 0) {
                         throw new PlcInvalidFieldException("A bit offset other than 0 is only supported for type BOOL");
                     }
-
+                    String stringEncoding = matcher.group(STRING_ENCODING);
+                    if (stringEncoding==null || "".equals(stringEncoding))
+                    {
+                        stringEncoding = "UTF-8";
+                        if (s7AddressAny.getTransportSize() == TransportSize.WSTRING || s7AddressAny.getTransportSize() == TransportSize.WCHAR)
+                        {
+                            stringEncoding = "UTF-16";
+                        }
+                    }
                     return new S7Field(s7AddressAny.getTransportSize(), s7AddressAny.getArea(),
                         s7AddressAny.getDbNumber(), s7AddressAny.getByteAddress(),
-                        s7AddressAny.getBitAddress(), s7AddressAny.getNumberOfElements());
+                        s7AddressAny.getBitAddress(), s7AddressAny.getNumberOfElements(), stringEncoding);
                 } else {
                     throw new PlcInvalidFieldException("Unsupported address type.");
                 }
@@ -305,8 +352,16 @@ public class S7Field implements PlcField, Serializable {
             if ((dataType != TransportSize.BOOL) && bitOffset != 0) {
                 throw new PlcInvalidFieldException("A bit offset other than 0 is only supported for type BOOL");
             }
-
-            return new S7Field(dataType, memoryArea, (short) 0, byteOffset, bitOffset, numElements);
+            String stringEncoding = matcher.group(STRING_ENCODING);
+            if (stringEncoding==null || "".equals(stringEncoding))
+            {
+                stringEncoding = "UTF-8";
+                if (dataType == TransportSize.WSTRING || dataType == TransportSize.WCHAR)
+                {
+                    stringEncoding = "UTF-16";
+                }
+            }
+            return new S7Field(dataType, memoryArea, (short) 0, byteOffset, bitOffset, numElements, stringEncoding);
         }
         throw new PlcInvalidFieldException("Unable to parse address: " + fieldString);
     }

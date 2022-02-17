@@ -387,7 +387,7 @@
     [array byte data count 'sampleSize']
 ]
 
-[dataIo DataItem(vstring dataFormatName, int 32 stringLength)
+[dataIo DataItem(vstring dataFormatName, int 32 stringLength, vstring stringEncoding)
     [typeSwitch dataFormatName
         // -----------------------------------------
         // Bit
@@ -466,11 +466,11 @@
         ]
         ['"IEC61131_STRING"' STRING
             // TODO: Fix this length
-            [manual vstring value 'STATIC_CALL("parseAmsString", readBuffer, stringLength, _type.encoding)' 'STATIC_CALL("serializeAmsString", writeBuffer, _value, stringLength, _type.encoding)' 'stringLength * 8']
+            [manual vstring value 'STATIC_CALL("parseAmsString", readBuffer, stringLength, _type.encoding, stringEncoding)' 'STATIC_CALL("serializeAmsString", writeBuffer, _value, stringLength, _type.encoding, stringEncoding)' 'stringLength * 8']
         ]
         ['"IEC61131_WSTRING"' STRING
             // TODO: Fix this length
-            [manual vstring value 'STATIC_CALL("parseAmsString", readBuffer, stringLength, _type.encoding)' 'STATIC_CALL("serializeAmsString", writeBuffer, _value, stringLength, _type.encoding)' 'stringLength * 16' encoding='"UTF-16"']
+            [manual vstring value 'STATIC_CALL("parseAmsString", readBuffer, stringLength, _type.encoding, stringEncoding)' 'STATIC_CALL("serializeAmsString", writeBuffer, _value, stringLength, _type.encoding, stringEncoding)' 'stringLength * 16' encoding='"UTF-16"']
         ]
 
         // -----------------------------------------

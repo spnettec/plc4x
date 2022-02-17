@@ -35,8 +35,9 @@ public class S7StringField extends S7Field {
     protected S7StringField(@JsonProperty("dataType") TransportSize dataType, @JsonProperty("memoryArea") MemoryArea memoryArea,
                             @JsonProperty("blockNumber") int blockNumber, @JsonProperty("byteOffset") int byteOffset,
                             @JsonProperty("bitOffset") byte bitOffset, @JsonProperty("numElements") int numElements,
-                            @JsonProperty("stringLength") int stringLength) {
-        super(dataType, memoryArea, blockNumber, byteOffset, bitOffset, numElements);
+                            @JsonProperty("stringLength") int stringLength,
+                            @JsonProperty("stringEncoding") String stringEncoding) {
+        super(dataType, memoryArea, blockNumber, byteOffset, bitOffset, numElements, stringEncoding);
         this.stringLength = stringLength;
     }
 

@@ -521,7 +521,7 @@
     ]
 ]
 
-[dataIo DataItem(vstring dataProtocolId, int 32 stringLength)
+[dataIo DataItem(vstring dataProtocolId, int 32 stringLength, vstring stringEncoding)
     [typeSwitch dataProtocolId
         // -----------------------------------------
         // Bit
@@ -597,18 +597,18 @@
         // Characters & Strings
         // -----------------------------------------
         ['"IEC61131_CHAR"' CHAR
-            [manual string 8 value  'STATIC_CALL("parseS7Char", readBuffer, _type.encoding)' 'STATIC_CALL("serializeS7Char", writeBuffer, _value, _type.encoding)' '8']
+            [manual string 8 value  'STATIC_CALL("parseS7Char", readBuffer, _type.encoding, stringEncoding)' 'STATIC_CALL("serializeS7Char", writeBuffer, _value, _type.encoding, stringEncoding)' '8']
         ]
         ['"IEC61131_WCHAR"' CHAR
-            [manual string 16 value 'STATIC_CALL("parseS7Char", readBuffer, _type.encoding)' 'STATIC_CALL("serializeS7Char", writeBuffer, _value, _type.encoding)' '16' encoding='"UTF-16"']
+            [manual string 16 value 'STATIC_CALL("parseS7Char", readBuffer, _type.encoding, stringEncoding)' 'STATIC_CALL("serializeS7Char", writeBuffer, _value, _type.encoding, stringEncoding)' '16' encoding='"UTF-16"']
         ]
         ['"IEC61131_STRING"' STRING
             // TODO: Fix this length
-            [manual vstring value  'STATIC_CALL("parseS7String", readBuffer, stringLength, _type.encoding)' 'STATIC_CALL("serializeS7String", writeBuffer, _value, stringLength, _type.encoding)' '(stringLength + 2) * 8']
+            [manual vstring value  'STATIC_CALL("parseS7String", readBuffer, stringLength, _type.encoding, stringEncoding)' 'STATIC_CALL("serializeS7String", writeBuffer, _value, stringLength, _type.encoding, stringEncoding)' '(stringLength + 2) * 8']
         ]
         ['"IEC61131_WSTRING"' STRING
             // TODO: Fix this length
-            [manual vstring value 'STATIC_CALL("parseS7String", readBuffer, stringLength, _type.encoding)' 'STATIC_CALL("serializeS7String", writeBuffer, _value, stringLength, _type.encoding)' '(stringLength + 2) * 16' encoding='"UTF-16"']
+            [manual vstring value 'STATIC_CALL("parseS7String", readBuffer, stringLength, _type.encoding, stringEncoding)' 'STATIC_CALL("serializeS7String", writeBuffer, _value, stringLength, _type.encoding, stringEncoding)' '(stringLength + 2) * 16' encoding='"UTF-16"']
         ]
 
         // -----------------------------------------
