@@ -33,7 +33,7 @@ import java.util.regex.Pattern;
  */
 public class SymbolicAdsField implements AdsField {
 
-    private static final Pattern SYMBOLIC_ADDRESS_PATTERN = Pattern.compile("^(?<symbolicAddress>.+):(?<adsDataType>\\w+)(\\[(?<numberOfElements>\\d+)])?");
+    private static final Pattern SYMBOLIC_ADDRESS_PATTERN = Pattern.compile("^(?<symbolicAddress>.+):(?<adsDataType>\\w+)(\\[(?<numberOfElements>\\d+)])?(\\|(?<stringEncoding>[a-z0-9A-Z_-]+))?");
 
     private final String symbolicAddress;
 
@@ -41,10 +41,13 @@ public class SymbolicAdsField implements AdsField {
 
     private final int numberOfElements;
 
-    public SymbolicAdsField(String symbolicAddress, AdsDataType adsDataType, Integer numberOfElements) {
+    private final String stringEncoding;
+
+    public SymbolicAdsField(String symbolicAddress, AdsDataType adsDataType, Integer numberOfElements, String stringEncoding) {
         this.symbolicAddress = Objects.requireNonNull(symbolicAddress);
         this.adsDataType = Objects.requireNonNull(adsDataType);
         this.numberOfElements = numberOfElements != null ? numberOfElements : 1;
+        this.stringEncoding = stringEncoding;
         if (this.numberOfElements <= 0) {
             throw new IllegalArgumentException("numberOfElements must be greater then zero. Was " + this.numberOfElements);
         }
@@ -63,8 +66,16 @@ public class SymbolicAdsField implements AdsField {
 
         String numberOfElementsString = matcher.group("numberOfElements");
         Integer numberOfElements = numberOfElementsString != null ? Integer.valueOf(numberOfElementsString) : null;
-
-        return new SymbolicAdsField(symbolicAddress, adsDataType, numberOfElements);
+        String stringEncoding = matcher.group("stringEncoding");
+        if (stringEncoding==null || "".equals(stringEncoding))
+        {
+            stringEncoding = "UTF-8";
+            if ("IEC61131_WSTRING".equals(adsDataTypeString))
+            {
+                stringEncoding = "UTF-16";
+            }
+        }
+        return new SymbolicAdsField(symbolicAddress, adsDataType, numberOfElements, stringEncoding);
     }
 
     public static boolean matches(String address) {
@@ -88,6 +99,11 @@ public class SymbolicAdsField implements AdsField {
     @Override
     public int getNumberOfElements() {
         return numberOfElements;
+    }
+
+    @Override
+    public String getStringEncoding() {
+        return stringEncoding;
     }
 
     @Override

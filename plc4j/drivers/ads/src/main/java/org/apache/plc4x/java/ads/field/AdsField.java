@@ -26,4 +26,6 @@ public interface AdsField extends PlcField, Serializable {
 
     AdsDataType getAdsDataType();
 
+    String getStringEncoding();
+
 }

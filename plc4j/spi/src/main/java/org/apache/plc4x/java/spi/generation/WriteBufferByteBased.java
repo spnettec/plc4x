@@ -47,10 +47,12 @@ public class WriteBufferByteBased implements WriteBuffer {
         this.byteOrder = byteOrder;
     }
 
+    @Override
     public ByteOrder getByteOrder() {
         return byteOrder;
     }
 
+    @Override
     public void setByteOrder(ByteOrder byteOrder) {
         this.byteOrder = byteOrder;
     }

@@ -32,13 +32,16 @@ import java.util.regex.Pattern;
  */
 public class SymbolicAdsStringField extends SymbolicAdsField implements AdsStringField {
 
-    private static final Pattern SYMBOLIC_ADDRESS_STRING_PATTERN = Pattern.compile("^(?<symbolicAddress>.+):(?<adsDataType>STRING|WSTRING)\\((?<stringLength>\\d{1,3})\\)(\\[(?<numberOfElements>\\d+)])?");
+    private static final Pattern SYMBOLIC_ADDRESS_STRING_PATTERN = Pattern.compile("^(?<symbolicAddress>.+):(?<adsDataType>STRING|WSTRING)\\((?<stringLength>\\d{1,3})\\)(\\[(?<numberOfElements>\\d+)])?(\\|(?<stringEncoding>[a-z0-9A-Z_-]+))?");
 
     private final int stringLength;
 
-    private SymbolicAdsStringField(String symbolicAddress, AdsDataType adsDataType, int stringLength, Integer numberOfElements) {
-        super(symbolicAddress, adsDataType, numberOfElements);
+    private final String stringEncoding;
+
+    private SymbolicAdsStringField(String symbolicAddress, AdsDataType adsDataType, int stringLength, Integer numberOfElements, String stringEncoding) {
+        super(symbolicAddress, adsDataType, numberOfElements, stringEncoding);
         this.stringLength = stringLength;
+        this.stringEncoding = stringEncoding;
     }
 
     public static SymbolicAdsStringField of(String address) {
@@ -52,12 +55,20 @@ public class SymbolicAdsStringField extends SymbolicAdsField implements AdsStrin
         AdsDataType adsDataType = AdsDataType.valueOf(adsDataTypeString);
 
         String stringLengthString = matcher.group("stringLength");
-        Integer stringLength = stringLengthString != null ? Integer.valueOf(stringLengthString) : null;
+        int stringLength = stringLengthString != null ? Integer.parseInt(stringLengthString) : 256;
 
         String numberOfElementsString = matcher.group("numberOfElements");
         Integer numberOfElements = numberOfElementsString != null ? Integer.valueOf(numberOfElementsString) : null;
-
-        return new SymbolicAdsStringField(symbolicAddress, adsDataType, stringLength, numberOfElements);
+        String stringEncoding = matcher.group("stringEncoding");
+        if (stringEncoding==null || "".equals(stringEncoding))
+        {
+            stringEncoding = "UTF-8";
+            if ("IEC61131_WSTRING".equals(adsDataTypeString))
+            {
+                stringEncoding = "UTF-16";
+            }
+        }
+        return new SymbolicAdsStringField(symbolicAddress, adsDataType, stringLength, numberOfElements, stringEncoding);
     }
 
     public static boolean matches(String address) {
