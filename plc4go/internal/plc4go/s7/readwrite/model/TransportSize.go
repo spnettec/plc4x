@@ -572,11 +572,11 @@ func (e TransportSize) SizeInBytes() uint8 {
 		}
 	case 0x1A:
 		{ /* '0x1A' */
-			return 12
+			return 8
 		}
 	case 0x1B:
 		{ /* '0x1B' */
-			return 12
+			return 8
 		}
 	default:
 		{
@@ -1130,19 +1130,19 @@ func (e TransportSize) DataTransportSize() DataTransportSize {
 		}
 	case 0x0C:
 		{ /* '0x0C' */
-			return 0
+			return DataTransportSize_BYTE_WORD_DWORD
 		}
 	case 0x0D:
 		{ /* '0x0D' */
-			return 0
+			return DataTransportSize_BYTE_WORD_DWORD
 		}
 	case 0x0E:
 		{ /* '0x0E' */
-			return DataTransportSize_REAL
+			return DataTransportSize_BYTE_WORD_DWORD
 		}
 	case 0x0F:
 		{ /* '0x0F' */
-			return 0
+			return DataTransportSize_BYTE_WORD_DWORD
 		}
 	case 0x10:
 		{ /* '0x10' */
@@ -1150,7 +1150,7 @@ func (e TransportSize) DataTransportSize() DataTransportSize {
 		}
 	case 0x11:
 		{ /* '0x11' */
-			return 0
+			return DataTransportSize_BYTE_WORD_DWORD
 		}
 	case 0x12:
 		{ /* '0x12' */
@@ -1158,15 +1158,15 @@ func (e TransportSize) DataTransportSize() DataTransportSize {
 		}
 	case 0x13:
 		{ /* '0x13' */
-			return 0
+			return DataTransportSize_BYTE_WORD_DWORD
 		}
 	case 0x14:
 		{ /* '0x14' */
-			return 0
+			return DataTransportSize_BYTE_WORD_DWORD
 		}
 	case 0x16:
 		{ /* '0x16' */
-			return 0
+			return DataTransportSize_BYTE_WORD_DWORD
 		}
 	case 0x17:
 		{ /* '0x17' */
@@ -1182,11 +1182,11 @@ func (e TransportSize) DataTransportSize() DataTransportSize {
 		}
 	case 0x1A:
 		{ /* '0x1A' */
-			return 0
+			return DataTransportSize_BYTE_WORD_DWORD
 		}
 	case 0x1B:
 		{ /* '0x1B' */
-			return 0
+			return DataTransportSize_BYTE_WORD_DWORD
 		}
 	default:
 		{
@@ -1252,11 +1252,11 @@ func (e TransportSize) BaseType() TransportSize {
 		}
 	case 0x0C:
 		{ /* '0x0C' */
-			return TransportSize_INT
+			return 0
 		}
 	case 0x0D:
 		{ /* '0x0D' */
-			return TransportSize_INT
+			return 0
 		}
 	case 0x0E:
 		{ /* '0x0E' */
@@ -1288,7 +1288,7 @@ func (e TransportSize) BaseType() TransportSize {
 		}
 	case 0x16:
 		{ /* '0x16' */
-			return TransportSize_TIME
+			return 0
 		}
 	case 0x17:
 		{ /* '0x17' */

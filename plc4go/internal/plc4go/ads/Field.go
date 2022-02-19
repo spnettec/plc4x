@@ -74,8 +74,9 @@ func castToAdsFieldFromPlcField(plcField model.PlcField) (AdsPlcField, error) {
 }
 
 type DirectPlcField struct {
-	IndexGroup  uint32
-	IndexOffset uint32
+	IndexGroup     uint32
+	IndexOffset    uint32
+	StringEncoding string
 	PlcField
 }
 
@@ -83,14 +84,15 @@ func (m DirectPlcField) GetAddressString() string {
 	return fmt.Sprintf("%dx%05d%05d%05d%05d:%s", m.FieldType, m.IndexGroup, m.IndexOffset, m.StringLength, m.NumberOfElements, m.Datatype.String())
 }
 
-func newDirectAdsPlcField(indexGroup uint32, indexOffset uint32, adsDataType model2.AdsDataType, stringLength int32, numberOfElements uint32) (model.PlcField, error) {
+func newDirectAdsPlcField(indexGroup uint32, indexOffset uint32, adsDataType model2.AdsDataType, stringLength int32, numberOfElements uint32, stringEncoding string) (model.PlcField, error) {
 	fieldType := DirectAdsField
 	if stringLength > 0 {
 		fieldType = DirectAdsStringField
 	}
 	return DirectPlcField{
-		IndexGroup:  indexGroup,
-		IndexOffset: indexOffset,
+		IndexGroup:     indexGroup,
+		IndexOffset:    indexOffset,
+		StringEncoding: stringEncoding,
 		PlcField: PlcField{
 			FieldType:        fieldType,
 			StringLength:     stringLength,
@@ -145,6 +147,7 @@ func (m DirectPlcField) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
 
 type SymbolicPlcField struct {
 	SymbolicAddress string
+	StringEncoding  string
 	PlcField
 }
 
@@ -152,13 +155,14 @@ func (m SymbolicPlcField) GetAddressString() string {
 	return fmt.Sprintf("%dx%s%05d%05d:%s", m.FieldType, m.SymbolicAddress, m.StringLength, m.NumberOfElements, m.Datatype.String())
 }
 
-func newAdsSymbolicPlcField(symbolicAddress string, adsDataType model2.AdsDataType, stringLength int32, numberOfElements uint32) (model.PlcField, error) {
+func newAdsSymbolicPlcField(symbolicAddress string, adsDataType model2.AdsDataType, stringLength int32, numberOfElements uint32, stringEncoding string) (model.PlcField, error) {
 	fieldType := SymbolicAdsField
 	if stringLength > 0 {
 		fieldType = SymbolicAdsStringField
 	}
 	return SymbolicPlcField{
 		SymbolicAddress: symbolicAddress,
+		StringEncoding:  stringEncoding,
 		PlcField: PlcField{
 			FieldType:        fieldType,
 			StringLength:     stringLength,
