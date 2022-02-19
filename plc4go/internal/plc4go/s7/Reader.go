@@ -215,14 +215,17 @@ func (m *Reader) ToPlc4xReadResponse(response readWriteModel.S7Message, readRequ
 	for i, fieldName := range readRequest.GetFieldNames() {
 		field := readRequest.GetField(fieldName).(S7PlcField)
 		payloadItem := payloadItems[i]
-
+		stringLength := uint16(254)
+		if s7StringField, ok := field.(PlcStringField); ok {
+			stringLength = s7StringField.StringLength
+		}
 		responseCode := decodeResponseCode(payloadItem.ReturnCode)
 		// Decode the data according to the information from the request
 		log.Trace().Msg("decode data")
 		rb := utils.NewReadBufferByteBased(utils.ByteArrayToUint8Array(payloadItem.Data))
 		responseCodes[fieldName] = responseCode
 		if responseCode == model.PlcResponseCode_OK {
-			plcValue, err := readWriteModel.DataItemParse(rb, field.GetDataType().DataProtocolId(), int32(field.GetNumElements()))
+			plcValue, err := readWriteModel.DataItemParse(rb, field.GetDataType().DataProtocolId(), int32(stringLength), field.GetStringEncoding())
 			if err != nil {
 				return nil, errors.Wrap(err, "Error parsing data item")
 			}
@@ -256,14 +259,14 @@ func encodeS7Address(field model.PlcField) (*readWriteModel.S7Address, error) {
 		transportSize = readWriteModel.TransportSize_CHAR
 		stringLength := uint16(254)
 		if s7StringField, ok := field.(PlcStringField); ok {
-			stringLength = s7StringField.stringLength
+			stringLength = s7StringField.StringLength
 		}
 		numElements = numElements * (stringLength + 2)
 	} else if transportSize == readWriteModel.TransportSize_WSTRING {
 		transportSize = readWriteModel.TransportSize_CHAR
 		stringLength := uint16(254)
 		if s7StringField, ok := field.(PlcStringField); ok {
-			stringLength = s7StringField.stringLength
+			stringLength = s7StringField.StringLength
 		}
 		numElements = numElements * (stringLength + 2) * 2
 	}

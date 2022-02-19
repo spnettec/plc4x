@@ -24,22 +24,22 @@ import (
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/values"
 )
 
-func ParseAmsString(io utils.ReadBuffer, stringLength int32, encoding string) (string, error) {
+func ParseAmsString(io utils.ReadBuffer, stringLength int32, encoding string, stringEncoding string) (string, error) {
 	var multiplier int32
 	switch encoding {
 	case "UTF-8":
-		multiplier = 0
+		multiplier = 8
 	case "UTF-16":
 		multiplier = 16
 	}
 	return io.ReadString("", uint32(stringLength*multiplier))
 }
 
-func SerializeAmsString(io utils.WriteBuffer, value values.PlcValue, stringLength int32, encoding string) error {
+func SerializeAmsString(io utils.WriteBuffer, value values.PlcValue, stringLength int32, encoding string, stringEncoding string) error {
 	var multiplier int32
 	switch encoding {
 	case "UTF-8":
-		multiplier = 0
+		multiplier = 8
 	case "UTF-16":
 		multiplier = 16
 	}

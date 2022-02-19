@@ -34,47 +34,51 @@ type S7PlcField interface {
 	GetMemoryArea() readWrite.MemoryArea
 	GetByteOffset() uint16
 	GetBitOffset() uint8
+	GetStringEncoding() string
 }
 
 type PlcField struct {
-	FieldType   FieldType
-	MemoryArea  readWrite.MemoryArea
-	BlockNumber uint16
-	ByteOffset  uint16
-	BitOffset   uint8
-	NumElements uint16
-	Datatype    readWrite.TransportSize
+	FieldType      FieldType
+	MemoryArea     readWrite.MemoryArea
+	BlockNumber    uint16
+	ByteOffset     uint16
+	BitOffset      uint8
+	NumElements    uint16
+	Datatype       readWrite.TransportSize
+	StringEncoding string
 }
 
-func NewField(memoryArea readWrite.MemoryArea, blockNumber uint16, byteOffset uint16, bitOffset uint8, numElements uint16, datatype readWrite.TransportSize) PlcField {
+func NewField(memoryArea readWrite.MemoryArea, blockNumber uint16, byteOffset uint16, bitOffset uint8, numElements uint16, datatype readWrite.TransportSize, stringEncoding string) PlcField {
 	return PlcField{
-		FieldType:   S7Field,
-		MemoryArea:  memoryArea,
-		BlockNumber: blockNumber,
-		ByteOffset:  byteOffset,
-		BitOffset:   bitOffset,
-		NumElements: numElements,
-		Datatype:    datatype,
+		FieldType:      S7Field,
+		MemoryArea:     memoryArea,
+		BlockNumber:    blockNumber,
+		ByteOffset:     byteOffset,
+		BitOffset:      bitOffset,
+		NumElements:    numElements,
+		Datatype:       datatype,
+		StringEncoding: stringEncoding,
 	}
 }
 
 type PlcStringField struct {
 	PlcField
-	stringLength uint16
+	StringLength uint16
 }
 
-func NewStringField(memoryArea readWrite.MemoryArea, blockNumber uint16, byteOffset uint16, bitOffset uint8, numElements uint16, stringLength uint16, datatype readWrite.TransportSize) PlcStringField {
+func NewStringField(memoryArea readWrite.MemoryArea, blockNumber uint16, byteOffset uint16, bitOffset uint8, numElements uint16, stringLength uint16, datatype readWrite.TransportSize, stringEncoding string) PlcStringField {
 	return PlcStringField{
 		PlcField: PlcField{
-			FieldType:   S7StringField,
-			MemoryArea:  memoryArea,
-			BlockNumber: blockNumber,
-			ByteOffset:  byteOffset,
-			BitOffset:   bitOffset,
-			NumElements: numElements,
-			Datatype:    datatype,
+			FieldType:      S7StringField,
+			MemoryArea:     memoryArea,
+			BlockNumber:    blockNumber,
+			ByteOffset:     byteOffset,
+			BitOffset:      bitOffset,
+			NumElements:    numElements,
+			Datatype:       datatype,
+			StringEncoding: stringEncoding,
 		},
-		stringLength: stringLength,
+		StringLength: stringLength,
 	}
 }
 
@@ -113,6 +117,10 @@ func (m PlcField) GetBitOffset() uint8 {
 
 func (m PlcField) GetQuantity() uint16 {
 	return m.NumElements
+}
+
+func (m PlcField) GetStringEncoding() string {
+	return m.StringEncoding
 }
 
 func CastTos7FieldFromPlcField(plcField model.PlcField) (PlcField, error) {
@@ -172,7 +180,7 @@ func (m PlcStringField) Serialize(writeBuffer utils.WriteBuffer) error {
 	if err := writeBuffer.WriteUint16("numElements", 16, m.NumElements); err != nil {
 		return err
 	}
-	if err := writeBuffer.WriteUint16("numElements", 16, m.stringLength); err != nil {
+	if err := writeBuffer.WriteUint16("stringLength", 16, m.StringLength); err != nil {
 		return err
 	}
 	if err := writeBuffer.WriteString("dataType", uint32(len(m.Datatype.String())*8), "UTF-8", m.Datatype.String()); err != nil {

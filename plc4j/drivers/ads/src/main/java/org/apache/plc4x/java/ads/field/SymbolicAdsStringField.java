@@ -36,12 +36,9 @@ public class SymbolicAdsStringField extends SymbolicAdsField implements AdsStrin
 
     private final int stringLength;
 
-    private final String stringEncoding;
-
     private SymbolicAdsStringField(String symbolicAddress, AdsDataType adsDataType, int stringLength, Integer numberOfElements, String stringEncoding) {
         super(symbolicAddress, adsDataType, numberOfElements, stringEncoding);
         this.stringLength = stringLength;
-        this.stringEncoding = stringEncoding;
     }
 
     public static SymbolicAdsStringField of(String address) {
@@ -63,7 +60,7 @@ public class SymbolicAdsStringField extends SymbolicAdsField implements AdsStrin
         if (stringEncoding==null || "".equals(stringEncoding))
         {
             stringEncoding = "UTF-8";
-            if ("IEC61131_WSTRING".equals(adsDataTypeString))
+            if (adsDataType == AdsDataType.WSTRING || adsDataType == AdsDataType.WCHAR)
             {
                 stringEncoding = "UTF-16";
             }

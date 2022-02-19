@@ -53,13 +53,13 @@ type FieldHandler struct {
 
 func NewFieldHandler() FieldHandler {
 	return FieldHandler{
-		addressPattern: regexp.MustCompile(`^%(?P<memoryArea>.)(?P<transferSizeCode>[XBWD]?)(?P<byteOffset>\d{1,7})(.(?P<bitOffset>[0-7]))?:(?P<dataType>[a-zA-Z_]+)(\[(?P<numElements>\d+)])?`),
+		addressPattern: regexp.MustCompile(`^%(?P<memoryArea>.)(?P<transferSizeCode>[XBWD]?)(?P<byteOffset>\d{1,7})(.(?P<bitOffset>[0-7]))?:(?P<dataType>[a-zA-Z_]+)(\[(?P<numElements>\d+)])?(\|(?P<stringEncoding>[a-z0-9A-Z_-]+))?`),
 		//blockNumber usually has its max hat around 64000 --> 5digits
-		dataBlockAddressPattern:       regexp.MustCompile(`^%DB(?P<blockNumber>\d{1,5}).DB(?P<transferSizeCode>[XBWD]?)(?P<byteOffset>\d{1,7})(.(?P<bitOffset>[0-7]))?:(?P<dataType>[a-zA-Z_]+)(\[(?P<numElements>\d+)])?`),
-		dataBlockShortPattern:         regexp.MustCompile(`^%DB(?P<blockNumber>\d{1,5}):(?P<byteOffset>\d{1,7})(.(?P<bitOffset>[0-7]))?:(?P<dataType>[a-zA-Z_]+)(\[(?P<numElements>\d+)])?`),
-		dataBlockStringAddressPattern: regexp.MustCompile(`^%DB(?P<blockNumber>\d{1,5}).DB(?P<transferSizeCode>[XBWD]?)(?P<byteOffset>\d{1,7})(.(?P<bitOffset>[0-7]))?:(?P<dataType>STRING|WSTRING)\((?P<stringLength>\d{1,3})\)(\[(?P<numElements>\d+)])?`),
-		dataBlockStringShortPattern:   regexp.MustCompile(`^%DB(?P<blockNumber>\d{1,5}):(?P<byteOffset>\d{1,7})(.(?P<bitOffset>[0-7]))?:(?P<dataType>STRING|WSTRING)\((?P<stringLength>\d{1,3})\)(\[(?P<numElements>\d+)])?`),
-		plcProxyAddressPattern:        regexp.MustCompile(`[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}`),
+		dataBlockAddressPattern:       regexp.MustCompile(`^%DB(?P<blockNumber>\d{1,5}).DB(?P<transferSizeCode>[XBWD]?)(?P<byteOffset>\d{1,7})(.(?P<bitOffset>[0-7]))?:(?P<dataType>[a-zA-Z_]+)(\[(?P<numElements>\d+)])?(\|(?P<stringEncoding>[a-z0-9A-Z_-]+))?`),
+		dataBlockShortPattern:         regexp.MustCompile(`^%DB(?P<blockNumber>\d{1,5}):(?P<byteOffset>\d{1,7})(.(?P<bitOffset>[0-7]))?:(?P<dataType>[a-zA-Z_]+)(\[(?P<numElements>\d+)])?(\|(?P<stringEncoding>[a-z0-9A-Z_-]+))?`),
+		dataBlockStringAddressPattern: regexp.MustCompile(`^%DB(?P<blockNumber>\d{1,5}).DB(?P<transferSizeCode>[XBWD]?)(?P<byteOffset>\d{1,7})(.(?P<bitOffset>[0-7]))?:(?P<dataType>STRING|WSTRING)\((?P<stringLength>\d{1,3})\)(\[(?P<numElements>\d+)])?(\|(?P<stringEncoding>[a-z0-9A-Z_-]+))?`),
+		dataBlockStringShortPattern:   regexp.MustCompile(`^%DB(?P<blockNumber>\d{1,5}):(?P<byteOffset>\d{1,7})(.(?P<bitOffset>[0-7]))?:(?P<dataType>STRING|WSTRING)\((?P<stringLength>\d{1,3})\)(\[(?P<numElements>\d+)])?(\|(?P<stringEncoding>[a-z0-9A-Z_-]+))?`),
+		plcProxyAddressPattern:        regexp.MustCompile(`[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}(\|(?P<stringEncoding>[a-z0-9A-Z_-]+))?`),
 	}
 }
 
@@ -114,8 +114,14 @@ func (m FieldHandler) ParseQuery(query string) (model.PlcField, error) {
 		if (transferSizeCode != 0) && (dataType.ShortName() != transferSizeCode) {
 			return nil, errors.Errorf("Transfer size code '%d' doesn't match specified data type '%s'", transferSizeCode, dataType)
 		}
-
-		return NewStringField(memoryArea, 0, byteOffset, bitOffset, numElements, stringLength, dataType), nil
+		stringEncoding := match["stringEncoding"]
+		if stringEncoding == "" {
+			stringEncoding = "UTF-8"
+			if dataType == readWriteModel.TransportSize_WSTRING || dataType == readWriteModel.TransportSize_WCHAR {
+				stringEncoding = "UTF-16"
+			}
+		}
+		return NewStringField(memoryArea, 0, byteOffset, bitOffset, numElements, stringLength, dataType, stringEncoding), nil
 	} else if match := utils.GetSubgroupMatches(m.dataBlockStringShortPattern, query); match != nil {
 		dataType := readWriteModel.TransportSizeByName(match[DATA_TYPE])
 		parsedStringLength, err := strconv.ParseUint(match[STRING_LENGTH], 10, 16)
@@ -149,8 +155,14 @@ func (m FieldHandler) ParseQuery(query string) (model.PlcField, error) {
 			}
 			numElements = uint16(parsedNumElements)
 		}
-
-		return NewStringField(memoryArea, blockNumber, byteOffset, bitOffset, numElements, stringLength, dataType), nil
+		stringEncoding := match["stringEncoding"]
+		if stringEncoding == "" {
+			stringEncoding = "UTF-8"
+			if dataType == readWriteModel.TransportSize_WSTRING || dataType == readWriteModel.TransportSize_WCHAR {
+				stringEncoding = "UTF-16"
+			}
+		}
+		return NewStringField(memoryArea, blockNumber, byteOffset, bitOffset, numElements, stringLength, dataType, stringEncoding), nil
 	} else if match := utils.GetSubgroupMatches(m.dataBlockAddressPattern, query); match != nil {
 		dataType := readWriteModel.TransportSizeByName(match[DATA_TYPE])
 		memoryArea := readWriteModel.MemoryArea_DATA_BLOCKS
@@ -193,8 +205,14 @@ func (m FieldHandler) ParseQuery(query string) (model.PlcField, error) {
 		if (transferSizeCode != 0) && (dataType.ShortName() != transferSizeCode) {
 			return nil, errors.Errorf("Transfer size code '%d' doesn't match specified data type '%s'", transferSizeCode, dataType)
 		}
-
-		return NewField(memoryArea, blockNumber, byteOffset, bitOffset, numElements, dataType), nil
+		stringEncoding := match["stringEncoding"]
+		if stringEncoding == "" {
+			stringEncoding = "UTF-8"
+			if dataType == readWriteModel.TransportSize_WSTRING || dataType == readWriteModel.TransportSize_WCHAR {
+				stringEncoding = "UTF-16"
+			}
+		}
+		return NewField(memoryArea, blockNumber, byteOffset, bitOffset, numElements, dataType, stringEncoding), nil
 	} else if match := utils.GetSubgroupMatches(m.dataBlockShortPattern, query); match != nil {
 		dataType := readWriteModel.TransportSizeByName(match[DATA_TYPE])
 		memoryArea := readWriteModel.MemoryArea_DATA_BLOCKS
@@ -232,8 +250,14 @@ func (m FieldHandler) ParseQuery(query string) (model.PlcField, error) {
 			}
 			numElements = uint16(parsedNumElements)
 		}
-
-		return NewField(memoryArea, blockNumber, byteOffset, bitOffset, numElements, dataType), nil
+		stringEncoding := match["stringEncoding"]
+		if stringEncoding == "" {
+			stringEncoding = "UTF-8"
+			if dataType == readWriteModel.TransportSize_WSTRING || dataType == readWriteModel.TransportSize_WCHAR {
+				stringEncoding = "UTF-16"
+			}
+		}
+		return NewField(memoryArea, blockNumber, byteOffset, bitOffset, numElements, dataType, stringEncoding), nil
 	} else if match := utils.GetSubgroupMatches(m.plcProxyAddressPattern, query); match != nil {
 		addressData, err := hex.DecodeString(strings.ReplaceAll(query, "[-]", ""))
 		if err != nil {
@@ -248,7 +272,13 @@ func (m FieldHandler) ParseQuery(query string) (model.PlcField, error) {
 		if (s7AddressAny.TransportSize != readWriteModel.TransportSize_BOOL) && s7AddressAny.BitAddress != 0 {
 			return nil, errors.New("A bit offset other than 0 is only supported for type BOOL")
 		}
-
+		stringEncoding := match["stringEncoding"]
+		if stringEncoding == "" {
+			stringEncoding = "UTF-8"
+			if s7AddressAny.TransportSize == readWriteModel.TransportSize_WSTRING || s7AddressAny.TransportSize == readWriteModel.TransportSize_WCHAR {
+				stringEncoding = "UTF-16"
+			}
+		}
 		return NewField(
 			s7AddressAny.Area,
 			s7AddressAny.DbNumber,
@@ -256,6 +286,7 @@ func (m FieldHandler) ParseQuery(query string) (model.PlcField, error) {
 			s7AddressAny.BitAddress,
 			s7AddressAny.NumberOfElements,
 			s7AddressAny.TransportSize,
+			stringEncoding,
 		), nil
 	} else if match := utils.GetSubgroupMatches(m.addressPattern, query); match != nil {
 		dataType := readWriteModel.TransportSizeByName(match[DATA_TYPE])
@@ -297,8 +328,14 @@ func (m FieldHandler) ParseQuery(query string) (model.PlcField, error) {
 		if (dataType != readWriteModel.TransportSize_BOOL) && bitOffset != 0 {
 			return nil, errors.New("A bit offset other than 0 is only supported for type BOOL")
 		}
-
-		return NewField(memoryArea, 0, byteOffset, bitOffset, numElements, dataType), nil
+		stringEncoding := match["stringEncoding"]
+		if stringEncoding == "" {
+			stringEncoding = "UTF-8"
+			if dataType == readWriteModel.TransportSize_WSTRING || dataType == readWriteModel.TransportSize_WCHAR {
+				stringEncoding = "UTF-16"
+			}
+		}
+		return NewField(memoryArea, 0, byteOffset, bitOffset, numElements, dataType, stringEncoding), nil
 	}
 	return nil, errors.Errorf("Unable to parse %s", query)
 }

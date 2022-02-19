@@ -234,10 +234,10 @@ func serializePlcValue(field model.PlcField, plcValue values.PlcValue) (*readWri
 	transportSize := s7Field.GetDataType().DataTransportSize()
 	stringLength := uint16(254)
 	if s7StringField, ok := field.(*PlcStringField); ok {
-		stringLength = s7StringField.stringLength
+		stringLength = s7StringField.StringLength
 	}
 	io := utils.NewWriteBufferByteBased()
-	err := readWriteModel.DataItemSerialize(io, plcValue, s7Field.GetDataType().DataProtocolId(), int32(stringLength))
+	err := readWriteModel.DataItemSerialize(io, plcValue, s7Field.GetDataType().DataProtocolId(), int32(stringLength), s7Field.GetStringEncoding())
 	if err != nil {
 		return nil, errors.Wrapf(err, "Error serializing field item of type: '%v'", s7Field.GetDataType())
 	}

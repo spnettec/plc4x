@@ -37,12 +37,10 @@ public class DirectAdsStringField extends DirectAdsField implements AdsStringFie
 
     private final int stringLength;
 
-    private final String stringEncoding;
 
     public DirectAdsStringField(long indexGroup, long indexOffset, AdsDataType adsDataType, int stringLength, Integer numberOfElements, String stringEncoding) {
         super(indexGroup, indexOffset, adsDataType, numberOfElements, stringEncoding);
         this.stringLength = stringLength;
-        this.stringEncoding = stringEncoding;
     }
 
     public static DirectAdsStringField of(long indexGroup, long indexOffset, AdsDataType adsDataType, int stringLength, Integer numberOfElements, String stringEncoding) {
@@ -87,7 +85,7 @@ public class DirectAdsStringField extends DirectAdsField implements AdsStringFie
         if (stringEncoding==null || "".equals(stringEncoding))
         {
             stringEncoding = "UTF-8";
-            if ("IEC61131_WSTRING".equals(adsDataTypeString))
+            if (adsDataType == AdsDataType.WSTRING || adsDataType == AdsDataType.WCHAR)
             {
                 stringEncoding = "UTF-16";
             }

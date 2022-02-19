@@ -70,7 +70,7 @@ public class SymbolicAdsField implements AdsField {
         if (stringEncoding==null || "".equals(stringEncoding))
         {
             stringEncoding = "UTF-8";
-            if ("IEC61131_WSTRING".equals(adsDataTypeString))
+            if (adsDataType == AdsDataType.WSTRING || adsDataType == AdsDataType.WCHAR)
             {
                 stringEncoding = "UTF-16";
             }

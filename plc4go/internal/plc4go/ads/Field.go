@@ -36,7 +36,7 @@ type PlcField struct {
 }
 
 func (m PlcField) GetTypeName() string {
-	return m.FieldType.GetName()
+	return m.Datatype.String()
 }
 
 func (m PlcField) GetQuantity() uint16 {
@@ -63,6 +63,7 @@ type AdsPlcField interface {
 	GetDatatype() model2.AdsDataType
 	GetStringLength() int32
 	GetNumberOfElements() uint32
+	GetStringEncoding() string
 	model.PlcField
 }
 
@@ -82,6 +83,9 @@ type DirectPlcField struct {
 
 func (m DirectPlcField) GetAddressString() string {
 	return fmt.Sprintf("%dx%05d%05d%05d%05d:%s", m.FieldType, m.IndexGroup, m.IndexOffset, m.StringLength, m.NumberOfElements, m.Datatype.String())
+}
+func (m DirectPlcField) GetStringEncoding() string {
+	return m.StringEncoding
 }
 
 func newDirectAdsPlcField(indexGroup uint32, indexOffset uint32, adsDataType model2.AdsDataType, stringLength int32, numberOfElements uint32, stringEncoding string) (model.PlcField, error) {
@@ -153,6 +157,10 @@ type SymbolicPlcField struct {
 
 func (m SymbolicPlcField) GetAddressString() string {
 	return fmt.Sprintf("%dx%s%05d%05d:%s", m.FieldType, m.SymbolicAddress, m.StringLength, m.NumberOfElements, m.Datatype.String())
+}
+
+func (m SymbolicPlcField) GetStringEncoding() string {
+	return m.StringEncoding
 }
 
 func newAdsSymbolicPlcField(symbolicAddress string, adsDataType model2.AdsDataType, stringLength int32, numberOfElements uint32, stringEncoding string) (model.PlcField, error) {

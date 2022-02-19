@@ -28,15 +28,16 @@ import (
 
 func main() {
 	driverManager := plc4go.NewPlcDriverManager()
-	drivers.RegisterAdsDriver(driverManager)
-	var ip = "127.0.0.1"
+	drivers.RegisterS7Driver(driverManager)
+	//var ip = "10.80.41.18"
 
-	var sourceAmsNetId = "10.80.41.10.1.1"
-	var sourceAmsPort = 65534
-	var targetAmsNetId = "5.81.202.72.1.1"
-	var targetAmsPort = 851
-	var connectionString = fmt.Sprintf("ads:tcp://%s?sourceAmsNetId=%s&sourceAmsPort=%d&targetAmsNetId=%s&targetAmsPort=%d", ip, sourceAmsNetId, sourceAmsPort, targetAmsNetId, targetAmsPort)
+	//var sourceAmsNetId = "10.80.41.10.1.1"
+	//var sourceAmsPort = 65534
+	//var targetAmsNetId = "5.81.202.72.1.1"
+	//var targetAmsPort = 851
+	//var connectionString = fmt.Sprintf("ads:tcp://%s?sourceAmsNetId=%s&sourceAmsPort=%d&targetAmsNetId=%s&targetAmsPort=%d", ip, sourceAmsNetId, sourceAmsPort, targetAmsNetId, targetAmsPort)
 	// Get a connection to a remote PLC
+	var connectionString = "s7://10.166.11.20?remote-rack=0&remote-slot=1"
 	crc := driverManager.GetConnection(connectionString)
 
 	// Wait for the driver to connect (or not)
@@ -51,8 +52,8 @@ func main() {
 	defer connection.BlockingClose()
 
 	// Prepare a read-request
-	readRequest, err := connection.WriteRequestBuilder().
-		AddQuery("field", "GVLMES.sNewDrumID:STRING(20)", "aaaaa").
+	readRequest, err := connection.ReadRequestBuilder().
+		AddQuery("field", "%DB132:124:STRING(40)|GBK").
 		Build()
 	if err != nil {
 		fmt.Printf("error preparing read-request: %s", connectionResult.GetErr().Error())
@@ -75,6 +76,6 @@ func main() {
 		return
 	}
 
-	//value := rrr.GetResponse().GetValue("field")
-	//fmt.Printf("Got result %s", value.GetString())
+	value := rrr.GetResponse().GetValue("field")
+	fmt.Printf("Got result %s", value.GetString())
 }
