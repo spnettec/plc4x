@@ -262,7 +262,7 @@ int main(int argc, char** argv) {
         }
         // UTF-16 doesn't work well in a portable way
         result = plc4c_read_request_add_item(read_request, "STRING",
-                                             "%DB4:140:STRING(10)");
+                                             "%DB4:140:STRING(10)|GBK");
         if (result != OK) {
           printf("FAILED\n");
           return -1;
