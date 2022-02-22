@@ -70,6 +70,9 @@ public class RandomPackagesTest {
         //System.getProperties().setProperty("jna.library.path", "/usr/local/Cellar/libpcap//1.10.1/lib");
         assumeTrue(() -> {
             try {
+                if (SystemUtils.IS_OS_MAC) {
+                    System.getProperties().setProperty("jna.library.path", "/usr/local/Cellar/libpcap//1.10.1/lib");
+                }
                 String version = Pcaps.libVersion();
                 LOGGER.info("Pcap version: " + version);
                 String libpcap_version_string = StringUtils.removeStart(version, "libpcap version ");

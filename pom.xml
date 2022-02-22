@@ -779,6 +779,7 @@
               to add a new licenses to the configuration.
             -->
             <exclude>**/Expression.g4</exclude>
+            <exclude>**/*.log</exclude>
             <exclude>**/KeyStoreLoader.java</exclude>
             <exclude>**/OPCUAServer.java</exclude>
             <exclude>**/Plc4xNamespace.java</exclude>
