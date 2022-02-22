@@ -854,7 +854,10 @@ plc4c_return_code plc4c_driver_s7_create_s7_write_request(
     // Get the item address from the API request.
     item = list_item->value; 
     parsed_item = item->item;
-    parsed_param = parsed_item->address;
+
+    plc4c_s7_read_write_s7_var_request_parameter_item_field* field = parsed_item->address;
+
+    parsed_param = field->parameter_item;
     parsed_value = item->value;
 
     // Make a copy of the param

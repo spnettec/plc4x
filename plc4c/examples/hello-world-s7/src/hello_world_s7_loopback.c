@@ -31,7 +31,7 @@
 
 #include "../../../spi/include/plc4c/spi/types_private.h"
 
-#define DEFAULT_CONNECTION_TEST_STRING "s7:tcp://0.0.0.0:102"
+#define DEFAULT_CONNECTION_TEST_STRING "s7:tcp://10.166.11.20:102?remote-rack=0&remote-slot=1"
 #define TEST_DOUBLE_INT
 int numOpenConnections = 0;
 
