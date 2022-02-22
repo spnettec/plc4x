@@ -24,6 +24,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <tpkt_packet.h>
+#include "plc4c/driver_s7_encode_decode.h"
 
 uint16_t plc4c_driver_s7_encode_tsap_id(
     plc4c_driver_s7_device_group device_group, uint8_t rack, uint8_t slot) {
@@ -93,7 +94,7 @@ plc4c_return_code decode_byte(const char* from_ptr, const char* to_ptr, uint8_t*
 plc4c_return_code plc4c_driver_s7_encode_address(char* address, void** item) {
 
   plc4c_s7_read_write_s7_var_request_parameter_item* s7_item;
-  
+
   s7_item = malloc(sizeof(plc4c_s7_read_write_s7_var_request_parameter_item));
   s7_item->_type =
       plc4c_s7_read_write_s7_var_request_parameter_item_type_plc4c_s7_read_write_s7_var_request_parameter_item_address;
@@ -115,6 +116,7 @@ plc4c_return_code plc4c_driver_s7_encode_address(char* address, void** item) {
   // Parser logic
   char* cur_pos = address;
   char* last_pos = address;
+  char* string_encoding = NULL;
   // - Does it start with "%"?
   if (*cur_pos == '%') {
     cur_pos++;
@@ -127,7 +129,6 @@ plc4c_return_code plc4c_driver_s7_encode_address(char* address, void** item) {
     char* data_type = NULL;
     char* string_length = NULL;
     char* num_elements = NULL;
-    char* string_encoding = NULL;
 
     ////////////////////////////////////////////////////////////////////////////
     // First extract the different parts of the address
@@ -335,9 +336,6 @@ plc4c_return_code plc4c_driver_s7_encode_address(char* address, void** item) {
     }
     free(num_elements);
 
-    any_address->s7_address_any_encoding_of_string = string_encoding;
-
-
     // TODO: THis should be moved to "driver_s7_packets.c->plc4c_return_code plc4c_driver_s7_create_s7_read_request"
     if (any_address->s7_address_any_transport_size ==
         plc4c_s7_read_write_transport_size_TIME ||
@@ -451,8 +449,12 @@ plc4c_return_code plc4c_driver_s7_encode_address(char* address, void** item) {
     free(read_buffer);
     free(raw_data);
   }
+  plc4c_s7_read_write_s7_var_request_parameter_item_field* s7_item_field;
 
-  *item = s7_item;
+  s7_item_field = malloc(sizeof(plc4c_s7_read_write_s7_var_request_parameter_item_field));
+  s7_item_field->parameter_item = s7_item;
+  s7_item_field->s7_address_any_encoding_of_string = string_encoding;
+  *item = s7_item_field;
 
   return OK;
 }
