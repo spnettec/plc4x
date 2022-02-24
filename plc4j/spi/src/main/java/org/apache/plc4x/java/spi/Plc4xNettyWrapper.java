@@ -49,12 +49,10 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
 
     private final Plc4xProtocolBase<T> protocolBase;
     private final Queue<HandlerRegistration> registeredHandlers;
-    private final ChannelPipeline pipeline;
     private final boolean passive;
 
     public Plc4xNettyWrapper(ChannelPipeline pipeline, boolean passive, Plc4xProtocolBase<T> protocol, Class<T> clazz) {
         super(clazz, Object.class);
-        this.pipeline = pipeline;
         this.passive = passive;
         this.registeredHandlers = new ConcurrentLinkedQueue<>();
         this.protocolBase = protocol;

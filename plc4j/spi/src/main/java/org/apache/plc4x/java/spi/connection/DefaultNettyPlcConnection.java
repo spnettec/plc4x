@@ -202,7 +202,7 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
         /*if (factory == null) {
             throw new IllegalStateException("No Instance Factory is Present!");
         }*/
-        return new ChannelInitializer<Channel>() {
+        return new ChannelInitializer<>() {
             @Override
             protected void initChannel(Channel channel) {
                 // Build the protocol stack for communicating with the s7 protocol.
@@ -221,10 +221,8 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
                             super.userEventTriggered(ctx, evt);
                         } else if (evt instanceof DiscoveredEvent) {
                             sessionDiscoverCompleteFuture.complete(((DiscoveredEvent) evt).getConfiguration());
-                        }
-                        else if (evt instanceof ConnectEvent)
-                        {
-                            if(!sessionSetupCompleteFuture.isCompletedExceptionally()) {
+                        } else if (evt instanceof ConnectEvent) {
+                            if (!sessionSetupCompleteFuture.isCompletedExceptionally()) {
                                 setProtocol(stackConfigurer.configurePipeline(configuration, pipeline, channelFactory.isPassive()));
                                 super.userEventTriggered(ctx, evt);
                             }
@@ -235,12 +233,12 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
                     }
                 });
                 pipeline.addLast(new ChannelInboundHandlerAdapter() {
-                         @Override
-                         public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws PlcConnectionException {
-                             logger.error("unknown error, close the connection", cause);
-                             close();
-                         }
-                     }
+                                     @Override
+                                     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws PlcConnectionException {
+                                         logger.error("unknown error, close the connection", cause);
+                                         close();
+                                     }
+                                 }
                 );
                 // Initialize via Transport Layer
                 channelFactory.initializePipeline(pipeline);
