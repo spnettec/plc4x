@@ -50,7 +50,9 @@ func (m S7XmlParserHelper) Parse(typeName string, xmlString string, parserArgume
 			return nil, err
 		}
 		stringLength := int32(parsedInt1)
-		return model.DataItemParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), dataProtocolId, stringLength)
+		// TODO: find a way to parse the sub types
+		var stringEncoding string
+		return model.DataItemParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), dataProtocolId, stringLength, stringEncoding)
 	case "SzlId":
 		return model.SzlIdParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "AlarmMessageObjectAckType":

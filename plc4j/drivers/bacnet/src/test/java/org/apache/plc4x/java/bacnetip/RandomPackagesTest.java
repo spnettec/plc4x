@@ -18,8 +18,11 @@
  */
 package org.apache.plc4x.java.bacnetip;
 
+import com.vdurmont.semver4j.Semver;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.SystemUtils;
 import org.apache.plc4x.java.bacnetip.readwrite.*;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.ReadBufferByteBased;

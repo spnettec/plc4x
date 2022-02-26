@@ -52,7 +52,9 @@ func (m AdsXmlParserHelper) Parse(typeName string, xmlString string, parserArgum
 			return nil, err
 		}
 		stringLength := int32(parsedInt1)
-		return model.DataItemParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), dataFormatName, stringLength)
+		// TODO: find a way to parse the sub types
+		var stringEncoding string
+		return model.DataItemParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), dataFormatName, stringLength, stringEncoding)
 	case "AdsMultiRequestItem":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 32)
 		if err != nil {

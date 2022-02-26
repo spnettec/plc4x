@@ -43,7 +43,11 @@ func (m AdsParserHelper) Parse(typeName string, arguments []string, io utils.Rea
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
-		return model.DataItemParse(io, dataFormatName, stringLength)
+		stringEncoding, err := utils.StrToString(arguments[2])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		return model.DataItemParse(io, dataFormatName, stringLength, stringEncoding)
 	case "AdsMultiRequestItem":
 		indexGroup, err := utils.StrToUint32(arguments[0])
 		if err != nil {
