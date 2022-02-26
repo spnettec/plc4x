@@ -40,6 +40,9 @@ public class RequirePcapNgCondition implements ExecutionCondition {
         // Linux:
         // Windows: NPcap version 1.6.0
         try {
+            if (SystemUtils.IS_OS_MAC) {
+                System.getProperties().setProperty("jna.library.path", "/usr/local/Cellar/libpcap//1.10.1/lib");
+            }
             String libVersion = Pcaps.libVersion();
             Pattern pattern = Pattern.compile("^.*libpcap version (?<version>\\d+\\.\\d+(?:\\.\\d+)?)[^\\d]?.*$");
             Matcher matcher = pattern.matcher(libVersion);
