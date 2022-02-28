@@ -16,27 +16,25 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.plc4x.protocol.genericcan;
+package org.apache.plc4x.protocol.cbus;
 
 import org.apache.plc4x.plugins.codegenerator.language.mspec.parser.MessageFormatParser;
 import org.apache.plc4x.plugins.codegenerator.protocol.Protocol;
 import org.apache.plc4x.plugins.codegenerator.protocol.TypeContext;
-import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.exceptions.GenerationException;
 
 import java.io.InputStream;
-import java.util.Map;
 
-public class GenericCANProtocol implements Protocol {
+public class CBusProtocol implements Protocol {
 
     @Override
     public String getName() {
-        return "genericcan";
+        return "c-bus";
     }
 
     @Override
     public TypeContext getTypeContext() throws GenerationException {
-        InputStream schemaInputStream = GenericCANProtocol.class.getResourceAsStream("/protocols/can/genericcan.mspec");
+        InputStream schemaInputStream = CBusProtocol.class.getResourceAsStream("/protocols/cbus/c-bus.mspec");
         if(schemaInputStream == null) {
             throw new GenerationException("Error loading message-format schema for protocol '" + getName() + "'");
         }

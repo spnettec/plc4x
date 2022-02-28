@@ -138,7 +138,7 @@
     <guava.version>31.0.1-jre</guava.version>
     <hamcrest.version>2.2</hamcrest.version>
     <httpclient.version>4.5.13</httpclient.version>
-    <httpcore.version>4.4.14</httpcore.version>
+    <httpcore.version>4.4.15</httpcore.version>
     <jackson.version>2.13.1</jackson.version>
     <woodstox-core.version>6.2.8</woodstox-core.version>
     <!-- When updating this to the latest version, we're getting errors in the opcua server tests -->
@@ -162,7 +162,7 @@
     <!-- Site properties -->
     <asciidoctor.maven.plugin.version>2.2.1</asciidoctor.maven.plugin.version>
     <asciidoctorj.version>2.5.3</asciidoctorj.version>
-    <asciidoctorj.diagram.version>2.1.2</asciidoctorj.diagram.version>
+    <asciidoctorj.diagram.version>2.2.1</asciidoctorj.diagram.version>
 
     <skip-code-generation-tests>true</skip-code-generation-tests>
     <skip-dependency-cve-scan>true</skip-dependency-cve-scan>
@@ -669,7 +669,7 @@
       <dependency>
         <groupId>org.jetbrains</groupId>
         <artifactId>annotations</artifactId>
-        <version>20.1.0</version>
+        <version>23.0.0</version>
       </dependency>
 
       <dependency>
@@ -1370,7 +1370,7 @@
         <plugin>
           <groupId>org.sonarsource.scanner.maven</groupId>
           <artifactId>sonar-maven-plugin</artifactId>
-          <version>3.9.0.2155</version>
+          <version>3.9.1.2184</version>
         </plugin>
 
         <plugin>
