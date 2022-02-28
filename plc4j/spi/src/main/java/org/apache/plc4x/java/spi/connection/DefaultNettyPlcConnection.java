@@ -202,7 +202,7 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
         /*if (factory == null) {
             throw new IllegalStateException("No Instance Factory is Present!");
         }*/
-        return new ChannelInitializer<>() {
+        return new ChannelInitializer<Channel>() {
             @Override
             protected void initChannel(Channel channel) {
                 // Build the protocol stack for communicating with the s7 protocol.

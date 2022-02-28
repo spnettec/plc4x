@@ -266,6 +266,7 @@
       </plugin>
 
       <!-- Ensure the generated output classes are compatible with Java 1.8 -->
+      <!--
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>animal-sniffer-maven-plugin</artifactId>
@@ -287,6 +288,7 @@
           </signature>
         </configuration>
       </plugin>
+      -->
     </plugins>
   </build>
 
