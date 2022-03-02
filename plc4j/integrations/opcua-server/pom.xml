@@ -32,7 +32,7 @@
 
   <properties>
     <app.main.class>org.apache.plc4x.java.opcuaserver.OPCUAServer</app.main.class>
-    <guava.version>30.0-jre</guava.version>
+    <guava.version>31.0.1-jre</guava.version>
   </properties>
 
   <dependencies>
