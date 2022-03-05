@@ -18,17 +18,14 @@
  */
 package org.apache.plc4x.protocol.ads;
 
-import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.utils.connectionpool.PooledPlcDriverManager;
-import org.apache.plc4x.test.manual.ManualTest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
 import java.util.function.Consumer;
 
 public class ManualAdsDriverTest {

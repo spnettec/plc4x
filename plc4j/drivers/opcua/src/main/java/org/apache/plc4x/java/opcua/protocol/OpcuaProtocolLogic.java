@@ -916,7 +916,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
             OpcuaSubscriptionHandle opcuaSubHandle = (OpcuaSubscriptionHandle) o;
             opcuaSubHandle.stopSubscriber();
         });
-        return null;
+        return CompletableFuture.completedFuture(null);
     }
 
     public void removeSubscription(Long subscriptionId) {

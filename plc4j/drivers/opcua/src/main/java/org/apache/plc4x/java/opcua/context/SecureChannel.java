@@ -85,7 +85,7 @@ public class SecureChannel {
         "(?<transportHost>[\\w.-]+)(:" +
         "(?<transportPort>\\d*))?");
 
-    public static final Pattern URI_PATTERN = Pattern.compile("^(?<protocolCode>opc)" +
+    public static final Pattern URI_PATTERN = Pattern.compile("^(?<protocolCode>opc|https)" +
         INET_ADDRESS_PATTERN +
         "(?<transportEndpoint>[\\w/=]*)[\\?]?"
     );
