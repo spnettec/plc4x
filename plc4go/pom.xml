@@ -565,6 +565,9 @@
           </packages>
           <sources>${project.basedir}</sources>
           <verbose>true</verbose>
+          <cliPath/>
+          <command/>
+          <customCommand/>
         </configuration>
       </plugin>
 

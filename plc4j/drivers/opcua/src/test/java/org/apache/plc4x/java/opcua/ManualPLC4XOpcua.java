@@ -43,13 +43,13 @@ import java.util.function.Consumer;
 public class ManualPLC4XOpcua {
     private static final Logger LOGGER = LoggerFactory.getLogger(ManualPLC4XOpcua.class);
     public static void main(String[] args) throws Exception {
-        String connectionString = "opcua:tcp://localhost:53530/OPCUA/SimulationServer?discovery=false";
+        String connectionString = "opcua:tcp://heyoulin-mini2.local:53530/OPCUA/SimulationServer";
         PooledPlcDriverManager pooledPlcDriverManager = new PooledPlcDriverManager();
         try (PlcConnection plcConnection = pooledPlcDriverManager.getConnection(connectionString)) {
 
             final PlcReadRequest.Builder builder = plcConnection.readRequestBuilder();
-            builder.addItem("Counter1","ns=5;s=Counter1;INT");
-            builder.addItem("Random1","ns=5;s=Random1;REAL");
+            builder.addItem("Counter1","ns=5;s=Counter1");
+            builder.addItem("Random1","ns=5;s=Random1");
             final PlcReadRequest readRequest = builder.build();
             final PlcReadResponse readResponse = readRequest.execute().get();
             System.out.println(readResponse.getAsPlcValue());
@@ -57,8 +57,8 @@ public class ManualPLC4XOpcua {
 
             final PlcSubscriptionRequest.Builder sbuilder = plcConnection.subscriptionRequestBuilder();
             PlcUnsubscriptionRequest.Builder unBuilder =   plcConnection.unsubscriptionRequestBuilder();
-            sbuilder.addChangeOfStateField("Counter1","ns=5;s=Counter1;INT");
-            sbuilder.addChangeOfStateField("Random1","ns=5;s=Random1;REAL");
+            sbuilder.addChangeOfStateField("Counter1","ns=5;s=Counter1");
+            sbuilder.addChangeOfStateField("Random1","ns=5;s=Random1");
             PlcSubscriptionRequest subscriptionRequest = sbuilder.build();
             final PlcSubscriptionResponse subscriptionResponse = subscriptionRequest.execute().get();
             for (String subscriptionName : subscriptionResponse.getFieldNames()) {
@@ -76,9 +76,7 @@ public class ManualPLC4XOpcua {
                     }
                     try {
                         unBuilder.build().execute().get();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    } catch (ExecutionException e) {
+                    } catch (InterruptedException | ExecutionException e) {
                         e.printStackTrace();
                     }
                 }

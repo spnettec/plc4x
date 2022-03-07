@@ -146,7 +146,7 @@ public class OpcuaSubscriptionHandleTest {
         });
 
         //Wait for value to be returned from server
-        Thread.sleep(1200);
+        Thread.sleep(120000);
 
         subscriptionHandle.stopSubscriber();
     }
