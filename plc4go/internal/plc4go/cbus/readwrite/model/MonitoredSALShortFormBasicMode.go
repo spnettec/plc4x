@@ -39,15 +39,16 @@ type MonitoredSALShortFormBasicMode struct {
 
 // The corresponding interface
 type IMonitoredSALShortFormBasicMode interface {
-	// GetCounts returns Counts
+	IMonitoredSAL
+	// GetCounts returns Counts (property field)
 	GetCounts() byte
-	// GetBridgeCount returns BridgeCount
+	// GetBridgeCount returns BridgeCount (property field)
 	GetBridgeCount() *BridgeCount
-	// GetNetworkNumber returns NetworkNumber
+	// GetNetworkNumber returns NetworkNumber (property field)
 	GetNetworkNumber() *NetworkNumber
-	// GetNoCounts returns NoCounts
+	// GetNoCounts returns NoCounts (property field)
 	GetNoCounts() *byte
-	// GetApplication returns Application
+	// GetApplication returns Application (property field)
 	GetApplication() ApplicationIdContainer
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
@@ -108,22 +109,19 @@ func NewMonitoredSALShortFormBasicMode(counts byte, bridgeCount *BridgeCount, ne
 }
 
 func CastMonitoredSALShortFormBasicMode(structType interface{}) *MonitoredSALShortFormBasicMode {
-	castFunc := func(typ interface{}) *MonitoredSALShortFormBasicMode {
-		if casted, ok := typ.(MonitoredSALShortFormBasicMode); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*MonitoredSALShortFormBasicMode); ok {
-			return casted
-		}
-		if casted, ok := typ.(MonitoredSAL); ok {
-			return CastMonitoredSALShortFormBasicMode(casted.Child)
-		}
-		if casted, ok := typ.(*MonitoredSAL); ok {
-			return CastMonitoredSALShortFormBasicMode(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(MonitoredSALShortFormBasicMode); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*MonitoredSALShortFormBasicMode); ok {
+		return casted
+	}
+	if casted, ok := structType.(MonitoredSAL); ok {
+		return CastMonitoredSALShortFormBasicMode(casted.Child)
+	}
+	if casted, ok := structType.(*MonitoredSAL); ok {
+		return CastMonitoredSALShortFormBasicMode(casted.Child)
+	}
+	return nil
 }
 
 func (m *MonitoredSALShortFormBasicMode) GetTypeName() string {
@@ -333,6 +331,8 @@ func (m *MonitoredSALShortFormBasicMode) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

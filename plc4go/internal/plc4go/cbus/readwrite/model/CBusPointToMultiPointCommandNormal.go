@@ -47,15 +47,16 @@ type CBusPointToMultiPointCommandNormal struct {
 
 // The corresponding interface
 type ICBusPointToMultiPointCommandNormal interface {
-	// GetApplication returns Application
+	ICBusPointToMultiPointCommand
+	// GetApplication returns Application (property field)
 	GetApplication() ApplicationIdContainer
-	// GetSalData returns SalData
+	// GetSalData returns SalData (property field)
 	GetSalData() *SALData
-	// GetCrc returns Crc
+	// GetCrc returns Crc (property field)
 	GetCrc() *Checksum
-	// GetPeekAlpha returns PeekAlpha
+	// GetPeekAlpha returns PeekAlpha (property field)
 	GetPeekAlpha() byte
-	// GetAlpha returns Alpha
+	// GetAlpha returns Alpha (property field)
 	GetAlpha() *Alpha
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
@@ -115,22 +116,19 @@ func NewCBusPointToMultiPointCommandNormal(application ApplicationIdContainer, s
 }
 
 func CastCBusPointToMultiPointCommandNormal(structType interface{}) *CBusPointToMultiPointCommandNormal {
-	castFunc := func(typ interface{}) *CBusPointToMultiPointCommandNormal {
-		if casted, ok := typ.(CBusPointToMultiPointCommandNormal); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*CBusPointToMultiPointCommandNormal); ok {
-			return casted
-		}
-		if casted, ok := typ.(CBusPointToMultiPointCommand); ok {
-			return CastCBusPointToMultiPointCommandNormal(casted.Child)
-		}
-		if casted, ok := typ.(*CBusPointToMultiPointCommand); ok {
-			return CastCBusPointToMultiPointCommandNormal(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(CBusPointToMultiPointCommandNormal); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*CBusPointToMultiPointCommandNormal); ok {
+		return casted
+	}
+	if casted, ok := structType.(CBusPointToMultiPointCommand); ok {
+		return CastCBusPointToMultiPointCommandNormal(casted.Child)
+	}
+	if casted, ok := structType.(*CBusPointToMultiPointCommand); ok {
+		return CastCBusPointToMultiPointCommandNormal(casted.Child)
+	}
+	return nil
 }
 
 func (m *CBusPointToMultiPointCommandNormal) GetTypeName() string {
@@ -386,6 +384,8 @@ func (m *CBusPointToMultiPointCommandNormal) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

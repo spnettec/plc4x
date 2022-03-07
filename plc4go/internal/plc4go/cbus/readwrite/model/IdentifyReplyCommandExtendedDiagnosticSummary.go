@@ -53,43 +53,44 @@ type IdentifyReplyCommandExtendedDiagnosticSummary struct {
 
 // The corresponding interface
 type IIdentifyReplyCommandExtendedDiagnosticSummary interface {
-	// GetLowApplication returns LowApplication
+	IIdentifyReplyCommand
+	// GetLowApplication returns LowApplication (property field)
 	GetLowApplication() ApplicationIdContainer
-	// GetHighApplication returns HighApplication
+	// GetHighApplication returns HighApplication (property field)
 	GetHighApplication() ApplicationIdContainer
-	// GetArea returns Area
+	// GetArea returns Area (property field)
 	GetArea() byte
-	// GetCrc returns Crc
+	// GetCrc returns Crc (property field)
 	GetCrc() uint16
-	// GetSerialNumber returns SerialNumber
+	// GetSerialNumber returns SerialNumber (property field)
 	GetSerialNumber() uint32
-	// GetNetworkVoltage returns NetworkVoltage
+	// GetNetworkVoltage returns NetworkVoltage (property field)
 	GetNetworkVoltage() byte
-	// GetOutputUnit returns OutputUnit
+	// GetOutputUnit returns OutputUnit (property field)
 	GetOutputUnit() bool
-	// GetEnableChecksumAlarm returns EnableChecksumAlarm
+	// GetEnableChecksumAlarm returns EnableChecksumAlarm (property field)
 	GetEnableChecksumAlarm() bool
-	// GetNetworkVoltageMarginal returns NetworkVoltageMarginal
+	// GetNetworkVoltageMarginal returns NetworkVoltageMarginal (property field)
 	GetNetworkVoltageMarginal() bool
-	// GetNetworkVoltageLow returns NetworkVoltageLow
+	// GetNetworkVoltageLow returns NetworkVoltageLow (property field)
 	GetNetworkVoltageLow() bool
-	// GetUnitInLearnMode returns UnitInLearnMode
+	// GetUnitInLearnMode returns UnitInLearnMode (property field)
 	GetUnitInLearnMode() bool
-	// GetMicroPowerReset returns MicroPowerReset
+	// GetMicroPowerReset returns MicroPowerReset (property field)
 	GetMicroPowerReset() bool
-	// GetInternalStackOverflow returns InternalStackOverflow
+	// GetInternalStackOverflow returns InternalStackOverflow (property field)
 	GetInternalStackOverflow() bool
-	// GetCommsTxError returns CommsTxError
+	// GetCommsTxError returns CommsTxError (property field)
 	GetCommsTxError() bool
-	// GetMicroReset returns MicroReset
+	// GetMicroReset returns MicroReset (property field)
 	GetMicroReset() bool
-	// GetEEDataError returns EEDataError
+	// GetEEDataError returns EEDataError (property field)
 	GetEEDataError() bool
-	// GetEEChecksumError returns EEChecksumError
+	// GetEEChecksumError returns EEChecksumError (property field)
 	GetEEChecksumError() bool
-	// GetEEWriteError returns EEWriteError
+	// GetEEWriteError returns EEWriteError (property field)
 	GetEEWriteError() bool
-	// GetInstallationMMIError returns InstallationMMIError
+	// GetInstallationMMIError returns InstallationMMIError (property field)
 	GetInstallationMMIError() bool
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
@@ -225,22 +226,19 @@ func NewIdentifyReplyCommandExtendedDiagnosticSummary(lowApplication Application
 }
 
 func CastIdentifyReplyCommandExtendedDiagnosticSummary(structType interface{}) *IdentifyReplyCommandExtendedDiagnosticSummary {
-	castFunc := func(typ interface{}) *IdentifyReplyCommandExtendedDiagnosticSummary {
-		if casted, ok := typ.(IdentifyReplyCommandExtendedDiagnosticSummary); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*IdentifyReplyCommandExtendedDiagnosticSummary); ok {
-			return casted
-		}
-		if casted, ok := typ.(IdentifyReplyCommand); ok {
-			return CastIdentifyReplyCommandExtendedDiagnosticSummary(casted.Child)
-		}
-		if casted, ok := typ.(*IdentifyReplyCommand); ok {
-			return CastIdentifyReplyCommandExtendedDiagnosticSummary(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(IdentifyReplyCommandExtendedDiagnosticSummary); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*IdentifyReplyCommandExtendedDiagnosticSummary); ok {
+		return casted
+	}
+	if casted, ok := structType.(IdentifyReplyCommand); ok {
+		return CastIdentifyReplyCommandExtendedDiagnosticSummary(casted.Child)
+	}
+	if casted, ok := structType.(*IdentifyReplyCommand); ok {
+		return CastIdentifyReplyCommandExtendedDiagnosticSummary(casted.Child)
+	}
+	return nil
 }
 
 func (m *IdentifyReplyCommandExtendedDiagnosticSummary) GetTypeName() string {
@@ -738,6 +736,8 @@ func (m *IdentifyReplyCommandExtendedDiagnosticSummary) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

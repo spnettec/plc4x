@@ -42,15 +42,15 @@ type StandardFormatStatusReply struct {
 
 // The corresponding interface
 type IStandardFormatStatusReply interface {
-	// GetStatusHeader returns StatusHeader
+	// GetStatusHeader returns StatusHeader (property field)
 	GetStatusHeader() *StatusHeader
-	// GetApplication returns Application
+	// GetApplication returns Application (property field)
 	GetApplication() ApplicationIdContainer
-	// GetBlockStart returns BlockStart
+	// GetBlockStart returns BlockStart (property field)
 	GetBlockStart() uint8
-	// GetStatusBytes returns StatusBytes
+	// GetStatusBytes returns StatusBytes (property field)
 	GetStatusBytes() []*StatusByte
-	// GetCrc returns Crc
+	// GetCrc returns Crc (property field)
 	GetCrc() *Checksum
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
@@ -93,16 +93,13 @@ func NewStandardFormatStatusReply(statusHeader *StatusHeader, application Applic
 }
 
 func CastStandardFormatStatusReply(structType interface{}) *StandardFormatStatusReply {
-	castFunc := func(typ interface{}) *StandardFormatStatusReply {
-		if casted, ok := typ.(StandardFormatStatusReply); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*StandardFormatStatusReply); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(StandardFormatStatusReply); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*StandardFormatStatusReply); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *StandardFormatStatusReply) GetTypeName() string {
@@ -334,6 +331,8 @@ func (m *StandardFormatStatusReply) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

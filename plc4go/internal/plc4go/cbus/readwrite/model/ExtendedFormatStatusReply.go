@@ -43,17 +43,17 @@ type ExtendedFormatStatusReply struct {
 
 // The corresponding interface
 type IExtendedFormatStatusReply interface {
-	// GetStatusHeader returns StatusHeader
+	// GetStatusHeader returns StatusHeader (property field)
 	GetStatusHeader() *ExtendedStatusHeader
-	// GetCoding returns Coding
+	// GetCoding returns Coding (property field)
 	GetCoding() StatusCoding
-	// GetApplication returns Application
+	// GetApplication returns Application (property field)
 	GetApplication() ApplicationIdContainer
-	// GetBlockStart returns BlockStart
+	// GetBlockStart returns BlockStart (property field)
 	GetBlockStart() uint8
-	// GetStatusBytes returns StatusBytes
+	// GetStatusBytes returns StatusBytes (property field)
 	GetStatusBytes() []*StatusByte
-	// GetCrc returns Crc
+	// GetCrc returns Crc (property field)
 	GetCrc() *Checksum
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
@@ -100,16 +100,13 @@ func NewExtendedFormatStatusReply(statusHeader *ExtendedStatusHeader, coding Sta
 }
 
 func CastExtendedFormatStatusReply(structType interface{}) *ExtendedFormatStatusReply {
-	castFunc := func(typ interface{}) *ExtendedFormatStatusReply {
-		if casted, ok := typ.(ExtendedFormatStatusReply); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*ExtendedFormatStatusReply); ok {
-			return casted
-		}
-		return nil
+	if casted, ok := structType.(ExtendedFormatStatusReply); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*ExtendedFormatStatusReply); ok {
+		return casted
+	}
+	return nil
 }
 
 func (m *ExtendedFormatStatusReply) GetTypeName() string {
@@ -369,6 +366,8 @@ func (m *ExtendedFormatStatusReply) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }

@@ -37,13 +37,14 @@ type CALDataReplyStatusExtended struct {
 
 // The corresponding interface
 type ICALDataReplyStatusExtended interface {
-	// GetEncoding returns Encoding
+	ICALData
+	// GetEncoding returns Encoding (property field)
 	GetEncoding() uint8
-	// GetApplication returns Application
+	// GetApplication returns Application (property field)
 	GetApplication() ApplicationIdContainer
-	// GetBlockStart returns BlockStart
+	// GetBlockStart returns BlockStart (property field)
 	GetBlockStart() uint8
-	// GetData returns Data
+	// GetData returns Data (property field)
 	GetData() []byte
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
@@ -56,13 +57,6 @@ type ICALDataReplyStatusExtended interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *CALDataReplyStatusExtended) CommandType() CALCommandType {
-	return CALCommandType_STATUS_EXTENDED
-}
-
-func (m *CALDataReplyStatusExtended) GetCommandType() CALCommandType {
-	return CALCommandType_STATUS_EXTENDED
-}
 
 func (m *CALDataReplyStatusExtended) InitializeParent(parent *CALData, commandTypeContainer CALCommandTypeContainer) {
 	m.CALData.CommandTypeContainer = commandTypeContainer
@@ -105,22 +99,19 @@ func NewCALDataReplyStatusExtended(encoding uint8, application ApplicationIdCont
 }
 
 func CastCALDataReplyStatusExtended(structType interface{}) *CALDataReplyStatusExtended {
-	castFunc := func(typ interface{}) *CALDataReplyStatusExtended {
-		if casted, ok := typ.(CALDataReplyStatusExtended); ok {
-			return &casted
-		}
-		if casted, ok := typ.(*CALDataReplyStatusExtended); ok {
-			return casted
-		}
-		if casted, ok := typ.(CALData); ok {
-			return CastCALDataReplyStatusExtended(casted.Child)
-		}
-		if casted, ok := typ.(*CALData); ok {
-			return CastCALDataReplyStatusExtended(casted.Child)
-		}
-		return nil
+	if casted, ok := structType.(CALDataReplyStatusExtended); ok {
+		return &casted
 	}
-	return castFunc(structType)
+	if casted, ok := structType.(*CALDataReplyStatusExtended); ok {
+		return casted
+	}
+	if casted, ok := structType.(CALData); ok {
+		return CastCALDataReplyStatusExtended(casted.Child)
+	}
+	if casted, ok := structType.(*CALData); ok {
+		return CastCALDataReplyStatusExtended(casted.Child)
+	}
+	return nil
 }
 
 func (m *CALDataReplyStatusExtended) GetTypeName() string {
@@ -265,6 +256,8 @@ func (m *CALDataReplyStatusExtended) String() string {
 		return "<nil>"
 	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	m.Serialize(buffer)
+	if err := m.Serialize(buffer); err != nil {
+		return err.Error()
+	}
 	return buffer.GetBox().String()
 }
