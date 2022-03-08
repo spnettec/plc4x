@@ -141,37 +141,13 @@ type I${type.name} interface {
 	<#assign discriminatedChildType = type.asDiscriminatedComplexTypeDefinition().orElseThrow()>
 
 ///////////////////////////////////////////////////////////
-// Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
+/////////////////////// Accessors for discriminator values.
+///////////////////////
 	<#list discriminatedChildType.getDiscriminatorMap() as discriminatorName, discriminatorTerm>
 		<#-- If the discriminator name matches that of another field, suppress the methods generation -->
 		<#if !type.isNonDiscriminatorField(discriminatorName)>
 			<#assign typeRef=helper.getDiscriminatorTypes()[discriminatorName]>
-func (m *${type.name}) ${discriminatorName?cap_first}() <#if typeRef.isNonSimpleTypeReference() && !typeRef.isEnumTypeReference()>I</#if>${helper.getLanguageTypeNameForTypeReference(typeRef)} {
-			<@compress single_line=true>
-	return
-				<#if discriminatorTerm?? && !helper.isWildcard(discriminatorTerm)>
-					<#if typeRef.isNonSimpleTypeReference()>
-						<#if typeRef.isEnumTypeReference()>
-                            <#assign enumType=helper.getLanguageTypeNameForTypeReference(typeRef)>
-                            <#assign enumTypeWithoutTraces=tracer.removeTraces(enumType)>
-                            <#assign enumTypeTraces=tracer.extractTraces(enumType)>
-                            <#assign enumValue=helper.toParseExpression(null, typeRef, discriminatorTerm, parserArguments)>
-                            <#assign enumValueWithoutTraces=tracer.removeTraces(enumValue)>
-                            <#assign enumValueTraces=tracer.extractTraces(enumValue)>
-                            ${enumTypeTraces}${enumValueTraces}${enumTypeWithoutTraces}_${enumValueWithoutTraces?replace("Get","")?replace("()","")}
-						<#else>
-							${helper.toParseExpression(null, typeRef, discriminatorTerm, parserArguments)}
-						</#if>
-					<#else>
-						${helper.toParseExpression(null, typeRef, discriminatorTerm, parserArguments)}
-					</#if>
-				<#else>
-					${helper.getNullValueForTypeReference(typeRef)}
-				</#if>
-			</@compress>
-}
-
 func (m *${type.name}) Get${discriminatorName?cap_first}() <#if typeRef.isNonSimpleTypeReference() && !typeRef.isEnumTypeReference()>I</#if>${helper.getLanguageTypeNameForTypeReference(typeRef)} {
 			<@compress single_line=true>
 				return
@@ -199,6 +175,10 @@ func (m *${type.name}) Get${discriminatorName?cap_first}() <#if typeRef.isNonSim
 
 		</#if>
 	</#list>
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 </#if>
 <#if type.isDiscriminatedParentTypeDefinition()>
 
@@ -221,6 +201,8 @@ type I${type.name}Child interface {
 	</#list>
 	)
 </@compress>
+
+	GetParent() *${type.name}
 
 	GetTypeName() string
 	I${type.name}
@@ -245,32 +227,49 @@ func (m *${type.name}) InitializeParent(parent *${type.parentType.orElseThrow().
 	m.${type.parentType.orElseThrow().name}.${field.name?cap_first} = ${field.name}
 	</#list>
 }
+
+func(m *${type.name}) GetParent() *${type.parentType.orElseThrow().name} {
+	return m.${type.parentType.orElseThrow().name}
+}
 </#if>
+<#if type.propertyFields?has_content>
 ///////////////////////////////////////////////////////////
-// Accessors for property fields.
 ///////////////////////////////////////////////////////////
-<#list type.propertyFields as field>
-    <#assign typeRef=field.asTypedField().orElseThrow().type>
+/////////////////////// Accessors for property fields.
+///////////////////////
+	<#list type.propertyFields as field>
+    	<#assign typeRef=field.asTypedField().orElseThrow().type>
 func (m *${type.name}) Get${field.name?cap_first}() <#if helper.needsPointerAccess(field)>*</#if>${helper.getLanguageTypeNameForTypeReference(typeRef)} {
 	return m.${field.name?cap_first}
 }
 
-</#list>
-
+	</#list>
+///////////////////////
+///////////////////////
 ///////////////////////////////////////////////////////////
-// Accessors for virtual fields.
 ///////////////////////////////////////////////////////////
-<#list type.virtualFields as field>
-    <#assign typeRef=field.asTypedField().orElseThrow().type>
+</#if>
+<#if type.virtualFields?has_content>
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+	<#list type.virtualFields as field>
+		<#assign typeRef=field.asTypedField().orElseThrow().type>
 func (m *${type.name}) Get${field.name?cap_first}() <#if helper.needsPointerAccess(field)>*</#if>${helper.getLanguageTypeNameForTypeReference(typeRef)} {
-    <#list type.propertyFields?filter(f->f.isOptionalField()) as field>
+  	  <#list type.propertyFields?filter(f->f.isOptionalField()) as field>
 	${field.name} := m.${field.name?cap_first}
 	_ = ${field.name}
-    </#list>
+  	  </#list>
 	return ${helper.toSerializationExpression(field, field.type, field.valueExpression, parserArguments)}
 }
 
-</#list>
+	</#list>
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+</#if>
 
 <#if type.parentType.isPresent() && type.parentType.orElseThrow().allParserArguments.isPresent()>
     <#assign filteredParentParserArguments = type.parentType.orElseThrow().allParserArguments.orElseThrow()?filter(arg -> !type.parentType.orElseThrow().asComplexTypeDefinition().orElseThrow().isDiscriminatorField(arg.name))>
@@ -297,18 +296,18 @@ func New${type.name}(
             <#sep>, </#sep>
         </#list>
     </#if>
-	) *<#if type.parentType.isPresent()>${type.parentType.orElseThrow().name}<#else>${type.name}</#if> {
+	) *${type.name} {
 </@compress>
 
 <#if type.parentType.isPresent()>
-	child := &${type.name}{
+	_result := &${type.name}{
 	<#list type.propertyFields as field>
 		${field.name?cap_first}: ${field.name},
 	</#list>
     	${type.parentType.orElseThrow().name}: New${type.parentType.orElseThrow().name}(<#list type.parentPropertyFields as parentField>${parentField.name}<#sep>, </#list><#if filteredParentParserArguments?has_content><#if type.parentPropertyFields?has_content>, </#if><#list filteredParentParserArguments as arg>${arg.name}<#sep>, </#sep></#list></#if>),
 	}
-	child.Child = child
-	return child.${type.parentType.orElseThrow().name}
+	_result.Child = _result
+	return _result
 <#else>
 	<@compress single_line=true>
 	return &${type.name}{
@@ -343,6 +342,11 @@ func Cast${type.name}(structType interface{}) *${type.name} {
 	if casted, ok := structType.(*${type.parentType.orElseThrow().name}); ok {
 		return Cast${type.name}(casted.Child)
 	}
+	</#if>
+	<#if type.isDiscriminatedParentTypeDefinition()>
+		if casted, ok := structType.(I${type.name}Child); ok {
+			return casted.GetParent()
+		}
 	</#if>
 	return nil
 }
@@ -701,7 +705,7 @@ func (m *${type.name}) GetLengthInBytes() uint16 {
 
 <#assign hasParserArguments=parserArguments?has_content/>
 <#assign parserArgumentList><#if hasParserArguments><#list parserArguments as parserArgument>${parserArgument.name} <#if parserArgument.type.isNonSimpleTypeReference() && !parserArgument.type.isEnumTypeReference()>*</#if>${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#sep>, </#sep></#list></#if></#assign>
-func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${parserArgumentList}</#if>) (*<#if type.parentType.isPresent()>${type.parentType.orElseThrow().name}<#else>${type.name}</#if>, error) {
+func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${parserArgumentList}</#if>) (*${type.name}, error) {
 	if pullErr := readBuffer.PullContext("${type.name}"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -1249,7 +1253,11 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 				<#assign switchField = field.asSwitchField().orElseThrow()>
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	var _parent *${type.name}
+	type ${type.name}Child interface {
+		InitializeParent(*${type.name}<#if type.propertyFields?has_content>, </#if> <#list type.propertyFields as field><#if helper.needsPointerAccess(field)>*</#if>${helper.getLanguageTypeNameForField(field)}<#sep>, </#sep></#list>)
+		GetParent() *${type.name}
+	}
+	var _child ${type.name}Child
 	var typeSwitchError error
 	switch {
 				<#list switchField.cases as case>
@@ -1291,7 +1299,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 						</#if>: // ${case.name}
                     </@compress>
 
-		_parent, typeSwitchError = ${case.name}Parse(readBuffer<#if case.allParserArguments.isPresent()>, <#list case.allParserArguments.orElseThrow() as parserArgument><#if <#--TODO: here DF1ResponseMessage throws a payloadLength not present: meaning that some feature is not rightfully implemented as the result should be a error not a missing pointer-->type.getPropertyFieldFromThisOrParentByName(parserArgument.name).isPresent() && type.getPropertyFieldFromThisOrParentByName(parserArgument.name).orElseThrow().isOptionalField()>*</#if>${parserArgument.name}<#sep>, </#sep></#list></#if>)
+		_child, typeSwitchError = ${case.name}Parse(readBuffer<#if case.allParserArguments.isPresent()>, <#list case.allParserArguments.orElseThrow() as parserArgument><#if <#--TODO: here DF1ResponseMessage throws a payloadLength not present: meaning that some feature is not rightfully implemented as the result should be a error not a missing pointer-->type.getPropertyFieldFromThisOrParentByName(parserArgument.name).isPresent() && type.getPropertyFieldFromThisOrParentByName(parserArgument.name).orElseThrow().isOptionalField()>*</#if>${parserArgument.name}<#sep>, </#sep></#list></#if>)
 				</#list>
 	default:
 		// TODO: return actual type
@@ -1390,7 +1398,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 	<#if type.isDiscriminatedParentTypeDefinition()>
 	// Finish initializing
 		<@compress single_line=true>
-	_parent.Child.InitializeParent(_parent
+	_child.InitializeParent(_child.GetParent()
 			<#if type.propertyFields?has_content>, </#if>
 			<#list type.propertyFields as field>
 				${field.name}
@@ -1399,7 +1407,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 			)
 		</@compress>
 
-	return _parent, nil
+	return _child.GetParent(), nil
 	<#elseif type.parentType.isPresent()>
 	// Create a partially initialized instance
 	_child := &${type.name}{
@@ -1409,7 +1417,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
         ${type.parentType.orElseThrow().name}: &${type.parentType.orElseThrow().name}{},
 	}
 	_child.${type.parentType.orElseThrow().name}.Child = _child
-	return _child.${type.parentType.orElseThrow().name}, nil
+	return _child, nil
 	<#else>
 	// Create the instance
 	return New${type.name}(<#list type.propertyFields as field>${field.name}<#sep>, </#sep></#list><#if filteredParserArguments?has_content><#if type.propertyFields?has_content>, </#if><#list filteredParserArguments as arg><#if arg.type.isNonSimpleTypeReference() && !arg.type.isEnumTypeReference()>*</#if>${arg.name}<#sep>, </#sep></#list></#if>), nil
