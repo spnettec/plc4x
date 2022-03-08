@@ -31,7 +31,7 @@ import java.util.function.Consumer;
 public class ManualAdsDriverTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(ManualAdsDriverTest.class);
     public static void main(String[] args) throws Exception {
-        String ip = "10.80.41.18";
+        String ip = "10.80.41.238";
 
         String sourceAmsNetId = "10.80.41.10.1.1";
         int sourceAmsPort = 65534;
