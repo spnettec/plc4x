@@ -124,7 +124,7 @@ public class RequestTransactionManagerTest {
     }
 
     @Test
-    @Disabled("This test is randomly failing on Jenkins")
+    //@Disabled("This test is randomly failing on Jenkins")
     public void abortTransactionFromExternally() throws ExecutionException, InterruptedException {
         CompletableFuture<Void> sendRequest = new CompletableFuture<>();
         CompletableFuture<Void> receiveResponse = new CompletableFuture<>();

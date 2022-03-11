@@ -93,8 +93,8 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
             @Override
             public SendRequestContext<T> sendRequest(T packet) {
                 return new DefaultSendRequestContext<>(handler -> {
-                    handler.setTimeoutHandle(createTimeout(handler));
                     logger.trace("Adding Response Handler ...");
+                    handler.setTimeoutHandle(createTimeout(handler));
                     registeredHandlers.add(handler);
                 }, packet, this);
             }
@@ -107,24 +107,21 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
                     registeredHandlers.add(handler);
                 }, clazz, timeout, this);
             }
-
-            private Timeout createTimeout(HandlerRegistration handler)
-            {
-                return SHARED_WHEEL_TIMER.newTimeout(tt -> {
-                    if (tt.isCancelled()) {
-                        return;
-                    }
-                    if( registeredHandlers.remove(handler))
-                    {
-                        handler.cancel();
-                        handler.getOnTimeoutConsumer().accept(new TimeoutException());
-                    }
-                }, handler.getTimeout().toMillis(), TimeUnit.MILLISECONDS);
-            }
-
         });
     }
-
+    private Timeout createTimeout(HandlerRegistration handler)
+    {
+        return SHARED_WHEEL_TIMER.newTimeout(tt -> {
+            if (tt.isCancelled()) {
+                return;
+            }
+            if( registeredHandlers.remove(handler))
+            {
+                handler.cancel();
+                handler.getOnTimeoutConsumer().accept(new TimeoutException());
+            }
+        }, handler.getTimeout().toMillis(), TimeUnit.MILLISECONDS);
+    }
     @Override
     protected void encode(ChannelHandlerContext channelHandlerContext, Object msg, List<Object> list) throws Exception {
 //        logger.trace("Encoding {}", plcRequestContainer);
@@ -258,6 +255,7 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
         public SendRequestContext<T1> sendRequest(T1 packet) {
             return new DefaultSendRequestContext<>(handler -> {
                 logger.trace("Adding Response Handler ...");
+                handler.setTimeoutHandle(createTimeout(handler));
                 registeredHandlers.add(handler);
             }, packet, this);
         }
@@ -266,6 +264,7 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
         public ExpectRequestContext<T1> expectRequest(Class<T1> clazz, Duration timeout) {
             return new DefaultExpectRequestContext<>(handler -> {
                 logger.trace("Adding Request Handler ...");
+                handler.setTimeoutHandle(createTimeout(handler));
                 registeredHandlers.add(handler);
             }, clazz, timeout, this);
         }
