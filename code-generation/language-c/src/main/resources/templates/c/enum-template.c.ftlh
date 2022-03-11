@@ -48,8 +48,8 @@ ${helper.getSourceDirectory()?replace(".", "/")}/${helper.camelCaseToSnakeCase(t
 <#--
     Add any import statements for partent-types, complex types used in properties or parser arguments.
 -->
-<#if helper.getTypeNamesForImportStatements()?has_content>
-    <#list helper.getTypeNamesForImportStatements() as typeReference>
+<#if helper.getNonSimpleTypeReferences()?has_content>
+    <#list helper.getNonSimpleTypeReferences() as typeReference>
 #include "${helper.camelCaseToSnakeCase(typeReference)}.h"
     </#list>
 </#if>
