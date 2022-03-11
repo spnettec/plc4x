@@ -22,6 +22,8 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
 import io.netty.handler.codec.MessageToMessageCodec;
+import io.netty.util.HashedWheelTimer;
+import io.netty.util.Timeout;
 import io.vavr.control.Either;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.events.*;
@@ -38,6 +40,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -46,7 +49,7 @@ import java.util.function.Predicate;
 public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
 
     private static final Logger logger = LoggerFactory.getLogger(Plc4xNettyWrapper.class);
-
+    private static HashedWheelTimer SHARED_WHEEL_TIMER = new HashedWheelTimer();
     private final Plc4xProtocolBase<T> protocolBase;
     private final Queue<HandlerRegistration> registeredHandlers;
     private final boolean passive;
@@ -90,6 +93,7 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
             @Override
             public SendRequestContext<T> sendRequest(T packet) {
                 return new DefaultSendRequestContext<>(handler -> {
+                    handler.setTimeoutHandle(createTimeout(handler));
                     logger.trace("Adding Response Handler ...");
                     registeredHandlers.add(handler);
                 }, packet, this);
@@ -99,8 +103,23 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
             public ExpectRequestContext<T> expectRequest(Class<T> clazz, Duration timeout) {
                 return new DefaultExpectRequestContext<>(handler -> {
                     logger.trace("Adding Request Handler ...");
+                    handler.setTimeoutHandle(createTimeout(handler));
                     registeredHandlers.add(handler);
                 }, clazz, timeout, this);
+            }
+
+            private Timeout createTimeout(HandlerRegistration handler)
+            {
+                return SHARED_WHEEL_TIMER.newTimeout(tt -> {
+                    if (tt.isCancelled()) {
+                        return;
+                    }
+                    if( registeredHandlers.remove(handler))
+                    {
+                        handler.cancel();
+                        handler.getOnTimeoutConsumer().accept(new TimeoutException());
+                    }
+                }, handler.getTimeout().toMillis(), TimeUnit.MILLISECONDS);
             }
 
         });
@@ -131,21 +150,15 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
             HandlerRegistration registration = iter.next();
             // Check if the handler can still be used or should be removed
             // Was cancelled?
+            if(registration.getTimeoutHandle()!=null && !registration.getTimeoutHandle().isCancelled()) {
+                registration.getTimeoutHandle().cancel();
+            }
             if (registration.isCancelled()) {
                 logger.debug("Removing {} as it was cancelled!", registration);
                 iter.remove();
                 continue;
             }
-            // Timeout?
-            final Instant now = Instant.now();
-            if (registration.getTimeoutAt().isBefore(now)) {
-                logger.debug("Removing {} as its timed out (timeout of {} was set till {} and now is {})",
-                    registration, registration.getTimeout(), registration.getTimeoutAt(), now);
-                // pass timeout back to caller so it can do ie. transaction compensation
-                registration.getOnTimeoutConsumer().accept(new TimeoutException());
-                iter.remove();
-                continue;
-            }
+
             logger.trace("Checking handler {} for Object of type {}", registration, t.getClass().getSimpleName());
             if (registration.getExpectClazz().isInstance(t)) {
                 logger.trace("Handler {} has right expected type {}, checking condition", registration, registration.getExpectClazz().getSimpleName());
