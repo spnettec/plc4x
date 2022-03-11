@@ -155,38 +155,6 @@ func (m *Reader) multiRead(readRequest model.PlcReadRequest, result chan model.P
 	// Calculate the size of all fields together.
 	// Calculate the expected size of the response data.
 	expectedResponseDataSize := uint32(0)
-	for _, fieldName := range readRequest.GetFieldNames() {
-		field, err := castToAdsFieldFromPlcField(readRequest.GetField(fieldName))
-		if err != nil {
-			result <- &plc4goModel.DefaultPlcReadRequestResult{
-				Request:  readRequest,
-				Response: nil,
-				Err:      errors.Wrap(err, "error casting field"),
-			}
-			return
-		}
-		size := uint32(0)
-		switch field.GetDatatype() {
-		case readWriteModel.AdsDataType_STRING:
-			// If an explicit size is given with the string, use this, if not use 256
-			if field.GetStringLength() != 0 {
-				size = uint32(field.GetStringLength())
-			} else {
-				size = 256
-			}
-		case readWriteModel.AdsDataType_WSTRING:
-			// If an explicit size is given with the string, use this, if not use 512
-			if field.GetStringLength() != 0 {
-				size = uint32(field.GetStringLength() * 2)
-			} else {
-				size = 512
-			}
-		default:
-			size = uint32(field.GetDatatype().NumBytes())
-		}
-		// Status code + payload size
-		expectedResponseDataSize += 4 + (size * field.GetNumberOfElements())
-	}
 
 	userdata := readWriteModel.AmsPacket{
 		TargetAmsNetId: &m.targetAmsNetId,
@@ -202,7 +170,8 @@ func (m *Reader) multiRead(readRequest model.PlcReadRequest, result chan model.P
 
 	items := make([]*readWriteModel.AdsMultiRequestItem, len(readRequest.GetFieldNames()))
 	for i, fieldName := range readRequest.GetFieldNames() {
-		field := readRequest.GetField(fieldName)
+		var field = readRequest.GetField(fieldName)
+
 		if needsResolving(field) {
 			adsField, err := castToSymbolicPlcFieldFromPlcField(field)
 			if err != nil {
@@ -235,8 +204,28 @@ func (m *Reader) multiRead(readRequest model.PlcReadRequest, result chan model.P
 			log.Debug().Msgf("Invalid field item type %T", field)
 			return
 		}
+		size := uint32(0)
+		switch adsField.GetDatatype() {
+		case readWriteModel.AdsDataType_STRING:
+			// If an explicit size is given with the string, use this, if not use 256
+			if adsField.GetStringLength() != 0 {
+				size = uint32(adsField.GetStringLength())
+			} else {
+				size = 256
+			}
+		case readWriteModel.AdsDataType_WSTRING:
+			// If an explicit size is given with the string, use this, if not use 512
+			if adsField.GetStringLength() != 0 {
+				size = uint32(adsField.GetStringLength() * 2)
+			} else {
+				size = 512
+			}
+		default:
+			size = uint32(adsField.GetDatatype().NumBytes())
+		}
 		// With multi-requests, the index-group is fixed and the index offset indicates the number of elements.
-		items[i] = readWriteModel.NewAdsMultiRequestItemRead(adsField.IndexGroup, adsField.IndexOffset, uint32(adsField.GetDatatype().NumBytes())*adsField.NumberOfElements).GetParent()
+		items[i] = readWriteModel.NewAdsMultiRequestItemRead(adsField.IndexGroup, adsField.IndexOffset, size*adsField.NumberOfElements).GetParent()
+		expectedResponseDataSize += 4 + (size * adsField.GetNumberOfElements())
 	}
 	userdata.Data = readWriteModel.NewAdsReadWriteRequest(uint32(readWriteModel.ReservedIndexGroups_ADSIGRP_MULTIPLE_READ), uint32(len(readRequest.GetFieldNames())), expectedResponseDataSize, items, nil).GetParent()
 

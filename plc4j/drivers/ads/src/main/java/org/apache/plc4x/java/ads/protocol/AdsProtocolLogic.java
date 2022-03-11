@@ -213,47 +213,30 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
     protected CompletableFuture<PlcReadResponse> multiRead(PlcReadRequest readRequest, List<DirectAdsField> directAdsFields) {
         CompletableFuture<PlcReadResponse> future = new CompletableFuture<>();
 
-        // Calculate the size of all fields together.
-        // Calculate the expected size of the response data.
-        long expectedResponseDataSize = directAdsFields.stream().mapToLong(
-            field -> {
-                final long size;
-                if (field.getAdsDataType() == AdsDataType.STRING) {
+        List<AdsMultiRequestItem> items = directAdsFields.stream().map(directAdsField -> {
+                long size;
+                if (directAdsField.getAdsDataType() == AdsDataType.STRING) {
                     // If an explicit size is given with the string, use this, if not use 256
-                    size = (field instanceof AdsStringField) ?
-                        ((AdsStringField) field).getStringLength() : 256;
-                } else if (field.getAdsDataType() == AdsDataType.WSTRING) {
+                    size = (directAdsField instanceof AdsStringField) ?
+                        ((AdsStringField) directAdsField).getStringLength() : 256;
+                } else if (directAdsField.getAdsDataType() == AdsDataType.WSTRING) {
                     // If an explicit size is given with the string, use this, if not use 512
-                    size = (field instanceof AdsStringField) ?
-                        ((long) ((AdsStringField) field).getStringLength()) * 2 : 512;
+                    size = (directAdsField instanceof AdsStringField) ?
+                        ((long) ((AdsStringField) directAdsField).getStringLength()) * 2 : 512;
                 } else {
-                    size = field.getAdsDataType().getNumBytes();
+                    size = directAdsField.getAdsDataType().getNumBytes();
                 }
-                // Status code + payload size
-                return 4 + (size * field.getNumberOfElements());
-            }).sum();
 
+                return new AdsMultiRequestItemRead(directAdsField.getIndexGroup(), directAdsField.getIndexOffset(),
+                    (size * directAdsField.getNumberOfElements()));
+            }
+        ).collect(Collectors.toList());
+        long expectedResponseDataSize = items.stream().mapToLong(item->((AdsMultiRequestItemRead)item).getItemReadLength()+4).sum();
         // With multi-requests, the index-group is fixed and the index offset indicates the number of elements.
-        AdsData adsData = new AdsReadWriteRequest(
+        AdsReadWriteRequest adsData = new AdsReadWriteRequest(
             ReservedIndexGroups.ADSIGRP_MULTIPLE_READ.getValue(), directAdsFields.size(), expectedResponseDataSize,
-            directAdsFields.stream().map(directAdsField -> {
-                    long size;
-                    if (directAdsField.getAdsDataType() == AdsDataType.STRING) {
-                        // If an explicit size is given with the string, use this, if not use 256
-                        size = (directAdsField instanceof AdsStringField) ?
-                            ((AdsStringField) directAdsField).getStringLength() : 256;
-                    } else if (directAdsField.getAdsDataType() == AdsDataType.WSTRING) {
-                        // If an explicit size is given with the string, use this, if not use 512
-                        size = (directAdsField instanceof AdsStringField) ?
-                            ((long) ((AdsStringField) directAdsField).getStringLength()) * 2 : 512;
-                    } else {
-                        size = directAdsField.getAdsDataType().getNumBytes();
-                    }
+            items, null);
 
-                    return new AdsMultiRequestItemRead(directAdsField.getIndexGroup(), directAdsField.getIndexOffset(),
-                        (size * directAdsField.getNumberOfElements()));
-                }
-                ).collect(Collectors.toList()), null);
 
         AmsPacket amsPacket = new AmsPacket(configuration.getTargetAmsNetId(), configuration.getTargetAmsPort(),
             configuration.getSourceAmsNetId(), configuration.getSourceAmsPort(),

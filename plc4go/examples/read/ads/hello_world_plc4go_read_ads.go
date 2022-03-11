@@ -31,7 +31,7 @@ func main() {
 	drivers.RegisterAdsDriver(driverManager)
 	var ip = "10.80.41.238"
 
-	var sourceAmsNetId = "10.80.41.10.1.1"
+	var sourceAmsNetId = "10.211.55.4.1.1"
 	var sourceAmsPort = 65534
 	var targetAmsNetId = "5.81.202.72.1.1"
 	var targetAmsPort = 851
@@ -73,11 +73,15 @@ func main() {
 	}
 
 	// Do something with the response
-	if rrr.GetResponse().GetResponseCode("field") != model.PlcResponseCode_OK {
-		fmt.Printf("error an non-ok return code: %s", rrr.GetResponse().GetResponseCode("field").GetName())
-		return
-	}
-	for _, name := range rrr.GetResponse().GetFieldNames() {
+	//if rrr.GetResponse().GetResponseCode("field") != model.PlcResponseCode_OK {
+	//	fmt.Printf("error an non-ok return code: %s", rrr.GetResponse().GetResponseCode("field").GetName())
+	//	return
+	//}
+	for _, name := range rrr.GetRequest().GetFieldNames() {
+		if rrr.GetResponse().GetResponseCode(name) != model.PlcResponseCode_OK {
+			fmt.Printf("error an non-ok return code: %s", rrr.GetResponse().GetResponseCode(name).GetName())
+			continue
+		}
 		value := rrr.GetResponse().GetValue(name)
 		fmt.Printf("Got result %s: %s", name, value.GetString())
 	}
