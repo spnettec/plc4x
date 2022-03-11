@@ -19,6 +19,7 @@
 package org.apache.plc4x.java.opcua;
 
 import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.api.value.PlcValue;
@@ -80,7 +81,27 @@ public class ManualPLC4XOpcua {
                         e.printStackTrace();
                     }
                 }
-            }, 3000);
+            }, 300000);
+            new Timer("time2").schedule(new TimerTask() {
+
+                @Override
+                public void run() {
+                    try (PlcConnection plcConnection = pooledPlcDriverManager.getConnection(connectionString)) {
+                        final PlcReadRequest.Builder builder = plcConnection.readRequestBuilder();
+                        builder.addItem("Counter1", "ns=5;s=Counter1");
+                        builder.addItem("Random1", "ns=5;s=Random1");
+                        final PlcReadRequest readRequest = builder.build();
+                        try {
+                            final PlcReadResponse readResponse = readRequest.execute().get();
+                            System.out.println(readResponse.getAsPlcValue());
+                        } catch (InterruptedException | ExecutionException e) {
+                            e.printStackTrace();
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }, 2000,2000);
         }
 
     }
