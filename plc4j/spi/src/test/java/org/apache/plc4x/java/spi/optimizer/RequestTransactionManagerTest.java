@@ -138,6 +138,7 @@ public class RequestTransactionManagerTest {
             // Receive
             receiveResponse.whenComplete((n,e) -> {
                 // never execute
+                fail();
             });
             //Wait that the fail is handled internally surely and then interrupt this block execute
             try {
