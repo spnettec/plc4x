@@ -137,13 +137,9 @@ public class RequestTransactionManagerTest {
             sendRequest.complete(null);
             // Receive
             receiveResponse.whenComplete((n,e) -> {
-                if(e!=null) {
-                    handle.endRequest();
-                    transactionIsFinished.complete(null);
-                } else {
-                    transactionIsFinished.cancel(true);
-                }
+                // never execute
             });
+            //wait failRequest to cancel request and interrupt this block execute
             try {
                 receiveResponse.get();
             } catch (Exception e) {
