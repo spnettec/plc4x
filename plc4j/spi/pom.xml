@@ -101,7 +101,7 @@
         <configuration>
           <instructions>
             <Import-Package>
-                com.fasterxml.jackson.annotation;resolution:=optional,
+                com.fasterxml.jackson.annotation;resolution:=optional,   
                 com.github.jinahya.bit.io;resolution:=optional,
                 *
             </Import-Package>
