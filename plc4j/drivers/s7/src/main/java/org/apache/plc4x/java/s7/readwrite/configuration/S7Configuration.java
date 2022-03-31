@@ -181,8 +181,8 @@ public class S7Configuration implements Configuration, TcpTransportConfiguration
             ", local-tsap=" + localTsap +
             ", remote-group=" + remoteGroup +
             ", remote-rack=" + remoteRack +
-            ", remot-slot=" + remoteSlot +
-            ", remot-tsap=" + remoteTsap +
+            ", remote-slot=" + remoteSlot +
+            ", remote-tsap=" + remoteTsap +
             ", pduSize=" + pduSize +
             ", maxAmqCaller=" + maxAmqCaller +
             ", maxAmqCallee=" + maxAmqCallee +
