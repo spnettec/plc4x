@@ -35,7 +35,7 @@ public class DatatypesTest {
 
         try (PlcConnection connection = pooledPlcDriverManager.getConnection("s7://10.166.11.20?remote-rack=0&remote-slot=1")) {
             final PlcReadRequest.Builder builder = connection.readRequestBuilder();
-            builder.addItem("CTray01_BarDiameter","%DB132:124:STRING(40)|GBK");
+            builder.addItem("CTray01_BarDiameter","%DB1:818:SINT[10]");
 
 
 

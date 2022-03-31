@@ -161,9 +161,10 @@ public class S7Field implements PlcField, Serializable {
             case UINT:
             case INT:
             case DINT:
-            case BYTE:
             case WORD:
                 return Integer.class;
+            case BYTE:
+                return byte.class;
             case UDINT:
             case ULINT:
             case LINT:
