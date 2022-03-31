@@ -139,7 +139,7 @@
     <hamcrest.version>2.2</hamcrest.version>
     <httpclient.version>4.5.13</httpclient.version>
     <httpcore.version>4.4.15</httpcore.version>
-    <jackson.version>2.13.1</jackson.version>
+    <jackson.version>2.13.2</jackson.version>
     <woodstox-core.version>6.2.8</woodstox-core.version>
     <!-- When updating this to the latest version, we're getting errors in the opcua server tests -->
     <jaxb.version>3.0.2</jaxb.version>
@@ -151,7 +151,7 @@
     <junit.platform.version>1.8.2</junit.platform.version>
     <logback.version>1.2.10</logback.version>
     <milo.version>0.6.4</milo.version>
-    <mockito.version>4.2.0</mockito.version>
+    <mockito.version>4.4.0</mockito.version>
     <netty.version>4.1.72.Final</netty.version>
     <owasp-dependency-check.version>6.5.3</owasp-dependency-check.version>
     <pcap4j.version>1.8.2</pcap4j.version>
@@ -381,7 +381,7 @@
       <dependency>
         <groupId>com.fasterxml.jackson.core</groupId>
         <artifactId>jackson-databind</artifactId>
-        <version>${jackson.version}</version>
+        <version>${jackson.version}.2</version>
       </dependency>
       <dependency>
         <groupId>com.fasterxml.jackson.dataformat</groupId>
@@ -771,7 +771,6 @@
             <exclude>**/.gitignore</exclude>
             <exclude>**/cmake-*/**</exclude>
             <exclude>**/.cmake/**</exclude>
-            <exclude>**/downloads/**</exclude>
             <!-- License Files for other licenses -->
             <exclude>**/UNLICENSE</exclude>
             <!--
@@ -779,7 +778,6 @@
               to add a new licenses to the configuration.
             -->
             <exclude>**/Expression.g4</exclude>
-            <exclude>**/*.log</exclude>
             <exclude>**/KeyStoreLoader.java</exclude>
             <exclude>**/OPCUAServer.java</exclude>
             <exclude>**/Plc4xNamespace.java</exclude>
