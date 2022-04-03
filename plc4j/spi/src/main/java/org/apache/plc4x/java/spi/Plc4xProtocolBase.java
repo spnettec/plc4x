@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.spi;
 
+import io.netty.util.Timer;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
@@ -35,6 +36,8 @@ public abstract class Plc4xProtocolBase<T> {
 
     protected ConversationContext<T> context;
 
+    protected Timer timer;
+
     protected DriverContext driverContext;
 
     public void setDriverContext(DriverContext driverContext) {
@@ -47,6 +50,10 @@ public abstract class Plc4xProtocolBase<T> {
 
     public void setContext(ConversationContext<T> context) {
         this.context = context;
+    }
+
+    public void setTimer(Timer timer) {
+        this.timer = timer;
     }
 
     public void onConnect(ConversationContext<T> context) {

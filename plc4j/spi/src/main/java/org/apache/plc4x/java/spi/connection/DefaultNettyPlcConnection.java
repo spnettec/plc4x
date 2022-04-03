@@ -19,12 +19,15 @@
 package org.apache.plc4x.java.spi.connection;
 
 import io.netty.channel.*;
+import io.netty.util.HashedWheelTimer;
+import io.netty.util.Timer;
 import org.apache.plc4x.java.api.EventPlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcIoException;
 import org.apache.plc4x.java.api.listener.ConnectionStateListener;
 import org.apache.plc4x.java.api.listener.EventListener;
 import org.apache.plc4x.java.api.value.PlcValueHandler;
+import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.ConfigurationFactory;
 import org.apache.plc4x.java.spi.events.*;
@@ -39,6 +42,11 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
 public class DefaultNettyPlcConnection extends AbstractPlcConnection implements ChannelExposingConnection, EventPlcConnection {
+
+    /**
+     * a {@link HashedWheelTimer} shall be only instantiated once.
+     */
+    // TODO: maybe find a way to make this configurable per jvm
 
     protected final static long DEFAULT_DISCONNECT_WAIT_TIME = 10000L;
     private static final Logger logger = LoggerFactory.getLogger(DefaultNettyPlcConnection.class);
@@ -238,7 +246,11 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
             }
         };
     }
-
+    @Override
+    public void setProtocol(Plc4xProtocolBase<?> protocol) {
+        super.setProtocol(protocol);
+        protocol.setTimer(channelFactory.getTimer());
+    }
     protected void sendChannelCreatedEvent() {
         logger.trace("Channel was created, firing ChannelCreated Event");
         // Send an event to the pipeline telling the Protocol filters what's going on.

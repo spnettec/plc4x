@@ -49,7 +49,6 @@ import java.util.function.Predicate;
 public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
 
     private static final Logger logger = LoggerFactory.getLogger(Plc4xNettyWrapper.class);
-    private static HashedWheelTimer SHARED_WHEEL_TIMER = new HashedWheelTimer();
     private final Plc4xProtocolBase<T> protocolBase;
     private final Queue<HandlerRegistration> registeredHandlers;
     private final boolean passive;
@@ -111,7 +110,7 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
     }
     private Timeout createTimeout(HandlerRegistration handler)
     {
-        return SHARED_WHEEL_TIMER.newTimeout(tt -> {
+        return this.protocolBase.timer.newTimeout(tt -> {
             if (tt.isCancelled()) {
                 return;
             }
@@ -203,7 +202,6 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
             this.protocolBase.onDiscover(new DefaultConversationContext<>(ctx, passive));
         } else if (evt instanceof CloseConnectionEvent) {
             this.protocolBase.close(new DefaultConversationContext<>(ctx, passive));
-            SHARED_WHEEL_TIMER.stop();
         } else {
             super.userEventTriggered(ctx, evt);
         }
