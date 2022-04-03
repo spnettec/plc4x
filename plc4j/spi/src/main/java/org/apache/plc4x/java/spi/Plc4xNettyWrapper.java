@@ -203,6 +203,7 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
             this.protocolBase.onDiscover(new DefaultConversationContext<>(ctx, passive));
         } else if (evt instanceof CloseConnectionEvent) {
             this.protocolBase.close(new DefaultConversationContext<>(ctx, passive));
+            SHARED_WHEEL_TIMER.stop();
         } else {
             super.userEventTriggered(ctx, evt);
         }

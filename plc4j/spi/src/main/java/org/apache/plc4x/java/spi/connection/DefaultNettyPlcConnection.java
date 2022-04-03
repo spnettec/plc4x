@@ -19,8 +19,6 @@
 package org.apache.plc4x.java.spi.connection;
 
 import io.netty.channel.*;
-import io.netty.util.HashedWheelTimer;
-import io.netty.util.Timer;
 import org.apache.plc4x.java.api.EventPlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcIoException;
@@ -33,22 +31,15 @@ import org.apache.plc4x.java.spi.events.*;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.apache.plc4x.java.api.value.PlcValueHandler;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
 public class DefaultNettyPlcConnection extends AbstractPlcConnection implements ChannelExposingConnection, EventPlcConnection {
 
-    /**
-     * a {@link HashedWheelTimer} shall be only instantiated once.
-     */
-    // TODO: maybe find a way to make this configurable per jvm
-    //protected final static Timer timer = new HashedWheelTimer();
     protected final static long DEFAULT_DISCONNECT_WAIT_TIME = 10000L;
     private static final Logger logger = LoggerFactory.getLogger(DefaultNettyPlcConnection.class);
 
