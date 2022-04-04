@@ -24,6 +24,7 @@ import io.netty.channel.ChannelPipeline;
 import io.netty.handler.codec.MessageToMessageCodec;
 import io.netty.util.HashedWheelTimer;
 import io.netty.util.Timeout;
+import io.netty.util.Timer;
 import io.vavr.control.Either;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.events.*;
@@ -51,6 +52,7 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
     private static final Logger logger = LoggerFactory.getLogger(Plc4xNettyWrapper.class);
     private final Plc4xProtocolBase<T> protocolBase;
     private final Queue<HandlerRegistration> registeredHandlers;
+    private Timer timer = null;
     private final boolean passive;
 
     public Plc4xNettyWrapper(ChannelPipeline pipeline, boolean passive, Plc4xProtocolBase<T> protocol, Class<T> clazz) {
@@ -110,7 +112,14 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
     }
     private Timeout createTimeout(HandlerRegistration handler)
     {
-        return this.protocolBase.timer.newTimeout(tt -> {
+        Timer createdTimer = this.protocolBase.timer;
+        if(createdTimer==null) {
+            if(this.timer == null) {
+                this.timer = new HashedWheelTimer();
+            }
+            createdTimer = this.timer;
+        }
+        return createdTimer.newTimeout(tt -> {
             if (tt.isCancelled()) {
                 return;
             }
@@ -202,6 +211,10 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
             this.protocolBase.onDiscover(new DefaultConversationContext<>(ctx, passive));
         } else if (evt instanceof CloseConnectionEvent) {
             this.protocolBase.close(new DefaultConversationContext<>(ctx, passive));
+            if(this.timer!=null) {
+                this.timer.stop();
+                this.timer = null;
+            }
         } else {
             super.userEventTriggered(ctx, evt);
         }
