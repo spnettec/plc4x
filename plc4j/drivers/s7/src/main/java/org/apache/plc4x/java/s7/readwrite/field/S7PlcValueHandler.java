@@ -18,6 +18,7 @@ under the License.
 */
 package org.apache.plc4x.java.s7.readwrite.field;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.plc4x.java.api.exceptions.PlcUnsupportedDataTypeException;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.value.PlcValue;
@@ -92,6 +93,8 @@ public class S7PlcValueHandler implements PlcValueHandler {
                 return new PlcSTRING((String) value);
             } else if (value instanceof PlcValue) {
                 return (PlcValue) value;
+            } else if (value instanceof byte[]) {
+                return of(ArrayUtils.toObject((byte[])value));
             } else {
                 throw new PlcUnsupportedDataTypeException("Data Type " + value.getClass()
                     + " Is not supported");
@@ -129,6 +132,13 @@ public class S7PlcValueHandler implements PlcValueHandler {
                     return PlcBOOL.of(value);
                 case "BYTE":
                 case "BITARR8":
+                    if(field.getNumberOfElements()>1){
+                        if(value instanceof byte[]) {
+                            return of(field, ArrayUtils.toObject((byte[]) value));
+                        } else if (value instanceof String && ((String)value).contains(",")){
+                            return of(field, stringToByteArray((String) value));
+                        }
+                    }
                     return PlcBYTE.of(value);
                 case "SINT":
                 case "INT8":
@@ -220,5 +230,15 @@ public class S7PlcValueHandler implements PlcValueHandler {
 
     public static PlcValue customDataType(PlcField field, Object[] values) {
         return of(values);
+    }
+
+    private static Byte[] stringToByteArray(String stringBytes){
+        String[] byteValues = stringBytes.substring(1, stringBytes.length() - 1).split(",");
+        Byte[] bytes = new Byte[byteValues.length];
+
+        for (int i=0, len=bytes.length; i<len; i++) {
+            bytes[i] = Byte.parseByte(byteValues[i].trim());
+        }
+        return bytes;
     }
 }
