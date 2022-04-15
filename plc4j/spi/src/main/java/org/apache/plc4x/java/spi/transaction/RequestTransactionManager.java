@@ -108,7 +108,7 @@ public class RequestTransactionManager {
         processWorklog();
     }
 
-    private void processWorklog() {
+    private synchronized void processWorklog() {
         while (runningRequests.size() < getNumberOfConcurrentRequests() && !workLog.isEmpty() && !executor.isShutdown()) {
             RequestTransaction next = workLog.remove();
             this.runningRequests.add(next);
