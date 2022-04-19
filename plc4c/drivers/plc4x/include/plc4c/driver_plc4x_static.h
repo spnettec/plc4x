@@ -17,13 +17,26 @@
  * under the License.
  */
 
-#ifndef PLC4C_DRIVER_MODBUS_STATIC_HELPER_H
-#define PLC4C_DRIVER_MODBUS_STATIC_HELPER_H
+#ifndef PLC4C_DRIVER_PLC4X_STATIC_H
+#define PLC4C_DRIVER_PLC4X_STATIC_H
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-#include "modbus_adu.h"
+#include <plc4c/spi/read_buffer.h>
+#include <plc4c/spi/write_buffer.h>
+#include <time.h>
+#include <stdint.h>
 
-uint16_t plc4c_modbus_read_write_rtu_crc_check(uint8_t address, plc4c_modbus_read_write_modbus_pdu* pdu);
+/*
+ *
+ *   Static functions
+ *
+ */
 
-uint8_t plc4c_modbus_read_write_ascii_lrc_check(uint8_t address, plc4c_modbus_read_write_modbus_pdu* pdu);
+uint8_t plc4c_spi_evaluation_helper_str_len(char* str);
 
-#endif  // PLC4C_DRIVER_MODBUS_STATIC_HELPER_H
+#ifdef __cplusplus
+}
+#endif
+#endif  // PLC4C_DRIVER_PLC4X_STATIC_H

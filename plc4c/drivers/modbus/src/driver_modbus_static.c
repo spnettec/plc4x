@@ -17,9 +17,12 @@
  * under the License.
  */
 
-#ifndef PLC4C_DRIVER_S7_STATIC_HELPER_H
-#define PLC4C_DRIVER_S7_STATIC_HELPER_H
+#include "plc4c/driver_modbus_static.h"
 
+uint16_t plc4c_modbus_read_write_rtu_crc_check(uint8_t address, plc4c_modbus_read_write_modbus_pdu* pdu) {
+  return 0;
+}
 
-
-#endif  // PLC4C_DRIVER_S7_STATIC_HELPER_H
+uint8_t plc4c_modbus_read_write_ascii_lrc_check(uint8_t address, plc4c_modbus_read_write_modbus_pdu* pdu) {
+  return 0;
+}
