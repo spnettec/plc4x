@@ -150,7 +150,7 @@
     <junit.jupiter.version>5.8.2</junit.jupiter.version>
     <junit.platform.version>1.8.2</junit.platform.version>
     <logback.version>1.2.10</logback.version>
-    <milo.version>0.6.4</milo.version>
+    <milo.version>0.6.5</milo.version>
     <mockito.version>4.4.0</mockito.version>
     <netty.version>4.1.72.Final</netty.version>
     <owasp-dependency-check.version>6.5.3</owasp-dependency-check.version>
