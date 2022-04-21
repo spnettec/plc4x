@@ -152,7 +152,7 @@
     <logback.version>1.2.10</logback.version>
     <milo.version>0.6.5</milo.version>
     <mockito.version>4.4.0</mockito.version>
-    <netty.version>4.1.72.Final</netty.version>
+    <netty.version>4.1.75.Final</netty.version>
     <owasp-dependency-check.version>6.5.3</owasp-dependency-check.version>
     <pcap4j.version>1.8.2</pcap4j.version>
     <slf4j.version>1.7.36</slf4j.version>
@@ -772,7 +772,9 @@
             <exclude>**/.gitignore</exclude>
             <exclude>**/cmake-*/**</exclude>
             <exclude>**/.cmake/**</exclude>
+            <exclude>**/.lock/**</exclude>
             <exclude>**/downloads/**</exclude>
+
             <!-- License Files for other licenses -->
             <exclude>**/UNLICENSE</exclude>
             <!--
@@ -1355,7 +1357,7 @@
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>build-helper-maven-plugin</artifactId>
-          <version>3.2.0</version>
+          <version>3.3.0</version>
         </plugin>
 
         <plugin>
