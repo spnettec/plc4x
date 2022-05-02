@@ -170,8 +170,7 @@ func (m *Reader) multiRead(readRequest model.PlcReadRequest, result chan model.P
 
 	items := make([]*readWriteModel.AdsMultiRequestItem, len(readRequest.GetFieldNames()))
 	for i, fieldName := range readRequest.GetFieldNames() {
-		var field = readRequest.GetField(fieldName)
-
+		field := readRequest.GetField(fieldName)
 		if needsResolving(field) {
 			adsField, err := castToSymbolicPlcFieldFromPlcField(field)
 			if err != nil {

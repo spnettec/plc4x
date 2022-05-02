@@ -63,7 +63,7 @@ func NewField(memoryArea readWrite.MemoryArea, blockNumber uint16, byteOffset ui
 
 type PlcStringField struct {
 	PlcField
-	StringLength uint16
+	stringLength uint16
 }
 
 func NewStringField(memoryArea readWrite.MemoryArea, blockNumber uint16, byteOffset uint16, bitOffset uint8, numElements uint16, stringLength uint16, datatype readWrite.TransportSize, stringEncoding string) PlcStringField {
@@ -78,7 +78,7 @@ func NewStringField(memoryArea readWrite.MemoryArea, blockNumber uint16, byteOff
 			Datatype:       datatype,
 			StringEncoding: stringEncoding,
 		},
-		StringLength: stringLength,
+		stringLength: stringLength,
 	}
 }
 
@@ -180,7 +180,7 @@ func (m PlcStringField) Serialize(writeBuffer utils.WriteBuffer) error {
 	if err := writeBuffer.WriteUint16("numElements", 16, m.NumElements); err != nil {
 		return err
 	}
-	if err := writeBuffer.WriteUint16("stringLength", 16, m.StringLength); err != nil {
+	if err := writeBuffer.WriteUint16("stringLength", 16, m.stringLength); err != nil {
 		return err
 	}
 	if err := writeBuffer.WriteString("dataType", uint32(len(m.Datatype.String())*8), "UTF-8", m.Datatype.String()); err != nil {

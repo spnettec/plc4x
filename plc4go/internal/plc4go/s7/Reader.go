@@ -217,7 +217,7 @@ func (m *Reader) ToPlc4xReadResponse(response readWriteModel.S7Message, readRequ
 		payloadItem := payloadItems[i]
 		stringLength := uint16(254)
 		if s7StringField, ok := field.(PlcStringField); ok {
-			stringLength = s7StringField.StringLength
+			stringLength = s7StringField.stringLength
 		}
 		responseCode := decodeResponseCode(payloadItem.ReturnCode)
 		// Decode the data according to the information from the request
@@ -259,14 +259,14 @@ func encodeS7Address(field model.PlcField) (*readWriteModel.S7Address, error) {
 		transportSize = readWriteModel.TransportSize_CHAR
 		stringLength := uint16(254)
 		if s7StringField, ok := field.(PlcStringField); ok {
-			stringLength = s7StringField.StringLength
+			stringLength = s7StringField.stringLength
 		}
 		numElements = numElements * (stringLength + 2)
 	} else if transportSize == readWriteModel.TransportSize_WSTRING {
 		transportSize = readWriteModel.TransportSize_CHAR
 		stringLength := uint16(254)
 		if s7StringField, ok := field.(PlcStringField); ok {
-			stringLength = s7StringField.StringLength
+			stringLength = s7StringField.stringLength
 		}
 		numElements = numElements * (stringLength + 2) * 2
 	}
