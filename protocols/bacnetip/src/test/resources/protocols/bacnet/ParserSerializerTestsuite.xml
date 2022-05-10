@@ -112,7 +112,9 @@
                     <reserved dataType="uint" bitLength="4">0</reserved>
                     <serviceRequest>
                       <BACnetUnconfirmedServiceRequest>
-                        <serviceChoice dataType="uint" bitLength="8">7</serviceChoice>
+                        <serviceChoice>
+                          <BACnetUnconfirmedServiceChoice dataType="uint" bitLength="8" stringRepresentation="WHO_HAS">7</BACnetUnconfirmedServiceChoice>
+                        </serviceChoice>
                         <BACnetUnconfirmedServiceRequestWhoHas>
                           <objectName>
                             <BACnetContextTag>
@@ -188,7 +190,9 @@
                     <reserved dataType="uint" bitLength="4">0</reserved>
                     <serviceRequest>
                       <BACnetUnconfirmedServiceRequest>
-                        <serviceChoice dataType="uint" bitLength="8">1</serviceChoice>
+                        <serviceChoice>
+                          <BACnetUnconfirmedServiceChoice dataType="uint" bitLength="8" stringRepresentation="I_HAVE">1</BACnetUnconfirmedServiceChoice>
+                        </serviceChoice>
                         <BACnetUnconfirmedServiceRequestIHave>
                           <deviceIdentifier>
                             <BACnetApplicationTag>
@@ -309,7 +313,9 @@
                     <reserved dataType="uint" bitLength="4">0</reserved>
                     <serviceRequest>
                       <BACnetUnconfirmedServiceRequest>
-                        <serviceChoice dataType="uint" bitLength="8">7</serviceChoice>
+                        <serviceChoice>
+                          <BACnetUnconfirmedServiceChoice dataType="uint" bitLength="8" stringRepresentation="WHO_HAS">7</BACnetUnconfirmedServiceChoice>
+                        </serviceChoice>
                         <BACnetUnconfirmedServiceRequestWhoHas>
                           <objectIdentifier>
                             <BACnetContextTag>
@@ -385,7 +391,9 @@
                     <reserved dataType="uint" bitLength="4">0</reserved>
                     <serviceRequest>
                       <BACnetUnconfirmedServiceRequest>
-                        <serviceChoice dataType="uint" bitLength="8">1</serviceChoice>
+                        <serviceChoice>
+                          <BACnetUnconfirmedServiceChoice dataType="uint" bitLength="8" stringRepresentation="I_HAVE">1</BACnetUnconfirmedServiceChoice>
+                        </serviceChoice>
                         <BACnetUnconfirmedServiceRequestIHave>
                           <deviceIdentifier>
                             <BACnetApplicationTag>
@@ -506,7 +514,9 @@
                     <reserved dataType="uint" bitLength="4">0</reserved>
                     <serviceRequest>
                       <BACnetUnconfirmedServiceRequest>
-                        <serviceChoice dataType="uint" bitLength="8">6</serviceChoice>
+                        <serviceChoice>
+                          <BACnetUnconfirmedServiceChoice dataType="uint" bitLength="8" stringRepresentation="TIME_SYNCHRONIZATION">6</BACnetUnconfirmedServiceChoice>
+                        </serviceChoice>
                         <BACnetUnconfirmedServiceRequestTimeSynchronization>
                           <synchronizedDate>
                             <BACnetApplicationTag>
@@ -607,7 +617,9 @@
                     <reserved dataType="uint" bitLength="4">0</reserved>
                     <serviceRequest>
                       <BACnetUnconfirmedServiceRequest>
-                        <serviceChoice dataType="uint" bitLength="8">8</serviceChoice>
+                        <serviceChoice>
+                          <BACnetUnconfirmedServiceChoice dataType="uint" bitLength="8" stringRepresentation="WHO_IS">8</BACnetUnconfirmedServiceChoice>
+                        </serviceChoice>
                         <BACnetUnconfirmedServiceRequestWhoIs>
                           <deviceInstanceRangeLowLimit>
                             <BACnetContextTag>
@@ -705,7 +717,9 @@
                     <reserved dataType="uint" bitLength="4">0</reserved>
                     <serviceRequest>
                       <BACnetUnconfirmedServiceRequest>
-                        <serviceChoice dataType="uint" bitLength="8">0</serviceChoice>
+                        <serviceChoice>
+                          <BACnetUnconfirmedServiceChoice dataType="uint" bitLength="8" stringRepresentation="I_AM">0</BACnetUnconfirmedServiceChoice>
+                        </serviceChoice>
                         <BACnetUnconfirmedServiceRequestIAm>
                           <deviceIdentifier>
                             <BACnetApplicationTag>
@@ -856,7 +870,9 @@
                     <invokeId dataType="uint" bitLength="8">1</invokeId>
                     <serviceRequest>
                       <BACnetConfirmedServiceRequest>
-                        <serviceChoice dataType="uint" bitLength="8">7</serviceChoice>
+                        <serviceChoice>
+                          <BACnetConfirmedServiceChoice dataType="uint" bitLength="8" stringRepresentation="ATOMIC_WRITE_FILE">7</BACnetConfirmedServiceChoice>
+                        </serviceChoice>
                         <BACnetConfirmedServiceRequestAtomicWriteFile>
                           <deviceIdentifier>
                             <BACnetApplicationTag>
@@ -1120,7 +1136,9 @@ make -f demo/object/ai</value>
                     <invokeId dataType="uint" bitLength="8">2</invokeId>
                     <serviceRequest>
                       <BACnetConfirmedServiceRequest>
-                        <serviceChoice dataType="uint" bitLength="8">7</serviceChoice>
+                        <serviceChoice>
+                          <BACnetConfirmedServiceChoice dataType="uint" bitLength="8" stringRepresentation="ATOMIC_WRITE_FILE">7</BACnetConfirmedServiceChoice>
+                        </serviceChoice>
                         <BACnetConfirmedServiceRequestAtomicWriteFile>
                           <deviceIdentifier>
                             <BACnetApplicationTag>
@@ -1378,7 +1396,9 @@ make -f awf.mak</value>
                     <invokeId dataType="uint" bitLength="8">3</invokeId>
                     <serviceRequest>
                       <BACnetConfirmedServiceRequest>
-                        <serviceChoice dataType="uint" bitLength="8">7</serviceChoice>
+                        <serviceChoice>
+                          <BACnetConfirmedServiceChoice dataType="uint" bitLength="8" stringRepresentation="ATOMIC_WRITE_FILE">7</BACnetConfirmedServiceChoice>
+                        </serviceChoice>
                         <BACnetConfirmedServiceRequestAtomicWriteFile>
                           <deviceIdentifier>
                             <BACnetApplicationTag>
@@ -1639,7 +1659,9 @@ make -f bacstr.mak</value>
                     <invokeId dataType="uint" bitLength="8">4</invokeId>
                     <serviceRequest>
                       <BACnetConfirmedServiceRequest>
-                        <serviceChoice dataType="uint" bitLength="8">7</serviceChoice>
+                        <serviceChoice>
+                          <BACnetConfirmedServiceChoice dataType="uint" bitLength="8" stringRepresentation="ATOMIC_WRITE_FILE">7</BACnetConfirmedServiceChoice>
+                        </serviceChoice>
                         <BACnetConfirmedServiceRequestAtomicWriteFile>
                           <deviceIdentifier>
                             <BACnetApplicationTag>
@@ -1897,7 +1919,9 @@ make -f crc.mak clean</value>
                     <invokeId dataType="uint" bitLength="8">5</invokeId>
                     <serviceRequest>
                       <BACnetConfirmedServiceRequest>
-                        <serviceChoice dataType="uint" bitLength="8">7</serviceChoice>
+                        <serviceChoice>
+                          <BACnetConfirmedServiceChoice dataType="uint" bitLength="8" stringRepresentation="ATOMIC_WRITE_FILE">7</BACnetConfirmedServiceChoice>
+                        </serviceChoice>
                         <BACnetConfirmedServiceRequestAtomicWriteFile>
                           <deviceIdentifier>
                             <BACnetApplicationTag>
@@ -2156,7 +2180,9 @@ make -f demo/object/lsp.</value>
                     <invokeId dataType="uint" bitLength="8">6</invokeId>
                     <serviceRequest>
                       <BACnetConfirmedServiceRequest>
-                        <serviceChoice dataType="uint" bitLength="8">7</serviceChoice>
+                        <serviceChoice>
+                          <BACnetConfirmedServiceChoice dataType="uint" bitLength="8" stringRepresentation="ATOMIC_WRITE_FILE">7</BACnetConfirmedServiceChoice>
+                        </serviceChoice>
                         <BACnetConfirmedServiceRequestAtomicWriteFile>
                           <deviceIdentifier>
                             <BACnetApplicationTag>
@@ -2418,7 +2444,9 @@ make</value>
                     <invokeId dataType="uint" bitLength="8">7</invokeId>
                     <serviceRequest>
                       <BACnetConfirmedServiceRequest>
-                        <serviceChoice dataType="uint" bitLength="8">7</serviceChoice>
+                        <serviceChoice>
+                          <BACnetConfirmedServiceChoice dataType="uint" bitLength="8" stringRepresentation="ATOMIC_WRITE_FILE">7</BACnetConfirmedServiceChoice>
+                        </serviceChoice>
                         <BACnetConfirmedServiceRequestAtomicWriteFile>
                           <deviceIdentifier>
                             <BACnetApplicationTag>
@@ -2681,7 +2709,9 @@ make -f tsm.mak cle</value>
                     <invokeId dataType="uint" bitLength="8">8</invokeId>
                     <serviceRequest>
                       <BACnetConfirmedServiceRequest>
-                        <serviceChoice dataType="uint" bitLength="8">7</serviceChoice>
+                        <serviceChoice>
+                          <BACnetConfirmedServiceChoice dataType="uint" bitLength="8" stringRepresentation="ATOMIC_WRITE_FILE">7</BACnetConfirmedServiceChoice>
+                        </serviceChoice>
                         <BACnetConfirmedServiceRequestAtomicWriteFile>
                           <deviceIdentifier>
                             <BACnetApplicationTag>
@@ -2926,7 +2956,9 @@ make -f wp.mak clean</value>
                     <reserved dataType="uint" bitLength="4">0</reserved>
                     <serviceRequest>
                       <BACnetUnconfirmedServiceRequest>
-                        <serviceChoice dataType="uint" bitLength="8">8</serviceChoice>
+                        <serviceChoice>
+                          <BACnetUnconfirmedServiceChoice dataType="uint" bitLength="8" stringRepresentation="WHO_IS">8</BACnetUnconfirmedServiceChoice>
+                        </serviceChoice>
                         <BACnetUnconfirmedServiceRequestWhoIs>
                           <deviceInstanceRangeLowLimit>
                             <BACnetContextTag>
@@ -3024,7 +3056,9 @@ make -f wp.mak clean</value>
                     <reserved dataType="uint" bitLength="4">0</reserved>
                     <serviceRequest>
                       <BACnetUnconfirmedServiceRequest>
-                        <serviceChoice dataType="uint" bitLength="8">0</serviceChoice>
+                        <serviceChoice>
+                          <BACnetUnconfirmedServiceChoice dataType="uint" bitLength="8" stringRepresentation="I_AM">0</BACnetUnconfirmedServiceChoice>
+                        </serviceChoice>
                         <BACnetUnconfirmedServiceRequestIAm>
                           <deviceIdentifier>
                             <BACnetApplicationTag>
@@ -3175,7 +3209,9 @@ make -f wp.mak clean</value>
                     <invokeId dataType="uint" bitLength="8">1</invokeId>
                     <serviceRequest>
                       <BACnetConfirmedServiceRequest>
-                        <serviceChoice dataType="uint" bitLength="8">20</serviceChoice>
+                        <serviceChoice>
+                          <BACnetConfirmedServiceChoice dataType="uint" bitLength="8" stringRepresentation="REINITIALIZE_DEVICE">20</BACnetConfirmedServiceChoice>
+                        </serviceChoice>
                         <BACnetConfirmedServiceRequestReinitializeDevice>
                           <reinitializedStateOfDevice>
                             <BACnetContextTag>
@@ -3368,7 +3404,9 @@ make -f wp.mak clean</value>
                     <reserved dataType="uint" bitLength="4">0</reserved>
                     <serviceRequest>
                       <BACnetUnconfirmedServiceRequest>
-                        <serviceChoice dataType="uint" bitLength="8">8</serviceChoice>
+                        <serviceChoice>
+                          <BACnetUnconfirmedServiceChoice dataType="uint" bitLength="8" stringRepresentation="WHO_IS">8</BACnetUnconfirmedServiceChoice>
+                        </serviceChoice>
                         <BACnetUnconfirmedServiceRequestWhoIs>
                           <deviceInstanceRangeLowLimit>
                             <BACnetContextTag>
@@ -3466,7 +3504,9 @@ make -f wp.mak clean</value>
                     <reserved dataType="uint" bitLength="4">0</reserved>
                     <serviceRequest>
                       <BACnetUnconfirmedServiceRequest>
-                        <serviceChoice dataType="uint" bitLength="8">0</serviceChoice>
+                        <serviceChoice>
+                          <BACnetUnconfirmedServiceChoice dataType="uint" bitLength="8" stringRepresentation="I_AM">0</BACnetUnconfirmedServiceChoice>
+                        </serviceChoice>
                         <BACnetUnconfirmedServiceRequestIAm>
                           <deviceIdentifier>
                             <BACnetApplicationTag>
@@ -3617,7 +3657,9 @@ make -f wp.mak clean</value>
                     <invokeId dataType="uint" bitLength="8">1</invokeId>
                     <serviceRequest>
                       <BACnetConfirmedServiceRequest>
-                        <serviceChoice dataType="uint" bitLength="8">12</serviceChoice>
+                        <serviceChoice>
+                          <BACnetConfirmedServiceChoice dataType="uint" bitLength="8" stringRepresentation="READ_PROPERTY">12</BACnetConfirmedServiceChoice>
+                        </serviceChoice>
                         <BACnetConfirmedServiceRequestReadProperty>
                           <objectIdentifier>
                             <BACnetContextTag>
@@ -3805,7 +3847,9 @@ make -f wp.mak clean</value>
                     <reserved dataType="uint" bitLength="4">0</reserved>
                     <serviceRequest>
                       <BACnetUnconfirmedServiceRequest>
-                        <serviceChoice dataType="uint" bitLength="8">8</serviceChoice>
+                        <serviceChoice>
+                          <BACnetUnconfirmedServiceChoice dataType="uint" bitLength="8" stringRepresentation="WHO_IS">8</BACnetUnconfirmedServiceChoice>
+                        </serviceChoice>
                         <BACnetUnconfirmedServiceRequestWhoIs>
                           <deviceInstanceRangeLowLimit>
                             <BACnetContextTag>
@@ -3903,7 +3947,9 @@ make -f wp.mak clean</value>
                     <reserved dataType="uint" bitLength="4">0</reserved>
                     <serviceRequest>
                       <BACnetUnconfirmedServiceRequest>
-                        <serviceChoice dataType="uint" bitLength="8">0</serviceChoice>
+                        <serviceChoice>
+                          <BACnetUnconfirmedServiceChoice dataType="uint" bitLength="8" stringRepresentation="I_AM">0</BACnetUnconfirmedServiceChoice>
+                        </serviceChoice>
                         <BACnetUnconfirmedServiceRequestIAm>
                           <deviceIdentifier>
                             <BACnetApplicationTag>
@@ -4054,7 +4100,9 @@ make -f wp.mak clean</value>
                     <invokeId dataType="uint" bitLength="8">1</invokeId>
                     <serviceRequest>
                       <BACnetConfirmedServiceRequest>
-                        <serviceChoice dataType="uint" bitLength="8">12</serviceChoice>
+                        <serviceChoice>
+                          <BACnetConfirmedServiceChoice dataType="uint" bitLength="8" stringRepresentation="READ_PROPERTY">12</BACnetConfirmedServiceChoice>
+                        </serviceChoice>
                         <BACnetConfirmedServiceRequestReadProperty>
                           <objectIdentifier>
                             <BACnetContextTag>
@@ -4242,7 +4290,9 @@ make -f wp.mak clean</value>
                     <reserved dataType="uint" bitLength="4">0</reserved>
                     <serviceRequest>
                       <BACnetUnconfirmedServiceRequest>
-                        <serviceChoice dataType="uint" bitLength="8">8</serviceChoice>
+                        <serviceChoice>
+                          <BACnetUnconfirmedServiceChoice dataType="uint" bitLength="8" stringRepresentation="WHO_IS">8</BACnetUnconfirmedServiceChoice>
+                        </serviceChoice>
                         <BACnetUnconfirmedServiceRequestWhoIs>
                           <deviceInstanceRangeLowLimit>
                             <BACnetContextTag>
@@ -4340,7 +4390,9 @@ make -f wp.mak clean</value>
                     <reserved dataType="uint" bitLength="4">0</reserved>
                     <serviceRequest>
                       <BACnetUnconfirmedServiceRequest>
-                        <serviceChoice dataType="uint" bitLength="8">0</serviceChoice>
+                        <serviceChoice>
+                          <BACnetUnconfirmedServiceChoice dataType="uint" bitLength="8" stringRepresentation="I_AM">0</BACnetUnconfirmedServiceChoice>
+                        </serviceChoice>
                         <BACnetUnconfirmedServiceRequestIAm>
                           <deviceIdentifier>
                             <BACnetApplicationTag>
@@ -4491,7 +4543,9 @@ make -f wp.mak clean</value>
                     <invokeId dataType="uint" bitLength="8">1</invokeId>
                     <serviceRequest>
                       <BACnetConfirmedServiceRequest>
-                        <serviceChoice dataType="uint" bitLength="8">12</serviceChoice>
+                        <serviceChoice>
+                          <BACnetConfirmedServiceChoice dataType="uint" bitLength="8" stringRepresentation="READ_PROPERTY">12</BACnetConfirmedServiceChoice>
+                        </serviceChoice>
                         <BACnetConfirmedServiceRequestReadProperty>
                           <objectIdentifier>
                             <BACnetContextTag>
@@ -4989,7 +5043,9 @@ make -f wp.mak clean</value>
                     <reserved dataType="uint" bitLength="4">0</reserved>
                     <serviceRequest>
                       <BACnetUnconfirmedServiceRequest>
-                        <serviceChoice dataType="uint" bitLength="8">2</serviceChoice>
+                        <serviceChoice>
+                          <BACnetUnconfirmedServiceChoice dataType="uint" bitLength="8" stringRepresentation="UNCONFIRMED_COV_NOTIFICATION">2</BACnetUnconfirmedServiceChoice>
+                        </serviceChoice>
                         <BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification>
                           <subscriberProcessIdentifier>
                             <BACnetContextTag>
@@ -5244,7 +5300,9 @@ make -f wp.mak clean</value>
                     <reserved dataType="uint" bitLength="4">0</reserved>
                     <serviceRequest>
                       <BACnetUnconfirmedServiceRequest>
-                        <serviceChoice dataType="uint" bitLength="8">8</serviceChoice>
+                        <serviceChoice>
+                          <BACnetUnconfirmedServiceChoice dataType="uint" bitLength="8" stringRepresentation="WHO_IS">8</BACnetUnconfirmedServiceChoice>
+                        </serviceChoice>
                         <BACnetUnconfirmedServiceRequestWhoIs>
                           <deviceInstanceRangeLowLimit>
                             <BACnetContextTag>
@@ -5342,7 +5400,9 @@ make -f wp.mak clean</value>
                     <reserved dataType="uint" bitLength="4">0</reserved>
                     <serviceRequest>
                       <BACnetUnconfirmedServiceRequest>
-                        <serviceChoice dataType="uint" bitLength="8">0</serviceChoice>
+                        <serviceChoice>
+                          <BACnetUnconfirmedServiceChoice dataType="uint" bitLength="8" stringRepresentation="I_AM">0</BACnetUnconfirmedServiceChoice>
+                        </serviceChoice>
                         <BACnetUnconfirmedServiceRequestIAm>
                           <deviceIdentifier>
                             <BACnetApplicationTag>
@@ -5493,7 +5553,9 @@ make -f wp.mak clean</value>
                     <invokeId dataType="uint" bitLength="8">1</invokeId>
                     <serviceRequest>
                       <BACnetConfirmedServiceRequest>
-                        <serviceChoice dataType="uint" bitLength="8">15</serviceChoice>
+                        <serviceChoice>
+                          <BACnetConfirmedServiceChoice dataType="uint" bitLength="8" stringRepresentation="WRITE_PROPERTY">15</BACnetConfirmedServiceChoice>
+                        </serviceChoice>
                         <BACnetConfirmedServiceRequestWriteProperty>
                           <objectIdentifier>
                             <BACnetContextTag>
@@ -5736,7 +5798,9 @@ make -f wp.mak clean</value>
                     <reserved dataType="uint" bitLength="4">0</reserved>
                     <serviceRequest>
                       <BACnetUnconfirmedServiceRequest>
-                        <serviceChoice dataType="uint" bitLength="8">8</serviceChoice>
+                        <serviceChoice>
+                          <BACnetUnconfirmedServiceChoice dataType="uint" bitLength="8" stringRepresentation="WHO_IS">8</BACnetUnconfirmedServiceChoice>
+                        </serviceChoice>
                         <BACnetUnconfirmedServiceRequestWhoIs>
                           <deviceInstanceRangeLowLimit>
                             <BACnetContextTag>
@@ -5834,7 +5898,9 @@ make -f wp.mak clean</value>
                     <reserved dataType="uint" bitLength="4">0</reserved>
                     <serviceRequest>
                       <BACnetUnconfirmedServiceRequest>
-                        <serviceChoice dataType="uint" bitLength="8">0</serviceChoice>
+                        <serviceChoice>
+                          <BACnetUnconfirmedServiceChoice dataType="uint" bitLength="8" stringRepresentation="I_AM">0</BACnetUnconfirmedServiceChoice>
+                        </serviceChoice>
                         <BACnetUnconfirmedServiceRequestIAm>
                           <deviceIdentifier>
                             <BACnetApplicationTag>
@@ -5985,7 +6051,9 @@ make -f wp.mak clean</value>
                     <invokeId dataType="uint" bitLength="8">1</invokeId>
                     <serviceRequest>
                       <BACnetConfirmedServiceRequest>
-                        <serviceChoice dataType="uint" bitLength="8">17</serviceChoice>
+                        <serviceChoice>
+                          <BACnetConfirmedServiceChoice dataType="uint" bitLength="8" stringRepresentation="DEVICE_COMMUNICATION_CONTROL">17</BACnetConfirmedServiceChoice>
+                        </serviceChoice>
                         <BACnetConfirmedServiceRequestDeviceCommunicationControl>
                           <enableDisable>
                             <BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable>
@@ -6138,7 +6206,9 @@ make -f wp.mak clean</value>
                     <reserved dataType="uint" bitLength="4">0</reserved>
                     <serviceRequest>
                       <BACnetUnconfirmedServiceRequest>
-                        <serviceChoice dataType="uint" bitLength="8">8</serviceChoice>
+                        <serviceChoice>
+                          <BACnetUnconfirmedServiceChoice dataType="uint" bitLength="8" stringRepresentation="WHO_IS">8</BACnetUnconfirmedServiceChoice>
+                        </serviceChoice>
                         <BACnetUnconfirmedServiceRequestWhoIs>
                           <deviceInstanceRangeLowLimit>
                             <BACnetContextTag>
@@ -6236,7 +6306,9 @@ make -f wp.mak clean</value>
                     <reserved dataType="uint" bitLength="4">0</reserved>
                     <serviceRequest>
                       <BACnetUnconfirmedServiceRequest>
-                        <serviceChoice dataType="uint" bitLength="8">0</serviceChoice>
+                        <serviceChoice>
+                          <BACnetUnconfirmedServiceChoice dataType="uint" bitLength="8" stringRepresentation="I_AM">0</BACnetUnconfirmedServiceChoice>
+                        </serviceChoice>
                         <BACnetUnconfirmedServiceRequestIAm>
                           <deviceIdentifier>
                             <BACnetApplicationTag>
@@ -6387,7 +6459,9 @@ make -f wp.mak clean</value>
                     <invokeId dataType="uint" bitLength="8">1</invokeId>
                     <serviceRequest>
                       <BACnetConfirmedServiceRequest>
-                        <serviceChoice dataType="uint" bitLength="8">17</serviceChoice>
+                        <serviceChoice>
+                          <BACnetConfirmedServiceChoice dataType="uint" bitLength="8" stringRepresentation="DEVICE_COMMUNICATION_CONTROL">17</BACnetConfirmedServiceChoice>
+                        </serviceChoice>
                         <BACnetConfirmedServiceRequestDeviceCommunicationControl>
                           <enableDisable>
                             <BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable>
@@ -6586,7 +6660,9 @@ make -f wp.mak clean</value>
                     <reserved dataType="uint" bitLength="4">0</reserved>
                     <serviceRequest>
                       <BACnetUnconfirmedServiceRequest>
-                        <serviceChoice dataType="uint" bitLength="8">0</serviceChoice>
+                        <serviceChoice>
+                          <BACnetUnconfirmedServiceChoice dataType="uint" bitLength="8" stringRepresentation="I_AM">0</BACnetUnconfirmedServiceChoice>
+                        </serviceChoice>
                         <BACnetUnconfirmedServiceRequestIAm>
                           <deviceIdentifier>
                             <BACnetApplicationTag>
@@ -6736,7 +6812,9 @@ make -f wp.mak clean</value>
                     <invokeId dataType="uint" bitLength="8">49</invokeId>
                     <serviceRequest>
                       <BACnetConfirmedServiceRequest>
-                        <serviceChoice dataType="uint" bitLength="8">17</serviceChoice>
+                        <serviceChoice>
+                          <BACnetConfirmedServiceChoice dataType="uint" bitLength="8" stringRepresentation="DEVICE_COMMUNICATION_CONTROL">17</BACnetConfirmedServiceChoice>
+                        </serviceChoice>
                         <BACnetConfirmedServiceRequestDeviceCommunicationControl>
                           <enableDisable>
                             <BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable>
@@ -6849,7 +6927,9 @@ make -f wp.mak clean</value>
                     <invokeId dataType="uint" bitLength="8">49</invokeId>
                     <serviceRequest>
                       <BACnetConfirmedServiceRequest>
-                        <serviceChoice dataType="uint" bitLength="8">17</serviceChoice>
+                        <serviceChoice>
+                          <BACnetConfirmedServiceChoice dataType="uint" bitLength="8" stringRepresentation="DEVICE_COMMUNICATION_CONTROL">17</BACnetConfirmedServiceChoice>
+                        </serviceChoice>
                         <BACnetConfirmedServiceRequestDeviceCommunicationControl>
                           <enableDisable>
                             <BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable>
@@ -6962,7 +7042,9 @@ make -f wp.mak clean</value>
                     <invokeId dataType="uint" bitLength="8">49</invokeId>
                     <serviceRequest>
                       <BACnetConfirmedServiceRequest>
-                        <serviceChoice dataType="uint" bitLength="8">17</serviceChoice>
+                        <serviceChoice>
+                          <BACnetConfirmedServiceChoice dataType="uint" bitLength="8" stringRepresentation="DEVICE_COMMUNICATION_CONTROL">17</BACnetConfirmedServiceChoice>
+                        </serviceChoice>
                         <BACnetConfirmedServiceRequestDeviceCommunicationControl>
                           <enableDisable>
                             <BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable>
@@ -7075,7 +7157,9 @@ make -f wp.mak clean</value>
                     <invokeId dataType="uint" bitLength="8">49</invokeId>
                     <serviceRequest>
                       <BACnetConfirmedServiceRequest>
-                        <serviceChoice dataType="uint" bitLength="8">17</serviceChoice>
+                        <serviceChoice>
+                          <BACnetConfirmedServiceChoice dataType="uint" bitLength="8" stringRepresentation="DEVICE_COMMUNICATION_CONTROL">17</BACnetConfirmedServiceChoice>
+                        </serviceChoice>
                         <BACnetConfirmedServiceRequestDeviceCommunicationControl>
                           <enableDisable>
                             <BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable>
@@ -7178,7 +7262,9 @@ make -f wp.mak clean</value>
                     <reserved dataType="uint" bitLength="4">0</reserved>
                     <serviceRequest>
                       <BACnetUnconfirmedServiceRequest>
-                        <serviceChoice dataType="uint" bitLength="8">0</serviceChoice>
+                        <serviceChoice>
+                          <BACnetUnconfirmedServiceChoice dataType="uint" bitLength="8" stringRepresentation="I_AM">0</BACnetUnconfirmedServiceChoice>
+                        </serviceChoice>
                         <BACnetUnconfirmedServiceRequestIAm>
                           <deviceIdentifier>
                             <BACnetApplicationTag>
@@ -7328,7 +7414,9 @@ make -f wp.mak clean</value>
                     <invokeId dataType="uint" bitLength="8">50</invokeId>
                     <serviceRequest>
                       <BACnetConfirmedServiceRequest>
-                        <serviceChoice dataType="uint" bitLength="8">17</serviceChoice>
+                        <serviceChoice>
+                          <BACnetConfirmedServiceChoice dataType="uint" bitLength="8" stringRepresentation="DEVICE_COMMUNICATION_CONTROL">17</BACnetConfirmedServiceChoice>
+                        </serviceChoice>
                         <BACnetConfirmedServiceRequestDeviceCommunicationControl>
                           <enableDisable>
                             <BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable>
@@ -7538,7 +7626,9 @@ make -f wp.mak clean</value>
                     <invokeId dataType="uint" bitLength="8">51</invokeId>
                     <serviceRequest>
                       <BACnetConfirmedServiceRequest>
-                        <serviceChoice dataType="uint" bitLength="8">17</serviceChoice>
+                        <serviceChoice>
+                          <BACnetConfirmedServiceChoice dataType="uint" bitLength="8" stringRepresentation="DEVICE_COMMUNICATION_CONTROL">17</BACnetConfirmedServiceChoice>
+                        </serviceChoice>
                         <BACnetConfirmedServiceRequestDeviceCommunicationControl>
                           <enableDisable>
                             <BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable>
@@ -7692,7 +7782,9 @@ make -f wp.mak clean</value>
                     <reserved dataType="uint" bitLength="4">0</reserved>
                     <serviceRequest>
                       <BACnetUnconfirmedServiceRequest>
-                        <serviceChoice dataType="uint" bitLength="8">0</serviceChoice>
+                        <serviceChoice>
+                          <BACnetUnconfirmedServiceChoice dataType="uint" bitLength="8" stringRepresentation="I_AM">0</BACnetUnconfirmedServiceChoice>
+                        </serviceChoice>
                         <BACnetUnconfirmedServiceRequestIAm>
                           <deviceIdentifier>
                             <BACnetApplicationTag>
@@ -7835,7 +7927,9 @@ make -f wp.mak clean</value>
                     <reserved dataType="uint" bitLength="4">0</reserved>
                     <serviceRequest>
                       <BACnetUnconfirmedServiceRequest>
-                        <serviceChoice dataType="uint" bitLength="8">6</serviceChoice>
+                        <serviceChoice>
+                          <BACnetUnconfirmedServiceChoice dataType="uint" bitLength="8" stringRepresentation="TIME_SYNCHRONIZATION">6</BACnetUnconfirmedServiceChoice>
+                        </serviceChoice>
                         <BACnetUnconfirmedServiceRequestTimeSynchronization>
                           <synchronizedDate>
                             <BACnetApplicationTag>
@@ -7939,7 +8033,9 @@ make -f wp.mak clean</value>
                     <reserved dataType="uint" bitLength="4">0</reserved>
                     <serviceRequest>
                       <BACnetUnconfirmedServiceRequest>
-                        <serviceChoice dataType="uint" bitLength="8">7</serviceChoice>
+                        <serviceChoice>
+                          <BACnetUnconfirmedServiceChoice dataType="uint" bitLength="8" stringRepresentation="WHO_HAS">7</BACnetUnconfirmedServiceChoice>
+                        </serviceChoice>
                         <BACnetUnconfirmedServiceRequestWhoHas>
                           <objectIdentifier>
                             <BACnetContextTag>
@@ -8015,7 +8111,9 @@ make -f wp.mak clean</value>
                     <reserved dataType="uint" bitLength="4">0</reserved>
                     <serviceRequest>
                       <BACnetUnconfirmedServiceRequest>
-                        <serviceChoice dataType="uint" bitLength="8">1</serviceChoice>
+                        <serviceChoice>
+                          <BACnetUnconfirmedServiceChoice dataType="uint" bitLength="8" stringRepresentation="I_HAVE">1</BACnetUnconfirmedServiceChoice>
+                        </serviceChoice>
                         <BACnetUnconfirmedServiceRequestIHave>
                           <deviceIdentifier>
                             <BACnetApplicationTag>
@@ -8146,7 +8244,9 @@ make -f wp.mak clean</value>
                     <invokeId dataType="uint" bitLength="8">52</invokeId>
                     <serviceRequest>
                       <BACnetConfirmedServiceRequest>
-                        <serviceChoice dataType="uint" bitLength="8">20</serviceChoice>
+                        <serviceChoice>
+                          <BACnetConfirmedServiceChoice dataType="uint" bitLength="8" stringRepresentation="REINITIALIZE_DEVICE">20</BACnetConfirmedServiceChoice>
+                        </serviceChoice>
                         <BACnetConfirmedServiceRequestReinitializeDevice>
                           <reinitializedStateOfDevice>
                             <BACnetContextTag>
@@ -8350,7 +8450,9 @@ make -f wp.mak clean</value>
                     <invokeId dataType="uint" bitLength="8">53</invokeId>
                     <serviceRequest>
                       <BACnetConfirmedServiceRequest>
-                        <serviceChoice dataType="uint" bitLength="8">20</serviceChoice>
+                        <serviceChoice>
+                          <BACnetConfirmedServiceChoice dataType="uint" bitLength="8" stringRepresentation="REINITIALIZE_DEVICE">20</BACnetConfirmedServiceChoice>
+                        </serviceChoice>
                         <BACnetConfirmedServiceRequestReinitializeDevice>
                           <reinitializedStateOfDevice>
                             <BACnetContextTag>
@@ -8508,7 +8610,9 @@ make -f wp.mak clean</value>
                     <invokeId dataType="uint" bitLength="8">54</invokeId>
                     <serviceRequest>
                       <BACnetConfirmedServiceRequest>
-                        <serviceChoice dataType="uint" bitLength="8">6</serviceChoice>
+                        <serviceChoice>
+                          <BACnetConfirmedServiceChoice dataType="uint" bitLength="8" stringRepresentation="ATOMIC_READ_FILE">6</BACnetConfirmedServiceChoice>
+                        </serviceChoice>
                         <BACnetConfirmedServiceRequestAtomicReadFile>
                           <fileIdentifier>
                             <BACnetApplicationTag>
@@ -8851,7 +8955,9 @@ Test "BACnet Applicat</value>
                     <invokeId dataType="uint" bitLength="8">55</invokeId>
                     <serviceRequest>
                       <BACnetConfirmedServiceRequest>
-                        <serviceChoice dataType="uint" bitLength="8">6</serviceChoice>
+                        <serviceChoice>
+                          <BACnetConfirmedServiceChoice dataType="uint" bitLength="8" stringRepresentation="ATOMIC_READ_FILE">6</BACnetConfirmedServiceChoice>
+                        </serviceChoice>
                         <BACnetConfirmedServiceRequestAtomicReadFile>
                           <fileIdentifier>
                             <BACnetApplicationTag>
@@ -9199,7 +9305,9 @@ Test "BACnet I-Am":
                     <invokeId dataType="uint" bitLength="8">56</invokeId>
                     <serviceRequest>
                       <BACnetConfirmedServiceRequest>
-                        <serviceChoice dataType="uint" bitLength="8">6</serviceChoice>
+                        <serviceChoice>
+                          <BACnetConfirmedServiceChoice dataType="uint" bitLength="8" stringRepresentation="ATOMIC_READ_FILE">6</BACnetConfirmedServiceChoice>
+                        </serviceChoice>
                         <BACnetConfirmedServiceRequestAtomicReadFile>
                           <fileIdentifier>
                             <BACnetApplicationTag>
@@ -9544,7 +9652,9 @@ Test "BACnet ReadProperty":
                     <invokeId dataType="uint" bitLength="8">57</invokeId>
                     <serviceRequest>
                       <BACnetConfirmedServiceRequest>
-                        <serviceChoice dataType="uint" bitLength="8">6</serviceChoice>
+                        <serviceChoice>
+                          <BACnetConfirmedServiceChoice dataType="uint" bitLength="8" stringRepresentation="ATOMIC_READ_FILE">6</BACnetConfirmedServiceChoice>
+                        </serviceChoice>
                         <BACnetConfirmedServiceRequestAtomicReadFile>
                           <fileIdentifier>
                             <BACnetApplicationTag>
@@ -9878,7 +9988,9 @@ Test "BACnet WriteProperty":
                     <invokeId dataType="uint" bitLength="8">58</invokeId>
                     <serviceRequest>
                       <BACnetConfirmedServiceRequest>
-                        <serviceChoice dataType="uint" bitLength="8">7</serviceChoice>
+                        <serviceChoice>
+                          <BACnetConfirmedServiceChoice dataType="uint" bitLength="8" stringRepresentation="ATOMIC_WRITE_FILE">7</BACnetConfirmedServiceChoice>
+                        </serviceChoice>
                         <BACnetConfirmedServiceRequestAtomicWriteFile>
                           <deviceIdentifier>
                             <BACnetApplicationTag>
@@ -10111,7 +10223,9 @@ Test "BACnet Applicat</value>
                     <invokeId dataType="uint" bitLength="8">59</invokeId>
                     <serviceRequest>
                       <BACnetConfirmedServiceRequest>
-                        <serviceChoice dataType="uint" bitLength="8">14</serviceChoice>
+                        <serviceChoice>
+                          <BACnetConfirmedServiceChoice dataType="uint" bitLength="8" stringRepresentation="READ_PROPERTY_MULTIPLE">14</BACnetConfirmedServiceChoice>
+                        </serviceChoice>
                         <BACnetConfirmedServiceRequestReadPropertyMultiple>
                           <data isList="true">
                             <BACnetReadAccessSpecification>

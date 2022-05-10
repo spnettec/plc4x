@@ -90,7 +90,7 @@ public class RandomPackagesTest {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     APDUUnconfirmedRequest apduUnconfirmedRequest = (APDUUnconfirmedRequest) ((BVLCDistributeBroadcastToNetwork) bvlc).getNpdu().getApdu();
-                    assertEquals((short) 0x8, apduUnconfirmedRequest.getServiceRequest().getServiceChoice());
+                    assertEquals(BACnetUnconfirmedServiceChoice.WHO_IS, apduUnconfirmedRequest.getServiceRequest().getServiceChoice());
                 }),
             DynamicTest.dynamicTest("No. 3 - BACnet Virtual Link Control BVLC Function BVLC-Results",
                 () -> {
@@ -103,7 +103,7 @@ public class RandomPackagesTest {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
                     APDUUnconfirmedRequest apduUnconfirmedRequest = (APDUUnconfirmedRequest) ((BVLCForwardedNPDU) bvlc).getNpdu().getApdu();
-                    assertEquals((short) 0x8, apduUnconfirmedRequest.getServiceRequest().getServiceChoice());
+                    assertEquals(BACnetUnconfirmedServiceChoice.WHO_IS, apduUnconfirmedRequest.getServiceRequest().getServiceChoice());
                 }),
             DynamicTest.dynamicTest("No. 5 - Unconfirmed-REQ i-Am device,123",
                 () -> {
