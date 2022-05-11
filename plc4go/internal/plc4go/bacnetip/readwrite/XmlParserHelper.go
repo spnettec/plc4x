@@ -61,6 +61,8 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		return model.BACnetReadAccessPropertyErrorParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetTagPayloadReal":
 		return model.BACnetTagPayloadRealParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "BACnetDeviceObjectReference":
+		return model.BACnetDeviceObjectReferenceParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BVLCForeignDeviceTableEntry":
 		return model.BVLCForeignDeviceTableEntryParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "NLM":
@@ -98,6 +100,13 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		}
 		actualLength := uint32(parsedUint0)
 		return model.BACnetTagPayloadEnumeratedParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), actualLength)
+	case "BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleListOfCovNotifications":
+		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 8)
+		if err != nil {
+			return nil, err
+		}
+		tagNumber := uint8(parsedUint0)
+		return model.BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleListOfCovNotificationsParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), tagNumber)
 	case "BACnetTagPayloadOctetString":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 32)
 		if err != nil {
@@ -187,6 +196,9 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		}
 		apduLength := uint16(parsedUint0)
 		return model.APDUParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), apduLength)
+	case "BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleListOfCovNotificationsValue":
+		objectType := model.BACnetObjectTypeByName(parserArguments[0])
+		return model.BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleListOfCovNotificationsValueParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), objectType)
 	case "BACnetTagPayloadCharacterString":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 32)
 		if err != nil {
