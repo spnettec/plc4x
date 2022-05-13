@@ -29,7 +29,7 @@ import (
 // BACnetConstructedDataLifeSafetyZoneMembers is the data-structure of this message
 type BACnetConstructedDataLifeSafetyZoneMembers struct {
 	*BACnetConstructedData
-	Zones []*BACnetDeviceObjectReference
+	Members []*BACnetDeviceObjectReference
 
 	// Arguments.
 	TagNumber                  uint8
@@ -39,8 +39,8 @@ type BACnetConstructedDataLifeSafetyZoneMembers struct {
 // IBACnetConstructedDataLifeSafetyZoneMembers is the corresponding interface of BACnetConstructedDataLifeSafetyZoneMembers
 type IBACnetConstructedDataLifeSafetyZoneMembers interface {
 	IBACnetConstructedData
-	// GetZones returns Zones (property field)
-	GetZones() []*BACnetDeviceObjectReference
+	// GetMembers returns Members (property field)
+	GetMembers() []*BACnetDeviceObjectReference
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -77,8 +77,8 @@ func (m *BACnetConstructedDataLifeSafetyZoneMembers) GetParent() *BACnetConstruc
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *BACnetConstructedDataLifeSafetyZoneMembers) GetZones() []*BACnetDeviceObjectReference {
-	return m.Zones
+func (m *BACnetConstructedDataLifeSafetyZoneMembers) GetMembers() []*BACnetDeviceObjectReference {
+	return m.Members
 }
 
 ///////////////////////
@@ -87,9 +87,9 @@ func (m *BACnetConstructedDataLifeSafetyZoneMembers) GetZones() []*BACnetDeviceO
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLifeSafetyZoneMembers factory function for BACnetConstructedDataLifeSafetyZoneMembers
-func NewBACnetConstructedDataLifeSafetyZoneMembers(zones []*BACnetDeviceObjectReference, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8, propertyIdentifierArgument BACnetContextTagPropertyIdentifier) *BACnetConstructedDataLifeSafetyZoneMembers {
+func NewBACnetConstructedDataLifeSafetyZoneMembers(members []*BACnetDeviceObjectReference, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8, propertyIdentifierArgument BACnetContextTagPropertyIdentifier) *BACnetConstructedDataLifeSafetyZoneMembers {
 	_result := &BACnetConstructedDataLifeSafetyZoneMembers{
-		Zones:                 zones,
+		Members:               members,
 		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber, propertyIdentifierArgument),
 	}
 	_result.Child = _result
@@ -124,8 +124,8 @@ func (m *BACnetConstructedDataLifeSafetyZoneMembers) GetLengthInBitsConditional(
 	lengthInBits := uint16(m.GetParentLengthInBits())
 
 	// Array field
-	if len(m.Zones) > 0 {
-		for _, element := range m.Zones {
+	if len(m.Members) > 0 {
+		for _, element := range m.Members {
 			lengthInBits += element.GetLengthInBits()
 		}
 	}
@@ -144,23 +144,23 @@ func BACnetConstructedDataLifeSafetyZoneMembersParse(readBuffer utils.ReadBuffer
 	currentPos := readBuffer.GetPos()
 	_ = currentPos
 
-	// Array field (zones)
-	if pullErr := readBuffer.PullContext("zones", utils.WithRenderAsList(true)); pullErr != nil {
+	// Array field (members)
+	if pullErr := readBuffer.PullContext("members", utils.WithRenderAsList(true)); pullErr != nil {
 		return nil, pullErr
 	}
 	// Terminated array
-	zones := make([]*BACnetDeviceObjectReference, 0)
+	members := make([]*BACnetDeviceObjectReference, 0)
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetDeviceObjectReferenceParse(readBuffer)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'zones' field")
+				return nil, errors.Wrap(_err, "Error parsing 'members' field")
 			}
-			zones = append(zones, CastBACnetDeviceObjectReference(_item))
+			members = append(members, CastBACnetDeviceObjectReference(_item))
 
 		}
 	}
-	if closeErr := readBuffer.CloseContext("zones", utils.WithRenderAsList(true)); closeErr != nil {
+	if closeErr := readBuffer.CloseContext("members", utils.WithRenderAsList(true)); closeErr != nil {
 		return nil, closeErr
 	}
 
@@ -170,7 +170,7 @@ func BACnetConstructedDataLifeSafetyZoneMembersParse(readBuffer utils.ReadBuffer
 
 	// Create a partially initialized instance
 	_child := &BACnetConstructedDataLifeSafetyZoneMembers{
-		Zones:                 zones,
+		Members:               members,
 		BACnetConstructedData: &BACnetConstructedData{},
 	}
 	_child.BACnetConstructedData.Child = _child
@@ -183,18 +183,18 @@ func (m *BACnetConstructedDataLifeSafetyZoneMembers) Serialize(writeBuffer utils
 			return pushErr
 		}
 
-		// Array Field (zones)
-		if m.Zones != nil {
-			if pushErr := writeBuffer.PushContext("zones", utils.WithRenderAsList(true)); pushErr != nil {
+		// Array Field (members)
+		if m.Members != nil {
+			if pushErr := writeBuffer.PushContext("members", utils.WithRenderAsList(true)); pushErr != nil {
 				return pushErr
 			}
-			for _, _element := range m.Zones {
+			for _, _element := range m.Members {
 				_elementErr := _element.Serialize(writeBuffer)
 				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'zones' field")
+					return errors.Wrap(_elementErr, "Error serializing 'members' field")
 				}
 			}
-			if popErr := writeBuffer.PopContext("zones", utils.WithRenderAsList(true)); popErr != nil {
+			if popErr := writeBuffer.PopContext("members", utils.WithRenderAsList(true)); popErr != nil {
 				return popErr
 			}
 		}
