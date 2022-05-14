@@ -17,39 +17,17 @@
  * under the License.
  */
 
-package utils
+package org.apache.plc4x.java.spi.generation;
 
-// InlineIf is basically a inline if like construct for golang
-func InlineIf(test bool, a func() interface{}, b func() interface{}) interface{} {
-	if test {
-		return a()
-	} else {
-		return b()
-	}
-}
+/**
+ * Is thrown when an validation field in mspec says no.
+ */
+public class ParseValidationException extends ParseException {
+    public ParseValidationException(String message) {
+        super(message);
+    }
 
-type ParseAssertError struct {
-	Message string
-}
-
-func (e ParseAssertError) Error() string {
-	return e.Message
-}
-
-func (e ParseAssertError) Is(target error) bool {
-	_, ok := target.(ParseAssertError)
-	return ok
-}
-
-type ParseValidationError struct {
-	Message string
-}
-
-func (e ParseValidationError) Error() string {
-	return e.Message
-}
-
-func (e ParseValidationError) Is(target error) bool {
-	_, ok := target.(ParseValidationError)
-	return ok
+    public ParseValidationException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

@@ -200,19 +200,24 @@
     [discriminator uint 4 apduType]
     [typeSwitch apduType
         ['0x0' APDUConfirmedRequest
-            [simple   bit       segmentedMessage                        ]
-            [simple   bit       moreFollows                             ]
-            [simple   bit       segmentedResponseAccepted               ]
-            [reserved uint 2    '0'                                     ]
+            [simple   bit       segmentedMessage                         ]
+            [simple   bit       moreFollows                              ]
+            [simple   bit       segmentedResponseAccepted                ]
+            [reserved uint 2    '0'                                      ]
             [simple   MaxSegmentsAccepted
-                                maxSegmentsAccepted                     ]
+                                maxSegmentsAccepted                      ]
             [simple   MaxApduLengthAccepted
-                                maxApduLengthAccepted                   ]
-            [simple   uint 8    invokeId                                ]
-            [optional uint 8    sequenceNumber       'segmentedMessage' ]
-            [optional uint 8    proposedWindowSize   'segmentedMessage' ]
-            [simple   BACnetConfirmedServiceRequest('apduLength - (4 + (segmentedMessage ? 2 : 0))')
-                                serviceRequest                          ]
+                                maxApduLengthAccepted                    ]
+            [simple   uint 8    invokeId                                 ]
+            [optional uint 8    sequenceNumber       'segmentedMessage'  ]
+            [optional uint 8    proposedWindowSize   'segmentedMessage'  ]
+            [optional BACnetConfirmedServiceRequest('apduLength - (4 + (segmentedMessage ? 2 : 0))')
+                                serviceRequest       '!segmentedMessage' ]
+            // TODO: maybe we should put this in the discriminated types below
+            [optional uint 8    segmentServiceChoice 'segmentedMessage && sequenceNumber != 0']
+            [array    byte      segment
+                                length
+                                'segmentedMessage?((apduLength>0)?(apduLength - ((sequenceNumber != 0)?6:5)):0):0'
         ]
         ['0x1' APDUUnconfirmedRequest
             [reserved uint 4                          '0'               ]
@@ -427,8 +432,11 @@
                             'serviceRequestLength'                   ]
         ]
         ['READ_RANGE' BACnetConfirmedServiceRequestReadRange
-            // TODO: implement me
-            [validation    '1 == 2'    "TODO: implement me"]
+            [simple   BACnetContextTagObjectIdentifier('0', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')     objectIdentifier    ]
+            [simple   BACnetContextTagPropertyIdentifier('1', 'BACnetDataType.BACNET_PROPERTY_IDENTIFIER') propertyIdentifier  ]
+            [optional BACnetContextTagUnsignedInteger('2', 'BACnetDataType.UNSIGNED_INTEGER')              propertyArrayIndex  ]
+            // TODO: this attribute should be named range but this is a keyword in golang (so at this point we should build a language translator which makes keywords safe)
+            [optional BACnetConfirmedServiceRequestReadRangeRange                                          readRange           ]
         ]
         ['WRITE_PROPERTY' BACnetConfirmedServiceRequestWriteProperty
             [simple   BACnetContextTagObjectIdentifier('0', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')     objectIdentifier    ]
@@ -456,8 +464,14 @@
 
         ]
         ['CONFIRMED_PRIVATE_TRANSFER' BACnetConfirmedServiceRequestConfirmedPrivateTransfer
+            [simple     BACnetContextTagUnsignedInteger('0', 'BACnetDataType.UNSIGNED_INTEGER')          vendorId                    ]// TODO: vendor list?
+            [simple     BACnetContextTagUnsignedInteger('1', 'BACnetDataType.UNSIGNED_INTEGER')          serviceNumber               ]
+            // TODO: temporary dummy property identifier... get rid of that
+            [optional BACnetConstructedData('2', 'BACnetObjectType.VENDOR_PROPRIETARY_VALUE', 'STATIC_CALL("dummyPropertyIdentifier")') serviceParameters           ]
         ]
         ['CONFIRMED_TEXT_MESSAGE' BACnetConfirmedServiceRequestConfirmedTextMessage
+             // TODO: implement me
+            [validation    '1 == 2'    "TODO: implement me"]
         ]
         ['REINITIALIZE_DEVICE' BACnetConfirmedServiceRequestReinitializeDevice
           [simple BACnetContextTagDeviceState('0', 'BACnetDataType.BACNET_DEVICE_STATE')     reinitializedStateOfDevice  ]
@@ -639,6 +653,31 @@
                      closingTag                     ]
 ]
 
+[type BACnetConfirmedServiceRequestReadRangeRange
+    [peek       BACnetTagHeader
+                    peekedTagHeader                 ]
+    [simple     BACnetOpeningTag('peekedTagHeader.actualTagNumber', 'BACnetDataType.OPENING_TAG')
+                     openingTag                     ]
+    [virtual    uint 8      peekedTagNumber     'peekedTagHeader.actualTagNumber']
+    [typeSwitch peekedTagNumber
+        ['0x3' BACnetConfirmedServiceRequestReadRangeRangeByPosition
+            [simple BACnetApplicationTagUnsignedInteger                   referenceIndex            ]
+            [simple BACnetApplicationTagSignedInteger                     count                     ]
+        ]
+        ['0x6' BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber
+            [simple BACnetApplicationTagUnsignedInteger                   referenceSequenceNumber   ]
+            [simple BACnetApplicationTagSignedInteger                     count                     ]
+        ]
+        ['0x7' BACnetConfirmedServiceRequestReadRangeRangeByTime
+            [simple BACnetDateTime                                        referenceTime             ]
+            [simple BACnetApplicationTagSignedInteger                     count                     ]
+        ]
+    ]
+    [simple     BACnetClosingTag('peekedTagHeader.actualTagNumber', 'BACnetDataType.CLOSING_TAG')
+                     closingTag
+    ]
+]
+
 [type BACnetPropertyWriteDefinition(BACnetObjectType objectType)
     [simple     BACnetContextTagPropertyIdentifier('0', 'BACnetDataType.BACNET_PROPERTY_IDENTIFIER')
                     propertyIdentifier              ]
@@ -717,9 +756,10 @@
             [optional BACnetNotificationParameters('12', 'eventObjectIdentifier.objectType')           eventValues                  ]
         ]
         ['UNCONFIRMED_PRIVATE_TRANSFER' BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer
-            [simple     BACnetContextTagUnsignedInteger('1', 'BACnetDataType.UNSIGNED_INTEGER')          vendorId                    ]// TODO: vendor list?
-            [simple     BACnetContextTagUnsignedInteger('2', 'BACnetDataType.UNSIGNED_INTEGER')          serviceNumber               ]
-            [optional   BACnetPropertyValues('2', 'BACnetObjectType.VENDOR_PROPRIETARY_VALUE')           serviceParameters           ] //TODO: what should we use as object identifier here?
+            [simple     BACnetContextTagUnsignedInteger('0', 'BACnetDataType.UNSIGNED_INTEGER')          vendorId                    ]// TODO: vendor list?
+            [simple     BACnetContextTagUnsignedInteger('1', 'BACnetDataType.UNSIGNED_INTEGER')          serviceNumber               ]
+            // TODO: temporary dummy property identifier... get rid of that
+            [optional BACnetConstructedData('2', 'BACnetObjectType.VENDOR_PROPRIETARY_VALUE', 'STATIC_CALL("dummyPropertyIdentifier")') serviceParameters           ]
         ]
         ['UNCONFIRMED_TEXT_MESSAGE' BACnetUnconfirmedServiceRequestUnconfirmedTextMessage
             // TODO: implement me
@@ -884,8 +924,13 @@
                             'serviceRequestLength'                   ]
         ]
         ['READ_RANGE' BACnetServiceAckReadRange
-            // TODO: implement me
-            [validation    '1 == 2'    "TODO: implement me"]
+            [simple   BACnetContextTagObjectIdentifier('0', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')     objectIdentifier    ]
+            [simple   BACnetContextTagPropertyIdentifier('1', 'BACnetDataType.BACNET_PROPERTY_IDENTIFIER') propertyIdentifier  ]
+            [optional BACnetContextTagUnsignedInteger('2', 'BACnetDataType.UNSIGNED_INTEGER')              propertyArrayIndex  ]
+            [simple   BACnetResultFlags('3')                                                               resultFlags         ]
+            [simple   BACnetContextTagUnsignedInteger('4', 'BACnetDataType.UNSIGNED_INTEGER')              itemCount           ]
+            [optional BACnetConstructedData('5', 'objectIdentifier.objectType', 'propertyIdentifier')      itemData            ]
+            [optional BACnetContextTagUnsignedInteger('2', 'BACnetDataType.UNSIGNED_INTEGER')              firstSequenceNumber ]
         ]
         ['WRITE_PROPERTY' BACnetServiceAckWriteProperty
             // TODO: implement me
@@ -907,8 +952,10 @@
             [validation    '1 == 2'    "TODO: implement me"]
         ]
         ['CONFIRMED_PRIVATE_TRANSFER' BACnetServiceAckConfirmedPrivateTransfer
-            // TODO: implement me
-            [validation    '1 == 2'    "TODO: implement me"]
+            [simple     BACnetContextTagUnsignedInteger('0', 'BACnetDataType.UNSIGNED_INTEGER')          vendorId                    ]// TODO: vendor list?
+            [simple     BACnetContextTagUnsignedInteger('1', 'BACnetDataType.UNSIGNED_INTEGER')          serviceNumber               ]
+            // TODO: temporary dummy property identifier... get rid of that
+            [optional BACnetConstructedData('2', 'BACnetObjectType.VENDOR_PROPRIETARY_VALUE', 'STATIC_CALL("dummyPropertyIdentifier")') resultBlock                 ]
         ]
         ['CONFIRMED_TEXT_MESSAGE' BACnetServiceAckConfirmedTextMessage
             // TODO: implement me
@@ -1063,6 +1110,16 @@
     [simple BACnetApplicationTagEnumerated errorCode]
     [simple     BACnetClosingTag('5', 'BACnetDataType.CLOSING_TAG')
                      closingTag                     ]
+]
+
+// TODO: this is a enum so we should build a static call which maps a enum (could be solved by using only the tag header with a length validation and the enum itself)
+[type BACnetResultFlags(uint 8 tagNumber)
+    [simple BACnetContextTagBitString('tagNumber', 'BACnetDataType.BIT_STRING')
+        rawBits
+    ]
+    [virtual    bit firstItem           'rawBits.payload.data[0]']
+    [virtual    bit lastItem            'rawBits.payload.data[1]']
+    [virtual    bit moreItems           'rawBits.payload.data[2]']
 ]
 
 [type BACnetServiceAckAtomicReadFileStreamOrRecord
@@ -1356,34 +1413,54 @@
     [simple     BACnetOpeningTag('tagNumber', 'BACnetDataType.OPENING_TAG')
                 openingTag
     ]
+    [peek       BACnetTagHeader
+                            peekedTagHeader
+    ]
+    [virtual    uint 8      peekedTagNumber     'peekedTagHeader.actualTagNumber'       ]
+    [virtual    bit         isOpeningTag        'peekedTagHeader.lengthValueType == 0x6']
+    [virtual    bit         isClosingTag        'peekedTagHeader.lengthValueType == 0x7']
     [optional   BACnetApplicationTagNull
-                nullValue]
+                nullValue
+                    'peekedTagNumber == 0x0 && !isOpeningTag && !isClosingTag'          ]
     [optional   BACnetApplicationTagReal
-                realValue]
+                realValue
+                    'peekedTagNumber == 0x4 && !isOpeningTag && !isClosingTag'          ]
     [optional   BACnetApplicationTagUnsignedInteger
-                unsignedValue]
+                unsignedValue
+                    'peekedTagNumber == 0x2 && !isOpeningTag && !isClosingTag'          ]
     [optional   BACnetApplicationTagBoolean
-                booleanValue]
+                booleanValue
+                    'peekedTagNumber == 0x1 && !isOpeningTag && !isClosingTag'          ]
     [optional   BACnetApplicationTagSignedInteger
-                integerValue]
+                integerValue
+                    'peekedTagNumber == 0x3 && !isOpeningTag && !isClosingTag'          ]
     [optional   BACnetApplicationTagDouble
-                doubleValue]
+                doubleValue
+                    'peekedTagNumber == 0x5 && !isOpeningTag && !isClosingTag'          ]
     [optional   BACnetApplicationTagOctetString
-                octetStringValue]
+                octetStringValue
+                    'peekedTagNumber == 0x6 && !isOpeningTag && !isClosingTag'          ]
     [optional   BACnetApplicationTagCharacterString
-                characterStringValue]
+                characterStringValue
+                    'peekedTagNumber == 0x7 && !isOpeningTag && !isClosingTag'          ]
     [optional   BACnetApplicationTagBitString
-                bitStringValue]
+                bitStringValue
+                    'peekedTagNumber == 0x8 && !isOpeningTag && !isClosingTag'          ]
     [optional   BACnetApplicationTagEnumerated
-                enumeratedValue]
+                enumeratedValue
+                    'peekedTagNumber == 0x9 && !isOpeningTag && !isClosingTag'          ]
     [optional   BACnetApplicationTagDate
-                dateValue]
+                dateValue
+                    'peekedTagNumber == 0xA && !isOpeningTag && !isClosingTag'          ]
     [optional   BACnetApplicationTagTime
-                timeValue]
+                timeValue
+                    'peekedTagNumber == 0xB && !isOpeningTag && !isClosingTag'          ]
     [optional   BACnetApplicationTagObjectIdentifier
-                objectIdentifier]
+                objectIdentifier
+                    'peekedTagNumber == 0xC && !isOpeningTag'                           ]
     [optional   BACnetDeviceObjectPropertyReferenceEnclosed('0')
-                reference]
+                reference
+                    'isOpeningTag && !isClosingTag'                                     ]
     [simple     BACnetClosingTag('tagNumber', 'BACnetDataType.CLOSING_TAG')
                 closingTag
     ]
@@ -1532,7 +1609,7 @@
             ]
         ]
         ['2' BACnetTimeStampDateTime
-            [simple BACnetDateTime('2')
+            [simple BACnetDateTimeEnclosed('2')
                     dateTimeValue
             ]
         ]
@@ -1562,15 +1639,21 @@
     ]
 ]
 
-[type BACnetDateTime(uint 8 tagNumber)
-    [simple     BACnetOpeningTag('tagNumber', 'BACnetDataType.OPENING_TAG')
-                openingTag
-    ]
+[type BACnetDateTime
     [simple     BACnetApplicationTagDate
                 dateValue
     ]
     [simple     BACnetApplicationTagTime
                 timeValue
+    ]
+]
+
+[type BACnetDateTimeEnclosed(uint 8 tagNumber)
+    [simple     BACnetOpeningTag('tagNumber', 'BACnetDataType.OPENING_TAG')
+                openingTag
+    ]
+    [simple     BACnetDateTime
+                dateTimeValue
     ]
     [simple     BACnetClosingTag('tagNumber', 'BACnetDataType.CLOSING_TAG')
                 closingTag
@@ -1676,18 +1759,18 @@
     [simple        BACnetTagHeader
                             header
     ]
-    [validation    'header.actualTagNumber == tagNumberArgument'    "tagnumber doesn't match"                           ]
-    [validation    'header.tagClass == TagClass.CONTEXT_SPECIFIC_TAGS'    "should be a context tag"                     ]
+    [validation    'header.actualTagNumber == tagNumberArgument' "tagnumber doesn't match" shouldFail=false             ]
+    [validation    'header.tagClass == TagClass.CONTEXT_SPECIFIC_TAGS' "should be a context tag"                        ]
     [virtual       uint 4   tagNumber     'header.tagNumber'                                                            ]
     [virtual       uint 32  actualLength  'header.actualLength'                                                         ]
     [virtual       bit      isNotOpeningOrClosingTag    'header.lengthValueType != 6 && header.lengthValueType != 7'    ]
     [typeSwitch dataType
         ['NULL' BACnetContextTagNull(bit isNotOpeningOrClosingTag, BACnetTagHeader header)
-            [validation 'isNotOpeningOrClosingTag' "length 6 and 7 reserved for opening and closing tag"                ]
+            [validation 'isNotOpeningOrClosingTag' "length 6 and 7 reserved for opening and closing tag" shouldFail=false]
             [validation 'header.actualLength == 0' "length field should be 0"                                           ]
         ]
         ['BOOLEAN' BACnetContextTagBoolean(bit isNotOpeningOrClosingTag, BACnetTagHeader header)
-            [validation 'isNotOpeningOrClosingTag' "length 6 and 7 reserved for opening and closing tag"                ]
+            [validation 'isNotOpeningOrClosingTag' "length 6 and 7 reserved for opening and closing tag" shouldFail=false]
             [validation 'header.actualLength == 1' "length field should be 1"                                           ]
             [simple  uint 8 value                                                                                       ]
             [simple BACnetTagPayloadBoolean('value')
@@ -1695,13 +1778,13 @@
             [virtual bit    actualValue 'payload.value'                                                                 ]
         ]
         ['UNSIGNED_INTEGER' BACnetContextTagUnsignedInteger(bit isNotOpeningOrClosingTag, BACnetTagHeader header)
-            [validation 'isNotOpeningOrClosingTag' "length 6 and 7 reserved for opening and closing tag"                ]
+            [validation 'isNotOpeningOrClosingTag' "length 6 and 7 reserved for opening and closing tag" shouldFail=false]
             [simple BACnetTagPayloadUnsignedInteger('header.actualLength')
                                 payload                                                                                 ]
             [virtual    uint 64 actualValue 'payload.actualValue'                                                     ]
         ]
         ['SIGNED_INTEGER' BACnetContextTagSignedInteger(bit isNotOpeningOrClosingTag, BACnetTagHeader header)
-            [validation 'isNotOpeningOrClosingTag' "length 6 and 7 reserved for opening and closing tag"                ]
+            [validation 'isNotOpeningOrClosingTag' "length 6 and 7 reserved for opening and closing tag" shouldFail=false]
             [simple BACnetTagPayloadSignedInteger('header.actualLength')
                                 payload                                                                                 ]
             [virtual    uint 64     actualValue 'payload.actualValue'                                                 ]
@@ -1726,34 +1809,34 @@
             [virtual vstring     value             'payload.value'                                                      ]
         ]
         ['CHARACTER_STRING' BACnetContextTagCharacterString(bit isNotOpeningOrClosingTag, BACnetTagHeader header)
-            [validation 'isNotOpeningOrClosingTag' "length 6 and 7 reserved for opening and closing tag"                ]
+            [validation 'isNotOpeningOrClosingTag' "length 6 and 7 reserved for opening and closing tag" shouldFail=false]
             [simple BACnetTagPayloadCharacterString('header.actualLength')
                                 payload                                                                                 ]
             [virtual vstring     value             'payload.value'                                                      ]
         ]
         ['BIT_STRING' BACnetContextTagBitString(bit isNotOpeningOrClosingTag, BACnetTagHeader header)
-            [validation 'isNotOpeningOrClosingTag' "length 6 and 7 reserved for opening and closing tag"                ]
+            [validation 'isNotOpeningOrClosingTag' "length 6 and 7 reserved for opening and closing tag" shouldFail=false]
             [simple BACnetTagPayloadBitString('header.actualLength')
                                 payload                                                                                 ]
         ]
         ['ENUMERATED' BACnetContextTagEnumerated(bit isNotOpeningOrClosingTag, BACnetTagHeader header)
-            [validation 'isNotOpeningOrClosingTag' "length 6 and 7 reserved for opening and closing tag"                ]
+            [validation 'isNotOpeningOrClosingTag' "length 6 and 7 reserved for opening and closing tag" shouldFail=false]
             [simple BACnetTagPayloadEnumerated('header.actualLength')
                                 payload                                                                                 ]
             [virtual  uint 32   actualValue 'payload.actualValue'                                                       ]
         ]
         ['DATE' BACnetContextTagDate(bit isNotOpeningOrClosingTag)
-            [validation 'isNotOpeningOrClosingTag' "length 6 and 7 reserved for opening and closing tag"                ]
+            [validation 'isNotOpeningOrClosingTag' "length 6 and 7 reserved for opening and closing tag" shouldFail=false]
             [simple BACnetTagPayloadDate
                                 payload                                                                                 ]
         ]
         ['TIME' BACnetContextTagTime(bit isNotOpeningOrClosingTag)
-            [validation 'isNotOpeningOrClosingTag' "length 6 and 7 reserved for opening and closing tag"                ]
+            [validation 'isNotOpeningOrClosingTag' "length 6 and 7 reserved for opening and closing tag" shouldFail=false]
             [simple     BACnetTagPayloadTime
                                 payload                                                                                 ]
         ]
         ['BACNET_OBJECT_IDENTIFIER' BACnetContextTagObjectIdentifier(bit isNotOpeningOrClosingTag)
-            [validation 'isNotOpeningOrClosingTag' "length 6 and 7 reserved for opening and closing tag"                ]
+            [validation 'isNotOpeningOrClosingTag' "length 6 and 7 reserved for opening and closing tag" shouldFail=false]
             [simple  BACnetTagPayloadObjectIdentifier
                                 payload                                                                                 ]
             [virtual BACnetObjectType
@@ -1762,7 +1845,7 @@
                                                'payload.instanceNumber'                                                 ]
         ]
         ['BACNET_PROPERTY_IDENTIFIER' BACnetContextTagPropertyIdentifier(bit isNotOpeningOrClosingTag, uint 32 actualLength)
-            [validation 'isNotOpeningOrClosingTag' "length 6 and 7 reserved for opening and closing tag"                ]
+            [validation 'isNotOpeningOrClosingTag' "length 6 and 7 reserved for opening and closing tag" shouldFail=false]
             [manual     BACnetPropertyIdentifier
                                 propertyIdentifier
                                 'STATIC_CALL("readPropertyIdentifier", readBuffer, actualLength)'
@@ -1853,6 +1936,7 @@
     [optional   uint 56     valueUint56     'isUint56'           ]
     [virtual    bit         isUint64        'actualLength == 8'  ]
     [optional   uint 64     valueUint64     'isUint64'           ]
+    [validation 'isUint8 || isUint16 || isUint24 || isUint32 || isUint40 || isUint48 || isUint56 || isUint64' "unmapped integer length"]
     [virtual    uint 64     actualValue     'isUint8?valueUint8:(isUint16?valueUint16:(isUint24?valueUint24:(isUint32?valueUint32:(isUint40?valueUint40:(isUint48?valueUint48:(isUint56?valueUint56:valueUint64))))))']
 ]
 
@@ -1873,6 +1957,7 @@
     [optional   int 56      valueInt56      'isInt56'            ]
     [virtual    bit         isInt64         'actualLength == 8'  ]
     [optional   int 64      valueInt64      'isInt64'            ]
+    [validation 'isInt8 || isInt16 || isInt24 || isInt32 || isInt40 || isInt48 || isInt56 || isInt64' "unmapped integer length"]
     [virtual    uint 64     actualValue     'isInt8?valueInt8:(isInt16?valueInt16:(isInt24?valueInt24:(isInt32?valueInt32:(isInt40?valueInt40:(isInt48?valueInt48:(isInt56?valueInt56:valueInt64))))))']
 ]
 
@@ -2137,7 +2222,7 @@
                     toOffnormal                                                                                 ]
             [simple BACnetContextTagUnsignedInteger('1', 'BACnetDataType.UNSIGNED_INTEGER')
                     toFault                                                                                     ]
-            [simple BACnetDateTime('2')
+            [simple BACnetDateTimeEnclosed('2')
                     toNormal                                                                                    ]
         ]
         //[*, 'EVENT_TYPE'                              BACnetConstructedDataEventType]
@@ -2465,11 +2550,6 @@
             [array    BACnetConstructedDataElement('objectType', 'propertyIdentifierArgument')
                             data                    terminated
                                 'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)']
-            [virtual  bit   hasData                 'COUNT(data) != 0']
-            [optional       BACnetContextTagPropertyIdentifier('0', 'BACnetDataType.BACNET_PROPERTY_IDENTIFIER')
-                            propertyIdentifier      '!hasData'                                                   ]
-            [optional       BACnetApplicationTag
-                            content                 '!hasData'                                                   ]
         ]
         //
         /////
@@ -2501,15 +2581,19 @@
                             peekedTagHeader                                                                     ]
     [virtual    uint 8      peekedTagNumber     'peekedTagHeader.actualTagNumber']
     [virtual    bit         isApplicationTag    'peekedTagHeader.tagClass == TagClass.APPLICATION_TAGS'         ]
-    [virtual    bit         isConstructedData   '!isApplicationTag && peekedTagHeader.lengthValueType == 0x6'      ]
+    [virtual    bit         isConstructedData   '!isApplicationTag && peekedTagHeader.lengthValueType == 0x6'   ]
     [virtual    bit         isContextTag        '!isConstructedData && !isApplicationTag'                       ]
+    [validation '!isContextTag || (isContextTag && peekedTagHeader.lengthValueType != 0x7)'
+                "unexpected closing tag"                                                                        ]
     [optional   BACnetApplicationTag
                             applicationTag      'isApplicationTag'                                              ]
-    [optional   BACnetContextTag('peekedTagNumber', 'STATIC_CALL("guessDataType", objectType, propertyIdentifier)')
+    [optional   BACnetContextTag('peekedTagNumber',
+                                 'STATIC_CALL("guessDataType", objectType, propertyIdentifier)')
                             contextTag          'isContextTag'                                                  ]
     [optional   BACnetConstructedData('peekedTagNumber', 'objectType', 'propertyIdentifier')
                             constructedData     'isConstructedData'                                             ]
-    [validation 'isApplicationTag || isContextTag || isConstructedData' "BACnetConstructedDataElement could not parse anything"]
+    [validation 'isApplicationTag || isContextTag || isConstructedData'
+                "BACnetConstructedDataElement could not parse anything"                                         ]
 ]
 
 [enum uint 16 BVLCResultCode
