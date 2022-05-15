@@ -22,7 +22,7 @@ import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.api.value.PlcValue;
-import org.apache.plc4x.java.utils.connectionpool.PooledPlcDriverManager;
+import org.apache.plc4x.java.utils.connectionpool2.PooledDriverManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,7 +38,7 @@ public class ManualAdsDriverTest {
         String targetAmsNetId = "5.81.202.72.1.1";
         int targetAmsPort = 851;
         String connectionString = String.format("ads:tcp://%s?sourceAmsNetId=%s&sourceAmsPort=%d&targetAmsNetId=%s&targetAmsPort=%d", ip, sourceAmsNetId, sourceAmsPort, targetAmsNetId, targetAmsPort);
-        PooledPlcDriverManager pooledPlcDriverManager = new PooledPlcDriverManager();
+        PooledDriverManager pooledPlcDriverManager = new PooledDriverManager();
         try (PlcConnection plcConnection = pooledPlcDriverManager.getConnection(connectionString)) {
 
             final PlcReadRequest.Builder builder = plcConnection.readRequestBuilder();
