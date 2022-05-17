@@ -70,9 +70,9 @@ public class PlcBYTE extends PlcIECValue<Short> {
     }
 
     public PlcBYTE(Byte value) {
-        if ((value < minValue) || (value > maxValue)) {
-            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
-        }
+        //if ((value < minValue) || (value > maxValue)) {
+        //    throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+        //}
         this.value = value.shortValue();
         this.isNullable = false;
     }

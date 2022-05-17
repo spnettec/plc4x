@@ -237,7 +237,8 @@ public class S7PlcValueHandler implements PlcValueHandler {
         Byte[] bytes = new Byte[byteValues.length];
 
         for (int i=0, len=bytes.length; i<len; i++) {
-            bytes[i] = Byte.parseByte(byteValues[i].trim());
+            int intvalue = Integer.parseInt(byteValues[i].trim());
+            bytes[i] = (byte)(intvalue & 0xff);
         }
         return bytes;
     }

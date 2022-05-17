@@ -40,10 +40,14 @@ public class PooledDriverManager extends PlcDriverManager implements PooledDrive
     private final Map<String, CachedDriverManager> cachedManagers = new ConcurrentHashMap<>();
 
     public PooledDriverManager() {
-        this(new PlcDriverManager());
+        this(new PlcDriverManager(),1000);
     }
 
-    public PooledDriverManager(PlcDriverManager driverManager) {
+    public PooledDriverManager(int timeoutMillis) {
+        this(new PlcDriverManager(),timeoutMillis);
+    }
+
+    public PooledDriverManager(PlcDriverManager driverManager,int timeoutMillis) {
         this.factory = key -> {
             return new CachedDriverManager(key, () -> {
                 try {
@@ -51,7 +55,7 @@ public class PooledDriverManager extends PlcDriverManager implements PooledDrive
                 } catch (PlcConnectionException e) {
                     throw new RuntimeException(e);
                 }
-            });
+            },timeoutMillis);
         };
 
         // Register as MBean

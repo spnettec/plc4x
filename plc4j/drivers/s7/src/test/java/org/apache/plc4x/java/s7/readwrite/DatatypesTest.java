@@ -18,19 +18,20 @@
  */
 package org.apache.plc4x.java.s7.readwrite;
 
+import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
-import org.apache.plc4x.java.utils.connectionpool2.PooledDriverManager;
+import org.apache.plc4x.java.utils.connectionpool.PooledPlcDriverManager;
 
 public class DatatypesTest {
 
     private PlcReadResponse readResponse;
 
     public static void main(String[] args) throws Exception {
-        PooledDriverManager pooledPlcDriverManager = new PooledDriverManager();
+        PooledPlcDriverManager pooledPlcDriverManager = new PooledPlcDriverManager();
 
         try (PlcConnection connection = pooledPlcDriverManager.getConnection("s7://10.166.11.20?remote-rack=0&remote-slot=1")) {
             final PlcReadRequest.Builder builder = connection.readRequestBuilder();
@@ -62,6 +63,7 @@ public class DatatypesTest {
             builder.addItem("PMS1302_StickName","%DB132:82:STRING(40)");
             builder.addItem("PMS1302_Template","%DB132:124:STRING(40)");
             builder.addItem("PMS1302_MeasurePoint","%DB132:166:STRING(200)");
+            builder.addItem("DD","%DB1:0:BYTE[10]");
 
 
 
@@ -77,7 +79,7 @@ public class DatatypesTest {
 
 
             final PlcWriteRequest.Builder rbuilder = connection.writeRequestBuilder();
-            rbuilder.addItem("PMS1302_Template", "%DB132:124:STRING(40)|GBK", "啊啊啊啊11"); // true
+            rbuilder.addItem("PMS1302_Template", "%DB1:0:BYTE[10]", "[0,156,3,4,5,6,7,8,9,10]"); // true
 
             final PlcWriteRequest writeRequest = rbuilder.build();
 
