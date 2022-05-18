@@ -335,6 +335,10 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		return model.SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionParse(io, tagNumber)
 	case "BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecifications":
 		return model.BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsParse(io)
+	case "BACnetConstructedDataAcceptedModesEntry":
+		return model.BACnetConstructedDataAcceptedModesEntryParse(io)
+	case "BACnetConstructedDataLifeSafetyStateEntry":
+		return model.BACnetConstructedDataLifeSafetyStateEntryParse(io)
 	case "BACnetWriteAccessSpecification":
 		return model.BACnetWriteAccessSpecificationParse(io)
 	case "BACnetServiceAck":

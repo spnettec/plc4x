@@ -1842,6 +1842,73 @@
     ]
 ]
 
+// TODO: try with manual fields
+[type BACnetConstructedDataAcceptedModesEntry
+    [simple   BACnetApplicationTagEnumerated
+                        rawData                                                                              ]
+    [virtual  bit       isAcceptedModeProprietary 'rawData.actualValue > 255'                                ]
+    [virtual  BACnetLifeSafetyMode
+                        acceptedMode
+                            'STATIC_CALL("mapBACnetLifeSafetyMode", rawData, isAcceptedModeProprietary)'    ]
+    [virtual  uint 16   acceptedModeProprietary 'isAcceptedModeProprietary?rawData.actualValue:0'           ]
+]
+
+[enum uint 16 BACnetLifeSafetyMode
+    ['0'    OFF                         ]
+    ['1'    ON                          ]
+    ['2'    TEST                        ]
+    ['3'    MANNED                      ]
+    ['4'    UNMANNED                    ]
+    ['5'    ARMED                       ]
+    ['6'    DISARMED                    ]
+    ['7'    PREARMED                    ]
+    ['8'    SLOW                        ]
+    ['9'    FAST                        ]
+    ['10'   DISCONNECTED                ]
+    ['11'   ENABLED                     ]
+    ['12'   DISABLED                    ]
+    ['13'   AUTOMATIC_RELEASE_DISABLED  ]
+    ['14'   DEFAULT                     ]
+]
+
+// TODO: try with manual fields
+[type BACnetConstructedDataLifeSafetyStateEntry
+    [simple   BACnetApplicationTagEnumerated
+                        rawData                                                                                 ]
+    [virtual  bit       isLifeSafetyStateProprietary 'rawData.actualValue > 255'                                ]
+    [virtual  BACnetLifeSafetyState
+                        lifeSafetyState 
+                            'STATIC_CALL("mapBACnetLifeSafetyState", rawData, isLifeSafetyStateProprietary)'    ]
+    [virtual  uint 16   lifeSafetyStateProprietary 'isLifeSafetyStateProprietary?rawData.actualValue:0'         ]
+]
+
+[enum uint 16 BACnetLifeSafetyState
+    ['0'    QUIET]
+    ['1'    PRE_ALARM]
+    ['2'    ALARM]
+    ['3'    FAULT]
+    ['4'    FAULT_PRE_ALARM]
+    ['5'    FAULT_ALARM]
+    ['6'    NOT_READY]
+    ['7'    ACTIVE]
+    ['8'    TAMPER]
+    ['9'    TEST_ALARM]
+    ['10'   TEST_ACTIVE]
+    ['11'   TEST_FAULT]
+    ['12'   TEST_FAULT_ALARM]
+    ['13'   HOLDUP]
+    ['14'   DURESS]
+    ['15'   TAMPER_ALARM]
+    ['16'   ABNORMAL]
+    ['17'   EMERGENCY_POWER]
+    ['18'   DELAYED]
+    ['19'   BLOCKED]
+    ['20'   LOCAL_ALARM]
+    ['21'   GENERAL_ALARM]
+    ['22'   SUPERVISORY]
+    ['23'   TEST_SUPERVISORY]
+]
+
 // TODO: this is a enum so we should build a static call which maps a enum (could be solved by using only the tag header with a length validation and the enum itself)
 [type BACnetStatusFlags(uint 8 tagNumber)
     [simple BACnetContextTagBitString('tagNumber', 'BACnetDataType.BIT_STRING')
@@ -1857,8 +1924,7 @@
 // TODO: fixme... this is only in context a context tag... otherwise it can be and application tag
 [type BACnetAction(uint 8 tagNumber)
     [optional   BACnetContextTagEnumerated('tagNumber', 'BACnetDataType.ENUMERATED')
-                rawData
-    ]
+                rawData                                                           ]
     [virtual    bit isDirect         'rawData != null && rawData.actualValue == 0']
     [virtual    bit isReverse        'rawData != null && rawData.actualValue == 1']
 ]
@@ -2265,6 +2331,9 @@
         ['CLOSING_TAG' BACnetClosingTag(uint 32 actualLength)
             [validation 'actualLength == 7' "closing tag should have a value of 7"]
         ]
+        ['UNKNOWN' BACnetContextTagUnknown(uint 32 actualLength)
+            [array byte unknownData length 'actualLength'          ]
+        ]
         [BACnetContextTagEmpty
         ]
     ]
@@ -2394,28 +2463,12 @@
     [virtual    BACnetPropertyIdentifier
                         propertyIdentifierEnum  'propertyIdentifierArgument.propertyIdentifier']
     [typeSwitch objectType, propertyIdentifierEnum
-        /////
-        // LifeSafetyZone
-
-        ['LIFE_SAFETY_ZONE', 'ZONE_MEMBERS'             BACnetConstructedDataLifeSafetyZoneMembers
-            [array  BACnetDeviceObjectReference
-                        members
-                    terminated
-                    'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'            ]
-        ]
-        ['LIFE_SAFETY_ZONE', 'MEMBER_OF'                BACnetConstructedDataLifeSafetyZoneMemberOf
-            [array  BACnetDeviceObjectReference
-                        zones
-                            terminated
-                            'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)'    ]
-        ]
-        //
-        /////
-
-        /////
-        // Generic Mapping
         //[*, 'ABSENTEE_LIMIT'                          BACnetConstructedDataAbsenteeLimit [validation    '1 == 2'    "TODO: implement me ABSENTEE_LIMIT BACnetConstructedDataAbsenteeLimit"]]
-        //[*, 'ACCEPTED_MODES'                          BACnetConstructedDataAcceptedModes [validation    '1 == 2'    "TODO: implement me ACCEPTED_MODES BACnetConstructedDataAcceptedModes"]]
+        [*, 'ACCEPTED_MODES'                          BACnetConstructedDataAcceptedModes
+            [array    BACnetConstructedDataAcceptedModesEntry
+                            acceptedModes              terminated
+                                'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)']
+        ]
         //[*, 'ACCESS_ALARM_EVENTS'                     BACnetConstructedDataAccessAlarmEvents [validation    '1 == 2'    "TODO: implement me ACCESS_ALARM_EVENTS BACnetConstructedDataAccessAlarmEvents"]]
         //[*, 'ACCESS_DOORS'                            BACnetConstructedDataAccessDoors [validation    '1 == 2'    "TODO: implement me ACCESS_DOORS BACnetConstructedDataAccessDoors"]]
         //[*, 'ACCESS_EVENT'                            BACnetConstructedDataAccessEvent [validation    '1 == 2'    "TODO: implement me ACCESS_EVENT BACnetConstructedDataAccessEvent"]]
@@ -2452,6 +2505,11 @@
         //[*, 'ACTUAL_SHED_LEVEL'                       BACnetConstructedDataActualShedLevel [validation    '1 == 2'    "TODO: implement me ACTUAL_SHED_LEVEL BACnetConstructedDataActualShedLevel"]]
         //[*, 'ADJUST_VALUE'                            BACnetConstructedDataAdjustValue [validation    '1 == 2'    "TODO: implement me ADJUST_VALUE BACnetConstructedDataAdjustValue"]]
         //[*, 'ALARM_VALUE'                             BACnetConstructedDataAlarmValue [validation    '1 == 2'    "TODO: implement me ALARM_VALUE BACnetConstructedDataAlarmValue"]]
+        ['LIFE_SAFETY_POINT', 'ALARM_VALUES'                            BACnetConstructedDataLifeSafetyPointAlarmValues
+            [array    BACnetConstructedDataLifeSafetyStateEntry
+                            alarmValues              terminated
+                                'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)']
+        ]
         //[*, 'ALARM_VALUES'                            BACnetConstructedDataAlarmValues [validation    '1 == 2'    "TODO: implement me ALARM_VALUES BACnetConstructedDataAlarmValues"]]
         //[*, 'ALIGN_INTERVALS'                         BACnetConstructedDataAlignIntervals [validation    '1 == 2'    "TODO: implement me ALIGN_INTERVALS BACnetConstructedDataAlignIntervals"]]
         //[*, 'ALL'                                     BACnetConstructedDataAll [validation    '1 == 2'    "TODO: implement me ALL BACnetConstructedDataAll"]]
@@ -2598,6 +2656,12 @@
         //[*, 'FAULT_PARAMETERS'                        BACnetConstructedDataFaultParameters [validation    '1 == 2'    "TODO: implement me FAULT_PARAMETERS BACnetConstructedDataFaultParameters"]]
         //[*, 'FAULT_SIGNALS'                           BACnetConstructedDataFaultSignals [validation    '1 == 2'    "TODO: implement me FAULT_SIGNALS BACnetConstructedDataFaultSignals"]]
         //[*, 'FAULT_TYPE'                              BACnetConstructedDataFaultType [validation    '1 == 2'    "TODO: implement me FAULT_TYPE BACnetConstructedDataFaultType"]]
+        ['LIFE_SAFETY_POINT', 'FAULT_VALUES'                            BACnetConstructedDataLifeSafetyPointFaultValues
+            [array    BACnetConstructedDataLifeSafetyStateEntry
+                            faultValues
+                                terminated
+                                'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)']
+        ]
         //[*, 'FAULT_VALUES'                            BACnetConstructedDataFaultValues [validation    '1 == 2'    "TODO: implement me FAULT_VALUES BACnetConstructedDataFaultValues"]]
         //[*, 'FD_BBMD_ADDRESS'                         BACnetConstructedDataFdBbmdAddress [validation    '1 == 2'    "TODO: implement me FD_BBMD_ADDRESS BACnetConstructedDataFdBbmdAddress"]]
         //[*, 'FD_SUBSCRIPTION_LIFETIME'                BACnetConstructedDataFdSubscriptionLifetime [validation    '1 == 2'    "TODO: implement me FD_SUBSCRIPTION_LIFETIME BACnetConstructedDataFdSubscriptionLifetime"]]
@@ -2663,7 +2727,11 @@
         //[*, 'LAST_RESTORE_TIME'                       BACnetConstructedDataLastRestoreTime [validation    '1 == 2'    "TODO: implement me LAST_RESTORE_TIME BACnetConstructedDataLastRestoreTime"]]
         //[*, 'LAST_STATE_CHANGE'                       BACnetConstructedDataLastStateChange [validation    '1 == 2'    "TODO: implement me LAST_STATE_CHANGE BACnetConstructedDataLastStateChange"]]
         //[*, 'LAST_USE_TIME'                           BACnetConstructedDataLastUseTime [validation    '1 == 2'    "TODO: implement me LAST_USE_TIME BACnetConstructedDataLastUseTime"]]
-        //[*, 'LIFE_SAFETY_ALARM_VALUES'                BACnetConstructedDataLifeSafetyAlarmValues [validation    '1 == 2'    "TODO: implement me LIFE_SAFETY_ALARM_VALUES BACnetConstructedDataLifeSafetyAlarmValues"]]
+        [*, 'LIFE_SAFETY_ALARM_VALUES'                BACnetConstructedDataLifeSafetyAlarmValues
+            [array    BACnetConstructedDataLifeSafetyStateEntry
+                            alarmValues              terminated
+                                'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)']
+        ]
         //[*, 'LIGHTING_COMMAND'                        BACnetConstructedDataLightingCommand [validation    '1 == 2'    "TODO: implement me LIGHTING_COMMAND BACnetConstructedDataLightingCommand"]]
         //[*, 'LIGHTING_COMMAND_DEFAULT_PRIORITY'       BACnetConstructedDataLightingCommandDefaultPriority [validation    '1 == 2'    "TODO: implement me LIGHTING_COMMAND_DEFAULT_PRIORITY BACnetConstructedDataLightingCommandDefaultPriority"]]
         //[*, 'LIMIT_ENABLE'                            BACnetConstructedDataLimitEnable [validation    '1 == 2'    "TODO: implement me LIMIT_ENABLE BACnetConstructedDataLimitEnable"]]
@@ -2909,8 +2977,6 @@
                             data                    terminated
                                 'STATIC_CALL("isBACnetConstructedDataClosingTag", readBuffer, false, tagNumber)']
         ]
-        //
-        /////
     ]
     [simple       BACnetClosingTag('tagNumber', 'BACnetDataType.CLOSING_TAG')
                         closingTag                                                                              ]
@@ -2985,6 +3051,7 @@
     ['30' EVENT_TYPE                            ]
     ['31' EVENT_STATE                           ]
     ['32' NOTIFY_TYPE                           ]
+    ['33' UNKNOWN                               ]
     //
     //////////
     //////////
