@@ -1128,4 +1128,29 @@ public class StaticHelper {
     public static BACnetContextTagPropertyIdentifier dummyPropertyIdentifier() {
         return new BACnetContextTagPropertyIdentifier(null, BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE, 0L, (short) 0, true, 0L);
     }
+
+    public static ErrorClass mapErrorClass(BACnetApplicationTagEnumerated rawErrorClass) {
+        return ErrorClass.enumForValue((int) rawErrorClass.getActualValue());
+    }
+
+    public static ErrorCode mapErrorCode(BACnetApplicationTagEnumerated rawErrorCode) {
+        return ErrorCode.enumForValue((int) rawErrorCode.getActualValue());
+    }
+
+    public static AbortReason mapAbortReason(short rawAbortReason, boolean proprietary) {
+        if (proprietary) return null;
+        return AbortReason.enumForValue(rawAbortReason);
+    }
+
+    public static RejectReason mapRejectReason(short rawRejectReason, boolean proprietary) {
+        if (proprietary) return null;
+        return RejectReason.enumForValue(rawRejectReason);
+    }
+
+    public static BACnetObjectType mapBACnetObjectType(BACnetContextTagEnumerated rawObjectType) {
+        if (rawObjectType == null) return null;
+        BACnetObjectType baCnetObjectType = BACnetObjectType.enumForValue((int) rawObjectType.getActualValue());
+        if (baCnetObjectType == null) return BACnetObjectType.VENDOR_PROPRIETARY_VALUE;
+        return baCnetObjectType;
+    }
 }

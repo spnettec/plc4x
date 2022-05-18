@@ -74,19 +74,19 @@ func (m *BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable) GetRawDat
 func (m *BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable) GetIsEnable() bool {
 	rawData := m.RawData
 	_ = rawData
-	return bool(bool(bool((m.GetRawData()) != (nil))) && bool(bool(((*m.GetRawData()).GetPayload().GetActualValue()) == (0))))
+	return bool(bool(bool((m.GetRawData()) != (nil))) && bool(bool(((*m.GetRawData()).GetActualValue()) == (0))))
 }
 
 func (m *BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable) GetIsDisable() bool {
 	rawData := m.RawData
 	_ = rawData
-	return bool(bool(bool((m.GetRawData()) != (nil))) && bool(bool(((*m.GetRawData()).GetPayload().GetActualValue()) == (1))))
+	return bool(bool(bool((m.GetRawData()) != (nil))) && bool(bool(((*m.GetRawData()).GetActualValue()) == (1))))
 }
 
 func (m *BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable) GetIsDisableInitiation() bool {
 	rawData := m.RawData
 	_ = rawData
-	return bool(bool(bool((m.GetRawData()) != (nil))) && bool(bool(((*m.GetRawData()).GetPayload().GetActualValue()) == (2))))
+	return bool(bool(bool((m.GetRawData()) != (nil))) && bool(bool(((*m.GetRawData()).GetActualValue()) == (2))))
 }
 
 ///////////////////////
@@ -139,16 +139,18 @@ func (m *BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable) GetLength
 }
 
 func BACnetConfirmedServiceRequestReinitializeDeviceEnableDisableParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Optional Field (rawData) (Can be skipped, if a given expression evaluates to false)
 	var rawData *BACnetContextTagEnumerated = nil
 	{
-		currentPos = readBuffer.GetPos()
+		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("rawData"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -167,17 +169,17 @@ func BACnetConfirmedServiceRequestReinitializeDeviceEnableDisableParse(readBuffe
 	}
 
 	// Virtual field
-	_isEnable := bool(bool((rawData) != (nil))) && bool(bool(((*rawData).GetPayload().GetActualValue()) == (0)))
+	_isEnable := bool(bool((rawData) != (nil))) && bool(bool(((*rawData).GetActualValue()) == (0)))
 	isEnable := bool(_isEnable)
 	_ = isEnable
 
 	// Virtual field
-	_isDisable := bool(bool((rawData) != (nil))) && bool(bool(((*rawData).GetPayload().GetActualValue()) == (1)))
+	_isDisable := bool(bool((rawData) != (nil))) && bool(bool(((*rawData).GetActualValue()) == (1)))
 	isDisable := bool(_isDisable)
 	_ = isDisable
 
 	// Virtual field
-	_isDisableInitiation := bool(bool((rawData) != (nil))) && bool(bool(((*rawData).GetPayload().GetActualValue()) == (2)))
+	_isDisableInitiation := bool(bool((rawData) != (nil))) && bool(bool(((*rawData).GetActualValue()) == (2)))
 	isDisableInitiation := bool(_isDisableInitiation)
 	_ = isDisableInitiation
 
@@ -190,6 +192,8 @@ func BACnetConfirmedServiceRequestReinitializeDeviceEnableDisableParse(readBuffe
 }
 
 func (m *BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetConfirmedServiceRequestReinitializeDeviceEnableDisable"); pushErr != nil {
 		return pushErr
 	}

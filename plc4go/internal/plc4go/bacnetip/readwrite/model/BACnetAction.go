@@ -72,13 +72,13 @@ func (m *BACnetAction) GetRawData() *BACnetContextTagEnumerated {
 func (m *BACnetAction) GetIsDirect() bool {
 	rawData := m.RawData
 	_ = rawData
-	return bool(bool(bool((m.GetRawData()) != (nil))) && bool(bool(((*m.GetRawData()).GetPayload().GetActualValue()) == (0))))
+	return bool(bool(bool((m.GetRawData()) != (nil))) && bool(bool(((*m.GetRawData()).GetActualValue()) == (0))))
 }
 
 func (m *BACnetAction) GetIsReverse() bool {
 	rawData := m.RawData
 	_ = rawData
-	return bool(bool(bool((m.GetRawData()) != (nil))) && bool(bool(((*m.GetRawData()).GetPayload().GetActualValue()) == (1))))
+	return bool(bool(bool((m.GetRawData()) != (nil))) && bool(bool(((*m.GetRawData()).GetActualValue()) == (1))))
 }
 
 ///////////////////////
@@ -129,16 +129,18 @@ func (m *BACnetAction) GetLengthInBytes() uint16 {
 }
 
 func BACnetActionParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*BACnetAction, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetAction"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Optional Field (rawData) (Can be skipped, if a given expression evaluates to false)
 	var rawData *BACnetContextTagEnumerated = nil
 	{
-		currentPos = readBuffer.GetPos()
+		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("rawData"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -157,12 +159,12 @@ func BACnetActionParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*BACnetAct
 	}
 
 	// Virtual field
-	_isDirect := bool(bool((rawData) != (nil))) && bool(bool(((*rawData).GetPayload().GetActualValue()) == (0)))
+	_isDirect := bool(bool((rawData) != (nil))) && bool(bool(((*rawData).GetActualValue()) == (0)))
 	isDirect := bool(_isDirect)
 	_ = isDirect
 
 	// Virtual field
-	_isReverse := bool(bool((rawData) != (nil))) && bool(bool(((*rawData).GetPayload().GetActualValue()) == (1)))
+	_isReverse := bool(bool((rawData) != (nil))) && bool(bool(((*rawData).GetActualValue()) == (1)))
 	isReverse := bool(_isReverse)
 	_ = isReverse
 
@@ -175,6 +177,8 @@ func BACnetActionParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*BACnetAct
 }
 
 func (m *BACnetAction) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetAction"); pushErr != nil {
 		return pushErr
 	}

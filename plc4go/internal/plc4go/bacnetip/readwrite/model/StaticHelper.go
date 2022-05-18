@@ -653,3 +653,33 @@ func requiredLength(value uint) uint32 {
 	}
 	return length
 }
+
+func MapErrorClass(applicationTagEnumerated *BACnetApplicationTagEnumerated) ErrorClass {
+	return ErrorClassByValue(uint16(applicationTagEnumerated.GetActualValue()))
+}
+
+func MapErrorCode(applicationTagEnumerated *BACnetApplicationTagEnumerated) ErrorCode {
+	return ErrorCodeByValue(uint16(applicationTagEnumerated.GetActualValue()))
+}
+
+func MapAbortReason(rawAbortReason uint8, proprietary bool) AbortReason {
+	if proprietary {
+		return 0
+	}
+	return AbortReason(rawAbortReason)
+}
+
+func MapRejectReason(rawRejectReason uint8, proprietary bool) RejectReason {
+	if proprietary {
+		return 0
+	}
+	return RejectReason(rawRejectReason)
+}
+
+func MapBACnetObjectType(rawObjectType BACnetContextTagEnumerated) BACnetObjectType {
+	baCnetObjectType := BACnetObjectTypeByValue(uint16(rawObjectType.GetActualValue()))
+	if baCnetObjectType == 0 {
+		return BACnetObjectType_VENDOR_PROPRIETARY_VALUE
+	}
+	return baCnetObjectType
+}

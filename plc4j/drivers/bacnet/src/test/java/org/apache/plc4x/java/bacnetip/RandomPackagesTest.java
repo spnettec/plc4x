@@ -387,7 +387,6 @@ public class RandomPackagesTest {
                     assertEquals(BACnetObjectType.DEVICE, baCnetUnconfirmedServiceRequestIAm.getDeviceIdentifier().getObjectType());
                     assertEquals(12345, baCnetUnconfirmedServiceRequestIAm.getDeviceIdentifier().getInstanceNumber());
                     assertEquals(480, baCnetUnconfirmedServiceRequestIAm.getMaximumApduLengthAcceptedLength().getPayload().getActualValue().longValue());
-                    // TODO: change to enum
                     assertTrue(baCnetUnconfirmedServiceRequestIAm.getSegmentationSupported().getIsSegmentedReceive());
                     assertEquals(260L, baCnetUnconfirmedServiceRequestIAm.getVendorId().getPayload().getActualValue().longValue());
                 }),
@@ -427,7 +426,6 @@ public class RandomPackagesTest {
                     assertEquals(BACnetObjectType.DEVICE, baCnetUnconfirmedServiceRequestIAm.getDeviceIdentifier().getObjectType());
                     assertEquals(12345, baCnetUnconfirmedServiceRequestIAm.getDeviceIdentifier().getInstanceNumber());
                     assertEquals(480, baCnetUnconfirmedServiceRequestIAm.getMaximumApduLengthAcceptedLength().getPayload().getActualValue().longValue());
-                    // TODO: change to enum
                     assertTrue(baCnetUnconfirmedServiceRequestIAm.getSegmentationSupported().getIsSegmentedReceive());
                     assertEquals(260L, baCnetUnconfirmedServiceRequestIAm.getVendorId().getPayload().getActualValue().longValue());
                 }),
@@ -456,7 +454,7 @@ public class RandomPackagesTest {
                     assertEquals(BACnetObjectType.ANALOG_OUTPUT, baCnetServiceAckReadProperty.getObjectIdentifier().getObjectType());
                     assertEquals(0, baCnetServiceAckReadProperty.getObjectIdentifier().getInstanceNumber());
                     assertEquals(BACnetPropertyIdentifier.PRIORITY_ARRAY, baCnetServiceAckReadProperty.getPropertyIdentifier().getPropertyIdentifier());
-                    /* FIXME: we get now a bunch of tags here
+                    /* FIXME: we get now a bunch of tags here (Priority Array)
                     BACnetPropertyValuePriorityValue baCnetPropertyValuePriorityValue = (BACnetPropertyValuePriorityValue) ((BACnetConstructedDataUnspecified)baCnetServiceAckReadProperty.getValues()).getData();
                     assertArrayEquals(new byte[]{0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0}, baCnetPropertyValuePriorityValue.getValues());
                      */
@@ -564,11 +562,9 @@ public class RandomPackagesTest {
                     dump(bvlc);
                     NPDU npdu = ((BVLCOriginalUnicastNPDU) bvlc).getNpdu();
                     APDUError apduError = (APDUError) npdu.getApdu();
-                    BACnetErrorWriteProperty baCnetErrorWriteProperty = (BACnetErrorWriteProperty) apduError.getError();
-                    // TODO: change to enum
-                    assertEquals(0x02, baCnetErrorWriteProperty.getErrorClass().getActualValue());
-                    // TODO: change to enum
-                    assertEquals(0x28, baCnetErrorWriteProperty.getErrorCode().getActualValue());
+                    BACnetErrorGeneral baCnetErrorWriteProperty = (BACnetErrorGeneral) apduError.getError();
+                    assertEquals(ErrorClass.PROPERTY, baCnetErrorWriteProperty.getError().getErrorClass());
+                    assertEquals(ErrorCode.WRITE_ACCESS_DENIED, baCnetErrorWriteProperty.getError().getErrorCode());
                 }),
             DynamicTest.dynamicTest("No. 79-86 - Skip Misc 8 packages",
                 () -> {
@@ -599,11 +595,9 @@ public class RandomPackagesTest {
                     dump(bvlc);
                     NPDU npdu = ((BVLCOriginalUnicastNPDU) bvlc).getNpdu();
                     APDUError apduError = (APDUError) npdu.getApdu();
-                    BACnetErrorWriteProperty baCnetErrorWriteProperty = (BACnetErrorWriteProperty) apduError.getError();
-                    // TODO: change to enum
-                    assertEquals(0x02, baCnetErrorWriteProperty.getErrorClass().getActualValue());
-                    // TODO: change to enum
-                    assertEquals(0x25, baCnetErrorWriteProperty.getErrorCode().getActualValue());
+                    BACnetErrorGeneral baCnetErrorWriteProperty = (BACnetErrorGeneral) apduError.getError();
+                    assertEquals(ErrorClass.PROPERTY, baCnetErrorWriteProperty.getError().getErrorClass());
+                    assertEquals(ErrorCode.VALUE_OUT_OF_RANGE, baCnetErrorWriteProperty.getError().getErrorCode());
                 }),
             DynamicTest.dynamicTest("No. 89-142 - Skip to 142 Misc packages",
                 () -> {
@@ -1278,20 +1272,14 @@ public class RandomPackagesTest {
     @DisplayName("PrivateTransferError-octetstring")
     Collection<DynamicNode> PrivateTransferError_octetstring() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("PrivateTransferError-octetstring.cap");
-        return List.of(pcapEvaluator.parseEmAll(
-            // TODO: repair error parsing as this seems to be all over the place
-            7
-        ));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
     @DisplayName("PrivateTransferError")
     Collection<DynamicNode> PrivateTransferError() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("PrivateTransferError.cap");
-        return List.of(pcapEvaluator.parseEmAll(
-            // TODO: repair error parsing as this seems to be all over the place
-            1
-        ));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
@@ -1624,10 +1612,7 @@ public class RandomPackagesTest {
     @DisplayName("TrendLogMultipleReadRangeSimple")
     Collection<DynamicNode> TrendLogMultipleReadRangeSimple() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("TrendLogMultipleReadRangeSimple.pcap");
-        return List.of(pcapEvaluator.parseEmAll(
-            // TODO: fix error handling as it is all over the place
-            478
-        ));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
@@ -1763,9 +1748,13 @@ public class RandomPackagesTest {
                             .extracting(BACnetContextTagPropertyIdentifier::getPropertyIdentifier)
                             .isEqualTo(BACnetPropertyIdentifier.ACTION);
                         assertThat(baCnetServiceAckReadProperty.getValues())
-                            .asInstanceOf(InstanceOfAssertFactories.type(BACnetConstructedDataCommand.class))
-                            .extracting(BACnetConstructedDataCommand::getAction)
-                            .satisfies(baCnetActionCommands -> {
+                            .asInstanceOf(InstanceOfAssertFactories.type(BACnetConstructedDataAction.class))
+                            .extracting(BACnetConstructedDataAction::getActionLists)
+                            .satisfies(baCnetActionLists -> {
+                                assertThat(baCnetActionLists).hasSize(1);
+                                BACnetActionList baCnetActionList = baCnetActionLists.get(0);
+                                assertThat(baCnetActionList.getAction()).isNotNull();
+                                List<BACnetActionCommand> baCnetActionCommands = baCnetActionList.getAction();
                                 assertThat(baCnetActionCommands)
                                     .element(0)
                                     .extracting(
@@ -1899,32 +1888,40 @@ public class RandomPackagesTest {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("alerton-plugfest-2.cap", BACNET_BPF_FILTER_UDP);
         return Arrays.asList(
             DynamicTest.dynamicTest("No. 1 - Complex-ACK readProperty[155] device,42222 protocol-version",
-                () -> {
-                    BVLC bvlc = pcapEvaluator.nextBVLC();
-                    dump(bvlc);
-
-                    NPDU npdu = ((BVLCOriginalUnicastNPDU) bvlc).getNpdu();
-                    APDUComplexAck apduComplexAck = (APDUComplexAck) npdu.getApdu();
-                    BACnetServiceAckReadProperty baCnetServiceAckReadProperty = (BACnetServiceAckReadProperty) apduComplexAck.getServiceAck();
-                    assertNotNull(baCnetServiceAckReadProperty);
-                    assertEquals(BACnetObjectType.DEVICE, baCnetServiceAckReadProperty.getObjectIdentifier().getObjectType());
-                    assertEquals(BACnetPropertyIdentifier.PROTOCOL_VERSION, baCnetServiceAckReadProperty.getPropertyIdentifier().getPropertyIdentifier());
-                    // TODO: finish me
-                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
-                }),
-            DynamicTest.dynamicTest("No. 2 - Complex-ACK readProperty[155] device,42222 protocol-conformance-class",
-                () -> {
-                    BVLC bvlc = pcapEvaluator.nextBVLC();
-                    dump(bvlc);
-                    // TODO: finish me
-                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
-                }),
-            pcapEvaluator.parseFrom(3,
-                // TODO: fix: error handling as this seems all over the place
-                26972,
-                // TODO: fix: error handling as this seems all over the place
-                27012
-            )
+                () -> assertThat(pcapEvaluator.nextBVLC())
+                    .asInstanceOf(InstanceOfAssertFactories.type(BVLCOriginalUnicastNPDU.class))
+                    .extracting(BVLCOriginalUnicastNPDU::getNpdu)
+                    .extracting(NPDU::getApdu)
+                    .asInstanceOf(InstanceOfAssertFactories.type(APDUComplexAck.class))
+                    .extracting(APDUComplexAck::getServiceAck)
+                    .asInstanceOf(InstanceOfAssertFactories.type(BACnetServiceAckReadProperty.class))
+                    .satisfies(baCnetServiceAckReadProperty -> {
+                        assertThat(baCnetServiceAckReadProperty)
+                            .extracting(BACnetServiceAckReadProperty::getObjectIdentifier)
+                            .extracting(BACnetContextTagObjectIdentifier::getObjectType, BACnetContextTagObjectIdentifier::getInstanceNumber)
+                            .containsExactly(BACnetObjectType.DEVICE, 42222L);
+                        assertThat(baCnetServiceAckReadProperty)
+                            .extracting(BACnetServiceAckReadProperty::getPropertyIdentifier)
+                            .extracting(BACnetContextTagPropertyIdentifier::getPropertyIdentifier)
+                            .isEqualTo(BACnetPropertyIdentifier.PROTOCOL_VERSION);
+                        assertThat(baCnetServiceAckReadProperty)
+                            .extracting(BACnetServiceAckReadProperty::getArrayIndex)
+                            .isNull();
+                        assertThat(baCnetServiceAckReadProperty)
+                            .extracting(BACnetServiceAckReadProperty::getValues)
+                            .asInstanceOf(InstanceOfAssertFactories.type(BACnetConstructedDataUnspecified.class))
+                            .extracting(BACnetConstructedDataUnspecified::getData)
+                            .satisfies(baCnetConstructedDataElements ->
+                                assertThat(baCnetConstructedDataElements)
+                                    .element(0)
+                                    .extracting(BACnetConstructedDataElement::getApplicationTag)
+                                    .asInstanceOf(InstanceOfAssertFactories.type(BACnetApplicationTagUnsignedInteger.class))
+                                    .extracting(BACnetApplicationTagUnsignedInteger::getPayload)
+                                    .extracting(BACnetTagPayloadUnsignedInteger::getValueUint8)
+                                    .isEqualTo((short) 1)
+                            );
+                    })),
+            pcapEvaluator.parseFrom(2)
         );
     }
 
@@ -1932,12 +1929,7 @@ public class RandomPackagesTest {
     @DisplayName("alerton-plugfest-3")
     Collection<DynamicNode> alerton_plugfest_3() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("alerton-plugfest-3.cap", BACNET_BPF_FILTER_UDP);
-        return List.of(pcapEvaluator.parseEmAll(
-            // TODO: fix: error handling as this seems all over the place
-            1622,
-            // TODO: fix: error handling as this seems all over the place
-            1638
-        ));
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @Disabled("too fat will crash ide (250k entries)")
@@ -2203,61 +2195,562 @@ public class RandomPackagesTest {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("bo_command_failure_original.pcap", BACNET_BPF_FILTER_UDP);
         return Arrays.asList(
             DynamicTest.dynamicTest("No. 21 - Unconfirmed-REQ unconfirmedCOVNotification device,1 accumulator,21 present-value status-flags",
-                () -> {
-                    BVLC bvlc = pcapEvaluator.nextBVLC();
-                    dump(bvlc);
-                    // TODO:finish me
-                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
-                }),
+                () -> assertThat(pcapEvaluator.nextBVLC())
+                    .asInstanceOf(InstanceOfAssertFactories.type(BVLCOriginalBroadcastNPDU.class))
+                    .extracting(BVLCOriginalBroadcastNPDU::getNpdu)
+                    .extracting(NPDU::getApdu)
+                    .asInstanceOf(InstanceOfAssertFactories.type(APDUUnconfirmedRequest.class))
+                    .extracting(APDUUnconfirmedRequest::getServiceRequest)
+                    .asInstanceOf(InstanceOfAssertFactories.type(BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification.class))
+                    .satisfies(baCnetUnconfirmedServiceRequestUnconfirmedCOVNotification -> {
+                        assertThat(baCnetUnconfirmedServiceRequestUnconfirmedCOVNotification)
+                            .extracting(BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification::getSubscriberProcessIdentifier)
+                            .extracting(BACnetContextTagUnsignedInteger::getActualValue)
+                            .isEqualTo(BigInteger.ZERO);
+                        assertThat(baCnetUnconfirmedServiceRequestUnconfirmedCOVNotification)
+                            .extracting(BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification::getInitiatingDeviceIdentifier)
+                            .extracting(BACnetContextTagObjectIdentifier::getObjectType, BACnetContextTagObjectIdentifier::getInstanceNumber)
+                            .containsExactly(BACnetObjectType.DEVICE, 1L);
+                        assertThat(baCnetUnconfirmedServiceRequestUnconfirmedCOVNotification)
+                            .extracting(BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification::getMonitoredObjectIdentifier)
+                            .extracting(BACnetContextTagObjectIdentifier::getObjectType, BACnetContextTagObjectIdentifier::getInstanceNumber)
+                            .containsExactly(BACnetObjectType.ACCUMULATOR, 21L);
+                        assertThat(baCnetUnconfirmedServiceRequestUnconfirmedCOVNotification)
+                            .extracting(BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification::getLifetimeInSeconds)
+                            .extracting(BACnetContextTagUnsignedInteger::getPayload)
+                            .extracting(BACnetTagPayloadUnsignedInteger::getValueUint32)
+                            .isEqualTo(3108189395L);
+                        assertThat(baCnetUnconfirmedServiceRequestUnconfirmedCOVNotification)
+                            .extracting(BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification::getListOfValues)
+                            .extracting(BACnetPropertyValues::getData)
+                            .satisfies(baCnetPropertyValues -> {
+                                assertThat(baCnetPropertyValues).element(0).satisfies(baCnetPropertyValue -> {
+                                    assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyIdentifier).extracting(BACnetContextTagPropertyIdentifier::getPropertyIdentifier).isEqualTo(BACnetPropertyIdentifier.PRESENT_VALUE);
+                                    assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyArrayIndex).isNull();
+                                    assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyValue)
+                                        .extracting(BACnetConstructedDataElement::getConstructedData)
+                                        .asInstanceOf(InstanceOfAssertFactories.type(BACnetConstructedDataUnspecified.class))
+                                        .extracting(BACnetConstructedDataUnspecified::getData)
+                                        .satisfies(baCnetConstructedDataElements -> {
+                                            assertThat(baCnetConstructedDataElements).element(0).extracting(BACnetConstructedDataElement::getApplicationTag)
+                                                .asInstanceOf(InstanceOfAssertFactories.type(BACnetApplicationTagUnsignedInteger.class))
+                                                .extracting(BACnetApplicationTagUnsignedInteger::getPayload)
+                                                .extracting(BACnetTagPayloadUnsignedInteger::getValueUint16)
+                                                .isEqualTo(1576);
+                                        });
+                                    assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPriority).isNull();
+                                });
+                                assertThat(baCnetPropertyValues).element(1).satisfies(baCnetPropertyValue -> {
+                                    assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyIdentifier).extracting(BACnetContextTagPropertyIdentifier::getPropertyIdentifier).isEqualTo(BACnetPropertyIdentifier.STATUS_FLAGS);
+                                    assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyArrayIndex).isNull();
+                                    assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyValue)
+                                        .extracting(BACnetConstructedDataElement::getConstructedData)
+                                        .asInstanceOf(InstanceOfAssertFactories.type(BACnetConstructedDataUnspecified.class))
+                                        .extracting(BACnetConstructedDataUnspecified::getData)
+                                        .satisfies(baCnetConstructedDataElements -> {
+                                            assertThat(baCnetConstructedDataElements).element(0).extracting(BACnetConstructedDataElement::getApplicationTag)
+                                                .asInstanceOf(InstanceOfAssertFactories.type(BACnetApplicationTagBitString.class))
+                                                .extracting(BACnetApplicationTagBitString::getPayload)
+                                                .extracting(BACnetTagPayloadBitString::getData)
+                                                .isEqualTo(List.of(false, false, false, false));
+                                        });
+                                    assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPriority).isNull();
+                                });
+                            });
+                    })),
             DynamicTest.dynamicTest("No. 22 - Unconfirmed-REQ unconfirmedCOVNotification device,1 accumulator,22 present-value status-flags",
-                () -> {
-                    BVLC bvlc = pcapEvaluator.nextBVLC();
-                    dump(bvlc);
-                    // TODO:finish me
-                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
-                }),
+                () -> assertThat(pcapEvaluator.nextBVLC())
+                    .asInstanceOf(InstanceOfAssertFactories.type(BVLCOriginalBroadcastNPDU.class))
+                    .extracting(BVLCOriginalBroadcastNPDU::getNpdu)
+                    .extracting(NPDU::getApdu)
+                    .asInstanceOf(InstanceOfAssertFactories.type(APDUUnconfirmedRequest.class))
+                    .extracting(APDUUnconfirmedRequest::getServiceRequest)
+                    .asInstanceOf(InstanceOfAssertFactories.type(BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification.class))
+                    .satisfies(baCnetUnconfirmedServiceRequestUnconfirmedCOVNotification -> {
+                        assertThat(baCnetUnconfirmedServiceRequestUnconfirmedCOVNotification)
+                            .extracting(BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification::getSubscriberProcessIdentifier)
+                            .extracting(BACnetContextTagUnsignedInteger::getActualValue)
+                            .isEqualTo(BigInteger.ZERO);
+                        assertThat(baCnetUnconfirmedServiceRequestUnconfirmedCOVNotification)
+                            .extracting(BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification::getInitiatingDeviceIdentifier)
+                            .extracting(BACnetContextTagObjectIdentifier::getObjectType, BACnetContextTagObjectIdentifier::getInstanceNumber)
+                            .containsExactly(BACnetObjectType.DEVICE, 1L);
+                        assertThat(baCnetUnconfirmedServiceRequestUnconfirmedCOVNotification)
+                            .extracting(BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification::getMonitoredObjectIdentifier)
+                            .extracting(BACnetContextTagObjectIdentifier::getObjectType, BACnetContextTagObjectIdentifier::getInstanceNumber)
+                            .containsExactly(BACnetObjectType.ACCUMULATOR, 22L);
+                        assertThat(baCnetUnconfirmedServiceRequestUnconfirmedCOVNotification)
+                            .extracting(BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification::getLifetimeInSeconds)
+                            .extracting(BACnetContextTagUnsignedInteger::getPayload)
+                            .extracting(BACnetTagPayloadUnsignedInteger::getValueUint32)
+                            .isEqualTo(3108189395L);
+                        assertThat(baCnetUnconfirmedServiceRequestUnconfirmedCOVNotification)
+                            .extracting(BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification::getListOfValues)
+                            .extracting(BACnetPropertyValues::getData)
+                            .satisfies(baCnetPropertyValues -> {
+                                assertThat(baCnetPropertyValues).element(0).satisfies(baCnetPropertyValue -> {
+                                    assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyIdentifier).extracting(BACnetContextTagPropertyIdentifier::getPropertyIdentifier).isEqualTo(BACnetPropertyIdentifier.PRESENT_VALUE);
+                                    assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyArrayIndex).isNull();
+                                    assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyValue)
+                                        .extracting(BACnetConstructedDataElement::getConstructedData)
+                                        .asInstanceOf(InstanceOfAssertFactories.type(BACnetConstructedDataUnspecified.class))
+                                        .extracting(BACnetConstructedDataUnspecified::getData)
+                                        .satisfies(baCnetConstructedDataElements -> {
+                                            assertThat(baCnetConstructedDataElements).element(0).extracting(BACnetConstructedDataElement::getApplicationTag)
+                                                .asInstanceOf(InstanceOfAssertFactories.type(BACnetApplicationTagUnsignedInteger.class))
+                                                .extracting(BACnetApplicationTagUnsignedInteger::getPayload)
+                                                .extracting(BACnetTagPayloadUnsignedInteger::getValueUint16)
+                                                .isEqualTo(1577);
+                                        });
+                                    assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPriority).isNull();
+                                });
+                                assertThat(baCnetPropertyValues).element(1).satisfies(baCnetPropertyValue -> {
+                                    assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyIdentifier).extracting(BACnetContextTagPropertyIdentifier::getPropertyIdentifier).isEqualTo(BACnetPropertyIdentifier.STATUS_FLAGS);
+                                    assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyArrayIndex).isNull();
+                                    assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyValue)
+                                        .extracting(BACnetConstructedDataElement::getConstructedData)
+                                        .asInstanceOf(InstanceOfAssertFactories.type(BACnetConstructedDataUnspecified.class))
+                                        .extracting(BACnetConstructedDataUnspecified::getData)
+                                        .satisfies(baCnetConstructedDataElements -> {
+                                            assertThat(baCnetConstructedDataElements).element(0).extracting(BACnetConstructedDataElement::getApplicationTag)
+                                                .asInstanceOf(InstanceOfAssertFactories.type(BACnetApplicationTagBitString.class))
+                                                .extracting(BACnetApplicationTagBitString::getPayload)
+                                                .extracting(BACnetTagPayloadBitString::getData)
+                                                .isEqualTo(List.of(false, false, false, false));
+                                        });
+                                    assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPriority).isNull();
+                                });
+                            });
+                    })),
             DynamicTest.dynamicTest("No. 23 - Unconfirmed-REQ unconfirmedCOVNotification device,1 binary-input,217 present-value status-flags",
-                () -> {
-                    BVLC bvlc = pcapEvaluator.nextBVLC();
-                    dump(bvlc);
-                    // TODO:finish me
-                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
-                }),
+                () -> assertThat(pcapEvaluator.nextBVLC())
+                    .asInstanceOf(InstanceOfAssertFactories.type(BVLCOriginalBroadcastNPDU.class))
+                    .extracting(BVLCOriginalBroadcastNPDU::getNpdu)
+                    .extracting(NPDU::getApdu)
+                    .asInstanceOf(InstanceOfAssertFactories.type(APDUUnconfirmedRequest.class))
+                    .extracting(APDUUnconfirmedRequest::getServiceRequest)
+                    .asInstanceOf(InstanceOfAssertFactories.type(BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification.class))
+                    .satisfies(baCnetUnconfirmedServiceRequestUnconfirmedCOVNotification -> {
+                        assertThat(baCnetUnconfirmedServiceRequestUnconfirmedCOVNotification)
+                            .extracting(BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification::getSubscriberProcessIdentifier)
+                            .extracting(BACnetContextTagUnsignedInteger::getActualValue)
+                            .isEqualTo(BigInteger.ZERO);
+                        assertThat(baCnetUnconfirmedServiceRequestUnconfirmedCOVNotification)
+                            .extracting(BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification::getInitiatingDeviceIdentifier)
+                            .extracting(BACnetContextTagObjectIdentifier::getObjectType, BACnetContextTagObjectIdentifier::getInstanceNumber)
+                            .containsExactly(BACnetObjectType.DEVICE, 1L);
+                        assertThat(baCnetUnconfirmedServiceRequestUnconfirmedCOVNotification)
+                            .extracting(BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification::getMonitoredObjectIdentifier)
+                            .extracting(BACnetContextTagObjectIdentifier::getObjectType, BACnetContextTagObjectIdentifier::getInstanceNumber)
+                            .containsExactly(BACnetObjectType.BINARY_INPUT, 217L);
+                        assertThat(baCnetUnconfirmedServiceRequestUnconfirmedCOVNotification)
+                            .extracting(BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification::getLifetimeInSeconds)
+                            .extracting(BACnetContextTagUnsignedInteger::getPayload)
+                            .extracting(BACnetTagPayloadUnsignedInteger::getValueUint32)
+                            .isEqualTo(3108189388L);
+                        assertThat(baCnetUnconfirmedServiceRequestUnconfirmedCOVNotification)
+                            .extracting(BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification::getListOfValues)
+                            .extracting(BACnetPropertyValues::getData)
+                            .satisfies(baCnetPropertyValues -> {
+                                assertThat(baCnetPropertyValues).element(0).satisfies(baCnetPropertyValue -> {
+                                    assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyIdentifier).extracting(BACnetContextTagPropertyIdentifier::getPropertyIdentifier).isEqualTo(BACnetPropertyIdentifier.PRESENT_VALUE);
+                                    assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyArrayIndex).isNull();
+                                    assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyValue)
+                                        .extracting(BACnetConstructedDataElement::getConstructedData)
+                                        .asInstanceOf(InstanceOfAssertFactories.type(BACnetConstructedDataUnspecified.class))
+                                        .extracting(BACnetConstructedDataUnspecified::getData)
+                                        .satisfies(baCnetConstructedDataElements -> {
+                                            assertThat(baCnetConstructedDataElements).element(0).extracting(BACnetConstructedDataElement::getApplicationTag)
+                                                .asInstanceOf(InstanceOfAssertFactories.type(BACnetApplicationTagEnumerated.class))
+                                                .extracting(BACnetApplicationTagEnumerated::getPayload)
+                                                .extracting(BACnetTagPayloadEnumerated::getActualValue)
+                                                .isEqualTo(1L);
+                                        });
+                                    assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPriority).isNull();
+                                });
+                                assertThat(baCnetPropertyValues).element(1).satisfies(baCnetPropertyValue -> {
+                                    assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyIdentifier).extracting(BACnetContextTagPropertyIdentifier::getPropertyIdentifier).isEqualTo(BACnetPropertyIdentifier.STATUS_FLAGS);
+                                    assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyArrayIndex).isNull();
+                                    assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyValue)
+                                        .extracting(BACnetConstructedDataElement::getConstructedData)
+                                        .asInstanceOf(InstanceOfAssertFactories.type(BACnetConstructedDataUnspecified.class))
+                                        .extracting(BACnetConstructedDataUnspecified::getData)
+                                        .satisfies(baCnetConstructedDataElements -> {
+                                            assertThat(baCnetConstructedDataElements).element(0).extracting(BACnetConstructedDataElement::getApplicationTag)
+                                                .asInstanceOf(InstanceOfAssertFactories.type(BACnetApplicationTagBitString.class))
+                                                .extracting(BACnetApplicationTagBitString::getPayload)
+                                                .extracting(BACnetTagPayloadBitString::getData)
+                                                .isEqualTo(List.of(false, false, false, false));
+                                        });
+                                    assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPriority).isNull();
+                                });
+                            });
+                    })),
             DynamicTest.dynamicTest("No. 24 - Unconfirmed-REQ unconfirmedCOVNotification device,1 accumulator,21 present-value status-flags",
-                () -> {
-                    BVLC bvlc = pcapEvaluator.nextBVLC();
-                    dump(bvlc);
-                    // TODO:finish me
-                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
-                }),
+                () -> assertThat(pcapEvaluator.nextBVLC())
+                    .asInstanceOf(InstanceOfAssertFactories.type(BVLCOriginalBroadcastNPDU.class))
+                    .extracting(BVLCOriginalBroadcastNPDU::getNpdu)
+                    .extracting(NPDU::getApdu)
+                    .asInstanceOf(InstanceOfAssertFactories.type(APDUUnconfirmedRequest.class))
+                    .extracting(APDUUnconfirmedRequest::getServiceRequest)
+                    .asInstanceOf(InstanceOfAssertFactories.type(BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification.class))
+                    .satisfies(baCnetUnconfirmedServiceRequestUnconfirmedCOVNotification -> {
+                        assertThat(baCnetUnconfirmedServiceRequestUnconfirmedCOVNotification)
+                            .extracting(BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification::getSubscriberProcessIdentifier)
+                            .extracting(BACnetContextTagUnsignedInteger::getActualValue)
+                            .isEqualTo(BigInteger.ZERO);
+                        assertThat(baCnetUnconfirmedServiceRequestUnconfirmedCOVNotification)
+                            .extracting(BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification::getInitiatingDeviceIdentifier)
+                            .extracting(BACnetContextTagObjectIdentifier::getObjectType, BACnetContextTagObjectIdentifier::getInstanceNumber)
+                            .containsExactly(BACnetObjectType.DEVICE, 1L);
+                        assertThat(baCnetUnconfirmedServiceRequestUnconfirmedCOVNotification)
+                            .extracting(BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification::getMonitoredObjectIdentifier)
+                            .extracting(BACnetContextTagObjectIdentifier::getObjectType, BACnetContextTagObjectIdentifier::getInstanceNumber)
+                            .containsExactly(BACnetObjectType.ACCUMULATOR, 21L);
+                        assertThat(baCnetUnconfirmedServiceRequestUnconfirmedCOVNotification)
+                            .extracting(BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification::getLifetimeInSeconds)
+                            .extracting(BACnetContextTagUnsignedInteger::getPayload)
+                            .extracting(BACnetTagPayloadUnsignedInteger::getValueUint32)
+                            .isEqualTo(3108189388L);
+                        assertThat(baCnetUnconfirmedServiceRequestUnconfirmedCOVNotification)
+                            .extracting(BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification::getListOfValues)
+                            .extracting(BACnetPropertyValues::getData)
+                            .satisfies(baCnetPropertyValues -> {
+                                assertThat(baCnetPropertyValues).element(0).satisfies(baCnetPropertyValue -> {
+                                    assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyIdentifier).extracting(BACnetContextTagPropertyIdentifier::getPropertyIdentifier).isEqualTo(BACnetPropertyIdentifier.PRESENT_VALUE);
+                                    assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyArrayIndex).isNull();
+                                    assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyValue)
+                                        .extracting(BACnetConstructedDataElement::getConstructedData)
+                                        .asInstanceOf(InstanceOfAssertFactories.type(BACnetConstructedDataUnspecified.class))
+                                        .extracting(BACnetConstructedDataUnspecified::getData)
+                                        .satisfies(baCnetConstructedDataElements -> {
+                                            assertThat(baCnetConstructedDataElements).element(0).extracting(BACnetConstructedDataElement::getApplicationTag)
+                                                .asInstanceOf(InstanceOfAssertFactories.type(BACnetApplicationTagUnsignedInteger.class))
+                                                .extracting(BACnetApplicationTagUnsignedInteger::getPayload)
+                                                .extracting(BACnetTagPayloadUnsignedInteger::getValueUint16)
+                                                .isEqualTo(1577);
+                                        });
+                                    assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPriority).isNull();
+                                });
+                                assertThat(baCnetPropertyValues).element(1).satisfies(baCnetPropertyValue -> {
+                                    assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyIdentifier).extracting(BACnetContextTagPropertyIdentifier::getPropertyIdentifier).isEqualTo(BACnetPropertyIdentifier.STATUS_FLAGS);
+                                    assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyArrayIndex).isNull();
+                                    assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyValue)
+                                        .extracting(BACnetConstructedDataElement::getConstructedData)
+                                        .asInstanceOf(InstanceOfAssertFactories.type(BACnetConstructedDataUnspecified.class))
+                                        .extracting(BACnetConstructedDataUnspecified::getData)
+                                        .satisfies(baCnetConstructedDataElements -> {
+                                            assertThat(baCnetConstructedDataElements).element(0).extracting(BACnetConstructedDataElement::getApplicationTag)
+                                                .asInstanceOf(InstanceOfAssertFactories.type(BACnetApplicationTagBitString.class))
+                                                .extracting(BACnetApplicationTagBitString::getPayload)
+                                                .extracting(BACnetTagPayloadBitString::getData)
+                                                .isEqualTo(List.of(false, false, false, false));
+                                        });
+                                    assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPriority).isNull();
+                                });
+                            });
+                    })),
             DynamicTest.dynamicTest("No. 25 - Unconfirmed-REQ unconfirmedCOVNotification device,1 binary-input,217 present-value status-flags",
-                () -> {
-                    BVLC bvlc = pcapEvaluator.nextBVLC();
-                    dump(bvlc);
-                    // TODO:finish me
-                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
-                }),
+                () -> assertThat(pcapEvaluator.nextBVLC())
+                    .asInstanceOf(InstanceOfAssertFactories.type(BVLCOriginalBroadcastNPDU.class))
+                    .extracting(BVLCOriginalBroadcastNPDU::getNpdu)
+                    .extracting(NPDU::getApdu)
+                    .asInstanceOf(InstanceOfAssertFactories.type(APDUUnconfirmedRequest.class))
+                    .extracting(APDUUnconfirmedRequest::getServiceRequest)
+                    .asInstanceOf(InstanceOfAssertFactories.type(BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification.class))
+                    .satisfies(baCnetUnconfirmedServiceRequestUnconfirmedCOVNotification -> {
+                        assertThat(baCnetUnconfirmedServiceRequestUnconfirmedCOVNotification)
+                            .extracting(BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification::getSubscriberProcessIdentifier)
+                            .extracting(BACnetContextTagUnsignedInteger::getActualValue)
+                            .isEqualTo(BigInteger.ZERO);
+                        assertThat(baCnetUnconfirmedServiceRequestUnconfirmedCOVNotification)
+                            .extracting(BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification::getInitiatingDeviceIdentifier)
+                            .extracting(BACnetContextTagObjectIdentifier::getObjectType, BACnetContextTagObjectIdentifier::getInstanceNumber)
+                            .containsExactly(BACnetObjectType.DEVICE, 1L);
+                        assertThat(baCnetUnconfirmedServiceRequestUnconfirmedCOVNotification)
+                            .extracting(BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification::getMonitoredObjectIdentifier)
+                            .extracting(BACnetContextTagObjectIdentifier::getObjectType, BACnetContextTagObjectIdentifier::getInstanceNumber)
+                            .containsExactly(BACnetObjectType.BINARY_INPUT, 217L);
+                        assertThat(baCnetUnconfirmedServiceRequestUnconfirmedCOVNotification)
+                            .extracting(BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification::getLifetimeInSeconds)
+                            .extracting(BACnetContextTagUnsignedInteger::getPayload)
+                            .extracting(BACnetTagPayloadUnsignedInteger::getValueUint32)
+                            .isEqualTo(3108189388L);
+                        assertThat(baCnetUnconfirmedServiceRequestUnconfirmedCOVNotification)
+                            .extracting(BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification::getListOfValues)
+                            .extracting(BACnetPropertyValues::getData)
+                            .satisfies(baCnetPropertyValues -> {
+                                assertThat(baCnetPropertyValues).element(0).satisfies(baCnetPropertyValue -> {
+                                    assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyIdentifier).extracting(BACnetContextTagPropertyIdentifier::getPropertyIdentifier).isEqualTo(BACnetPropertyIdentifier.PRESENT_VALUE);
+                                    assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyArrayIndex).isNull();
+                                    assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyValue)
+                                        .extracting(BACnetConstructedDataElement::getConstructedData)
+                                        .asInstanceOf(InstanceOfAssertFactories.type(BACnetConstructedDataUnspecified.class))
+                                        .extracting(BACnetConstructedDataUnspecified::getData)
+                                        .satisfies(baCnetConstructedDataElements -> {
+                                            assertThat(baCnetConstructedDataElements).element(0).extracting(BACnetConstructedDataElement::getApplicationTag)
+                                                .asInstanceOf(InstanceOfAssertFactories.type(BACnetApplicationTagEnumerated.class))
+                                                .extracting(BACnetApplicationTagEnumerated::getPayload)
+                                                .extracting(BACnetTagPayloadEnumerated::getActualValue)
+                                                .isEqualTo(1L);
+                                        });
+                                    assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPriority).isNull();
+                                });
+                                assertThat(baCnetPropertyValues).element(1).satisfies(baCnetPropertyValue -> {
+                                    assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyIdentifier).extracting(BACnetContextTagPropertyIdentifier::getPropertyIdentifier).isEqualTo(BACnetPropertyIdentifier.STATUS_FLAGS);
+                                    assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyArrayIndex).isNull();
+                                    assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyValue)
+                                        .extracting(BACnetConstructedDataElement::getConstructedData)
+                                        .asInstanceOf(InstanceOfAssertFactories.type(BACnetConstructedDataUnspecified.class))
+                                        .extracting(BACnetConstructedDataUnspecified::getData)
+                                        .satisfies(baCnetConstructedDataElements -> {
+                                            assertThat(baCnetConstructedDataElements).element(0).extracting(BACnetConstructedDataElement::getApplicationTag)
+                                                .asInstanceOf(InstanceOfAssertFactories.type(BACnetApplicationTagBitString.class))
+                                                .extracting(BACnetApplicationTagBitString::getPayload)
+                                                .extracting(BACnetTagPayloadBitString::getData)
+                                                .isEqualTo(List.of(true, false, false, false));
+                                        });
+                                    assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPriority).isNull();
+                                });
+                            });
+                    })),
             DynamicTest.dynamicTest("No. 26 - Unconfirmed-REQ unconfirmedCOVNotification device,1 binary-output,1 present-value status-flags",
-                () -> {
-                    BVLC bvlc = pcapEvaluator.nextBVLC();
-                    dump(bvlc);
-                    // TODO:finish me
-                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
-                }),
-            DynamicTest.dynamicTest("No. 26 - Unconfirmed-REQ unconfirmedEventNotification device,1 binary-output,1",
-                () -> {
-                    BVLC bvlc = pcapEvaluator.nextBVLC();
-                    dump(bvlc);
-                    // TODO:finish me
-                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
-                }),
+                () -> assertThat(pcapEvaluator.nextBVLC())
+                    .asInstanceOf(InstanceOfAssertFactories.type(BVLCOriginalBroadcastNPDU.class))
+                    .extracting(BVLCOriginalBroadcastNPDU::getNpdu)
+                    .extracting(NPDU::getApdu)
+                    .asInstanceOf(InstanceOfAssertFactories.type(APDUUnconfirmedRequest.class))
+                    .extracting(APDUUnconfirmedRequest::getServiceRequest)
+                    .asInstanceOf(InstanceOfAssertFactories.type(BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification.class))
+                    .satisfies(baCnetUnconfirmedServiceRequestUnconfirmedCOVNotification -> {
+                        assertThat(baCnetUnconfirmedServiceRequestUnconfirmedCOVNotification)
+                            .extracting(BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification::getSubscriberProcessIdentifier)
+                            .extracting(BACnetContextTagUnsignedInteger::getActualValue)
+                            .isEqualTo(BigInteger.ZERO);
+                        assertThat(baCnetUnconfirmedServiceRequestUnconfirmedCOVNotification)
+                            .extracting(BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification::getInitiatingDeviceIdentifier)
+                            .extracting(BACnetContextTagObjectIdentifier::getObjectType, BACnetContextTagObjectIdentifier::getInstanceNumber)
+                            .containsExactly(BACnetObjectType.DEVICE, 1L);
+                        assertThat(baCnetUnconfirmedServiceRequestUnconfirmedCOVNotification)
+                            .extracting(BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification::getMonitoredObjectIdentifier)
+                            .extracting(BACnetContextTagObjectIdentifier::getObjectType, BACnetContextTagObjectIdentifier::getInstanceNumber)
+                            .containsExactly(BACnetObjectType.BINARY_OUTPUT, 1L);
+                        assertThat(baCnetUnconfirmedServiceRequestUnconfirmedCOVNotification)
+                            .extracting(BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification::getLifetimeInSeconds)
+                            .extracting(BACnetContextTagUnsignedInteger::getPayload)
+                            .extracting(BACnetTagPayloadUnsignedInteger::getValueUint32)
+                            .isEqualTo(3108189383L);
+                        assertThat(baCnetUnconfirmedServiceRequestUnconfirmedCOVNotification)
+                            .extracting(BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification::getListOfValues)
+                            .extracting(BACnetPropertyValues::getData)
+                            .satisfies(baCnetPropertyValues -> {
+                                assertThat(baCnetPropertyValues).element(0).satisfies(baCnetPropertyValue -> {
+                                    assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyIdentifier).extracting(BACnetContextTagPropertyIdentifier::getPropertyIdentifier).isEqualTo(BACnetPropertyIdentifier.PRESENT_VALUE);
+                                    assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyArrayIndex).isNull();
+                                    assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyValue)
+                                        .extracting(BACnetConstructedDataElement::getConstructedData)
+                                        .asInstanceOf(InstanceOfAssertFactories.type(BACnetConstructedDataUnspecified.class))
+                                        .extracting(BACnetConstructedDataUnspecified::getData)
+                                        .satisfies(baCnetConstructedDataElements -> {
+                                            assertThat(baCnetConstructedDataElements).element(0).extracting(BACnetConstructedDataElement::getApplicationTag)
+                                                .asInstanceOf(InstanceOfAssertFactories.type(BACnetApplicationTagEnumerated.class))
+                                                .extracting(BACnetApplicationTagEnumerated::getPayload)
+                                                .extracting(BACnetTagPayloadEnumerated::getActualValue)
+                                                .isEqualTo(0L);
+                                        });
+                                    assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPriority).isNull();
+                                });
+                                assertThat(baCnetPropertyValues).element(1).satisfies(baCnetPropertyValue -> {
+                                    assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyIdentifier).extracting(BACnetContextTagPropertyIdentifier::getPropertyIdentifier).isEqualTo(BACnetPropertyIdentifier.STATUS_FLAGS);
+                                    assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyArrayIndex).isNull();
+                                    assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyValue)
+                                        .extracting(BACnetConstructedDataElement::getConstructedData)
+                                        .asInstanceOf(InstanceOfAssertFactories.type(BACnetConstructedDataUnspecified.class))
+                                        .extracting(BACnetConstructedDataUnspecified::getData)
+                                        .satisfies(baCnetConstructedDataElements -> {
+                                            assertThat(baCnetConstructedDataElements).element(0).extracting(BACnetConstructedDataElement::getApplicationTag)
+                                                .asInstanceOf(InstanceOfAssertFactories.type(BACnetApplicationTagBitString.class))
+                                                .extracting(BACnetApplicationTagBitString::getPayload)
+                                                .extracting(BACnetTagPayloadBitString::getData)
+                                                .isEqualTo(List.of(true, false, false, false));
+                                        });
+                                    assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPriority).isNull();
+                                });
+                            });
+                    })),
+            DynamicTest.dynamicTest("No. 27 - Unconfirmed-REQ unconfirmedEventNotification device,1 binary-output,1",
+                () -> assertThat(pcapEvaluator.nextBVLC())
+                    .asInstanceOf(InstanceOfAssertFactories.type(BVLCOriginalBroadcastNPDU.class))
+                    .extracting(BVLCOriginalBroadcastNPDU::getNpdu)
+                    .extracting(NPDU::getApdu)
+                    .asInstanceOf(InstanceOfAssertFactories.type(APDUUnconfirmedRequest.class))
+                    .extracting(APDUUnconfirmedRequest::getServiceRequest)
+                    .asInstanceOf(InstanceOfAssertFactories.type(BACnetUnconfirmedServiceRequestUnconfirmedEventNotification.class))
+                    .satisfies(baCnetUnconfirmedServiceRequestUnconfirmedEventNotification -> {
+                        assertThat(baCnetUnconfirmedServiceRequestUnconfirmedEventNotification)
+                            .extracting(BACnetUnconfirmedServiceRequestUnconfirmedEventNotification::getProcessIdentifier)
+                            .extracting(BACnetContextTagUnsignedInteger::getActualValue)
+                            .isEqualTo(BigInteger.ZERO);
+                        assertThat(baCnetUnconfirmedServiceRequestUnconfirmedEventNotification)
+                            .extracting(BACnetUnconfirmedServiceRequestUnconfirmedEventNotification::getInitiatingDeviceIdentifier)
+                            .extracting(BACnetContextTagObjectIdentifier::getObjectType, BACnetContextTagObjectIdentifier::getInstanceNumber)
+                            .containsExactly(BACnetObjectType.DEVICE, 1L);
+                        assertThat(baCnetUnconfirmedServiceRequestUnconfirmedEventNotification)
+                            .extracting(BACnetUnconfirmedServiceRequestUnconfirmedEventNotification::getEventObjectIdentifier)
+                            .extracting(BACnetContextTagObjectIdentifier::getObjectType, BACnetContextTagObjectIdentifier::getInstanceNumber)
+                            .containsExactly(BACnetObjectType.BINARY_OUTPUT, 1L);
+                        assertThat(baCnetUnconfirmedServiceRequestUnconfirmedEventNotification)
+                            .extracting(BACnetUnconfirmedServiceRequestUnconfirmedEventNotification::getTimestamp)
+                            .extracting(BACnetTimeStampEnclosed::getTimestamp)
+                            .asInstanceOf(InstanceOfAssertFactories.type(BACnetTimeStampDateTime.class))
+                            .extracting(BACnetTimeStampDateTime::getDateTimeValue)
+                            .extracting(BACnetDateTimeEnclosed::getDateTimeValue)
+                            .satisfies(baCnetDateTime -> {
+                                assertThat(baCnetDateTime)
+                                    .extracting(BACnetDateTime::getDateValue)
+                                    .extracting(BACnetApplicationTagDate::getPayload)
+                                    .extracting(BACnetTagPayloadDate::getYearMinus1900, BACnetTagPayloadDate::getMonth, BACnetTagPayloadDate::getDayOfMonth, BACnetTagPayloadDate::getDayOfWeek)
+                                    .contains((short) 107, (short) 8, (short) 10, (short) 5);
+                                assertThat(baCnetDateTime)
+                                    .extracting(BACnetDateTime::getTimeValue)
+                                    .extracting(BACnetApplicationTagTime::getPayload)
+                                    .extracting(BACnetTagPayloadTime::getHour, BACnetTagPayloadTime::getMinute, BACnetTagPayloadTime::getSecond, BACnetTagPayloadTime::getFractional)
+                                    .contains((short) 20, (short) 31, (short) 53, (short) 12);
+                            });
+                        assertThat(baCnetUnconfirmedServiceRequestUnconfirmedEventNotification)
+                            .extracting(BACnetUnconfirmedServiceRequestUnconfirmedEventNotification::getNotificationClass)
+                            .extracting(BACnetContextTagUnsignedInteger::getPayload)
+                            .extracting(BACnetTagPayloadUnsignedInteger::getValueUint8)
+                            .isEqualTo((short) 1);
+                        assertThat(baCnetUnconfirmedServiceRequestUnconfirmedEventNotification)
+                            .extracting(BACnetUnconfirmedServiceRequestUnconfirmedEventNotification::getPriority)
+                            .extracting(BACnetContextTagUnsignedInteger::getPayload)
+                            .extracting(BACnetTagPayloadUnsignedInteger::getValueUint8)
+                            .isEqualTo((short) 0);
+                        assertThat(baCnetUnconfirmedServiceRequestUnconfirmedEventNotification)
+                            .extracting(BACnetUnconfirmedServiceRequestUnconfirmedEventNotification::getEventType)
+                            .extracting(BACnetContextTagEventType::getEventType)
+                            .isEqualTo(BACnetEventType.COMMAND_FAILURE);
+                        assertThat(baCnetUnconfirmedServiceRequestUnconfirmedEventNotification)
+                            .extracting(BACnetUnconfirmedServiceRequestUnconfirmedEventNotification::getMessageText)
+                            .extracting(BACnetContextTagCharacterString::getPayload)
+                            .extracting(BACnetTagPayloadCharacterString::getValue)
+                            // TODO: check if there is a general problem with bacnet string parsing as we should not read that null byte at the end
+                            .isEqualTo("BO_1\u0000");
+                        assertThat(baCnetUnconfirmedServiceRequestUnconfirmedEventNotification)
+                            .extracting(BACnetUnconfirmedServiceRequestUnconfirmedEventNotification::getNotifyType)
+                            .extracting(BACnetContextTagNotifyType::getValue)
+                            .isEqualTo(BACnetNotifyType.ALARM);
+                        assertThat(baCnetUnconfirmedServiceRequestUnconfirmedEventNotification)
+                            .extracting(BACnetUnconfirmedServiceRequestUnconfirmedEventNotification::getAckRequired)
+                            .extracting(BACnetContextTagBoolean::getActualValue)
+                            .isEqualTo(false);
+                        assertThat(baCnetUnconfirmedServiceRequestUnconfirmedEventNotification)
+                            .extracting(BACnetUnconfirmedServiceRequestUnconfirmedEventNotification::getFromState)
+                            .extracting(BACnetContextTagEventState::getEventState)
+                            .isEqualTo(BACnetEventState.NORMAL);
+                        assertThat(baCnetUnconfirmedServiceRequestUnconfirmedEventNotification)
+                            .extracting(BACnetUnconfirmedServiceRequestUnconfirmedEventNotification::getToState)
+                            .extracting(BACnetContextTagEventState::getEventState)
+                            .isEqualTo(BACnetEventState.OFFNORMAL);
+                        assertThat(baCnetUnconfirmedServiceRequestUnconfirmedEventNotification)
+                            .extracting(BACnetUnconfirmedServiceRequestUnconfirmedEventNotification::getEventValues)
+                            .asInstanceOf(InstanceOfAssertFactories.type(BACnetNotificationParametersCommandFailure.class))
+                            .satisfies(baCnetNotificationParametersCommandFailure -> {
+                                assertThat(baCnetNotificationParametersCommandFailure)
+                                    .extracting(BACnetNotificationParametersCommandFailure::getCommandValue)
+                                    .asInstanceOf(InstanceOfAssertFactories.type(BACnetConstructedDataUnspecified.class))
+                                    .extracting(BACnetConstructedDataUnspecified::getData)
+                                    .satisfies(baCnetConstructedDataElements ->
+                                        assertThat(baCnetConstructedDataElements)
+                                            .element(0)
+                                            .extracting(BACnetConstructedDataElement::getApplicationTag)
+                                            .asInstanceOf(InstanceOfAssertFactories.type(BACnetApplicationTagEnumerated.class))
+                                            .extracting(BACnetApplicationTagEnumerated::getActualValue)
+                                            .isEqualTo(0L)
+                                    );
+                                assertThat(baCnetNotificationParametersCommandFailure)
+                                    .extracting(BACnetNotificationParametersCommandFailure::getStatusFlags)
+                                    .extracting(BACnetStatusFlags::getInAlarm)
+                                    .isEqualTo(true);
+                                assertThat(baCnetNotificationParametersCommandFailure)
+                                    .extracting(BACnetNotificationParametersCommandFailure::getFeedbackValue)
+                                    .asInstanceOf(InstanceOfAssertFactories.type(BACnetConstructedDataUnspecified.class))
+                                    .extracting(BACnetConstructedDataUnspecified::getData)
+                                    .satisfies(baCnetConstructedDataElements ->
+                                        assertThat(baCnetConstructedDataElements)
+                                            .element(0)
+                                            .extracting(BACnetConstructedDataElement::getApplicationTag)
+                                            .asInstanceOf(InstanceOfAssertFactories.type(BACnetApplicationTagEnumerated.class))
+                                            .extracting(BACnetApplicationTagEnumerated::getActualValue)
+                                            .isEqualTo(1L)
+                                    );
+                            });
+                    })),
             DynamicTest.dynamicTest("No. 28 - Unconfirmed-REQ unconfirmedCOVNotification device,1 accumulator,22 present-value status-flags",
-                () -> {
-                    BVLC bvlc = pcapEvaluator.nextBVLC();
-                    dump(bvlc);
-                    // TODO:finish me
-                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
-                })
+                () -> assertThat(pcapEvaluator.nextBVLC())
+                    .asInstanceOf(InstanceOfAssertFactories.type(BVLCOriginalBroadcastNPDU.class))
+                    .extracting(BVLCOriginalBroadcastNPDU::getNpdu)
+                    .extracting(NPDU::getApdu)
+                    .asInstanceOf(InstanceOfAssertFactories.type(APDUUnconfirmedRequest.class))
+                    .extracting(APDUUnconfirmedRequest::getServiceRequest)
+                    .asInstanceOf(InstanceOfAssertFactories.type(BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification.class))
+                    .satisfies(baCnetUnconfirmedServiceRequestUnconfirmedCOVNotification -> {
+                        assertThat(baCnetUnconfirmedServiceRequestUnconfirmedCOVNotification)
+                            .extracting(BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification::getSubscriberProcessIdentifier)
+                            .extracting(BACnetContextTagUnsignedInteger::getActualValue)
+                            .isEqualTo(BigInteger.ZERO);
+                        assertThat(baCnetUnconfirmedServiceRequestUnconfirmedCOVNotification)
+                            .extracting(BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification::getInitiatingDeviceIdentifier)
+                            .extracting(BACnetContextTagObjectIdentifier::getObjectType, BACnetContextTagObjectIdentifier::getInstanceNumber)
+                            .containsExactly(BACnetObjectType.DEVICE, 1L);
+                        assertThat(baCnetUnconfirmedServiceRequestUnconfirmedCOVNotification)
+                            .extracting(BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification::getMonitoredObjectIdentifier)
+                            .extracting(BACnetContextTagObjectIdentifier::getObjectType, BACnetContextTagObjectIdentifier::getInstanceNumber)
+                            .containsExactly(BACnetObjectType.ACCUMULATOR, 22L);
+                        assertThat(baCnetUnconfirmedServiceRequestUnconfirmedCOVNotification)
+                            .extracting(BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification::getLifetimeInSeconds)
+                            .extracting(BACnetContextTagUnsignedInteger::getPayload)
+                            .extracting(BACnetTagPayloadUnsignedInteger::getValueUint32)
+                            .isEqualTo(3108189381L);
+                        assertThat(baCnetUnconfirmedServiceRequestUnconfirmedCOVNotification)
+                            .extracting(BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification::getListOfValues)
+                            .extracting(BACnetPropertyValues::getData)
+                            .satisfies(baCnetPropertyValues -> {
+                                assertThat(baCnetPropertyValues).element(0).satisfies(baCnetPropertyValue -> {
+                                    assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyIdentifier).extracting(BACnetContextTagPropertyIdentifier::getPropertyIdentifier).isEqualTo(BACnetPropertyIdentifier.PRESENT_VALUE);
+                                    assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyArrayIndex).isNull();
+                                    assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyValue)
+                                        .extracting(BACnetConstructedDataElement::getConstructedData)
+                                        .asInstanceOf(InstanceOfAssertFactories.type(BACnetConstructedDataUnspecified.class))
+                                        .extracting(BACnetConstructedDataUnspecified::getData)
+                                        .satisfies(baCnetConstructedDataElements -> {
+                                            assertThat(baCnetConstructedDataElements).element(0).extracting(BACnetConstructedDataElement::getApplicationTag)
+                                                .asInstanceOf(InstanceOfAssertFactories.type(BACnetApplicationTagUnsignedInteger.class))
+                                                .extracting(BACnetApplicationTagUnsignedInteger::getPayload)
+                                                .extracting(BACnetTagPayloadUnsignedInteger::getValueUint16)
+                                                .isEqualTo(1578);
+                                        });
+                                    assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPriority).isNull();
+                                });
+                                assertThat(baCnetPropertyValues).element(1).satisfies(baCnetPropertyValue -> {
+                                    assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyIdentifier).extracting(BACnetContextTagPropertyIdentifier::getPropertyIdentifier).isEqualTo(BACnetPropertyIdentifier.STATUS_FLAGS);
+                                    assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyArrayIndex).isNull();
+                                    assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPropertyValue)
+                                        .extracting(BACnetConstructedDataElement::getConstructedData)
+                                        .asInstanceOf(InstanceOfAssertFactories.type(BACnetConstructedDataUnspecified.class))
+                                        .extracting(BACnetConstructedDataUnspecified::getData)
+                                        .satisfies(baCnetConstructedDataElements -> {
+                                            assertThat(baCnetConstructedDataElements).element(0).extracting(BACnetConstructedDataElement::getApplicationTag)
+                                                .asInstanceOf(InstanceOfAssertFactories.type(BACnetApplicationTagBitString.class))
+                                                .extracting(BACnetApplicationTagBitString::getPayload)
+                                                .extracting(BACnetTagPayloadBitString::getData)
+                                                .isEqualTo(List.of(false, false, false, false));
+                                        });
+                                    assertThat(baCnetPropertyValue).extracting(BACnetPropertyValue::getPriority).isNull();
+                                });
+                            });
+                    }))
         );
     }
 
@@ -2330,8 +2823,45 @@ public class RandomPackagesTest {
                 () -> {
                     BVLC bvlc = pcapEvaluator.nextBVLC();
                     dump(bvlc);
-                    // TODO:finish me
-                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
+                    NPDU npdu = ((BVLCOriginalUnicastNPDU) bvlc).getNpdu();
+                    APDUConfirmedRequest apduConfirmedRequest = (APDUConfirmedRequest) npdu.getApdu();
+                    BACnetConfirmedServiceRequest serviceRequest = apduConfirmedRequest.getServiceRequest();
+                    assertNotNull(serviceRequest);
+                    BACnetConfirmedServiceRequestConfirmedEventNotification baCnetConfirmedServiceRequestConfirmedEventNotification = (BACnetConfirmedServiceRequestConfirmedEventNotification) serviceRequest;
+                    assertEquals((short) 123, baCnetConfirmedServiceRequestConfirmedEventNotification.getProcessIdentifier().getPayload().getValueUint8());
+                    assertEquals(BACnetObjectType.DEVICE, baCnetConfirmedServiceRequestConfirmedEventNotification.getInitiatingDeviceIdentifier().getObjectType());
+                    assertEquals(1041000, baCnetConfirmedServiceRequestConfirmedEventNotification.getInitiatingDeviceIdentifier().getInstanceNumber());
+                    assertEquals(BACnetObjectType.ANALOG_INPUT, baCnetConfirmedServiceRequestConfirmedEventNotification.getEventObjectIdentifier().getObjectType());
+                    assertEquals(3000016, baCnetConfirmedServiceRequestConfirmedEventNotification.getEventObjectIdentifier().getInstanceNumber());
+                    {
+                        BACnetTimeStampTime timestamp = (BACnetTimeStampTime) baCnetConfirmedServiceRequestConfirmedEventNotification.getTimestamp().getTimestamp();
+                        assertEquals(2, timestamp.getTimeValue().getPayload().getHour());
+                    }
+                    {
+                        assertEquals(1, baCnetConfirmedServiceRequestConfirmedEventNotification.getNotificationClass().getPayload().getActualValue().longValue());
+                    }
+                    {
+                        assertEquals(200, baCnetConfirmedServiceRequestConfirmedEventNotification.getPriority().getPayload().getActualValue().longValue());
+                    }
+                    {
+                        assertEquals(BACnetEventType.VENDOR_PROPRIETARY_VALUE, baCnetConfirmedServiceRequestConfirmedEventNotification.getEventType().getEventType());
+                    }
+                    {
+                        assertEquals(BACnetNotifyType.ALARM, baCnetConfirmedServiceRequestConfirmedEventNotification.getNotifyType().getValue());
+                    }
+                    {
+                        assertFalse(baCnetConfirmedServiceRequestConfirmedEventNotification.getAckRequired().getPayload().getIsFalse());
+                    }
+                    {
+                        assertEquals(BACnetEventState.HIGH_LIMIT, baCnetConfirmedServiceRequestConfirmedEventNotification.getFromState().getEventState());
+                    }
+                    {
+                        assertEquals(BACnetEventState.NORMAL, baCnetConfirmedServiceRequestConfirmedEventNotification.getToState().getEventState());
+                    }
+                    {
+                        BACnetNotificationParametersComplexEventType baCnetNotificationParametersComplexEventType = (BACnetNotificationParametersComplexEventType) baCnetConfirmedServiceRequestConfirmedEventNotification.getEventValues();
+                        assertNotNull(baCnetNotificationParametersComplexEventType);
+                    }
                 }),
             pcapEvaluator.parseFrom(2)
         );
@@ -2447,6 +2977,8 @@ public class RandomPackagesTest {
                             .satisfies(baCnetConstructedDataEventTimestamps ->
                                 assertThat(baCnetConstructedDataEventTimestamps)
                                     .extracting(BACnetConstructedDataEventTimestamps::getToOffnormal)
+                                    .asInstanceOf(InstanceOfAssertFactories.type(BACnetTimeStampTime.class))
+                                    .extracting(BACnetTimeStampTime::getTimeValue)
                                     .extracting(BACnetContextTagTime::getPayload)
                                     .extracting(BACnetTagPayloadTime::getHourIsWildcard, BACnetTagPayloadTime::getMinuteIsWildcard, BACnetTagPayloadTime::getSecondIsWildcard, BACnetTagPayloadTime::getFractionalIsWildcard)
                                     .containsExactly(true, true, true, true)
@@ -2454,6 +2986,8 @@ public class RandomPackagesTest {
                             .satisfies(baCnetConstructedDataEventTimestamps ->
                                 assertThat(baCnetConstructedDataEventTimestamps)
                                     .extracting(BACnetConstructedDataEventTimestamps::getToFault)
+                                    .asInstanceOf(InstanceOfAssertFactories.type(BACnetTimeStampSequence.class))
+                                    .extracting(BACnetTimeStampSequence::getSequenceNumber)
                                     .extracting(BACnetContextTagUnsignedInteger::getPayload)
                                     .extracting(BACnetTagPayloadUnsignedInteger::getActualValue)
                                     .isEqualTo(BigInteger.ZERO)
@@ -2461,6 +2995,8 @@ public class RandomPackagesTest {
                             .satisfies(baCnetConstructedDataEventTimestamps ->
                                 assertThat(baCnetConstructedDataEventTimestamps)
                                     .extracting(BACnetConstructedDataEventTimestamps::getToNormal)
+                                    .asInstanceOf(InstanceOfAssertFactories.type(BACnetTimeStampDateTime.class))
+                                    .extracting(BACnetTimeStampDateTime::getDateTimeValue)
                                     .satisfies(baCnetDateTime ->
                                         assertThat(baCnetDateTime)
                                             .extracting(BACnetDateTimeEnclosed::getDateTimeValue)
@@ -2819,22 +3355,7 @@ public class RandomPackagesTest {
     Collection<DynamicNode> plugfest_delta_2b() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("plugfest-delta-2b.cap", BACNET_BPF_FILTER_UDP);
         return List.of(
-            pcapEvaluator.parseEmAll(
-                // TODO: fix broken error mapping
-                129,
-                // TODO: fix broken error mapping
-                169,
-                // TODO: fix broken error mapping
-                1985,
-                // TODO: fix broken error mapping
-                9345,
-                // TODO: fix broken error mapping
-                9688,
-                // TODO: fix broken error mapping
-                10521,
-                // TODO: fix broken error mapping
-                10559
-            ));
+            pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
@@ -3713,9 +4234,9 @@ public class RandomPackagesTest {
                     dump(bvlc);
                     NPDU npdu = ((BVLCOriginalUnicastNPDU) bvlc).getNpdu();
                     APDUError apduError = (APDUError) npdu.getApdu();
-                    BACnetErrorReadProperty baCnetErrorReadProperty = (BACnetErrorReadProperty) apduError.getError();
-                    // TODO: use proper enums
-                    assertEquals(32, baCnetErrorReadProperty.getErrorCode().getActualValue());
+                    BACnetErrorGeneral baCnetErrorWriteProperty = (BACnetErrorGeneral) apduError.getError();
+                    assertEquals(ErrorClass.PROPERTY, baCnetErrorWriteProperty.getError().getErrorClass());
+                    assertEquals(ErrorCode.UNKNOWN_PROPERTY, baCnetErrorWriteProperty.getError().getErrorCode());
                 }),
             DynamicTest.dynamicTest("No. 57 - Confirmed-REQ   readProperty[ 52] device,201 max-master",
                 () -> {
@@ -3849,9 +4370,9 @@ public class RandomPackagesTest {
                     dump(bvlc);
                     NPDU npdu = ((BVLCOriginalUnicastNPDU) bvlc).getNpdu();
                     APDUError apduError = (APDUError) npdu.getApdu();
-                    BACnetErrorReadProperty baCnetErrorReadProperty = (BACnetErrorReadProperty) apduError.getError();
-                    // TODO: use proper enums
-                    assertEquals(32, baCnetErrorReadProperty.getErrorCode().getActualValue());
+                    BACnetErrorGeneral baCnetErrorWriteProperty = (BACnetErrorGeneral) apduError.getError();
+                    assertEquals(ErrorClass.PROPERTY, baCnetErrorWriteProperty.getError().getErrorClass());
+                    assertEquals(ErrorCode.UNKNOWN_PROPERTY, baCnetErrorWriteProperty.getError().getErrorCode());
                 }),
             DynamicTest.dynamicTest("No. 67 - Confirmed-REQ   readProperty[ 57] device,61 object-identifier",
                 () -> {
@@ -4513,9 +5034,9 @@ public class RandomPackagesTest {
                     dump(bvlc);
                     NPDU npdu = ((BVLCOriginalUnicastNPDU) bvlc).getNpdu();
                     APDUError apduError = (APDUError) npdu.getApdu();
-                    BACnetErrorReadProperty baCnetErrorReadProperty = (BACnetErrorReadProperty) apduError.getError();
-                    // TODO: use proper enums
-                    assertEquals(32, baCnetErrorReadProperty.getErrorCode().getActualValue());
+                    BACnetErrorGeneral baCnetErrorWriteProperty = (BACnetErrorGeneral) apduError.getError();
+                    assertEquals(ErrorClass.PROPERTY, baCnetErrorWriteProperty.getError().getErrorClass());
+                    assertEquals(ErrorCode.UNKNOWN_PROPERTY, baCnetErrorWriteProperty.getError().getErrorCode());
                 }),
             DynamicTest.dynamicTest("No. 113 - Confirmed-REQ   readProperty[ 80] device,61 max-master",
                 () -> {
@@ -4747,23 +5268,7 @@ public class RandomPackagesTest {
     @DisplayName("rp-shed-level")
     Collection<DynamicNode> rp_shed_level() throws Exception {
         TestPcapEvaluator pcapEvaluator = pcapEvaluator("rp-shed-level.cap");
-        return Arrays.asList(
-            DynamicTest.dynamicTest("No. 1 - Confirmed-REQ   readProperty[  1] load-control,0 expected-shed-level",
-                () -> {
-                    BVLC bvlc = pcapEvaluator.nextBVLC();
-                    dump(bvlc);
-                    // TODO: finish me
-                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
-                }),
-            DynamicTest.dynamicTest("No. 2 - Complex-ACK     readProperty[  1] load-control,0 expected-shed-level",
-                () -> {
-                    BVLC bvlc = pcapEvaluator.nextBVLC();
-                    dump(bvlc);
-                    // TODO: finish me
-                    assumeTrue(false, "not properly implemented. Check manually and add asserts");
-                }),
-            pcapEvaluator.parseFrom(3)
-        );
+        return List.of(pcapEvaluator.parseEmAll());
     }
 
     @TestFactory
@@ -4968,7 +5473,6 @@ public class RandomPackagesTest {
                     assertEquals(BACnetObjectType.DEVICE, baCnetUnconfirmedServiceRequestIAm.getDeviceIdentifier().getObjectType());
                     assertEquals(133, baCnetUnconfirmedServiceRequestIAm.getDeviceIdentifier().getInstanceNumber());
                     assertEquals(480, baCnetUnconfirmedServiceRequestIAm.getMaximumApduLengthAcceptedLength().getPayload().getActualValue().longValue());
-                    // TODO: we should use a enum here
                     assertTrue(baCnetUnconfirmedServiceRequestIAm.getSegmentationSupported().getIsSegmentedBoth());
                     assertEquals(42, baCnetUnconfirmedServiceRequestIAm.getVendorId().getPayload().getActualValue().longValue());
                 }),

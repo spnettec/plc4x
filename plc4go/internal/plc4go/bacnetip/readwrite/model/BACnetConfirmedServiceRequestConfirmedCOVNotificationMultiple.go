@@ -34,7 +34,7 @@ type BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple struct {
 	InitiatingDeviceIdentifier  *BACnetContextTagObjectIdentifier
 	TimeRemaining               *BACnetContextTagUnsignedInteger
 	Timestamp                   *BACnetTimeStampEnclosed
-	ListOfCovNotifications      *BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleListOfCovNotifications
+	ListOfCovNotifications      *ListOfCovNotificationsList
 
 	// Arguments.
 	ServiceRequestLength uint16
@@ -52,7 +52,7 @@ type IBACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple interface {
 	// GetTimestamp returns Timestamp (property field)
 	GetTimestamp() *BACnetTimeStampEnclosed
 	// GetListOfCovNotifications returns ListOfCovNotifications (property field)
-	GetListOfCovNotifications() *BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleListOfCovNotifications
+	GetListOfCovNotifications() *ListOfCovNotificationsList
 	// GetLengthInBytes returns the length in bytes
 	GetLengthInBytes() uint16
 	// GetLengthInBits returns the length in bits
@@ -103,7 +103,7 @@ func (m *BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple) GetTimes
 	return m.Timestamp
 }
 
-func (m *BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple) GetListOfCovNotifications() *BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleListOfCovNotifications {
+func (m *BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple) GetListOfCovNotifications() *ListOfCovNotificationsList {
 	return m.ListOfCovNotifications
 }
 
@@ -113,7 +113,7 @@ func (m *BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple) GetListO
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple factory function for BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple
-func NewBACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple(subscriberProcessIdentifier *BACnetContextTagUnsignedInteger, initiatingDeviceIdentifier *BACnetContextTagObjectIdentifier, timeRemaining *BACnetContextTagUnsignedInteger, timestamp *BACnetTimeStampEnclosed, listOfCovNotifications *BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleListOfCovNotifications, serviceRequestLength uint16) *BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple {
+func NewBACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple(subscriberProcessIdentifier *BACnetContextTagUnsignedInteger, initiatingDeviceIdentifier *BACnetContextTagObjectIdentifier, timeRemaining *BACnetContextTagUnsignedInteger, timestamp *BACnetTimeStampEnclosed, listOfCovNotifications *ListOfCovNotificationsList, serviceRequestLength uint16) *BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple {
 	_result := &BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple{
 		SubscriberProcessIdentifier:   subscriberProcessIdentifier,
 		InitiatingDeviceIdentifier:    initiatingDeviceIdentifier,
@@ -178,10 +178,12 @@ func (m *BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple) GetLengt
 }
 
 func BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (*BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple, error) {
+	positionAware := readBuffer
+	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple"); pullErr != nil {
 		return nil, pullErr
 	}
-	currentPos := readBuffer.GetPos()
+	currentPos := positionAware.GetPos()
 	_ = currentPos
 
 	// Simple Field (subscriberProcessIdentifier)
@@ -226,7 +228,7 @@ func BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleParse(readBuff
 	// Optional Field (timestamp) (Can be skipped, if a given expression evaluates to false)
 	var timestamp *BACnetTimeStampEnclosed = nil
 	{
-		currentPos = readBuffer.GetPos()
+		currentPos = positionAware.GetPos()
 		if pullErr := readBuffer.PullContext("timestamp"); pullErr != nil {
 			return nil, pullErr
 		}
@@ -248,11 +250,11 @@ func BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleParse(readBuff
 	if pullErr := readBuffer.PullContext("listOfCovNotifications"); pullErr != nil {
 		return nil, pullErr
 	}
-	_listOfCovNotifications, _listOfCovNotificationsErr := BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleListOfCovNotificationsParse(readBuffer, uint8(uint8(4)))
+	_listOfCovNotifications, _listOfCovNotificationsErr := ListOfCovNotificationsListParse(readBuffer, uint8(uint8(4)))
 	if _listOfCovNotificationsErr != nil {
 		return nil, errors.Wrap(_listOfCovNotificationsErr, "Error parsing 'listOfCovNotifications' field")
 	}
-	listOfCovNotifications := CastBACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleListOfCovNotifications(_listOfCovNotifications)
+	listOfCovNotifications := CastListOfCovNotificationsList(_listOfCovNotifications)
 	if closeErr := readBuffer.CloseContext("listOfCovNotifications"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -267,7 +269,7 @@ func BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleParse(readBuff
 		InitiatingDeviceIdentifier:    CastBACnetContextTagObjectIdentifier(initiatingDeviceIdentifier),
 		TimeRemaining:                 CastBACnetContextTagUnsignedInteger(timeRemaining),
 		Timestamp:                     CastBACnetTimeStampEnclosed(timestamp),
-		ListOfCovNotifications:        CastBACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleListOfCovNotifications(listOfCovNotifications),
+		ListOfCovNotifications:        CastListOfCovNotificationsList(listOfCovNotifications),
 		BACnetConfirmedServiceRequest: &BACnetConfirmedServiceRequest{},
 	}
 	_child.BACnetConfirmedServiceRequest.Child = _child
@@ -275,6 +277,8 @@ func BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleParse(readBuff
 }
 
 func (m *BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple) Serialize(writeBuffer utils.WriteBuffer) error {
+	positionAware := writeBuffer
+	_ = positionAware
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple"); pushErr != nil {
 			return pushErr
