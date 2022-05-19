@@ -79,7 +79,7 @@ public class DatatypesTest {
 
 
             final PlcWriteRequest.Builder rbuilder = connection.writeRequestBuilder();
-            rbuilder.addItem("PMS1302_Template", "%DB1:0:BYTE[10]", "[0,156,3,4,5,6,7,8,9,10]"); // true
+            rbuilder.addItem("PMS1302_Template", "%DB1:0:BYTE[10]", "[0,1,3,4,5,6,7,8,9,10]"); // true
 
             final PlcWriteRequest writeRequest = rbuilder.build();
 

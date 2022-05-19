@@ -128,7 +128,11 @@ public abstract class NettyChannelFactory implements ChannelFactory {
             final Channel channel = f.channel();
             
             // Shutdowm the workerGroup when channel closing to avoid open too many files
-            channel.closeFuture().addListener(future -> workerGroup.shutdownGracefully());
+            channel.closeFuture().addListener(future -> {
+                if (workerGroup != null) {
+                    workerGroup.shutdownGracefully();
+                }
+            });
 
             // Add to event-loop group
             if (workerGroup != null) {

@@ -50,6 +50,7 @@ import java.util.function.Predicate;
 public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
 
     private static final Logger logger = LoggerFactory.getLogger(Plc4xNettyWrapper.class);
+
     private final Plc4xProtocolBase<T> protocolBase;
     private final Queue<HandlerRegistration> registeredHandlers;
     private Timer timer = null;

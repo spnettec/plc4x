@@ -300,18 +300,11 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
             tpduGenerator.set(1);
         }
 
-        TPKTPacket tpktPacket = new TPKTPacket(
-            new COTPPacketData(
-                null,
-                new S7MessageRequest(tpduId,
-                    new S7ParameterWriteVarRequest(parameterItems),
-                    new S7PayloadWriteVarRequest(payloadItems, null)
-                ),
-                true,
-                (short) tpduId,
-                Integer.MAX_VALUE
-            )
-        );
+        TPKTPacket tpktPacket = new TPKTPacket(new COTPPacketData(null,
+            new S7MessageRequest(tpduId,
+                new S7ParameterWriteVarRequest(parameterItems),
+                new S7PayloadWriteVarRequest(payloadItems, null)),
+            true, (short) tpduId, Integer.MAX_VALUE));
 
         // Start a new request-transaction (Is ended in the response-handler)
         RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
@@ -717,7 +710,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         {
             tpduId = 0;
         }
-        COTPPacketData cotpPacketData = new COTPPacketData(null, s7Message, true, (short) tpduId, null);
+        COTPPacketData cotpPacketData = new COTPPacketData(null, s7Message, true, (short) tpduId, Integer.MAX_VALUE);
         return new TPKTPacket(cotpPacketData);
     }
 

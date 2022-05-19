@@ -232,9 +232,9 @@ public class S7PlcValueHandler implements PlcValueHandler {
         return of(values);
     }
 
-    private static Byte[] stringToByteArray(String stringBytes){
+    private static byte[] stringToByteArray(String stringBytes){
         String[] byteValues = stringBytes.substring(1, stringBytes.length() - 1).split(",");
-        Byte[] bytes = new Byte[byteValues.length];
+        byte[] bytes = new byte[byteValues.length];
 
         for (int i=0, len=bytes.length; i<len; i++) {
             int intvalue = Integer.parseInt(byteValues[i].trim());
