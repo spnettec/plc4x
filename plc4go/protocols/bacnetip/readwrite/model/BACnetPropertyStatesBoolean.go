@@ -30,9 +30,6 @@ import (
 type BACnetPropertyStatesBoolean struct {
 	*BACnetPropertyStates
 	BooleanValue *BACnetContextTagBoolean
-
-	// Arguments.
-	TagNumber uint8
 }
 
 // IBACnetPropertyStatesBoolean is the corresponding interface of BACnetPropertyStatesBoolean
@@ -58,10 +55,8 @@ type IBACnetPropertyStatesBoolean interface {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetPropertyStatesBoolean) InitializeParent(parent *BACnetPropertyStates, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
-	m.BACnetPropertyStates.OpeningTag = openingTag
+func (m *BACnetPropertyStatesBoolean) InitializeParent(parent *BACnetPropertyStates, peekedTagHeader *BACnetTagHeader) {
 	m.BACnetPropertyStates.PeekedTagHeader = peekedTagHeader
-	m.BACnetPropertyStates.ClosingTag = closingTag
 }
 
 func (m *BACnetPropertyStatesBoolean) GetParent() *BACnetPropertyStates {
@@ -83,10 +78,10 @@ func (m *BACnetPropertyStatesBoolean) GetBooleanValue() *BACnetContextTagBoolean
 ///////////////////////////////////////////////////////////
 
 // NewBACnetPropertyStatesBoolean factory function for BACnetPropertyStatesBoolean
-func NewBACnetPropertyStatesBoolean(booleanValue *BACnetContextTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetPropertyStatesBoolean {
+func NewBACnetPropertyStatesBoolean(booleanValue *BACnetContextTagBoolean, peekedTagHeader *BACnetTagHeader) *BACnetPropertyStatesBoolean {
 	_result := &BACnetPropertyStatesBoolean{
 		BooleanValue:         booleanValue,
-		BACnetPropertyStates: NewBACnetPropertyStates(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BACnetPropertyStates: NewBACnetPropertyStates(peekedTagHeader),
 	}
 	_result.Child = _result
 	return _result
@@ -129,7 +124,7 @@ func (m *BACnetPropertyStatesBoolean) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetPropertyStatesBooleanParse(readBuffer utils.ReadBuffer, tagNumber uint8, peekedTagNumber uint8) (*BACnetPropertyStatesBoolean, error) {
+func BACnetPropertyStatesBooleanParse(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (*BACnetPropertyStatesBoolean, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesBoolean"); pullErr != nil {
