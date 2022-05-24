@@ -197,7 +197,6 @@
             [optional BACnetConfirmedServiceRequest('apduLength - (4 + (segmentedMessage ? 2 : 0))')
                                 serviceRequest       '!segmentedMessage' ]
             [validation '(!segmentedMessage && serviceRequest != null) || segmentedMessage' "service request should be set" ]
-            // TODO: maybe we should put this in the discriminated types below
             [optional uint 8    segmentServiceChoice
                                     'segmentedMessage && sequenceNumber != 0']
             [array    byte      segment
@@ -224,7 +223,6 @@
             [optional BACnetServiceAck('apduLength - (3 + (segmentedMessage ? 2 : 0))')
                                 serviceAck         '!segmentedMessage'  ]
             [validation '(!segmentedMessage && serviceAck != null) || segmentedMessage' "service ack should be set" ]
-            // TODO: maybe we should put this in the discriminated types below
             [optional uint 8    segmentServiceChoice 'segmentedMessage && sequenceNumber != 0']
             [array    byte      segment
                                     length
@@ -485,9 +483,9 @@
             [simple   BACnetContextTagCharacterString('3', 'BACnetDataType.CHARACTER_STRING')               message                     ]
         ]
         ['REINITIALIZE_DEVICE' BACnetConfirmedServiceRequestReinitializeDevice
-          [simple   BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged('0', 'TagClass.CONTEXT_SPECIFIC_TAGS')
+            [simple   BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged('0', 'TagClass.CONTEXT_SPECIFIC_TAGS')
                                                                                                             reinitializedStateOfDevice  ]
-          [optional BACnetContextTagCharacterString('1', 'BACnetDataType.CHARACTER_STRING')
+            [optional BACnetContextTagCharacterString('1', 'BACnetDataType.CHARACTER_STRING')
                                                                                                             password                    ]
         ]
 
@@ -495,16 +493,17 @@
         //  Virtual Terminal Services
 
         ['VT_OPEN' BACnetConfirmedServiceRequestVTOpen
-            // TODO: implement me
-            [validation    '1 == 2'    "TODO: implement me"]
+            [simple   BACnetVTClassTagged('0', 'TagClass.APPLICATION_TAGS')                                 vtClass                     ]
+            [simple   BACnetApplicationTagUnsignedInteger                                                   localVtSessionIdentifier    ]
         ]
         ['VT_CLOSE' BACnetConfirmedServiceRequestVTClose
-            // TODO: implement me
-            [validation    '1 == 2'    "TODO: implement me"]
+            [array    BACnetApplicationTagUnsignedInteger                                                   listOfRemoteVtSessionIdentifiers
+                                                               length '(serviceRequestLength>0)?(serviceRequestLength - 1):0'           ]
         ]
         ['VT_DATA' BACnetConfirmedServiceRequestVTData
-            // TODO: implement me
-            [validation    '1 == 2'    "TODO: implement me"]
+            [simple   BACnetApplicationTagUnsignedInteger                                                   vtSessionIdentifier         ]
+            [simple   BACnetApplicationTagOctetString                                                       vtNewData                   ]
+            [simple   BACnetApplicationTagUnsignedInteger                                                   vtDataFlag                  ]
         ]
         //
         ////
@@ -894,25 +893,10 @@
         ////
         // Alarm and Event Services
 
-        ['ACKNOWLEDGE_ALARM' BACnetServiceAckAcknowledgeAlarm
-            // TODO: implement me
-            [validation    '1 == 2'    "TODO: implement me"]
-        ]
-        ['CONFIRMED_COV_NOTIFICATION' BACnetServiceAckConfirmedCovNotification
-            // TODO: implement me
-            [validation    '1 == 2'    "TODO: implement me"]
-        ]
-        ['CONFIRMED_COV_NOTIFICATION_MULTIPLE' BACnetServiceAckConfirmedCovNotificationMultiple
-            // TODO: implement me
-            [validation    '1 == 2'    "TODO: implement me"]
-        ]
-        ['CONFIRMED_EVENT_NOTIFICATION' BACnetServiceAckConfirmedEventNotification
-            // TODO: implement me
-            [validation    '1 == 2'    "TODO: implement me"]
-        ]
         ['GET_ALARM_SUMMARY' BACnetServiceAckGetAlarmSummary
-            // TODO: implement me
-            [validation    '1 == 2'    "TODO: implement me"]
+            [simple   BACnetApplicationTagObjectIdentifier                      objectIdentifier                ]
+            [simple   BACnetEventStateTagged('0', 'TagClass.APPLICATION_TAGS')  eventState                      ]
+            [simple   BACnetEventTransitionBitsApplication                      acknowledgedTransitions         ]
         ]
         ['GET_ENROLLMENT_SUMMARY' BACnetServiceAckGetEnrollmentSummary
             [simple   BACnetApplicationTagObjectIdentifier                      objectIdentifier                ]
@@ -926,22 +910,6 @@
                         listOfEventSummaries            ]
             [simple   BACnetContextTagBoolean('1', 'BACnetDataType.BOOLEAN')
                         moreEvents                       ]
-        ]
-        ['LIFE_SAFETY_OPERATION' BACnetServiceAckLifeSafetyOperation
-            // TODO: implement me
-            [validation    '1 == 2'    "TODO: implement me"]
-        ]
-        ['SUBSCRIBE_COV' BACnetServiceAckSubscribeCov
-            // TODO: implement me
-            [validation    '1 == 2'    "TODO: implement me"]
-        ]
-        ['SUBSCRIBE_COV_PROPERTY' BACnetServiceAckSubscribeCovProperty
-            // TODO: implement me
-            [validation    '1 == 2'    "TODO: implement me"]
-        ]
-        ['SUBSCRIBE_COV_PROPERTY_MULTIPLE' BACnetServiceAckSubscribeCovPropertyMultiple
-            // TODO: implement me
-            [validation    '1 == 2'    "TODO: implement me"]
         ]
         //
         ////
@@ -964,17 +932,8 @@
 
         ////
         // Object Access Services
-        ['ADD_LIST_ELEMENT' BACnetServiceAckAddListElement
-            // TODO: implement me
-            [validation    '1 == 2'    "TODO: implement me"]
-        ]
-        ['REMOVE_LIST_ELEMENT' BACnetServiceAckRemoveListElement
-            // TODO: implement me
-            [validation    '1 == 2'    "TODO: implement me"]
-        ]
         ['CREATE_OBJECT' BACnetServiceAckCreateObject
-            // TODO: implement me
-            [validation    '1 == 2'    "TODO: implement me"]
+            [simple   BACnetApplicationTagObjectIdentifier                      objectIdentifier                ]
         ]
         ['READ_PROPERTY' BACnetServiceAckReadProperty
             [simple   BACnetContextTagObjectIdentifier('0', 'BACnetDataType.BACNET_OBJECT_IDENTIFIER')
@@ -1001,14 +960,6 @@
             [optional BACnetConstructedData('5', 'objectIdentifier.objectType', 'propertyIdentifier.value') itemData            ]
             [optional BACnetContextTagUnsignedInteger('2', 'BACnetDataType.UNSIGNED_INTEGER')               firstSequenceNumber ]
         ]
-        ['WRITE_PROPERTY' BACnetServiceAckWriteProperty
-            // TODO: implement me
-            [validation    '1 == 2'    "TODO: implement me"]
-        ]
-        ['WRITE_PROPERTY_MULTIPLE' BACnetServiceAckWritePropertyMultiple
-            // TODO: implement me
-            [validation    '1 == 2'    "TODO: implement me"]
-        ]
         //
         ////
 
@@ -1016,22 +967,10 @@
         ////
         // Remote Device Management Services
 
-        ['DEVICE_COMMUNICATION_CONTROL' BACnetServiceAckDeviceCommunicationControl
-            // TODO: implement me
-            [validation    '1 == 2'    "TODO: implement me"]
-        ]
         ['CONFIRMED_PRIVATE_TRANSFER' BACnetServiceAckConfirmedPrivateTransfer
             [simple   BACnetVendorIdTagged('0', 'TagClass.CONTEXT_SPECIFIC_TAGS')                      vendorId                    ]
             [simple   BACnetContextTagUnsignedInteger('1', 'BACnetDataType.UNSIGNED_INTEGER')          serviceNumber               ]
             [optional BACnetConstructedData('2', 'BACnetObjectType.VENDOR_PROPRIETARY_VALUE', 'BACnetPropertyIdentifier.VENDOR_PROPRIETARY_VALUE') resultBlock                 ]
-        ]
-        ['CONFIRMED_TEXT_MESSAGE' BACnetServiceAckConfirmedTextMessage
-            // TODO: implement me
-            [validation    '1 == 2'    "TODO: implement me"]
-        ]
-        ['REINITIALIZE_DEVICE' BACnetServiceAckReinitializeDevice
-            // TODO: implement me
-            [validation    '1 == 2'    "TODO: implement me"]
         ]
         //
         ////
@@ -1040,16 +979,12 @@
         //  Virtual Terminal Services
 
         ['VT_OPEN' BACnetServiceAckVTOpen
-            // TODO: implement me
-            [validation    '1 == 2'    "TODO: implement me"]
-        ]
-        ['VT_CLOSE' BACnetServiceAckVTClose
-            // TODO: implement me
-            [validation    '1 == 2'    "TODO: implement me"]
+            [simple   BACnetApplicationTagUnsignedInteger                       remoteVtSessionIdentifier                        ]
         ]
         ['VT_DATA' BACnetServiceAckVTData
-            // TODO: implement me
-            [validation    '1 == 2'    "TODO: implement me"]
+            [simple   BACnetApplicationTagUnsignedInteger                       vtSessionIdentifier                              ]
+            [simple   BACnetApplicationTagOctetString                           vtNewData                                        ]
+            [simple   BACnetApplicationTagUnsignedInteger                       vtDataFlag                                       ]
         ]
         //
         ////
@@ -1133,8 +1068,16 @@
 
 [type BACnetEventTransitionBits(uint 8 tagNumber)
     [simple   BACnetContextTagBitString('tagNumber', 'BACnetDataType.BIT_STRING')
-        rawBits
-    ]
+                    rawBits                                      ]
+    [virtual    bit toOffnormal         'rawBits.payload.data[0]']
+    [virtual    bit toFault             'rawBits.payload.data[1]']
+    [virtual    bit toNormal            'rawBits.payload.data[2]']
+]
+
+// TODO: check if we can do that a bit smarter
+[type BACnetEventTransitionBitsApplication
+    [simple   BACnetApplicationTagBitString
+                    rawBits                                      ]
     [virtual    bit toOffnormal         'rawBits.payload.data[0]']
     [virtual    bit toFault             'rawBits.payload.data[1]']
     [virtual    bit toNormal            'rawBits.payload.data[2]']
