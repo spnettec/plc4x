@@ -206,7 +206,7 @@ public class CachedPlcConnection implements PlcConnection, PlcConnectionMetadata
         // First, close this connection and allow no further operations on it!
         this.closed = true;
         // Return the Connection
-        parent.returnConnection(activeConnection);
+        parent.returnConnection();
         // Invalidate Connection
         this.activeConnection = null;
     }

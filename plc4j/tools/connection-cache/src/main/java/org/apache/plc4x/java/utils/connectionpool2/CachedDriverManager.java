@@ -48,9 +48,6 @@ public class CachedDriverManager extends PlcDriverManager implements CachedDrive
 
     private static final Logger logger = LoggerFactory.getLogger(CachedDriverManager.class);
 
-    // Constants
-    public static final int LONG_BORROW_WATCHDOG_TIMEOUT_MS = 5_000;
-
     // JMX
 
     private final AtomicInteger numberOfConnects = new AtomicInteger(0);
@@ -75,7 +72,7 @@ public class CachedDriverManager extends PlcDriverManager implements CachedDrive
     private ScheduledFuture<?> borrowWatchdog;
 
     public CachedDriverManager(String url, PlcConnectionFactory connectionFactory) {
-        this(url, connectionFactory, 1000);
+        this(url, connectionFactory, 5000);
     }
 
     /**
@@ -96,7 +93,7 @@ public class CachedDriverManager extends PlcDriverManager implements CachedDrive
         }
     }
 
-    public synchronized void returnConnection(PlcConnection activeConnection) {
+    public synchronized void returnConnection() {
         logger.debug("Borrowed Connection is closed and returned.");
         // Stop Watchdog
         cancelWatchdog();
@@ -176,10 +173,10 @@ public class CachedDriverManager extends PlcDriverManager implements CachedDrive
             queue.add(future);
         }
         try {
-            return future.get(timeoutMillis, TimeUnit.MILLISECONDS);
-        } catch (ExecutionException | TimeoutException e) {
+            return future.get();
+        } catch (ExecutionException e) {
             handleBrokenConnection();
-            throw new PlcConnectionException("No Connection Available, timed out while waiting in queue.", e);
+            throw new PlcConnectionException("No Connection Available, exception accur while waiting in queue.", e);
         } catch (InterruptedException e) {
             handleBrokenConnection();
             Thread.currentThread().interrupt();
@@ -228,6 +225,7 @@ public class CachedDriverManager extends PlcDriverManager implements CachedDrive
                     } catch (Exception e) {
                         logger.warn("Unable to establish connection to PLC {}", url, e);
                         setState(ConnectionState.DISCONNECTED);
+                        cancelQueue(e);
                     }
                 });
 
@@ -269,6 +267,20 @@ public class CachedDriverManager extends PlcDriverManager implements CachedDrive
         }
         logger.trace("check queue ended");
     }
+    private synchronized void cancelQueue(Throwable tx) {
+        logger.debug("Connection is broken, cancel the queue...");
+        CompletableFuture<PlcConnection> next;
+        logger.trace("current queue size before check queue {}", queue.size());
+        while ((next = queue.poll()) != null) {
+            if (next.isCancelled()) {
+                logger.trace("Cleaning up already timed out connection...");
+                continue;
+            }
+            // timed out
+            next.completeExceptionally(tx);
+        }
+        logger.trace("check queue ended");
+    }
 
     private void startWatchdog(CachedPlcConnection connection) {
         borrowWatchdog = executorService.schedule(() -> {
@@ -281,7 +293,8 @@ public class CachedDriverManager extends PlcDriverManager implements CachedDrive
             } catch (Exception e) {
                 logger.warn("Unable to close the borrowed Connection from Watchdog", e);
             }
-        }, LONG_BORROW_WATCHDOG_TIMEOUT_MS, TimeUnit.MILLISECONDS);
+            cancelQueue(new TimeoutException());
+        }, timeoutMillis, TimeUnit.MILLISECONDS);
     }
 
     private void cancelWatchdog() {

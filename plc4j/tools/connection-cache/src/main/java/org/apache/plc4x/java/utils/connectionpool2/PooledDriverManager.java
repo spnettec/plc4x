@@ -40,7 +40,7 @@ public class PooledDriverManager extends PlcDriverManager implements PooledDrive
     private final Map<String, CachedDriverManager> cachedManagers = new ConcurrentHashMap<>();
 
     public PooledDriverManager() {
-        this(new PlcDriverManager(),1000);
+        this(new PlcDriverManager(),5000);
     }
 
     public PooledDriverManager(int timeoutMillis) {
