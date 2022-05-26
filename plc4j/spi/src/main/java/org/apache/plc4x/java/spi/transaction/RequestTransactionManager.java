@@ -69,13 +69,6 @@ public class RequestTransactionManager {
         this(1);
     }
 
-    public void shutDown()
-    {
-        runningRequests.clear();
-        workLog.clear();
-        this.executor.shutdown();
-    }
-
     public int getNumberOfConcurrentRequests() {
         return numberOfConcurrentRequests;
     }

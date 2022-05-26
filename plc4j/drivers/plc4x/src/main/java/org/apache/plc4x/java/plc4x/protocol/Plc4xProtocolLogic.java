@@ -147,7 +147,7 @@ public class Plc4xProtocolLogic extends Plc4xProtocolBase<Plc4xMessage> implemen
 
         // Send the request and await a response.
         RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
-        context.sendRequest(write)
+        transaction.submit(() ->context.sendRequest(write)
             .expectResponse(Plc4xMessage.class, requestTimeout)
             .onTimeout(future::completeExceptionally)
             .check(p -> p.getRequestId() == requestId)
@@ -167,7 +167,7 @@ public class Plc4xProtocolLogic extends Plc4xProtocolBase<Plc4xMessage> implemen
 
                 // Finish the request-transaction.
                 transaction.endRequest();
-            });
+            }));
         return future;
     }
 
