@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.s7.readwrite.protocol;
 
+import org.apache.plc4x.java.s7.readwrite.configuration.S7Configuration;
 import org.apache.plc4x.java.s7.readwrite.field.S7PlcValueHandler;
 import org.apache.plc4x.java.s7.readwrite.utils.S7PlcSubscriptionHandle;
 import io.netty.buffer.ByteBuf;
@@ -31,6 +32,7 @@ import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
+import org.apache.plc4x.java.spi.configuration.HasConfiguration;
 import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.java.spi.values.PlcNull;
 import org.apache.plc4x.java.api.value.PlcValue;
@@ -80,13 +82,12 @@ import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionField;
  * So we need to limit those.
  * Thus, each request goes to a Work Queue and this Queue ensures, that only 3 are open at the same time.
  */
-public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
-
-    public static final Duration REQUEST_TIMEOUT = Duration.ofMillis(10000);
+public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements HasConfiguration<S7Configuration> {
 
     private final Logger logger = LoggerFactory.getLogger(S7ProtocolLogic.class);
     private final AtomicInteger tpduGenerator = new AtomicInteger(1);
 
+    private S7Configuration configuration;
     /*
      * Take into account that the size of this buffer depends on the final device.
      * S7-300 goes from 20 to 300 and for S7-400 it goes from 300 to 10000.
@@ -123,6 +124,10 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         context.fireDisconnected();
     }
     @Override
+    public void setConfiguration(S7Configuration configuration) {
+        this.configuration = configuration;
+    }
+    @Override
     public void onConnect(ConversationContext<TPKTPacket> context) {
         if (context.isPassive()) {
             logger.info("S7 Driver running in PASSIVE mode.");
@@ -144,7 +149,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                 logger.warn("Timeout during Connection establishing, closing channel...");
                 context.getChannel().close();
             })
-            .expectResponse(TPKTPacket.class, REQUEST_TIMEOUT)
+            .expectResponse(TPKTPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
             .check(p -> p.getPayload() instanceof COTPPacketConnectionResponse)
             .unwrap(p -> (COTPPacketConnectionResponse) p.getPayload())
             .handle(cotpPacketConnectionResponse -> {
@@ -155,7 +160,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                         logger.warn("Timeout during Connection establishing, closing channel...");
                         context.getChannel().close();
                     })
-                    .expectResponse(TPKTPacket.class, REQUEST_TIMEOUT)
+                    .expectResponse(TPKTPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
                     .unwrap(TPKTPacket::getPayload)
                     .only(COTPPacketData.class)
                     .unwrap(COTPPacket::getPayload)
@@ -192,7 +197,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                                 logger.warn("Timeout during Connection establishing, closing channel...");
                                 context.getChannel().close();
                             })
-                            .expectResponse(TPKTPacket.class, REQUEST_TIMEOUT)
+                            .expectResponse(TPKTPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
                             .check(p -> p.getPayload() instanceof COTPPacketData)
                             .unwrap(p -> ((COTPPacketData) p.getPayload()))
                             .check(p -> p.getPayload() instanceof S7MessageUserData)
@@ -268,7 +273,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         transaction.submit(() -> context.sendRequest(tpktPacket)
             .onTimeout(new TransactionErrorCallback<>(future, transaction))
             .onError(new TransactionErrorCallback<>(future, transaction))
-            .expectResponse(TPKTPacket.class, REQUEST_TIMEOUT)
+            .expectResponse(TPKTPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
             .check(p -> p.getPayload() instanceof COTPPacketData)
             .unwrap(p -> (COTPPacketData) p.getPayload())
             .check(p -> p.getPayload() != null)
@@ -311,7 +316,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         transaction.submit(() -> context.sendRequest(tpktPacket)
             .onTimeout(new TransactionErrorCallback<>(future, transaction))
             .onError(new TransactionErrorCallback<>(future, transaction))
-            .expectResponse(TPKTPacket.class, REQUEST_TIMEOUT)
+            .expectResponse(TPKTPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
             .check(p -> p.getPayload() instanceof COTPPacketData)
             .unwrap(p -> ((COTPPacketData) p.getPayload()))
             .unwrap(COTPPacket::getPayload)
@@ -383,7 +388,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         transaction.submit(() -> context.sendRequest(tpktPacket)
             .onTimeout(new TransactionErrorCallback<>(future, transaction))
             .onError(new TransactionErrorCallback<>(future, transaction))
-            .expectResponse(TPKTPacket.class, REQUEST_TIMEOUT)
+            .expectResponse(TPKTPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
             .check(p -> p.getPayload() instanceof COTPPacketData)
             .unwrap(p -> ((COTPPacketData) p.getPayload()))
             .unwrap(COTPPacket::getPayload)

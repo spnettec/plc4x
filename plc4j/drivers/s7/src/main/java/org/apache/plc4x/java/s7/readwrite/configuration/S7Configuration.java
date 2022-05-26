@@ -71,6 +71,9 @@ public class S7Configuration implements Configuration, TcpTransportConfiguration
     @ConfigurationParameter("controller-type")
     public String controllerType;
 
+    @ConfigurationParameter("timeout-request")
+    @IntDefaultValue(4000)
+    protected int timeoutRequest;
     public int getLocalGroup() {
         return localGroup;
     }
@@ -162,7 +165,13 @@ public class S7Configuration implements Configuration, TcpTransportConfiguration
     public void setControllerType(String controllerType) {
         this.controllerType = controllerType;
     }
+    public int getTimeoutRequest() {
+        return timeoutRequest;
+    }
 
+    public void setTimeoutRequest(int timeoutRequest) {
+        this.timeoutRequest = timeoutRequest;
+    }
     /**
      * Per default port for the S7 protocol is 102.
      * @return 102
@@ -186,7 +195,8 @@ public class S7Configuration implements Configuration, TcpTransportConfiguration
             ", pduSize=" + pduSize +
             ", maxAmqCaller=" + maxAmqCaller +
             ", maxAmqCallee=" + maxAmqCallee +
-            ", controllerType='" + controllerType + '\'' +
+            ", controllerType='" + controllerType +
+            ", timeoutRequest='" + timeoutRequest + '\'' +
             '}';
     }
 
