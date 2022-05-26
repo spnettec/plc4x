@@ -26,25 +26,21 @@ import org.apache.plc4x.java.api.messages.PlcReadResponse;
 public class Plc4xReadClient {
 
     public static void main(String[] args) throws Exception {
-        try (final PlcConnection connection = new PlcDriverManager().getConnection("plc4x://localhost?remote-connection-string=simulated%3A%2F%2Flocalhost")) {
-            final PlcReadRequest.Builder requestBuilder = connection.readRequestBuilder();
-            requestBuilder.addItem("test-BOOL", "RANDOM/foo:BOOL");
-            requestBuilder.addItem("test-BYTE", "RANDOM/foo:BYTE");
-            requestBuilder.addItem("test-WORD", "RANDOM/foo:WORD");
-            requestBuilder.addItem("test-DWORD", "RANDOM/foo:DWORD");
-            requestBuilder.addItem("test-USINT", "RANDOM/foo:USINT");
-            requestBuilder.addItem("test-UINT", "RANDOM/foo:UINT");
-            requestBuilder.addItem("test-UDINT", "RANDOM/foo:UDINT");
-            requestBuilder.addItem("test-ULINT", "RANDOM/foo:ULINT");
-            requestBuilder.addItem("test-SINT", "RANDOM/foo:SINT");
-            requestBuilder.addItem("test-INT", "RANDOM/foo:INT");
-            requestBuilder.addItem("test-DINT", "RANDOM/foo:DINT");
-            requestBuilder.addItem("test-LINT", "RANDOM/foo:LINT");
-            requestBuilder.addItem("test-REAL", "RANDOM/foo:REAL");
-            requestBuilder.addItem("test-LREAL", "RANDOM/foo:LREAL");
-            requestBuilder.addItem("test-CHAR", "RANDOM/foo:CHAR");
-            requestBuilder.addItem("test-WCHAR", "RANDOM/foo:WCHAR");
-            final PlcReadRequest readRequest = requestBuilder.build();
+        try (final PlcConnection connection = new PlcDriverManager().getConnection("plc4x://localhost?remote-connection-string=s7://10.166.11.18?remote-rack=0&remote-slot=1")) {
+            final PlcReadRequest.Builder builder = connection.readRequestBuilder();
+            builder.addItem("TestBool1","%DB1:4.1:BOOL");
+            builder.addItem("TestBool2","%DB1:4.0:BOOL");
+            builder.addItem("TestInt","%DB1:18:INT");
+            builder.addItem("TestLReal","%DB1:20:LREAL");
+            builder.addItem("TestReal1","%DB1:0:REAL");
+            builder.addItem("TestReal2","%DB1:28:REAL");
+            builder.addItem("TestSInt","%DB1:32:SINT");
+            builder.addItem("TestString","%DB1:34:STRING(40)|GBK");
+            builder.addItem("TestTypeArray1","%DB1:818:BYTE[10]");
+            builder.addItem("TestUDInt","%DB1:294:UDINT");
+            builder.addItem("TestWString","%DB1:304:STRING(100)");
+
+            final PlcReadRequest readRequest = builder.build();
             final PlcReadResponse readResponse = readRequest.execute().get();
             System.out.println(readResponse);
         }

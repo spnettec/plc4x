@@ -61,6 +61,7 @@
             <usedDependency>ch.qos.logback:logback-core</usedDependency>
             <usedDependency>org.slf4j:log4j-over-slf4j</usedDependency>
             <usedDependency>org.apache.plc4x:plc4j-driver-simulated</usedDependency>
+            <usedDependency>org.apache.plc4x:plc4j-driver-s7</usedDependency>
           </usedDependencies>
         </configuration>
       </plugin>
@@ -89,6 +90,12 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-simulated</artifactId>
+      <version>0.10.0-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-driver-s7</artifactId>
       <version>0.10.0-SNAPSHOT</version>
     </dependency>
 
