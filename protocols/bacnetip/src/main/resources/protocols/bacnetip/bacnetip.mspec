@@ -180,9 +180,9 @@
 ]
 
 [discriminatedType APDU(uint 16 apduLength)
-    [discriminator uint 4 apduType]
+    [discriminator ApduType apduType]
     [typeSwitch apduType
-        ['0x0' APDUConfirmedRequest
+        ['CONFIRMED_REQUEST_PDU' APDUConfirmedRequest
             [simple   bit       segmentedMessage                         ]
             [simple   bit       moreFollows                              ]
             [simple   bit       segmentedResponseAccepted                ]
@@ -203,17 +203,17 @@
                                     length
                                     'segmentedMessage?((apduLength>0)?(apduLength - ((sequenceNumber != 0)?(6):(5))):0):0']
         ]
-        ['0x1' APDUUnconfirmedRequest
+        ['UNCONFIRMED_REQUEST_PDU' APDUUnconfirmedRequest
             [reserved uint 4                          '0'               ]
             [simple   BACnetUnconfirmedServiceRequest('apduLength - 1')
                                 serviceRequest                          ]
         ]
-        ['0x2' APDUSimpleAck
+        ['SIMPLE_ACK_PDU' APDUSimpleAck
             [reserved uint 4    '0'                                     ]
             [simple   uint 8    originalInvokeId                        ]
             [simple   uint 8    serviceChoice                           ]
         ]
-        ['0x3' APDUComplexAck
+        ['COMPLEX_ACK_PDU' APDUComplexAck
             [simple   bit       segmentedMessage                        ]
             [simple   bit       moreFollows                             ]
             [reserved uint 2    '0'                                     ]
@@ -229,7 +229,7 @@
                                     'segmentedMessage?((apduLength>0)?(apduLength - ((sequenceNumber != 0)?(5):(4))):0):0'
                                                                         ]
         ]
-        ['0x4' APDUSegmentAck
+        ['SEGMENT_ACK_PDU' APDUSegmentAck
             [reserved uint 2    '0x00'                                  ]
             [simple   bit       negativeAck                             ]
             [simple   bit       server                                  ]
@@ -237,7 +237,7 @@
             [simple   uint 8    sequenceNumber                          ]
             [simple   uint 8    proposedWindowSize                      ]
         ]
-        ['0x5' APDUError
+        ['ERROR_PDU' APDUError
             [reserved uint 4    '0x00'                                  ]
             [simple   uint 8    originalInvokeId                        ]
             [simple   BACnetConfirmedServiceChoice
@@ -245,13 +245,13 @@
             [simple   BACnetError('errorChoice')
                                 error                                   ]
         ]
-        ['0x6' APDUReject
+        ['REJECT_PDU' APDUReject
             [reserved uint 4    '0x00'                                  ]
             [simple   uint 8    originalInvokeId                        ]
             [simple   BACnetRejectReasonTagged('1')
                                 rejectReason                            ]
         ]
-        ['0x7' APDUAbort
+        ['ABORT_PDU' APDUAbort
             [reserved uint 3    '0x00'                                  ]
             [simple   bit       server                                  ]
             [simple   uint 8    originalInvokeId                        ]
@@ -260,9 +260,33 @@
         ]
         [APDUUnknown
             [simple   uint 4    unknownTypeRest                         ]
-            [array    byte      unknownBytes length '(apduLength>0)?(apduLength - 1):0'    ]
+            [array    byte      unknownBytes length '(apduLength>0)?apduLength:0'    ]
         ]
     ]
+]
+
+[enum uint 4 ApduType
+  ['0x0' CONFIRMED_REQUEST_PDU           ]
+  ['0x1' UNCONFIRMED_REQUEST_PDU         ]
+  ['0x2' SIMPLE_ACK_PDU                  ]
+  ['0x3' COMPLEX_ACK_PDU                 ]
+  ['0x4' SEGMENT_ACK_PDU                 ]
+  ['0x5' ERROR_PDU                       ]
+  ['0x6' REJECT_PDU                      ]
+  ['0x7' ABORT_PDU                       ]
+  /////
+  // plc4x definitions to not fall back to 0x0 in case one of those is parsed
+
+  ['0x8' APDU_UNKNOWN_8                  ]
+  ['0x9' APDU_UNKNOWN_9                  ]
+  ['0xA' APDU_UNKNOWN_A                  ]
+  ['0xB' APDU_UNKNOWN_B                  ]
+  ['0xC' APDU_UNKNOWN_C                  ]
+  ['0xD' APDU_UNKNOWN_D                  ]
+  ['0xE' APDU_UNKNOWN_E                  ]
+  ['0xF' APDU_UNKNOWN_F                  ]
+  //
+  /////
 ]
 
 // Not really tagged as it has no header but is consistent with naming schema enum+Tagged
@@ -271,14 +295,14 @@
                     value
                         'STATIC_CALL("readEnumGeneric", readBuffer, actualLength, BACnetRejectReason.VENDOR_PROPRIETARY_VALUE)'
                         'STATIC_CALL("writeEnumGeneric", writeBuffer, value)'
-                        'actualLength * 8'                                  ]
+                        '_value.isProprietary?0:(actualLength * 8)'                     ]
     [virtual  bit   isProprietary
-                        'value == BACnetRejectReason.VENDOR_PROPRIETARY_VALUE'    ]
+                        'value == BACnetRejectReason.VENDOR_PROPRIETARY_VALUE'          ]
     [manual   uint 32
                     proprietaryValue
                         'STATIC_CALL("readProprietaryEnumGeneric", readBuffer, actualLength, isProprietary)'
                         'STATIC_CALL("writeProprietaryEnumGeneric", writeBuffer, proprietaryValue, isProprietary)'
-                        '_value.isProprietary?(actualLength * 8):0'                  ]
+                        '_value.isProprietary?(actualLength * 8):0'                     ]
 ]
 
 // Not really tagged as it has no header but is consistent with naming schema enum+Tagged
@@ -287,14 +311,14 @@
                     value
                         'STATIC_CALL("readEnumGeneric", readBuffer, actualLength, BACnetAbortReason.VENDOR_PROPRIETARY_VALUE)'
                         'STATIC_CALL("writeEnumGeneric", writeBuffer, value)'
-                        'actualLength * 8'                                  ]
+                        '_value.isProprietary?0:(actualLength * 8)'                     ]
     [virtual  bit   isProprietary
-                        'value == BACnetAbortReason.VENDOR_PROPRIETARY_VALUE'     ]
+                        'value == BACnetAbortReason.VENDOR_PROPRIETARY_VALUE'           ]
     [manual   uint 32
                     proprietaryValue
                         'STATIC_CALL("readProprietaryEnumGeneric", readBuffer, actualLength, isProprietary)'
                         'STATIC_CALL("writeProprietaryEnumGeneric", writeBuffer, proprietaryValue, isProprietary)'
-                        '_value.isProprietary?(actualLength * 8):0'                  ]
+                        '_value.isProprietary?(actualLength * 8):0'                     ]
 ]
 
 [discriminatedType BACnetConfirmedServiceRequest(uint 16 serviceRequestLength)
@@ -959,7 +983,7 @@
             [simple   BACnetResultFlags('3')                                                                resultFlags         ]
             [simple   BACnetContextTagUnsignedInteger('4', 'BACnetDataType.UNSIGNED_INTEGER')               itemCount           ]
             [optional BACnetConstructedData('5', 'objectIdentifier.objectType', 'propertyIdentifier.value') itemData            ]
-            [optional BACnetContextTagUnsignedInteger('2', 'BACnetDataType.UNSIGNED_INTEGER')               firstSequenceNumber ]
+            [optional BACnetContextTagUnsignedInteger('6', 'BACnetDataType.UNSIGNED_INTEGER')               firstSequenceNumber ]
         ]
         //
         ////
@@ -1033,7 +1057,7 @@
                     notifyType                      ]
     [simple   BACnetEventTransitionBits('5')
                     eventEnable                     ]
-    [simple   BACnetEventProrities('6')
+    [simple   BACnetEventPriorities('6')
                     eventPriorities                 ]
 ]
 
@@ -1052,7 +1076,7 @@
     ]
 ]
 
-[type BACnetEventProrities(uint 8 tagNumber)
+[type BACnetEventPriorities(uint 8 tagNumber)
     [simple  BACnetOpeningTag('tagNumber')
                     openingTag
     ]
@@ -2212,6 +2236,10 @@
         ]
         //[*, 'ALARM_VALUES'                            BACnetConstructedDataAlarmValues [validation    '1 == 2'    "TODO: implement me ALARM_VALUES BACnetConstructedDataAlarmValues"]]
         //[*, 'ALIGN_INTERVALS'                         BACnetConstructedDataAlignIntervals [validation    '1 == 2'    "TODO: implement me ALIGN_INTERVALS BACnetConstructedDataAlignIntervals"]]
+
+        /////
+        // All property implementations for every object
+
         ['ACCESS_CREDENTIAL'     , 'ALL'              BACnetConstructedDataAccessCredentialAl
             [validation '1==2' "TODO: implement me BACnetConstructedData ...ACCESS_CREDENTIAL..."]
         ]
@@ -2434,6 +2462,9 @@
         ['TREND_LOG_MULTIPLE'    , 'ALL'              BACnetConstructedDataTrendLogMultipleAll
             [validation '1==2' "TODO: implement me BACnetConstructedData ...TREND_LOG_MULTIPLE..."]
         ]
+        //
+        /////
+
         //[*, 'ALL_WRITES_SUCCESSFUL'                   BACnetConstructedDataAllWritesSuccessful [validation    '1 == 2'    "TODO: implement me ALL_WRITES_SUCCESSFUL BACnetConstructedDataAllWritesSuccessful"]]
         //[*, 'ALLOW_GROUP_DELAY_INHIBIT'               BACnetConstructedDataAllowGroupDelayInhibit [validation    '1 == 2'    "TODO: implement me ALLOW_GROUP_DELAY_INHIBIT BACnetConstructedDataAllowGroupDelayInhibit"]]
         //[*, 'APDU_LENGTH'                             BACnetConstructedDataAPDULength [validation    '1 == 2'    "TODO: implement me APDU_LENGTH BACnetConstructedDataAPDULength"]]
@@ -2480,7 +2511,9 @@
         //[*, 'CAR_DOOR_ZONE'                           BACnetConstructedDataCarDoorZone [validation    '1 == 2'    "TODO: implement me CAR_DOOR_ZONE BACnetConstructedDataCarDoorZone"]]
         //[*, 'CAR_DRIVE_STATUS'                        BACnetConstructedDataCarDriveStatus [validation    '1 == 2'    "TODO: implement me CAR_DRIVE_STATUS BACnetConstructedDataCarDriveStatus"]]
         //[*, 'CAR_LOAD'                                BACnetConstructedDataCarLoad [validation    '1 == 2'    "TODO: implement me CAR_LOAD BACnetConstructedDataCarLoad"]]
-        //[*, 'CAR_LOAD_UNITS'                          BACnetConstructedDataCarLoadUnits [validation    '1 == 2'    "TODO: implement me CAR_LOAD_UNITS BACnetConstructedDataCarLoadUnits"]]
+        [*, 'CAR_LOAD_UNITS'                          BACnetConstructedDataCarLoadUnits
+            [simple   BACnetEngineeringUnitsTagged('0', 'TagClass.APPLICATION_TAGS') units                           ]
+        ]
         //[*, 'CAR_MODE'                                BACnetConstructedDataCarMode [validation    '1 == 2'    "TODO: implement me CAR_MODE BACnetConstructedDataCarMode"]]
         //[*, 'CAR_MOVING_DIRECTION'                    BACnetConstructedDataCarMovingDirection [validation    '1 == 2'    "TODO: implement me CAR_MOVING_DIRECTION BACnetConstructedDataCarMovingDirection"]]
         //[*, 'CAR_POSITION'                            BACnetConstructedDataCarPosition [validation    '1 == 2'    "TODO: implement me CAR_POSITION BACnetConstructedDataCarPosition"]]
@@ -2494,8 +2527,12 @@
         //[*, 'CONFIGURATION_FILES'                     BACnetConstructedDataConfigurationFiles [validation    '1 == 2'    "TODO: implement me CONFIGURATION_FILES BACnetConstructedDataConfigurationFiles"]]
         //[*, 'CONTROL_GROUPS'                          BACnetConstructedDataControlGroups [validation    '1 == 2'    "TODO: implement me CONTROL_GROUPS BACnetConstructedDataControlGroups"]]
         //[*, 'CONTROLLED_VARIABLE_REFERENCE'           BACnetConstructedDataControlledVariableReference [validation    '1 == 2'    "TODO: implement me CONTROLLED_VARIABLE_REFERENCE BACnetConstructedDataControlledVariableReference"]]
-        //[*, 'CONTROLLED_VARIABLE_UNITS'               BACnetConstructedDataControlledVariableUnits [validation    '1 == 2'    "TODO: implement me CONTROLLED_VARIABLE_UNITS BACnetConstructedDataControlledVariableUnits"]]
-        //[*, 'CONTROLLED_VARIABLE_VALUE'               BACnetConstructedDataControlledVariableValue [validation    '1 == 2'    "TODO: implement me CONTROLLED_VARIABLE_VALUE BACnetConstructedDataControlledVariableValue"]]
+        [*, 'CONTROLLED_VARIABLE_UNITS'               BACnetConstructedDataControlledVariableUnits
+            [simple   BACnetEngineeringUnitsTagged('0', 'TagClass.APPLICATION_TAGS') units                           ]
+        ]
+        [*, 'CONTROLLED_VARIABLE_VALUE'               BACnetConstructedDataControlledVariableValue
+            [simple   BACnetApplicationTagReal  controlledVariableValue         ]
+        ]
         //[*, 'COUNT'                                   BACnetConstructedDataCount [validation    '1 == 2'    "TODO: implement me COUNT BACnetConstructedDataCount"]]
         //[*, 'COUNT_BEFORE_CHANGE'                     BACnetConstructedDataCountBeforeChange [validation    '1 == 2'    "TODO: implement me COUNT_BEFORE_CHANGE BACnetConstructedDataCountBeforeChange"]]
         //[*, 'COUNT_CHANGE_TIME'                       BACnetConstructedDataCountChangeTime [validation    '1 == 2'    "TODO: implement me COUNT_CHANGE_TIME BACnetConstructedDataCountChangeTime"]]
@@ -2521,7 +2558,9 @@
         //[*, 'DEFAULT_TIMEOUT'                         BACnetConstructedDataDefaultTimeout [validation    '1 == 2'    "TODO: implement me DEFAULT_TIMEOUT BACnetConstructedDataDefaultTimeout"]]
         //[*, 'DEPLOYED_PROFILE_LOCATION'               BACnetConstructedDataDeployedProfileLocation [validation    '1 == 2'    "TODO: implement me DEPLOYED_PROFILE_LOCATION BACnetConstructedDataDeployedProfileLocation"]]
         //[*, 'DERIVATIVE_CONSTANT'                     BACnetConstructedDataDerivativeConstant [validation    '1 == 2'    "TODO: implement me DERIVATIVE_CONSTANT BACnetConstructedDataDerivativeConstant"]]
-        //[*, 'DERIVATIVE_CONSTANT_UNITS'               BACnetConstructedDataDerivativeConstantUnits [validation    '1 == 2'    "TODO: implement me DERIVATIVE_CONSTANT_UNITS BACnetConstructedDataDerivativeConstantUnits"]]
+        [*, 'DERIVATIVE_CONSTANT_UNITS'               BACnetConstructedDataDerivativeConstantUnits
+          [simple   BACnetEngineeringUnitsTagged('0', 'TagClass.APPLICATION_TAGS') units                           ]
+
         //[*, 'DESCRIPTION'                             BACnetConstructedDataDescription [validation    '1 == 2'    "TODO: implement me DESCRIPTION BACnetConstructedDataDescription"]]
         //[*, 'DESCRIPTION_OF_HALT'                     BACnetConstructedDataDescriptionOfHalt [validation    '1 == 2'    "TODO: implement me DESCRIPTION_OF_HALT BACnetConstructedDataDescriptionOfHalt"]]
         //[*, 'DEVICE_ADDRESS_BINDING'                  BACnetConstructedDataDeviceAddressBinding [validation    '1 == 2'    "TODO: implement me DEVICE_ADDRESS_BINDING BACnetConstructedDataDeviceAddressBinding"]]
@@ -2609,7 +2648,9 @@
         //[*, 'INSTANCE_OF'                             BACnetConstructedDataInstanceOf [validation    '1 == 2'    "TODO: implement me INSTANCE_OF BACnetConstructedDataInstanceOf"]]
         //[*, 'INSTANTANEOUS_POWER'                     BACnetConstructedDataInstantaneousPower [validation    '1 == 2'    "TODO: implement me INSTANTANEOUS_POWER BACnetConstructedDataInstantaneousPower"]]
         //[*, 'INTEGRAL_CONSTANT'                       BACnetConstructedDataIntegralConstant [validation    '1 == 2'    "TODO: implement me INTEGRAL_CONSTANT BACnetConstructedDataIntegralConstant"]]
-        //[*, 'INTEGRAL_CONSTANT_UNITS'                 BACnetConstructedDataIntegralConstantUnits [validation    '1 == 2'    "TODO: implement me INTEGRAL_CONSTANT_UNITS BACnetConstructedDataIntegralConstantUnits"]]
+        [*, 'INTEGRAL_CONSTANT_UNITS'                 BACnetConstructedDataIntegralConstantUnits
+          [simple   BACnetEngineeringUnitsTagged('0', 'TagClass.APPLICATION_TAGS') units                           ]
+
         //[*, 'INTERFACE_VALUE'                         BACnetConstructedDataInterfaceValue [validation    '1 == 2'    "TODO: implement me INTERFACE_VALUE BACnetConstructedDataInterfaceValue"]]
         //[*, 'INTERVAL_OFFSET'                         BACnetConstructedDataIntervalOffset [validation    '1 == 2'    "TODO: implement me INTERVAL_OFFSET BACnetConstructedDataIntervalOffset"]]
         //[*, 'IP_ADDRESS'                              BACnetConstructedDataIpAddress [validation    '1 == 2'    "TODO: implement me IP_ADDRESS BACnetConstructedDataIpAddress"]]
@@ -2749,8 +2790,12 @@
         //[*, 'OPERATION_DIRECTION'                     BACnetConstructedDataOperationDirection [validation    '1 == 2'    "TODO: implement me OPERATION_DIRECTION BACnetConstructedDataOperationDirection"]]
         //[*, 'OPERATION_EXPECTED'                      BACnetConstructedDataOperationExpected [validation    '1 == 2'    "TODO: implement me OPERATION_EXPECTED BACnetConstructedDataOperationExpected"]]
         //[*, 'OPTIONAL'                                BACnetConstructedDataOptional [validation    '1 == 2'    "TODO: implement me OPTIONAL BACnetConstructedDataOptional"]]
-        //[*, 'OUT_OF_SERVICE'                          BACnetConstructedDataOutOfService [validation    '1 == 2'    "TODO: implement me OUT_OF_SERVICE BACnetConstructedDataOutOfService"]]
-        //[*, 'OUTPUT_UNITS'                            BACnetConstructedDataOutputUnits [validation    '1 == 2'    "TODO: implement me OUTPUT_UNITS BACnetConstructedDataOutputUnits"]]
+        [*, 'OUT_OF_SERVICE'                          BACnetConstructedDataOutOfService
+            [simple   BACnetApplicationTagBoolean  outOfService         ]
+        ]
+        [*, 'OUTPUT_UNITS'                            BACnetConstructedDataOutputUnits
+          [simple   BACnetEngineeringUnitsTagged('0', 'TagClass.APPLICATION_TAGS') units                           ]
+
         //[*, 'PACKET_REORDER_TIME'                     BACnetConstructedDataPacketReorderTime [validation    '1 == 2'    "TODO: implement me PACKET_REORDER_TIME BACnetConstructedDataPacketReorderTime"]]
         //[*, 'PASSBACK_MODE'                           BACnetConstructedDataPassbackMode [validation    '1 == 2'    "TODO: implement me PASSBACK_MODE BACnetConstructedDataPassbackMode"]]
         //[*, 'PASSBACK_TIMEOUT'                        BACnetConstructedDataPassbackTimeout [validation    '1 == 2'    "TODO: implement me PASSBACK_TIMEOUT BACnetConstructedDataPassbackTimeout"]]
@@ -2774,7 +2819,9 @@
         //[*, 'PROGRAM_STATE'                           BACnetConstructedDataProgramState [validation    '1 == 2'    "TODO: implement me PROGRAM_STATE BACnetConstructedDataProgramState"]]
         //[*, 'PROPERTY_LIST'                           BACnetConstructedDataPropertyList [validation    '1 == 2'    "TODO: implement me PROPERTY_LIST BACnetConstructedDataPropertyList"]]
         //[*, 'PROPORTIONAL_CONSTANT'                   BACnetConstructedDataProportionalConstant [validation    '1 == 2'    "TODO: implement me PROPORTIONAL_CONSTANT BACnetConstructedDataProportionalConstant"]]
-        //[*, 'PROPORTIONAL_CONSTANT_UNITS'             BACnetConstructedDataProportionalConstantUnits [validation    '1 == 2'    "TODO: implement me PROPORTIONAL_CONSTANT_UNITS BACnetConstructedDataProportionalConstantUnits"]]
+        [*, 'PROPORTIONAL_CONSTANT_UNITS'             BACnetConstructedDataProportionalConstantUnits
+          [simple   BACnetEngineeringUnitsTagged('0', 'TagClass.APPLICATION_TAGS') units                           ]
+
         //[*, 'PROTOCOL_LEVEL'                          BACnetConstructedDataProtocolLevel [validation    '1 == 2'    "TODO: implement me PROTOCOL_LEVEL BACnetConstructedDataProtocolLevel"]]
         //[*, 'PROTOCOL_CONFORMANCE_CLASS'              BACnetConstructedDataProtocolConformanceClass [validation    '1 == 2'    "TODO: implement me PROTOCOL_CONFORMANCE_CLASS BACnetConstructedDataProtocolConformanceClass"]]
         //[*, 'PROTOCOL_OBJECT_TYPES_SUPPORTED'         BACnetConstructedDataProtocolObjectTypesSupported [validation    '1 == 2'    "TODO: implement me PROTOCOL_OBJECT_TYPES_SUPPORTED BACnetConstructedDataProtocolObjectTypesSupported"]]
@@ -2864,7 +2911,9 @@
         //[*, 'TRANSACTION_NOTIFICATION_CLASS'          BACnetConstructedDataTransactionNotificationClass [validation    '1 == 2'    "TODO: implement me TRANSACTION_NOTIFICATION_CLASS BACnetConstructedDataTransactionNotificationClass"]]
         //[*, 'TRANSITION'                              BACnetConstructedDataTransition [validation    '1 == 2'    "TODO: implement me TRANSITION BACnetConstructedDataTransition"]]
         //[*, 'TRIGGER'                                 BACnetConstructedDataTrigger [validation    '1 == 2'    "TODO: implement me TRIGGER BACnetConstructedDataTrigger"]]
-        //[*, 'UNITS'                                   BACnetConstructedDataUnits [validation    '1 == 2'    "TODO: implement me UNITS BACnetConstructedDataUnits"]]
+        [*, 'UNITS'                                   BACnetConstructedDataUnits
+          [simple   BACnetEngineeringUnitsTagged('0', 'TagClass.APPLICATION_TAGS') units                           ]
+
         //[*, 'UPDATE_INTERVAL'                         BACnetConstructedDataUpdateInterval [validation    '1 == 2'    "TODO: implement me UPDATE_INTERVAL BACnetConstructedDataUpdateInterval"]]
         //[*, 'UPDATE_KEY_SET_TIMEOUT'                  BACnetConstructedDataUpdateKeySetTimeout [validation    '1 == 2'    "TODO: implement me UPDATE_KEY_SET_TIMEOUT BACnetConstructedDataUpdateKeySetTimeout"]]
         //[*, 'UPDATE_TIME'                             BACnetConstructedDataUpdateTime [validation    '1 == 2'    "TODO: implement me UPDATE_TIME BACnetConstructedDataUpdateTime"]]
