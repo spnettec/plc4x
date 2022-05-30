@@ -37,7 +37,7 @@ func main() {
 	//var targetAmsPort = 851
 	//var connectionString = fmt.Sprintf("ads:tcp://%s?sourceAmsNetId=%s&sourceAmsPort=%d&targetAmsNetId=%s&targetAmsPort=%d", ip, sourceAmsNetId, sourceAmsPort, targetAmsNetId, targetAmsPort)
 	// Get a connection to a remote PLC
-	var connectionString = "s7://10.166.11.20?remote-rack=0&remote-slot=1"
+	var connectionString = "s7://10.166.11.18?remote-rack=0&remote-slot=1"
 	crc := driverManager.GetConnection(connectionString)
 
 	// Wait for the driver to connect (or not)
