@@ -4488,282 +4488,318 @@
                                   </header>
                                 </BACnetOpeningTag>
                               </openingTag>
-                              <BACnetConstructedDataUnspecified>
-                                <data isList="true">
-                                  <BACnetConstructedDataElement>
-                                    <applicationTag>
-                                      <BACnetApplicationTag>
-                                        <header>
-                                          <BACnetTagHeader>
-                                            <tagNumber dataType="uint" bitLength="4">0</tagNumber>
-                                            <tagClass>
-                                              <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
-                                            </tagClass>
-                                            <lengthValueType dataType="uint" bitLength="3">0</lengthValueType>
-                                          </BACnetTagHeader>
-                                        </header>
-                                        <BACnetApplicationTagNull>
-                                        </BACnetApplicationTagNull>
-                                      </BACnetApplicationTag>
-                                    </applicationTag>
-                                  </BACnetConstructedDataElement>
-                                  <BACnetConstructedDataElement>
-                                    <applicationTag>
-                                      <BACnetApplicationTag>
-                                        <header>
-                                          <BACnetTagHeader>
-                                            <tagNumber dataType="uint" bitLength="4">0</tagNumber>
-                                            <tagClass>
-                                              <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
-                                            </tagClass>
-                                            <lengthValueType dataType="uint" bitLength="3">0</lengthValueType>
-                                          </BACnetTagHeader>
-                                        </header>
-                                        <BACnetApplicationTagNull>
-                                        </BACnetApplicationTagNull>
-                                      </BACnetApplicationTag>
-                                    </applicationTag>
-                                  </BACnetConstructedDataElement>
-                                  <BACnetConstructedDataElement>
-                                    <applicationTag>
-                                      <BACnetApplicationTag>
-                                        <header>
-                                          <BACnetTagHeader>
-                                            <tagNumber dataType="uint" bitLength="4">0</tagNumber>
-                                            <tagClass>
-                                              <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
-                                            </tagClass>
-                                            <lengthValueType dataType="uint" bitLength="3">0</lengthValueType>
-                                          </BACnetTagHeader>
-                                        </header>
-                                        <BACnetApplicationTagNull>
-                                        </BACnetApplicationTagNull>
-                                      </BACnetApplicationTag>
-                                    </applicationTag>
-                                  </BACnetConstructedDataElement>
-                                  <BACnetConstructedDataElement>
-                                    <applicationTag>
-                                      <BACnetApplicationTag>
-                                        <header>
-                                          <BACnetTagHeader>
-                                            <tagNumber dataType="uint" bitLength="4">0</tagNumber>
-                                            <tagClass>
-                                              <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
-                                            </tagClass>
-                                            <lengthValueType dataType="uint" bitLength="3">0</lengthValueType>
-                                          </BACnetTagHeader>
-                                        </header>
-                                        <BACnetApplicationTagNull>
-                                        </BACnetApplicationTagNull>
-                                      </BACnetApplicationTag>
-                                    </applicationTag>
-                                  </BACnetConstructedDataElement>
-                                  <BACnetConstructedDataElement>
-                                    <applicationTag>
-                                      <BACnetApplicationTag>
-                                        <header>
-                                          <BACnetTagHeader>
-                                            <tagNumber dataType="uint" bitLength="4">0</tagNumber>
-                                            <tagClass>
-                                              <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
-                                            </tagClass>
-                                            <lengthValueType dataType="uint" bitLength="3">0</lengthValueType>
-                                          </BACnetTagHeader>
-                                        </header>
-                                        <BACnetApplicationTagNull>
-                                        </BACnetApplicationTagNull>
-                                      </BACnetApplicationTag>
-                                    </applicationTag>
-                                  </BACnetConstructedDataElement>
-                                  <BACnetConstructedDataElement>
-                                    <applicationTag>
-                                      <BACnetApplicationTag>
-                                        <header>
-                                          <BACnetTagHeader>
-                                            <tagNumber dataType="uint" bitLength="4">0</tagNumber>
-                                            <tagClass>
-                                              <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
-                                            </tagClass>
-                                            <lengthValueType dataType="uint" bitLength="3">0</lengthValueType>
-                                          </BACnetTagHeader>
-                                        </header>
-                                        <BACnetApplicationTagNull>
-                                        </BACnetApplicationTagNull>
-                                      </BACnetApplicationTag>
-                                    </applicationTag>
-                                  </BACnetConstructedDataElement>
-                                  <BACnetConstructedDataElement>
-                                    <applicationTag>
-                                      <BACnetApplicationTag>
-                                        <header>
-                                          <BACnetTagHeader>
-                                            <tagNumber dataType="uint" bitLength="4">0</tagNumber>
-                                            <tagClass>
-                                              <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
-                                            </tagClass>
-                                            <lengthValueType dataType="uint" bitLength="3">0</lengthValueType>
-                                          </BACnetTagHeader>
-                                        </header>
-                                        <BACnetApplicationTagNull>
-                                        </BACnetApplicationTagNull>
-                                      </BACnetApplicationTag>
-                                    </applicationTag>
-                                  </BACnetConstructedDataElement>
-                                  <BACnetConstructedDataElement>
-                                    <applicationTag>
-                                      <BACnetApplicationTag>
-                                        <header>
-                                          <BACnetTagHeader>
-                                            <tagNumber dataType="uint" bitLength="4">0</tagNumber>
-                                            <tagClass>
-                                              <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
-                                            </tagClass>
-                                            <lengthValueType dataType="uint" bitLength="3">0</lengthValueType>
-                                          </BACnetTagHeader>
-                                        </header>
-                                        <BACnetApplicationTagNull>
-                                        </BACnetApplicationTagNull>
-                                      </BACnetApplicationTag>
-                                    </applicationTag>
-                                  </BACnetConstructedDataElement>
-                                  <BACnetConstructedDataElement>
-                                    <applicationTag>
-                                      <BACnetApplicationTag>
-                                        <header>
-                                          <BACnetTagHeader>
-                                            <tagNumber dataType="uint" bitLength="4">0</tagNumber>
-                                            <tagClass>
-                                              <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
-                                            </tagClass>
-                                            <lengthValueType dataType="uint" bitLength="3">0</lengthValueType>
-                                          </BACnetTagHeader>
-                                        </header>
-                                        <BACnetApplicationTagNull>
-                                        </BACnetApplicationTagNull>
-                                      </BACnetApplicationTag>
-                                    </applicationTag>
-                                  </BACnetConstructedDataElement>
-                                  <BACnetConstructedDataElement>
-                                    <applicationTag>
-                                      <BACnetApplicationTag>
-                                        <header>
-                                          <BACnetTagHeader>
-                                            <tagNumber dataType="uint" bitLength="4">0</tagNumber>
-                                            <tagClass>
-                                              <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
-                                            </tagClass>
-                                            <lengthValueType dataType="uint" bitLength="3">0</lengthValueType>
-                                          </BACnetTagHeader>
-                                        </header>
-                                        <BACnetApplicationTagNull>
-                                        </BACnetApplicationTagNull>
-                                      </BACnetApplicationTag>
-                                    </applicationTag>
-                                  </BACnetConstructedDataElement>
-                                  <BACnetConstructedDataElement>
-                                    <applicationTag>
-                                      <BACnetApplicationTag>
-                                        <header>
-                                          <BACnetTagHeader>
-                                            <tagNumber dataType="uint" bitLength="4">0</tagNumber>
-                                            <tagClass>
-                                              <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
-                                            </tagClass>
-                                            <lengthValueType dataType="uint" bitLength="3">0</lengthValueType>
-                                          </BACnetTagHeader>
-                                        </header>
-                                        <BACnetApplicationTagNull>
-                                        </BACnetApplicationTagNull>
-                                      </BACnetApplicationTag>
-                                    </applicationTag>
-                                  </BACnetConstructedDataElement>
-                                  <BACnetConstructedDataElement>
-                                    <applicationTag>
-                                      <BACnetApplicationTag>
-                                        <header>
-                                          <BACnetTagHeader>
-                                            <tagNumber dataType="uint" bitLength="4">0</tagNumber>
-                                            <tagClass>
-                                              <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
-                                            </tagClass>
-                                            <lengthValueType dataType="uint" bitLength="3">0</lengthValueType>
-                                          </BACnetTagHeader>
-                                        </header>
-                                        <BACnetApplicationTagNull>
-                                        </BACnetApplicationTagNull>
-                                      </BACnetApplicationTag>
-                                    </applicationTag>
-                                  </BACnetConstructedDataElement>
-                                  <BACnetConstructedDataElement>
-                                    <applicationTag>
-                                      <BACnetApplicationTag>
-                                        <header>
-                                          <BACnetTagHeader>
-                                            <tagNumber dataType="uint" bitLength="4">0</tagNumber>
-                                            <tagClass>
-                                              <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
-                                            </tagClass>
-                                            <lengthValueType dataType="uint" bitLength="3">0</lengthValueType>
-                                          </BACnetTagHeader>
-                                        </header>
-                                        <BACnetApplicationTagNull>
-                                        </BACnetApplicationTagNull>
-                                      </BACnetApplicationTag>
-                                    </applicationTag>
-                                  </BACnetConstructedDataElement>
-                                  <BACnetConstructedDataElement>
-                                    <applicationTag>
-                                      <BACnetApplicationTag>
-                                        <header>
-                                          <BACnetTagHeader>
-                                            <tagNumber dataType="uint" bitLength="4">0</tagNumber>
-                                            <tagClass>
-                                              <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
-                                            </tagClass>
-                                            <lengthValueType dataType="uint" bitLength="3">0</lengthValueType>
-                                          </BACnetTagHeader>
-                                        </header>
-                                        <BACnetApplicationTagNull>
-                                        </BACnetApplicationTagNull>
-                                      </BACnetApplicationTag>
-                                    </applicationTag>
-                                  </BACnetConstructedDataElement>
-                                  <BACnetConstructedDataElement>
-                                    <applicationTag>
-                                      <BACnetApplicationTag>
-                                        <header>
-                                          <BACnetTagHeader>
-                                            <tagNumber dataType="uint" bitLength="4">0</tagNumber>
-                                            <tagClass>
-                                              <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
-                                            </tagClass>
-                                            <lengthValueType dataType="uint" bitLength="3">0</lengthValueType>
-                                          </BACnetTagHeader>
-                                        </header>
-                                        <BACnetApplicationTagNull>
-                                        </BACnetApplicationTagNull>
-                                      </BACnetApplicationTag>
-                                    </applicationTag>
-                                  </BACnetConstructedDataElement>
-                                  <BACnetConstructedDataElement>
-                                    <applicationTag>
-                                      <BACnetApplicationTag>
-                                        <header>
-                                          <BACnetTagHeader>
-                                            <tagNumber dataType="uint" bitLength="4">0</tagNumber>
-                                            <tagClass>
-                                              <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
-                                            </tagClass>
-                                            <lengthValueType dataType="uint" bitLength="3">0</lengthValueType>
-                                          </BACnetTagHeader>
-                                        </header>
-                                        <BACnetApplicationTagNull>
-                                        </BACnetApplicationTagNull>
-                                      </BACnetApplicationTag>
-                                    </applicationTag>
-                                  </BACnetConstructedDataElement>
-                                </data>
-                              </BACnetConstructedDataUnspecified>
+                              <BACnetConstructedDataPriorityArray>
+                                <priorityArray>
+                                  <BACnetPriorityArray>
+                                    <data isList="true">
+                                      <BACnetPriorityValue>
+                                        <BACnetPriorityValueNull>
+                                          <nullValue>
+                                            <BACnetApplicationTag>
+                                              <header>
+                                                <BACnetTagHeader>
+                                                  <tagNumber dataType="uint" bitLength="4">0</tagNumber>
+                                                  <tagClass>
+                                                    <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
+                                                  </tagClass>
+                                                  <lengthValueType dataType="uint" bitLength="3">0</lengthValueType>
+                                                </BACnetTagHeader>
+                                              </header>
+                                              <BACnetApplicationTagNull>
+                                              </BACnetApplicationTagNull>
+                                            </BACnetApplicationTag>
+                                          </nullValue>
+                                        </BACnetPriorityValueNull>
+                                      </BACnetPriorityValue>
+                                      <BACnetPriorityValue>
+                                        <BACnetPriorityValueNull>
+                                          <nullValue>
+                                            <BACnetApplicationTag>
+                                              <header>
+                                                <BACnetTagHeader>
+                                                  <tagNumber dataType="uint" bitLength="4">0</tagNumber>
+                                                  <tagClass>
+                                                    <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
+                                                  </tagClass>
+                                                  <lengthValueType dataType="uint" bitLength="3">0</lengthValueType>
+                                                </BACnetTagHeader>
+                                              </header>
+                                              <BACnetApplicationTagNull>
+                                              </BACnetApplicationTagNull>
+                                            </BACnetApplicationTag>
+                                          </nullValue>
+                                        </BACnetPriorityValueNull>
+                                      </BACnetPriorityValue>
+                                      <BACnetPriorityValue>
+                                        <BACnetPriorityValueNull>
+                                          <nullValue>
+                                            <BACnetApplicationTag>
+                                              <header>
+                                                <BACnetTagHeader>
+                                                  <tagNumber dataType="uint" bitLength="4">0</tagNumber>
+                                                  <tagClass>
+                                                    <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
+                                                  </tagClass>
+                                                  <lengthValueType dataType="uint" bitLength="3">0</lengthValueType>
+                                                </BACnetTagHeader>
+                                              </header>
+                                              <BACnetApplicationTagNull>
+                                              </BACnetApplicationTagNull>
+                                            </BACnetApplicationTag>
+                                          </nullValue>
+                                        </BACnetPriorityValueNull>
+                                      </BACnetPriorityValue>
+                                      <BACnetPriorityValue>
+                                        <BACnetPriorityValueNull>
+                                          <nullValue>
+                                            <BACnetApplicationTag>
+                                              <header>
+                                                <BACnetTagHeader>
+                                                  <tagNumber dataType="uint" bitLength="4">0</tagNumber>
+                                                  <tagClass>
+                                                    <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
+                                                  </tagClass>
+                                                  <lengthValueType dataType="uint" bitLength="3">0</lengthValueType>
+                                                </BACnetTagHeader>
+                                              </header>
+                                              <BACnetApplicationTagNull>
+                                              </BACnetApplicationTagNull>
+                                            </BACnetApplicationTag>
+                                          </nullValue>
+                                        </BACnetPriorityValueNull>
+                                      </BACnetPriorityValue>
+                                      <BACnetPriorityValue>
+                                        <BACnetPriorityValueNull>
+                                          <nullValue>
+                                            <BACnetApplicationTag>
+                                              <header>
+                                                <BACnetTagHeader>
+                                                  <tagNumber dataType="uint" bitLength="4">0</tagNumber>
+                                                  <tagClass>
+                                                    <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
+                                                  </tagClass>
+                                                  <lengthValueType dataType="uint" bitLength="3">0</lengthValueType>
+                                                </BACnetTagHeader>
+                                              </header>
+                                              <BACnetApplicationTagNull>
+                                              </BACnetApplicationTagNull>
+                                            </BACnetApplicationTag>
+                                          </nullValue>
+                                        </BACnetPriorityValueNull>
+                                      </BACnetPriorityValue>
+                                      <BACnetPriorityValue>
+                                        <BACnetPriorityValueNull>
+                                          <nullValue>
+                                            <BACnetApplicationTag>
+                                              <header>
+                                                <BACnetTagHeader>
+                                                  <tagNumber dataType="uint" bitLength="4">0</tagNumber>
+                                                  <tagClass>
+                                                    <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
+                                                  </tagClass>
+                                                  <lengthValueType dataType="uint" bitLength="3">0</lengthValueType>
+                                                </BACnetTagHeader>
+                                              </header>
+                                              <BACnetApplicationTagNull>
+                                              </BACnetApplicationTagNull>
+                                            </BACnetApplicationTag>
+                                          </nullValue>
+                                        </BACnetPriorityValueNull>
+                                      </BACnetPriorityValue>
+                                      <BACnetPriorityValue>
+                                        <BACnetPriorityValueNull>
+                                          <nullValue>
+                                            <BACnetApplicationTag>
+                                              <header>
+                                                <BACnetTagHeader>
+                                                  <tagNumber dataType="uint" bitLength="4">0</tagNumber>
+                                                  <tagClass>
+                                                    <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
+                                                  </tagClass>
+                                                  <lengthValueType dataType="uint" bitLength="3">0</lengthValueType>
+                                                </BACnetTagHeader>
+                                              </header>
+                                              <BACnetApplicationTagNull>
+                                              </BACnetApplicationTagNull>
+                                            </BACnetApplicationTag>
+                                          </nullValue>
+                                        </BACnetPriorityValueNull>
+                                      </BACnetPriorityValue>
+                                      <BACnetPriorityValue>
+                                        <BACnetPriorityValueNull>
+                                          <nullValue>
+                                            <BACnetApplicationTag>
+                                              <header>
+                                                <BACnetTagHeader>
+                                                  <tagNumber dataType="uint" bitLength="4">0</tagNumber>
+                                                  <tagClass>
+                                                    <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
+                                                  </tagClass>
+                                                  <lengthValueType dataType="uint" bitLength="3">0</lengthValueType>
+                                                </BACnetTagHeader>
+                                              </header>
+                                              <BACnetApplicationTagNull>
+                                              </BACnetApplicationTagNull>
+                                            </BACnetApplicationTag>
+                                          </nullValue>
+                                        </BACnetPriorityValueNull>
+                                      </BACnetPriorityValue>
+                                      <BACnetPriorityValue>
+                                        <BACnetPriorityValueNull>
+                                          <nullValue>
+                                            <BACnetApplicationTag>
+                                              <header>
+                                                <BACnetTagHeader>
+                                                  <tagNumber dataType="uint" bitLength="4">0</tagNumber>
+                                                  <tagClass>
+                                                    <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
+                                                  </tagClass>
+                                                  <lengthValueType dataType="uint" bitLength="3">0</lengthValueType>
+                                                </BACnetTagHeader>
+                                              </header>
+                                              <BACnetApplicationTagNull>
+                                              </BACnetApplicationTagNull>
+                                            </BACnetApplicationTag>
+                                          </nullValue>
+                                        </BACnetPriorityValueNull>
+                                      </BACnetPriorityValue>
+                                      <BACnetPriorityValue>
+                                        <BACnetPriorityValueNull>
+                                          <nullValue>
+                                            <BACnetApplicationTag>
+                                              <header>
+                                                <BACnetTagHeader>
+                                                  <tagNumber dataType="uint" bitLength="4">0</tagNumber>
+                                                  <tagClass>
+                                                    <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
+                                                  </tagClass>
+                                                  <lengthValueType dataType="uint" bitLength="3">0</lengthValueType>
+                                                </BACnetTagHeader>
+                                              </header>
+                                              <BACnetApplicationTagNull>
+                                              </BACnetApplicationTagNull>
+                                            </BACnetApplicationTag>
+                                          </nullValue>
+                                        </BACnetPriorityValueNull>
+                                      </BACnetPriorityValue>
+                                      <BACnetPriorityValue>
+                                        <BACnetPriorityValueNull>
+                                          <nullValue>
+                                            <BACnetApplicationTag>
+                                              <header>
+                                                <BACnetTagHeader>
+                                                  <tagNumber dataType="uint" bitLength="4">0</tagNumber>
+                                                  <tagClass>
+                                                    <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
+                                                  </tagClass>
+                                                  <lengthValueType dataType="uint" bitLength="3">0</lengthValueType>
+                                                </BACnetTagHeader>
+                                              </header>
+                                              <BACnetApplicationTagNull>
+                                              </BACnetApplicationTagNull>
+                                            </BACnetApplicationTag>
+                                          </nullValue>
+                                        </BACnetPriorityValueNull>
+                                      </BACnetPriorityValue>
+                                      <BACnetPriorityValue>
+                                        <BACnetPriorityValueNull>
+                                          <nullValue>
+                                            <BACnetApplicationTag>
+                                              <header>
+                                                <BACnetTagHeader>
+                                                  <tagNumber dataType="uint" bitLength="4">0</tagNumber>
+                                                  <tagClass>
+                                                    <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
+                                                  </tagClass>
+                                                  <lengthValueType dataType="uint" bitLength="3">0</lengthValueType>
+                                                </BACnetTagHeader>
+                                              </header>
+                                              <BACnetApplicationTagNull>
+                                              </BACnetApplicationTagNull>
+                                            </BACnetApplicationTag>
+                                          </nullValue>
+                                        </BACnetPriorityValueNull>
+                                      </BACnetPriorityValue>
+                                      <BACnetPriorityValue>
+                                        <BACnetPriorityValueNull>
+                                          <nullValue>
+                                            <BACnetApplicationTag>
+                                              <header>
+                                                <BACnetTagHeader>
+                                                  <tagNumber dataType="uint" bitLength="4">0</tagNumber>
+                                                  <tagClass>
+                                                    <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
+                                                  </tagClass>
+                                                  <lengthValueType dataType="uint" bitLength="3">0</lengthValueType>
+                                                </BACnetTagHeader>
+                                              </header>
+                                              <BACnetApplicationTagNull>
+                                              </BACnetApplicationTagNull>
+                                            </BACnetApplicationTag>
+                                          </nullValue>
+                                        </BACnetPriorityValueNull>
+                                      </BACnetPriorityValue>
+                                      <BACnetPriorityValue>
+                                        <BACnetPriorityValueNull>
+                                          <nullValue>
+                                            <BACnetApplicationTag>
+                                              <header>
+                                                <BACnetTagHeader>
+                                                  <tagNumber dataType="uint" bitLength="4">0</tagNumber>
+                                                  <tagClass>
+                                                    <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
+                                                  </tagClass>
+                                                  <lengthValueType dataType="uint" bitLength="3">0</lengthValueType>
+                                                </BACnetTagHeader>
+                                              </header>
+                                              <BACnetApplicationTagNull>
+                                              </BACnetApplicationTagNull>
+                                            </BACnetApplicationTag>
+                                          </nullValue>
+                                        </BACnetPriorityValueNull>
+                                      </BACnetPriorityValue>
+                                      <BACnetPriorityValue>
+                                        <BACnetPriorityValueNull>
+                                          <nullValue>
+                                            <BACnetApplicationTag>
+                                              <header>
+                                                <BACnetTagHeader>
+                                                  <tagNumber dataType="uint" bitLength="4">0</tagNumber>
+                                                  <tagClass>
+                                                    <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
+                                                  </tagClass>
+                                                  <lengthValueType dataType="uint" bitLength="3">0</lengthValueType>
+                                                </BACnetTagHeader>
+                                              </header>
+                                              <BACnetApplicationTagNull>
+                                              </BACnetApplicationTagNull>
+                                            </BACnetApplicationTag>
+                                          </nullValue>
+                                        </BACnetPriorityValueNull>
+                                      </BACnetPriorityValue>
+                                      <BACnetPriorityValue>
+                                        <BACnetPriorityValueNull>
+                                          <nullValue>
+                                            <BACnetApplicationTag>
+                                              <header>
+                                                <BACnetTagHeader>
+                                                  <tagNumber dataType="uint" bitLength="4">0</tagNumber>
+                                                  <tagClass>
+                                                    <TagClass dataType="uint" bitLength="1" stringRepresentation="APPLICATION_TAGS">0</TagClass>
+                                                  </tagClass>
+                                                  <lengthValueType dataType="uint" bitLength="3">0</lengthValueType>
+                                                </BACnetTagHeader>
+                                              </header>
+                                              <BACnetApplicationTagNull>
+                                              </BACnetApplicationTagNull>
+                                            </BACnetApplicationTag>
+                                          </nullValue>
+                                        </BACnetPriorityValueNull>
+                                      </BACnetPriorityValue>
+                                    </data>
+                                  </BACnetPriorityArray>
+                                </priorityArray>
+                              </BACnetConstructedDataPriorityArray>
                               <closingTag>
                                 <BACnetClosingTag>
                                   <header>
