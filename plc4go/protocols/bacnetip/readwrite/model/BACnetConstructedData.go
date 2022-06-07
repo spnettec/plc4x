@@ -186,6 +186,8 @@ func BACnetConstructedDataParse(readBuffer utils.ReadBuffer, tagNumber uint8, ob
 		_child, typeSwitchError = BACnetConstructedDataAccompanimentParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_ACCOMPANIMENT_TIME: // BACnetConstructedDataAccompanimentTime
 		_child, typeSwitchError = BACnetConstructedDataAccompanimentTimeParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_ACK_REQUIRED: // BACnetConstructedDataAckRequired
+		_child, typeSwitchError = BACnetConstructedDataAckRequiredParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_ACKED_TRANSITIONS: // BACnetConstructedDataAckedTransitions
 		_child, typeSwitchError = BACnetConstructedDataAckedTransitionsParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case objectTypeArgument == BACnetObjectType_LOOP && propertyIdentifierArgument == BACnetPropertyIdentifier_ACTION: // BACnetConstructedDataLoopAction
@@ -196,6 +198,8 @@ func BACnetConstructedDataParse(readBuffer utils.ReadBuffer, tagNumber uint8, ob
 		_child, typeSwitchError = BACnetConstructedDataActivationTimeParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_ACTIVE_AUTHENTICATION_POLICY: // BACnetConstructedDataActiveAuthenticationPolicy
 		_child, typeSwitchError = BACnetConstructedDataActiveAuthenticationPolicyParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_ACTUAL_SHED_LEVEL: // BACnetConstructedDataActualShedLevel
+		_child, typeSwitchError = BACnetConstructedDataActualShedLevelParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case objectTypeArgument == BACnetObjectType_LIFE_SAFETY_POINT && propertyIdentifierArgument == BACnetPropertyIdentifier_ALARM_VALUES: // BACnetConstructedDataLifeSafetyPointAlarmValues
 		_child, typeSwitchError = BACnetConstructedDataLifeSafetyPointAlarmValuesParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case objectTypeArgument == BACnetObjectType_ACCESS_CREDENTIAL && propertyIdentifierArgument == BACnetPropertyIdentifier_ALL: // BACnetConstructedDataAccessCredentialAl
@@ -318,6 +322,8 @@ func BACnetConstructedDataParse(readBuffer utils.ReadBuffer, tagNumber uint8, ob
 		_child, typeSwitchError = BACnetConstructedDataTrendLogAllParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case objectTypeArgument == BACnetObjectType_TREND_LOG_MULTIPLE && propertyIdentifierArgument == BACnetPropertyIdentifier_ALL: // BACnetConstructedDataTrendLogMultipleAll
 		_child, typeSwitchError = BACnetConstructedDataTrendLogMultipleAllParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_APDU_LENGTH: // BACnetConstructedDataAPDULength
+		_child, typeSwitchError = BACnetConstructedDataAPDULengthParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_ASSIGNED_ACCESS_RIGHTS: // BACnetConstructedDataAssignedAccessRights
 		_child, typeSwitchError = BACnetConstructedDataAssignedAccessRightsParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_AUTHENTICATION_FACTORS: // BACnetConstructedDataAuthenticationFactors
@@ -332,16 +338,48 @@ func BACnetConstructedDataParse(readBuffer utils.ReadBuffer, tagNumber uint8, ob
 		_child, typeSwitchError = BACnetConstructedDataAuthorizationExemptionsParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_AUTHORIZATION_MODE: // BACnetConstructedDataAuthorizationMode
 		_child, typeSwitchError = BACnetConstructedDataAuthorizationModeParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_AUTO_SLAVE_DISCOVERY: // BACnetConstructedDataAutoSlaveDiscovery
+		_child, typeSwitchError = BACnetConstructedDataAutoSlaveDiscoveryParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_BACNET_IP_GLOBAL_ADDRESS: // BACnetConstructedDataBACnetIPGlobalAddress
+		_child, typeSwitchError = BACnetConstructedDataBACnetIPGlobalAddressParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_BACNET_IP_MODE: // BACnetConstructedDataBACnetIPMode
+		_child, typeSwitchError = BACnetConstructedDataBACnetIPModeParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_BACNET_IP_MULTICAST_ADDRESS: // BACnetConstructedDataBACnetIPMulticastAddress
+		_child, typeSwitchError = BACnetConstructedDataBACnetIPMulticastAddressParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_BACNET_IP_NAT_TRAVERSAL: // BACnetConstructedDataBACnetIPNATTraversal
+		_child, typeSwitchError = BACnetConstructedDataBACnetIPNATTraversalParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_BACNET_IP_UDP_PORT: // BACnetConstructedDataBACnetIPUDPPort
+		_child, typeSwitchError = BACnetConstructedDataBACnetIPUDPPortParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_BACNET_IPV6_MODE: // BACnetConstructedDataBACnetIPv6Mode
+		_child, typeSwitchError = BACnetConstructedDataBACnetIPv6ModeParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_BACNET_IPV6_UDP_PORT: // BACnetConstructedDataBACnetIPv6UDPPort
+		_child, typeSwitchError = BACnetConstructedDataBACnetIPv6UDPPortParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_BACNET_IPV6_MULTICAST_ADDRESS: // BACnetConstructedDataBACnetIPv6MulticastAddress
+		_child, typeSwitchError = BACnetConstructedDataBACnetIPv6MulticastAddressParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_BASE_DEVICE_SECURITY_POLICY: // BACnetConstructedDataBaseDeviceSecurityPolicy
+		_child, typeSwitchError = BACnetConstructedDataBaseDeviceSecurityPolicyParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_BBMD_ACCEPT_FD_REGISTRATIONS: // BACnetConstructedDataBBMDAcceptFDRegistrations
 		_child, typeSwitchError = BACnetConstructedDataBBMDAcceptFDRegistrationsParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_BBMD_BROADCAST_DISTRIBUTION_TABLE: // BACnetConstructedDataBBMDBroadcastDistributionTable
+		_child, typeSwitchError = BACnetConstructedDataBBMDBroadcastDistributionTableParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_BBMD_FOREIGN_DEVICE_TABLE: // BACnetConstructedDataBBMDForeignDeviceTable
+		_child, typeSwitchError = BACnetConstructedDataBBMDForeignDeviceTableParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_BELONGS_TO: // BACnetConstructedDataBelongsTo
 		_child, typeSwitchError = BACnetConstructedDataBelongsToParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_BIAS: // BACnetConstructedDataBias
+		_child, typeSwitchError = BACnetConstructedDataBiasParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_BIT_MASK: // BACnetConstructedDataBitMask
 		_child, typeSwitchError = BACnetConstructedDataBitMaskParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_BIT_TEXT: // BACnetConstructedDataBitText
 		_child, typeSwitchError = BACnetConstructedDataBitTextParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_CAR_LOAD_UNITS: // BACnetConstructedDataCarLoadUnits
 		_child, typeSwitchError = BACnetConstructedDataCarLoadUnitsParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_CHANGES_PENDING: // BACnetConstructedDataChangesPending
+		_child, typeSwitchError = BACnetConstructedDataChangesPendingParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_COMMAND: // BACnetConstructedDataCommand
+		_child, typeSwitchError = BACnetConstructedDataCommandParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_CONTROLLED_VARIABLE_REFERENCE: // BACnetConstructedDataControlledVariableReference
+		_child, typeSwitchError = BACnetConstructedDataControlledVariableReferenceParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_CONTROLLED_VARIABLE_UNITS: // BACnetConstructedDataControlledVariableUnits
 		_child, typeSwitchError = BACnetConstructedDataControlledVariableUnitsParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_CONTROLLED_VARIABLE_VALUE: // BACnetConstructedDataControlledVariableValue
@@ -366,16 +404,30 @@ func BACnetConstructedDataParse(readBuffer utils.ReadBuffer, tagNumber uint8, ob
 		_child, typeSwitchError = BACnetConstructedDataDaysRemainingParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_DEADBAND: // BACnetConstructedDataDeadband
 		_child, typeSwitchError = BACnetConstructedDataDeadbandParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_DEFAULT_FADE_TIME: // BACnetConstructedDataDefaultFadeTime
+		_child, typeSwitchError = BACnetConstructedDataDefaultFadeTimeParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_DEFAULT_RAMP_RATE: // BACnetConstructedDataDefaultRampRate
+		_child, typeSwitchError = BACnetConstructedDataDefaultRampRateParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_DEFAULT_STEP_INCREMENT: // BACnetConstructedDataDefaultStepIncrement
+		_child, typeSwitchError = BACnetConstructedDataDefaultStepIncrementParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_DEFAULT_SUBORDINATE_RELATIONSHIP: // BACnetConstructedDataDefaultSubordinateRelationship
 		_child, typeSwitchError = BACnetConstructedDataDefaultSubordinateRelationshipParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_DEFAULT_TIMEOUT: // BACnetConstructedDataDefaultTimeout
 		_child, typeSwitchError = BACnetConstructedDataDefaultTimeoutParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_DERIVATIVE_CONSTANT: // BACnetConstructedDataDerivativeConstant
+		_child, typeSwitchError = BACnetConstructedDataDerivativeConstantParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_DERIVATIVE_CONSTANT_UNITS: // BACnetConstructedDataDerivativeConstantUnits
 		_child, typeSwitchError = BACnetConstructedDataDerivativeConstantUnitsParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_DESCRIPTION: // BACnetConstructedDataDescription
 		_child, typeSwitchError = BACnetConstructedDataDescriptionParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_DESCRIPTION_OF_HALT: // BACnetConstructedDataDescriptionOfHalt
+		_child, typeSwitchError = BACnetConstructedDataDescriptionOfHaltParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_DEVICE_TYPE: // BACnetConstructedDataDeviceType
 		_child, typeSwitchError = BACnetConstructedDataDeviceTypeParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_DISTRIBUTION_KEY_REVISION: // BACnetConstructedDataDistributionKeyRevision
+		_child, typeSwitchError = BACnetConstructedDataDistributionKeyRevisionParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_DO_NOT_HIDE: // BACnetConstructedDataDoNotHide
+		_child, typeSwitchError = BACnetConstructedDataDoNotHideParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_DOOR_ALARM_STATE: // BACnetConstructedDataDoorAlarmState
 		_child, typeSwitchError = BACnetConstructedDataDoorAlarmStateParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_DOOR_EXTENDED_PULSE_TIME: // BACnetConstructedDataDoorExtendedPulseTime
@@ -390,8 +442,12 @@ func BACnetConstructedDataParse(readBuffer utils.ReadBuffer, tagNumber uint8, ob
 		_child, typeSwitchError = BACnetConstructedDataDoorStatusParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_DOOR_UNLOCK_DELAY_TIME: // BACnetConstructedDataDoorUnlockDelayTime
 		_child, typeSwitchError = BACnetConstructedDataDoorUnlockDelayTimeParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_DUTY_WINDOW: // BACnetConstructedDataDutyWindow
+		_child, typeSwitchError = BACnetConstructedDataDutyWindowParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_EFFECTIVE_PERIOD: // BACnetConstructedDataEffectivePeriod
 		_child, typeSwitchError = BACnetConstructedDataEffectivePeriodParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_ERROR_LIMIT: // BACnetConstructedDataErrorLimit
+		_child, typeSwitchError = BACnetConstructedDataErrorLimitParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_EVENT_ALGORITHM_INHIBIT: // BACnetConstructedDataEventAlgorithmInhibit
 		_child, typeSwitchError = BACnetConstructedDataEventAlgorithmInhibitParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_EVENT_ALGORITHM_INHIBIT_REF: // BACnetConstructedDataEventAlgorithmInhibitRef
@@ -410,6 +466,8 @@ func BACnetConstructedDataParse(readBuffer utils.ReadBuffer, tagNumber uint8, ob
 		_child, typeSwitchError = BACnetConstructedDataEventTimestampsParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_EXCEPTION_SCHEDULE: // BACnetConstructedDataExceptionSchedule
 		_child, typeSwitchError = BACnetConstructedDataExceptionScheduleParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_EXPECTED_SHED_LEVEL: // BACnetConstructedDataExpectedShedLevel
+		_child, typeSwitchError = BACnetConstructedDataExpectedShedLevelParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_EXTENDED_TIME_ENABLE: // BACnetConstructedDataExtendedTimeEnable
 		_child, typeSwitchError = BACnetConstructedDataExtendedTimeEnableParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_FAILED_ATTEMPT_EVENTS: // BACnetConstructedDataFailedAttemptEvents
@@ -424,70 +482,154 @@ func BACnetConstructedDataParse(readBuffer utils.ReadBuffer, tagNumber uint8, ob
 		_child, typeSwitchError = BACnetConstructedDataFaultLowLimitParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case objectTypeArgument == BACnetObjectType_LIFE_SAFETY_POINT && propertyIdentifierArgument == BACnetPropertyIdentifier_FAULT_VALUES: // BACnetConstructedDataLifeSafetyPointFaultValues
 		_child, typeSwitchError = BACnetConstructedDataLifeSafetyPointFaultValuesParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_FD_BBMD_ADDRESS: // BACnetConstructedDataFDBBMDAddress
+		_child, typeSwitchError = BACnetConstructedDataFDBBMDAddressParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_FD_SUBSCRIPTION_LIFETIME: // BACnetConstructedDataFDSubscriptionLifetime
+		_child, typeSwitchError = BACnetConstructedDataFDSubscriptionLifetimeParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_FULL_DUTY_BASELINE: // BACnetConstructedDataFullDutyBaseline
+		_child, typeSwitchError = BACnetConstructedDataFullDutyBaselineParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case objectTypeArgument == BACnetObjectType_ACCUMULATOR && propertyIdentifierArgument == BACnetPropertyIdentifier_HIGH_LIMIT: // BACnetConstructedDataAccumulatorHighLimit
 		_child, typeSwitchError = BACnetConstructedDataAccumulatorHighLimitParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_HIGH_LIMIT: // BACnetConstructedDataHighLimit
 		_child, typeSwitchError = BACnetConstructedDataHighLimitParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_IN_PROGRESS: // BACnetConstructedDataInProgress
+		_child, typeSwitchError = BACnetConstructedDataInProgressParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_INITIAL_TIMEOUT: // BACnetConstructedDataInitialTimeout
 		_child, typeSwitchError = BACnetConstructedDataInitialTimeoutParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_INPUT_REFERENCE: // BACnetConstructedDataInputReference
 		_child, typeSwitchError = BACnetConstructedDataInputReferenceParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_INSTANCE_OF: // BACnetConstructedDataInstanceOf
+		_child, typeSwitchError = BACnetConstructedDataInstanceOfParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_INSTANTANEOUS_POWER: // BACnetConstructedDataInstantaneousPower
+		_child, typeSwitchError = BACnetConstructedDataInstantaneousPowerParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_INTEGRAL_CONSTANT: // BACnetConstructedDataIntegralConstant
+		_child, typeSwitchError = BACnetConstructedDataIntegralConstantParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_INTEGRAL_CONSTANT_UNITS: // BACnetConstructedDataIntegralConstantUnits
 		_child, typeSwitchError = BACnetConstructedDataIntegralConstantUnitsParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case objectTypeArgument == BACnetObjectType_ANALOG_INPUT && propertyIdentifierArgument == BACnetPropertyIdentifier_INTERFACE_VALUE: // BACnetConstructedDataAnalogInputInterfaceValue
 		_child, typeSwitchError = BACnetConstructedDataAnalogInputInterfaceValueParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_IP_ADDRESS: // BACnetConstructedDataIPAddress
+		_child, typeSwitchError = BACnetConstructedDataIPAddressParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_IP_DEFAULT_GATEWAY: // BACnetConstructedDataIPDefaultGateway
+		_child, typeSwitchError = BACnetConstructedDataIPDefaultGatewayParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_IP_DHCP_ENABLE: // BACnetConstructedDataIPDHCPEnable
+		_child, typeSwitchError = BACnetConstructedDataIPDHCPEnableParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_IP_DHCP_LEASE_TIME: // BACnetConstructedDataIPDHCPLeaseTime
+		_child, typeSwitchError = BACnetConstructedDataIPDHCPLeaseTimeParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_IP_DHCP_LEASE_TIME_REMAINING: // BACnetConstructedDataIPDHCPLeaseTimeRemaining
 		_child, typeSwitchError = BACnetConstructedDataIPDHCPLeaseTimeRemainingParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_IP_DHCP_SERVER: // BACnetConstructedDataIPDHCPServer
+		_child, typeSwitchError = BACnetConstructedDataIPDHCPServerParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_IP_DNS_SERVER: // BACnetConstructedDataIPDNSServer
+		_child, typeSwitchError = BACnetConstructedDataIPDNSServerParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_IP_SUBNET_MASK: // BACnetConstructedDataIPSubnetMask
+		_child, typeSwitchError = BACnetConstructedDataIPSubnetMaskParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_IPV6_ADDRESS: // BACnetConstructedDataIPv6Address
+		_child, typeSwitchError = BACnetConstructedDataIPv6AddressParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_IPV6_AUTO_ADDRESSING_ENABLE: // BACnetConstructedDataIPv6AutoAddressingEnable
+		_child, typeSwitchError = BACnetConstructedDataIPv6AutoAddressingEnableParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_IPV6_DEFAULT_GATEWAY: // BACnetConstructedDataIPv6DefaultGateway
+		_child, typeSwitchError = BACnetConstructedDataIPv6DefaultGatewayParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_IPV6_DHCP_LEASE_TIME: // BACnetConstructedDataIPv6DHCPLeaseTime
+		_child, typeSwitchError = BACnetConstructedDataIPv6DHCPLeaseTimeParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_IPV6_DHCP_LEASE_TIME_REMAINING: // BACnetConstructedDataIPv6DHCPLeaseTimeRemaining
 		_child, typeSwitchError = BACnetConstructedDataIPv6DHCPLeaseTimeRemainingParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_IPV6_DHCP_SERVER: // BACnetConstructedDataIPv6DHCPServer
+		_child, typeSwitchError = BACnetConstructedDataIPv6DHCPServerParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_IPV6_DNS_SERVER: // BACnetConstructedDataIPv6DNSServer
+		_child, typeSwitchError = BACnetConstructedDataIPv6DNSServerParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_IPV6_PREFIX_LENGTH: // BACnetConstructedDataIPv6PrefixLength
+		_child, typeSwitchError = BACnetConstructedDataIPv6PrefixLengthParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_IPV6_ZONE_INDEX: // BACnetConstructedDataIPv6ZoneIndex
+		_child, typeSwitchError = BACnetConstructedDataIPv6ZoneIndexParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_KEY_SETS: // BACnetConstructedDataKeySets
+		_child, typeSwitchError = BACnetConstructedDataKeySetsParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_LAST_ACCESS_EVENT: // BACnetConstructedDataLastAccessEvent
 		_child, typeSwitchError = BACnetConstructedDataLastAccessEventParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_LAST_ACCESS_POINT: // BACnetConstructedDataLastAccessPoint
 		_child, typeSwitchError = BACnetConstructedDataLastAccessPointParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_LAST_KEY_SERVER: // BACnetConstructedDataLastKeyServer
+		_child, typeSwitchError = BACnetConstructedDataLastKeyServerParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_LAST_STATE_CHANGE: // BACnetConstructedDataLastStateChange
 		_child, typeSwitchError = BACnetConstructedDataLastStateChangeParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_LAST_USE_TIME: // BACnetConstructedDataLastUseTime
 		_child, typeSwitchError = BACnetConstructedDataLastUseTimeParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_LIFE_SAFETY_ALARM_VALUES: // BACnetConstructedDataLifeSafetyAlarmValues
 		_child, typeSwitchError = BACnetConstructedDataLifeSafetyAlarmValuesParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_LIGHTING_COMMAND: // BACnetConstructedDataLightingCommand
+		_child, typeSwitchError = BACnetConstructedDataLightingCommandParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_LIGHTING_COMMAND_DEFAULT_PRIORITY: // BACnetConstructedDataLightingCommandDefaultPriority
+		_child, typeSwitchError = BACnetConstructedDataLightingCommandDefaultPriorityParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_LIMIT_ENABLE: // BACnetConstructedDataLimitEnable
 		_child, typeSwitchError = BACnetConstructedDataLimitEnableParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_LINK_SPEED: // BACnetConstructedDataLinkSpeed
+		_child, typeSwitchError = BACnetConstructedDataLinkSpeedParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_LINK_SPEED_AUTONEGOTIATE: // BACnetConstructedDataLinkSpeedAutonegotiate
+		_child, typeSwitchError = BACnetConstructedDataLinkSpeedAutonegotiateParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_LINK_SPEEDS: // BACnetConstructedDataLinkSpeeds
+		_child, typeSwitchError = BACnetConstructedDataLinkSpeedsParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_LIST_OF_OBJECT_PROPERTY_REFERENCES: // BACnetConstructedDataListOfObjectPropertyReferences
 		_child, typeSwitchError = BACnetConstructedDataListOfObjectPropertyReferencesParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_LOCAL_FORWARDING_ONLY: // BACnetConstructedDataLocalForwardingOnly
+		_child, typeSwitchError = BACnetConstructedDataLocalForwardingOnlyParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_LOCK_STATUS: // BACnetConstructedDataLockStatus
 		_child, typeSwitchError = BACnetConstructedDataLockStatusParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_LOCKOUT: // BACnetConstructedDataLockout
 		_child, typeSwitchError = BACnetConstructedDataLockoutParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_LOCKOUT_RELINQUISH_TIME: // BACnetConstructedDataLockoutRelinquishTime
 		_child, typeSwitchError = BACnetConstructedDataLockoutRelinquishTimeParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_LOW_DIFF_LIMIT: // BACnetConstructedDataLowDiffLimit
+		_child, typeSwitchError = BACnetConstructedDataLowDiffLimitParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case objectTypeArgument == BACnetObjectType_ACCUMULATOR && propertyIdentifierArgument == BACnetPropertyIdentifier_LOW_LIMIT: // BACnetConstructedDataAccumulatorLowLimit
 		_child, typeSwitchError = BACnetConstructedDataAccumulatorLowLimitParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_LOW_LIMIT: // BACnetConstructedDataLowLimit
 		_child, typeSwitchError = BACnetConstructedDataLowLimitParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_MAC_ADDRESS: // BACnetConstructedDataMACAddress
+		_child, typeSwitchError = BACnetConstructedDataMACAddressParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_MANIPULATED_VARIABLE_REFERENCE: // BACnetConstructedDataManipulatedVariableReference
+		_child, typeSwitchError = BACnetConstructedDataManipulatedVariableReferenceParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_MANUAL_SLAVE_ADDRESS_BINDING: // BACnetConstructedDataManualSlaveAddressBinding
 		_child, typeSwitchError = BACnetConstructedDataManualSlaveAddressBindingParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_MASKED_ALARM_VALUES: // BACnetConstructedDataMaskedAlarmValues
 		_child, typeSwitchError = BACnetConstructedDataMaskedAlarmValuesParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_MAX_ACTUAL_VALUE: // BACnetConstructedDataMaxActualValue
+		_child, typeSwitchError = BACnetConstructedDataMaxActualValueParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_MAX_FAILED_ATTEMPTS: // BACnetConstructedDataMaxFailedAttempts
 		_child, typeSwitchError = BACnetConstructedDataMaxFailedAttemptsParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case objectTypeArgument == BACnetObjectType_ACCUMULATOR && propertyIdentifierArgument == BACnetPropertyIdentifier_MAX_PRES_VALUE: // BACnetConstructedDataAccumulatorMaxPresValue
 		_child, typeSwitchError = BACnetConstructedDataAccumulatorMaxPresValueParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_MAX_PRES_VALUE: // BACnetConstructedDataMaxPresValue
 		_child, typeSwitchError = BACnetConstructedDataMaxPresValueParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_MAXIMUM_OUTPUT: // BACnetConstructedDataMaximumOutput
+		_child, typeSwitchError = BACnetConstructedDataMaximumOutputParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_MEMBER_OF: // BACnetConstructedDataMemberOf
 		_child, typeSwitchError = BACnetConstructedDataMemberOfParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_MEMBERS: // BACnetConstructedDataMembers
 		_child, typeSwitchError = BACnetConstructedDataMembersParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_MIN_ACTUAL_VALUE: // BACnetConstructedDataMinActualValue
+		_child, typeSwitchError = BACnetConstructedDataMinActualValueParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case objectTypeArgument == BACnetObjectType_ACCUMULATOR && propertyIdentifierArgument == BACnetPropertyIdentifier_MIN_PRES_VALUE: // BACnetConstructedDataAccumulatorMinPresValue
 		_child, typeSwitchError = BACnetConstructedDataAccumulatorMinPresValueParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_MIN_PRES_VALUE: // BACnetConstructedDataMinPresValue
 		_child, typeSwitchError = BACnetConstructedDataMinPresValueParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_MINIMUM_OUTPUT: // BACnetConstructedDataMinimumOutput
+		_child, typeSwitchError = BACnetConstructedDataMinimumOutputParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_MINIMUM_VALUE: // BACnetConstructedDataMinimumValue
 		_child, typeSwitchError = BACnetConstructedDataMinimumValueParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_MUSTER_POINT: // BACnetConstructedDataMusterPoint
 		_child, typeSwitchError = BACnetConstructedDataMusterPointParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_NEGATIVE_ACCESS_RULES: // BACnetConstructedDataNegativeAccessRules
 		_child, typeSwitchError = BACnetConstructedDataNegativeAccessRulesParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_NETWORK_ACCESS_SECURITY_POLICIES: // BACnetConstructedDataNetworkAccessSecurityPolicies
+		_child, typeSwitchError = BACnetConstructedDataNetworkAccessSecurityPoliciesParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_NETWORK_INTERFACE_NAME: // BACnetConstructedDataNetworkInterfaceName
+		_child, typeSwitchError = BACnetConstructedDataNetworkInterfaceNameParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_NETWORK_NUMBER: // BACnetConstructedDataNetworkNumber
+		_child, typeSwitchError = BACnetConstructedDataNetworkNumberParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_NETWORK_NUMBER_QUALITY: // BACnetConstructedDataNetworkNumberQuality
+		_child, typeSwitchError = BACnetConstructedDataNetworkNumberQualityParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_NETWORK_TYPE: // BACnetConstructedDataNetworkType
+		_child, typeSwitchError = BACnetConstructedDataNetworkTypeParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_NODE_SUBTYPE: // BACnetConstructedDataNodeSubtype
 		_child, typeSwitchError = BACnetConstructedDataNodeSubtypeParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_NODE_TYPE: // BACnetConstructedDataNodeType
@@ -514,38 +656,84 @@ func BACnetConstructedDataParse(readBuffer utils.ReadBuffer, tagNumber uint8, ob
 		_child, typeSwitchError = BACnetConstructedDataOutOfServiceParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_OUTPUT_UNITS: // BACnetConstructedDataOutputUnits
 		_child, typeSwitchError = BACnetConstructedDataOutputUnitsParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_PACKET_REORDER_TIME: // BACnetConstructedDataPacketReorderTime
+		_child, typeSwitchError = BACnetConstructedDataPacketReorderTimeParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_PORT_FILTER: // BACnetConstructedDataPortFilter
+		_child, typeSwitchError = BACnetConstructedDataPortFilterParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_POSITIVE_ACCESS_RULES: // BACnetConstructedDataPositiveAccessRules
 		_child, typeSwitchError = BACnetConstructedDataPositiveAccessRulesParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case objectTypeArgument == BACnetObjectType_ANALOG_INPUT && propertyIdentifierArgument == BACnetPropertyIdentifier_PRESENT_VALUE: // BACnetConstructedDataAnalogInputPresentValue
 		_child, typeSwitchError = BACnetConstructedDataAnalogInputPresentValueParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_PRIORITY: // BACnetConstructedDataPriority
+		_child, typeSwitchError = BACnetConstructedDataPriorityParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_PRIORITY_ARRAY: // BACnetConstructedDataPriorityArray
 		_child, typeSwitchError = BACnetConstructedDataPriorityArrayParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_PROCESS_IDENTIFIER_FILTER: // BACnetConstructedDataProcessIdentifierFilter
+		_child, typeSwitchError = BACnetConstructedDataProcessIdentifierFilterParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_PROFILE_LOCATION: // BACnetConstructedDataProfileLocation
 		_child, typeSwitchError = BACnetConstructedDataProfileLocationParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_PROFILE_NAME: // BACnetConstructedDataProfileName
 		_child, typeSwitchError = BACnetConstructedDataProfileNameParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_PROGRAM_CHANGE: // BACnetConstructedDataProgramChange
+		_child, typeSwitchError = BACnetConstructedDataProgramChangeParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_PROGRAM_LOCATION: // BACnetConstructedDataProgramLocation
+		_child, typeSwitchError = BACnetConstructedDataProgramLocationParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_PROGRAM_STATE: // BACnetConstructedDataProgramState
+		_child, typeSwitchError = BACnetConstructedDataProgramStateParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_PROPERTY_LIST: // BACnetConstructedDataPropertyList
 		_child, typeSwitchError = BACnetConstructedDataPropertyListParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_PROPORTIONAL_CONSTANT: // BACnetConstructedDataProportionalConstant
+		_child, typeSwitchError = BACnetConstructedDataProportionalConstantParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_PROPORTIONAL_CONSTANT_UNITS: // BACnetConstructedDataProportionalConstantUnits
 		_child, typeSwitchError = BACnetConstructedDataProportionalConstantUnitsParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_PROTOCOL_LEVEL: // BACnetConstructedDataProtocolLevel
+		_child, typeSwitchError = BACnetConstructedDataProtocolLevelParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_REASON_FOR_DISABLE: // BACnetConstructedDataReasonForDisable
 		_child, typeSwitchError = BACnetConstructedDataReasonForDisableParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_REASON_FOR_HALT: // BACnetConstructedDataReasonForHalt
+		_child, typeSwitchError = BACnetConstructedDataReasonForHaltParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_REFERENCE_PORT: // BACnetConstructedDataReferencePort
+		_child, typeSwitchError = BACnetConstructedDataReferencePortParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_RELIABILITY: // BACnetConstructedDataReliability
 		_child, typeSwitchError = BACnetConstructedDataReliabilityParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_RELIABILITY_EVALUATION_INHIBIT: // BACnetConstructedDataReliabilityEvaluationInhibit
 		_child, typeSwitchError = BACnetConstructedDataReliabilityEvaluationInhibitParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_REPRESENTS: // BACnetConstructedDataRepresents
 		_child, typeSwitchError = BACnetConstructedDataRepresentsParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_REQUESTED_SHED_LEVEL: // BACnetConstructedDataRequestedShedLevel
+		_child, typeSwitchError = BACnetConstructedDataRequestedShedLevelParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_RESOLUTION: // BACnetConstructedDataResolution
 		_child, typeSwitchError = BACnetConstructedDataResolutionParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_ROUTING_TABLE: // BACnetConstructedDataRoutingTable
+		_child, typeSwitchError = BACnetConstructedDataRoutingTableParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_SCALE_FACTOR: // BACnetConstructedDataScaleFactor
 		_child, typeSwitchError = BACnetConstructedDataScaleFactorParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_SCHEDULE_DEFAULT: // BACnetConstructedDataScheduleDefault
 		_child, typeSwitchError = BACnetConstructedDataScheduleDefaultParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_SECURED_STATUS: // BACnetConstructedDataSecuredStatus
 		_child, typeSwitchError = BACnetConstructedDataSecuredStatusParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_SECURITY_PDU_TIMEOUT: // BACnetConstructedDataSecurityPDUTimeout
+		_child, typeSwitchError = BACnetConstructedDataSecurityPDUTimeoutParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_SECURITY_TIME_WINDOW: // BACnetConstructedDataSecurityTimeWindow
+		_child, typeSwitchError = BACnetConstructedDataSecurityTimeWindowParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_SETPOINT: // BACnetConstructedDataSetpoint
+		_child, typeSwitchError = BACnetConstructedDataSetpointParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_SETPOINT_REFERENCE: // BACnetConstructedDataSetpointReference
+		_child, typeSwitchError = BACnetConstructedDataSetpointReferenceParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_SHED_DURATION: // BACnetConstructedDataShedDuration
+		_child, typeSwitchError = BACnetConstructedDataShedDurationParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_SHED_LEVEL_DESCRIPTIONS: // BACnetConstructedDataShedLevelDescriptions
+		_child, typeSwitchError = BACnetConstructedDataShedLevelDescriptionsParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_SHED_LEVELS: // BACnetConstructedDataShedLevels
+		_child, typeSwitchError = BACnetConstructedDataShedLevelsParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_SLAVE_ADDRESS_BINDING: // BACnetConstructedDataSlaveAddressBinding
+		_child, typeSwitchError = BACnetConstructedDataSlaveAddressBindingParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_SLAVE_PROXY_ENABLE: // BACnetConstructedDataSlaveProxyEnable
+		_child, typeSwitchError = BACnetConstructedDataSlaveProxyEnableParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_STATE_CHANGE_VALUES: // BACnetConstructedDataStateChangeValues
 		_child, typeSwitchError = BACnetConstructedDataStateChangeValuesParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_STATE_DESCRIPTION: // BACnetConstructedDataStateDescription
+		_child, typeSwitchError = BACnetConstructedDataStateDescriptionParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_STATUS_FLAGS: // BACnetConstructedDataStatusFlags
 		_child, typeSwitchError = BACnetConstructedDataStatusFlagsParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_STRIKE_COUNT: // BACnetConstructedDataStrikeCount
@@ -560,6 +748,10 @@ func BACnetConstructedDataParse(readBuffer utils.ReadBuffer, tagNumber uint8, ob
 		_child, typeSwitchError = BACnetConstructedDataSubordinateRelationshipsParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_SUBORDINATE_TAGS: // BACnetConstructedDataSubordinateTags
 		_child, typeSwitchError = BACnetConstructedDataSubordinateTagsParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_SUBSCRIBED_RECIPIENTS: // BACnetConstructedDataSubscribedRecipients
+		_child, typeSwitchError = BACnetConstructedDataSubscribedRecipientsParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_SUPPORTED_SECURITY_ALGORITHMS: // BACnetConstructedDataSupportedSecurityAlgorithms
+		_child, typeSwitchError = BACnetConstructedDataSupportedSecurityAlgorithmsParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_TAGS: // BACnetConstructedDataTags
 		_child, typeSwitchError = BACnetConstructedDataTagsParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_THREAT_AUTHORITY: // BACnetConstructedDataThreatAuthority
@@ -580,10 +772,14 @@ func BACnetConstructedDataParse(readBuffer utils.ReadBuffer, tagNumber uint8, ob
 		_child, typeSwitchError = BACnetConstructedDataTraceFlagParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_TRANSACTION_NOTIFICATION_CLASS: // BACnetConstructedDataTransactionNotificationClass
 		_child, typeSwitchError = BACnetConstructedDataTransactionNotificationClassParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_TRANSITION: // BACnetConstructedDataTransition
+		_child, typeSwitchError = BACnetConstructedDataTransitionParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_UNITS: // BACnetConstructedDataUnits
 		_child, typeSwitchError = BACnetConstructedDataUnitsParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_UPDATE_INTERVAL: // BACnetConstructedDataUpdateInterval
 		_child, typeSwitchError = BACnetConstructedDataUpdateIntervalParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_UPDATE_KEY_SET_TIMEOUT: // BACnetConstructedDataUpdateKeySetTimeout
+		_child, typeSwitchError = BACnetConstructedDataUpdateKeySetTimeoutParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_USER_EXTERNAL_IDENTIFIER: // BACnetConstructedDataUserExternalIdentifier
 		_child, typeSwitchError = BACnetConstructedDataUserExternalIdentifierParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_USER_INFORMATION_REFERENCE: // BACnetConstructedDataUserInformationReference
@@ -596,6 +792,8 @@ func BACnetConstructedDataParse(readBuffer utils.ReadBuffer, tagNumber uint8, ob
 		_child, typeSwitchError = BACnetConstructedDataUsesRemainingParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_VERIFICATION_TIME: // BACnetConstructedDataVerificationTime
 		_child, typeSwitchError = BACnetConstructedDataVerificationTimeParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
+	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_VIRTUAL_MAC_ADDRESS_TABLE: // BACnetConstructedDataVirtualMACAddressTable
+		_child, typeSwitchError = BACnetConstructedDataVirtualMACAddressTableParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_WEEKLY_SCHEDULE: // BACnetConstructedDataWeeklySchedule
 		_child, typeSwitchError = BACnetConstructedDataWeeklyScheduleParse(readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument)
 	case true && propertyIdentifierArgument == BACnetPropertyIdentifier_ZONE_FROM: // BACnetConstructedDataZoneFrom

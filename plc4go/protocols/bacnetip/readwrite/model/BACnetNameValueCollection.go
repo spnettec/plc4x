@@ -31,6 +31,9 @@ type BACnetNameValueCollection struct {
 	OpeningTag *BACnetOpeningTag
 	Members    []*BACnetNameValue
 	ClosingTag *BACnetClosingTag
+
+	// Arguments.
+	TagNumber uint8
 }
 
 // IBACnetNameValueCollection is the corresponding interface of BACnetNameValueCollection
@@ -72,8 +75,8 @@ func (m *BACnetNameValueCollection) GetClosingTag() *BACnetClosingTag {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetNameValueCollection factory function for BACnetNameValueCollection
-func NewBACnetNameValueCollection(openingTag *BACnetOpeningTag, members []*BACnetNameValue, closingTag *BACnetClosingTag) *BACnetNameValueCollection {
-	return &BACnetNameValueCollection{OpeningTag: openingTag, Members: members, ClosingTag: closingTag}
+func NewBACnetNameValueCollection(openingTag *BACnetOpeningTag, members []*BACnetNameValue, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetNameValueCollection {
+	return &BACnetNameValueCollection{OpeningTag: openingTag, Members: members, ClosingTag: closingTag, TagNumber: tagNumber}
 }
 
 func CastBACnetNameValueCollection(structType interface{}) *BACnetNameValueCollection {
@@ -117,7 +120,7 @@ func (m *BACnetNameValueCollection) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetNameValueCollectionParse(readBuffer utils.ReadBuffer) (*BACnetNameValueCollection, error) {
+func BACnetNameValueCollectionParse(readBuffer utils.ReadBuffer, tagNumber uint8) (*BACnetNameValueCollection, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetNameValueCollection"); pullErr != nil {
@@ -130,7 +133,7 @@ func BACnetNameValueCollectionParse(readBuffer utils.ReadBuffer) (*BACnetNameVal
 	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
 		return nil, pullErr
 	}
-	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(uint8(0)))
+	_openingTag, _openingTagErr := BACnetOpeningTagParse(readBuffer, uint8(tagNumber))
 	if _openingTagErr != nil {
 		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field")
 	}
@@ -146,7 +149,7 @@ func BACnetNameValueCollectionParse(readBuffer utils.ReadBuffer) (*BACnetNameVal
 	// Terminated array
 	members := make([]*BACnetNameValue, 0)
 	{
-		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, 0)) {
+		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
 			_item, _err := BACnetNameValueParse(readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'members' field")
@@ -163,7 +166,7 @@ func BACnetNameValueCollectionParse(readBuffer utils.ReadBuffer) (*BACnetNameVal
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
 		return nil, pullErr
 	}
-	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(uint8(0)))
+	_closingTag, _closingTagErr := BACnetClosingTagParse(readBuffer, uint8(tagNumber))
 	if _closingTagErr != nil {
 		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field")
 	}
@@ -177,7 +180,7 @@ func BACnetNameValueCollectionParse(readBuffer utils.ReadBuffer) (*BACnetNameVal
 	}
 
 	// Create the instance
-	return NewBACnetNameValueCollection(openingTag, members, closingTag), nil
+	return NewBACnetNameValueCollection(openingTag, members, closingTag, tagNumber), nil
 }
 
 func (m *BACnetNameValueCollection) Serialize(writeBuffer utils.WriteBuffer) error {
