@@ -32,7 +32,8 @@ type BACnetConstructedDataUsesRemaining struct {
 	UsesRemaining *BACnetApplicationTagSignedInteger
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataUsesRemaining is the corresponding interface of BACnetConstructedDataUsesRemaining
@@ -66,8 +67,9 @@ func (m *BACnetConstructedDataUsesRemaining) GetPropertyIdentifierArgument() BAC
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataUsesRemaining) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataUsesRemaining) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +92,10 @@ func (m *BACnetConstructedDataUsesRemaining) GetUsesRemaining() *BACnetApplicati
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataUsesRemaining factory function for BACnetConstructedDataUsesRemaining
-func NewBACnetConstructedDataUsesRemaining(usesRemaining *BACnetApplicationTagSignedInteger, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataUsesRemaining {
+func NewBACnetConstructedDataUsesRemaining(usesRemaining *BACnetApplicationTagSignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataUsesRemaining {
 	_result := &BACnetConstructedDataUsesRemaining{
 		UsesRemaining:         usesRemaining,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -136,7 +138,7 @@ func (m *BACnetConstructedDataUsesRemaining) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataUsesRemainingParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataUsesRemaining, error) {
+func BACnetConstructedDataUsesRemainingParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataUsesRemaining, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataUsesRemaining"); pullErr != nil {

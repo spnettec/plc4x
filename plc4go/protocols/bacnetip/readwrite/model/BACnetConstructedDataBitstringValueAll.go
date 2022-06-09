@@ -30,7 +30,8 @@ type BACnetConstructedDataBitstringValueAll struct {
 	*BACnetConstructedData
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataBitstringValueAll is the corresponding interface of BACnetConstructedDataBitstringValueAll
@@ -62,8 +63,9 @@ func (m *BACnetConstructedDataBitstringValueAll) GetPropertyIdentifierArgument()
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataBitstringValueAll) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataBitstringValueAll) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -72,9 +74,9 @@ func (m *BACnetConstructedDataBitstringValueAll) GetParent() *BACnetConstructedD
 }
 
 // NewBACnetConstructedDataBitstringValueAll factory function for BACnetConstructedDataBitstringValueAll
-func NewBACnetConstructedDataBitstringValueAll(openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataBitstringValueAll {
+func NewBACnetConstructedDataBitstringValueAll(openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataBitstringValueAll {
 	_result := &BACnetConstructedDataBitstringValueAll{
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -114,7 +116,7 @@ func (m *BACnetConstructedDataBitstringValueAll) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataBitstringValueAllParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataBitstringValueAll, error) {
+func BACnetConstructedDataBitstringValueAllParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataBitstringValueAll, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBitstringValueAll"); pullErr != nil {

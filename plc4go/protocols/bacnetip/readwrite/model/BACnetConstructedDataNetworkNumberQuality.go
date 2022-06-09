@@ -32,7 +32,8 @@ type BACnetConstructedDataNetworkNumberQuality struct {
 	NetworkNumberQuality *BACnetNetworkNumberQualityTagged
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataNetworkNumberQuality is the corresponding interface of BACnetConstructedDataNetworkNumberQuality
@@ -66,8 +67,9 @@ func (m *BACnetConstructedDataNetworkNumberQuality) GetPropertyIdentifierArgumen
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataNetworkNumberQuality) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataNetworkNumberQuality) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +92,10 @@ func (m *BACnetConstructedDataNetworkNumberQuality) GetNetworkNumberQuality() *B
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataNetworkNumberQuality factory function for BACnetConstructedDataNetworkNumberQuality
-func NewBACnetConstructedDataNetworkNumberQuality(networkNumberQuality *BACnetNetworkNumberQualityTagged, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataNetworkNumberQuality {
+func NewBACnetConstructedDataNetworkNumberQuality(networkNumberQuality *BACnetNetworkNumberQualityTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataNetworkNumberQuality {
 	_result := &BACnetConstructedDataNetworkNumberQuality{
 		NetworkNumberQuality:  networkNumberQuality,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -136,7 +138,7 @@ func (m *BACnetConstructedDataNetworkNumberQuality) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataNetworkNumberQualityParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataNetworkNumberQuality, error) {
+func BACnetConstructedDataNetworkNumberQualityParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataNetworkNumberQuality, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataNetworkNumberQuality"); pullErr != nil {

@@ -32,7 +32,8 @@ type BACnetConstructedDataCarLoadUnits struct {
 	Units *BACnetEngineeringUnitsTagged
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataCarLoadUnits is the corresponding interface of BACnetConstructedDataCarLoadUnits
@@ -66,8 +67,9 @@ func (m *BACnetConstructedDataCarLoadUnits) GetPropertyIdentifierArgument() BACn
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataCarLoadUnits) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataCarLoadUnits) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +92,10 @@ func (m *BACnetConstructedDataCarLoadUnits) GetUnits() *BACnetEngineeringUnitsTa
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataCarLoadUnits factory function for BACnetConstructedDataCarLoadUnits
-func NewBACnetConstructedDataCarLoadUnits(units *BACnetEngineeringUnitsTagged, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataCarLoadUnits {
+func NewBACnetConstructedDataCarLoadUnits(units *BACnetEngineeringUnitsTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataCarLoadUnits {
 	_result := &BACnetConstructedDataCarLoadUnits{
 		Units:                 units,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -136,7 +138,7 @@ func (m *BACnetConstructedDataCarLoadUnits) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataCarLoadUnitsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataCarLoadUnits, error) {
+func BACnetConstructedDataCarLoadUnitsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataCarLoadUnits, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataCarLoadUnits"); pullErr != nil {

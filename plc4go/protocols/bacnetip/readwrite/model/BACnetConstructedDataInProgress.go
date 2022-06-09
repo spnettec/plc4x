@@ -32,7 +32,8 @@ type BACnetConstructedDataInProgress struct {
 	InProgress *BACnetLightingInProgressTagged
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataInProgress is the corresponding interface of BACnetConstructedDataInProgress
@@ -66,8 +67,9 @@ func (m *BACnetConstructedDataInProgress) GetPropertyIdentifierArgument() BACnet
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataInProgress) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataInProgress) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +92,10 @@ func (m *BACnetConstructedDataInProgress) GetInProgress() *BACnetLightingInProgr
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataInProgress factory function for BACnetConstructedDataInProgress
-func NewBACnetConstructedDataInProgress(inProgress *BACnetLightingInProgressTagged, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataInProgress {
+func NewBACnetConstructedDataInProgress(inProgress *BACnetLightingInProgressTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataInProgress {
 	_result := &BACnetConstructedDataInProgress{
 		InProgress:            inProgress,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -136,7 +138,7 @@ func (m *BACnetConstructedDataInProgress) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataInProgressParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataInProgress, error) {
+func BACnetConstructedDataInProgressParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataInProgress, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataInProgress"); pullErr != nil {

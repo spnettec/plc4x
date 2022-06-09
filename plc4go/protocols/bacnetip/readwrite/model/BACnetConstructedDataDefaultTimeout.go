@@ -32,7 +32,8 @@ type BACnetConstructedDataDefaultTimeout struct {
 	DefaultTimeout *BACnetApplicationTagUnsignedInteger
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataDefaultTimeout is the corresponding interface of BACnetConstructedDataDefaultTimeout
@@ -66,8 +67,9 @@ func (m *BACnetConstructedDataDefaultTimeout) GetPropertyIdentifierArgument() BA
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataDefaultTimeout) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataDefaultTimeout) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +92,10 @@ func (m *BACnetConstructedDataDefaultTimeout) GetDefaultTimeout() *BACnetApplica
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataDefaultTimeout factory function for BACnetConstructedDataDefaultTimeout
-func NewBACnetConstructedDataDefaultTimeout(defaultTimeout *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataDefaultTimeout {
+func NewBACnetConstructedDataDefaultTimeout(defaultTimeout *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataDefaultTimeout {
 	_result := &BACnetConstructedDataDefaultTimeout{
 		DefaultTimeout:        defaultTimeout,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -136,7 +138,7 @@ func (m *BACnetConstructedDataDefaultTimeout) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataDefaultTimeoutParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataDefaultTimeout, error) {
+func BACnetConstructedDataDefaultTimeoutParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataDefaultTimeout, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDefaultTimeout"); pullErr != nil {

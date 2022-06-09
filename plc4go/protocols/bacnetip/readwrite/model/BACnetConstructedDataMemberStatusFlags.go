@@ -32,7 +32,8 @@ type BACnetConstructedDataMemberStatusFlags struct {
 	StatusFlags *BACnetStatusFlagsTagged
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataMemberStatusFlags is the corresponding interface of BACnetConstructedDataMemberStatusFlags
@@ -66,8 +67,9 @@ func (m *BACnetConstructedDataMemberStatusFlags) GetPropertyIdentifierArgument()
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataMemberStatusFlags) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataMemberStatusFlags) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +92,10 @@ func (m *BACnetConstructedDataMemberStatusFlags) GetStatusFlags() *BACnetStatusF
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataMemberStatusFlags factory function for BACnetConstructedDataMemberStatusFlags
-func NewBACnetConstructedDataMemberStatusFlags(statusFlags *BACnetStatusFlagsTagged, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataMemberStatusFlags {
+func NewBACnetConstructedDataMemberStatusFlags(statusFlags *BACnetStatusFlagsTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataMemberStatusFlags {
 	_result := &BACnetConstructedDataMemberStatusFlags{
 		StatusFlags:           statusFlags,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -136,7 +138,7 @@ func (m *BACnetConstructedDataMemberStatusFlags) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataMemberStatusFlagsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataMemberStatusFlags, error) {
+func BACnetConstructedDataMemberStatusFlagsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataMemberStatusFlags, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataMemberStatusFlags"); pullErr != nil {

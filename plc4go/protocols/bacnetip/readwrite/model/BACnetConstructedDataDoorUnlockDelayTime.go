@@ -32,7 +32,8 @@ type BACnetConstructedDataDoorUnlockDelayTime struct {
 	DoorUnlockDelayTime *BACnetApplicationTagUnsignedInteger
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataDoorUnlockDelayTime is the corresponding interface of BACnetConstructedDataDoorUnlockDelayTime
@@ -66,8 +67,9 @@ func (m *BACnetConstructedDataDoorUnlockDelayTime) GetPropertyIdentifierArgument
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataDoorUnlockDelayTime) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataDoorUnlockDelayTime) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +92,10 @@ func (m *BACnetConstructedDataDoorUnlockDelayTime) GetDoorUnlockDelayTime() *BAC
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataDoorUnlockDelayTime factory function for BACnetConstructedDataDoorUnlockDelayTime
-func NewBACnetConstructedDataDoorUnlockDelayTime(doorUnlockDelayTime *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataDoorUnlockDelayTime {
+func NewBACnetConstructedDataDoorUnlockDelayTime(doorUnlockDelayTime *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataDoorUnlockDelayTime {
 	_result := &BACnetConstructedDataDoorUnlockDelayTime{
 		DoorUnlockDelayTime:   doorUnlockDelayTime,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -136,7 +138,7 @@ func (m *BACnetConstructedDataDoorUnlockDelayTime) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataDoorUnlockDelayTimeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataDoorUnlockDelayTime, error) {
+func BACnetConstructedDataDoorUnlockDelayTimeParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataDoorUnlockDelayTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDoorUnlockDelayTime"); pullErr != nil {

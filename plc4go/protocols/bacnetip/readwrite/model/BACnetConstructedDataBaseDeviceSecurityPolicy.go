@@ -32,7 +32,8 @@ type BACnetConstructedDataBaseDeviceSecurityPolicy struct {
 	BaseDeviceSecurityPolicy *BACnetSecurityLevelTagged
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataBaseDeviceSecurityPolicy is the corresponding interface of BACnetConstructedDataBaseDeviceSecurityPolicy
@@ -66,8 +67,9 @@ func (m *BACnetConstructedDataBaseDeviceSecurityPolicy) GetPropertyIdentifierArg
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataBaseDeviceSecurityPolicy) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataBaseDeviceSecurityPolicy) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +92,10 @@ func (m *BACnetConstructedDataBaseDeviceSecurityPolicy) GetBaseDeviceSecurityPol
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataBaseDeviceSecurityPolicy factory function for BACnetConstructedDataBaseDeviceSecurityPolicy
-func NewBACnetConstructedDataBaseDeviceSecurityPolicy(baseDeviceSecurityPolicy *BACnetSecurityLevelTagged, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataBaseDeviceSecurityPolicy {
+func NewBACnetConstructedDataBaseDeviceSecurityPolicy(baseDeviceSecurityPolicy *BACnetSecurityLevelTagged, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataBaseDeviceSecurityPolicy {
 	_result := &BACnetConstructedDataBaseDeviceSecurityPolicy{
 		BaseDeviceSecurityPolicy: baseDeviceSecurityPolicy,
-		BACnetConstructedData:    NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData:    NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -136,7 +138,7 @@ func (m *BACnetConstructedDataBaseDeviceSecurityPolicy) GetLengthInBytes() uint1
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataBaseDeviceSecurityPolicyParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataBaseDeviceSecurityPolicy, error) {
+func BACnetConstructedDataBaseDeviceSecurityPolicyParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataBaseDeviceSecurityPolicy, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBaseDeviceSecurityPolicy"); pullErr != nil {

@@ -32,7 +32,8 @@ type BACnetConstructedDataDistributionKeyRevision struct {
 	DistributionKeyRevision *BACnetApplicationTagUnsignedInteger
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataDistributionKeyRevision is the corresponding interface of BACnetConstructedDataDistributionKeyRevision
@@ -66,8 +67,9 @@ func (m *BACnetConstructedDataDistributionKeyRevision) GetPropertyIdentifierArgu
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataDistributionKeyRevision) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataDistributionKeyRevision) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +92,10 @@ func (m *BACnetConstructedDataDistributionKeyRevision) GetDistributionKeyRevisio
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataDistributionKeyRevision factory function for BACnetConstructedDataDistributionKeyRevision
-func NewBACnetConstructedDataDistributionKeyRevision(distributionKeyRevision *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataDistributionKeyRevision {
+func NewBACnetConstructedDataDistributionKeyRevision(distributionKeyRevision *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataDistributionKeyRevision {
 	_result := &BACnetConstructedDataDistributionKeyRevision{
 		DistributionKeyRevision: distributionKeyRevision,
-		BACnetConstructedData:   NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData:   NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -136,7 +138,7 @@ func (m *BACnetConstructedDataDistributionKeyRevision) GetLengthInBytes() uint16
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataDistributionKeyRevisionParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataDistributionKeyRevision, error) {
+func BACnetConstructedDataDistributionKeyRevisionParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataDistributionKeyRevision, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDistributionKeyRevision"); pullErr != nil {

@@ -22,10 +22,11 @@ import org.apache.maven.project.MavenProject
 
 project = (MavenProject) project
 def bacnetEnumsFile = new File(project.basedir, "src/main/resources/protocols/bacnetip/bacnet-bit-strings.mspec")
+def bacnetEnumsFileContent = bacnetEnumsFile.text
 foundEnums = []
-enumPattern = ~/\[enum \w+ \d+ (\w+)\r?\n((?: *\[.*]\r?\n)*)]/
+enumPattern = ~/\[enum \w+ \d+ (\w+)\r?\n((?:(?:(?: *\[.*] *(?:\/\/.*)?)|(?: *\/\/.*))\r?\n)*)]/
 enumEntryPattern = ~/ *\['(\d)+' *([\w_]+).*]/
-matcher = bacnetEnumsFile.text =~ enumPattern
+matcher = bacnetEnumsFileContent =~ enumPattern
 if (matcher.find()) {
     matcher.each {
         def enumName = it[1]
@@ -75,8 +76,7 @@ taggedEnumsTemplate = """
                                                     "tagnumber doesn't match" shouldFail=false                  ]
     [simple BACnetTagPayloadBitString('header.actualLength')
                     payload                                                                                     ]
-
-<% for (enumIndex in item.enumEntries.keySet().sort()) { %>    [virtual    bit <%= item.enumEntries[enumIndex].enumCamelCase %>         'payload.data[<%= enumIndex %>]'          ]\n<% } %>
+<% for (enumIndex in item.enumEntries.keySet().sort()) { %>    [virtual    bit <%= item.enumEntries[enumIndex].enumCamelCase %>         '(COUNT(payload.data)><%= enumIndex %>)?payload.data[<%= enumIndex %>]:false'          ]\n<% } %>
 ]
 <% } %>
 """

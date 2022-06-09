@@ -32,7 +32,8 @@ type BACnetConstructedDataPriority struct {
 	Priority []*BACnetApplicationTagUnsignedInteger
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataPriority is the corresponding interface of BACnetConstructedDataPriority
@@ -66,8 +67,9 @@ func (m *BACnetConstructedDataPriority) GetPropertyIdentifierArgument() BACnetPr
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataPriority) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataPriority) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +92,10 @@ func (m *BACnetConstructedDataPriority) GetPriority() []*BACnetApplicationTagUns
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataPriority factory function for BACnetConstructedDataPriority
-func NewBACnetConstructedDataPriority(priority []*BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataPriority {
+func NewBACnetConstructedDataPriority(priority []*BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataPriority {
 	_result := &BACnetConstructedDataPriority{
 		Priority:              priority,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -140,7 +142,7 @@ func (m *BACnetConstructedDataPriority) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataPriorityParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataPriority, error) {
+func BACnetConstructedDataPriorityParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataPriority, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataPriority"); pullErr != nil {
@@ -167,11 +169,6 @@ func BACnetConstructedDataPriorityParse(readBuffer utils.ReadBuffer, tagNumber u
 	}
 	if closeErr := readBuffer.CloseContext("priority", utils.WithRenderAsList(true)); closeErr != nil {
 		return nil, closeErr
-	}
-
-	// Validation
-	if !(bool((len(priority)) == (3))) {
-		return nil, utils.ParseValidationError{"priority should have exactly 3 values"}
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataPriority"); closeErr != nil {

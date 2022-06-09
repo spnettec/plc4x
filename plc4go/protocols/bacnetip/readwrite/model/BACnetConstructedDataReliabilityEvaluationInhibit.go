@@ -32,7 +32,8 @@ type BACnetConstructedDataReliabilityEvaluationInhibit struct {
 	ReliabilityEvaluationInhibit *BACnetApplicationTagBoolean
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataReliabilityEvaluationInhibit is the corresponding interface of BACnetConstructedDataReliabilityEvaluationInhibit
@@ -66,8 +67,9 @@ func (m *BACnetConstructedDataReliabilityEvaluationInhibit) GetPropertyIdentifie
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataReliabilityEvaluationInhibit) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataReliabilityEvaluationInhibit) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +92,10 @@ func (m *BACnetConstructedDataReliabilityEvaluationInhibit) GetReliabilityEvalua
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataReliabilityEvaluationInhibit factory function for BACnetConstructedDataReliabilityEvaluationInhibit
-func NewBACnetConstructedDataReliabilityEvaluationInhibit(reliabilityEvaluationInhibit *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataReliabilityEvaluationInhibit {
+func NewBACnetConstructedDataReliabilityEvaluationInhibit(reliabilityEvaluationInhibit *BACnetApplicationTagBoolean, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataReliabilityEvaluationInhibit {
 	_result := &BACnetConstructedDataReliabilityEvaluationInhibit{
 		ReliabilityEvaluationInhibit: reliabilityEvaluationInhibit,
-		BACnetConstructedData:        NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData:        NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -136,7 +138,7 @@ func (m *BACnetConstructedDataReliabilityEvaluationInhibit) GetLengthInBytes() u
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataReliabilityEvaluationInhibitParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataReliabilityEvaluationInhibit, error) {
+func BACnetConstructedDataReliabilityEvaluationInhibitParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataReliabilityEvaluationInhibit, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataReliabilityEvaluationInhibit"); pullErr != nil {

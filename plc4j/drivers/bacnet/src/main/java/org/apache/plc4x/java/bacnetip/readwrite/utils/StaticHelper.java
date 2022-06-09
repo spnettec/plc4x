@@ -90,6 +90,26 @@ public class StaticHelper {
             if (!BACnetProgramRequest.isDefined((short) rawValue))
                 throw new ParseException("Invalid value " + rawValue + " for " + BACnetProgramRequest.class.getSimpleName());
             return BACnetProgramRequest.enumForValue((short) rawValue);
+        } else if (declaringClass == BACnetFileAccessMethod.class) {
+            if (!BACnetFileAccessMethod.isDefined((short) rawValue))
+                throw new ParseException("Invalid value " + rawValue + " for " + BACnetFileAccessMethod.class.getSimpleName());
+            return BACnetFileAccessMethod.enumForValue((short) rawValue);
+        } else if (declaringClass == BACnetAccumulatorRecordAccumulatorStatus.class) {
+            if (!BACnetAccumulatorRecordAccumulatorStatus.isDefined((short) rawValue))
+                throw new ParseException("Invalid value " + rawValue + " for " + BACnetAccumulatorRecordAccumulatorStatus.class.getSimpleName());
+            return BACnetAccumulatorRecordAccumulatorStatus.enumForValue((short) rawValue);
+        } else if (declaringClass == BACnetPolarity.class) {
+            if (!BACnetPolarity.isDefined((short) rawValue))
+                throw new ParseException("Invalid value " + rawValue + " for " + BACnetPolarity.class.getSimpleName());
+            return BACnetPolarity.enumForValue((short) rawValue);
+        } else if (declaringClass == BACnetShedState.class) {
+            if (!BACnetShedState.isDefined((short) rawValue))
+                throw new ParseException("Invalid value " + rawValue + " for " + BACnetShedState.class.getSimpleName());
+            return BACnetShedState.enumForValue((short) rawValue);
+        } else if (declaringClass == BACnetDoorValue.class) {
+            if (!BACnetDoorValue.isDefined((short) rawValue))
+                throw new ParseException("Invalid value " + rawValue + " for " + BACnetDoorValue.class.getSimpleName());
+            return BACnetDoorValue.enumForValue((short) rawValue);
         }
         throw new ParseException("Unmapped type " + declaringClass);
     }

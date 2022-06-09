@@ -32,7 +32,8 @@ type BACnetConstructedDataKeySets struct {
 	KeySets []*BACnetSecurityKeySet
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataKeySets is the corresponding interface of BACnetConstructedDataKeySets
@@ -66,8 +67,9 @@ func (m *BACnetConstructedDataKeySets) GetPropertyIdentifierArgument() BACnetPro
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataKeySets) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataKeySets) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +92,10 @@ func (m *BACnetConstructedDataKeySets) GetKeySets() []*BACnetSecurityKeySet {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataKeySets factory function for BACnetConstructedDataKeySets
-func NewBACnetConstructedDataKeySets(keySets []*BACnetSecurityKeySet, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataKeySets {
+func NewBACnetConstructedDataKeySets(keySets []*BACnetSecurityKeySet, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataKeySets {
 	_result := &BACnetConstructedDataKeySets{
 		KeySets:               keySets,
-		BACnetConstructedData: NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -140,7 +142,7 @@ func (m *BACnetConstructedDataKeySets) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataKeySetsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataKeySets, error) {
+func BACnetConstructedDataKeySetsParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataKeySets, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataKeySets"); pullErr != nil {
@@ -167,11 +169,6 @@ func BACnetConstructedDataKeySetsParse(readBuffer utils.ReadBuffer, tagNumber ui
 	}
 	if closeErr := readBuffer.CloseContext("keySets", utils.WithRenderAsList(true)); closeErr != nil {
 		return nil, closeErr
-	}
-
-	// Validation
-	if !(bool((len(keySets)) == (2))) {
-		return nil, utils.ParseValidationError{"keySets should have exactly 2 values"}
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataKeySets"); closeErr != nil {

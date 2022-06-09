@@ -32,7 +32,8 @@ type BACnetConstructedDataLightingCommandDefaultPriority struct {
 	LightingCommandDefaultPriority *BACnetApplicationTagUnsignedInteger
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataLightingCommandDefaultPriority is the corresponding interface of BACnetConstructedDataLightingCommandDefaultPriority
@@ -66,8 +67,9 @@ func (m *BACnetConstructedDataLightingCommandDefaultPriority) GetPropertyIdentif
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataLightingCommandDefaultPriority) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataLightingCommandDefaultPriority) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +92,10 @@ func (m *BACnetConstructedDataLightingCommandDefaultPriority) GetLightingCommand
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLightingCommandDefaultPriority factory function for BACnetConstructedDataLightingCommandDefaultPriority
-func NewBACnetConstructedDataLightingCommandDefaultPriority(lightingCommandDefaultPriority *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataLightingCommandDefaultPriority {
+func NewBACnetConstructedDataLightingCommandDefaultPriority(lightingCommandDefaultPriority *BACnetApplicationTagUnsignedInteger, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataLightingCommandDefaultPriority {
 	_result := &BACnetConstructedDataLightingCommandDefaultPriority{
 		LightingCommandDefaultPriority: lightingCommandDefaultPriority,
-		BACnetConstructedData:          NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData:          NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -136,7 +138,7 @@ func (m *BACnetConstructedDataLightingCommandDefaultPriority) GetLengthInBytes()
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataLightingCommandDefaultPriorityParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataLightingCommandDefaultPriority, error) {
+func BACnetConstructedDataLightingCommandDefaultPriorityParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataLightingCommandDefaultPriority, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLightingCommandDefaultPriority"); pullErr != nil {

@@ -32,7 +32,8 @@ type BACnetConstructedDataAuthenticationPolicyNames struct {
 	AuthenticationPolicyNames []*BACnetApplicationTagCharacterString
 
 	// Arguments.
-	TagNumber uint8
+	TagNumber          uint8
+	ArrayIndexArgument *BACnetTagPayloadUnsignedInteger
 }
 
 // IBACnetConstructedDataAuthenticationPolicyNames is the corresponding interface of BACnetConstructedDataAuthenticationPolicyNames
@@ -66,8 +67,9 @@ func (m *BACnetConstructedDataAuthenticationPolicyNames) GetPropertyIdentifierAr
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *BACnetConstructedDataAuthenticationPolicyNames) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag) {
+func (m *BACnetConstructedDataAuthenticationPolicyNames) InitializeParent(parent *BACnetConstructedData, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag) {
 	m.BACnetConstructedData.OpeningTag = openingTag
+	m.BACnetConstructedData.PeekedTagHeader = peekedTagHeader
 	m.BACnetConstructedData.ClosingTag = closingTag
 }
 
@@ -90,10 +92,10 @@ func (m *BACnetConstructedDataAuthenticationPolicyNames) GetAuthenticationPolicy
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataAuthenticationPolicyNames factory function for BACnetConstructedDataAuthenticationPolicyNames
-func NewBACnetConstructedDataAuthenticationPolicyNames(authenticationPolicyNames []*BACnetApplicationTagCharacterString, openingTag *BACnetOpeningTag, closingTag *BACnetClosingTag, tagNumber uint8) *BACnetConstructedDataAuthenticationPolicyNames {
+func NewBACnetConstructedDataAuthenticationPolicyNames(authenticationPolicyNames []*BACnetApplicationTagCharacterString, openingTag *BACnetOpeningTag, peekedTagHeader *BACnetTagHeader, closingTag *BACnetClosingTag, tagNumber uint8, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) *BACnetConstructedDataAuthenticationPolicyNames {
 	_result := &BACnetConstructedDataAuthenticationPolicyNames{
 		AuthenticationPolicyNames: authenticationPolicyNames,
-		BACnetConstructedData:     NewBACnetConstructedData(openingTag, closingTag, tagNumber),
+		BACnetConstructedData:     NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
 	_result.Child = _result
 	return _result
@@ -140,7 +142,7 @@ func (m *BACnetConstructedDataAuthenticationPolicyNames) GetLengthInBytes() uint
 	return m.GetLengthInBits() / 8
 }
 
-func BACnetConstructedDataAuthenticationPolicyNamesParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier) (*BACnetConstructedDataAuthenticationPolicyNames, error) {
+func BACnetConstructedDataAuthenticationPolicyNamesParse(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument *BACnetTagPayloadUnsignedInteger) (*BACnetConstructedDataAuthenticationPolicyNames, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAuthenticationPolicyNames"); pullErr != nil {
