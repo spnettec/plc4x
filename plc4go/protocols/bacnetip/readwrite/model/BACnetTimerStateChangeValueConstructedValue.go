@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -174,7 +174,7 @@ func (m *BACnetTimerStateChangeValueConstructedValue) Serialize(writeBuffer util
 		if pushErr := writeBuffer.PushContext("constructedValue"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for constructedValue")
 		}
-		_constructedValueErr := m.ConstructedValue.Serialize(writeBuffer)
+		_constructedValueErr := writeBuffer.WriteSerializable(m.ConstructedValue)
 		if popErr := writeBuffer.PopContext("constructedValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for constructedValue")
 		}
@@ -194,9 +194,9 @@ func (m *BACnetTimerStateChangeValueConstructedValue) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

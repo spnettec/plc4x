@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -234,7 +234,7 @@ func (m *BACnetServiceAckAtomicReadFileRecord) Serialize(writeBuffer utils.Write
 		if pushErr := writeBuffer.PushContext("fileStartRecord"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for fileStartRecord")
 		}
-		_fileStartRecordErr := m.FileStartRecord.Serialize(writeBuffer)
+		_fileStartRecordErr := writeBuffer.WriteSerializable(m.FileStartRecord)
 		if popErr := writeBuffer.PopContext("fileStartRecord"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for fileStartRecord")
 		}
@@ -246,7 +246,7 @@ func (m *BACnetServiceAckAtomicReadFileRecord) Serialize(writeBuffer utils.Write
 		if pushErr := writeBuffer.PushContext("returnedRecordCount"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for returnedRecordCount")
 		}
-		_returnedRecordCountErr := m.ReturnedRecordCount.Serialize(writeBuffer)
+		_returnedRecordCountErr := writeBuffer.WriteSerializable(m.ReturnedRecordCount)
 		if popErr := writeBuffer.PopContext("returnedRecordCount"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for returnedRecordCount")
 		}
@@ -260,7 +260,7 @@ func (m *BACnetServiceAckAtomicReadFileRecord) Serialize(writeBuffer utils.Write
 				return errors.Wrap(pushErr, "Error pushing for fileRecordData")
 			}
 			for _, _element := range m.FileRecordData {
-				_elementErr := _element.Serialize(writeBuffer)
+				_elementErr := writeBuffer.WriteSerializable(_element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'fileRecordData' field")
 				}
@@ -282,9 +282,9 @@ func (m *BACnetServiceAckAtomicReadFileRecord) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

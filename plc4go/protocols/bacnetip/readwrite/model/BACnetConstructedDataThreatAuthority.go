@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataThreatAuthority) Serialize(writeBuffer utils.Write
 		if pushErr := writeBuffer.PushContext("threatAuthority"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for threatAuthority")
 		}
-		_threatAuthorityErr := m.ThreatAuthority.Serialize(writeBuffer)
+		_threatAuthorityErr := writeBuffer.WriteSerializable(m.ThreatAuthority)
 		if popErr := writeBuffer.PopContext("threatAuthority"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for threatAuthority")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataThreatAuthority) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

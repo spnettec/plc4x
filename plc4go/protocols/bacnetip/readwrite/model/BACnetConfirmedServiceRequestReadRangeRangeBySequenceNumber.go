@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -198,7 +198,7 @@ func (m *BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber) Serialize(
 		if pushErr := writeBuffer.PushContext("referenceSequenceNumber"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for referenceSequenceNumber")
 		}
-		_referenceSequenceNumberErr := m.ReferenceSequenceNumber.Serialize(writeBuffer)
+		_referenceSequenceNumberErr := writeBuffer.WriteSerializable(m.ReferenceSequenceNumber)
 		if popErr := writeBuffer.PopContext("referenceSequenceNumber"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for referenceSequenceNumber")
 		}
@@ -210,7 +210,7 @@ func (m *BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber) Serialize(
 		if pushErr := writeBuffer.PushContext("count"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for count")
 		}
-		_countErr := m.Count.Serialize(writeBuffer)
+		_countErr := writeBuffer.WriteSerializable(m.Count)
 		if popErr := writeBuffer.PopContext("count"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for count")
 		}
@@ -230,9 +230,9 @@ func (m *BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber) String() s
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

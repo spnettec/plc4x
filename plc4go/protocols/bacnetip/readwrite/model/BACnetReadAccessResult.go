@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -170,7 +170,7 @@ func (m *BACnetReadAccessResult) Serialize(writeBuffer utils.WriteBuffer) error 
 	if pushErr := writeBuffer.PushContext("objectIdentifier"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for objectIdentifier")
 	}
-	_objectIdentifierErr := m.ObjectIdentifier.Serialize(writeBuffer)
+	_objectIdentifierErr := writeBuffer.WriteSerializable(m.ObjectIdentifier)
 	if popErr := writeBuffer.PopContext("objectIdentifier"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for objectIdentifier")
 	}
@@ -185,7 +185,7 @@ func (m *BACnetReadAccessResult) Serialize(writeBuffer utils.WriteBuffer) error 
 			return errors.Wrap(pushErr, "Error pushing for listOfResults")
 		}
 		listOfResults = m.ListOfResults
-		_listOfResultsErr := listOfResults.Serialize(writeBuffer)
+		_listOfResultsErr := writeBuffer.WriteSerializable(listOfResults)
 		if popErr := writeBuffer.PopContext("listOfResults"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for listOfResults")
 		}
@@ -204,9 +204,9 @@ func (m *BACnetReadAccessResult) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

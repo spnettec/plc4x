@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -249,7 +249,7 @@ func (m *BACnetReadAccessPropertyReadResult) Serialize(writeBuffer utils.WriteBu
 			return errors.Wrap(pushErr, "Error pushing for propertyValue")
 		}
 		propertyValue = m.PropertyValue
-		_propertyValueErr := propertyValue.Serialize(writeBuffer)
+		_propertyValueErr := writeBuffer.WriteSerializable(propertyValue)
 		if popErr := writeBuffer.PopContext("propertyValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for propertyValue")
 		}
@@ -265,7 +265,7 @@ func (m *BACnetReadAccessPropertyReadResult) Serialize(writeBuffer utils.WriteBu
 			return errors.Wrap(pushErr, "Error pushing for propertyAccessError")
 		}
 		propertyAccessError = m.PropertyAccessError
-		_propertyAccessErrorErr := propertyAccessError.Serialize(writeBuffer)
+		_propertyAccessErrorErr := writeBuffer.WriteSerializable(propertyAccessError)
 		if popErr := writeBuffer.PopContext("propertyAccessError"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for propertyAccessError")
 		}
@@ -284,9 +284,9 @@ func (m *BACnetReadAccessPropertyReadResult) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

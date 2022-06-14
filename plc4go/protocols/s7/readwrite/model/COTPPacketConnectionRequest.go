@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -231,7 +231,7 @@ func (m *COTPPacketConnectionRequest) Serialize(writeBuffer utils.WriteBuffer) e
 		if pushErr := writeBuffer.PushContext("protocolClass"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for protocolClass")
 		}
-		_protocolClassErr := m.ProtocolClass.Serialize(writeBuffer)
+		_protocolClassErr := writeBuffer.WriteSerializable(m.ProtocolClass)
 		if popErr := writeBuffer.PopContext("protocolClass"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for protocolClass")
 		}
@@ -251,9 +251,9 @@ func (m *COTPPacketConnectionRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

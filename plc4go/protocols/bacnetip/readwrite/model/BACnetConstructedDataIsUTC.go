@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataIsUTC) Serialize(writeBuffer utils.WriteBuffer) er
 		if pushErr := writeBuffer.PushContext("isUtc"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for isUtc")
 		}
-		_isUtcErr := m.IsUtc.Serialize(writeBuffer)
+		_isUtcErr := writeBuffer.WriteSerializable(m.IsUtc)
 		if popErr := writeBuffer.PopContext("isUtc"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for isUtc")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataIsUTC) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

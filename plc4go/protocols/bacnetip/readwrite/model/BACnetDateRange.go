@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -157,7 +157,7 @@ func (m *BACnetDateRange) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("startDate"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for startDate")
 	}
-	_startDateErr := m.StartDate.Serialize(writeBuffer)
+	_startDateErr := writeBuffer.WriteSerializable(m.StartDate)
 	if popErr := writeBuffer.PopContext("startDate"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for startDate")
 	}
@@ -169,7 +169,7 @@ func (m *BACnetDateRange) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("endDate"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for endDate")
 	}
-	_endDateErr := m.EndDate.Serialize(writeBuffer)
+	_endDateErr := writeBuffer.WriteSerializable(m.EndDate)
 	if popErr := writeBuffer.PopContext("endDate"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for endDate")
 	}
@@ -187,9 +187,9 @@ func (m *BACnetDateRange) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

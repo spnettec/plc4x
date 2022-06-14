@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -185,7 +185,7 @@ func (m *BACnetConstructedDataEnable) Serialize(writeBuffer utils.WriteBuffer) e
 		if pushErr := writeBuffer.PushContext("enable"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for enable")
 		}
-		_enableErr := m.Enable.Serialize(writeBuffer)
+		_enableErr := writeBuffer.WriteSerializable(m.Enable)
 		if popErr := writeBuffer.PopContext("enable"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for enable")
 		}
@@ -205,9 +205,9 @@ func (m *BACnetConstructedDataEnable) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

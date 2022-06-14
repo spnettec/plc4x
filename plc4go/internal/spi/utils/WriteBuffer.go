@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -45,6 +45,7 @@ type WriteBuffer interface {
 	WriteBigFloat(logicalName string, bitLength uint8, value *big.Float, writerArgs ...WithWriterArgs) error
 	WriteString(logicalName string, bitLength uint32, encoding string, value string, writerArgs ...WithWriterArgs) error
 	WriteVirtual(logicalName string, value interface{}, writerArgs ...WithWriterArgs) error
+	WriteSerializable(serializable Serializable) error
 	// PopContext signals work done with the context with the supplied logical name
 	PopContext(logicalName string, writerArgs ...WithWriterArgs) error
 }

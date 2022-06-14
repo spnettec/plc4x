@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -230,6 +230,13 @@ func (b *boxedWriteBuffer) WriteVirtual(logicalName string, value interface{}, w
 	}
 	b.PushBack(asciiBox)
 	return nil
+}
+
+func (b *boxedWriteBuffer) WriteSerializable(serializable Serializable) error {
+	if serializable == nil {
+		return nil
+	}
+	return serializable.Serialize(b)
 }
 
 func (b *boxedWriteBuffer) PopContext(logicalName string, _ ...WithWriterArgs) error {

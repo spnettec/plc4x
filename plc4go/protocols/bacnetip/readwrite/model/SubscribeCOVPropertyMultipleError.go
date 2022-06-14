@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -198,7 +198,7 @@ func (m *SubscribeCOVPropertyMultipleError) Serialize(writeBuffer utils.WriteBuf
 		if pushErr := writeBuffer.PushContext("errorType"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for errorType")
 		}
-		_errorTypeErr := m.ErrorType.Serialize(writeBuffer)
+		_errorTypeErr := writeBuffer.WriteSerializable(m.ErrorType)
 		if popErr := writeBuffer.PopContext("errorType"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for errorType")
 		}
@@ -210,7 +210,7 @@ func (m *SubscribeCOVPropertyMultipleError) Serialize(writeBuffer utils.WriteBuf
 		if pushErr := writeBuffer.PushContext("firstFailedSubscription"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for firstFailedSubscription")
 		}
-		_firstFailedSubscriptionErr := m.FirstFailedSubscription.Serialize(writeBuffer)
+		_firstFailedSubscriptionErr := writeBuffer.WriteSerializable(m.FirstFailedSubscription)
 		if popErr := writeBuffer.PopContext("firstFailedSubscription"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for firstFailedSubscription")
 		}
@@ -230,9 +230,9 @@ func (m *SubscribeCOVPropertyMultipleError) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

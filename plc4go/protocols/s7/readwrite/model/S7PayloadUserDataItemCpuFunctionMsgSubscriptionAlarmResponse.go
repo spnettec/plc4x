@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -274,7 +274,7 @@ func (m *S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse) Serialize
 		if pushErr := writeBuffer.PushContext("alarmType"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for alarmType")
 		}
-		_alarmTypeErr := m.AlarmType.Serialize(writeBuffer)
+		_alarmTypeErr := writeBuffer.WriteSerializable(m.AlarmType)
 		if popErr := writeBuffer.PopContext("alarmType"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for alarmType")
 		}
@@ -308,9 +308,9 @@ func (m *S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse) String() 
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }

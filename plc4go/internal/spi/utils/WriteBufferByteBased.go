@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -242,6 +242,13 @@ func (wb *byteWriteBuffer) WriteString(_ string, bitLength uint32, encoding stri
 func (wb *byteWriteBuffer) WriteVirtual(logicalName string, value interface{}, writerArgs ...WithWriterArgs) error {
 	// NO-OP
 	return nil
+}
+
+func (wb *byteWriteBuffer) WriteSerializable(serializable Serializable) error {
+	if serializable == nil {
+		return nil
+	}
+	return serializable.Serialize(wb)
 }
 
 func (wb *byteWriteBuffer) PopContext(_ string, _ ...WithWriterArgs) error {

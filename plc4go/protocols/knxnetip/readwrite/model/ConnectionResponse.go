@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -273,7 +273,7 @@ func (m *ConnectionResponse) Serialize(writeBuffer utils.WriteBuffer) error {
 		if pushErr := writeBuffer.PushContext("status"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for status")
 		}
-		_statusErr := m.Status.Serialize(writeBuffer)
+		_statusErr := writeBuffer.WriteSerializable(m.Status)
 		if popErr := writeBuffer.PopContext("status"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for status")
 		}
@@ -288,7 +288,7 @@ func (m *ConnectionResponse) Serialize(writeBuffer utils.WriteBuffer) error {
 				return errors.Wrap(pushErr, "Error pushing for hpaiDataEndpoint")
 			}
 			hpaiDataEndpoint = m.HpaiDataEndpoint
-			_hpaiDataEndpointErr := hpaiDataEndpoint.Serialize(writeBuffer)
+			_hpaiDataEndpointErr := writeBuffer.WriteSerializable(hpaiDataEndpoint)
 			if popErr := writeBuffer.PopContext("hpaiDataEndpoint"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for hpaiDataEndpoint")
 			}
@@ -304,7 +304,7 @@ func (m *ConnectionResponse) Serialize(writeBuffer utils.WriteBuffer) error {
 				return errors.Wrap(pushErr, "Error pushing for connectionResponseDataBlock")
 			}
 			connectionResponseDataBlock = m.ConnectionResponseDataBlock
-			_connectionResponseDataBlockErr := connectionResponseDataBlock.Serialize(writeBuffer)
+			_connectionResponseDataBlockErr := writeBuffer.WriteSerializable(connectionResponseDataBlock)
 			if popErr := writeBuffer.PopContext("connectionResponseDataBlock"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for connectionResponseDataBlock")
 			}
@@ -325,9 +325,9 @@ func (m *ConnectionResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
-	if err := m.Serialize(buffer); err != nil {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
 		return err.Error()
 	}
-	return buffer.GetBox().String()
+	return writeBuffer.GetBox().String()
 }
