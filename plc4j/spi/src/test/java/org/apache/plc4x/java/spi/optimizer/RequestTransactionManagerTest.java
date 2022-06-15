@@ -128,7 +128,6 @@ public class RequestTransactionManagerTest {
     public void abortTransactionFromExternally() throws ExecutionException, InterruptedException {
         CompletableFuture<Void> sendRequest = new CompletableFuture<>();
         CompletableFuture<Void> receiveResponse = new CompletableFuture<>();
-        CompletableFuture<Void> transactionIsFinished = new CompletableFuture<>();
 
         RequestTransactionManager tm = new RequestTransactionManager();
         RequestTransactionManager.RequestTransaction handle = tm.startRequest();

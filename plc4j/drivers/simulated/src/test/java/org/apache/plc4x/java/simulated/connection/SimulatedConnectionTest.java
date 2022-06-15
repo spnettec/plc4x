@@ -218,7 +218,7 @@ class SimulatedConnectionTest implements WithAssertions {
             stateQueue.forEach(
                 plcSubscriptionEvent -> assertThat(plcSubscriptionEvent.getFieldNames()).containsOnly("state"));
             // No idea, why this should not be empty
-            //assertThat(eventQueue).isNotEmpty();
+            assertThat(eventQueue).isNotEmpty();
             eventQueue.forEach(
                 plcSubscriptionEvent -> assertThat(plcSubscriptionEvent.getFieldNames()).containsOnly("event"));
         }

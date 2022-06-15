@@ -109,6 +109,7 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
                     registeredHandlers.add(handler);
                 }, clazz, timeout, this);
             }
+
         });
     }
     private Timeout createTimeout(HandlerRegistration handler)

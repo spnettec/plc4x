@@ -22,10 +22,8 @@ import io.netty.util.Timeout;
 import io.vavr.control.Either;
 
 import java.time.Duration;
-import java.time.Instant;
 import java.util.Deque;
 import java.util.concurrent.TimeoutException;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
