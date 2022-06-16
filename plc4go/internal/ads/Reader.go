@@ -223,7 +223,7 @@ func (m *Reader) multiRead(readRequest model.PlcReadRequest, result chan model.P
 			size = uint32(adsField.GetDatatype().NumBytes())
 		}
 		// With multi-requests, the index-group is fixed and the index offset indicates the number of elements.
-		items[i] = readWriteModel.NewAdsMultiRequestItemRead(adsField.IndexGroup, adsField.IndexOffset, size*adsField.NumberOfElements).GetParent()
+		items[i] = readWriteModel.NewAdsMultiRequestItemRead(adsField.IndexGroup, adsField.IndexOffset, size*adsField.NumberOfElements)
 		expectedResponseDataSize += 4 + (size * adsField.GetNumberOfElements())
 	}
 	userdata.Data = readWriteModel.NewAdsReadWriteRequest(uint32(readWriteModel.ReservedIndexGroups_ADSIGRP_MULTIPLE_READ), uint32(len(readRequest.GetFieldNames())), expectedResponseDataSize, items, nil)

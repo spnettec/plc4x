@@ -275,7 +275,7 @@ func (m FieldHandler) ParseQuery(query string) (model.PlcField, error) {
 		stringEncoding := match["stringEncoding"]
 		if stringEncoding == "" {
 			stringEncoding = "UTF-8"
-			if s7AddressAny.TransportSize == readWriteModel.TransportSize_WSTRING || s7AddressAny.TransportSize == readWriteModel.TransportSize_WCHAR {
+			if s7AddressAny.GetTransportSize() == readWriteModel.TransportSize_WSTRING || s7AddressAny.GetTransportSize() == readWriteModel.TransportSize_WCHAR {
 				stringEncoding = "UTF-16"
 			}
 		}
