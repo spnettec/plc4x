@@ -28,15 +28,18 @@ import (
 
 // BACnetConfirmedServiceRequestConfirmedUnknown is the corresponding interface of BACnetConfirmedServiceRequestConfirmedUnknown
 type BACnetConfirmedServiceRequestConfirmedUnknown interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetConfirmedServiceRequest
 	// GetUnknownBytes returns UnknownBytes (property field)
 	GetUnknownBytes() []byte
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetConfirmedServiceRequestConfirmedUnknownExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestConfirmedUnknown.
+// This is useful for switch cases.
+type BACnetConfirmedServiceRequestConfirmedUnknownExactly interface {
+	BACnetConfirmedServiceRequestConfirmedUnknown
+	isBACnetConfirmedServiceRequestConfirmedUnknown() bool
 }
 
 // _BACnetConfirmedServiceRequestConfirmedUnknown is the data-structure of this message
@@ -45,7 +48,6 @@ type _BACnetConfirmedServiceRequestConfirmedUnknown struct {
 	UnknownBytes []byte
 
 	// Arguments.
-	ServiceRequestLength        uint16
 	ServiceRequestPayloadLength uint16
 }
 
@@ -149,8 +151,10 @@ func BACnetConfirmedServiceRequestConfirmedUnknownParse(readBuffer utils.ReadBuf
 
 	// Create a partially initialized instance
 	_child := &_BACnetConfirmedServiceRequestConfirmedUnknown{
-		UnknownBytes:                   unknownBytes,
-		_BACnetConfirmedServiceRequest: &_BACnetConfirmedServiceRequest{},
+		UnknownBytes: unknownBytes,
+		_BACnetConfirmedServiceRequest: &_BACnetConfirmedServiceRequest{
+			ServiceRequestLength: serviceRequestLength,
+		},
 	}
 	_child._BACnetConfirmedServiceRequest._BACnetConfirmedServiceRequestChildRequirements = _child
 	return _child, nil
@@ -165,12 +169,9 @@ func (m *_BACnetConfirmedServiceRequestConfirmedUnknown) Serialize(writeBuffer u
 		}
 
 		// Array Field (unknownBytes)
-		if m.GetUnknownBytes() != nil {
-			// Byte Array field (unknownBytes)
-			_writeArrayErr := writeBuffer.WriteByteArray("unknownBytes", m.GetUnknownBytes())
-			if _writeArrayErr != nil {
-				return errors.Wrap(_writeArrayErr, "Error serializing 'unknownBytes' field")
-			}
+		// Byte Array field (unknownBytes)
+		if err := writeBuffer.WriteByteArray("unknownBytes", m.GetUnknownBytes()); err != nil {
+			return errors.Wrap(err, "Error serializing 'unknownBytes' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConfirmedServiceRequestConfirmedUnknown"); popErr != nil {
@@ -179,6 +180,10 @@ func (m *_BACnetConfirmedServiceRequestConfirmedUnknown) Serialize(writeBuffer u
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetConfirmedServiceRequestConfirmedUnknown) isBACnetConfirmedServiceRequestConfirmedUnknown() bool {
+	return true
 }
 
 func (m *_BACnetConfirmedServiceRequestConfirmedUnknown) String() string {

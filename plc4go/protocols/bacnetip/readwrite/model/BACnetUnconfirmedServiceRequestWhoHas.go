@@ -30,6 +30,8 @@ import (
 
 // BACnetUnconfirmedServiceRequestWhoHas is the corresponding interface of BACnetUnconfirmedServiceRequestWhoHas
 type BACnetUnconfirmedServiceRequestWhoHas interface {
+	utils.LengthAware
+	utils.Serializable
 	BACnetUnconfirmedServiceRequest
 	// GetDeviceInstanceRangeLowLimit returns DeviceInstanceRangeLowLimit (property field)
 	GetDeviceInstanceRangeLowLimit() BACnetContextTagUnsignedInteger
@@ -39,12 +41,13 @@ type BACnetUnconfirmedServiceRequestWhoHas interface {
 	GetObjectIdentifier() BACnetContextTagObjectIdentifier
 	// GetObjectName returns ObjectName (property field)
 	GetObjectName() BACnetContextTagCharacterString
-	// GetLengthInBytes returns the length in bytes
-	GetLengthInBytes() uint16
-	// GetLengthInBits returns the length in bits
-	GetLengthInBits() uint16
-	// Serialize serializes this type
-	Serialize(writeBuffer utils.WriteBuffer) error
+}
+
+// BACnetUnconfirmedServiceRequestWhoHasExactly can be used when we want exactly this type and not a type which fulfills BACnetUnconfirmedServiceRequestWhoHas.
+// This is useful for switch cases.
+type BACnetUnconfirmedServiceRequestWhoHasExactly interface {
+	BACnetUnconfirmedServiceRequestWhoHas
+	isBACnetUnconfirmedServiceRequestWhoHas() bool
 }
 
 // _BACnetUnconfirmedServiceRequestWhoHas is the data-structure of this message
@@ -54,9 +57,6 @@ type _BACnetUnconfirmedServiceRequestWhoHas struct {
 	DeviceInstanceRangeHighLimit BACnetContextTagUnsignedInteger
 	ObjectIdentifier             BACnetContextTagObjectIdentifier
 	ObjectName                   BACnetContextTagCharacterString
-
-	// Arguments.
-	ServiceRequestLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -271,11 +271,13 @@ func BACnetUnconfirmedServiceRequestWhoHasParse(readBuffer utils.ReadBuffer, ser
 
 	// Create a partially initialized instance
 	_child := &_BACnetUnconfirmedServiceRequestWhoHas{
-		DeviceInstanceRangeLowLimit:      deviceInstanceRangeLowLimit,
-		DeviceInstanceRangeHighLimit:     deviceInstanceRangeHighLimit,
-		ObjectIdentifier:                 objectIdentifier,
-		ObjectName:                       objectName,
-		_BACnetUnconfirmedServiceRequest: &_BACnetUnconfirmedServiceRequest{},
+		DeviceInstanceRangeLowLimit:  deviceInstanceRangeLowLimit,
+		DeviceInstanceRangeHighLimit: deviceInstanceRangeHighLimit,
+		ObjectIdentifier:             objectIdentifier,
+		ObjectName:                   objectName,
+		_BACnetUnconfirmedServiceRequest: &_BACnetUnconfirmedServiceRequest{
+			ServiceRequestLength: serviceRequestLength,
+		},
 	}
 	_child._BACnetUnconfirmedServiceRequest._BACnetUnconfirmedServiceRequestChildRequirements = _child
 	return _child, nil
@@ -359,6 +361,10 @@ func (m *_BACnetUnconfirmedServiceRequestWhoHas) Serialize(writeBuffer utils.Wri
 		return nil
 	}
 	return m.SerializeParent(writeBuffer, m, ser)
+}
+
+func (m *_BACnetUnconfirmedServiceRequestWhoHas) isBACnetUnconfirmedServiceRequestWhoHas() bool {
+	return true
 }
 
 func (m *_BACnetUnconfirmedServiceRequestWhoHas) String() string {
