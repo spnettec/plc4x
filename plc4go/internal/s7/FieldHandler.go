@@ -76,7 +76,10 @@ const (
 
 func (m FieldHandler) ParseQuery(query string) (model.PlcField, error) {
 	if match := utils.GetSubgroupMatches(m.dataBlockStringAddressPattern, query); match != nil {
-		dataType := readWriteModel.TransportSizeByName(match[DATA_TYPE])
+		dataType, ok := readWriteModel.TransportSizeByName(match[DATA_TYPE])
+		if !ok {
+			return nil, errors.Errorf("Unknown type %s", match[DATA_TYPE])
+		}
 		parsedStringLength, err := strconv.ParseUint(match[STRING_LENGTH], 10, 16)
 		if err != nil {
 			return nil, errors.Wrap(err, "Error converting stringlength")
@@ -123,7 +126,10 @@ func (m FieldHandler) ParseQuery(query string) (model.PlcField, error) {
 		}
 		return NewStringField(memoryArea, 0, byteOffset, bitOffset, numElements, stringLength, dataType, stringEncoding), nil
 	} else if match := utils.GetSubgroupMatches(m.dataBlockStringShortPattern, query); match != nil {
-		dataType := readWriteModel.TransportSizeByName(match[DATA_TYPE])
+		dataType, ok := readWriteModel.TransportSizeByName(match[DATA_TYPE])
+		if !ok {
+			return nil, errors.Errorf("Unknown type %s", match[DATA_TYPE])
+		}
 		parsedStringLength, err := strconv.ParseUint(match[STRING_LENGTH], 10, 16)
 		if err != nil {
 			return nil, errors.Wrap(err, "Error converting stringlength")
@@ -164,7 +170,10 @@ func (m FieldHandler) ParseQuery(query string) (model.PlcField, error) {
 		}
 		return NewStringField(memoryArea, blockNumber, byteOffset, bitOffset, numElements, stringLength, dataType, stringEncoding), nil
 	} else if match := utils.GetSubgroupMatches(m.dataBlockAddressPattern, query); match != nil {
-		dataType := readWriteModel.TransportSizeByName(match[DATA_TYPE])
+		dataType, ok := readWriteModel.TransportSizeByName(match[DATA_TYPE])
+		if !ok {
+			return nil, errors.Errorf("Unknown type %s", match[DATA_TYPE])
+		}
 		memoryArea := readWriteModel.MemoryArea_DATA_BLOCKS
 		transferSizeCode := getSizeCode(match[TRANSFER_SIZE_CODE])
 		parsedBlockNumber, err := strconv.ParseUint(match[BLOCK_NUMBER], 10, 16)
@@ -214,7 +223,10 @@ func (m FieldHandler) ParseQuery(query string) (model.PlcField, error) {
 		}
 		return NewField(memoryArea, blockNumber, byteOffset, bitOffset, numElements, dataType, stringEncoding), nil
 	} else if match := utils.GetSubgroupMatches(m.dataBlockShortPattern, query); match != nil {
-		dataType := readWriteModel.TransportSizeByName(match[DATA_TYPE])
+		dataType, ok := readWriteModel.TransportSizeByName(match[DATA_TYPE])
+		if !ok {
+			return nil, errors.Errorf("Unknown type %s", match[DATA_TYPE])
+		}
 		memoryArea := readWriteModel.MemoryArea_DATA_BLOCKS
 		parsedBlockNumber, err := strconv.ParseUint(match[BLOCK_NUMBER], 10, 16)
 		if err != nil {
@@ -289,7 +301,10 @@ func (m FieldHandler) ParseQuery(query string) (model.PlcField, error) {
 			stringEncoding,
 		), nil
 	} else if match := utils.GetSubgroupMatches(m.addressPattern, query); match != nil {
-		dataType := readWriteModel.TransportSizeByName(match[DATA_TYPE])
+		dataType, ok := readWriteModel.TransportSizeByName(match[DATA_TYPE])
+		if !ok {
+			return nil, errors.Errorf("Unknown type %s", match[DATA_TYPE])
+		}
 		memoryArea, err := getMemoryAreaForShortName(match[MEMORY_AREA])
 		if err != nil {
 			return nil, errors.Wrap(err, "Error getting memory area")
