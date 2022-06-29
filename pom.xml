@@ -88,7 +88,7 @@
     <!--
       At least 3.3.3 required for camel-package-maven-plugin
     -->
-    <maven.version>3.8.5</maven.version>
+    <maven.version>3.8.6</maven.version>
 
     <java.version>11</java.version>
 
@@ -143,7 +143,7 @@
     <woodstox-core.version>6.2.8</woodstox-core.version>
     <!-- When updating this to the latest version, we're getting errors in the opcua server tests -->
     <jaxb.version>4.0.0</jaxb.version>
-    <jetty-util.version>11.0.9</jetty-util.version>
+    <jetty-util.version>11.0.11</jetty-util.version>
     <jna.version>5.10.0</jna.version>
     <joda-time.version>2.10.14</joda-time.version>
     <jserialcom.version>2.9.1</jserialcom.version>
@@ -152,7 +152,8 @@
     <logback.version>1.2.11</logback.version>
     <maven.clean.plugin.version>3.2.0</maven.clean.plugin.version>
     <milo.version>0.6.6</milo.version>
-    <mockito.version>4.5.1</mockito.version>
+    <milo.version>0.6.6</milo.version>
+    <mockito.version>4.6.1</mockito.version>
     <netty.version>4.1.77.Final</netty.version>
     <owasp-dependency-check.version>7.1.1</owasp-dependency-check.version>
     <pcap4j.version>1.8.2</pcap4j.version>
@@ -720,9 +721,7 @@
             <exclude>**/.git/**</exclude>
             <exclude>**/.gitignore</exclude>
             <exclude>**/cmake-*/**</exclude>
-            <exclude>**/.cmake/**</exclude>
             <exclude>**/.lock/**</exclude>
-            <exclude>**/downloads/**</exclude>
 
             <!-- License Files for other licenses -->
             <exclude>**/UNLICENSE</exclude>
@@ -731,7 +730,6 @@
               to add a new licenses to the configuration.
             -->
             <exclude>**/Expression.g4</exclude>
-            <exclude>**/*.log</exclude>
             <exclude>**/KeyStoreLoader.java</exclude>
             <exclude>**/OPCUAServer.java</exclude>
             <exclude>**/Plc4xNamespace.java</exclude>
@@ -1068,7 +1066,7 @@
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>buildnumber-maven-plugin</artifactId>
-          <version>1.4</version>
+          <version>3.0.0</version>
         </plugin>
 
         <plugin>
@@ -1087,7 +1085,7 @@
         <plugin>
           <groupId>org.apache.felix</groupId>
           <artifactId>maven-bundle-plugin</artifactId>
-          <version>5.1.4</version>
+          <version>5.1.6</version>
         </plugin>
 
         <plugin>
@@ -1124,7 +1122,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.10.0</version>
+          <version>3.10.1</version>
           <configuration>
             <release>${java.version}</release>
           </configuration>
@@ -1321,7 +1319,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-release-plugin</artifactId>
-          <version>3.0.0-M5</version>
+          <version>3.0.0-M6</version>
           <configuration>
             <!-- Tell the plugin to always release all modules using the same version -->
             <autoVersionSubmodules>true</autoVersionSubmodules>

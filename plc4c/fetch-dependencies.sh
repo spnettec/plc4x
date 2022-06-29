@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 # ----------------------------------------------------------------------------
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
@@ -17,23 +19,8 @@
 # under the License.
 # ----------------------------------------------------------------------------
 
-# Dependency Review Action
-#
-# This Action will scan dependency manifest files that change as part of a Pull Request, surfacing known-vulnerable versions of the packages declared or updated in the PR. Once installed, if the workflow run is marked as required, PRs introducing known-vulnerable packages will be blocked from merging.
-#
-# Source repository: https://github.com/actions/dependency-review-action
-# Public documentation: https://docs.github.com/en/code-security/supply-chain-security/understanding-your-software-supply-chain/about-dependency-review#dependency-review-enforcement
-name: 'Dependency Review'
-on: [pull_request]
+mkdir -p target/dependency
 
-permissions:
-  contents: read
+wget -O target/unity.zip https://github.com/ThrowTheSwitch/Unity/archive/v2.5.2.zip
 
-jobs:
-  dependency-review:
-    runs-on: ubuntu-latest
-    steps:
-      - name: 'Checkout Repository'
-        uses: actions/checkout@v3
-      - name: 'Dependency Review'
-        uses: actions/dependency-review-action@v2
+unzip target/unity.zip -d target/dependency
