@@ -23,6 +23,8 @@ import (
 	"bytes"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/tools/plc4xpcapanalyzer/internal/bacnetanalyzer"
+	"github.com/apache/plc4x/plc4go/tools/plc4xpcapanalyzer/internal/cbusanalyzer"
+	"github.com/apache/plc4x/plc4go/tools/plc4xpcapanalyzer/internal/common"
 	"github.com/apache/plc4x/plc4go/tools/plc4xpcapanalyzer/internal/pcaphandler"
 	"github.com/k0kubun/go-ansi"
 	"github.com/rs/zerolog/log"
@@ -37,12 +39,15 @@ func Analyze(pcapFile, protocolType, filter string, onlyParse, noBytesCompare bo
 	defer handle.Close()
 	log.Debug().Interface("handle", handle).Int("numberOfPackage", numberOfPackage).Msg("got handle")
 	source := pcaphandler.GetPacketSource(handle)
-	var packageParse func(string, []byte) (interface{}, error)
+	var packageParse func(common.PacketInformation, []byte) (interface{}, error)
 	var serializePackage func(interface{}) ([]byte, error)
 	switch protocolType {
 	case "bacnet":
 		packageParse = bacnetanalyzer.PackageParse
 		serializePackage = bacnetanalyzer.SerializePackage
+	case "c-bus":
+		packageParse = cbusanalyzer.PackageParse
+		serializePackage = cbusanalyzer.SerializePackage
 	}
 	bar := progressbar.NewOptions(numberOfPackage, progressbar.OptionSetWriter(ansi.NewAnsiStdout()),
 		progressbar.OptionEnableColorCodes(true),
@@ -66,16 +71,18 @@ func Analyze(pcapFile, protocolType, filter string, onlyParse, noBytesCompare bo
 		}
 		packetTimestamp := packet.Metadata().Timestamp
 		realPacketNumber := timestampToIndexMap[packetTimestamp]
-		packetInformation := fmt.Sprintf("%s: [%d] timestamp: %v", pcapFile, realPacketNumber, packetTimestamp)
+		description := fmt.Sprintf("%s: [%d] timestamp: %v", pcapFile, realPacketNumber, packetTimestamp)
 		applicationLayer := packet.ApplicationLayer()
 		if applicationLayer == nil {
-			log.Info().Str("packetInformation", packetInformation).Msg("No application layer")
+			log.Info().Str("packetInformation", description).Msg("No application layer")
 			continue
 		}
+		// TODO: extract ips if available
+		packetInformation := common.PacketInformation{Description: description}
 		payload := applicationLayer.Payload()
 		if parsed, err := packageParse(packetInformation, payload); err != nil {
 			// TODO: write report to xml or something
-			log.Warn().Str("packetInformation", packetInformation).Err(err).Msg("Error parsing package")
+			log.Warn().Str("packetInformation", description).Err(err).Msg("Error parsing package")
 			continue
 		} else {
 			if onlyParse {
@@ -85,7 +92,7 @@ func Analyze(pcapFile, protocolType, filter string, onlyParse, noBytesCompare bo
 			serializedBytes, err := serializePackage(parsed)
 			if err != nil {
 				// TODO: write report to xml or something
-				log.Warn().Str("packetInformation", packetInformation).Err(err).Msg("Error serializing")
+				log.Warn().Str("packetInformation", description).Err(err).Msg("Error serializing")
 				continue
 			}
 			if noBytesCompare {

@@ -130,7 +130,7 @@ def checkGo() {
     Matcher matcher = extractVersion(output)
     if (matcher.size() > 0) {
         def curVersion = matcher[0][1]
-        def result = checkVersionAtLeast(curVersion, "1.0.0")
+        def result = checkVersionAtLeast(curVersion, "1.18.0")
         if (!result) {
             allConditionsMet = false
         }
@@ -428,16 +428,18 @@ def checkDocker() {
     // TODO: Implement the actual check ...
 }
 
-def checkLibPcap(String minVersion) {
+def checkLibPcap(String minVersion, String os) {
     print "Detecting LibPcap version: "
     try {
+        // For some reason it doesn't work, if we pass this in from the outside.
+        if (os == "mac") {
+            System.getProperties().setProperty("jna.library.path", "/usr/local/Cellar/libpcap/1.10.1/lib");
+        }
         output = org.pcap4j.core.Pcaps.libVersion()
         String version = output - ~/^libpcap version /
         def result =  checkVersionAtLeast(version, minVersion)
         if (!result) {
-            // TODO: only on mac we need the minimum version so we need to refine this
-            // allConditionsMet = false
-            println "This will probably a problem on mac"
+            //allConditionsMet = false
         }
     } catch (Error e) {
         output = ""
@@ -595,7 +597,7 @@ if (cppEnabled && (os == "windows")) {
 
 if (os == "mac") {
     // The current system version from mac crashes so we assert for a version coming with brew
-    checkLibPcap("1.10.1")
+    checkLibPcap("1.10.1", os)
 }
 
 if (!allConditionsMet) {
