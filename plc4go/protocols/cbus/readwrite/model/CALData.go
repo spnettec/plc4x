@@ -146,7 +146,7 @@ func CALDataParse(readBuffer utils.ReadBuffer) (CALData, error) {
 	}
 	_commandTypeContainer, _commandTypeContainerErr := CALCommandTypeContainerParse(readBuffer)
 	if _commandTypeContainerErr != nil {
-		return nil, errors.Wrap(_commandTypeContainerErr, "Error parsing 'commandTypeContainer' field")
+		return nil, errors.Wrap(_commandTypeContainerErr, "Error parsing 'commandTypeContainer' field of CALData")
 	}
 	commandTypeContainer := _commandTypeContainer
 	if closeErr := readBuffer.CloseContext("commandTypeContainer"); closeErr != nil {
@@ -185,11 +185,10 @@ func CALDataParse(readBuffer utils.ReadBuffer) (CALData, error) {
 	case commandType == CALCommandType_STATUS_EXTENDED: // CALDataReplyStatusExtended
 		_childTemp, typeSwitchError = CALDataReplyStatusExtendedParse(readBuffer, commandTypeContainer)
 	default:
-		// TODO: return actual type
-		typeSwitchError = errors.New("Unmapped type")
+		typeSwitchError = errors.Errorf("Unmapped type for parameters [commandType=%v]", commandType)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of CALData")
 	}
 	_child = _childTemp.(CALDataChildSerializeRequirement)
 

@@ -64,12 +64,12 @@ type _CBusPointToPointCommandIndirect struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_CBusPointToPointCommandIndirect) InitializeParent(parent CBusPointToPointCommand, bridgeAddressCountPeek uint16, calData CALData, crc Checksum, peekAlpha byte, alpha Alpha) {
+func (m *_CBusPointToPointCommandIndirect) InitializeParent(parent CBusPointToPointCommand, bridgeAddressCountPeek uint16, calData CALData, crc Checksum, alpha Alpha, termination RequestTermination) {
 	m.BridgeAddressCountPeek = bridgeAddressCountPeek
 	m.CalData = calData
 	m.Crc = crc
-	m.PeekAlpha = peekAlpha
 	m.Alpha = alpha
+	m.Termination = termination
 }
 
 func (m *_CBusPointToPointCommandIndirect) GetParent() CBusPointToPointCommand {
@@ -99,12 +99,12 @@ func (m *_CBusPointToPointCommandIndirect) GetUnitAddress() UnitAddress {
 ///////////////////////////////////////////////////////////
 
 // NewCBusPointToPointCommandIndirect factory function for _CBusPointToPointCommandIndirect
-func NewCBusPointToPointCommandIndirect(bridgeAddress BridgeAddress, networkRoute NetworkRoute, unitAddress UnitAddress, bridgeAddressCountPeek uint16, calData CALData, crc Checksum, peekAlpha byte, alpha Alpha, srchk bool) *_CBusPointToPointCommandIndirect {
+func NewCBusPointToPointCommandIndirect(bridgeAddress BridgeAddress, networkRoute NetworkRoute, unitAddress UnitAddress, bridgeAddressCountPeek uint16, calData CALData, crc Checksum, alpha Alpha, termination RequestTermination, srchk bool) *_CBusPointToPointCommandIndirect {
 	_result := &_CBusPointToPointCommandIndirect{
 		BridgeAddress:            bridgeAddress,
 		NetworkRoute:             networkRoute,
 		UnitAddress:              unitAddress,
-		_CBusPointToPointCommand: NewCBusPointToPointCommand(bridgeAddressCountPeek, calData, crc, peekAlpha, alpha, srchk),
+		_CBusPointToPointCommand: NewCBusPointToPointCommand(bridgeAddressCountPeek, calData, crc, alpha, termination, srchk),
 	}
 	_result._CBusPointToPointCommand._CBusPointToPointCommandChildRequirements = _result
 	return _result
@@ -163,7 +163,7 @@ func CBusPointToPointCommandIndirectParse(readBuffer utils.ReadBuffer, srchk boo
 	}
 	_bridgeAddress, _bridgeAddressErr := BridgeAddressParse(readBuffer)
 	if _bridgeAddressErr != nil {
-		return nil, errors.Wrap(_bridgeAddressErr, "Error parsing 'bridgeAddress' field")
+		return nil, errors.Wrap(_bridgeAddressErr, "Error parsing 'bridgeAddress' field of CBusPointToPointCommandIndirect")
 	}
 	bridgeAddress := _bridgeAddress.(BridgeAddress)
 	if closeErr := readBuffer.CloseContext("bridgeAddress"); closeErr != nil {
@@ -176,7 +176,7 @@ func CBusPointToPointCommandIndirectParse(readBuffer utils.ReadBuffer, srchk boo
 	}
 	_networkRoute, _networkRouteErr := NetworkRouteParse(readBuffer)
 	if _networkRouteErr != nil {
-		return nil, errors.Wrap(_networkRouteErr, "Error parsing 'networkRoute' field")
+		return nil, errors.Wrap(_networkRouteErr, "Error parsing 'networkRoute' field of CBusPointToPointCommandIndirect")
 	}
 	networkRoute := _networkRoute.(NetworkRoute)
 	if closeErr := readBuffer.CloseContext("networkRoute"); closeErr != nil {
@@ -189,7 +189,7 @@ func CBusPointToPointCommandIndirectParse(readBuffer utils.ReadBuffer, srchk boo
 	}
 	_unitAddress, _unitAddressErr := UnitAddressParse(readBuffer)
 	if _unitAddressErr != nil {
-		return nil, errors.Wrap(_unitAddressErr, "Error parsing 'unitAddress' field")
+		return nil, errors.Wrap(_unitAddressErr, "Error parsing 'unitAddress' field of CBusPointToPointCommandIndirect")
 	}
 	unitAddress := _unitAddress.(UnitAddress)
 	if closeErr := readBuffer.CloseContext("unitAddress"); closeErr != nil {

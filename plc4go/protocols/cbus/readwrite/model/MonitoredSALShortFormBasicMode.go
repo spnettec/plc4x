@@ -72,9 +72,10 @@ type _MonitoredSALShortFormBasicMode struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_MonitoredSALShortFormBasicMode) InitializeParent(parent MonitoredSAL, salType byte, salData SALData) {
+func (m *_MonitoredSALShortFormBasicMode) InitializeParent(parent MonitoredSAL, salType byte, salData SALData, termination ResponseTermination) {
 	m.SalType = salType
 	m.SalData = salData
+	m.Termination = termination
 }
 
 func (m *_MonitoredSALShortFormBasicMode) GetParent() MonitoredSAL {
@@ -112,14 +113,14 @@ func (m *_MonitoredSALShortFormBasicMode) GetApplication() ApplicationIdContaine
 ///////////////////////////////////////////////////////////
 
 // NewMonitoredSALShortFormBasicMode factory function for _MonitoredSALShortFormBasicMode
-func NewMonitoredSALShortFormBasicMode(counts byte, bridgeCount BridgeCount, networkNumber NetworkNumber, noCounts *byte, application ApplicationIdContainer, salType byte, salData SALData) *_MonitoredSALShortFormBasicMode {
+func NewMonitoredSALShortFormBasicMode(counts byte, bridgeCount BridgeCount, networkNumber NetworkNumber, noCounts *byte, application ApplicationIdContainer, salType byte, salData SALData, termination ResponseTermination) *_MonitoredSALShortFormBasicMode {
 	_result := &_MonitoredSALShortFormBasicMode{
 		Counts:        counts,
 		BridgeCount:   bridgeCount,
 		NetworkNumber: networkNumber,
 		NoCounts:      noCounts,
 		Application:   application,
-		_MonitoredSAL: NewMonitoredSAL(salType, salData),
+		_MonitoredSAL: NewMonitoredSAL(salType, salData, termination),
 	}
 	_result._MonitoredSAL._MonitoredSALChildRequirements = _result
 	return _result
@@ -185,7 +186,7 @@ func MonitoredSALShortFormBasicModeParse(readBuffer utils.ReadBuffer) (Monitored
 	currentPos = positionAware.GetPos()
 	counts, _err := readBuffer.ReadByte("counts")
 	if _err != nil {
-		return nil, errors.Wrap(_err, "Error parsing 'counts' field")
+		return nil, errors.Wrap(_err, "Error parsing 'counts' field of MonitoredSALShortFormBasicMode")
 	}
 
 	readBuffer.Reset(currentPos)
@@ -203,7 +204,7 @@ func MonitoredSALShortFormBasicModeParse(readBuffer utils.ReadBuffer) (Monitored
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'bridgeCount' field")
+			return nil, errors.Wrap(_err, "Error parsing 'bridgeCount' field of MonitoredSALShortFormBasicMode")
 		default:
 			bridgeCount = _val.(BridgeCount)
 			if closeErr := readBuffer.CloseContext("bridgeCount"); closeErr != nil {
@@ -225,7 +226,7 @@ func MonitoredSALShortFormBasicModeParse(readBuffer utils.ReadBuffer) (Monitored
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'networkNumber' field")
+			return nil, errors.Wrap(_err, "Error parsing 'networkNumber' field of MonitoredSALShortFormBasicMode")
 		default:
 			networkNumber = _val.(NetworkNumber)
 			if closeErr := readBuffer.CloseContext("networkNumber"); closeErr != nil {
@@ -239,7 +240,7 @@ func MonitoredSALShortFormBasicModeParse(readBuffer utils.ReadBuffer) (Monitored
 	if bool((counts) == (0x00)) {
 		_val, _err := readBuffer.ReadByte("noCounts")
 		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'noCounts' field")
+			return nil, errors.Wrap(_err, "Error parsing 'noCounts' field of MonitoredSALShortFormBasicMode")
 		}
 		noCounts = &_val
 	}
@@ -250,7 +251,7 @@ func MonitoredSALShortFormBasicModeParse(readBuffer utils.ReadBuffer) (Monitored
 	}
 	_application, _applicationErr := ApplicationIdContainerParse(readBuffer)
 	if _applicationErr != nil {
-		return nil, errors.Wrap(_applicationErr, "Error parsing 'application' field")
+		return nil, errors.Wrap(_applicationErr, "Error parsing 'application' field of MonitoredSALShortFormBasicMode")
 	}
 	application := _application
 	if closeErr := readBuffer.CloseContext("application"); closeErr != nil {

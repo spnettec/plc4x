@@ -77,9 +77,10 @@ type _MonitoredSALLongFormSmartMode struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_MonitoredSALLongFormSmartMode) InitializeParent(parent MonitoredSAL, salType byte, salData SALData) {
+func (m *_MonitoredSALLongFormSmartMode) InitializeParent(parent MonitoredSAL, salType byte, salData SALData, termination ResponseTermination) {
 	m.SalType = salType
 	m.SalData = salData
+	m.Termination = termination
 }
 
 func (m *_MonitoredSALLongFormSmartMode) GetParent() MonitoredSAL {
@@ -142,7 +143,7 @@ func (m *_MonitoredSALLongFormSmartMode) GetIsUnitAddress() bool {
 ///////////////////////////////////////////////////////////
 
 // NewMonitoredSALLongFormSmartMode factory function for _MonitoredSALLongFormSmartMode
-func NewMonitoredSALLongFormSmartMode(terminatingByte uint32, unitAddress UnitAddress, bridgeAddress BridgeAddress, serialInterfaceAddress SerialInterfaceAddress, reservedByte *byte, replyNetwork ReplyNetwork, salType byte, salData SALData) *_MonitoredSALLongFormSmartMode {
+func NewMonitoredSALLongFormSmartMode(terminatingByte uint32, unitAddress UnitAddress, bridgeAddress BridgeAddress, serialInterfaceAddress SerialInterfaceAddress, reservedByte *byte, replyNetwork ReplyNetwork, salType byte, salData SALData, termination ResponseTermination) *_MonitoredSALLongFormSmartMode {
 	_result := &_MonitoredSALLongFormSmartMode{
 		TerminatingByte:        terminatingByte,
 		UnitAddress:            unitAddress,
@@ -150,7 +151,7 @@ func NewMonitoredSALLongFormSmartMode(terminatingByte uint32, unitAddress UnitAd
 		SerialInterfaceAddress: serialInterfaceAddress,
 		ReservedByte:           reservedByte,
 		ReplyNetwork:           replyNetwork,
-		_MonitoredSAL:          NewMonitoredSAL(salType, salData),
+		_MonitoredSAL:          NewMonitoredSAL(salType, salData, termination),
 	}
 	_result._MonitoredSAL._MonitoredSALChildRequirements = _result
 	return _result
@@ -226,7 +227,7 @@ func MonitoredSALLongFormSmartModeParse(readBuffer utils.ReadBuffer) (MonitoredS
 	{
 		reserved, _err := readBuffer.ReadByte("reserved")
 		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
+			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of MonitoredSALLongFormSmartMode")
 		}
 		if reserved != byte(0x05) {
 			log.Info().Fields(map[string]interface{}{
@@ -240,7 +241,7 @@ func MonitoredSALLongFormSmartModeParse(readBuffer utils.ReadBuffer) (MonitoredS
 	currentPos = positionAware.GetPos()
 	terminatingByte, _err := readBuffer.ReadUint32("terminatingByte", 24)
 	if _err != nil {
-		return nil, errors.Wrap(_err, "Error parsing 'terminatingByte' field")
+		return nil, errors.Wrap(_err, "Error parsing 'terminatingByte' field of MonitoredSALLongFormSmartMode")
 	}
 
 	readBuffer.Reset(currentPos)
@@ -263,7 +264,7 @@ func MonitoredSALLongFormSmartModeParse(readBuffer utils.ReadBuffer) (MonitoredS
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'unitAddress' field")
+			return nil, errors.Wrap(_err, "Error parsing 'unitAddress' field of MonitoredSALLongFormSmartMode")
 		default:
 			unitAddress = _val.(UnitAddress)
 			if closeErr := readBuffer.CloseContext("unitAddress"); closeErr != nil {
@@ -285,7 +286,7 @@ func MonitoredSALLongFormSmartModeParse(readBuffer utils.ReadBuffer) (MonitoredS
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'bridgeAddress' field")
+			return nil, errors.Wrap(_err, "Error parsing 'bridgeAddress' field of MonitoredSALLongFormSmartMode")
 		default:
 			bridgeAddress = _val.(BridgeAddress)
 			if closeErr := readBuffer.CloseContext("bridgeAddress"); closeErr != nil {
@@ -300,7 +301,7 @@ func MonitoredSALLongFormSmartModeParse(readBuffer utils.ReadBuffer) (MonitoredS
 	}
 	_serialInterfaceAddress, _serialInterfaceAddressErr := SerialInterfaceAddressParse(readBuffer)
 	if _serialInterfaceAddressErr != nil {
-		return nil, errors.Wrap(_serialInterfaceAddressErr, "Error parsing 'serialInterfaceAddress' field")
+		return nil, errors.Wrap(_serialInterfaceAddressErr, "Error parsing 'serialInterfaceAddress' field of MonitoredSALLongFormSmartMode")
 	}
 	serialInterfaceAddress := _serialInterfaceAddress.(SerialInterfaceAddress)
 	if closeErr := readBuffer.CloseContext("serialInterfaceAddress"); closeErr != nil {
@@ -312,7 +313,7 @@ func MonitoredSALLongFormSmartModeParse(readBuffer utils.ReadBuffer) (MonitoredS
 	if isUnitAddress {
 		_val, _err := readBuffer.ReadByte("reservedByte")
 		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reservedByte' field")
+			return nil, errors.Wrap(_err, "Error parsing 'reservedByte' field of MonitoredSALLongFormSmartMode")
 		}
 		reservedByte = &_val
 	}
@@ -335,7 +336,7 @@ func MonitoredSALLongFormSmartModeParse(readBuffer utils.ReadBuffer) (MonitoredS
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'replyNetwork' field")
+			return nil, errors.Wrap(_err, "Error parsing 'replyNetwork' field of MonitoredSALLongFormSmartMode")
 		default:
 			replyNetwork = _val.(ReplyNetwork)
 			if closeErr := readBuffer.CloseContext("replyNetwork"); closeErr != nil {

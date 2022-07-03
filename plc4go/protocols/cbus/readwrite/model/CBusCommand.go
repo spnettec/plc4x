@@ -32,6 +32,8 @@ type CBusCommand interface {
 	utils.Serializable
 	// GetHeader returns Header (property field)
 	GetHeader() CBusHeader
+	// GetIsDeviceManagement returns IsDeviceManagement (virtual field)
+	GetIsDeviceManagement() bool
 	// GetDestinationAddressType returns DestinationAddressType (virtual field)
 	GetDestinationAddressType() DestinationAddressType
 }
@@ -90,6 +92,10 @@ func (m *_CBusCommand) GetHeader() CBusHeader {
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
+func (m *_CBusCommand) GetIsDeviceManagement() bool {
+	return bool(m.GetHeader().GetDp())
+}
+
 func (m *_CBusCommand) GetDestinationAddressType() DestinationAddressType {
 	return CastDestinationAddressType(m.GetHeader().GetDestinationAddressType())
 }
@@ -127,6 +133,8 @@ func (m *_CBusCommand) GetParentLengthInBits() uint16 {
 
 	// A virtual field doesn't have any in- or output.
 
+	// A virtual field doesn't have any in- or output.
+
 	return lengthInBits
 }
 
@@ -149,12 +157,17 @@ func CBusCommandParse(readBuffer utils.ReadBuffer, srchk bool) (CBusCommand, err
 	}
 	_header, _headerErr := CBusHeaderParse(readBuffer)
 	if _headerErr != nil {
-		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field")
+		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field of CBusCommand")
 	}
 	header := _header.(CBusHeader)
 	if closeErr := readBuffer.CloseContext("header"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for header")
 	}
+
+	// Virtual field
+	_isDeviceManagement := header.GetDp()
+	isDeviceManagement := bool(_isDeviceManagement)
+	_ = isDeviceManagement
 
 	// Virtual field
 	_destinationAddressType := header.GetDestinationAddressType()
@@ -171,6 +184,8 @@ func CBusCommandParse(readBuffer utils.ReadBuffer, srchk bool) (CBusCommand, err
 	var _child CBusCommandChildSerializeRequirement
 	var typeSwitchError error
 	switch {
+	case true && isDeviceManagement == bool(true): // CBusCommandDeviceManagement
+		_childTemp, typeSwitchError = CBusCommandDeviceManagementParse(readBuffer, srchk)
 	case destinationAddressType == DestinationAddressType_PointToPointToMultiPoint: // CBusCommandPointToPointToMultiPoint
 		_childTemp, typeSwitchError = CBusCommandPointToPointToMultiPointParse(readBuffer, srchk)
 	case destinationAddressType == DestinationAddressType_PointToMultiPoint: // CBusCommandPointToMultiPoint
@@ -178,11 +193,10 @@ func CBusCommandParse(readBuffer utils.ReadBuffer, srchk bool) (CBusCommand, err
 	case destinationAddressType == DestinationAddressType_PointToPoint: // CBusCommandPointToPoint
 		_childTemp, typeSwitchError = CBusCommandPointToPointParse(readBuffer, srchk)
 	default:
-		// TODO: return actual type
-		typeSwitchError = errors.New("Unmapped type")
+		typeSwitchError = errors.Errorf("Unmapped type for parameters [destinationAddressType=%v, isDeviceManagement=%v]", destinationAddressType, isDeviceManagement)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of CBusCommand")
 	}
 	_child = _childTemp.(CBusCommandChildSerializeRequirement)
 
@@ -215,6 +229,10 @@ func (pm *_CBusCommand) SerializeParent(writeBuffer utils.WriteBuffer, child CBu
 	}
 	if _headerErr != nil {
 		return errors.Wrap(_headerErr, "Error serializing 'header' field")
+	}
+	// Virtual field
+	if _isDeviceManagementErr := writeBuffer.WriteVirtual("isDeviceManagement", m.GetIsDeviceManagement()); _isDeviceManagementErr != nil {
+		return errors.Wrap(_isDeviceManagementErr, "Error serializing 'isDeviceManagement' field")
 	}
 	// Virtual field
 	if _destinationAddressTypeErr := writeBuffer.WriteVirtual("destinationAddressType", m.GetDestinationAddressType()); _destinationAddressTypeErr != nil {

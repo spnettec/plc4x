@@ -58,8 +58,8 @@ type _PowerUpReply struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_PowerUpReply) InitializeParent(parent Reply, magicByte byte) {
-	m.MagicByte = magicByte
+func (m *_PowerUpReply) InitializeParent(parent Reply, peekedByte byte) {
+	m.PeekedByte = peekedByte
 }
 
 func (m *_PowerUpReply) GetParent() Reply {
@@ -81,10 +81,10 @@ func (m *_PowerUpReply) GetIsA() PowerUp {
 ///////////////////////////////////////////////////////////
 
 // NewPowerUpReply factory function for _PowerUpReply
-func NewPowerUpReply(isA PowerUp, magicByte byte) *_PowerUpReply {
+func NewPowerUpReply(isA PowerUp, peekedByte byte) *_PowerUpReply {
 	_result := &_PowerUpReply{
 		IsA:    isA,
-		_Reply: NewReply(magicByte),
+		_Reply: NewReply(peekedByte),
 	}
 	_result._Reply._ReplyChildRequirements = _result
 	return _result
@@ -137,7 +137,7 @@ func PowerUpReplyParse(readBuffer utils.ReadBuffer) (PowerUpReply, error) {
 	}
 	_isA, _isAErr := PowerUpParse(readBuffer)
 	if _isAErr != nil {
-		return nil, errors.Wrap(_isAErr, "Error parsing 'isA' field")
+		return nil, errors.Wrap(_isAErr, "Error parsing 'isA' field of PowerUpReply")
 	}
 	isA := _isA.(PowerUp)
 	if closeErr := readBuffer.CloseContext("isA"); closeErr != nil {

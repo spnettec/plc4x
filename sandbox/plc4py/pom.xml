@@ -161,12 +161,16 @@
       </plugin>
 
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-clean-plugin</artifactId>
-        <version>${maven.clean.plugin.version}</version>
         <configuration>
           <filesets>
             <fileset>
-              <directory>venv</directory>
+              <directory>.pytest_cache</directory>
+              <followSymlinks>false</followSymlinks>
+            </fileset>
+            <fileset>
+              <directory>build</directory>
               <followSymlinks>false</followSymlinks>
             </fileset>
             <fileset>
@@ -174,15 +178,11 @@
               <followSymlinks>false</followSymlinks>
             </fileset>
             <fileset>
-              <directory>.pytest_cache</directory>
+              <directory>venv</directory>
               <followSymlinks>false</followSymlinks>
             </fileset>
             <fileset>
               <directory>plc4py.egg-info</directory>
-              <followSymlinks>false</followSymlinks>
-            </fileset>
-            <fileset>
-              <directory>build</directory>
               <followSymlinks>false</followSymlinks>
             </fileset>
           </filesets>

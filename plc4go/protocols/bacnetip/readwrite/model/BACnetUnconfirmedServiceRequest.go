@@ -121,7 +121,7 @@ func BACnetUnconfirmedServiceRequestParse(readBuffer utils.ReadBuffer, serviceRe
 		return nil, errors.Wrap(closeErr, "Error closing for serviceChoice")
 	}
 	if _serviceChoiceErr != nil {
-		return nil, errors.Wrap(_serviceChoiceErr, "Error parsing 'serviceChoice' field")
+		return nil, errors.Wrap(_serviceChoiceErr, "Error parsing 'serviceChoice' field of BACnetUnconfirmedServiceRequest")
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
@@ -161,11 +161,10 @@ func BACnetUnconfirmedServiceRequestParse(readBuffer utils.ReadBuffer, serviceRe
 	case true: // BACnetUnconfirmedServiceRequestUnknown
 		_childTemp, typeSwitchError = BACnetUnconfirmedServiceRequestUnknownParse(readBuffer, serviceRequestLength)
 	default:
-		// TODO: return actual type
-		typeSwitchError = errors.New("Unmapped type")
+		typeSwitchError = errors.Errorf("Unmapped type for parameters [serviceChoice=%v]", serviceChoice)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of BACnetUnconfirmedServiceRequest")
 	}
 	_child = _childTemp.(BACnetUnconfirmedServiceRequestChildSerializeRequirement)
 

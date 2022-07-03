@@ -75,29 +75,6 @@ def checkVersionAtMost(String current, String maximum) {
     curNotShorter
 }
 
-def checkBison() {
-    print "Detecting Bison version:   "
-    def output
-    try {
-        output = "bison --version".execute().text
-    } catch (IOException e) {
-        output = ""
-    }
-    Matcher matcher = extractVersion(output)
-    if (matcher.size() > 0) {
-        def curVersion = matcher[0][1]
-        def result = checkVersionAtLeast(curVersion, "2.4.0")
-        if (!result) {
-            allConditionsMet = false
-        }
-
-        // TODO: Ensure the path of the `bison` binary doesn't contain any spaces.
-    } else {
-        println "missing"
-        allConditionsMet = false
-    }
-}
-
 def checkDotnet() {
     print "Detecting Dotnet version:  "
     def output
@@ -118,28 +95,6 @@ def checkDotnet() {
         allConditionsMet = false
     }
 }
-
-def checkGo() {
-    print "Detecting Go version:      "
-    def output
-    try {
-        output = "go version".execute().text
-    } catch (IOException e) {
-        output = ""
-    }
-    Matcher matcher = extractVersion(output)
-    if (matcher.size() > 0) {
-        def curVersion = matcher[0][1]
-        def result = checkVersionAtLeast(curVersion, "1.18.0")
-        if (!result) {
-            allConditionsMet = false
-        }
-    } else {
-        println "missing"
-        allConditionsMet = false
-    }
-}
-
 
 def checkJavaVersion(String minVersion, String maxVersion) {
     print "Detecting Java version:    "
@@ -178,27 +133,6 @@ def checkMavenVersion(String minVersion, String maxVersion) {
             allConditionsMet = false
             return
         }
-    }
-}
-
-def checkFlex() {
-    print "Detecting Flex version:    "
-    def output
-    try {
-        output = "flex --version".execute().text
-    } catch (IOException e) {
-        output = ""
-    }
-    Matcher matcher = extractVersion(output)
-    if (matcher.size() > 0) {
-        def curVersion = matcher[0][1]
-        def result = checkVersionAtLeast(curVersion, "2.0.0")
-        if (!result) {
-            allConditionsMet = false
-        }
-    } else {
-        println "missing"
-        allConditionsMet = false
     }
 }
 
@@ -245,69 +179,8 @@ def checkGit() {
     }
 }
 
-def checkGpp() {
-    print "Detecting G++ version:     "
-    def output
-    try {
-        output = "g++ --version".execute().text
-    } catch (IOException e) {
-        output = ""
-    }
-    Matcher matcher = extractVersion(output)
-    if (matcher.size() > 0) {
-        def curVersion = matcher[0][1]
-        def result = checkVersionAtLeast(curVersion, "1.0.0")
-        if (!result) {
-            allConditionsMet = false
-        }
-    } else {
-        println "missing"
-        allConditionsMet = false
-    }
-}
-
-def checkClang() {
-    print "Detecting clang version:   "
-    def output
-    try {
-        output = "clang --version".execute().text
-    } catch (IOException e) {
-        output = ""
-    }
-    Matcher matcher = extractVersion(output)
-    if (matcher.size() > 0) {
-        def curVersion = matcher[0][1]
-        def result = checkVersionAtLeast(curVersion, "1.0.0")
-        if (!result) {
-            allConditionsMet = false
-        }
-    } else {
-        println "missing"
-        allConditionsMet = false
-    }
-}
-
-def checkCmake() {
-    print "Detecting cmake version:   "
-    def output
-    try {
-        output = "cmake --version".execute().text
-    } catch (IOException e) {
-        output = ""
-    }
-    Matcher matcher = extractVersion(output)
-    if (matcher.size() > 0) {
-        def curVersion = matcher[0][1]
-        def result = checkVersionAtLeast(curVersion, "3.0.0")
-        if (!result) {
-            allConditionsMet = false
-        }
-    } else {
-        println "missing"
-        allConditionsMet = false
-    }
-}
-
+// Remark: We're using venv, which was introduced with python 3.3,
+// that's why this is the baseline for python.
 def checkPython() {
     print "Detecting Python version:  "
     try {
@@ -319,12 +192,12 @@ def checkPython() {
         Matcher matcher = extractVersion(stdOut + stdErr)
         if (matcher.size() > 0) {
             def curVersion = matcher[0][1]
-            def result = checkVersionAtLeast(curVersion, "3.6.0")
+            def result = checkVersionAtLeast(curVersion, "3.7.0")
             if (!result) {
                 allConditionsMet = false
             }
         } else {
-            println "missing (Please install at least version 3.6.0)"
+            println "missing (Please install at least version 3.7.0)"
             allConditionsMet = false
         }
     } catch (Exception e) {
@@ -333,43 +206,25 @@ def checkPython() {
     }
 }
 
-def checkSetupTools() {
-    print "Detecting setuptools:      "
+// On Ubuntu it seems that venv is generally available, but the 'ensurepip' command fails.
+// In this case we need to install the python3-venv package. Unfortunately checking the
+// venv is successful in this case, so we need this slightly odd test.
+def checkPythonVenv() {
+    print "Detecting venv:            "
     try {
-        def cmdArray = ["python3", "-c", "import setuptools"]
+        def cmdArray = ["python3", "-Im", "ensurepip"]
         def process = cmdArray.execute()
         def stdOut = new StringBuilder()
         def stdErr = new StringBuilder()
         process.consumeProcessOutput(stdOut, stdErr)
         process.waitForOrKill(500)
-        if(stdErr.contains("No module named setuptools")) {
+        if(stdErr.contains("No module named")) {
             println "missing"
             allConditionsMet = false
         } else {
             println "               OK"
         }
     } catch (Exception e) {
-        println "missing"
-        allConditionsMet = false
-    }
-}
-
-def checkOpenSSL() {
-    print "Detecting OpenSSL version: "
-    def output
-    try {
-        output = "openssl version".execute().text
-    } catch (IOException e) {
-        output = ""
-    }
-    Matcher matcher = extractVersion(output)
-    if (matcher.size() > 0) {
-        def curVersion = matcher[0][1]
-        def result = checkVersionAtLeast(curVersion, "1.0.0")
-        if (!result) {
-            allConditionsMet = false
-        }
-    } else {
         println "missing"
         allConditionsMet = false
     }
@@ -425,6 +280,10 @@ def checkLibPcap(String minVersion, String os) {
         println "missing"
         allConditionsMet = false
     }
+}
+
+def checkLibPcapHeaders() {
+
 }
 
 /**
@@ -512,10 +371,6 @@ if (dotnetEnabled) {
     checkDotnet()
 }
 
-if (goEnabled) {
-//    checkGo()
-}
-
 if (javaEnabled) {
     checkGit()
 }
@@ -526,12 +381,16 @@ if (cEnabled) {
     checkGcc()
 }
 
-if (pythonEnabled) {
-    checkPython()
-    checkSetupTools()
+if (goEnabled) {
+    checkLibPcapHeaders()
 }
 
-if (sandboxEnabled && dockerEnabled) {
+if (pythonEnabled) {
+    checkPython()
+    checkPythonVenv()
+}
+
+if (dockerEnabled) {
     checkDocker()
 }
 

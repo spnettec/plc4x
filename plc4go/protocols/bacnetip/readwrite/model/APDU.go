@@ -121,7 +121,7 @@ func APDUParse(readBuffer utils.ReadBuffer, apduLength uint16) (APDU, error) {
 		return nil, errors.Wrap(closeErr, "Error closing for apduType")
 	}
 	if _apduTypeErr != nil {
-		return nil, errors.Wrap(_apduTypeErr, "Error parsing 'apduType' field")
+		return nil, errors.Wrap(_apduTypeErr, "Error parsing 'apduType' field of APDU")
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
@@ -153,11 +153,10 @@ func APDUParse(readBuffer utils.ReadBuffer, apduLength uint16) (APDU, error) {
 	case true: // APDUUnknown
 		_childTemp, typeSwitchError = APDUUnknownParse(readBuffer, apduLength)
 	default:
-		// TODO: return actual type
-		typeSwitchError = errors.New("Unmapped type")
+		typeSwitchError = errors.Errorf("Unmapped type for parameters [apduType=%v]", apduType)
 	}
 	if typeSwitchError != nil {
-		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
+		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of APDU")
 	}
 	_child = _childTemp.(APDUChildSerializeRequirement)
 

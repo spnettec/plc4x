@@ -58,8 +58,8 @@ type _CALReplyReply struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_CALReplyReply) InitializeParent(parent Reply, magicByte byte) {
-	m.MagicByte = magicByte
+func (m *_CALReplyReply) InitializeParent(parent Reply, peekedByte byte) {
+	m.PeekedByte = peekedByte
 }
 
 func (m *_CALReplyReply) GetParent() Reply {
@@ -81,10 +81,10 @@ func (m *_CALReplyReply) GetIsA() CALReply {
 ///////////////////////////////////////////////////////////
 
 // NewCALReplyReply factory function for _CALReplyReply
-func NewCALReplyReply(isA CALReply, magicByte byte) *_CALReplyReply {
+func NewCALReplyReply(isA CALReply, peekedByte byte) *_CALReplyReply {
 	_result := &_CALReplyReply{
 		IsA:    isA,
-		_Reply: NewReply(magicByte),
+		_Reply: NewReply(peekedByte),
 	}
 	_result._Reply._ReplyChildRequirements = _result
 	return _result
@@ -137,7 +137,7 @@ func CALReplyReplyParse(readBuffer utils.ReadBuffer) (CALReplyReply, error) {
 	}
 	_isA, _isAErr := CALReplyParse(readBuffer)
 	if _isAErr != nil {
-		return nil, errors.Wrap(_isAErr, "Error parsing 'isA' field")
+		return nil, errors.Wrap(_isAErr, "Error parsing 'isA' field of CALReplyReply")
 	}
 	isA := _isA.(CALReply)
 	if closeErr := readBuffer.CloseContext("isA"); closeErr != nil {

@@ -18,37 +18,7 @@
  */
 
 [type CBusConstants
-    [const          uint 16     cbusTcpDefaultPort 10001]
-]
-
-[type CBusMessage(bit response, bit srchk)
-    // TODO: we need to peek here too
-    [typeSwitch response
-       ['false' *ToServer
-            [simple   CBusCommand('srchk')    command]
-       ]
-       ['true' *ToClient
-            [simple   Confirmation          confirmation]
-       ]
-    ]
-]
-
-[discriminatedType CBusCommand(bit srchk)
-    //[const  byte       initiator 0x5C   ] // 0x5C == "/"
-    [simple CBusHeader header           ]
-    // TODO: header.destinationAddressType could be used directly but for this we need source type resolving to work (WIP)
-    [virtual DestinationAddressType destinationAddressType 'header.destinationAddressType']
-    [typeSwitch destinationAddressType
-        ['PointToPointToMultiPoint' CBusCommandPointToPointToMultiPoint
-            [simple CBusPointToPointToMultipointCommand('srchk') command]
-        ]
-        ['PointToMultiPoint'        CBusCommandPointToMultiPoint
-            [simple CBusPointToMultiPointCommand('srchk')        command]
-        ]
-        ['PointToPoint'             CBusCommandPointToPoint
-            [simple CBusPointToPointCommand('srchk')             command]
-        ]
-    ]
+    [const    uint 16     cbusTcpDefaultPort 10001]
 ]
 
 // TODO: check if that can be used in combination with srchk
@@ -63,10 +33,74 @@
     [simple bit pcn    ]
 ]
 
+[type CBusMessage(bit response, bit srchk)
+    [typeSwitch response
+       ['false' *ToServer
+            [simple   Request('srchk')      request         ]
+       ]
+       ['true' *ToClient
+            [simple   Reply                 reply           ]
+       ]
+    ]
+]
+
+[type Request(bit srchk)
+    [peek    byte peekedByte                                                ]
+    [typeSwitch peekedByte
+        ['0x7C' *SmartConnectShortcut
+            [const    byte                pipe      0x7C                    ]
+            [simple   RequestTermination  termination                       ]
+        ]
+        ['0x7E' *Reset
+            [const    byte                tilde     0x7E                    ]
+            [simple   RequestTermination  termination                       ]
+        ]
+        ['0x40' *DirectCommandAccess
+            [const    byte                at        0x40                    ]
+            [simple   CBusPointToPointCommand('srchk')     cbusCommand      ]
+            [simple   RequestTermination  termination                       ]
+        ]
+        ['0x5C' *Command
+            [const    byte                initiator 0x5C                    ] // 0x5C == "/"
+            [simple   CBusCommand('srchk')     cbusCommand                  ]
+        ]
+        ['0x6E' *Null
+            [const    uint 32             nullIndicator        0x6E756C6C   ] // "null"
+            [simple   RequestTermination  termination                       ]
+        ]
+        ['0x0D' *Empty
+            [simple   RequestTermination  termination                       ]
+        ]
+    ]
+]
+
+[discriminatedType CBusCommand(bit srchk)
+    [simple  CBusHeader header           ]
+    [virtual bit        isDeviceManagement 'header.dp']
+    // TODO: header.destinationAddressType could be used directly but for this we need source type resolving to work (WIP)
+    [virtual DestinationAddressType destinationAddressType 'header.destinationAddressType']
+    [typeSwitch destinationAddressType, isDeviceManagement
+        [*, 'true' *DeviceManagement
+            [simple     uint 8  parameterNumber                         ]
+            [const      byte    delimiter       0x0                     ]
+            [simple     byte    parameterValue                          ]
+        ]
+        ['PointToPointToMultiPoint' *PointToPointToMultiPoint
+            [simple CBusPointToPointToMultipointCommand('srchk') command]
+        ]
+        ['PointToMultiPoint'        *PointToMultiPoint
+            [simple CBusPointToMultiPointCommand('srchk')        command]
+        ]
+        ['PointToPoint'             *PointToPoint
+            [simple CBusPointToPointCommand('srchk')             command]
+        ]
+    ]
+]
+
 [type CBusHeader
     [simple   PriorityClass          priorityClass         ]
-    [simple   bit                    dpReservedManagement  ] // Reserved for internal C-Bus management purposes (Referred to as special packet attribute)
-    [simple   uint 2                 rcReservedManagement  ] // Reserved for internal C-Bus management purposes (Referred to as special packet attribute)
+    [simple   bit                    dp                    ] // Reserved for internal C-Bus management purposes (Referred to as special packet attribute)
+    [simple   uint 2                 rc                    ] // Reserved for internal C-Bus management purposes (Referred to as special packet attribute)
     [simple   DestinationAddressType destinationAddressType]
 ]
 
@@ -97,6 +131,7 @@
 
 [type Alpha
     [simple byte character]
+    [validation '(character >= 0x67) && (character <= 0x7A)' "character not in alpha space" shouldFail=false] // Read if the peeked byte is between 'g' and 'z'
 ]
 
 [type NetworkRoute
@@ -141,9 +176,8 @@
     ]
     [simple   CALData calData                                                                   ]
     [optional Checksum      crc      'srchk'                                                    ] // checksum is optional but mspec checksum isn't
-    [peek     byte          peekAlpha                                                           ]
-    [optional Alpha         alpha    '(peekAlpha >= 0x67) && (peekAlpha <= 0x7A)'               ] // Read if the peeked byte is between 'g' and 'z'
-    [const    byte          cr       0xD                                                        ] // 0xD == "<cr>"
+    [optional Alpha         alpha                                                               ]
+    [simple   RequestTermination  termination                                                   ]
 ]
 
 [discriminatedType CBusPointToMultiPointCommand(bit srchk)
@@ -154,20 +188,17 @@
             [reserved byte          '0x00'                                                             ]
             [simple   StatusRequest statusRequest                                                      ]
             [optional Checksum      crc           'srchk'                                              ] // checksum is optional but mspec checksum isn't
-            [peek     byte          peekAlpha                                                          ]
-            [optional Alpha         alpha         '(peekAlpha >= 0x67) && (peekAlpha <= 0x7A)'         ] // Read if the peeked byte is between 'g' and 'z'
-            [const    byte          cr            0xD                                                  ] // 0xD == "<cr>"
+            [optional Alpha         alpha                                                              ]
         ]
         [         CBusPointToMultiPointCommandNormal
             [simple   ApplicationIdContainer   application                                             ]
             [reserved byte                     '0x00'                                                  ]
             [simple   SALData                  salData                                                 ]
             [optional Checksum                 crc         'srchk'                                     ] // crc      is optional but mspec crc      isn't
-            [peek     byte                     peekAlpha                                               ]
-            [optional Alpha                    alpha       '(peekAlpha >= 0x67) && (peekAlpha <= 0x7A)'] // Read if the peeked byte is between 'g' and 'z'
-            [const    byte                     cr          0xD                                         ] // 0xD == "<cr>"
+            [optional Alpha         alpha                                                               ]
         ]
     ]
+    [simple   RequestTermination  termination                       ]
 ]
 
 [discriminatedType CBusPointToPointToMultipointCommand(bit srchk)
@@ -179,19 +210,16 @@
             [reserved byte        '0xFF'                                                             ]
             [simple StatusRequest statusRequest                                                      ]
             [optional Checksum    crc           'srchk'                                              ] // crc      is optional but mspec crc      isn't
-            [peek     byte        peekAlpha                                                          ]
-            [optional Alpha       alpha         '(peekAlpha >= 0x67) && (peekAlpha <= 0x7A)'         ] // Read if the peeked byte is between 'g' and 'z'
-            [const    byte        cr            0xD                                                  ] // 0xD == "<cr>"
+            [optional Alpha         alpha                                                            ]
         ]
         [         CBusCommandPointToPointToMultiPointNormal
             [simple   ApplicationIdContainer application                                             ]
             [simple   SALData                salData                                                 ]
             [optional Checksum               crc         'srchk'                                     ] // crc      is optional but mspec crc      isn't
-            [peek     byte                   peekAlpha                                               ]
-            [optional Alpha                  alpha       '(peekAlpha >= 0x67) && (peekAlpha <= 0x7A)'] // Read if the peeked byte is between 'g' and 'z'
-            [const    byte                   cr          0xD                                         ] // 0xD == "<cr>"
+            [optional Alpha         alpha                                                            ]
         ]
     ]
+    [simple   RequestTermination  termination                       ]
 ]
 
 /*
@@ -489,6 +517,8 @@
 
 [type CALData
     [simple  CALCommandTypeContainer commandTypeContainer                                   ]
+    //TODO: golang doesn't like checking for 0
+    //[validation 'commandTypeContainer!=null' "no command type could be found"               ]
     [virtual CALCommandType          commandType          'commandTypeContainer.commandType']
     [typeSwitch commandType
         ['RESET' CALDataRequestReset
@@ -851,25 +881,26 @@
 ]
 
 [type Reply
-    [peek   byte magicByte]
-    [typeSwitch magicByte
-        ['0x0' CALReplyReply
-            [simple CALReply isA]
+    [peek    byte peekedByte                                              ]
+    [virtual bit  isAlpha '(peekedByte >= 0x67) && (peekedByte <= 0x7A)'  ]
+    [typeSwitch peekedByte, isAlpha
+        [*, 'true' ConfirmationReply
+            [simple Confirmation isA]
+        ]
+        ['0x2B' PowerUpReply
+            [simple PowerUp isA]
+        ]
+        ['0x3D' ParameterChangeReply
+            [simple ParameterChange isA]
+        ]
+        ['0x21' ServerErrorReply
+            [const  byte    errorMarker     0x21        ]
         ]
         ['0x0' MonitoredSALReply
             [simple MonitoredSAL isA]
         ]
-        ['0x0' ConfirmationReply
-            [simple Confirmation isA]
-        ]
-        ['0x0' PowerUpReply
-            [simple PowerUp isA]
-        ]
-        ['0x0' ParameterChangeReply
-            [simple ParameterChange isA]
-        ]
-        ['0x0' ExclamationMarkReply
-            [simple ExclamationMark isA]
+        [* CALReplyReply
+            [simple CALReply isA]
         ]
     ]
 ]
@@ -894,8 +925,7 @@
     ]
     [simple   CALData   calData                                                                  ]
     //[checksum byte crc   '0x00'                                                                ] // TODO: Fix this
-    [const    byte      cr      0x0D                                                             ] // 0xD == "<cr>"
-    [const    byte      lf      0x0A                                                             ] // 0xA == "<lf>"
+    [simple   ResponseTermination termination                       ]
 ]
 
 [type BridgeCount
@@ -934,8 +964,7 @@
     ]
     [optional SALData salData                                               ]
     //[checksum byte crc   '0x00'                                                                ] // TODO: Fix this
-    [const    byte        cr 0x0D                                                     ] // 0xD == "<cr>"
-    [const    byte        lf 0x0A                                                     ] // 0xA == "<lf>"
+    [simple   ResponseTermination termination                       ]
 ]
 
 [type Confirmation
@@ -947,26 +976,23 @@
         ['0x24'    NotTransmittedCorruption            ] // "$"
         ['0x25'    NotTransmittedSyncLoss              ] // "%"
         ['0x27'    NotTransmittedTooLong               ] // "'"
+        [*         *Unknown
+        ]
     ]
 ]
 
 [type PowerUp
-// TODO: implement garbage reading
-//    [array    byte        garbage   terminated  '0x2B'                              ] // "+"
-    [const    byte        plus 0x02B                                                  ] // 0xD == "<cr>"
-    [const    byte        cr   0x0D                                                   ] // 0xD == "<cr>"
-    [const    byte        lf   0x0A                                                   ] // 0xA == "<lf>"
+    [const    byte        powerUpIndicator       0x2B                  ] // "+"
+    // TODO: do we really need a static helper to peek for terminated?=
+    //[array    uint 8        garbage   terminated  '0x0D'                 ] // read all following +
+    [simple   RequestTermination  reqTermination                       ]
+    [simple   ResponseTermination resTermination                       ]
 ]
 
 [type ParameterChange
-    [const    byte        specialChar1      0x3D                                    ] // "="
-    [const    byte        specialChar2      0x3D                                    ] // "="
-    [const    byte        cr 0x0D                                                   ] // 0xD == "<cr>"
-    [const    byte        lf 0x0A                                                   ] // 0xA == "<lf>"
-]
-
-[type ExclamationMark
-    // TODO: implement me
+    [const    byte        specialChar1      0x3D                    ] // "="
+    [const    byte        specialChar2      0x3D                    ] // "="
+    [simple   ResponseTermination termination                       ]
 ]
 
 [type ReplyNetwork
@@ -991,8 +1017,7 @@
                         'statusHeader.numberOfCharacterPairs - 2'   ]
     [simple     Checksum
                         crc                                         ]
-    [const      byte    cr  0x0D                                    ] // 0xD == "<cr>"
-    [const      byte    lf  0x0A                                    ] // 0xA == "<lf>"
+    [simple   ResponseTermination termination                       ]
 ]
 
 [type StatusHeader
@@ -1014,8 +1039,7 @@
                         'statusHeader.numberOfCharacterPairs - 3'   ]
     [simple     Checksum
                         crc                                         ]
-    [const      byte    cr  0x0D                                    ] // 0xD == "<cr>"
-    [const      byte    lf  0x0A                                    ] // 0xA == "<lf>"
+    [simple   ResponseTermination termination                       ]
 ]
 
 [type ExtendedStatusHeader
@@ -1048,4 +1072,13 @@
     [reserved   uint 2  '0x0'           ]
     [simple     uint 3  stackCounter    ]
     [simple     uint 3  stackDepth      ]
+]
+
+[type RequestTermination
+    [const      byte    cr  0x0D                                    ] // 0xD == "<cr>"
+]
+
+[type ResponseTermination
+    [const      byte    cr  0x0D                                    ] // 0xD == "<cr>"
+    [const      byte    lf  0x0A                                    ] // 0xA == "<lf>"
 ]
