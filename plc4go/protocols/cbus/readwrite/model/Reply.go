@@ -47,6 +47,9 @@ type ReplyExactly interface {
 type _Reply struct {
 	_ReplyChildRequirements
 	PeekedByte byte
+
+	// Arguments.
+	MessageLength uint16
 }
 
 type _ReplyChildRequirements interface {
@@ -97,8 +100,8 @@ func (m *_Reply) GetIsAlpha() bool {
 ///////////////////////////////////////////////////////////
 
 // NewReply factory function for _Reply
-func NewReply(peekedByte byte) *_Reply {
-	return &_Reply{PeekedByte: peekedByte}
+func NewReply(peekedByte byte, messageLength uint16) *_Reply {
+	return &_Reply{PeekedByte: peekedByte, MessageLength: messageLength}
 }
 
 // Deprecated: use the interface for direct cast
@@ -128,7 +131,7 @@ func (m *_Reply) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ReplyParse(readBuffer utils.ReadBuffer) (Reply, error) {
+func ReplyParse(readBuffer utils.ReadBuffer, messageLength uint16) (Reply, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("Reply"); pullErr != nil {
@@ -161,20 +164,12 @@ func ReplyParse(readBuffer utils.ReadBuffer) (Reply, error) {
 	var _child ReplyChildSerializeRequirement
 	var typeSwitchError error
 	switch {
-	case true && isAlpha == bool(true): // ConfirmationReply
-		_childTemp, typeSwitchError = ConfirmationReplyParse(readBuffer)
-	case peekedByte == 0x2B: // PowerUpReply
-		_childTemp, typeSwitchError = PowerUpReplyParse(readBuffer)
-	case peekedByte == 0x3D: // ParameterChangeReply
-		_childTemp, typeSwitchError = ParameterChangeReplyParse(readBuffer)
-	case peekedByte == 0x21: // ServerErrorReply
-		_childTemp, typeSwitchError = ServerErrorReplyParse(readBuffer)
-	case peekedByte == 0x0: // MonitoredSALReply
-		_childTemp, typeSwitchError = MonitoredSALReplyParse(readBuffer)
-	case true: // CALReplyReply
-		_childTemp, typeSwitchError = CALReplyReplyParse(readBuffer)
+	case isAlpha == bool(true): // ConfirmationReply
+		_childTemp, typeSwitchError = ConfirmationReplyParse(readBuffer, messageLength)
+	case isAlpha == bool(false): // ReplyNormalReply
+		_childTemp, typeSwitchError = ReplyNormalReplyParse(readBuffer, messageLength)
 	default:
-		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedByte=%v, isAlpha=%v]", peekedByte, isAlpha)
+		typeSwitchError = errors.Errorf("Unmapped type for parameters [isAlpha=%v]", isAlpha)
 	}
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of Reply")

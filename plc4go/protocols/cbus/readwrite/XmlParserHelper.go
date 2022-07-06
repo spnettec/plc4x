@@ -44,12 +44,21 @@ func (m CbusXmlParserHelper) Parse(typeName string, xmlString string, parserArgu
 	switch typeName {
 	case "CALData":
 		return model.CALDataParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "CALDataNormal":
+		return model.CALDataNormalParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "Checksum":
 		return model.ChecksumParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "CALReply":
 		return model.CALReplyParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "NetworkRoute":
 		return model.NetworkRouteParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "NormalReply":
+		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 16)
+		if err != nil {
+			return nil, err
+		}
+		replyLength := uint16(parsedUint0)
+		return model.NormalReplyParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), replyLength)
 	case "NetworkNumber":
 		return model.NetworkNumberParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "RequestTermination":
@@ -59,7 +68,12 @@ func (m CbusXmlParserHelper) Parse(typeName string, xmlString string, parserArgu
 	case "CBusMessage":
 		response := parserArguments[0] == "true"
 		srchk := parserArguments[1] == "true"
-		return model.CBusMessageParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), response, srchk)
+		parsedUint2, err := strconv.ParseUint(parserArguments[2], 10, 16)
+		if err != nil {
+			return nil, err
+		}
+		messageLength := uint16(parsedUint2)
+		return model.CBusMessageParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), response, srchk, messageLength)
 	case "ResponseTermination":
 		return model.ResponseTerminationParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "CBusOptions":
@@ -79,7 +93,12 @@ func (m CbusXmlParserHelper) Parse(typeName string, xmlString string, parserArgu
 	case "PowerUp":
 		return model.PowerUpParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "Reply":
-		return model.ReplyParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 16)
+		if err != nil {
+			return nil, err
+		}
+		messageLength := uint16(parsedUint0)
+		return model.ReplyParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), messageLength)
 	case "SerialInterfaceAddress":
 		return model.SerialInterfaceAddressParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BridgeAddress":
@@ -115,7 +134,12 @@ func (m CbusXmlParserHelper) Parse(typeName string, xmlString string, parserArgu
 		return model.CBusHeaderParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "Request":
 		srchk := parserArguments[0] == "true"
-		return model.RequestParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), srchk)
+		parsedUint1, err := strconv.ParseUint(parserArguments[1], 10, 16)
+		if err != nil {
+			return nil, err
+		}
+		messageLength := uint16(parsedUint1)
+		return model.RequestParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), srchk, messageLength)
 	case "CBusPointToPointCommand":
 		srchk := parserArguments[0] == "true"
 		return model.CBusPointToPointCommandParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), srchk)

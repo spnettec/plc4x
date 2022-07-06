@@ -34,7 +34,7 @@ const ServerErrorReply_ERRORMARKER byte = 0x21
 type ServerErrorReply interface {
 	utils.LengthAware
 	utils.Serializable
-	Reply
+	NormalReply
 }
 
 // ServerErrorReplyExactly can be used when we want exactly this type and not a type which fulfills ServerErrorReply.
@@ -46,7 +46,7 @@ type ServerErrorReplyExactly interface {
 
 // _ServerErrorReply is the data-structure of this message
 type _ServerErrorReply struct {
-	*_Reply
+	*_NormalReply
 }
 
 ///////////////////////////////////////////////////////////
@@ -59,12 +59,12 @@ type _ServerErrorReply struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_ServerErrorReply) InitializeParent(parent Reply, peekedByte byte) {
+func (m *_ServerErrorReply) InitializeParent(parent NormalReply, peekedByte byte) {
 	m.PeekedByte = peekedByte
 }
 
-func (m *_ServerErrorReply) GetParent() Reply {
-	return m._Reply
+func (m *_ServerErrorReply) GetParent() NormalReply {
+	return m._NormalReply
 }
 
 ///////////////////////////////////////////////////////////
@@ -82,11 +82,11 @@ func (m *_ServerErrorReply) GetErrorMarker() byte {
 ///////////////////////////////////////////////////////////
 
 // NewServerErrorReply factory function for _ServerErrorReply
-func NewServerErrorReply(peekedByte byte) *_ServerErrorReply {
+func NewServerErrorReply(peekedByte byte, replyLength uint16) *_ServerErrorReply {
 	_result := &_ServerErrorReply{
-		_Reply: NewReply(peekedByte),
+		_NormalReply: NewNormalReply(peekedByte, replyLength),
 	}
-	_result._Reply._ReplyChildRequirements = _result
+	_result._NormalReply._NormalReplyChildRequirements = _result
 	return _result
 }
 
@@ -122,7 +122,7 @@ func (m *_ServerErrorReply) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func ServerErrorReplyParse(readBuffer utils.ReadBuffer) (ServerErrorReply, error) {
+func ServerErrorReplyParse(readBuffer utils.ReadBuffer, replyLength uint16) (ServerErrorReply, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ServerErrorReply"); pullErr != nil {
@@ -146,9 +146,11 @@ func ServerErrorReplyParse(readBuffer utils.ReadBuffer) (ServerErrorReply, error
 
 	// Create a partially initialized instance
 	_child := &_ServerErrorReply{
-		_Reply: &_Reply{},
+		_NormalReply: &_NormalReply{
+			ReplyLength: replyLength,
+		},
 	}
-	_child._Reply._ReplyChildRequirements = _child
+	_child._NormalReply._NormalReplyChildRequirements = _child
 	return _child, nil
 }
 

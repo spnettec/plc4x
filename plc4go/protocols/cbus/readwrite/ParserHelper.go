@@ -34,12 +34,20 @@ func (m CbusParserHelper) Parse(typeName string, arguments []string, io utils.Re
 	switch typeName {
 	case "CALData":
 		return model.CALDataParse(io)
+	case "CALDataNormal":
+		return model.CALDataNormalParse(io)
 	case "Checksum":
 		return model.ChecksumParse(io)
 	case "CALReply":
 		return model.CALReplyParse(io)
 	case "NetworkRoute":
 		return model.NetworkRouteParse(io)
+	case "NormalReply":
+		replyLength, err := utils.StrToUint16(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		return model.NormalReplyParse(io, replyLength)
 	case "NetworkNumber":
 		return model.NetworkNumberParse(io)
 	case "RequestTermination":
@@ -55,7 +63,11 @@ func (m CbusParserHelper) Parse(typeName string, arguments []string, io utils.Re
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
-		return model.CBusMessageParse(io, response, srchk)
+		messageLength, err := utils.StrToUint16(arguments[2])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		return model.CBusMessageParse(io, response, srchk, messageLength)
 	case "ResponseTermination":
 		return model.ResponseTerminationParse(io)
 	case "CBusOptions":
@@ -78,7 +90,11 @@ func (m CbusParserHelper) Parse(typeName string, arguments []string, io utils.Re
 	case "PowerUp":
 		return model.PowerUpParse(io)
 	case "Reply":
-		return model.ReplyParse(io)
+		messageLength, err := utils.StrToUint16(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		return model.ReplyParse(io, messageLength)
 	case "SerialInterfaceAddress":
 		return model.SerialInterfaceAddressParse(io)
 	case "BridgeAddress":
@@ -120,7 +136,11 @@ func (m CbusParserHelper) Parse(typeName string, arguments []string, io utils.Re
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
-		return model.RequestParse(io, srchk)
+		messageLength, err := utils.StrToUint16(arguments[1])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		return model.RequestParse(io, srchk, messageLength)
 	case "CBusPointToPointCommand":
 		srchk, err := utils.StrToBool(arguments[0])
 		if err != nil {

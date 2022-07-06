@@ -30,7 +30,7 @@ import (
 type MonitoredSALReply interface {
 	utils.LengthAware
 	utils.Serializable
-	Reply
+	NormalReply
 	// GetIsA returns IsA (property field)
 	GetIsA() MonitoredSAL
 }
@@ -44,7 +44,7 @@ type MonitoredSALReplyExactly interface {
 
 // _MonitoredSALReply is the data-structure of this message
 type _MonitoredSALReply struct {
-	*_Reply
+	*_NormalReply
 	IsA MonitoredSAL
 }
 
@@ -58,12 +58,12 @@ type _MonitoredSALReply struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_MonitoredSALReply) InitializeParent(parent Reply, peekedByte byte) {
+func (m *_MonitoredSALReply) InitializeParent(parent NormalReply, peekedByte byte) {
 	m.PeekedByte = peekedByte
 }
 
-func (m *_MonitoredSALReply) GetParent() Reply {
-	return m._Reply
+func (m *_MonitoredSALReply) GetParent() NormalReply {
+	return m._NormalReply
 }
 
 ///////////////////////////////////////////////////////////
@@ -81,12 +81,12 @@ func (m *_MonitoredSALReply) GetIsA() MonitoredSAL {
 ///////////////////////////////////////////////////////////
 
 // NewMonitoredSALReply factory function for _MonitoredSALReply
-func NewMonitoredSALReply(isA MonitoredSAL, peekedByte byte) *_MonitoredSALReply {
+func NewMonitoredSALReply(isA MonitoredSAL, peekedByte byte, replyLength uint16) *_MonitoredSALReply {
 	_result := &_MonitoredSALReply{
-		IsA:    isA,
-		_Reply: NewReply(peekedByte),
+		IsA:          isA,
+		_NormalReply: NewNormalReply(peekedByte, replyLength),
 	}
-	_result._Reply._ReplyChildRequirements = _result
+	_result._NormalReply._NormalReplyChildRequirements = _result
 	return _result
 }
 
@@ -122,7 +122,7 @@ func (m *_MonitoredSALReply) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func MonitoredSALReplyParse(readBuffer utils.ReadBuffer) (MonitoredSALReply, error) {
+func MonitoredSALReplyParse(readBuffer utils.ReadBuffer, replyLength uint16) (MonitoredSALReply, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MonitoredSALReply"); pullErr != nil {
@@ -150,10 +150,12 @@ func MonitoredSALReplyParse(readBuffer utils.ReadBuffer) (MonitoredSALReply, err
 
 	// Create a partially initialized instance
 	_child := &_MonitoredSALReply{
-		IsA:    isA,
-		_Reply: &_Reply{},
+		IsA: isA,
+		_NormalReply: &_NormalReply{
+			ReplyLength: replyLength,
+		},
 	}
-	_child._Reply._ReplyChildRequirements = _child
+	_child._NormalReply._NormalReplyChildRequirements = _child
 	return _child, nil
 }
 

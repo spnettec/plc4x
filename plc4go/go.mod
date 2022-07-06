@@ -35,7 +35,7 @@ require (
 	github.com/snksoft/crc v1.1.0
 	github.com/spf13/cobra v1.5.0
 	github.com/spf13/viper v1.12.0
-	github.com/stretchr/testify v1.7.5
+	github.com/stretchr/testify v1.8.0
 	github.com/subchen/go-xmldom v1.1.2
 	github.com/viney-shih/go-lock v1.1.2
 )
@@ -44,7 +44,7 @@ require (
 	github.com/antchfx/xpath v0.0.0-20170515025933-1f3266e77307 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/dnephin/pflag v1.0.7 // indirect
-	github.com/elastic/go-licenser v0.4.0 // indirect
+	github.com/elastic/go-licenser v0.4.1 // indirect
 	github.com/fatih/color v1.13.0 // indirect
 	github.com/fsnotify/fsnotify v1.5.4 // indirect
 	github.com/google/shlex v0.0.0-20191202100458-e7afc7fbc510 // indirect

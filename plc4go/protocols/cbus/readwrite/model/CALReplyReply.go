@@ -30,9 +30,11 @@ import (
 type CALReplyReply interface {
 	utils.LengthAware
 	utils.Serializable
-	Reply
-	// GetIsA returns IsA (property field)
-	GetIsA() CALReply
+	NormalReply
+	// GetCalReply returns CalReply (property field)
+	GetCalReply() CALReply
+	// GetPayloadLength returns PayloadLength (virtual field)
+	GetPayloadLength() uint16
 }
 
 // CALReplyReplyExactly can be used when we want exactly this type and not a type which fulfills CALReplyReply.
@@ -44,8 +46,8 @@ type CALReplyReplyExactly interface {
 
 // _CALReplyReply is the data-structure of this message
 type _CALReplyReply struct {
-	*_Reply
-	IsA CALReply
+	*_NormalReply
+	CalReply CALReply
 }
 
 ///////////////////////////////////////////////////////////
@@ -58,12 +60,12 @@ type _CALReplyReply struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_CALReplyReply) InitializeParent(parent Reply, peekedByte byte) {
+func (m *_CALReplyReply) InitializeParent(parent NormalReply, peekedByte byte) {
 	m.PeekedByte = peekedByte
 }
 
-func (m *_CALReplyReply) GetParent() Reply {
-	return m._Reply
+func (m *_CALReplyReply) GetParent() NormalReply {
+	return m._NormalReply
 }
 
 ///////////////////////////////////////////////////////////
@@ -71,8 +73,21 @@ func (m *_CALReplyReply) GetParent() Reply {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_CALReplyReply) GetIsA() CALReply {
-	return m.IsA
+func (m *_CALReplyReply) GetCalReply() CALReply {
+	return m.CalReply
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for virtual fields.
+///////////////////////
+
+func (m *_CALReplyReply) GetPayloadLength() uint16 {
+	return uint16(m.ReplyLength)
 }
 
 ///////////////////////
@@ -81,12 +96,12 @@ func (m *_CALReplyReply) GetIsA() CALReply {
 ///////////////////////////////////////////////////////////
 
 // NewCALReplyReply factory function for _CALReplyReply
-func NewCALReplyReply(isA CALReply, peekedByte byte) *_CALReplyReply {
+func NewCALReplyReply(calReply CALReply, peekedByte byte, replyLength uint16) *_CALReplyReply {
 	_result := &_CALReplyReply{
-		IsA:    isA,
-		_Reply: NewReply(peekedByte),
+		CalReply:     calReply,
+		_NormalReply: NewNormalReply(peekedByte, replyLength),
 	}
-	_result._Reply._ReplyChildRequirements = _result
+	_result._NormalReply._NormalReplyChildRequirements = _result
 	return _result
 }
 
@@ -112,8 +127,10 @@ func (m *_CALReplyReply) GetLengthInBits() uint16 {
 func (m *_CALReplyReply) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.GetParentLengthInBits())
 
-	// Simple field (isA)
-	lengthInBits += m.IsA.GetLengthInBits()
+	// A virtual field doesn't have any in- or output.
+
+	// Manual Field (calReply)
+	lengthInBits += uint16(int32(m.GetLengthInBytes()) * int32(int32(2)))
 
 	return lengthInBits
 }
@@ -122,7 +139,7 @@ func (m *_CALReplyReply) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func CALReplyReplyParse(readBuffer utils.ReadBuffer) (CALReplyReply, error) {
+func CALReplyReplyParse(readBuffer utils.ReadBuffer, replyLength uint16) (CALReplyReply, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CALReplyReply"); pullErr != nil {
@@ -131,18 +148,17 @@ func CALReplyReplyParse(readBuffer utils.ReadBuffer) (CALReplyReply, error) {
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (isA)
-	if pullErr := readBuffer.PullContext("isA"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for isA")
+	// Virtual field
+	_payloadLength := replyLength
+	payloadLength := uint16(_payloadLength)
+	_ = payloadLength
+
+	// Manual Field (calReply)
+	_calReply, _calReplyErr := ReadCALReply(readBuffer, payloadLength)
+	if _calReplyErr != nil {
+		return nil, errors.Wrap(_calReplyErr, "Error parsing 'calReply' field of CALReplyReply")
 	}
-	_isA, _isAErr := CALReplyParse(readBuffer)
-	if _isAErr != nil {
-		return nil, errors.Wrap(_isAErr, "Error parsing 'isA' field of CALReplyReply")
-	}
-	isA := _isA.(CALReply)
-	if closeErr := readBuffer.CloseContext("isA"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for isA")
-	}
+	calReply := _calReply.(CALReply)
 
 	if closeErr := readBuffer.CloseContext("CALReplyReply"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for CALReplyReply")
@@ -150,10 +166,12 @@ func CALReplyReplyParse(readBuffer utils.ReadBuffer) (CALReplyReply, error) {
 
 	// Create a partially initialized instance
 	_child := &_CALReplyReply{
-		IsA:    isA,
-		_Reply: &_Reply{},
+		CalReply: calReply,
+		_NormalReply: &_NormalReply{
+			ReplyLength: replyLength,
+		},
 	}
-	_child._Reply._ReplyChildRequirements = _child
+	_child._NormalReply._NormalReplyChildRequirements = _child
 	return _child, nil
 }
 
@@ -164,17 +182,15 @@ func (m *_CALReplyReply) Serialize(writeBuffer utils.WriteBuffer) error {
 		if pushErr := writeBuffer.PushContext("CALReplyReply"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for CALReplyReply")
 		}
+		// Virtual field
+		if _payloadLengthErr := writeBuffer.WriteVirtual("payloadLength", m.GetPayloadLength()); _payloadLengthErr != nil {
+			return errors.Wrap(_payloadLengthErr, "Error serializing 'payloadLength' field")
+		}
 
-		// Simple Field (isA)
-		if pushErr := writeBuffer.PushContext("isA"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for isA")
-		}
-		_isAErr := writeBuffer.WriteSerializable(m.GetIsA())
-		if popErr := writeBuffer.PopContext("isA"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for isA")
-		}
-		if _isAErr != nil {
-			return errors.Wrap(_isAErr, "Error serializing 'isA' field")
+		// Manual Field (calReply)
+		_calReplyErr := WriteCALReply(writeBuffer, m.GetCalReply())
+		if _calReplyErr != nil {
+			return errors.Wrap(_calReplyErr, "Error serializing 'calReply' field")
 		}
 
 		if popErr := writeBuffer.PopContext("CALReplyReply"); popErr != nil {

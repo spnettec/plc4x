@@ -108,12 +108,12 @@
 
     <antlr.version>4.10.1</antlr.version>
     <apiguardian.version>1.1.2</apiguardian.version>
-    <assertj.version>3.22.0</assertj.version>
+    <assertj.version>3.23.1</assertj.version>
     <awaitility.version>4.2.0</awaitility.version>
     <!-- The currently available version is 2.0.5 and anything above 1.4.3 is no longer compatible with our code -->
     <bit-io.version>1.4.3</bit-io.version>
     <bouncycastle.version>1.71</bouncycastle.version>
-    <byte-buddy.version>1.12.10</byte-buddy.version>
+    <byte-buddy.version>1.12.12</byte-buddy.version>
     <!-- Be sure to keep this version set to the version of the cmake-maven-plugin -->
     <cmake-version>3.22.1</cmake-version>
     <commons-beanutils.version>1.9.4</commons-beanutils.version>
@@ -151,8 +151,7 @@
     <junit.platform.version>1.8.2</junit.platform.version>
     <logback.version>1.2.11</logback.version>
     <maven.clean.plugin.version>3.2.0</maven.clean.plugin.version>
-    <milo.version>0.6.6</milo.version>
-    <milo.version>0.6.6</milo.version>
+    <milo.version>0.6.7</milo.version>
     <mockito.version>4.6.1</mockito.version>
     <netty.version>4.1.77.Final</netty.version>
     <owasp-dependency-check.version>7.1.1</owasp-dependency-check.version>
@@ -292,6 +291,11 @@
         <groupId>com.google.code.gson</groupId>
         <artifactId>gson</artifactId>
         <version>${gson.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.google.googlejavaformat</groupId>
+        <artifactId>google-java-format</artifactId>
+        <version>1.15.0</version>
       </dependency>
 
       <dependency>
@@ -718,14 +722,13 @@
             <exclude>**/.git/**</exclude>
             <exclude>**/.gitignore</exclude>
             <exclude>**/cmake-*/**</exclude>
-            <exclude>**/.cmake/**</exclude>
             <exclude>**/.lock/**</exclude>
-            <exclude>**/downloads/**</exclude>
 
             <!-- License Files for other licenses -->
             <exclude>**/UNLICENSE</exclude>
+            <exclude>**/EPL-2.0</exclude>
             <!--
-              Explicitly exclude these files as I was unable
+              Explicitly exclude thfese files as I was unable
               to add a new licenses to the configuration.
             -->
             <exclude>**/Expression.g4</exclude>
@@ -1051,7 +1054,7 @@
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>properties-maven-plugin</artifactId>
-          <version>1.0.0</version>
+          <version>1.1.0</version>
         </plugin>
 
         <plugin>
@@ -1161,7 +1164,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-jar-plugin</artifactId>
-          <version>3.2.0</version>
+          <version>3.2.2</version>
         </plugin>
 
         <plugin>

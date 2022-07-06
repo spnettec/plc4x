@@ -20,6 +20,7 @@
 package cbusanalyzer
 
 import (
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
 	"github.com/apache/plc4x/plc4go/tools/plc4xpcapanalyzer/internal/common"
@@ -37,7 +38,7 @@ func (a Analyzer) PackageParse(packetInformation common.PacketInformation, paylo
 	// TODO: srcchk we need to pull that out of the config
 	isResponse := packetInformation.DstIp.Equal(a.Client)
 	log.Debug().Stringer("packetInformation", packetInformation).Msgf("isResponse: %t", isResponse)
-	parse, err := model.CBusMessageParse(utils.NewReadBufferByteBased(payload), isResponse, true)
+	parse, err := model.CBusMessageParse(utils.NewReadBufferByteBased(payload), isResponse, true, uint16(len(payload)))
 	if err != nil {
 		return nil, errors.Wrap(err, "Error parsing CBusCommand")
 	}
@@ -45,15 +46,51 @@ func (a Analyzer) PackageParse(packetInformation common.PacketInformation, paylo
 	return parse, nil
 }
 
-func (a Analyzer) SerializePackage(command interface{}) ([]byte, error) {
-	if command, ok := command.(model.CBusMessage); !ok {
-		log.Fatal().Msgf("Unsupported type %T supplied", command)
+func (a Analyzer) SerializePackage(message interface{}) ([]byte, error) {
+	if message, ok := message.(model.CBusMessage); !ok {
+		log.Fatal().Msgf("Unsupported type %T supplied", message)
 		panic("unreachable statement")
 	} else {
 		based := utils.NewWriteBufferByteBased()
-		if err := command.Serialize(based); err != nil {
+		if err := message.Serialize(based); err != nil {
 			return nil, errors.Wrap(err, "Error serializing")
 		}
 		return based.GetBytes(), nil
+	}
+}
+
+func (a Analyzer) PrettyPrint(message interface{}) {
+	if message, ok := message.(model.CBusMessage); !ok {
+		log.Fatal().Msgf("Unsupported type %T supplied", message)
+		panic("unreachable statement")
+	} else {
+		fmt.Printf("%v\n", message)
+		switch message := message.(type) {
+		case model.CBusMessageToServerExactly:
+			switch request := message.GetRequest().(type) {
+			case model.RequestDirectCommandAccessExactly:
+				fmt.Printf("%v\n", request.GetCalData())
+			case model.RequestCommandExactly:
+				fmt.Printf("%v\n", request.GetCbusCommand())
+			}
+		case model.CBusMessageToClientExactly:
+			switch reply := message.GetReply().(type) {
+			case model.ConfirmationReplyExactly:
+				switch reply := reply.GetEmbeddedReply().(type) {
+				case model.ReplyNormalReplyExactly:
+					switch reply := reply.GetReply().(type) {
+					case model.CALReplyReplyExactly:
+						// We print this a second time as the first print contains only the hex part
+						fmt.Printf("%v\n", reply.GetCalReply())
+					}
+				}
+			case model.ReplyNormalReplyExactly:
+				switch reply := reply.GetReply().(type) {
+				case model.CALReplyReplyExactly:
+					// We print this a second time as the first print contains only the hex part
+					fmt.Printf("%v\n", reply.GetCalReply())
+				}
+			}
+		}
 	}
 }
