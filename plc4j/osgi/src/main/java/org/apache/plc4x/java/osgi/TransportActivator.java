@@ -18,42 +18,39 @@
  */
 package org.apache.plc4x.java.osgi;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.framework.wiring.BundleWiring;
 import org.apache.plc4x.java.spi.transport.Transport;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.List;
 import java.util.ServiceLoader;
 
 public class TransportActivator implements BundleActivator {
-    private static final Logger LOGGER = LoggerFactory.getLogger(TransportActivator.class);
-    private List<ServiceRegistration<Transport>> regs = new ArrayList<>();
+
+    private final List<ServiceRegistration<Transport>> registrations = new ArrayList<>();
     private final String TRANSPORT_CODE ="org.apache.plc4x.transport.code";
     private final String TRANSPORT_NAME ="org.apache.plc4x.transport.name";
 
 
     @Override
-    public void start(BundleContext context) {
+    public void start(BundleContext context) throws Exception {
         ServiceLoader<Transport> transports = ServiceLoader.load(Transport.class, context.getBundle().adapt(BundleWiring.class).getClassLoader());
         for (Transport transport : transports) {
             Hashtable<String, String> props = new Hashtable<String, String>();
             props.put(TRANSPORT_CODE, transport.getTransportCode());
             props.put(TRANSPORT_NAME, transport.getTransportName());
-            regs.add(context.registerService(Transport.class, transport, props));
-            LOGGER.info("register transport {}",transport.getTransportName());
+            registrations.add(context.registerService(Transport.class, transport, props));
         }
-        LOGGER.info("register {}  transports done",regs.size());
     }
 
     @Override
     public void stop(BundleContext context) {
-        regs.forEach(ServiceRegistration::unregister);
+        registrations.forEach(ServiceRegistration::unregister);
+        registrations.clear();
     }
 }
 
