@@ -23,6 +23,7 @@ import (
 	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
+	"github.com/apache/plc4x/plc4go/tools/plc4xpcapanalyzer/config"
 	"github.com/apache/plc4x/plc4go/tools/plc4xpcapanalyzer/internal/common"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
@@ -40,11 +41,10 @@ func (a *Analyzer) PackageParse(packetInformation common.PacketInformation, payl
 	if !a.initialized {
 		log.Warn().Msg("Not initialized... doing that now")
 		a.requestContext = model.NewRequestContext(false, false, false)
-		a.cBusOptions = model.NewCBusOptions(false, false, false, false, false, false, false, false, false)
+		a.cBusOptions = model.NewCBusOptions(config.CBusConfigInstance.Connect, config.CBusConfigInstance.Smart, config.CBusConfigInstance.Idmon, config.CBusConfigInstance.Exstat, config.CBusConfigInstance.Monitor, config.CBusConfigInstance.Monall, config.CBusConfigInstance.Pun, config.CBusConfigInstance.Pcn, config.CBusConfigInstance.Srchk)
 		a.initialized = true
 	}
 	log.Debug().Msgf("Parsing %s with requestContext\n%v\nBusOptions\n%s", packetInformation, a.requestContext, a.cBusOptions)
-	// TODO: srcchk we need to pull that out of the config
 	isResponse := packetInformation.DstIp.Equal(a.Client)
 	log.Debug().Stringer("packetInformation", packetInformation).Msgf("isResponse: %t", isResponse)
 	parse, err := model.CBusMessageParse(utils.NewReadBufferByteBased(payload), isResponse, a.requestContext, a.cBusOptions, uint16(len(payload)))
@@ -71,8 +71,13 @@ func (a *Analyzer) PackageParse(packetInformation common.PacketInformation, payl
 				log.Debug().Msgf("No.[%d] CAL request detected", packetInformation.PacketNumber)
 				a.requestContext = model.NewRequestContext(true, false, false)
 			case model.CBusCommandPointToPointExactly:
+				sendIdentifyRequestBefore := false
 				log.Debug().Msgf("No.[%d] CAL request detected", packetInformation.PacketNumber)
-				a.requestContext = model.NewRequestContext(true, false, false)
+				switch command.GetCommand().GetCalData().(type) {
+				case model.CALDataIdentifyExactly:
+					sendIdentifyRequestBefore = true
+				}
+				a.requestContext = model.NewRequestContext(true, false, sendIdentifyRequestBefore)
 			case model.CBusCommandPointToMultiPointExactly:
 				switch command.GetCommand().(type) {
 				case model.CBusPointToMultiPointCommandStatusExactly:
@@ -128,6 +133,8 @@ func (a *Analyzer) PrettyPrint(message interface{}) {
 			switch request := message.GetRequest().(type) {
 			case model.RequestDirectCommandAccessExactly:
 				fmt.Printf("%v\n", request.GetCalDataOrSetParameter())
+			case model.RequestObsoleteExactly:
+				fmt.Printf("%v\n", request.GetCalDataOrSetParameter())
 			case model.RequestCommandExactly:
 				fmt.Printf("%v\n", request.GetCbusCommand())
 			}
@@ -138,13 +145,28 @@ func (a *Analyzer) PrettyPrint(message interface{}) {
 				// TODO: add recursion
 				case model.ReplyOrConfirmationReplyExactly:
 					switch reply := reply.GetReply().(type) {
+					case model.ReplyExtendedFormatStatusReplyExactly:
+						// We print this a second time as the first print contains only the hex part
+						fmt.Printf("%v\n", reply.GetReply())
+					case model.ReplyStandardFormatStatusReplyExactly:
+						// We print this a second time as the first print contains only the hex part
+						fmt.Printf("%v\n", reply.GetReply())
 					case model.ReplyCALReplyExactly:
 						// We print this a second time as the first print contains only the hex part
 						fmt.Printf("%v\n", reply.GetCalReply())
+					case model.MonitoredSALReplyExactly:
+						// We print this a second time as the first print contains only the hex part
+						fmt.Printf("%v\n", reply.GetMonitoredSAL())
 					}
 				}
 			case model.ReplyOrConfirmationReplyExactly:
 				switch reply := reply.GetReply().(type) {
+				case model.ReplyExtendedFormatStatusReplyExactly:
+					// We print this a second time as the first print contains only the hex part
+					fmt.Printf("%v\n", reply.GetReply())
+				case model.ReplyStandardFormatStatusReplyExactly:
+					// We print this a second time as the first print contains only the hex part
+					fmt.Printf("%v\n", reply.GetReply())
 				case model.ReplyCALReplyExactly:
 					// We print this a second time as the first print contains only the hex part
 					fmt.Printf("%v\n", reply.GetCalReply())

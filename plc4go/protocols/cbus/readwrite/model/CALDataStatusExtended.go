@@ -67,8 +67,9 @@ type _CALDataStatusExtended struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_CALDataStatusExtended) InitializeParent(parent CALData, commandTypeContainer CALCommandTypeContainer) {
+func (m *_CALDataStatusExtended) InitializeParent(parent CALData, commandTypeContainer CALCommandTypeContainer, additionalData CALData) {
 	m.CommandTypeContainer = commandTypeContainer
+	m.AdditionalData = additionalData
 }
 
 func (m *_CALDataStatusExtended) GetParent() CALData {
@@ -102,13 +103,13 @@ func (m *_CALDataStatusExtended) GetData() []byte {
 ///////////////////////////////////////////////////////////
 
 // NewCALDataStatusExtended factory function for _CALDataStatusExtended
-func NewCALDataStatusExtended(encoding uint8, application ApplicationIdContainer, blockStart uint8, data []byte, commandTypeContainer CALCommandTypeContainer, requestContext RequestContext) *_CALDataStatusExtended {
+func NewCALDataStatusExtended(encoding uint8, application ApplicationIdContainer, blockStart uint8, data []byte, commandTypeContainer CALCommandTypeContainer, additionalData CALData, requestContext RequestContext) *_CALDataStatusExtended {
 	_result := &_CALDataStatusExtended{
 		Encoding:    encoding,
 		Application: application,
 		BlockStart:  blockStart,
 		Data:        data,
-		_CALData:    NewCALData(commandTypeContainer, requestContext),
+		_CALData:    NewCALData(commandTypeContainer, additionalData, requestContext),
 	}
 	_result._CALData._CALDataChildRequirements = _result
 	return _result
@@ -193,7 +194,7 @@ func CALDataStatusExtendedParse(readBuffer utils.ReadBuffer, requestContext Requ
 	}
 	blockStart := _blockStart
 	// Byte Array field (data)
-	numberOfBytesdata := int(commandTypeContainer.NumBytes())
+	numberOfBytesdata := int(uint16(commandTypeContainer.NumBytes()) - uint16(uint16(3)))
 	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)
 	if _readArrayErr != nil {
 		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field of CALDataStatusExtended")

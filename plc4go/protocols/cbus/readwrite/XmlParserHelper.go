@@ -46,6 +46,10 @@ func (m CbusXmlParserHelper) Parse(typeName string, xmlString string, parserArgu
 		// TODO: find a way to parse the sub types
 		var requestContext model.RequestContext
 		return model.CALDataParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), requestContext)
+	case "ApplicationAddress2":
+		return model.ApplicationAddress2Parse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "ApplicationAddress1":
+		return model.ApplicationAddress1Parse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "Checksum":
 		return model.ChecksumParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "RequestContext":
@@ -56,6 +60,8 @@ func (m CbusXmlParserHelper) Parse(typeName string, xmlString string, parserArgu
 		// TODO: find a way to parse the sub types
 		var requestContext model.RequestContext
 		return model.CALReplyParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), cBusOptions, requestContext)
+	case "CustomManufacturer":
+		return model.CustomManufacturerParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "NetworkRoute":
 		return model.NetworkRouteParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "NetworkNumber":
@@ -99,9 +105,16 @@ func (m CbusXmlParserHelper) Parse(typeName string, xmlString string, parserArgu
 		return model.CBusCommandParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), cBusOptions)
 	case "IdentifyReplyCommand":
 		attribute, _ := model.AttributeByName(parserArguments[0])
-		return model.IdentifyReplyCommandParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), attribute)
+		parsedUint1, err := strconv.ParseUint(parserArguments[1], 10, 5)
+		if err != nil {
+			return nil, err
+		}
+		numBytes := uint8(parsedUint1)
+		return model.IdentifyReplyCommandParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), attribute, numBytes)
 	case "CALDataOrSetParameter":
 		return model.CALDataOrSetParameterParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "IdentifyReplyCommandUnitSummary":
+		return model.IdentifyReplyCommandUnitSummaryParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "CBusConstants":
 		return model.CBusConstantsParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BridgeCount":
@@ -121,6 +134,8 @@ func (m CbusXmlParserHelper) Parse(typeName string, xmlString string, parserArgu
 		return model.ReplyParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), cBusOptions, replyLength, requestContext)
 	case "SerialInterfaceAddress":
 		return model.SerialInterfaceAddressParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "InterfaceOptions1PowerUpSettings":
+		return model.InterfaceOptions1PowerUpSettingsParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BridgeAddress":
 		return model.BridgeAddressParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "MonitoredSAL":
@@ -133,8 +148,12 @@ func (m CbusXmlParserHelper) Parse(typeName string, xmlString string, parserArgu
 		return model.StatusByteParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "ReplyNetwork":
 		return model.ReplyNetworkParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "SerialNumber":
+		return model.SerialNumberParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "ExtendedStatusHeader":
 		return model.ExtendedStatusHeaderParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "CustomTypes":
+		return model.CustomTypesParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "CommandHeader":
 		return model.CommandHeaderParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "Confirmation":
@@ -147,6 +166,12 @@ func (m CbusXmlParserHelper) Parse(typeName string, xmlString string, parserArgu
 		return model.StatusHeaderParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "StatusRequest":
 		return model.StatusRequestParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "InterfaceOptions3":
+		return model.InterfaceOptions3Parse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "InterfaceOptions1":
+		return model.InterfaceOptions1Parse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "InterfaceOptions2":
+		return model.InterfaceOptions2Parse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "UnitAddress":
 		return model.UnitAddressParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "NetworkProtocolControlInformation":
@@ -174,6 +199,8 @@ func (m CbusXmlParserHelper) Parse(typeName string, xmlString string, parserArgu
 		// TODO: find a way to parse the sub types
 		var cBusOptions model.CBusOptions
 		return model.CBusPointToPointToMultipointCommandParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), cBusOptions)
+	case "LogicAssignment":
+		return model.LogicAssignmentParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	}
 	return nil, errors.Errorf("Unsupported type %s", typeName)
 }

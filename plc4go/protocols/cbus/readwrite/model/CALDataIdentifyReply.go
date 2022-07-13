@@ -61,8 +61,9 @@ type _CALDataIdentifyReply struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_CALDataIdentifyReply) InitializeParent(parent CALData, commandTypeContainer CALCommandTypeContainer) {
+func (m *_CALDataIdentifyReply) InitializeParent(parent CALData, commandTypeContainer CALCommandTypeContainer, additionalData CALData) {
 	m.CommandTypeContainer = commandTypeContainer
+	m.AdditionalData = additionalData
 }
 
 func (m *_CALDataIdentifyReply) GetParent() CALData {
@@ -88,11 +89,11 @@ func (m *_CALDataIdentifyReply) GetIdentifyReplyCommand() IdentifyReplyCommand {
 ///////////////////////////////////////////////////////////
 
 // NewCALDataIdentifyReply factory function for _CALDataIdentifyReply
-func NewCALDataIdentifyReply(attribute Attribute, identifyReplyCommand IdentifyReplyCommand, commandTypeContainer CALCommandTypeContainer, requestContext RequestContext) *_CALDataIdentifyReply {
+func NewCALDataIdentifyReply(attribute Attribute, identifyReplyCommand IdentifyReplyCommand, commandTypeContainer CALCommandTypeContainer, additionalData CALData, requestContext RequestContext) *_CALDataIdentifyReply {
 	_result := &_CALDataIdentifyReply{
 		Attribute:            attribute,
 		IdentifyReplyCommand: identifyReplyCommand,
-		_CALData:             NewCALData(commandTypeContainer, requestContext),
+		_CALData:             NewCALData(commandTypeContainer, additionalData, requestContext),
 	}
 	_result._CALData._CALDataChildRequirements = _result
 	return _result
@@ -159,7 +160,7 @@ func CALDataIdentifyReplyParse(readBuffer utils.ReadBuffer, requestContext Reque
 	if pullErr := readBuffer.PullContext("identifyReplyCommand"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for identifyReplyCommand")
 	}
-	_identifyReplyCommand, _identifyReplyCommandErr := IdentifyReplyCommandParse(readBuffer, Attribute(attribute))
+	_identifyReplyCommand, _identifyReplyCommandErr := IdentifyReplyCommandParse(readBuffer, Attribute(attribute), uint8(uint8(commandTypeContainer.NumBytes())-uint8(uint8(1))))
 	if _identifyReplyCommandErr != nil {
 		return nil, errors.Wrap(_identifyReplyCommandErr, "Error parsing 'identifyReplyCommand' field of CALDataIdentifyReply")
 	}

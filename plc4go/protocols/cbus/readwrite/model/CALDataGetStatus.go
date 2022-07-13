@@ -32,7 +32,7 @@ type CALDataGetStatus interface {
 	utils.Serializable
 	CALData
 	// GetParamNo returns ParamNo (property field)
-	GetParamNo() uint8
+	GetParamNo() Parameter
 	// GetCount returns Count (property field)
 	GetCount() uint8
 }
@@ -47,7 +47,7 @@ type CALDataGetStatusExactly interface {
 // _CALDataGetStatus is the data-structure of this message
 type _CALDataGetStatus struct {
 	*_CALData
-	ParamNo uint8
+	ParamNo Parameter
 	Count   uint8
 }
 
@@ -61,8 +61,9 @@ type _CALDataGetStatus struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_CALDataGetStatus) InitializeParent(parent CALData, commandTypeContainer CALCommandTypeContainer) {
+func (m *_CALDataGetStatus) InitializeParent(parent CALData, commandTypeContainer CALCommandTypeContainer, additionalData CALData) {
 	m.CommandTypeContainer = commandTypeContainer
+	m.AdditionalData = additionalData
 }
 
 func (m *_CALDataGetStatus) GetParent() CALData {
@@ -74,7 +75,7 @@ func (m *_CALDataGetStatus) GetParent() CALData {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_CALDataGetStatus) GetParamNo() uint8 {
+func (m *_CALDataGetStatus) GetParamNo() Parameter {
 	return m.ParamNo
 }
 
@@ -88,11 +89,11 @@ func (m *_CALDataGetStatus) GetCount() uint8 {
 ///////////////////////////////////////////////////////////
 
 // NewCALDataGetStatus factory function for _CALDataGetStatus
-func NewCALDataGetStatus(paramNo uint8, count uint8, commandTypeContainer CALCommandTypeContainer, requestContext RequestContext) *_CALDataGetStatus {
+func NewCALDataGetStatus(paramNo Parameter, count uint8, commandTypeContainer CALCommandTypeContainer, additionalData CALData, requestContext RequestContext) *_CALDataGetStatus {
 	_result := &_CALDataGetStatus{
 		ParamNo:  paramNo,
 		Count:    count,
-		_CALData: NewCALData(commandTypeContainer, requestContext),
+		_CALData: NewCALData(commandTypeContainer, additionalData, requestContext),
 	}
 	_result._CALData._CALDataChildRequirements = _result
 	return _result
@@ -143,11 +144,17 @@ func CALDataGetStatusParse(readBuffer utils.ReadBuffer, requestContext RequestCo
 	_ = currentPos
 
 	// Simple Field (paramNo)
-	_paramNo, _paramNoErr := readBuffer.ReadUint8("paramNo", 8)
+	if pullErr := readBuffer.PullContext("paramNo"); pullErr != nil {
+		return nil, errors.Wrap(pullErr, "Error pulling for paramNo")
+	}
+	_paramNo, _paramNoErr := ParameterParse(readBuffer)
 	if _paramNoErr != nil {
 		return nil, errors.Wrap(_paramNoErr, "Error parsing 'paramNo' field of CALDataGetStatus")
 	}
 	paramNo := _paramNo
+	if closeErr := readBuffer.CloseContext("paramNo"); closeErr != nil {
+		return nil, errors.Wrap(closeErr, "Error closing for paramNo")
+	}
 
 	// Simple Field (count)
 	_count, _countErr := readBuffer.ReadUint8("count", 8)
@@ -181,8 +188,13 @@ func (m *_CALDataGetStatus) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 
 		// Simple Field (paramNo)
-		paramNo := uint8(m.GetParamNo())
-		_paramNoErr := writeBuffer.WriteUint8("paramNo", 8, (paramNo))
+		if pushErr := writeBuffer.PushContext("paramNo"); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for paramNo")
+		}
+		_paramNoErr := writeBuffer.WriteSerializable(m.GetParamNo())
+		if popErr := writeBuffer.PopContext("paramNo"); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for paramNo")
+		}
 		if _paramNoErr != nil {
 			return errors.Wrap(_paramNoErr, "Error serializing 'paramNo' field")
 		}

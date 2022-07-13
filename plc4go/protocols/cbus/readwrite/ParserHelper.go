@@ -35,6 +35,10 @@ func (m CbusParserHelper) Parse(typeName string, arguments []string, io utils.Re
 	case "CALData":
 		var requestContext model.RequestContext
 		return model.CALDataParse(io, requestContext)
+	case "ApplicationAddress2":
+		return model.ApplicationAddress2Parse(io)
+	case "ApplicationAddress1":
+		return model.ApplicationAddress1Parse(io)
 	case "Checksum":
 		return model.ChecksumParse(io)
 	case "RequestContext":
@@ -43,6 +47,8 @@ func (m CbusParserHelper) Parse(typeName string, arguments []string, io utils.Re
 		var cBusOptions model.CBusOptions
 		var requestContext model.RequestContext
 		return model.CALReplyParse(io, cBusOptions, requestContext)
+	case "CustomManufacturer":
+		return model.CustomManufacturerParse(io)
 	case "NetworkRoute":
 		return model.NetworkRouteParse(io)
 	case "NetworkNumber":
@@ -82,9 +88,15 @@ func (m CbusParserHelper) Parse(typeName string, arguments []string, io utils.Re
 		return model.CBusCommandParse(io, cBusOptions)
 	case "IdentifyReplyCommand":
 		attribute, _ := model.AttributeByName(arguments[0])
-		return model.IdentifyReplyCommandParse(io, attribute)
+		numBytes, err := utils.StrToUint8(arguments[1])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		return model.IdentifyReplyCommandParse(io, attribute, numBytes)
 	case "CALDataOrSetParameter":
 		return model.CALDataOrSetParameterParse(io)
+	case "IdentifyReplyCommandUnitSummary":
+		return model.IdentifyReplyCommandUnitSummaryParse(io)
 	case "CBusConstants":
 		return model.CBusConstantsParse(io)
 	case "BridgeCount":
@@ -101,6 +113,8 @@ func (m CbusParserHelper) Parse(typeName string, arguments []string, io utils.Re
 		return model.ReplyParse(io, cBusOptions, replyLength, requestContext)
 	case "SerialInterfaceAddress":
 		return model.SerialInterfaceAddressParse(io)
+	case "InterfaceOptions1PowerUpSettings":
+		return model.InterfaceOptions1PowerUpSettingsParse(io)
 	case "BridgeAddress":
 		return model.BridgeAddressParse(io)
 	case "MonitoredSAL":
@@ -112,8 +126,12 @@ func (m CbusParserHelper) Parse(typeName string, arguments []string, io utils.Re
 		return model.StatusByteParse(io)
 	case "ReplyNetwork":
 		return model.ReplyNetworkParse(io)
+	case "SerialNumber":
+		return model.SerialNumberParse(io)
 	case "ExtendedStatusHeader":
 		return model.ExtendedStatusHeaderParse(io)
+	case "CustomTypes":
+		return model.CustomTypesParse(io)
 	case "CommandHeader":
 		return model.CommandHeaderParse(io)
 	case "Confirmation":
@@ -125,6 +143,12 @@ func (m CbusParserHelper) Parse(typeName string, arguments []string, io utils.Re
 		return model.StatusHeaderParse(io)
 	case "StatusRequest":
 		return model.StatusRequestParse(io)
+	case "InterfaceOptions3":
+		return model.InterfaceOptions3Parse(io)
+	case "InterfaceOptions1":
+		return model.InterfaceOptions1Parse(io)
+	case "InterfaceOptions2":
+		return model.InterfaceOptions2Parse(io)
 	case "UnitAddress":
 		return model.UnitAddressParse(io)
 	case "NetworkProtocolControlInformation":
@@ -148,6 +172,8 @@ func (m CbusParserHelper) Parse(typeName string, arguments []string, io utils.Re
 	case "CBusPointToPointToMultipointCommand":
 		var cBusOptions model.CBusOptions
 		return model.CBusPointToPointToMultipointCommandParse(io, cBusOptions)
+	case "LogicAssignment":
+		return model.LogicAssignmentParse(io)
 	}
 	return nil, errors.Errorf("Unsupported type %s", typeName)
 }
