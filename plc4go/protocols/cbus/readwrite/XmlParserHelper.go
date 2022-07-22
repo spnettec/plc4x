@@ -42,30 +42,24 @@ func init() {
 
 func (m CbusXmlParserHelper) Parse(typeName string, xmlString string, parserArguments ...string) (interface{}, error) {
 	switch typeName {
-	case "CALData":
-		// TODO: find a way to parse the sub types
-		var requestContext model.RequestContext
-		return model.CALDataParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), requestContext)
+	case "HVACStatusFlags":
+		return model.HVACStatusFlagsParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "MeteringData":
+		return model.MeteringDataParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "EnableControlData":
+		return model.EnableControlDataParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "ApplicationAddress2":
 		return model.ApplicationAddress2Parse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "LabelOptions":
-		return model.LabelOptionsParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "ApplicationAddress1":
 		return model.ApplicationAddress1Parse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "Checksum":
-		return model.ChecksumParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "RequestContext":
 		return model.RequestContextParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "CALReply":
-		// TODO: find a way to parse the sub types
-		var cBusOptions model.CBusOptions
-		// TODO: find a way to parse the sub types
-		var requestContext model.RequestContext
-		return model.CALReplyParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), cBusOptions, requestContext)
-	case "CustomManufacturer":
-		return model.CustomManufacturerParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "NetworkRoute":
-		return model.NetworkRouteParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "TriggerControlData":
+		return model.TriggerControlDataParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "HVACStartTime":
+		return model.HVACStartTimeParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "HVACTemperature":
+		return model.HVACTemperatureParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "NetworkNumber":
 		return model.NetworkNumberParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "RequestTermination":
@@ -81,8 +75,6 @@ func (m CbusXmlParserHelper) Parse(typeName string, xmlString string, parserArgu
 		// TODO: find a way to parse the sub types
 		var requestContext model.RequestContext
 		return model.ReplyOrConfirmationParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), cBusOptions, messageLength, requestContext)
-	case "StandardFormatStatusReply":
-		return model.StandardFormatStatusReplyParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "CBusMessage":
 		isResponse := parserArguments[0] == "true"
 		// TODO: find a way to parse the sub types
@@ -95,30 +87,16 @@ func (m CbusXmlParserHelper) Parse(typeName string, xmlString string, parserArgu
 		}
 		messageLength := uint16(parsedUint3)
 		return model.CBusMessageParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), isResponse, requestContext, cBusOptions, messageLength)
-	case "ResponseTermination":
-		return model.ResponseTerminationParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "CBusOptions":
 		return model.CBusOptionsParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "SALData":
-		return model.SALDataParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "CBusCommand":
-		// TODO: find a way to parse the sub types
-		var cBusOptions model.CBusOptions
-		return model.CBusCommandParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), cBusOptions)
-	case "IdentifyReplyCommand":
-		attribute, _ := model.AttributeByName(parserArguments[0])
-		parsedUint1, err := strconv.ParseUint(parserArguments[1], 10, 5)
-		if err != nil {
-			return nil, err
-		}
-		numBytes := uint8(parsedUint1)
-		return model.IdentifyReplyCommandParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), attribute, numBytes)
-	case "CALDataOrSetParameter":
-		return model.CALDataOrSetParameterParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "TemperatureBroadcastData":
+		return model.TemperatureBroadcastDataParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "ErrorReportingSystemCategory":
+		return model.ErrorReportingSystemCategoryParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "PanicStatus":
+		return model.PanicStatusParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "IdentifyReplyCommandUnitSummary":
 		return model.IdentifyReplyCommandUnitSummaryParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "CBusConstants":
-		return model.CBusConstantsParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BridgeCount":
 		return model.BridgeCountParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "PowerUp":
@@ -134,58 +112,43 @@ func (m CbusXmlParserHelper) Parse(typeName string, xmlString string, parserArgu
 		// TODO: find a way to parse the sub types
 		var requestContext model.RequestContext
 		return model.ReplyParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), cBusOptions, replyLength, requestContext)
-	case "SerialInterfaceAddress":
-		return model.SerialInterfaceAddressParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "TelephonyData":
+		return model.TelephonyDataParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "HVACHumidityStatusFlags":
+		return model.HVACHumidityStatusFlagsParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "InterfaceOptions1PowerUpSettings":
 		return model.InterfaceOptions1PowerUpSettingsParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "BridgeAddress":
-		return model.BridgeAddressParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "MonitoredSAL":
 		// TODO: find a way to parse the sub types
 		var cBusOptions model.CBusOptions
 		return model.MonitoredSALParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), cBusOptions)
 	case "ParameterChange":
 		return model.ParameterChangeParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "StatusByte":
-		return model.StatusByteParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "ReplyNetwork":
 		return model.ReplyNetworkParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "SerialNumber":
 		return model.SerialNumberParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "ExtendedStatusHeader":
-		return model.ExtendedStatusHeaderParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "CustomTypes":
-		return model.CustomTypesParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "CommandHeader":
-		return model.CommandHeaderParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "ErrorReportingSystemCategoryType":
+		errorReportingSystemCategoryClass, _ := model.ErrorReportingSystemCategoryClassByName(parserArguments[0])
+		return model.ErrorReportingSystemCategoryTypeParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), errorReportingSystemCategoryClass)
 	case "Confirmation":
 		return model.ConfirmationParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "CBusPointToMultiPointCommand":
 		// TODO: find a way to parse the sub types
 		var cBusOptions model.CBusOptions
 		return model.CBusPointToMultiPointCommandParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), cBusOptions)
-	case "StatusHeader":
-		return model.StatusHeaderParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "StatusRequest":
 		return model.StatusRequestParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "EncodedReply":
-		// TODO: find a way to parse the sub types
-		var cBusOptions model.CBusOptions
-		// TODO: find a way to parse the sub types
-		var requestContext model.RequestContext
-		return model.EncodedReplyParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), cBusOptions, requestContext)
 	case "InterfaceOptions3":
 		return model.InterfaceOptions3Parse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "InterfaceOptions1":
 		return model.InterfaceOptions1Parse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "InterfaceOptions2":
 		return model.InterfaceOptions2Parse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "UnitAddress":
-		return model.UnitAddressParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "SecurityData":
+		return model.SecurityDataParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "NetworkProtocolControlInformation":
 		return model.NetworkProtocolControlInformationParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "ExtendedFormatStatusReply":
-		return model.ExtendedFormatStatusReplyParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "CBusHeader":
 		return model.CBusHeaderParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "Request":
@@ -197,16 +160,111 @@ func (m CbusXmlParserHelper) Parse(typeName string, xmlString string, parserArgu
 		}
 		messageLength := uint16(parsedUint1)
 		return model.RequestParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), cBusOptions, messageLength)
+	case "HVACModeAndFlags":
+		return model.HVACModeAndFlagsParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "Alpha":
+		return model.AlphaParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "CALData":
+		// TODO: find a way to parse the sub types
+		var requestContext model.RequestContext
+		return model.CALDataParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), requestContext)
+	case "Checksum":
+		return model.ChecksumParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "CALReply":
+		// TODO: find a way to parse the sub types
+		var cBusOptions model.CBusOptions
+		// TODO: find a way to parse the sub types
+		var requestContext model.RequestContext
+		return model.CALReplyParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), cBusOptions, requestContext)
+	case "CustomManufacturer":
+		return model.CustomManufacturerParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "LightingData":
+		return model.LightingDataParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "AccessControlData":
+		return model.AccessControlDataParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "ClockAndTimekeepingData":
+		return model.ClockAndTimekeepingDataParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "NetworkRoute":
+		return model.NetworkRouteParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "StandardFormatStatusReply":
+		return model.StandardFormatStatusReplyParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "ResponseTermination":
+		return model.ResponseTerminationParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "SALData":
+		applicationId, _ := model.ApplicationIdByName(parserArguments[0])
+		return model.SALDataParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), applicationId)
+	case "CBusCommand":
+		// TODO: find a way to parse the sub types
+		var cBusOptions model.CBusOptions
+		return model.CBusCommandParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), cBusOptions)
+	case "TamperStatus":
+		return model.TamperStatusParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "IdentifyReplyCommand":
+		attribute, _ := model.AttributeByName(parserArguments[0])
+		parsedUint1, err := strconv.ParseUint(parserArguments[1], 10, 5)
+		if err != nil {
+			return nil, err
+		}
+		numBytes := uint8(parsedUint1)
+		return model.IdentifyReplyCommandParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), attribute, numBytes)
+	case "HVACHumidity":
+		return model.HVACHumidityParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "HVACHumidityModeAndFlags":
+		return model.HVACHumidityModeAndFlagsParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "HVACRawLevels":
+		return model.HVACRawLevelsParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "CBusConstants":
+		return model.CBusConstantsParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "SerialInterfaceAddress":
+		return model.SerialInterfaceAddressParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "MeasurementData":
+		return model.MeasurementDataParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "HVACZoneList":
+		return model.HVACZoneListParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "ZoneStatus":
+		return model.ZoneStatusParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "BridgeAddress":
+		return model.BridgeAddressParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "MediaTransportControlData":
+		return model.MediaTransportControlDataParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "StatusByte":
+		return model.StatusByteParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "LightingLabelOptions":
+		return model.LightingLabelOptionsParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "ExtendedStatusHeader":
+		return model.ExtendedStatusHeaderParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "CustomTypes":
+		return model.CustomTypesParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "TriggerControlLabelOptions":
+		return model.TriggerControlLabelOptionsParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "HVACAuxiliaryLevel":
+		return model.HVACAuxiliaryLevelParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "StatusHeader":
+		return model.StatusHeaderParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "EncodedReply":
+		// TODO: find a way to parse the sub types
+		var cBusOptions model.CBusOptions
+		// TODO: find a way to parse the sub types
+		var requestContext model.RequestContext
+		return model.EncodedReplyParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), cBusOptions, requestContext)
+	case "ErrorReportingData":
+		return model.ErrorReportingDataParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "CBusPointToPointToMultiPointCommand":
+		// TODO: find a way to parse the sub types
+		var cBusOptions model.CBusOptions
+		return model.CBusPointToPointToMultiPointCommandParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), cBusOptions)
+	case "UnitAddress":
+		return model.UnitAddressParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "ExtendedFormatStatusReply":
+		return model.ExtendedFormatStatusReplyParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "SecurityArmCode":
+		return model.SecurityArmCodeParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "CBusPointToPointCommand":
 		// TODO: find a way to parse the sub types
 		var cBusOptions model.CBusOptions
 		return model.CBusPointToPointCommandParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), cBusOptions)
-	case "Alpha":
-		return model.AlphaParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "CBusPointToPointToMultipointCommand":
-		// TODO: find a way to parse the sub types
-		var cBusOptions model.CBusOptions
-		return model.CBusPointToPointToMultipointCommandParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), cBusOptions)
+	case "AirConditioningData":
+		return model.AirConditioningDataParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "LogicAssignment":
 		return model.LogicAssignmentParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	}

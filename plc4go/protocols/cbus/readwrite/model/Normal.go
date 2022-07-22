@@ -62,9 +62,8 @@ type _Normal struct {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_Normal) InitializeParent(parent CBusPointToMultiPointCommand, peekedApplication byte, crc Checksum) {
+func (m *_Normal) InitializeParent(parent CBusPointToMultiPointCommand, peekedApplication byte) {
 	m.PeekedApplication = peekedApplication
-	m.Crc = crc
 }
 
 func (m *_Normal) GetParent() CBusPointToMultiPointCommand {
@@ -90,11 +89,11 @@ func (m *_Normal) GetSalData() SALData {
 ///////////////////////////////////////////////////////////
 
 // NewNormal factory function for _Normal
-func NewNormal(application ApplicationIdContainer, salData SALData, peekedApplication byte, crc Checksum, cBusOptions CBusOptions) *_Normal {
+func NewNormal(application ApplicationIdContainer, salData SALData, peekedApplication byte, cBusOptions CBusOptions) *_Normal {
 	_result := &_Normal{
 		Application:                   application,
 		SalData:                       salData,
-		_CBusPointToMultiPointCommand: NewCBusPointToMultiPointCommand(peekedApplication, crc, cBusOptions),
+		_CBusPointToMultiPointCommand: NewCBusPointToMultiPointCommand(peekedApplication, cBusOptions),
 	}
 	_result._CBusPointToMultiPointCommand._CBusPointToMultiPointCommandChildRequirements = _result
 	return _result
@@ -178,7 +177,7 @@ func NormalParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (Normal, 
 	if pullErr := readBuffer.PullContext("salData"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for salData")
 	}
-	_salData, _salDataErr := SALDataParse(readBuffer)
+	_salData, _salDataErr := SALDataParse(readBuffer, ApplicationId(application.ApplicationId()))
 	if _salDataErr != nil {
 		return nil, errors.Wrap(_salDataErr, "Error parsing 'salData' field of Normal")
 	}
