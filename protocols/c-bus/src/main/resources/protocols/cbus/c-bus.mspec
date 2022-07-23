@@ -47,7 +47,7 @@
     [simple bit pun    ]
     // causes parameter change notifications to be emitted.
     [simple bit pcn    ]
-    // enabled the crc checks
+    // enabled the checksum checks
     [simple bit srchk ]
 ]
 
@@ -621,7 +621,6 @@
             [array  byte                   data        count 'commandTypeContainer.numBytes - 2'       ] // TODO: this should be -3 but somehow it is -2 with the examples
         ]
     ]
-    // TODO: we need to check that we don't read the crc by accident
     // Note: we omit the request context as it is only useful for the first element
     [optional CALData('null') additionalData]
 ]
@@ -1369,7 +1368,6 @@
             [simple LightingData ventilationData]
         ]
     ]
-    // TODO: we need to check that we don't read the crc by accident
     [optional SALData('applicationId') salData                                  ]
 ]
 
@@ -2715,7 +2713,7 @@
             [simple   HVACType            hvacType            ]
             [optional HVACTemperature     level     'hvacModeAndFlags.isLevelTemperature']
             [optional HVACRawLevels       rawLevel  'hvacModeAndFlags.isLevelRaw'        ]
-            [simple   HVACAuxiliaryLevel  auxLevel            ]
+            [optional HVACAuxiliaryLevel  auxLevel  'hvacModeAndFlags.isAuxLevelUsed'    ]
         ]
         ['SET_PLANT_HVAC_LEVEL'             *SetPlantHvacLevel
             [simple   byte                zoneGroup           ]
@@ -2724,25 +2722,25 @@
             [simple   HVACType            hvacType            ]
             [optional HVACTemperature     level     'hvacModeAndFlags.isLevelTemperature']
             [optional HVACRawLevels       rawLevel  'hvacModeAndFlags.isLevelRaw'        ]
-            [simple   HVACAuxiliaryLevel  auxLevel            ]
+            [optional HVACAuxiliaryLevel  auxLevel  'hvacModeAndFlags.isAuxLevelUsed'    ]
         ]
         ['SET_ZONE_HUMIDITY_MODE'           *SetZoneHumidityMode
             [simple   byte                      zoneGroup               ]
             [simple   HVACZoneList              zoneList                ]
             [simple   HVACHumidityModeAndFlags  humidityModeAndFlags    ]
             [simple   HVACHumidityType          humidityType            ]
-            [optional HVACHumidity              level   'humidityModeAndFlags.isLevelHumidity']
-            [optional HVACRawLevels             rawLevel 'humidityModeAndFlags.isLevelRaw'    ]
-            [simple   HVACAuxiliaryLevel        auxLevel            ]
+            [optional HVACHumidity              level    'humidityModeAndFlags.isLevelHumidity']
+            [optional HVACRawLevels             rawLevel 'humidityModeAndFlags.isLevelRaw'     ]
+            [optional HVACAuxiliaryLevel        auxLevel 'humidityModeAndFlags.isAuxLevelUsed' ]
         ]
         ['SET_PLANT_HUMIDITY_LEVEL'         *SetPlantHumidityLevel
             [simple   byte                      zoneGroup               ]
             [simple   HVACZoneList              zoneList                ]
             [simple   HVACHumidityModeAndFlags  humidityModeAndFlags    ]
             [simple   HVACHumidityType          humidityType            ]
-            [optional HVACHumidity              level   'humidityModeAndFlags.isLevelHumidity']
-            [optional HVACRawLevels             rawLevel 'humidityModeAndFlags.isLevelRaw'    ]
-            [simple   HVACAuxiliaryLevel        auxLevel            ]
+            [optional HVACHumidity              level    'humidityModeAndFlags.isLevelHumidity']
+            [optional HVACRawLevels             rawLevel 'humidityModeAndFlags.isLevelRaw'     ]
+            [optional HVACAuxiliaryLevel        auxLevel 'humidityModeAndFlags.isAuxLevelUsed' ]
         ]
         ['SET_HVAC_UPPER_GUARD_LIMIT'       *SetHvacUpperGuardLimit
             [simple   byte                zoneGroup           ]

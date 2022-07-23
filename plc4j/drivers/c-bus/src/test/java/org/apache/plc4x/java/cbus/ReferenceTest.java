@@ -42,9 +42,15 @@ public class ReferenceTest {
         cBusOptions = new CBusOptions(false, false, false, false, false, false, false, false, false);
     }
 
+    // from: https://updates.clipsal.com/ClipsalSoftwareDownload/DL/downloads/OpenCBus/C-Bus%20Interface%20Requirements.pdf
+    @Nested
+    class InterfaceRequirementsTest {
+        // TODO: implement those
+    }
+
     // from: https://updates.clipsal.com/ClipsalSoftwareDownload/DL/downloads/OpenCBus/Serial%20Interface%20User%20Guide.pdf
     @Nested
-    class ReferenceDocumentationTest {
+    class SerialInterfaceGuideTest {
 
         // 3.4
         @Nested
@@ -828,7 +834,7 @@ public class ReferenceTest {
             // 7.3
             @Test
             void ReceiveAnRampToLevelCommand() throws Exception {
-                byte[] bytes = "05003800550855C3\r\n".getBytes(StandardCharsets.UTF_8);
+                byte[] bytes = "050038005A08550C\r\n".getBytes(StandardCharsets.UTF_8);
                 ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
                 cBusOptions = new CBusOptions(false, false, false, false, false, false, false, false, true);
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions, bytes.length);
@@ -840,7 +846,7 @@ public class ReferenceTest {
             // 7.3
             @Test
             void ReceiveAnRampToLevelCommandAlternative() throws Exception {
-                byte[] bytes = "0500380100550855C2\r\n".getBytes(StandardCharsets.UTF_8);
+                byte[] bytes = "05003801005A08550B\r\n".getBytes(StandardCharsets.UTF_8);
                 ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
                 cBusOptions = new CBusOptions(false, false, false, false, false, false, false, false, true);
                 CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions, bytes.length);
