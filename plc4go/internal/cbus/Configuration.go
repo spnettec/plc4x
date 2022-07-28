@@ -16,20 +16,43 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.plc4x.simulator.exceptions;
 
-public class SimulatorExcepiton extends Exception {
+package cbus
 
-    public SimulatorExcepiton(String message) {
-        super(message);
-    }
+import (
+	"strconv"
 
-    public SimulatorExcepiton(String message, Throwable cause) {
-        super(message, cause);
-    }
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
+)
 
-    public SimulatorExcepiton(Throwable cause) {
-        super(cause);
-    }
+type Configuration struct {
+	srchk bool
+}
 
+func ParseFromOptions(options map[string][]string) (Configuration, error) {
+	configuration := Configuration{
+		srchk: true,
+	}
+	if srchk := getFromOptions(options, "srchk"); srchk != "" {
+		parseBool, err := strconv.ParseBool(srchk)
+		if err != nil {
+			return Configuration{}, errors.Wrap(err, "Error parsing srchk")
+		}
+		configuration.srchk = parseBool
+	}
+	return configuration, nil
+}
+
+func getFromOptions(options map[string][]string, key string) string {
+	if optionValues, ok := options[key]; ok {
+		if len(optionValues) <= 0 {
+			return ""
+		}
+		if len(optionValues) > 1 {
+			log.Warn().Msgf("Options %s must be unique", key)
+		}
+		return optionValues[0]
+	}
+	return ""
 }

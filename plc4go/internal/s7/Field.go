@@ -23,114 +23,107 @@ import (
 	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/spi/utils"
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
-	readWrite "github.com/apache/plc4x/plc4go/protocols/s7/readwrite/model"
-	"github.com/pkg/errors"
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/s7/readwrite/model"
 )
 
-type S7PlcField interface {
-	GetDataType() readWrite.TransportSize
+type PlcField interface {
+	model.PlcField
+	GetDataType() readWriteModel.TransportSize
 	GetNumElements() uint16
 	GetBlockNumber() uint16
-	GetMemoryArea() readWrite.MemoryArea
+	GetMemoryArea() readWriteModel.MemoryArea
 	GetByteOffset() uint16
 	GetBitOffset() uint8
 	GetStringEncoding() string
 }
 
-type PlcField struct {
-	FieldType      FieldType
-	MemoryArea     readWrite.MemoryArea
-	BlockNumber    uint16
-	ByteOffset     uint16
-	BitOffset      uint8
-	NumElements    uint16
-	Datatype       readWrite.TransportSize
+type plcField struct {
+	FieldType   FieldType
+	MemoryArea  readWriteModel.MemoryArea
+	BlockNumber uint16
+	ByteOffset  uint16
+	BitOffset   uint8
+	NumElements uint16
+	Datatype    readWriteModel.TransportSize
 	StringEncoding string
 }
 
-func NewField(memoryArea readWrite.MemoryArea, blockNumber uint16, byteOffset uint16, bitOffset uint8, numElements uint16, datatype readWrite.TransportSize, stringEncoding string) PlcField {
-	return PlcField{
-		FieldType:      S7Field,
-		MemoryArea:     memoryArea,
-		BlockNumber:    blockNumber,
-		ByteOffset:     byteOffset,
-		BitOffset:      bitOffset,
-		NumElements:    numElements,
-		Datatype:       datatype,
+func NewField(memoryArea readWriteModel.MemoryArea, blockNumber uint16, byteOffset uint16, bitOffset uint8, numElements uint16, datatype readWriteModel.TransportSize) PlcField {
+	return plcField{
+		FieldType:   S7Field,
+		MemoryArea:  memoryArea,
+		BlockNumber: blockNumber,
+		ByteOffset:  byteOffset,
+		BitOffset:   bitOffset,
+		NumElements: numElements,
+		Datatype:    datatype,
 		StringEncoding: stringEncoding,
 	}
 }
 
 type PlcStringField struct {
-	PlcField
+	plcField
 	stringLength uint16
 }
 
-func NewStringField(memoryArea readWrite.MemoryArea, blockNumber uint16, byteOffset uint16, bitOffset uint8, numElements uint16, stringLength uint16, datatype readWrite.TransportSize, stringEncoding string) PlcStringField {
+func NewStringField(memoryArea readWriteModel.MemoryArea, blockNumber uint16, byteOffset uint16, bitOffset uint8, numElements uint16, stringLength uint16, datatype readWriteModel.TransportSize, stringEncoding string) PlcStringField {
 	return PlcStringField{
-		PlcField: PlcField{
-			FieldType:      S7StringField,
-			MemoryArea:     memoryArea,
-			BlockNumber:    blockNumber,
-			ByteOffset:     byteOffset,
-			BitOffset:      bitOffset,
-			NumElements:    numElements,
-			Datatype:       datatype,
+		plcField: plcField{
+			FieldType:   S7StringField,
+			MemoryArea:  memoryArea,
+			BlockNumber: blockNumber,
+			ByteOffset:  byteOffset,
+			BitOffset:   bitOffset,
+			NumElements: numElements,
+			Datatype:    datatype,
 			StringEncoding: stringEncoding,
 		},
 		stringLength: stringLength,
 	}
 }
 
-func (m PlcField) GetAddressString() string {
+func (m plcField) GetAddressString() string {
 	// TODO: add missing variables like memory area, block number, byte offset, bit offset
 	return fmt.Sprintf("%d:%s[%d]", m.FieldType, m.Datatype, m.NumElements)
 }
 
-func (m PlcField) GetTypeName() string {
+func (m plcField) GetTypeName() string {
 	return m.Datatype.String()
 }
 
-func (m PlcField) GetDataType() readWrite.TransportSize {
+func (m plcField) GetDataType() readWriteModel.TransportSize {
 	return m.Datatype
 }
 
-func (m PlcField) GetNumElements() uint16 {
+func (m plcField) GetNumElements() uint16 {
 	return m.NumElements
 }
 
-func (m PlcField) GetBlockNumber() uint16 {
+func (m plcField) GetBlockNumber() uint16 {
 	return m.BlockNumber
 }
 
-func (m PlcField) GetMemoryArea() readWrite.MemoryArea {
+func (m plcField) GetMemoryArea() readWriteModel.MemoryArea {
 	return m.MemoryArea
 }
 
-func (m PlcField) GetByteOffset() uint16 {
+func (m plcField) GetByteOffset() uint16 {
 	return m.ByteOffset
 }
 
-func (m PlcField) GetBitOffset() uint8 {
+func (m plcField) GetBitOffset() uint8 {
 	return m.BitOffset
 }
 
-func (m PlcField) GetQuantity() uint16 {
+func (m plcField) GetQuantity() uint16 {
 	return m.NumElements
 }
 
-func (m PlcField) GetStringEncoding() string {
+func (m plcField) GetStringEncoding() string {
 	return m.StringEncoding
 }
 
-func CastTos7FieldFromPlcField(plcField model.PlcField) (PlcField, error) {
-	if s7Field, ok := plcField.(PlcField); ok {
-		return s7Field, nil
-	}
-	return PlcField{}, errors.New("couldn't cast to s7PlcField")
-}
-
-func (m PlcField) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m plcField) Serialize(writeBuffer utils.WriteBuffer) error {
 	if err := writeBuffer.PushContext(m.FieldType.GetName()); err != nil {
 		return err
 	}

@@ -58,9 +58,6 @@ type _RequestCommand struct {
 	CbusCommand CBusCommand
 	Chksum      Checksum
 	Alpha       Alpha
-
-	// Arguments.
-	PayloadLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -121,12 +118,12 @@ func (m *_RequestCommand) GetInitiator() byte {
 ///////////////////////////////////////////////////////////
 
 // NewRequestCommand factory function for _RequestCommand
-func NewRequestCommand(cbusCommand CBusCommand, chksum Checksum, alpha Alpha, peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, cBusOptions CBusOptions, messageLength uint16, payloadLength uint16) *_RequestCommand {
+func NewRequestCommand(cbusCommand CBusCommand, chksum Checksum, alpha Alpha, peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, cBusOptions CBusOptions) *_RequestCommand {
 	_result := &_RequestCommand{
 		CbusCommand: cbusCommand,
 		Chksum:      chksum,
 		Alpha:       alpha,
-		_Request:    NewRequest(peekedByte, startingCR, resetMode, secondPeek, termination, cBusOptions, messageLength),
+		_Request:    NewRequest(peekedByte, startingCR, resetMode, secondPeek, termination, cBusOptions),
 	}
 	_result._Request._RequestChildRequirements = _result
 	return _result
@@ -158,10 +155,10 @@ func (m *_RequestCommand) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits += 8
 
 	// Manual Field (cbusCommand)
-	lengthInBits += uint16(int32(int32(int32(m.GetLengthInBytes())*int32(int32(2)))) * int32(int32(8)))
+	lengthInBits += uint16(int32(int32(int32(m.GetCbusCommand().GetLengthInBytes())*int32(int32(2)))) * int32(int32(8)))
 
 	// Manual Field (chksum)
-	lengthInBits += uint16(int32(8))
+	lengthInBits += uint16(utils.InlineIf(m.CBusOptions.GetSrchk(), func() interface{} { return int32(int32(16)) }, func() interface{} { return int32(int32(0)) }).(int32))
 
 	// Optional Field (alpha)
 	if m.Alpha != nil {
@@ -175,7 +172,7 @@ func (m *_RequestCommand) GetLengthInBytes() uint16 {
 	return m.GetLengthInBits() / 8
 }
 
-func RequestCommandParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, messageLength uint16, payloadLength uint16) (RequestCommand, error) {
+func RequestCommandParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (RequestCommand, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("RequestCommand"); pullErr != nil {
@@ -194,7 +191,7 @@ func RequestCommandParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, m
 	}
 
 	// Manual Field (cbusCommand)
-	_cbusCommand, _cbusCommandErr := ReadCBusCommand(readBuffer, payloadLength, cBusOptions, cBusOptions.GetSrchk())
+	_cbusCommand, _cbusCommandErr := ReadCBusCommand(readBuffer, cBusOptions, cBusOptions.GetSrchk())
 	if _cbusCommandErr != nil {
 		return nil, errors.Wrap(_cbusCommandErr, "Error parsing 'cbusCommand' field of RequestCommand")
 	}
@@ -245,8 +242,7 @@ func RequestCommandParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, m
 		Chksum:      chksum,
 		Alpha:       alpha,
 		_Request: &_Request{
-			CBusOptions:   cBusOptions,
-			MessageLength: messageLength,
+			CBusOptions: cBusOptions,
 		},
 	}
 	_child._Request._RequestChildRequirements = _child
