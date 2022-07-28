@@ -38,25 +38,25 @@ type PlcField interface {
 }
 
 type plcField struct {
-	FieldType   FieldType
-	MemoryArea  readWriteModel.MemoryArea
-	BlockNumber uint16
-	ByteOffset  uint16
-	BitOffset   uint8
-	NumElements uint16
-	Datatype    readWriteModel.TransportSize
+	FieldType      FieldType
+	MemoryArea     readWriteModel.MemoryArea
+	BlockNumber    uint16
+	ByteOffset     uint16
+	BitOffset      uint8
+	NumElements    uint16
+	Datatype       readWriteModel.TransportSize
 	StringEncoding string
 }
 
-func NewField(memoryArea readWriteModel.MemoryArea, blockNumber uint16, byteOffset uint16, bitOffset uint8, numElements uint16, datatype readWriteModel.TransportSize) PlcField {
+func NewField(memoryArea readWriteModel.MemoryArea, blockNumber uint16, byteOffset uint16, bitOffset uint8, numElements uint16, datatype readWriteModel.TransportSize, stringEncoding string) PlcField {
 	return plcField{
-		FieldType:   S7Field,
-		MemoryArea:  memoryArea,
-		BlockNumber: blockNumber,
-		ByteOffset:  byteOffset,
-		BitOffset:   bitOffset,
-		NumElements: numElements,
-		Datatype:    datatype,
+		FieldType:      S7Field,
+		MemoryArea:     memoryArea,
+		BlockNumber:    blockNumber,
+		ByteOffset:     byteOffset,
+		BitOffset:      bitOffset,
+		NumElements:    numElements,
+		Datatype:       datatype,
 		StringEncoding: stringEncoding,
 	}
 }
@@ -69,13 +69,13 @@ type PlcStringField struct {
 func NewStringField(memoryArea readWriteModel.MemoryArea, blockNumber uint16, byteOffset uint16, bitOffset uint8, numElements uint16, stringLength uint16, datatype readWriteModel.TransportSize, stringEncoding string) PlcStringField {
 	return PlcStringField{
 		plcField: plcField{
-			FieldType:   S7StringField,
-			MemoryArea:  memoryArea,
-			BlockNumber: blockNumber,
-			ByteOffset:  byteOffset,
-			BitOffset:   bitOffset,
-			NumElements: numElements,
-			Datatype:    datatype,
+			FieldType:      S7StringField,
+			MemoryArea:     memoryArea,
+			BlockNumber:    blockNumber,
+			ByteOffset:     byteOffset,
+			BitOffset:      bitOffset,
+			NumElements:    numElements,
+			Datatype:       datatype,
 			StringEncoding: stringEncoding,
 		},
 		stringLength: stringLength,
