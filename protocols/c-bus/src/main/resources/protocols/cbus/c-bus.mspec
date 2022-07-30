@@ -193,29 +193,8 @@
 ]
 
 [type NetworkRoute
-    [reserved uint 2      '0x00'                                                       ]
-    [simple RouteType     reverseRouteType                                             ]
-    [simple RouteType     routeType                                                    ]
-    [array  BridgeAddress additionalBridgeAddresses count 'routeType.additionalBridges']
-]
-
-// The last 3 bits are the total number of bridges ... subtracting 1 results in the number of additional bridges.
-// It also seems as if these are generally 2 empty bits and then twice the number of bridges as 3-bit numbers.
-// The block of 3 in bit's 3..5 seem to be the reverse route.
-//
-// Observations on failing packets:
-// - In the first case the first two bits are not empty, but 01 ... the first block of bridges is then increased by one.
-// - In another packet the first two bits are 0, but the first group ist set to 111 and the number of bridges is set to 000.
-// - In another packet the first two bits are 0, the first group is set to 001 and the second to 101
-[enum uint 3 RouteType(uint 3 additionalBridges)
-    ['0x0' NoBridgeAtAll         ['0']]
-    ['0x1' NoAdditionalBridge    ['0']]
-    ['0x2' OneAdditionalBridge   ['1']]
-    ['0x3' TwoAdditionalBridge   ['2']]
-    ['0x4' ThreeAdditionalBridge ['3']]
-    ['0x5' FourAdditionalBridge  ['4']]
-    ['0x6' FiveAdditionalBridge  ['5']]
-    ['0x7' SixAdditionalBridge   ['6']]
+    [simple NetworkProtocolControlInformation networkPCI                                ]
+    [array  BridgeAddress additionalBridgeAddresses count 'networkPCI.stackDepth-1'     ] // We substract 1 as when a route is used we always have one prefixed
 ]
 
 [discriminatedType CBusPointToPointCommand(CBusOptions cBusOptions)
@@ -420,8 +399,8 @@
     ['0x70' VENTILATION_70                        ['VENTILATION'                       , 'YES'                 ]]
     ['0x71' IRRIGATION_CONTROL_71                 ['IRRIGATION_CONTROL'                , 'YES'                 ]]
     ['0x72' POOLS_SPAS_PONDS_FOUNTAINS_CONTROL_72 ['POOLS_SPAS_PONDS_FOUNTAINS_CONTROL', 'YES'                 ]]
-    ['0x73' RESERVED_73                           ['HVAC_ACTUATOR'                     , 'NA'                  ]] // HVAC_ACTUATOR
-    ['0x74' RESERVED_74                           ['HVAC_ACTUATOR'                     , 'NA'                  ]] // HVAC_ACTUATOR
+    ['0x73' HVAC_ACTUATOR_73                      ['HVAC_ACTUATOR'                     , 'NA'                  ]]
+    ['0x74' HVAC_ACTUATOR_74                      ['HVAC_ACTUATOR'                     , 'NA'                  ]]
     ['0x75' RESERVED_75                           ['RESERVED'                          , 'NA'                  ]]
     ['0x76' RESERVED_76                           ['RESERVED'                          , 'NA'                  ]]
     ['0x77' RESERVED_77                           ['RESERVED'                          , 'NA'                  ]]
@@ -497,7 +476,7 @@
     ['0xBD' RESERVED_BD                           ['RESERVED'                          , 'NA'                  ]]
     ['0xBE' RESERVED_BE                           ['RESERVED'                          , 'NA'                  ]]
     ['0xBF' RESERVED_BF                           ['RESERVED'                          , 'NA'                  ]]
-    ['0xC0' MEDIA_TRANSPORT_CONTROL_C0            ['MEDIA_TRANSPORT_CONTROL'           , 'NA'                  ]] // MEDIA_TRANSPORT_CONTROL
+    ['0xC0' MEDIA_TRANSPORT_CONTROL_C0            ['MEDIA_TRANSPORT_CONTROL'           , 'NA'                  ]]
     ['0xC1' RESERVED_C1                           ['RESERVED'                          , 'NA'                  ]]
     ['0xC2' RESERVED_C2                           ['RESERVED'                          , 'NA'                  ]]
     ['0xC3' RESERVED_C3                           ['RESERVED'                          , 'NA'                  ]]
@@ -511,7 +490,7 @@
     ['0xCB' ENABLE_CONTROL_CB                     ['ENABLE_CONTROL'                    , 'YES_BUT_RESTRICTIONS']]
     ['0xCC' I_HAVE_NO_IDEA_CC                     ['RESERVED'                          , 'NA'                  ]] // This is the only value actually not defined in the spec.
     ['0xCD' AUDIO_AND_VIDEO_CD                    ['AUDIO_AND_VIDEO'                   , 'YES_BUT_RESTRICTIONS']]
-    ['0xCE' ERROR_REPORTING_CE                    ['ERROR_REPORTING'                   , 'NA'                  ]] // ERROR_REPORTING
+    ['0xCE' ERROR_REPORTING_CE                    ['ERROR_REPORTING'                   , 'NA'                  ]]
     ['0xCF' RESERVED_CF                           ['RESERVED'                          , 'NA'                  ]]
     ['0xD0' SECURITY_D0                           ['SECURITY'                          , 'NO'                  ]]
     ['0xD1' METERING_D1                           ['METERING'                          , 'NO'                  ]]
@@ -1414,7 +1393,7 @@
 [type EncodedReply(CBusOptions cBusOptions, RequestContext requestContext)
     [peek    byte peekedByte                                                        ]
     // TODO: if we reliable can detect this with the mask we don't need the request context anymore
-    [virtual bit  isMonitoredSAL            '(peekedByte & 0x3F) == 0x05'                                           ]
+    [virtual bit  isMonitoredSAL            '(peekedByte & 0x3F) == 0x05 || peekedByte == 0x00 || (peekedByte & 0xF8) == 0x00'] // First check if it is in long mode, second for short mode, third for bridged short mode
     [virtual bit  isCalCommand              '(peekedByte & 0x3F) == 0x06 || requestContext.sendCalCommandBefore'    ] // The 0x3F and 0x06 doesn't seem to work always
     [virtual bit  isStandardFormatStatus    '(peekedByte & 0xC0) == 0xC0 && !cBusOptions.exstat'                    ]
     [virtual bit  isExtendedFormatStatus    '(peekedByte & 0xE0) == 0xE0 && (cBusOptions.exstat || requestContext.sendStatusRequestLevelBefore)']
@@ -1455,14 +1434,6 @@
     [simple   CALData('requestContext')   calData                                                ]
 ]
 
-[type BridgeCount
-    [simple uint 8 count]
-]
-
-[type NetworkNumber
-    [simple uint 8 number]
-]
-
 [type MonitoredSAL(CBusOptions cBusOptions)
     [peek    byte     salType             ]
     [typeSwitch salType
@@ -1481,8 +1452,8 @@
         ]
         [*      *ShortFormBasicMode
             [peek     byte                   counts                             ]
-            [optional BridgeCount            bridgeCount     'counts != 0x00'   ]
-            [optional NetworkNumber          networkNumber   'counts != 0x00'   ]
+            [optional uint 8                 bridgeCount     'counts != 0x00'   ]
+            [optional uint 8                 networkNumber   'counts != 0x00'   ]
             [optional byte                   noCounts        'counts == 0x00'   ] // TODO: add validation that this is 0x00 when no bridge and network number are set
             [simple   ApplicationIdContainer application                        ]
             [optional SALData('application.applicationId')  salData             ]
@@ -1507,10 +1478,8 @@
 ]
 
 [type PowerUp
-    [const    byte        powerUpIndicator       0x2B                  ] // "+"
-    // TODO: do we really need a static helper to peek for terminated?=
-    //[array    uint 8        garbage   terminated  '0x0D'                 ] // read all following +
-    [simple   RequestTermination  reqTermination                       ] // TODO: maybe should be externalized
+    [const    byte        powerUpIndicator1       0x2B                  ] // "+"
+    [const    byte        powerUpIndicator2       0x2B                  ] // "+"
 ]
 
 [type ParameterChange
@@ -1519,11 +1488,8 @@
 ]
 
 [type ReplyNetwork
-    [reserved uint 2      '0x00'                                                       ]
-    [simple RouteType     reverseRouteType                                             ]
-    [simple RouteType     routeType                                                    ]
-    [array  BridgeAddress additionalBridgeAddresses count 'routeType.additionalBridges']
-    [simple UnitAddress   unitAddress                                                  ]
+    [simple NetworkRoute  networkRoute                              ]
+    [simple UnitAddress   unitAddress                               ]
 ]
 
 [type Checksum
@@ -1642,8 +1608,8 @@
 
 [type NetworkProtocolControlInformation
     [reserved   uint 2  '0x0'           ]
-    [simple     uint 3  stackCounter    ]
-    [simple     uint 3  stackDepth      ]
+    [simple     uint 3  stackCounter    ] // Number of bridges required to transmit information from source to destination
+    [simple     uint 3  stackDepth      ] // Number of bridges required to complete the transmission from source to destination
 ]
 
 [type RequestTermination

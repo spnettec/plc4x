@@ -405,4 +405,29 @@ public class RandomPackagesTest {
         assertMessageMatches(bytes, msg);
     }
 
+    @Test
+    void ownSal() throws Exception {
+        byte[] bytes = "003809AF10\r\n".getBytes(StandardCharsets.UTF_8);
+        ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+        cBusOptions = C_BUS_OPTIONS_WITH_SRCHK;
+        CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
+        assertThat(msg).isNotNull();
+        System.out.println(msg);
+        System.out.println(((ReplyEncodedReply) ((ReplyOrConfirmationReply) ((CBusMessageToClient) msg).getReply()).getReply()).getEncodedReply());
+
+        assertMessageMatches(bytes, msg);
+    }
+
+    @Test
+    void powerUpNotification() throws Exception {
+        byte[] bytes = "++\r\n".getBytes(StandardCharsets.UTF_8);
+        ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+        CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
+        assertThat(msg).isNotNull();
+        System.out.println(msg);
+
+        assertMessageMatches(bytes, msg);
+    }
+
+
 }
