@@ -20,6 +20,7 @@ package org.apache.plc4x.simulator.server.cbus.protocol;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.vavr.CheckedRunnable;
 import org.apache.plc4x.java.cbus.readwrite.*;
 import org.apache.plc4x.simulator.model.Context;
 import org.slf4j.Logger;
@@ -38,56 +39,37 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
     private Context context;
 
     private static final RequestContext requestContext = new RequestContext(false, false, false);
-    private static final CBusOptions cBusOptions = new CBusOptions(false, false, false, false, false, false, false, false, true);
 
-    private Lock writeLock = new ReentrantLock();
+    private static boolean connect;
+    private static boolean smart;
+    private static boolean idmon;
+    private static boolean exstat;
+    private static boolean monitor;
+    private static boolean monall;
+    private static boolean pun;
+    private static boolean pcn;
+    private static boolean srchk;
+    private static CBusOptions cBusOptions;
+
+    private final Lock writeLock = new ReentrantLock();
 
     private ScheduledFuture<?> sf;
 
     public CBusServerAdapter(Context context) {
         this.context = context;
+        cBusOptions = new CBusOptions(connect, smart, idmon, exstat, monitor, monall, pun, pcn, srchk);
     }
 
-    @Override
-    public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        super.channelActive(ctx);
-        sf = ctx.executor().scheduleAtFixedRate(() -> {
-            try {
-                writeLock.lock();
-                MonitoredSAL monitoredSAL;
-                if (cBusOptions.getExstat()) {
-                    // TODO implement long from
-                    throw new IllegalStateException("Not implemented");
-                } else {
-                    LightingData lightingData;
-                    double random = Math.random();
-                    if (random < 0.25) {
-                        lightingData = new LightingDataOn(LightingCommandTypeContainer.LightingCommandOn, (byte) 0xAF);
-                    } else if (random > 0.25 && random < 0.5) {
-                        lightingData = new LightingDataOff(LightingCommandTypeContainer.LightingCommandOff, (byte) 0xAF);
-                    } else if (random > 0.5 && random < 0.75) {
-                        lightingData = new LightingDataRampToLevel(LightingCommandTypeContainer.LightingCommandRampToLevel_20Second, (byte) 0xAF, (byte) 0xE0);
-                    } else {
-                        lightingData = new LightingDataTerminateRamp(LightingCommandTypeContainer.LightingCommandTerminateRamp, (byte) 0xAF);
-                    }
-                    SALData salData = new SALDataLighting(null, lightingData);
-                    monitoredSAL = new MonitoredSALShortFormBasicMode((byte) 0x0, (byte) 0x0, (short) 0x0, (short) 0x0, (byte) 0x0, ApplicationIdContainer.LIGHTING_38, salData, cBusOptions);
-                }
-                EncodedReply encodedReply = new MonitoredSALReply((byte) 0x0, monitoredSAL, cBusOptions, requestContext);
-                Reply reply = new ReplyEncodedReply((byte) 0x0, encodedReply, null, cBusOptions, requestContext);
-                ReplyOrConfirmation replyOrConfirmation = new ReplyOrConfirmationReply((byte) 0x00, reply, new ResponseTermination(), cBusOptions, requestContext);
-                CBusMessage message = new CBusMessageToClient(replyOrConfirmation, requestContext, cBusOptions);
-                LOGGER.info("[Monitor] Sending out\n{}\n{}", message, encodedReply);
-                ctx.writeAndFlush(message);
-            } finally {
-                writeLock.unlock();
-            }
-        }, 5, 5, TimeUnit.SECONDS);
+    private static void buildCBusOptions() {
+        LOGGER.info("Updating options {}", cBusOptions);
+        cBusOptions = new CBusOptions(connect, smart, idmon, exstat, monitor, monall, pun, pcn, srchk);
+        LOGGER.info("Updated options {}", cBusOptions);
     }
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        sf.cancel(false);
+        if (sf != null)
+            sf.cancel(false);
         super.channelInactive(ctx);
     }
 
@@ -95,6 +77,11 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         if (!(msg instanceof CBusMessage)) {
             return;
+        }
+        if (!smart && !connect) {
+            // In this mode every message will be echoed
+            LOGGER.info("Sending echo");
+            ctx.writeAndFlush(msg);
         }
         try {
             writeLock.lock();
@@ -111,8 +98,101 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
             }
             if (request instanceof RequestDirectCommandAccess) {
                 RequestDirectCommandAccess requestDirectCommandAccess = (RequestDirectCommandAccess) request;
-                LOGGER.info("Handling RequestDirectCommandAccess\n{}", requestDirectCommandAccess);
-                // TODO: handle this
+                CALData calData = requestDirectCommandAccess.getCalData();
+                LOGGER.info("Handling RequestDirectCommandAccess\n{}\n{}", requestDirectCommandAccess, calData);
+
+                // TODO: handle other cal data type
+                if (calData instanceof CALDataWrite) {
+                    CALDataWrite calDataWrite = (CALDataWrite) calData;
+                    Runnable acknowledger = () -> {
+                        CALDataAcknowledge calDataAcknowledge = new CALDataAcknowledge(CALCommandTypeContainer.CALCommandAcknowledge, null, calDataWrite.getParamNo(), (short) 0x0, requestContext);
+                        CALReplyShort calReply = new CALReplyShort((byte) 0x0, calDataAcknowledge, cBusOptions, requestContext);
+                        EncodedReplyCALReply encodedReply = new EncodedReplyCALReply((byte) 0x0, calReply, cBusOptions, requestContext);
+                        ReplyEncodedReply replyEncodedReply = new ReplyEncodedReply((byte) 0x0, encodedReply, null, cBusOptions, requestContext);
+                        ReplyOrConfirmationReply replyOrConfirmationReply = new ReplyOrConfirmationReply((byte) 0x0, replyEncodedReply, new ResponseTermination(), cBusOptions, requestContext);
+                        CBusMessageToClient cBusMessageToClient = new CBusMessageToClient(replyOrConfirmationReply, requestContext, cBusOptions);
+                        LOGGER.info("Sending ack\n{}\n{}", cBusMessageToClient, encodedReply);
+                        ctx.writeAndFlush(cBusMessageToClient);
+                    };
+                    switch (calDataWrite.getParamNo().getParameterType()) {
+                        case APPLICATION_ADDRESS_1:
+                            // TODO: check settings for subscription etc.
+                            acknowledger.run();
+                            return;
+                        case APPLICATION_ADDRESS_2:
+                            // TODO: check settings for subscription etc.
+                            acknowledger.run();
+                            return;
+                        case INTERFACE_OPTIONS_1:
+                            InterfaceOptions1 interfaceOptions1 = ((ParameterValueInterfaceOptions1) calDataWrite.getParameterValue()).getValue();
+                            idmon = interfaceOptions1.getIdmon();
+                            monitor = interfaceOptions1.getMonitor();
+                            if (monitor) startMonitor(ctx);
+                            else stopMonitor();
+                            smart = interfaceOptions1.getSmart();
+                            srchk = interfaceOptions1.getSrchk();
+                            // TODO: add support for xonxoff
+                            // xonxoff = interfaceOptions1.getXonXoff();
+                            connect = interfaceOptions1.getConnect();
+                            buildCBusOptions();
+                            acknowledger.run();
+                            return;
+                        case INTERFACE_OPTIONS_2:
+                            InterfaceOptions2 interfaceOptions2 = ((ParameterValueInterfaceOptions2) calDataWrite.getParameterValue()).getValue();
+                            // TODO: add support for burden
+                            // burden =  interfaceOptions2.getBurden();
+                            // TODO: add support for clockgen
+                            // clockgen = interfaceOptions2.getClockGen();
+                            buildCBusOptions();
+                            acknowledger.run();
+                            return;
+                        case INTERFACE_OPTIONS_3:
+                            InterfaceOptions3 interfaceOptions3Value = ((ParameterValueInterfaceOptions3) calDataWrite.getParameterValue()).getValue();
+                            exstat = interfaceOptions3Value.getExstat();
+                            pun = interfaceOptions3Value.getPun();
+                            // TODO: add support for localsal
+                            // localsal = interfaceOptions3Value.getLocalSal();
+                            pcn = interfaceOptions3Value.getPcn();
+                            buildCBusOptions();
+                            acknowledger.run();
+                            return;
+                        case BAUD_RATE_SELECTOR:
+                            BaudRateSelector baudRateSelector = ((ParameterValueBaudRateSelector) calDataWrite.getParameterValue()).getValue();
+                            // TODO: add support for baudrate
+                            // baudrate = baudRateSelector.getValue();
+                            buildCBusOptions();
+                            acknowledger.run();
+                            return;
+                        case INTERFACE_OPTIONS_1_POWER_UP_SETTINGS:
+                            InterfaceOptions1 interfaceOptions1PowerUpSettings = ((ParameterValueInterfaceOptions1PowerUpSettings) calDataWrite.getParameterValue()).getValue().getInterfaceOptions1();
+                            idmon = interfaceOptions1PowerUpSettings.getIdmon();
+                            monitor = interfaceOptions1PowerUpSettings.getMonitor();
+                            if (monitor) startMonitor(ctx);
+                            else stopMonitor();
+                            smart = interfaceOptions1PowerUpSettings.getSmart();
+                            srchk = interfaceOptions1PowerUpSettings.getSrchk();
+                            // TODO: add support for xonxoff
+                            // xonxoff = interfaceOptions1PowerUpSettings.getXonXoff();
+                            connect = interfaceOptions1PowerUpSettings.getConnect();
+                            buildCBusOptions();
+                            acknowledger.run();
+                            return;
+                        case CUSTOM_MANUFACTURER:
+                            // TODO: handle other parm typed
+                            acknowledger.run();
+                            return;
+                        case SERIAL_NUMBER:
+                            // TODO: handle other parm typed
+                            acknowledger.run();
+                            return;
+                        case CUSTOM_TYPE:
+                            // TODO: handle other parm typed
+                            acknowledger.run();
+                            return;
+                        default:
+                            throw new IllegalStateException("Unmapped type");
+                    }
+                }
                 return;
             }
             if (request instanceof RequestCommand) {
@@ -134,13 +214,22 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
                         StatusRequest statusRequest = cBusPointToMultiPointCommandStatus.getStatusRequest();
                         if (statusRequest instanceof StatusRequestBinaryState) {
                             StatusRequestBinaryState statusRequestBinaryState = (StatusRequestBinaryState) statusRequest;
-                            StatusHeader statusHeader = new StatusHeader((short) (2 + 1)); // 2 we have always + 1 as we got one status byte
-                            // TODO: map actuall values from simulator
-                            byte blockStart = 0x0;
-                            List<StatusByte> statusBytes = List.of(new StatusByte(GAVState.ON, GAVState.ERROR, GAVState.OFF, GAVState.DOES_NOT_EXIST));
-                            // TODO: this might be extended or standard depeding on exstat
-                            StandardFormatStatusReply standardFormatStatusReply = new StandardFormatStatusReply(statusHeader, statusRequestBinaryState.getApplication(), blockStart, statusBytes);
-                            EncodedReply encodedReply = new EncodedReplyStandardFormatStatusReply((byte) 0xC0, standardFormatStatusReply, cBusOptions, requestContext);
+                            EncodedReply encodedReply;
+                            if (exstat) {
+                                ExtendedStatusHeader extendedStatusHeader = new ExtendedStatusHeader((short) (3 + 1));
+                                // TODO: map actuall values from simulator
+                                byte blockStart = 0x0;
+                                List<StatusByte> statusBytes = List.of(new StatusByte(GAVState.ON, GAVState.ERROR, GAVState.OFF, GAVState.DOES_NOT_EXIST));
+                                ExtendedFormatStatusReply extendedFormatStatusReply = new ExtendedFormatStatusReply(extendedStatusHeader, StatusCoding.BINARY_BY_THIS_SERIAL_INTERFACE, statusRequestBinaryState.getApplication(), blockStart, statusBytes, null);// 3 we have always + 1 as we got one status byte
+                                encodedReply = new EncodedReplyExtendedFormatStatusReply((byte) 0xE0, extendedFormatStatusReply, cBusOptions, requestContext);
+                            } else {
+                                StatusHeader statusHeader = new StatusHeader((short) (2 + 1)); // 2 we have always + 1 as we got one status byte
+                                // TODO: map actuall values from simulator
+                                byte blockStart = 0x0;
+                                List<StatusByte> statusBytes = List.of(new StatusByte(GAVState.ON, GAVState.ERROR, GAVState.OFF, GAVState.DOES_NOT_EXIST));
+                                StandardFormatStatusReply standardFormatStatusReply = new StandardFormatStatusReply(statusHeader, statusRequestBinaryState.getApplication(), blockStart, statusBytes);
+                                encodedReply = new EncodedReplyStandardFormatStatusReply((byte) 0xC0, standardFormatStatusReply, cBusOptions, requestContext);
+                            }
                             ReplyEncodedReply replyEncodedReply = new ReplyEncodedReply((byte) 0xC0, encodedReply, null, cBusOptions, requestContext);
                             ReplyOrConfirmation replyOrConfirmation = new ReplyOrConfirmationReply((byte) 0xFF, replyEncodedReply, new ResponseTermination(), cBusOptions, requestContext);
                             Alpha alpha = requestCommand.getAlpha();
@@ -223,7 +312,16 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
             if (request instanceof RequestReset) {
                 RequestReset requestReset = (RequestReset) request;
                 LOGGER.info("Handling RequestReset\n{}", requestReset);
-                // TODO: handle this
+                connect = false;
+                smart = false;
+                idmon = false;
+                exstat = false;
+                monitor = false;
+                monall = false;
+                pun = false;
+                pcn = false;
+                srchk = false;
+                stopMonitor();
                 return;
             }
             if (request instanceof RequestSmartConnectShortcut) {
@@ -235,6 +333,66 @@ public class CBusServerAdapter extends ChannelInboundHandlerAdapter {
         } finally {
             writeLock.unlock();
         }
+    }
+
+    private void startMonitor(ChannelHandlerContext ctx) {
+        if (sf != null) {
+            LOGGER.debug("Monitor already running");
+            return;
+        }
+        LOGGER.info("Starting monitor");
+        sf = ctx.executor().scheduleAtFixedRate(() -> {
+            try {
+                writeLock.lock();
+                MonitoredSAL monitoredSAL;
+                if (cBusOptions.getExstat()) {
+                    LightingData lightingData;
+                    double random = Math.random();
+                    if (random < 0.25) {
+                        lightingData = new LightingDataOn(LightingCommandTypeContainer.LightingCommandOn, (byte) 0xAF);
+                    } else if (random > 0.25 && random < 0.5) {
+                        lightingData = new LightingDataOff(LightingCommandTypeContainer.LightingCommandOff, (byte) 0xAF);
+                    } else if (random > 0.5 && random < 0.75) {
+                        lightingData = new LightingDataRampToLevel(LightingCommandTypeContainer.LightingCommandRampToLevel_20Second, (byte) 0xAF, (byte) 0xE0);
+                    } else {
+                        lightingData = new LightingDataTerminateRamp(LightingCommandTypeContainer.LightingCommandTerminateRamp, (byte) 0xAF);
+                    }
+                    SALData salData = new SALDataLighting(null, lightingData);
+                    monitoredSAL = new MonitoredSALLongFormSmartMode((byte) 0x05, (byte) 0x00, new UnitAddress((byte) 0x0), null, ApplicationIdContainer.LIGHTING_38, (byte) 0x00, null, salData, cBusOptions);
+                } else {
+                    LightingData lightingData;
+                    double random = Math.random();
+                    if (random < 0.25) {
+                        lightingData = new LightingDataOn(LightingCommandTypeContainer.LightingCommandOn, (byte) 0xAF);
+                    } else if (random > 0.25 && random < 0.5) {
+                        lightingData = new LightingDataOff(LightingCommandTypeContainer.LightingCommandOff, (byte) 0xAF);
+                    } else if (random > 0.5 && random < 0.75) {
+                        lightingData = new LightingDataRampToLevel(LightingCommandTypeContainer.LightingCommandRampToLevel_20Second, (byte) 0xAF, (byte) 0xE0);
+                    } else {
+                        lightingData = new LightingDataTerminateRamp(LightingCommandTypeContainer.LightingCommandTerminateRamp, (byte) 0xAF);
+                    }
+                    SALData salData = new SALDataLighting(null, lightingData);
+                    monitoredSAL = new MonitoredSALShortFormBasicMode((byte) 0x0, (byte) 0x0, (short) 0x0, (short) 0x0, (byte) 0x0, ApplicationIdContainer.LIGHTING_38, salData, cBusOptions);
+                }
+                EncodedReply encodedReply = new MonitoredSALReply((byte) 0x0, monitoredSAL, cBusOptions, requestContext);
+                Reply reply = new ReplyEncodedReply((byte) 0x0, encodedReply, null, cBusOptions, requestContext);
+                ReplyOrConfirmation replyOrConfirmation = new ReplyOrConfirmationReply((byte) 0x00, reply, new ResponseTermination(), cBusOptions, requestContext);
+                CBusMessage message = new CBusMessageToClient(replyOrConfirmation, requestContext, cBusOptions);
+                LOGGER.info("[Monitor] Sending out\n{}\n{}", message, encodedReply);
+                ctx.writeAndFlush(message);
+            } finally {
+                writeLock.unlock();
+            }
+        }, 5, 5, TimeUnit.SECONDS);
+    }
+
+    private void stopMonitor() {
+        if (sf == null) {
+            return;
+        }
+        LOGGER.info("Stopping monitor");
+        sf.cancel(false);
+        sf = null;
     }
 
 }

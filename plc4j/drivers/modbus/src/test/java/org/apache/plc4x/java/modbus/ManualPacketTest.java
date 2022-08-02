@@ -19,19 +19,26 @@
 package org.apache.plc4x.java.modbus;
 
 import org.apache.commons.codec.binary.Hex;
+import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.api.messages.PlcReadRequest;
+import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.modbus.readwrite.DriverType;
 import org.apache.plc4x.java.modbus.readwrite.ModbusADU;
 import org.apache.plc4x.java.spi.generation.ReadBufferByteBased;
+import org.apache.plc4x.java.utils.connectionpool.PooledPlcDriverManager;
 import org.junit.jupiter.api.Disabled;
 
 @Disabled("Manual Test")
 public class ManualPacketTest {
 
     public static void main(String[] args) throws Exception {
-        final byte[] bytes = Hex.decodeHex("0103140000000000000000000000000000000000000000a367");
-        final ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
-        final ModbusADU modbusADU = ModbusADU.staticParse(readBufferByteBased, DriverType.MODBUS_RTU, true);
-        System.out.println(modbusADU);
+        PooledPlcDriverManager pooledPlcDriverManager = new PooledPlcDriverManager();
+        try (PlcConnection connection = pooledPlcDriverManager.getConnection("modbus-tcp://10.110.20.154:509")) {
+            final PlcReadRequest.Builder builder = connection.readRequestBuilder();
+            builder.addItem("01", "holding-register:30001:REAL[20]");
+            final PlcReadRequest readRequest = builder.build();
+            final PlcReadResponse readResponse = readRequest.execute().get();
+            System.out.println(readResponse.getAsPlcValue());
+        }
     }
-
 }

@@ -222,7 +222,9 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
                             sessionDiscoverCompleteFuture.complete(((DiscoveredEvent) evt).getConfiguration());
                         } else if (evt instanceof ConnectEvent) {
                             if (!sessionSetupCompleteFuture.isCompletedExceptionally()) {
-                                setProtocol(stackConfigurer.configurePipeline(configuration, pipeline, channelFactory.isPassive()));
+                                if (awaitSessionSetupComplete) {
+                                    setProtocol(stackConfigurer.configurePipeline(configuration, pipeline, channelFactory.isPassive()));
+                                }
                                 super.userEventTriggered(ctx, evt);
                             }
                         } else {
@@ -242,7 +244,9 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
                 // Initialize via Transport Layer
                 channelFactory.initializePipeline(pipeline);
                 // Initialize Protocol Layer
-                //setProtocol(stackConfigurer.configurePipeline(configuration, pipeline, channelFactory.isPassive()));
+                if (!awaitSessionSetupComplete) {
+                    setProtocol(stackConfigurer.configurePipeline(configuration, pipeline, channelFactory.isPassive()));
+                }
             }
         };
     }
