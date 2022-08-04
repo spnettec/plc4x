@@ -217,6 +217,7 @@ func (c *Connection) setupConnection(ch chan plc4go.PlcConnectionConnectResult) 
 			return
 		}
 
+		startTime := time.Now()
 		select {
 		case <-receivedResetEchoChan:
 			log.Debug().Msgf("We received the echo")
@@ -224,7 +225,7 @@ func (c *Connection) setupConnection(ch chan plc4go.PlcConnectionConnectResult) 
 			c.fireConnectionError(errors.Wrap(err, "Error receiving of Reset"), ch)
 			return
 		case timeout := <-time.After(time.Second * 2):
-			c.fireConnectionError(errors.Errorf("Timeout after %v", timeout), ch)
+			c.fireConnectionError(errors.Errorf("Timeout after %v", timeout.Sub(startTime)), ch)
 			return
 		}
 		log.Debug().Msg("Reset done")
@@ -243,6 +244,7 @@ func (c *Connection) setupConnection(ch chan plc4go.PlcConnectionConnectResult) 
 		if !c.sendCalDataWrite(ch, readWriteModel.Parameter_INTERFACE_OPTIONS_3, interfaceOptions3, requestContext, cbusOptions) {
 			return
 		}
+		// TODO: add localsal to the options
 		*cbusOptions = readWriteModel.NewCBusOptions(false, false, false, true, false, false, false, false, false)
 		log.Debug().Msg("Interface options 3 set")
 	}
@@ -252,7 +254,7 @@ func (c *Connection) setupConnection(ch chan plc4go.PlcConnectionConnectResult) 
 		if !c.sendCalDataWrite(ch, readWriteModel.Parameter_INTERFACE_OPTIONS_1_POWER_UP_SETTINGS, interfaceOptions1PowerUpSettings, requestContext, cbusOptions) {
 			return
 		}
-		*cbusOptions = readWriteModel.NewCBusOptions(false, true, true, true, true, false, false, false, true)
+		*cbusOptions = readWriteModel.NewCBusOptions(true, true, true, true, true, false, false, false, true)
 		log.Debug().Msg("Interface options 1 power up settings set")
 	}
 	{
@@ -261,7 +263,7 @@ func (c *Connection) setupConnection(ch chan plc4go.PlcConnectionConnectResult) 
 		if !c.sendCalDataWrite(ch, readWriteModel.Parameter_INTERFACE_OPTIONS_1, interfaceOptions1, requestContext, cbusOptions) {
 			return
 		}
-		*cbusOptions = readWriteModel.NewCBusOptions(false, true, true, true, true, false, false, false, true)
+		*cbusOptions = readWriteModel.NewCBusOptions(true, true, true, true, true, false, false, false, true)
 		log.Debug().Msg("Interface options 1 set")
 	}
 	c.fireConnected(ch)
@@ -272,12 +274,47 @@ func (c *Connection) setupConnection(ch chan plc4go.PlcConnectionConnectResult) 
 			log.Debug().Msg("Handling incoming message")
 			for monitoredSal := range c.messageCodec.(*MessageCodec).monitoredSALs {
 				for _, subscriber := range c.subscribers {
-					subscriber.handleMonitoredSal(monitoredSal)
+					if ok := subscriber.handleMonitoredSal(monitoredSal); ok {
+						log.Debug().Msgf("%v handled\n%s", subscriber, monitoredSal)
+					}
 				}
 			}
 		}
 	}()
 	log.Debug().Msg("Subscription handler stated")
+
+	log.Debug().Msg("Starting default incoming message handler")
+	go func() {
+		for c.IsConnected() {
+			log.Debug().Msg("Polling data")
+			incomingMessageChannel := c.messageCodec.GetDefaultIncomingMessageChannel()
+			select {
+			case message := <-incomingMessageChannel:
+				switch message := message.(type) {
+				case readWriteModel.CBusMessageToClientExactly:
+					switch reply := message.GetReply().(type) {
+					case readWriteModel.ReplyOrConfirmationReplyExactly:
+						switch reply := reply.GetReply().(type) {
+						case readWriteModel.ReplyEncodedReplyExactly:
+							switch encodedReply := reply.GetEncodedReply().(type) {
+							case readWriteModel.EncodedReplyCALReplyExactly:
+								for _, subscriber := range c.subscribers {
+									calReply := encodedReply.GetCalReply()
+									if ok := subscriber.handleMonitoredMMI(calReply); ok {
+										log.Debug().Msgf("%v handled\n%s", subscriber, calReply)
+									}
+								}
+							}
+						}
+					}
+				}
+				log.Debug().Msgf("Received \n%v", message)
+			case <-time.After(20 * time.Millisecond):
+			}
+		}
+		log.Info().Msg("Ending default incoming message handler")
+	}()
+	log.Debug().Msg("default incoming message handler started")
 }
 
 func (c *Connection) sendCalDataWrite(ch chan plc4go.PlcConnectionConnectResult, paramNo readWriteModel.Parameter, parameterValue readWriteModel.ParameterValue, requestContext *readWriteModel.RequestContext, cbusOptions *readWriteModel.CBusOptions) bool {
@@ -347,6 +384,7 @@ func (c *Connection) sendCalDataWrite(ch chan plc4go.PlcConnectionConnectResult,
 		return false
 	}
 
+	startTime := time.Now()
 	select {
 	case <-directCommandAckChan:
 		log.Debug().Msgf("We received the ack")
@@ -354,7 +392,7 @@ func (c *Connection) sendCalDataWrite(ch chan plc4go.PlcConnectionConnectResult,
 		c.fireConnectionError(errors.Wrap(err, "Error receiving of ack"), ch)
 		return false
 	case timeout := <-time.After(time.Second * 2):
-		c.fireConnectionError(errors.Errorf("Timeout after %v", timeout), ch)
+		c.fireConnectionError(errors.Errorf("Timeout after %v", timeout.Sub(startTime)), ch)
 		return false
 	}
 	return true
