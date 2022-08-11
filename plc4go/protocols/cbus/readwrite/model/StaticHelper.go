@@ -112,7 +112,7 @@ func ReadCALData(readBuffer utils.ReadBuffer) (CALData, error) {
 func readBytesFromHex(logicalName string, readBuffer utils.ReadBuffer, srchk bool) ([]byte, error) {
 	payloadLength := findHexEnd(readBuffer)
 	if payloadLength == 0 {
-		return nil, errors.New("Length is 0")
+		return nil, utils.ParseAssertError{Message: "Length is 0"}
 	}
 	hexBytes, err := readBuffer.ReadByteArray(logicalName, payloadLength)
 	if err != nil {
@@ -141,7 +141,7 @@ func readBytesFromHex(logicalName string, readBuffer utils.ReadBuffer, srchk boo
 		readBuffer.Reset(readBuffer.GetPos() - 2)
 		rawBytes = rawBytes[:len(rawBytes)-1]
 	}
-	log.Debug().Msgf("%d bytes decoded", n)
+	log.Trace().Msgf("%d bytes decoded", n)
 	return rawBytes, nil
 }
 
@@ -177,7 +177,7 @@ func writeToHex(logicalName string, writeBuffer utils.WriteBuffer, bytesToWrite 
 	// usually you use hex.Encode but we want the encoding in uppercase
 	//n := hex.Encode(hexBytes, wbbb.GetBytes())
 	n := encodeHexUpperCase(hexBytes, bytesToWrite)
-	log.Debug().Msgf("%d bytes encoded", n)
+	log.Trace().Msgf("%d bytes encoded", n)
 	return writeBuffer.WriteByteArray(logicalName, hexBytes)
 }
 

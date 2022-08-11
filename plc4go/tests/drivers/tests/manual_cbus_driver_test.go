@@ -93,3 +93,37 @@ func TestManualCBusDriver(t *testing.T) {
 		t.Logf("Got %d monitors", monitorCount)
 	})
 }
+
+func TestManualCBusBrowse(t *testing.T) {
+	log.Logger = log.
+		With().Caller().Logger().
+		Output(zerolog.ConsoleWriter{Out: os.Stderr}).
+		Level(zerolog.InfoLevel)
+	config.TraceTransactionManagerWorkers = false
+	config.TraceTransactionManagerTransactions = false
+	config.TraceDefaultMessageCodecWorker = false
+	t.Skip()
+
+	connectionString := "c-bus://192.168.178.101?Monitor=false&MonitoredApplication1=0x00&MonitoredApplication2=0x00"
+	driverManager := plc4go.NewPlcDriverManager()
+	driverManager.RegisterDriver(cbus.NewDriver())
+	transports.RegisterTcpTransport(driverManager)
+	connectionResult := <-driverManager.GetConnection(connectionString)
+	if err := connectionResult.GetErr(); err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	connection := connectionResult.GetConnection()
+	defer connection.Close()
+	browseRequest, err := connection.BrowseRequestBuilder().
+		AddQuery("asd", "info/*/*").
+		Build()
+	if err != nil {
+		panic(err)
+	}
+	browseRequestResult := <-browseRequest.ExecuteWithInterceptor(func(result model.PlcBrowseEvent) bool {
+		fmt.Printf("%s", result)
+		return true
+	})
+	fmt.Printf("%s", browseRequestResult.GetResponse())
+}

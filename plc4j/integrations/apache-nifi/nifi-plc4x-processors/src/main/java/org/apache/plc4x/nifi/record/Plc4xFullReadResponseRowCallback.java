@@ -16,27 +16,17 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.plc4x.processors.plc4x4nifi;
+package org.apache.plc4x.nifi.record;
 
-import org.apache.nifi.util.TestRunner;
-import org.apache.nifi.util.TestRunners;
-import org.apache.plc4x.nifi.Plc4xSourceProcessor;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import java.io.IOException;
 
+import org.apache.plc4x.java.api.messages.PlcReadResponse;
 
-public class Plc4xSourceProcessorTest {
+public class Plc4xFullReadResponseRowCallback implements Plc4xReadResponseRowCallback {
 
-    private TestRunner testRunner;
-
-    @BeforeEach
-    public void init() {
-        testRunner = TestRunners.newTestRunner(Plc4xSourceProcessor.class);
-    }
-
-    @Test
-    public void testProcessor() {
-
-    }
+	@Override
+	public void processRow(PlcReadResponse result) throws IOException {
+		// do nothing
+	}
 
 }

@@ -17,35 +17,27 @@
  * under the License.
  */
 
-package main
+package ui
 
 import (
 	"fmt"
-	"github.com/apache/plc4x/plc4go/internal/ads"
-	"github.com/apache/plc4x/plc4go/internal/bacnetip"
-	"github.com/apache/plc4x/plc4go/internal/cbus"
-	"github.com/apache/plc4x/plc4go/internal/s7"
 	plc4x_config "github.com/apache/plc4x/plc4go/pkg/api/config"
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
-	"github.com/apache/plc4x/plc4go/pkg/api/transports"
 	"github.com/pkg/errors"
-	"github.com/rivo/tview"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
+	"github.com/sruehl/tview"
 	"net/url"
 	"strings"
+	"time"
 )
-
-var plc4xBrowserLog = zerolog.Nop()
 
 const rootCommandIndicator = "rootCommand"
 
-const protocols = "ads,bacnetip,c-bus,s7"
-
-var protocolsSuggestions = strings.Split(protocols, ",")
-
 var commands = map[inputMode]Command{
 	normalMode:        rootCommand,
+	readEditMode:      rootCommand,
+	writeEditMode:     rootCommand,
 	subscribeEditMode: rootCommand,
 }
 
@@ -61,7 +53,7 @@ var rootCommand = Command{
 				if err != nil {
 					return errors.Wrapf(err, "can't parse connection url %s", connectionString)
 				}
-				addHost(connectionUrl.Host)
+				addHostHistoryEntry(connectionUrl.Host)
 				connectionId := fmt.Sprintf("%s://%s", connectionUrl.Scheme, connectionUrl.Host)
 				if _, ok := connections[connectionId]; ok {
 					return errors.Errorf("%s already connected", connectionId)
@@ -76,7 +68,7 @@ var rootCommand = Command{
 				return nil
 			},
 			parameterSuggestions: func(currentText string) (entries []string) {
-				for _, protocol := range protocolsSuggestions {
+				for _, protocol := range protocolList {
 					if strings.HasPrefix(currentText, protocol) {
 						for _, host := range config.History.Last10Hosts {
 							entries = append(entries, protocol+"://"+host)
@@ -114,36 +106,210 @@ var rootCommand = Command{
 			},
 		},
 		{
-			Name: "read",
+			Name:        "read",
+			Description: "Starts a read request (switched mode to read edit)",
+			action: func(_ Command, connectionsString string) error {
+				if connection, ok := connections[connectionsString]; !ok {
+					return errors.Errorf("%s not connected", connectionsString)
+				} else {
+					return errors.Errorf("%s mode switch not yet implemented", connection)
+				}
+			},
+			parameterSuggestions: func(currentText string) (entries []string) {
+				for connectionsString, _ := range connections {
+					entries = append(entries, connectionsString)
+				}
+				return
+			},
 		},
 		{
-			Name: "write",
+			Name:        "read-direct",
+			Description: "Builds a read request with the supplied field",
+			action: func(c Command, connectionsStringAndFieldQuery string) error {
+				split := strings.Split(connectionsStringAndFieldQuery, " ")
+				if len(split) != 2 {
+					return errors.Errorf("%s expects exactly two arguments [connection url] [fieldQuery]", c)
+				}
+				connectionsString := split[0]
+				if connection, ok := connections[connectionsString]; !ok {
+					return errors.Errorf("%s not connected", connectionsString)
+				} else {
+					start := time.Now()
+					readRequest, err := connection.ReadRequestBuilder().
+						AddQuery("readField", split[1]).
+						Build()
+					if err != nil {
+						return errors.Wrapf(err, "%s can't read", connectionsString)
+					}
+					readRequestResult := <-readRequest.Execute()
+					if err := readRequestResult.GetErr(); err != nil {
+						return errors.Wrapf(err, "%s can't read", connectionsString)
+					}
+					plc4xBrowserLog.Debug().Msgf("read took %f seconds", time.Now().Sub(start).Seconds())
+					if err := readRequestResult.GetErr(); err != nil {
+						return errors.Wrapf(err, "%s error reading", connectionsString)
+					}
+					numberOfMessagesReceived++
+					messageReceived(numberOfMessagesReceived, time.Now(), readRequestResult.GetResponse())
+				}
+				return nil
+			},
+			parameterSuggestions: func(currentText string) (entries []string) {
+				for connectionsString, _ := range connections {
+					if strings.HasPrefix(currentText, connectionsString+"") {
+						parse, _ := url.Parse(connectionsString)
+						switch parse.Scheme {
+						// TODO: add to protocol suggestor so it can be reused.
+
+						}
+					} else {
+						entries = append(entries, connectionsString)
+					}
+				}
+				return
+			},
+		},
+		{
+			Name:        "write",
+			Description: "Starts a write request (switched mode to write edit)",
+			action: func(_ Command, connectionsString string) error {
+				if connection, ok := connections[connectionsString]; !ok {
+					return errors.Errorf("%s not connected", connectionsString)
+				} else {
+					return errors.Errorf("%s mode switch not yet implemented", connection)
+				}
+			},
+			parameterSuggestions: func(currentText string) (entries []string) {
+				for connectionsString, _ := range connections {
+					entries = append(entries, connectionsString)
+				}
+				return
+			},
+		},
+		{
+			Name:        "write-direct",
+			Description: "Builds a write request with the supplied field",
+			action: func(c Command, connectionsStringAndFieldQuery string) error {
+				split := strings.Split(connectionsStringAndFieldQuery, " ")
+				if len(split) != 3 {
+					return errors.Errorf("%s expects exactly three arguments [connection url] [fieldQuery] [value]", c)
+				}
+				connectionsString := split[0]
+				if connection, ok := connections[connectionsString]; !ok {
+					return errors.Errorf("%s not connected", connectionsString)
+				} else {
+					start := time.Now()
+					writeRequest, err := connection.WriteRequestBuilder().
+						AddQuery("writeField", split[1], split[2]).
+						Build()
+					if err != nil {
+						return errors.Wrapf(err, "%s can't write", connectionsString)
+					}
+					writeRequestResult := <-writeRequest.Execute()
+					if err := writeRequestResult.GetErr(); err != nil {
+						return errors.Wrapf(err, "%s can't write", connectionsString)
+					}
+					plc4xBrowserLog.Debug().Msgf("write took %f seconds", time.Now().Sub(start).Seconds())
+					if err := writeRequestResult.GetErr(); err != nil {
+						return errors.Wrapf(err, "%s error writing", connectionsString)
+					}
+					numberOfMessagesReceived++
+					messageReceived(numberOfMessagesReceived, time.Now(), writeRequestResult.GetResponse())
+				}
+				return nil
+			},
+			parameterSuggestions: func(currentText string) (entries []string) {
+				for connectionsString, _ := range connections {
+					if strings.HasPrefix(currentText, connectionsString+"") {
+						parse, _ := url.Parse(connectionsString)
+						switch parse.Scheme {
+						// TODO: add to protocol suggestor so it can be reused.
+
+						}
+					} else {
+						entries = append(entries, connectionsString)
+					}
+				}
+				return
+			},
+		},
+		{
+			Name:        "browse",
+			Description: "Starts a browse request (switched mode to browse edit)",
+			action: func(_ Command, connectionsString string) error {
+				if connection, ok := connections[connectionsString]; !ok {
+					return errors.Errorf("%s not connected", connectionsString)
+				} else {
+					return errors.Errorf("%s mode switch not yet implemented", connection)
+				}
+			},
+			parameterSuggestions: func(currentText string) (entries []string) {
+				for connectionsString, _ := range connections {
+					entries = append(entries, connectionsString)
+				}
+				return
+			},
+		},
+		{
+			Name:        "browse-direct",
+			Description: "Builds a browse request with the supplied field",
+			action: func(c Command, connectionsStringAndFieldQuery string) error {
+				split := strings.Split(connectionsStringAndFieldQuery, " ")
+				if len(split) != 2 {
+					return errors.Errorf("%s expects exactly three arguments [connection url] [fieldQuery]", c)
+				}
+				connectionsString := split[0]
+				if connection, ok := connections[connectionsString]; !ok {
+					return errors.Errorf("%s not connected", connectionsString)
+				} else {
+					start := time.Now()
+					browseRequest, err := connection.BrowseRequestBuilder().
+						AddQuery("browseField", split[1]).
+						Build()
+					if err != nil {
+						return errors.Wrapf(err, "%s can't browse", connectionsString)
+					}
+					browseRequestResult := <-browseRequest.ExecuteWithInterceptor(func(result model.PlcBrowseEvent) bool {
+						numberOfMessagesReceived++
+						messageReceived(numberOfMessagesReceived, time.Now(), result)
+						return true
+					})
+					if err := browseRequestResult.GetErr(); err != nil {
+						return errors.Wrapf(err, "%s can't browse", connectionsString)
+					}
+					plc4xBrowserLog.Debug().Msgf("write took %f seconds", time.Now().Sub(start).Seconds())
+					if err := browseRequestResult.GetErr(); err != nil {
+						return errors.Wrapf(err, "%s error browse", connectionsString)
+					}
+					numberOfMessagesReceived++
+					messageReceived(numberOfMessagesReceived, time.Now(), browseRequestResult.GetResponse())
+				}
+				return nil
+			},
+			parameterSuggestions: func(currentText string) (entries []string) {
+				for connectionsString, _ := range connections {
+					if strings.HasPrefix(currentText, connectionsString+"") {
+						parse, _ := url.Parse(connectionsString)
+						switch parse.Scheme {
+						// TODO: add to protocol suggestor so it can be reused.
+						case "c-bus":
+							entries = append(entries, connectionsString+" info/*/*")
+						}
+					} else {
+						entries = append(entries, connectionsString)
+					}
+				}
+				return
+			},
 		},
 		{
 			Name:        "register",
 			Description: "register a driver in the subsystem",
-			action: func(_ Command, protocol string) error {
-				switch protocol {
-				case "ads":
-					driverManager.RegisterDriver(ads.NewDriver())
-					transports.RegisterTcpTransport(driverManager)
-				case "bacnetip":
-					driverManager.RegisterDriver(bacnetip.NewDriver())
-					transports.RegisterUdpTransport(driverManager)
-				case "c-bus":
-					driverManager.RegisterDriver(cbus.NewDriver())
-					transports.RegisterTcpTransport(driverManager)
-				case "s7":
-					driverManager.RegisterDriver(s7.NewDriver())
-					transports.RegisterTcpTransport(driverManager)
-				default:
-					return errors.Errorf("Unknown protocol %s", protocol)
-				}
-				driverAdded(protocol)
-				return nil
+			action: func(_ Command, driver string) error {
+				return registerDriver(driver)
 			},
 			parameterSuggestions: func(currentText string) (entries []string) {
-				for _, protocol := range protocolsSuggestions {
+				for _, protocol := range protocolList {
 					if strings.HasPrefix(protocol, currentText) {
 						entries = append(entries, protocol)
 					}
@@ -160,7 +326,6 @@ var rootCommand = Command{
 				} else {
 					return errors.Errorf("%s mode switch not yet implemented", connection)
 				}
-				return nil
 			},
 			parameterSuggestions: func(currentText string) (entries []string) {
 				for connectionsString, _ := range connections {
@@ -184,8 +349,8 @@ var rootCommand = Command{
 					subscriptionRequest, err := connection.SubscriptionRequestBuilder().
 						AddEventQuery("subscriptionField", split[1]).
 						AddItemHandler(func(event model.PlcSubscriptionEvent) {
-							messagesReceived++
-							_, _ = fmt.Fprintf(messageOutput, "[\"%d\"]\n%s[\"\"]", messagesReceived, event)
+							numberOfMessagesReceived++
+							messageReceived(numberOfMessagesReceived, time.Now(), event)
 						}).
 						Build()
 					if err != nil {
@@ -266,75 +431,132 @@ var rootCommand = Command{
 			Description: "plc4x related settings",
 			subCommands: []Command{
 				{
-					Name: "TraceTransactionManagerWorkers",
-					action: func(_ Command, argument string) error {
-						switch argument {
-						case "on":
-							plc4x_config.TraceTransactionManagerWorkers = true
-						case "off":
-							plc4x_config.TraceTransactionManagerWorkers = false
-						default:
-							return errors.Errorf("illegal argument %s", argument)
-						}
-						return nil
-					},
-					parameterSuggestions: func(currentText string) (entries []string) {
-						entries = append(entries, "on", "off")
-						return
-					},
-				},
-				{
-					Name: "TraceTransactionManagerTransactions",
-					action: func(_ Command, argument string) error {
-						switch argument {
-						case "on":
-							plc4x_config.TraceTransactionManagerTransactions = true
-						case "off":
-							plc4x_config.TraceTransactionManagerTransactions = false
-						default:
-							return errors.Errorf("illegal argument %s", argument)
-						}
-						return nil
-					},
-					parameterSuggestions: func(currentText string) (entries []string) {
-						entries = append(entries, "on", "off")
-						return
+					Name:        "TraceTransactionManagerWorkers",
+					Description: "print information about transaction manager workers",
+					subCommands: []Command{
+						{
+							Name:        "on",
+							Description: "trace on",
+							action: func(_ Command, _ string) error {
+								plc4x_config.TraceTransactionManagerWorkers = true
+								return nil
+							},
+						},
+						{
+							Name:        "off",
+							Description: "trace off",
+							action: func(_ Command, _ string) error {
+								plc4x_config.TraceTransactionManagerWorkers = false
+								return nil
+							},
+						},
 					},
 				},
 				{
-					Name: "TraceDefaultMessageCodecWorker",
-					action: func(_ Command, argument string) error {
-						switch argument {
-						case "on":
-							plc4x_config.TraceDefaultMessageCodecWorker = true
-						case "off":
-							plc4x_config.TraceDefaultMessageCodecWorker = false
-						default:
-							return errors.Errorf("illegal argument %s", argument)
-						}
-						return nil
-					},
-					parameterSuggestions: func(currentText string) (entries []string) {
-						entries = append(entries, "on", "off")
-						return
+					Name:        "TraceTransactionManagerTransactions",
+					Description: "print information about transaction manager transactions",
+					subCommands: []Command{
+						{
+							Name:        "on",
+							Description: "trace on",
+							action: func(_ Command, _ string) error {
+								plc4x_config.TraceTransactionManagerTransactions = true
+								return nil
+							},
+						},
+						{
+							Name:        "off",
+							Description: "trace off",
+							action: func(_ Command, _ string) error {
+								plc4x_config.TraceTransactionManagerTransactions = false
+								return nil
+							},
+						},
 					},
 				},
 				{
-					Name: "plc4xbrowser-debug",
-					action: func(_ Command, argument string) error {
-						switch argument {
-						case "on":
-							plc4xBrowserLog = zerolog.New(zerolog.ConsoleWriter{Out: tview.ANSIWriter(consoleOutput)})
-						case "off":
-							plc4xBrowserLog = zerolog.Nop()
-						default:
-							return errors.Errorf("illegal argument %s", argument)
-						}
-						return nil
+					Name:        "TraceDefaultMessageCodecWorker",
+					Description: "print information about message codec workers",
+					subCommands: []Command{
+						{
+							Name:        "on",
+							Description: "trace on",
+							action: func(_ Command, _ string) error {
+								plc4x_config.TraceDefaultMessageCodecWorker = true
+								return nil
+							},
+						},
+						{
+							Name:        "off",
+							Description: "trace off",
+							action: func(_ Command, _ string) error {
+								plc4x_config.TraceDefaultMessageCodecWorker = false
+								return nil
+							},
+						},
 					},
-					parameterSuggestions: func(currentText string) (entries []string) {
-						entries = append(entries, "on", "off")
-						return
+				},
+				{
+					Name:        "plc4xbrowser-debug",
+					Description: "Prints out debug information of the browser itself",
+					subCommands: []Command{
+						{
+							Name:        "on",
+							Description: "debug on",
+							action: func(_ Command, _ string) error {
+								plc4xBrowserLog = zerolog.New(zerolog.ConsoleWriter{Out: tview.ANSIWriter(consoleOutput)})
+								return nil
+							},
+						},
+						{
+							Name:        "off",
+							Description: "debug off",
+							action: func(_ Command, _ string) error {
+								plc4xBrowserLog = zerolog.Nop()
+								return nil
+							},
+						},
+					},
+				},
+				{
+					Name:        "auto-register",
+					Description: "autoregister driver at startup",
+					subCommands: []Command{
+						{
+							Name: "list",
+							action: func(currentCommand Command, argument string) error {
+								_, _ = fmt.Fprintf(commandOutput, "Auto-register enabled drivers:\n  %s\n", strings.Join(config.AutoRegisterDrivers, "\n  "))
+								return nil
+							},
+						},
+						{
+							Name: "enable",
+							action: func(_ Command, argument string) error {
+								return enableAutoRegister(argument)
+							},
+							parameterSuggestions: func(currentText string) (entries []string) {
+								for _, protocol := range protocolList {
+									if strings.HasPrefix(protocol, currentText) {
+										entries = append(entries, protocol)
+									}
+								}
+								return
+							},
+						},
+						{
+							Name: "disable",
+							action: func(_ Command, argument string) error {
+								return disableAutoRegister(argument)
+							},
+							parameterSuggestions: func(currentText string) (entries []string) {
+								for _, protocol := range protocolList {
+									if strings.HasPrefix(protocol, currentText) {
+										entries = append(entries, protocol)
+									}
+								}
+								return
+							},
+						},
 					},
 				},
 			},
@@ -356,6 +578,32 @@ var rootCommand = Command{
 				commandOutputClear()
 				return nil
 			},
+			subCommands: []Command{
+				{
+					Name:        "message",
+					Description: "clears message output",
+					action: func(_ Command, _ string) error {
+						messageOutputClear()
+						return nil
+					},
+				},
+				{
+					Name:        "console",
+					Description: "clears console output",
+					action: func(_ Command, _ string) error {
+						consoleOutputClear()
+						return nil
+					},
+				},
+				{
+					Name:        "command",
+					Description: "clears command output",
+					action: func(_ Command, _ string) error {
+						commandOutputClear()
+						return nil
+					},
+				},
+			},
 		},
 	},
 }
@@ -369,7 +617,11 @@ func init() {
 			_, _ = fmt.Fprintf(commandOutput, "[#0000ff]Available commands[white]\n")
 			rootCommand.visit(0, func(currentIndent int, command Command) {
 				indentString := strings.Repeat("  ", currentIndent)
-				_, _ = fmt.Fprintf(commandOutput, "%s [#00ff00]%s[white]: %s\n", indentString, command.Name, command.Description)
+				description := command.Description
+				if description == "" {
+					description = command.Name + "s"
+				}
+				_, _ = fmt.Fprintf(commandOutput, "%s [#00ff00]%s[white]: %s\n", indentString, command.Name, description)
 			})
 			return nil
 		},
@@ -461,7 +713,7 @@ func (c Command) hasDirectExecution() bool {
 func Execute(commandText string) error {
 	err := rootCommand.Execute(commandText)
 	if err == nil {
-		addCommand(commandText)
+		addCommandHistoryEntry(commandText)
 	}
 	return err
 }
@@ -493,7 +745,7 @@ func (c Command) Execute(commandText string) error {
 func (c Command) visit(i int, f func(currentIndent int, command Command)) {
 	f(i, c)
 	for _, subCommand := range c.subCommands {
-		f(i+1, subCommand)
+		subCommand.visit(i+1, f)
 	}
 }
 

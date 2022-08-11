@@ -33,6 +33,16 @@ const (
 	StatusRequestTypeLevel
 )
 
+func (s StatusRequestType) String() string {
+	switch s {
+	case StatusRequestTypeBinaryState:
+		return "StatusRequestTypeBinaryState"
+	case StatusRequestTypeLevel:
+		return "StatusRequestTypeLevel"
+	}
+	return ""
+}
+
 // StatusField can be used to query status using a P-to-MP-StatusRequest command
 type StatusField interface {
 	model.PlcField
@@ -51,9 +61,14 @@ func NewStatusField(statusRequestType StatusRequestType, startingGroupAddressLab
 	}
 }
 
+type CalField interface {
+	GetUnitAddress() readWriteModel.UnitAddress
+}
+
 // CALRecallField can be used to get device/network management fields
 type CALRecallField interface {
 	model.PlcField
+	CalField
 	GetParameter() readWriteModel.Parameter
 	GetCount() uint8
 }
@@ -71,6 +86,7 @@ func NewCALRecallField(unitAddress readWriteModel.UnitAddress, parameter readWri
 // CALIdentifyField can be used to get device/network management fields
 type CALIdentifyField interface {
 	model.PlcField
+	CalField
 	GetAttribute() readWriteModel.Attribute
 }
 
@@ -86,6 +102,7 @@ func NewCALIdentifyField(unitAddress readWriteModel.UnitAddress, attribute readW
 // CALGetstatusField can be used to get device/network management fields
 type CALGetstatusField interface {
 	model.PlcField
+	CalField
 	GetParameter() readWriteModel.Parameter
 	GetCount() uint8
 }
@@ -119,6 +136,7 @@ func NewSALMonitorField(unitAddress readWriteModel.UnitAddress, application read
 // MMIMonitorField can be used to monitor mmi fields
 type MMIMonitorField interface {
 	model.PlcField
+	CalField
 	GetUnitAddress() readWriteModel.UnitAddress
 	GetApplication() readWriteModel.ApplicationIdContainer
 }
@@ -128,6 +146,22 @@ func NewMMIMonitorField(unitAddress readWriteModel.UnitAddress, application read
 		fieldType:   MMI_STATUS_MONITOR,
 		unitAddress: unitAddress,
 		application: application,
+		numElements: numElements,
+	}
+}
+
+// UnitInfoField can be used to get information about unit(s)
+type UnitInfoField interface {
+	model.PlcField
+	GetUnitAddress() *readWriteModel.UnitAddress
+	GetAttribute() *readWriteModel.Attribute
+}
+
+func NewUnitInfoField(unitAddress *readWriteModel.UnitAddress, attribute *readWriteModel.Attribute, numElements uint16) UnitInfoField {
+	return &unitInfoField{
+		unitAddress: unitAddress,
+		fieldType:   UNIT_INFO,
+		attribute:   attribute,
 		numElements: numElements,
 	}
 }
@@ -187,6 +221,13 @@ type mmiMonitorField struct {
 	numElements uint16
 }
 
+type unitInfoField struct {
+	fieldType   FieldType
+	unitAddress *readWriteModel.UnitAddress
+	attribute   *readWriteModel.Attribute
+	numElements uint16
+}
+
 //
 // Internal section
 //
@@ -222,8 +263,7 @@ func (m statusField) Serialize(writeBuffer utils.WriteBuffer) error {
 		return err
 	}
 
-	// TODO: add string representation
-	if err := writeBuffer.WriteUint8("statusRequestType", 8, uint8(m.statusRequestType)); err != nil {
+	if err := writeBuffer.WriteUint8("statusRequestType", 8, uint8(m.statusRequestType), utils.WithAdditionalStringRepresentation(m.statusRequestType.String())); err != nil {
 		return err
 	}
 	if m.startingGroupAddressLabel != nil {
@@ -241,50 +281,71 @@ func (m statusField) Serialize(writeBuffer utils.WriteBuffer) error {
 	return nil
 }
 
-func (m calField) Serialize(writeBuffer utils.WriteBuffer) error {
-	return m.unitAddress.Serialize(writeBuffer)
+func (c calField) GetUnitAddress() readWriteModel.UnitAddress {
+	return c.unitAddress
 }
 
-func (m calRecallField) GetParameter() readWriteModel.Parameter {
-	return m.parameter
+func (c calField) Serialize(writeBuffer utils.WriteBuffer) error {
+	return c.unitAddress.Serialize(writeBuffer)
 }
 
-func (m calRecallField) GetCount() uint8 {
-	return m.count
+func (c calField) String() string {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(c); err != nil {
+		return err.Error()
+	}
+	return writeBuffer.GetBox().String()
 }
 
-func (m calRecallField) GetAddressString() string {
-	return fmt.Sprintf("%d[%d]", m.fieldType, m.numElements)
+func (c calRecallField) GetParameter() readWriteModel.Parameter {
+	return c.parameter
 }
 
-func (m calRecallField) GetTypeName() string {
-	return m.fieldType.GetName()
+func (c calRecallField) GetCount() uint8 {
+	return c.count
 }
 
-func (m calRecallField) GetQuantity() uint16 {
-	return m.numElements
+func (c calRecallField) GetAddressString() string {
+	return fmt.Sprintf("%d[%d]", c.fieldType, c.numElements)
 }
 
-func (m calRecallField) Serialize(writeBuffer utils.WriteBuffer) error {
-	if err := writeBuffer.PushContext(m.fieldType.GetName()); err != nil {
+func (c calRecallField) GetTypeName() string {
+	return c.fieldType.GetName()
+}
+
+func (c calRecallField) GetQuantity() uint16 {
+	return c.numElements
+}
+
+func (c calRecallField) Serialize(writeBuffer utils.WriteBuffer) error {
+	if err := writeBuffer.PushContext(c.fieldType.GetName()); err != nil {
 		return err
 	}
 
-	if err := m.calField.Serialize(writeBuffer); err != nil {
+	if err := c.calField.Serialize(writeBuffer); err != nil {
 		return err
 	}
 
-	if err := writeBuffer.WriteUint8("parameter", 8, uint8(m.parameter), utils.WithAdditionalStringRepresentation(m.parameter.String())); err != nil {
-		return err
-	}
-	if err := writeBuffer.WriteUint8("count", 8, m.count); err != nil {
+	if err := c.parameter.Serialize(writeBuffer); err != nil {
 		return err
 	}
 
-	if err := writeBuffer.PopContext(m.fieldType.GetName()); err != nil {
+	if err := writeBuffer.WriteUint8("count", 8, c.count); err != nil {
+		return err
+	}
+
+	if err := writeBuffer.PopContext(c.fieldType.GetName()); err != nil {
 		return err
 	}
 	return nil
+}
+
+func (c calRecallField) String() string {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(c); err != nil {
+		return err.Error()
+	}
+	return writeBuffer.GetBox().String()
 }
 
 func (c calIdentifyField) GetAttribute() readWriteModel.Attribute {
@@ -312,7 +373,7 @@ func (c calIdentifyField) Serialize(writeBuffer utils.WriteBuffer) error {
 		return err
 	}
 
-	if err := writeBuffer.WriteUint8("attribute", 8, uint8(c.attribute), utils.WithAdditionalStringRepresentation(c.attribute.String())); err != nil {
+	if err := c.attribute.Serialize(writeBuffer); err != nil {
 		return err
 	}
 
@@ -320,6 +381,14 @@ func (c calIdentifyField) Serialize(writeBuffer utils.WriteBuffer) error {
 		return err
 	}
 	return nil
+}
+
+func (c calIdentifyField) String() string {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(c); err != nil {
+		return err.Error()
+	}
+	return writeBuffer.GetBox().String()
 }
 
 func (c calGetstatusField) GetParameter() readWriteModel.Parameter {
@@ -351,9 +420,10 @@ func (c calGetstatusField) Serialize(writeBuffer utils.WriteBuffer) error {
 		return err
 	}
 
-	if err := writeBuffer.WriteUint8("parameter", 8, uint8(c.parameter), utils.WithAdditionalStringRepresentation(c.parameter.String())); err != nil {
+	if err := c.parameter.Serialize(writeBuffer); err != nil {
 		return err
 	}
+
 	if err := writeBuffer.WriteUint8("count", 8, c.count); err != nil {
 		return err
 	}
@@ -362,6 +432,14 @@ func (c calGetstatusField) Serialize(writeBuffer utils.WriteBuffer) error {
 		return err
 	}
 	return nil
+}
+
+func (c calGetstatusField) String() string {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(c); err != nil {
+		return err.Error()
+	}
+	return writeBuffer.GetBox().String()
 }
 
 func (s salMonitorField) GetAddressString() string {
@@ -402,6 +480,14 @@ func (s salMonitorField) Serialize(writeBuffer utils.WriteBuffer) error {
 	return nil
 }
 
+func (s salMonitorField) String() string {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(s); err != nil {
+		return err.Error()
+	}
+	return writeBuffer.GetBox().String()
+}
+
 func (m mmiMonitorField) GetAddressString() string {
 	return fmt.Sprintf("%d/%s%s[%d]", m.fieldType, m.unitAddress, m.application, m.numElements)
 }
@@ -438,4 +524,63 @@ func (m mmiMonitorField) Serialize(writeBuffer utils.WriteBuffer) error {
 		return err
 	}
 	return nil
+}
+
+func (m mmiMonitorField) String() string {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(m); err != nil {
+		return err.Error()
+	}
+	return writeBuffer.GetBox().String()
+}
+
+func (u unitInfoField) GetUnitAddress() *readWriteModel.UnitAddress {
+	return u.unitAddress
+}
+
+func (u unitInfoField) GetAttribute() *readWriteModel.Attribute {
+	return u.attribute
+}
+
+func (u unitInfoField) GetAddressString() string {
+	return fmt.Sprintf("%d[%d]", u.fieldType, u.numElements)
+}
+
+func (u unitInfoField) GetTypeName() string {
+	return u.fieldType.GetName()
+}
+
+func (u unitInfoField) GetQuantity() uint16 {
+	return u.numElements
+}
+
+func (u unitInfoField) Serialize(writeBuffer utils.WriteBuffer) error {
+	if err := writeBuffer.PushContext(u.fieldType.GetName()); err != nil {
+		return err
+	}
+
+	if unitAddress := u.unitAddress; unitAddress != nil {
+		if err := (*unitAddress).Serialize(writeBuffer); err != nil {
+			return err
+		}
+	}
+
+	if attribute := u.attribute; attribute != nil {
+		if err := (*attribute).Serialize(writeBuffer); err != nil {
+			return err
+		}
+	}
+
+	if err := writeBuffer.PopContext(u.fieldType.GetName()); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (u unitInfoField) String() string {
+	writeBuffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(u); err != nil {
+		return err.Error()
+	}
+	return writeBuffer.GetBox().String()
 }

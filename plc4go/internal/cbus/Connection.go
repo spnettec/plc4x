@@ -43,7 +43,7 @@ func (t *AlphaGenerator) getAndIncrement() byte {
 	t.lock.Lock()
 	defer t.lock.Unlock()
 	// If we've reached the max value 'z', reset back to 'g'
-	if t.currentAlpha >= 'z' {
+	if t.currentAlpha > 'z' {
 		t.currentAlpha = 'g'
 	}
 	result := t.currentAlpha
@@ -157,8 +157,7 @@ func (c *Connection) UnsubscriptionRequestBuilder() apiModel.PlcUnsubscriptionRe
 }
 
 func (c *Connection) BrowseRequestBuilder() apiModel.PlcBrowseRequestBuilder {
-	// TODO: where do we get the browser from
-	return internalModel.NewDefaultPlcBrowseRequestBuilder(nil)
+	return internalModel.NewDefaultPlcBrowseRequestBuilder(c.GetPlcFieldHandler(), NewBrowser(c, c.messageCodec))
 }
 
 func (c *Connection) addSubscriber(subscriber *Subscriber) {
@@ -232,46 +231,52 @@ func (c *Connection) setupConnection(ch chan plc4go.PlcConnectionConnectResult) 
 	}
 	{
 		log.Debug().Msg("Set application filter to all")
-		applicationAddress1 := readWriteModel.NewParameterValueApplicationAddress1(readWriteModel.NewApplicationAddress1(0xFF), 1)
+		applicationAddress1 := readWriteModel.NewParameterValueApplicationAddress1(readWriteModel.NewApplicationAddress1(c.configuration.MonitoredApplication1), nil, 1)
 		if !c.sendCalDataWrite(ch, readWriteModel.Parameter_APPLICATION_ADDRESS_1, applicationAddress1, requestContext, cbusOptions) {
+			return
+		}
+		applicationAddress2 := readWriteModel.NewParameterValueApplicationAddress2(readWriteModel.NewApplicationAddress2(c.configuration.MonitoredApplication2), nil, 1)
+		if !c.sendCalDataWrite(ch, readWriteModel.Parameter_APPLICATION_ADDRESS_2, applicationAddress2, requestContext, cbusOptions) {
 			return
 		}
 		log.Debug().Msg("Application filter set")
 	}
 	{
 		log.Debug().Msg("Set interface options 3")
-		interfaceOptions3 := readWriteModel.NewParameterValueInterfaceOptions3(readWriteModel.NewInterfaceOptions3(true, false, true, false), 1)
+		interfaceOptions3 := readWriteModel.NewParameterValueInterfaceOptions3(readWriteModel.NewInterfaceOptions3(c.configuration.Exstat, c.configuration.Pun, c.configuration.LocalSal, c.configuration.Pcn), nil, 1)
 		if !c.sendCalDataWrite(ch, readWriteModel.Parameter_INTERFACE_OPTIONS_3, interfaceOptions3, requestContext, cbusOptions) {
 			return
 		}
 		// TODO: add localsal to the options
-		*cbusOptions = readWriteModel.NewCBusOptions(false, false, false, true, false, false, false, false, false)
+		*cbusOptions = readWriteModel.NewCBusOptions(false, false, false, c.configuration.Exstat, false, false, c.configuration.Pun, c.configuration.Pcn, false)
 		log.Debug().Msg("Interface options 3 set")
 	}
 	{
 		log.Debug().Msg("Set interface options 1 power up settings")
-		interfaceOptions1PowerUpSettings := readWriteModel.NewParameterValueInterfaceOptions1PowerUpSettings(readWriteModel.NewInterfaceOptions1PowerUpSettings(readWriteModel.NewInterfaceOptions1(true, true, true, true, false, true)), 1)
+		interfaceOptions1PowerUpSettings := readWriteModel.NewParameterValueInterfaceOptions1PowerUpSettings(readWriteModel.NewInterfaceOptions1PowerUpSettings(readWriteModel.NewInterfaceOptions1(c.configuration.Idmon, c.configuration.Monitor, c.configuration.Smart, c.configuration.Srchk, c.configuration.XonXoff, c.configuration.Connect)), 1)
 		if !c.sendCalDataWrite(ch, readWriteModel.Parameter_INTERFACE_OPTIONS_1_POWER_UP_SETTINGS, interfaceOptions1PowerUpSettings, requestContext, cbusOptions) {
 			return
 		}
-		*cbusOptions = readWriteModel.NewCBusOptions(true, true, true, true, true, false, false, false, true)
+		// TODO: what is with monall
+		*cbusOptions = readWriteModel.NewCBusOptions(c.configuration.Connect, c.configuration.Smart, c.configuration.Idmon, c.configuration.Exstat, c.configuration.Monitor, false, c.configuration.Pun, c.configuration.Pcn, c.configuration.Srchk)
 		log.Debug().Msg("Interface options 1 power up settings set")
 	}
 	{
 		log.Debug().Msg("Set interface options 1")
-		interfaceOptions1 := readWriteModel.NewParameterValueInterfaceOptions1(readWriteModel.NewInterfaceOptions1(true, true, true, true, false, true), 1)
+		interfaceOptions1 := readWriteModel.NewParameterValueInterfaceOptions1(readWriteModel.NewInterfaceOptions1(c.configuration.Idmon, c.configuration.Monitor, c.configuration.Smart, c.configuration.Srchk, c.configuration.XonXoff, c.configuration.Connect), nil, 1)
 		if !c.sendCalDataWrite(ch, readWriteModel.Parameter_INTERFACE_OPTIONS_1, interfaceOptions1, requestContext, cbusOptions) {
 			return
 		}
-		*cbusOptions = readWriteModel.NewCBusOptions(true, true, true, true, true, false, false, false, true)
+		// TODO: what is with monall
+		*cbusOptions = readWriteModel.NewCBusOptions(c.configuration.Connect, c.configuration.Smart, c.configuration.Idmon, c.configuration.Exstat, c.configuration.Monitor, false, c.configuration.Pun, c.configuration.Pcn, c.configuration.Srchk)
 		log.Debug().Msg("Interface options 1 set")
 	}
 	c.fireConnected(ch)
 
 	log.Debug().Msg("Starting subscription handler")
 	go func() {
+		log.Debug().Msg("Subscription handler stated")
 		for c.IsConnected() {
-			log.Debug().Msg("Handling incoming message")
 			for monitoredSal := range c.messageCodec.(*MessageCodec).monitoredSALs {
 				for _, subscriber := range c.subscribers {
 					if ok := subscriber.handleMonitoredSal(monitoredSal); ok {
@@ -280,16 +285,14 @@ func (c *Connection) setupConnection(ch chan plc4go.PlcConnectionConnectResult) 
 				}
 			}
 		}
+		log.Info().Msg("Ending subscription handler")
 	}()
-	log.Debug().Msg("Subscription handler stated")
 
 	log.Debug().Msg("Starting default incoming message handler")
 	go func() {
+		log.Debug().Msg("default incoming message handler started")
 		for c.IsConnected() {
-			log.Debug().Msg("Polling data")
-			incomingMessageChannel := c.messageCodec.GetDefaultIncomingMessageChannel()
-			select {
-			case message := <-incomingMessageChannel:
+			for message := range c.messageCodec.GetDefaultIncomingMessageChannel() {
 				switch message := message.(type) {
 				case readWriteModel.CBusMessageToClientExactly:
 					switch reply := message.GetReply().(type) {
@@ -302,19 +305,18 @@ func (c *Connection) setupConnection(ch chan plc4go.PlcConnectionConnectResult) 
 									calReply := encodedReply.GetCalReply()
 									if ok := subscriber.handleMonitoredMMI(calReply); ok {
 										log.Debug().Msgf("%v handled\n%s", subscriber, calReply)
+										continue
 									}
 								}
 							}
 						}
 					}
 				}
-				log.Debug().Msgf("Received \n%v", message)
-			case <-time.After(20 * time.Millisecond):
+				log.Debug().Msgf("Received unhandled \n%v", message)
 			}
 		}
 		log.Info().Msg("Ending default incoming message handler")
 	}()
-	log.Debug().Msg("default incoming message handler started")
 }
 
 func (c *Connection) sendCalDataWrite(ch chan plc4go.PlcConnectionConnectResult, paramNo readWriteModel.Parameter, parameterValue readWriteModel.ParameterValue, requestContext *readWriteModel.RequestContext, cbusOptions *readWriteModel.CBusOptions) bool {

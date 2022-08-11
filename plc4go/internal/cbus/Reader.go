@@ -108,6 +108,12 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 						if !ok {
 							return false
 						}
+						// Check if this errored
+						if _, ok = messageToClient.GetReply().(readWriteModel.ServerErrorReplyExactly); ok {
+							// This means we must handle this below
+							return true
+						}
+
 						confirmation, ok := messageToClient.GetReply().(readWriteModel.ReplyOrConfirmationConfirmationExactly)
 						if !ok {
 							return false
@@ -119,12 +125,16 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 						log.Trace().Msg("convert response to ")
 						cbusMessage := receivedMessage.(readWriteModel.CBusMessage)
 						messageToClient := cbusMessage.(readWriteModel.CBusMessageToClient)
-						confirmation := messageToClient.GetReply().(readWriteModel.ReplyOrConfirmationConfirmationExactly)
-						if !confirmation.GetConfirmation().GetIsSuccess() {
+						if _, ok := messageToClient.GetReply().(readWriteModel.ServerErrorReplyExactly); ok {
+							log.Trace().Msg("We got a server failure")
+							addResponseCode(fieldNameCopy, model.PlcResponseCode_INVALID_DATA)
+							requestWasOk <- false
+							return transaction.EndRequest()
+						}
+						replyOrConfirmationConfirmation := messageToClient.GetReply().(readWriteModel.ReplyOrConfirmationConfirmationExactly)
+						if !replyOrConfirmationConfirmation.GetConfirmation().GetIsSuccess() {
 							var responseCode model.PlcResponseCode
-							switch confirmation.GetConfirmation().GetConfirmationType() {
-							case readWriteModel.ConfirmationType_CONFIRMATION_SUCCESSFUL:
-								responseCode = model.PlcResponseCode_OK
+							switch replyOrConfirmationConfirmation.GetConfirmation().GetConfirmationType() {
 							case readWriteModel.ConfirmationType_NOT_TRANSMITTED_TO_MANY_RE_TRANSMISSIONS:
 								responseCode = model.PlcResponseCode_REMOTE_ERROR
 							case readWriteModel.ConfirmationType_NOT_TRANSMITTED_CORRUPTION:
@@ -133,47 +143,39 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 								responseCode = model.PlcResponseCode_REMOTE_BUSY
 							case readWriteModel.ConfirmationType_NOT_TRANSMITTED_TOO_LONG:
 								responseCode = model.PlcResponseCode_INVALID_DATA
+							default:
+								panic("Every code should be mapped here")
 							}
+							log.Trace().Msgf("Was no success %s:%v", fieldNameCopy, responseCode)
 							addResponseCode(fieldNameCopy, responseCode)
-							return nil
+							requestWasOk <- true
+							return transaction.EndRequest()
 						}
 
+						alpha := replyOrConfirmationConfirmation.GetConfirmation().GetAlpha()
 						// TODO: it could be double confirmed but this is not implemented yet
-						embeddedReply := confirmation.GetEmbeddedReply().(readWriteModel.ReplyOrConfirmationReplyExactly)
+						embeddedReply, ok := replyOrConfirmationConfirmation.GetEmbeddedReply().(readWriteModel.ReplyOrConfirmationReplyExactly)
+						if !ok {
+							log.Trace().Msgf("Is a confirm only, no data. Alpha: %c", alpha.GetCharacter())
+							addResponseCode(fieldNameCopy, model.PlcResponseCode_NOT_FOUND)
+							requestWasOk <- true
+							return transaction.EndRequest()
+						}
 
+						log.Trace().Msg("Handling confirmed data")
 						switch reply := embeddedReply.GetReply().(readWriteModel.ReplyEncodedReply).GetEncodedReply().(type) {
-						case readWriteModel.EncodedReplyStandardFormatStatusReplyExactly:
-							application := reply.GetReply().GetApplication()
-							// TODO: verify application... this should be the same
-							_ = application
-							blockStart := reply.GetReply().GetBlockStart()
-							// TODO: verify application... this should be the same
-							_ = blockStart
-							statusBytes := reply.GetReply().GetStatusBytes()
+						case readWriteModel.EncodedReplyCALReplyExactly:
+							calData := reply.GetCalReply().GetCalData()
 							addResponseCode(fieldNameCopy, model.PlcResponseCode_OK)
-							plcListValues := make([]values.PlcValue, len(statusBytes)*4)
-							for i, statusByte := range statusBytes {
-								plcListValues[i*4+0] = spiValues.NewPlcSTRING(statusByte.GetGav0().String())
-								plcListValues[i*4+1] = spiValues.NewPlcSTRING(statusByte.GetGav1().String())
-								plcListValues[i*4+2] = spiValues.NewPlcSTRING(statusByte.GetGav2().String())
-								plcListValues[i*4+3] = spiValues.NewPlcSTRING(statusByte.GetGav3().String())
-							}
-							addPlcValue(fieldNameCopy, spiValues.NewPlcList(plcListValues))
-						case readWriteModel.EncodedReplyExtendedFormatStatusReplyExactly:
-							coding := reply.GetReply().GetCoding()
-							// TODO: verify coding... this should be the same
-							_ = coding
-							application := reply.GetReply().GetApplication()
-							// TODO: verify application... this should be the same
-							_ = application
-							blockStart := reply.GetReply().GetBlockStart()
-							// TODO: verify application... this should be the same
-							_ = blockStart
-							switch coding {
-							case readWriteModel.StatusCoding_BINARY_BY_THIS_SERIAL_INTERFACE:
-								fallthrough
-							case readWriteModel.StatusCoding_BINARY_BY_ELSEWHERE:
-								statusBytes := reply.GetReply().GetStatusBytes()
+							switch calData := calData.(type) {
+							case readWriteModel.CALDataStatusExactly:
+								application := calData.GetApplication()
+								// TODO: verify application... this should be the same
+								_ = application
+								blockStart := calData.GetBlockStart()
+								// TODO: verify application... this should be the same
+								_ = blockStart
+								statusBytes := calData.GetStatusBytes()
 								addResponseCode(fieldNameCopy, model.PlcResponseCode_OK)
 								plcListValues := make([]values.PlcValue, len(statusBytes)*4)
 								for i, statusByte := range statusBytes {
@@ -183,31 +185,55 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 									plcListValues[i*4+3] = spiValues.NewPlcSTRING(statusByte.GetGav3().String())
 								}
 								addPlcValue(fieldNameCopy, spiValues.NewPlcList(plcListValues))
-							case readWriteModel.StatusCoding_LEVEL_BY_THIS_SERIAL_INTERFACE:
-								fallthrough
-							case readWriteModel.StatusCoding_LEVEL_BY_ELSEWHERE:
-								levelInformation := reply.GetReply().GetLevelInformation()
-								addResponseCode(fieldNameCopy, model.PlcResponseCode_OK)
-								plcListValues := make([]values.PlcValue, len(levelInformation))
-								for i, levelInformation := range levelInformation {
-									switch levelInformation := levelInformation.(type) {
-									case readWriteModel.LevelInformationAbsentExactly:
-										plcListValues[i] = spiValues.NewPlcSTRING("is absent")
-									case readWriteModel.LevelInformationCorruptedExactly:
-										plcListValues[i] = spiValues.NewPlcSTRING("corrupted")
-									case readWriteModel.LevelInformationNormalExactly:
-										plcListValues[i] = spiValues.NewPlcUSINT(levelInformation.GetActualLevel())
-									default:
-										panic("Impossible case")
+							case readWriteModel.CALDataStatusExtendedExactly:
+								coding := calData.GetCoding()
+								// TODO: verify coding... this should be the same
+								_ = coding
+								application := calData.GetApplication()
+								// TODO: verify application... this should be the same
+								_ = application
+								blockStart := calData.GetBlockStart()
+								// TODO: verify application... this should be the same
+								_ = blockStart
+								switch coding {
+								case readWriteModel.StatusCoding_BINARY_BY_THIS_SERIAL_INTERFACE:
+									fallthrough
+								case readWriteModel.StatusCoding_BINARY_BY_ELSEWHERE:
+									statusBytes := calData.GetStatusBytes()
+									addResponseCode(fieldNameCopy, model.PlcResponseCode_OK)
+									plcListValues := make([]values.PlcValue, len(statusBytes)*4)
+									for i, statusByte := range statusBytes {
+										plcListValues[i*4+0] = spiValues.NewPlcSTRING(statusByte.GetGav0().String())
+										plcListValues[i*4+1] = spiValues.NewPlcSTRING(statusByte.GetGav1().String())
+										plcListValues[i*4+2] = spiValues.NewPlcSTRING(statusByte.GetGav2().String())
+										plcListValues[i*4+3] = spiValues.NewPlcSTRING(statusByte.GetGav3().String())
 									}
+									addPlcValue(fieldNameCopy, spiValues.NewPlcList(plcListValues))
+								case readWriteModel.StatusCoding_LEVEL_BY_THIS_SERIAL_INTERFACE:
+									fallthrough
+								case readWriteModel.StatusCoding_LEVEL_BY_ELSEWHERE:
+									levelInformation := calData.GetLevelInformation()
+									addResponseCode(fieldNameCopy, model.PlcResponseCode_OK)
+									plcListValues := make([]values.PlcValue, len(levelInformation))
+									for i, levelInformation := range levelInformation {
+										switch levelInformation := levelInformation.(type) {
+										case readWriteModel.LevelInformationAbsentExactly:
+											plcListValues[i] = spiValues.NewPlcSTRING("is absent")
+										case readWriteModel.LevelInformationCorruptedExactly:
+											plcListValues[i] = spiValues.NewPlcSTRING("corrupted")
+										case readWriteModel.LevelInformationNormalExactly:
+											plcListValues[i] = spiValues.NewPlcUSINT(levelInformation.GetActualLevel())
+										default:
+											panic("Impossible case")
+										}
+									}
+									addPlcValue(fieldNameCopy, spiValues.NewPlcList(plcListValues))
 								}
-								addPlcValue(fieldNameCopy, spiValues.NewPlcList(plcListValues))
 							}
-						case readWriteModel.EncodedReplyCALReplyExactly:
-							calData := reply.GetCalReply().GetCalData()
-							addResponseCode(fieldNameCopy, model.PlcResponseCode_OK)
 							// TODO: how should we serialize that???
 							addPlcValue(fieldNameCopy, spiValues.NewPlcSTRING(fmt.Sprintf("%s", calData)))
+						default:
+							panic(fmt.Sprintf("All types should be mapped here. Not mapped: %T", reply))
 						}
 						requestWasOk <- true
 						return transaction.EndRequest()
@@ -240,10 +266,9 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 	return result
 }
 
-var defaultRequestContext = readWriteModel.NewRequestContext(false, false, false)
-var defaultOptions = readWriteModel.NewCBusOptions(false, false, false, false, false, false, false, false, false)
-
 func (m *Reader) fieldToCBusMessage(field model.PlcField) (readWriteModel.CBusMessage, error) {
+	cbusOptions := m.messageCodec.(*MessageCodec).cbusOptions
+	requestContext := m.messageCodec.(*MessageCodec).requestContext
 	switch field := field.(type) {
 	case *statusField:
 		var statusRequest readWriteModel.StatusRequest
@@ -253,35 +278,35 @@ func (m *Reader) fieldToCBusMessage(field model.PlcField) (readWriteModel.CBusMe
 		case StatusRequestTypeLevel:
 			statusRequest = readWriteModel.NewStatusRequestLevel(field.application, *field.startingGroupAddressLabel, 0x73)
 		}
-		command := readWriteModel.NewCBusPointToMultiPointCommandStatus(statusRequest, byte(field.application), defaultOptions)
+		command := readWriteModel.NewCBusPointToMultiPointCommandStatus(statusRequest, byte(field.application), cbusOptions)
 		header := readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToMultiPoint)
-		cbusCommand := readWriteModel.NewCBusCommandPointToMultiPoint(command, header, defaultOptions)
-		request := readWriteModel.NewRequestCommand(cbusCommand, nil, readWriteModel.NewAlpha(m.alphaGenerator.getAndIncrement()), readWriteModel.RequestType_REQUEST_COMMAND, nil, nil, readWriteModel.RequestType_EMPTY, readWriteModel.NewRequestTermination(), defaultOptions)
-		return readWriteModel.NewCBusMessageToServer(request, defaultRequestContext, defaultOptions), nil
+		cbusCommand := readWriteModel.NewCBusCommandPointToMultiPoint(command, header, cbusOptions)
+		request := readWriteModel.NewRequestCommand(cbusCommand, nil, readWriteModel.NewAlpha(m.alphaGenerator.getAndIncrement()), readWriteModel.RequestType_REQUEST_COMMAND, nil, nil, readWriteModel.RequestType_EMPTY, readWriteModel.NewRequestTermination(), cbusOptions)
+		return readWriteModel.NewCBusMessageToServer(request, requestContext, cbusOptions), nil
 	case *calRecallField:
-		calData := readWriteModel.NewCALDataRecall(field.parameter, field.count, readWriteModel.CALCommandTypeContainer_CALCommandRecall, nil, defaultRequestContext)
+		calData := readWriteModel.NewCALDataRecall(field.parameter, field.count, readWriteModel.CALCommandTypeContainer_CALCommandRecall, nil, requestContext)
 		//TODO: we need support for bridged commands
-		command := readWriteModel.NewCBusPointToPointCommandDirect(field.unitAddress, 0x0000, calData, defaultOptions)
+		command := readWriteModel.NewCBusPointToPointCommandDirect(field.unitAddress, 0x0000, calData, cbusOptions)
 		header := readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPoint)
-		cbusCommand := readWriteModel.NewCBusCommandPointToPoint(command, header, defaultOptions)
-		request := readWriteModel.NewRequestCommand(cbusCommand, nil, readWriteModel.NewAlpha(m.alphaGenerator.getAndIncrement()), readWriteModel.RequestType_REQUEST_COMMAND, nil, nil, readWriteModel.RequestType_EMPTY, readWriteModel.NewRequestTermination(), defaultOptions)
-		return readWriteModel.NewCBusMessageToServer(request, defaultRequestContext, defaultOptions), nil
+		cbusCommand := readWriteModel.NewCBusCommandPointToPoint(command, header, cbusOptions)
+		request := readWriteModel.NewRequestCommand(cbusCommand, nil, readWriteModel.NewAlpha(m.alphaGenerator.getAndIncrement()), readWriteModel.RequestType_REQUEST_COMMAND, nil, nil, readWriteModel.RequestType_EMPTY, readWriteModel.NewRequestTermination(), cbusOptions)
+		return readWriteModel.NewCBusMessageToServer(request, requestContext, cbusOptions), nil
 	case *calIdentifyField:
-		calData := readWriteModel.NewCALDataIdentify(field.attribute, readWriteModel.CALCommandTypeContainer_CALCommandIdentify, nil, defaultRequestContext)
+		calData := readWriteModel.NewCALDataIdentify(field.attribute, readWriteModel.CALCommandTypeContainer_CALCommandIdentify, nil, requestContext)
 		//TODO: we need support for bridged commands
-		command := readWriteModel.NewCBusPointToPointCommandDirect(field.unitAddress, 0x0000, calData, defaultOptions)
+		command := readWriteModel.NewCBusPointToPointCommandDirect(field.unitAddress, 0x0000, calData, cbusOptions)
 		header := readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPoint)
-		cbusCommand := readWriteModel.NewCBusCommandPointToPoint(command, header, defaultOptions)
-		request := readWriteModel.NewRequestCommand(cbusCommand, nil, readWriteModel.NewAlpha(m.alphaGenerator.getAndIncrement()), readWriteModel.RequestType_REQUEST_COMMAND, nil, nil, readWriteModel.RequestType_EMPTY, readWriteModel.NewRequestTermination(), defaultOptions)
-		return readWriteModel.NewCBusMessageToServer(request, defaultRequestContext, defaultOptions), nil
+		cbusCommand := readWriteModel.NewCBusCommandPointToPoint(command, header, cbusOptions)
+		request := readWriteModel.NewRequestCommand(cbusCommand, nil, readWriteModel.NewAlpha(m.alphaGenerator.getAndIncrement()), readWriteModel.RequestType_REQUEST_COMMAND, nil, nil, readWriteModel.RequestType_EMPTY, readWriteModel.NewRequestTermination(), cbusOptions)
+		return readWriteModel.NewCBusMessageToServer(request, requestContext, cbusOptions), nil
 	case *calGetstatusField:
-		calData := readWriteModel.NewCALDataGetStatus(field.parameter, field.count, readWriteModel.CALCommandTypeContainer_CALCommandGetStatus, nil, defaultRequestContext)
+		calData := readWriteModel.NewCALDataGetStatus(field.parameter, field.count, readWriteModel.CALCommandTypeContainer_CALCommandGetStatus, nil, requestContext)
 		//TODO: we need support for bridged commands
-		command := readWriteModel.NewCBusPointToPointCommandDirect(field.unitAddress, 0x0000, calData, defaultOptions)
+		command := readWriteModel.NewCBusPointToPointCommandDirect(field.unitAddress, 0x0000, calData, cbusOptions)
 		header := readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPoint)
-		cbusCommand := readWriteModel.NewCBusCommandPointToPoint(command, header, defaultOptions)
-		request := readWriteModel.NewRequestCommand(cbusCommand, nil, readWriteModel.NewAlpha(m.alphaGenerator.getAndIncrement()), readWriteModel.RequestType_REQUEST_COMMAND, nil, nil, readWriteModel.RequestType_EMPTY, readWriteModel.NewRequestTermination(), defaultOptions)
-		return readWriteModel.NewCBusMessageToServer(request, defaultRequestContext, defaultOptions), nil
+		cbusCommand := readWriteModel.NewCBusCommandPointToPoint(command, header, cbusOptions)
+		request := readWriteModel.NewRequestCommand(cbusCommand, nil, readWriteModel.NewAlpha(m.alphaGenerator.getAndIncrement()), readWriteModel.RequestType_REQUEST_COMMAND, nil, nil, readWriteModel.RequestType_EMPTY, readWriteModel.NewRequestTermination(), cbusOptions)
+		return readWriteModel.NewCBusMessageToServer(request, requestContext, cbusOptions), nil
 	default:
 		return nil, errors.Errorf("Unmapped type %T", field)
 	}

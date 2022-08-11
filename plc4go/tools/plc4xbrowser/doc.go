@@ -17,28 +17,10 @@
  * under the License.
  */
 
-package drivers
+/* Package main contains the code for the plc4xbrowser
 
-import (
-	"encoding/hex"
-	"github.com/apache/plc4x/plc4go/internal/spi/utils"
-	"github.com/apache/plc4x/plc4go/protocols/s7/readwrite/model"
-	_ "github.com/apache/plc4x/plc4go/tests/initializetest"
-	"testing"
-)
+The plc4xbrowser can be used to interactively talk to a plc using the plc4x api. Therefor it can be used by users to
+evaluate different API requests in a REPL style format.
 
-func TestS7(t *testing.T) {
-	t.Skip()
-	request, err := hex.DecodeString("000a00000006010300000004")
-	if err != nil {
-		// Output an error ...
-	}
-	rb := utils.NewReadBufferByteBased(request)
-	adu, err := model.TPKTPacketParse(rb)
-	if err != nil {
-		t.Errorf("Error parsing: %s", err)
-	}
-	if adu != nil {
-		// Output success ...
-	}
-}
+*/
+package main
