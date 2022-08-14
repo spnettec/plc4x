@@ -21,13 +21,13 @@ package cbus
 
 import (
 	"fmt"
-	"github.com/apache/plc4x/plc4go/internal/spi"
-	"github.com/apache/plc4x/plc4go/internal/spi/default"
-	internalModel "github.com/apache/plc4x/plc4go/internal/spi/model"
-	"github.com/apache/plc4x/plc4go/internal/spi/plcerrors"
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi"
+	"github.com/apache/plc4x/plc4go/spi/default"
+	internalModel "github.com/apache/plc4x/plc4go/spi/model"
+	"github.com/apache/plc4x/plc4go/spi/plcerrors"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"sync"
@@ -181,8 +181,7 @@ func (c *Connection) setupConnection(ch chan plc4go.PlcConnectionConnectResult) 
 	{
 		log.Debug().Msg("Send a reset")
 		requestTypeReset := readWriteModel.RequestType_RESET
-		requestTypeResetByte := byte(readWriteModel.RequestType_RESET)
-		requestReset := readWriteModel.NewRequestReset(requestTypeReset, &requestTypeResetByte, requestTypeReset, &requestTypeResetByte, requestTypeReset, nil, &requestTypeReset, requestTypeReset, readWriteModel.NewRequestTermination(), *cbusOptions)
+		requestReset := readWriteModel.NewRequestReset(requestTypeReset, &requestTypeReset, requestTypeReset, &requestTypeReset, requestTypeReset, nil, &requestTypeReset, requestTypeReset, readWriteModel.NewRequestTermination(), *cbusOptions)
 		cBusMessage := readWriteModel.NewCBusMessageToServer(requestReset, *requestContext, *cbusOptions)
 
 		receivedResetEchoChan := make(chan bool)
@@ -319,10 +318,11 @@ func (c *Connection) setupConnection(ch chan plc4go.PlcConnectionConnectResult) 
 	}()
 }
 
+// This is used for connection setup
 func (c *Connection) sendCalDataWrite(ch chan plc4go.PlcConnectionConnectResult, paramNo readWriteModel.Parameter, parameterValue readWriteModel.ParameterValue, requestContext *readWriteModel.RequestContext, cbusOptions *readWriteModel.CBusOptions) bool {
 	// TODO: we assume that is always a one byte request otherwise we need to map the length here
 	calData := readWriteModel.NewCALDataWrite(paramNo, 0x0, parameterValue, readWriteModel.CALCommandTypeContainer_CALCommandWrite_3Bytes, nil, *requestContext)
-	directCommand := readWriteModel.NewRequestDirectCommandAccess(calData, 0x40, nil, nil, 0x0, readWriteModel.NewRequestTermination(), *cbusOptions)
+	directCommand := readWriteModel.NewRequestDirectCommandAccess(calData /*we don't want a alpha otherwise the PCI will auto-switch*/, nil, 0x40, nil, nil, 0x0, readWriteModel.NewRequestTermination(), *cbusOptions)
 	cBusMessage := readWriteModel.NewCBusMessageToServer(directCommand, *requestContext, *cbusOptions)
 
 	directCommandAckChan := make(chan bool)
