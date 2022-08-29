@@ -94,7 +94,7 @@ public class S7PlcValueHandler implements PlcValueHandler {
             } else if (value instanceof PlcValue) {
                 return (PlcValue) value;
             } else if (value instanceof byte[]) {
-                return of(ArrayUtils.toObject((byte[])value));
+                return PlcRawByteArray.of(value);
             } else {
                 throw new PlcUnsupportedDataTypeException("Data Type " + value.getClass()
                     + " Is not supported");
