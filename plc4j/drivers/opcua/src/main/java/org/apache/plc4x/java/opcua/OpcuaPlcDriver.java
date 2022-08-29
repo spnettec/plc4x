@@ -104,6 +104,11 @@ public class OpcuaPlcDriver extends GeneratedDriverBase<OpcuaAPU> {
     }
 
     @Override
+    protected boolean canBrowse() {
+        return false;
+    }
+
+    @Override
     protected OpcuaOptimizer getOptimizer() {
         return new OpcuaOptimizer();
     }
@@ -224,7 +229,7 @@ public class OpcuaPlcDriver extends GeneratedDriverBase<OpcuaAPU> {
         }
 
         return new DefaultNettyPlcConnection(
-            canRead(), canWrite(), canSubscribe(),
+            canRead(), canWrite(), canSubscribe(), canBrowse(),
             getFieldHandler(),
             getValueHandler(),
             configuration,

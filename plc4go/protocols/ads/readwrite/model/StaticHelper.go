@@ -45,3 +45,7 @@ func SerializeAmsString(io utils.WriteBuffer, value values.PlcValue, stringLengt
 	}
 	return io.WriteString("", uint32(stringLength*multiplier), encoding, value.GetString())
 }
+
+func STR_LEN(str string) int {
+	return len(str)
+}

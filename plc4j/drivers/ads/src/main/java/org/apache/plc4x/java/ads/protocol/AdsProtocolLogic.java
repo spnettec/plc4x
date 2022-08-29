@@ -56,13 +56,11 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements HasConfiguration<AdsConfiguration>, PlcSubscriber {
+public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements HasConfiguration<AdsConfiguration>, PlcSubscriber, PlcBrowser {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AdsProtocolLogic.class);
 
     private AdsConfiguration configuration;
-    public static final State DEFAULT_COMMAND_STATE = new State(
-        false, false, false, false, false, true, false, false, false);
 
     private final AtomicLong invokeIdGenerator = new AtomicLong(1);
     private final RequestTransactionManager tm;
@@ -72,9 +70,14 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
     private final ConcurrentHashMap<SymbolicAdsField, DirectAdsField> symbolicFieldMapping;
     private final ConcurrentHashMap<SymbolicAdsField, CompletableFuture<Void>> pendingResolutionRequests;
 
+    private final Map<String, AdsSymbolTableEntry> symbolTable;
+    private final Map<String, AdsDataTypeTableEntry> dataTypeTable;
+
     public AdsProtocolLogic() {
         symbolicFieldMapping = new ConcurrentHashMap<>();
         pendingResolutionRequests = new ConcurrentHashMap<>();
+        symbolTable = new HashMap<>();
+        dataTypeTable = new HashMap<>();
 
         // Initialize Transaction Manager.
         // Until the number of concurrent requests is successfully negotiated we set it to a
@@ -96,14 +99,152 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
 
     @Override
     public void onConnect(ConversationContext<AmsTCPPacket> context) {
-        // AMS/ADS doesn't know a concept of a "connect".
-        context.fireConnected();
+        LOGGER.debug("Fetching sizes of symbol and datatype table sizes.");
+        final CompletableFuture<Void> future = new CompletableFuture<>();
+
+        List<AdsDataTypeTableEntry> dataTypes = new ArrayList<>();
+        List<AdsSymbolTableEntry> symbols = new ArrayList<>();
+        // Initialize the request.
+        AmsPacket amsPacket = new AdsReadRequest(configuration.getTargetAmsNetId(), configuration.getTargetAmsPort(),
+            configuration.getSourceAmsNetId(), configuration.getSourceAmsPort(), 0, getInvokeId(),
+            ReservedIndexGroups.ADSIGRP_SYMBOL_AND_DATA_TYPE_SIZES.getValue(), 0x00000000, 24);
+        AmsTCPPacket amsTCPPacket = new AmsTCPPacket(amsPacket);
+        // Start a new request-transaction (Is ended in the response-handler)
+        RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
+        transaction.submit(() -> context.sendRequest(amsTCPPacket)
+            .expectResponse(AmsTCPPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
+            .onTimeout(future::completeExceptionally)
+            .onError((p, e) -> future.completeExceptionally(e))
+            .check(responseAmsPacket -> responseAmsPacket.getUserdata().getInvokeId() == amsPacket.getInvokeId())
+            .unwrap(response -> (AdsReadResponse) response.getUserdata())
+            .handle(responseAdsData -> {
+                transaction.endRequest();
+                if (responseAdsData.getResult() == ReturnCode.OK) {
+                    ReadBuffer readBuffer = new ReadBufferByteBased(responseAdsData.getData());
+                    try {
+                        AdsTableSizes adsTableSizes = AdsTableSizes.staticParse(readBuffer);
+                        LOGGER.debug("PLC contains {} symbols and {} data-types", adsTableSizes.getSymbolCount(), adsTableSizes.getDataTypeCount());
+
+                        // Now we load the datatype definitions.
+                        AmsPacket amsReadTablePacket = new AdsReadRequest(configuration.getTargetAmsNetId(), configuration.getTargetAmsPort(),
+                            configuration.getSourceAmsNetId(), configuration.getSourceAmsPort(), 0, getInvokeId(),
+                            ReservedIndexGroups.ADSIGRP_DATA_TYPE_TABLE_UPLOAD.getValue(), 0x00000000, adsTableSizes.getDataTypeLength());
+                        RequestTransactionManager.RequestTransaction transaction2 = tm.startRequest();
+                        AmsTCPPacket amsReadTableTCPPacket = new AmsTCPPacket(amsReadTablePacket);
+                        transaction2.submit(() -> context.sendRequest(amsReadTableTCPPacket)
+                            .expectResponse(AmsTCPPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
+                            .onTimeout(future::completeExceptionally)
+                            .onError((p, e) -> future.completeExceptionally(e))
+                            .check(responseAmsPacket -> responseAmsPacket.getUserdata().getInvokeId() == amsReadTablePacket.getInvokeId())
+                            .unwrap(response -> (AdsReadResponse) response.getUserdata())
+                            .handle(responseAdsReadTableData -> {
+                                transaction2.endRequest();
+                                if (responseAdsData.getResult() == ReturnCode.OK) {
+                                    // Parse the result.
+                                    ReadBuffer rb = new ReadBufferByteBased(responseAdsReadTableData.getData());
+                                    for (int i = 0; i < adsTableSizes.getDataTypeCount(); i++) {
+                                        try {
+                                            AdsDataTypeTableEntry adsDataTypeTableEntry = AdsDataTypeTableEntry.staticParse(rb);
+                                            dataTypes.add(adsDataTypeTableEntry);
+                                        } catch (ParseException e) {
+                                            throw new RuntimeException(e);
+                                        }
+                                    }
+
+                                    AmsPacket amsReadSymbolTablePacket = new AdsReadRequest(configuration.getTargetAmsNetId(), configuration.getTargetAmsPort(),
+                                        configuration.getSourceAmsNetId(), configuration.getSourceAmsPort(), 0, getInvokeId(),
+                                        ReservedIndexGroups.ADSIGRP_SYM_UPLOAD.getValue(), 0x00000000, adsTableSizes.getSymbolLength());
+                                    RequestTransactionManager.RequestTransaction transaction3 = tm.startRequest();
+                                    AmsTCPPacket amsReadSymbolTableTCPPacket = new AmsTCPPacket(amsReadSymbolTablePacket);
+                                    transaction3.submit(() -> context.sendRequest(amsReadSymbolTableTCPPacket)
+                                        .expectResponse(AmsTCPPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
+                                        .onTimeout(future::completeExceptionally)
+                                        .onError((p, e) -> future.completeExceptionally(e))
+                                        .check(responseAmsPacket -> responseAmsPacket.getUserdata().getInvokeId() == amsReadSymbolTablePacket.getInvokeId())
+                                        .unwrap(response -> (AdsReadResponse) response.getUserdata())
+                                        .handle(responseAdsReadSymbolTableData -> {
+                                            transaction3.endRequest();
+                                            if (responseAdsData.getResult() == ReturnCode.OK) {
+                                                ReadBuffer rb2 = new ReadBufferByteBased(responseAdsReadSymbolTableData.getData());
+                                                for (int i = 0; i < adsTableSizes.getSymbolCount(); i++) {
+                                                    try {
+                                                        AdsSymbolTableEntry adsSymbolTableEntry = AdsSymbolTableEntry.staticParse(rb2);
+                                                        symbols.add(adsSymbolTableEntry);
+                                                    } catch (ParseException e) {
+                                                        throw new RuntimeException(e);
+                                                    }
+                                                }
+                                                future.complete(null);
+                                            }
+                                        }));
+                                }
+                            }));
+                    } catch (ParseException e) {
+                        future.completeExceptionally(new PlcException("Error loading the table sizes", e));
+                    }
+                } else {
+                    // TODO: Implement this correctly.
+                    future.completeExceptionally(new PlcException("Result is " + responseAdsData.getResult()));
+                }
+            }));
+        future.whenComplete((unused, throwable) -> {
+            if(throwable != null) {
+                LOGGER.error("Error fetching symbol and datatype table sizes");
+            } else {
+                for (AdsDataTypeTableEntry dataType : dataTypes) {
+                    dataTypeTable.put(dataType.getDataTypeName(), dataType);
+                }
+                for (AdsSymbolTableEntry symbol : symbols) {
+                    symbolTable.put(symbol.getName(), symbol);
+                }
+                context.fireConnected();
+            }
+        });
     }
 
     @Override
     public void onDisconnect(ConversationContext<AmsTCPPacket> context) {
         super.onDisconnect(context);
         // TODO: Here we have to clean up all of the handles this connection acquired.
+    }
+
+    @Override
+    public CompletableFuture<PlcBrowseResponse> browse(PlcBrowseRequest browseRequest) {
+        CompletableFuture<PlcBrowseResponse> future = new CompletableFuture<>();
+        List<PlcBrowseItem> values = new ArrayList<>(symbolTable.size());
+        for (AdsSymbolTableEntry symbol : symbolTable.values()) {
+            // Add the type itself.
+            values.add(new DefaultPlcBrowseItem(symbol.getName(), symbol.getDataTypeName()));
+            AdsDataTypeTableEntry dataType = dataTypeTable.get(symbol.getDataTypeName());
+            if(dataType == null) {
+                System.out.printf("couldn't find datatype: %s%n", symbol.getDataTypeName());
+                continue;
+            }
+            // Recursively add all children of the current datatype.
+            values.addAll(getBrowseItems(symbol.getName(), symbol.getGroup(), symbol.getOffset(), dataType));
+        }
+        DefaultPlcBrowseResponse response = new DefaultPlcBrowseResponse(browseRequest, PlcResponseCode.OK, values);
+        future.complete(response);
+        return future;
+    }
+
+    protected List<PlcBrowseItem> getBrowseItems(String basePath, long baseGroupId, long baseOffset, AdsDataTypeTableEntry dataType) {
+        if(dataType.getNumChildren() == 0) {
+            return Collections.emptyList();
+        }
+
+        List<PlcBrowseItem> values = new ArrayList<>(dataType.getNumChildren());
+        for (AdsDataTypeTableChildEntry child : dataType.getChildren()) {
+            values.add(new DefaultPlcBrowseItem(basePath + "." + child.getPropertyName(), child.getDataTypeName()));
+            AdsDataTypeTableEntry childDataType = dataTypeTable.get(child.getDataTypeName());
+            if(childDataType == null) {
+                System.out.printf("couldn't find datatype: %s%n", child.getDataTypeName());
+                continue;
+            }
+            // Recursively add all children of the current datatype.
+            values.addAll(getBrowseItems(child.getDataTypeName(), baseGroupId, baseOffset + child.getOffset(), childDataType));
+        }
+        return values;
     }
 
     @Override
@@ -168,23 +309,21 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
     protected CompletableFuture<PlcReadResponse> singleRead(PlcReadRequest readRequest, DirectAdsField directAdsField) {
         CompletableFuture<PlcReadResponse> future = new CompletableFuture<>();
 
-        final long size;
+        long size;
         if (directAdsField.getAdsDataType() == AdsDataType.STRING) {
             // If an explicit size is given with the string, use this, if not use 256
             size = (directAdsField instanceof AdsStringField) ?
-                ((AdsStringField) directAdsField).getStringLength() : 256;
+                ((AdsStringField) directAdsField).getStringLength() + 1 : 81;
         } else if (directAdsField.getAdsDataType() == AdsDataType.WSTRING) {
             // If an explicit size is given with the string, use this, if not use 512
             size = (directAdsField instanceof AdsStringField) ?
-                ((long) ((AdsStringField) directAdsField).getStringLength()) * 2 : 512;
+                ((long) ((AdsStringField) directAdsField).getStringLength() + 1) * 2 : 162;
         } else {
             size = directAdsField.getAdsDataType().getNumBytes();
         }
-        AdsData adsData = new AdsReadRequest(directAdsField.getIndexGroup(), directAdsField.getIndexOffset(),
-            size * directAdsField.getNumberOfElements());
-        AmsPacket amsPacket = new AmsPacket(configuration.getTargetAmsNetId(), configuration.getTargetAmsPort(),
-            configuration.getSourceAmsNetId(), configuration.getSourceAmsPort(),
-            CommandId.ADS_READ, DEFAULT_COMMAND_STATE, 0, getInvokeId(), adsData);
+        AmsPacket amsPacket = new AdsReadRequest(configuration.getTargetAmsNetId(), configuration.getTargetAmsPort(),
+            configuration.getSourceAmsNetId(), configuration.getSourceAmsPort(), 0, getInvokeId(),
+            directAdsField.getIndexGroup(), directAdsField.getIndexOffset(),size * directAdsField.getNumberOfElements());
         AmsTCPPacket amsTCPPacket = new AmsTCPPacket(amsPacket);
 
         // Start a new request-transaction (Is ended in the response-handler)
@@ -194,15 +333,15 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
             .onTimeout(future::completeExceptionally)
             .onError((p, e) -> future.completeExceptionally(e))
             .check(responseAmsPacket -> responseAmsPacket.getUserdata().getInvokeId() == amsPacket.getInvokeId())
-            .unwrap(response -> (AdsReadResponse) response.getUserdata().getData())
-            .handle(responseAdsData -> {
-                if (responseAdsData.getResult() == ReturnCode.OK) {
-                    final PlcReadResponse plcReadResponse = convertToPlc4xReadResponse(readRequest, responseAdsData);
+            .unwrap(amsResponsePacket -> (AdsReadResponse) amsResponsePacket.getUserdata())
+            .handle(response -> {
+                if (response.getResult() == ReturnCode.OK) {
+                    final PlcReadResponse plcReadResponse = convertToPlc4xReadResponse(readRequest, response);
                     // Convert the response from the PLC into a PLC4X Response ...
                     future.complete(plcReadResponse);
                 } else {
                     // TODO: Implement this correctly.
-                    future.completeExceptionally(new PlcException("Result is " + responseAdsData.getResult()));
+                    future.completeExceptionally(new PlcException("Result is " + response.getResult()));
                 }
                 // Finish the request-transaction.
                 transaction.endRequest();
@@ -213,34 +352,34 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
     protected CompletableFuture<PlcReadResponse> multiRead(PlcReadRequest readRequest, List<DirectAdsField> directAdsFields) {
         CompletableFuture<PlcReadResponse> future = new CompletableFuture<>();
 
-        List<AdsMultiRequestItem> items = directAdsFields.stream().map(directAdsField -> {
+        // Calculate the size of all fields together.
+        // Calculate the expected size of the response data.
+        long expectedResponseDataSize = directAdsFields.stream().mapToLong(
+            field -> {
                 long size;
-                if (directAdsField.getAdsDataType() == AdsDataType.STRING) {
+                if (field.getAdsDataType() == AdsDataType.STRING) {
                     // If an explicit size is given with the string, use this, if not use 256
-                    size = (directAdsField instanceof AdsStringField) ?
-                        ((AdsStringField) directAdsField).getStringLength() : 256;
-                } else if (directAdsField.getAdsDataType() == AdsDataType.WSTRING) {
+                    size = (field instanceof AdsStringField) ?
+                        ((AdsStringField) field).getStringLength() + 1 : 256;
+                } else if (field.getAdsDataType() == AdsDataType.WSTRING) {
                     // If an explicit size is given with the string, use this, if not use 512
-                    size = (directAdsField instanceof AdsStringField) ?
-                        ((long) ((AdsStringField) directAdsField).getStringLength()) * 2 : 512;
+                    size = (field instanceof AdsStringField) ?
+                        ((long) ((AdsStringField) field).getStringLength() + 1) * 2 : 512;
                 } else {
-                    size = directAdsField.getAdsDataType().getNumBytes();
+                    size = field.getAdsDataType().getNumBytes();
                 }
+                // Status code + payload size
+                return 4 + (size * field.getNumberOfElements());
+            }).sum();
 
-                return new AdsMultiRequestItemRead(directAdsField.getIndexGroup(), directAdsField.getIndexOffset(),
-                    (size * directAdsField.getNumberOfElements()));
-            }
-        ).collect(Collectors.toList());
-        long expectedResponseDataSize = items.stream().mapToLong(item->((AdsMultiRequestItemRead)item).getItemReadLength()+4).sum();
         // With multi-requests, the index-group is fixed and the index offset indicates the number of elements.
-        AdsReadWriteRequest adsData = new AdsReadWriteRequest(
-            ReservedIndexGroups.ADSIGRP_MULTIPLE_READ.getValue(), directAdsFields.size(), expectedResponseDataSize,
-            items, null);
-
-
-        AmsPacket amsPacket = new AmsPacket(configuration.getTargetAmsNetId(), configuration.getTargetAmsPort(),
+        AmsPacket amsPacket = new AdsReadWriteRequest(configuration.getTargetAmsNetId(), configuration.getTargetAmsPort(),
             configuration.getSourceAmsNetId(), configuration.getSourceAmsPort(),
-            CommandId.ADS_READ_WRITE, DEFAULT_COMMAND_STATE, 0, getInvokeId(), adsData);
+            0, getInvokeId(), ReservedIndexGroups.ADSIGRP_MULTIPLE_READ.getValue(), directAdsFields.size(), expectedResponseDataSize,
+            directAdsFields.stream().map(directAdsField -> new AdsMultiRequestItemRead(
+                    directAdsField.getIndexGroup(), directAdsField.getIndexOffset(),
+                    ((long) directAdsField.getAdsDataType().getNumBytes() * directAdsField.getNumberOfElements())))
+                .collect(Collectors.toList()), null);
         AmsTCPPacket amsTCPPacket = new AmsTCPPacket(amsPacket);
 
         // Start a new request-transaction (Is ended in the response-handler)
@@ -250,18 +389,18 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
             .onTimeout(future::completeExceptionally)
             .onError((p, e) -> future.completeExceptionally(e))
             .check(responseAmsPacket -> responseAmsPacket.getUserdata().getInvokeId() == amsPacket.getInvokeId())
-            .unwrap(response -> (AdsReadWriteResponse) response.getUserdata().getData())
-            .handle(responseAdsData -> {
-                if (responseAdsData.getResult() == ReturnCode.OK) {
-                    final PlcReadResponse plcReadResponse = convertToPlc4xReadResponse(readRequest, responseAdsData);
+            .unwrap(amsResponsePacket -> (AdsReadWriteResponse) amsResponsePacket.getUserdata())
+            .handle(response -> {
+                if (response.getResult() == ReturnCode.OK) {
+                    final PlcReadResponse plcReadResponse = convertToPlc4xReadResponse(readRequest, response);
                     // Convert the response from the PLC into a PLC4X Response ...
                     future.complete(plcReadResponse);
                 } else {
-                    if (responseAdsData.getResult() == ReturnCode.ADSERR_DEVICE_INVALIDSIZE) {
+                    if (response.getResult() == ReturnCode.ADSERR_DEVICE_INVALIDSIZE) {
                         future.completeExceptionally(
                             new PlcException("The parameter size was not correct (Internal error)"));
                     } else {
-                        future.completeExceptionally(new PlcException("Unexpected result " + responseAdsData.getResult()));
+                        future.completeExceptionally(new PlcException("Unexpected result " + response.getResult()));
                     }
                 }
                 // Finish the request-transaction.
@@ -270,7 +409,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
         return future;
     }
 
-    protected PlcReadResponse convertToPlc4xReadResponse(PlcReadRequest readRequest, AdsData adsData) {
+    protected PlcReadResponse convertToPlc4xReadResponse(PlcReadRequest readRequest, AmsPacket adsData) {
         ReadBuffer readBuffer = null;
         Map<String, PlcResponseCode> responseCodes = new HashMap<>();
         if (adsData instanceof AdsReadResponse) {
@@ -322,19 +461,18 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
     private ResponseItem<PlcValue> parsePlcValue(AdsField field, ReadBuffer readBuffer) {
         try {
             int strLen = 0;
-            String strEncoding = "UTF-8";
             if ((field.getAdsDataType() == AdsDataType.STRING) || (field.getAdsDataType() == AdsDataType.WSTRING)) {
                 strLen = (field instanceof AdsStringField) ? ((AdsStringField) field).getStringLength() : 256;
             }
             final int stringLength = strLen;
             if (field.getNumberOfElements() == 1) {
                 return new ResponseItem<>(PlcResponseCode.OK,
-                    DataItem.staticParse(readBuffer, field.getAdsDataType().getDataFormatName(), stringLength, field.getStringEncoding()));
+                    DataItem.staticParse(readBuffer, field.getAdsDataType().getDataFormatName(), stringLength));
             } else {
                 // Fetch all
                 final PlcValue[] resultItems = IntStream.range(0, field.getNumberOfElements()).mapToObj(i -> {
                     try {
-                        return DataItem.staticParse(readBuffer, field.getAdsDataType().getDataFormatName(), stringLength, field.getStringEncoding());
+                        return DataItem.staticParse(readBuffer, field.getAdsDataType().getDataFormatName(), stringLength);
                     } catch (ParseException e) {
                         LOGGER.warn("Error parsing field item of type: '{}' (at position {}})", field.getAdsDataType(), i, e);
                     }
@@ -414,17 +552,23 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
         final String fieldName = writeRequest.getFieldNames().iterator().next();
         final AdsField plcField = (AdsField) writeRequest.getField(fieldName);
         final PlcValue plcValue = writeRequest.getPlcValue(fieldName);
-        int stringLength = (plcField instanceof AdsStringField) ? ((AdsStringField) plcField).getStringLength() : 0;
-        stringLength = Math.min(stringLength, 256);
+        final int stringLength;
+        if (directAdsField.getAdsDataType() == AdsDataType.STRING) {
+            stringLength = plcValue.getString().length() + 1;
+        } else {
+            if (directAdsField.getAdsDataType() == AdsDataType.WSTRING) {
+                stringLength = (plcValue.getString().length() + 1) * 2;
+            } else {
+                stringLength = 0;
+            }
+        }
         try {
             WriteBufferByteBased writeBuffer = new WriteBufferByteBased(DataItem.getLengthInBytes(plcValue,
-                plcField.getAdsDataType().getDataFormatName(), stringLength, plcField.getStringEncoding()), ByteOrder.LITTLE_ENDIAN);
-            DataItem.staticSerialize(writeBuffer, plcValue, plcField.getAdsDataType().getDataFormatName(), stringLength, plcField.getStringEncoding(), ByteOrder.LITTLE_ENDIAN);
-            AdsData adsData = new AdsWriteRequest(
-                directAdsField.getIndexGroup(), directAdsField.getIndexOffset(), writeBuffer.getBytes());
-            AmsPacket amsPacket = new AmsPacket(configuration.getTargetAmsNetId(), configuration.getTargetAmsPort(),
+                plcField.getAdsDataType().getPlcValueType(), stringLength));
+            DataItem.staticSerialize(writeBuffer, plcValue, plcField.getAdsDataType().getPlcValueType(), stringLength, ByteOrder.LITTLE_ENDIAN);
+            AmsPacket amsPacket = new AdsWriteRequest(configuration.getTargetAmsNetId(), configuration.getTargetAmsPort(),
                 configuration.getSourceAmsNetId(), configuration.getSourceAmsPort(),
-                CommandId.ADS_WRITE, DEFAULT_COMMAND_STATE, 0, getInvokeId(), adsData);
+                0, getInvokeId(), directAdsField.getIndexGroup(), directAdsField.getIndexOffset(), writeBuffer.getData());
             AmsTCPPacket amsTCPPacket = new AmsTCPPacket(amsPacket);
 
             // Start a new request-transaction (Is ended in the response-handler)
@@ -434,21 +578,21 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                 .onTimeout(future::completeExceptionally)
                 .onError((p, e) -> future.completeExceptionally(e))
                 .check(responseAmsPacket -> responseAmsPacket.getUserdata().getInvokeId() == amsPacket.getInvokeId())
-                .unwrap(response -> (AdsWriteResponse) response.getUserdata().getData())
-                .handle(responseAdsData -> {
-                    if (responseAdsData.getResult() == ReturnCode.OK) {
-                        final PlcWriteResponse plcWriteResponse = convertToPlc4xWriteResponse(writeRequest, responseAdsData);
+                .unwrap(amsResponsePacket -> (AdsWriteResponse) amsResponsePacket.getUserdata())
+                .handle(response -> {
+                    if (response.getResult() == ReturnCode.OK) {
+                        final PlcWriteResponse plcWriteResponse = convertToPlc4xWriteResponse(writeRequest, response);
                         // Convert the response from the PLC into a PLC4X Response ...
                         future.complete(plcWriteResponse);
                     } else {
                         // TODO: Implement this correctly.
-                        future.completeExceptionally(new PlcException("Unexpected return code " + responseAdsData.getResult()));
+                        future.completeExceptionally(new PlcException("Unexpected return code " + response.getResult()));
                     }
                     // Finish the request-transaction.
                     transaction.endRequest();
                 }));
         } catch (Exception e) {
-            future.completeExceptionally(new PlcException("Error",e));
+            future.completeExceptionally(new PlcException("Error"));
         }
         return future;
     }
@@ -458,69 +602,44 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
 
         // Calculate the size of all fields together.
         // Calculate the expected size of the response data.
-        int expectedResponseDataSize = writeRequest.getFieldNames().stream().mapToInt(fieldName->{
-                final AdsField plcField = (AdsField) writeRequest.getField(fieldName);
-                final PlcValue plcValue = writeRequest.getPlcValue(fieldName);
-                int stringLength = (plcField instanceof AdsStringField) ? ((AdsStringField) plcField).getStringLength() : 0;
-                stringLength = Math.min(stringLength, 256);
-                final int lengthInBytes =  DataItem.getLengthInBytes(plcValue,
-                    plcField.getAdsDataType().getDataFormatName(), stringLength, plcField.getStringEncoding());
-                return lengthInBytes * plcField.getNumberOfElements();
-            }
-        ).sum();
-        byte[] writeBuffer = new byte[expectedResponseDataSize];
+        int expectedRequestDataSize = directAdsFields.stream().mapToInt(
+            field -> field.getAdsDataType().getNumBytes() * field.getNumberOfElements()).sum();
+        byte[] writeBuffer = new byte[expectedRequestDataSize];
         int pos = 0;
         for (String fieldName : writeRequest.getFieldNames()) {
-            final AdsField plcField = (AdsField) writeRequest.getField(fieldName);
+            final AdsField field = (AdsField) writeRequest.getField(fieldName);
             final PlcValue plcValue = writeRequest.getPlcValue(fieldName);
-            int stringLength = (plcField instanceof AdsStringField) ? ((AdsStringField) plcField).getStringLength() : 0;
-            stringLength = Math.min(stringLength, 256);
+            final int stringLength;
+            if (field.getAdsDataType() == AdsDataType.STRING) {
+                stringLength = plcValue.getString().length() + 1;
+            } else {
+                if (field.getAdsDataType() == AdsDataType.WSTRING) {
+                    stringLength = (plcValue.getString().length() + 1) * 2;
+                } else {
+                    stringLength = 0;
+                }
+            }
             try {
                 WriteBufferByteBased itemWriteBuffer = new WriteBufferByteBased(DataItem.getLengthInBytes(plcValue,
-                    plcField.getAdsDataType().getDataFormatName(), stringLength, plcField.getStringEncoding()), ByteOrder.LITTLE_ENDIAN);
+                    field.getAdsDataType().getPlcValueType(), stringLength));
                 DataItem.staticSerialize(itemWriteBuffer, plcValue,
-                    plcField.getAdsDataType().getDataFormatName(), stringLength, plcField.getStringEncoding(), ByteOrder.LITTLE_ENDIAN);
+                    field.getAdsDataType().getPlcValueType(), stringLength, ByteOrder.LITTLE_ENDIAN);
                 int numBytes = itemWriteBuffer.getPos();
-                System.arraycopy(itemWriteBuffer.getBytes(), 0, writeBuffer, pos, numBytes);
+                System.arraycopy(itemWriteBuffer.getData(), 0, writeBuffer, pos, numBytes);
                 pos += numBytes;
-                if( pos > expectedResponseDataSize)
-                {
-                    throw new PlcRuntimeException("Error serializing data, Data length too long");
-                }
             } catch (Exception e) {
                 throw new PlcRuntimeException("Error serializing data", e);
             }
         }
+
         // With multi-requests, the index-group is fixed and the index offset indicates the number of elements.
-        AdsData adsData = new AdsReadWriteRequest(
-            ReservedIndexGroups.ADSIGRP_MULTIPLE_WRITE.getValue(), directAdsFields.size(), (long) directAdsFields.size() * 4,
-            directAdsFields.stream().map(directAdsField -> {
-                    long stringLength;
-                    long size;
-                    if (directAdsField.getAdsDataType() == AdsDataType.STRING) {
-                        // If an explicit size is given with the string, use this, if not use 256
-                        stringLength = (directAdsField instanceof AdsStringField) ?
-                            ((AdsStringField) directAdsField).getStringLength() : 256;
-                        size = stringLength;
-                    } else if (directAdsField.getAdsDataType() == AdsDataType.WSTRING) {
-                        // If an explicit size is given with the string, use this, if not use 512
-                        stringLength = (directAdsField instanceof AdsStringField) ?
-                            ((long) ((AdsStringField) directAdsField).getStringLength() ) * 2 : 512;
-                        size = stringLength;
-                    } else {
-                        size = directAdsField.getAdsDataType().getNumBytes();
-                    }
-                    return new AdsMultiRequestItemWrite(
-                        directAdsField.getIndexGroup(), directAdsField.getIndexOffset(),
-                        (size * directAdsField.getNumberOfElements()));
-                    }
-
-                )
-                .collect(Collectors.toList()), writeBuffer);
-
-        AmsPacket amsPacket = new AmsPacket(configuration.getTargetAmsNetId(), configuration.getTargetAmsPort(),
+        AmsPacket amsPacket = new AdsReadWriteRequest(configuration.getTargetAmsNetId(), configuration.getTargetAmsPort(),
             configuration.getSourceAmsNetId(), configuration.getSourceAmsPort(),
-            CommandId.ADS_READ_WRITE, DEFAULT_COMMAND_STATE, 0, getInvokeId(), adsData);
+            0, getInvokeId(), ReservedIndexGroups.ADSIGRP_MULTIPLE_WRITE.getValue(), directAdsFields.size(), (long) directAdsFields.size() * 4,
+            directAdsFields.stream().map(directAdsField -> new AdsMultiRequestItemWrite(
+                    directAdsField.getIndexGroup(), directAdsField.getIndexOffset(),
+                    ((long) directAdsField.getAdsDataType().getNumBytes() * directAdsField.getNumberOfElements())))
+                .collect(Collectors.toList()), writeBuffer);
         AmsTCPPacket amsTCPPacket = new AmsTCPPacket(amsPacket);
 
         // Start a new request-transaction (Is ended in the response-handler)
@@ -530,10 +649,10 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
             .onTimeout(future::completeExceptionally)
             .onError((p, e) -> future.completeExceptionally(e))
             .check(responseAmsPacket -> responseAmsPacket.getUserdata().getInvokeId() == amsPacket.getInvokeId())
-            .unwrap(response -> (AdsReadWriteResponse) response.getUserdata().getData())
-            .handle(responseAdsData -> {
-                if (responseAdsData.getResult() == ReturnCode.OK) {
-                    final PlcWriteResponse plcWriteResponse = convertToPlc4xWriteResponse(writeRequest, responseAdsData);
+            .unwrap(responseAmsPacket -> (AdsReadWriteResponse) responseAmsPacket.getUserdata())
+            .handle(response -> {
+                if (response.getResult() == ReturnCode.OK) {
+                    final PlcWriteResponse plcWriteResponse = convertToPlc4xWriteResponse(writeRequest, response);
                     // Convert the response from the PLC into a PLC4X Response ...
                     future.complete(plcWriteResponse);
                 } else {
@@ -546,7 +665,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
         return future;
     }
 
-    protected PlcWriteResponse convertToPlc4xWriteResponse(PlcWriteRequest writeRequest, AdsData adsData) {
+    protected PlcWriteResponse convertToPlc4xWriteResponse(PlcWriteRequest writeRequest, AmsPacket adsData) {
         Map<String, PlcResponseCode> responseCodes = new HashMap<>();
         if (adsData instanceof AdsWriteResponse) {
             AdsWriteResponse adsWriteResponse = (AdsWriteResponse) adsData;
@@ -623,22 +742,18 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
     private CompletableFuture<PlcSubscriptionResponse> executeSubscribe(PlcSubscriptionRequest subscribeRequest) {
         CompletableFuture<PlcSubscriptionResponse> future = new CompletableFuture<>();
 
-        List<AdsData> adsData = subscribeRequest.getFields().stream()
+        List<AmsTCPPacket> amsTCPPackets = subscribeRequest.getFields().stream()
             .map(field -> (DefaultPlcSubscriptionField) field)
-            .map(field -> new AdsAddDeviceNotificationRequest(
+            .map(field -> new AmsTCPPacket(new AdsAddDeviceNotificationRequest(configuration.getTargetAmsNetId(), configuration.getTargetAmsPort(),
+                configuration.getSourceAmsNetId(), configuration.getSourceAmsPort(),
+                0, getInvokeId(),
                 symbolicFieldMapping.get((SymbolicAdsField) field.getPlcField()).getIndexGroup(),
                 symbolicFieldMapping.get((SymbolicAdsField) field.getPlcField()).getIndexOffset(),
                 (long) ((AdsField) field.getPlcField()).getAdsDataType().getNumBytes() * field.getNumberOfElements(),
                 field.getPlcSubscriptionType() == PlcSubscriptionType.CYCLIC ? 3 : 4, // if it's not cyclic, it's on change or event
                 0, // there is no api for that yet
-                field.getDuration().orElse(Duration.ZERO).toMillis()))
+                field.getDuration().orElse(Duration.ZERO).toMillis())))
             .collect(Collectors.toList());
-
-        List<AmsTCPPacket> amsTCPPackets = adsData.stream().map(data ->
-            new AmsTCPPacket(new AmsPacket(
-                configuration.getTargetAmsNetId(), configuration.getTargetAmsPort(),
-                configuration.getSourceAmsNetId(), configuration.getSourceAmsPort(),
-                CommandId.ADS_ADD_DEVICE_NOTIFICATION, DEFAULT_COMMAND_STATE, 0, getInvokeId(), data))).collect(Collectors.toList());
 
         Map<String, ResponseItem<PlcSubscriptionHandle>> responses = new HashMap<>();
 
@@ -668,16 +783,16 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                 .onTimeout(future::completeExceptionally)
                 .onError((p, e) -> future.completeExceptionally(e))
                 .check(responseAmsPacket -> responseAmsPacket.getUserdata().getInvokeId() == packet.getUserdata().getInvokeId())
-                .unwrap(response -> (AdsAddDeviceNotificationResponse) response.getUserdata().getData())
-                .handle(responseAdsData -> {
-                    if (responseAdsData.getResult() == ReturnCode.OK) {
+                .unwrap(responseAmsPacket -> (AdsAddDeviceNotificationResponse) responseAmsPacket.getUserdata())
+                .handle(response -> {
+                    if (response.getResult() == ReturnCode.OK) {
                         // Collect notification handle from individual response.
                         responses.put(fieldName, new ResponseItem<>(
-                            parsePlcResponseCode(responseAdsData.getResult()),
+                            parsePlcResponseCode(response.getResult()),
                             new AdsSubscriptionHandle(this,
                                 fieldName,
                                 ((AdsField) ((DefaultPlcSubscriptionField) subscriptionRequest.getField(fieldName)).getPlcField()).getAdsDataType(),
-                                responseAdsData.getNotificationHandle())));
+                                response.getNotificationHandle())));
 
                         // After receiving the last ADD_DEVICE_NOTIFICATION response, complete the PLC4X response.
                         if (!hasMorePackets) {
@@ -685,11 +800,11 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                             future.complete(plcSubscriptionResponse);
                         }
                     } else {
-                        if (responseAdsData.getResult() == ReturnCode.ADSERR_DEVICE_INVALIDSIZE) {
+                        if (response.getResult() == ReturnCode.ADSERR_DEVICE_INVALIDSIZE) {
                             future.completeExceptionally(
                                 new PlcException("The parameter size was not correct (Internal error)"));
                         } else {
-                            future.completeExceptionally(new PlcException("Unexpected result " + responseAdsData.getResult()));
+                            future.completeExceptionally(new PlcException("Unexpected result " + response.getResult()));
                         }
                     }
                     // Finish the request-transaction.
@@ -722,14 +837,10 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                     .forEach(DefaultPlcConsumerRegistration::unregister);
             });
 
-        List<AdsData> adsData = notificationHandles.stream()
-            .map(AdsDeleteDeviceNotificationRequest::new)
-            .collect(Collectors.toList());
-
-        List<AmsTCPPacket> amsTCPPackets = adsData.stream().map(data -> new AmsTCPPacket(
-            new AmsPacket(configuration.getTargetAmsNetId(), configuration.getTargetAmsPort(),
+        List<AmsTCPPacket> amsTCPPackets = notificationHandles.stream().map(data -> new AmsTCPPacket(
+            new AdsDeleteDeviceNotificationRequest(configuration.getTargetAmsNetId(), configuration.getTargetAmsPort(),
                 configuration.getSourceAmsNetId(), configuration.getSourceAmsPort(),
-                CommandId.ADS_DELETE_DEVICE_NOTIFICATION, DEFAULT_COMMAND_STATE, 0, getInvokeId(), data))).collect(Collectors.toList());
+                0, getInvokeId(), data))).collect(Collectors.toList());
 
         // Start the first request-transaction (it is ended in the response-handler)
         RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
@@ -749,9 +860,9 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                 .onTimeout(future::completeExceptionally)
                 .onError((p, e) -> future.completeExceptionally(e))
                 .check(responseAmsPacket -> responseAmsPacket.getUserdata().getInvokeId() == packet.getUserdata().getInvokeId())
-                .unwrap(response -> (AdsDeleteDeviceNotificationResponse) response.getUserdata().getData())
-                .handle(responseAdsData -> {
-                    if (responseAdsData.getResult() == ReturnCode.OK) {
+                .unwrap(responseAmsPacket -> (AdsDeleteDeviceNotificationResponse) responseAmsPacket.getUserdata())
+                .handle(response -> {
+                    if (response.getResult() == ReturnCode.OK) {
                         // After receiving the last DELETE_DEVICE_NOTIFICATION response, complete the PLC4X response.
                         if (!hasMorePackets) {
                             final PlcUnsubscriptionResponse plcUnsubscriptionResponse = new DefaultPlcUnsubscriptionResponse(unsubscriptionRequest);
@@ -759,11 +870,11 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                         }
                     } else {
                         // TODO: this is more guesswork than knowing it could actually occur
-                        if (responseAdsData.getResult() == ReturnCode.ADSERR_DEVICE_NOTIFYHNDINVALID) {
+                        if (response.getResult() == ReturnCode.ADSERR_DEVICE_NOTIFYHNDINVALID) {
                             future.completeExceptionally(
                                 new PlcException("The notification handle is invalid (Internal error)"));
                         } else {
-                            future.completeExceptionally(new PlcException("Unexpected result " + responseAdsData.getResult()));
+                            future.completeExceptionally(new PlcException("Unexpected result " + response.getResult()));
                         }
                     }
                     // Finish the request-transaction.
@@ -780,8 +891,8 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
 
     @Override
     protected void decode(ConversationContext<AmsTCPPacket> context, AmsTCPPacket msg) throws Exception {
-        if (msg.getUserdata().getData() instanceof AdsDeviceNotificationRequest) {
-            AdsDeviceNotificationRequest notificationData = (AdsDeviceNotificationRequest) msg.getUserdata().getData();
+        if (msg.getUserdata() instanceof AdsDeviceNotificationRequest) {
+            AdsDeviceNotificationRequest notificationData = (AdsDeviceNotificationRequest) msg.getUserdata();
             List<AdsStampHeader> stamps = notificationData.getAdsStampHeaders();
             for (AdsStampHeader stamp : stamps) {
                 // convert Windows FILETIME format to unix epoch
@@ -793,11 +904,10 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                         for (PlcSubscriptionHandle subscriptionHandle : registration.getSubscriptionHandles()) {
                             if (subscriptionHandle instanceof AdsSubscriptionHandle) {
                                 AdsSubscriptionHandle adsHandle = (AdsSubscriptionHandle) subscriptionHandle;
-                                if (adsHandle.getNotificationHandle() == handle) {
+                                if (adsHandle.getNotificationHandle() == handle)
                                     consumers.get(registration).accept(
                                         new DefaultPlcSubscriptionEvent(Instant.ofEpochMilli(unixEpochTimestamp),
                                             convertSampleToPlc4XResult(adsHandle, sample.getData())));
-                                }
                             }
                         }
                     }
@@ -811,7 +921,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
         Map<String, ResponseItem<PlcValue>> values = new HashMap<>();
         ReadBufferByteBased readBuffer = new ReadBufferByteBased(data, ByteOrder.LITTLE_ENDIAN);
         values.put(subscriptionHandle.getPlcFieldName(), new ResponseItem<>(PlcResponseCode.OK,
-            DataItem.staticParse(readBuffer, subscriptionHandle.getAdsDataType().getDataFormatName(), data.length, "UTF-8")));
+            DataItem.staticParse(readBuffer, subscriptionHandle.getAdsDataType().getPlcValueType(), data.length)));
         return values;
     }
 
@@ -908,12 +1018,11 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
     protected CompletableFuture<Void> resolveSingleSymbolicAddress(SymbolicAdsField symbolicAdsField) {
         CompletableFuture<Void> future = new CompletableFuture<>();
 
-        AdsData adsData = new AdsReadWriteRequest(ReservedIndexGroups.ADSIGRP_SYM_HNDBYNAME.getValue(), 0,
+        AmsPacket amsPacket = new AdsReadWriteRequest(configuration.getTargetAmsNetId(), configuration.getTargetAmsPort(),
+            configuration.getSourceAmsNetId(), configuration.getSourceAmsPort(),
+            0, getInvokeId(), ReservedIndexGroups.ADSIGRP_SYM_HNDBYNAME.getValue(), 0,
             4, null,
             getNullByteTerminatedArray(symbolicAdsField.getSymbolicAddress()));
-        AmsPacket amsPacket = new AmsPacket(configuration.getTargetAmsNetId(), configuration.getTargetAmsPort(),
-            configuration.getSourceAmsNetId(), configuration.getSourceAmsPort(),
-            CommandId.ADS_READ_WRITE, DEFAULT_COMMAND_STATE, 0, getInvokeId(), adsData);
         AmsTCPPacket amsTCPPacket = new AmsTCPPacket(amsPacket);
 
         // Start a new request-transaction (Is ended in the response-handler)
@@ -923,35 +1032,22 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
             .onTimeout(future::completeExceptionally)
             .onError((p, e) -> future.completeExceptionally(e))
             .check(responseAmsPacket -> responseAmsPacket.getUserdata().getInvokeId() == amsPacket.getInvokeId())
-            .unwrap(response -> response.getUserdata().getData())
+            .unwrap(AmsTCPPacket::getUserdata)
             .check(AdsReadWriteResponse.class::isInstance)
             .unwrap(AdsReadWriteResponse.class::cast)
-            .handle(responseAdsData -> {
-                if (responseAdsData.getResult() != ReturnCode.OK) {
-                    if (responseAdsData.getResult() == null)
-                    {
-                        future.completeExceptionally(new PlcException("Couldn't retrieve handle for symbolic field " +
-                            symbolicAdsField.getSymbolicAddress()));
-                    } else {
-                        future.completeExceptionally(new PlcException("Couldn't retrieve handle for symbolic field " +
-                            symbolicAdsField.getSymbolicAddress() + ", got return code " +  responseAdsData.getResult().name()));
-                    }
+            .handle(response -> {
+                if (response.getResult() != ReturnCode.OK) {
+                    future.completeExceptionally(new PlcException("Couldn't retrieve handle for symbolic field " +
+                        symbolicAdsField.getSymbolicAddress() + " got return code " + response.getResult().name()));
                 } else {
-                    ReadBuffer readBuffer = new ReadBufferByteBased(responseAdsData.getData(), ByteOrder.LITTLE_ENDIAN);
+                    ReadBuffer readBuffer = new ReadBufferByteBased(response.getData(), ByteOrder.LITTLE_ENDIAN);
                     try {
                         // Read the handle.
                         long handle = readBuffer.readUnsignedLong(32);
-                        final DirectAdsField directAdsField;
-                        if(symbolicAdsField instanceof AdsStringField)
-                        {
-                            directAdsField = new DirectAdsStringField(
-                                ReservedIndexGroups.ADSIGRP_SYM_VALBYHND.getValue(), handle,
-                                symbolicAdsField.getAdsDataType(),((AdsStringField)symbolicAdsField).getStringLength(), symbolicAdsField.getNumberOfElements(), symbolicAdsField.getStringEncoding());
-                        } else {
-                            directAdsField = new DirectAdsField(
-                                ReservedIndexGroups.ADSIGRP_SYM_VALBYHND.getValue(), handle,
-                                symbolicAdsField.getAdsDataType(), symbolicAdsField.getNumberOfElements(), symbolicAdsField.getStringEncoding());
-                        }
+
+                        DirectAdsField directAdsField = new DirectAdsField(
+                            ReservedIndexGroups.ADSIGRP_SYM_VALBYHND.getValue(), handle,
+                            symbolicAdsField.getAdsDataType(), symbolicAdsField.getNumberOfElements());
                         symbolicFieldMapping.put(symbolicAdsField, directAdsField);
                         future.complete(null);
                     } catch (ParseException e) {
@@ -968,17 +1064,15 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
 
         // The expected response for every symbolic address is 12 bytes (8 bytes header and 4 bytes for the handle)
         long expectedResponseDataSize = (long) (symbolicAdsFields.size()) * 12;
-        // Concatenate the string part of each symbolic address into one concattenated string and get the bytes.
+        // Concatenate the string part of each symbolic address into one concatenated string and get the bytes.
         byte[] addressData = symbolicAdsFields.stream().map(
             SymbolicAdsField::getSymbolicAddress).collect(Collectors.joining("")).getBytes();
-        AdsData adsData = new AdsReadWriteRequest(ReservedIndexGroups.ADSIGRP_MULTIPLE_READ_WRITE.getValue(),
+        AmsPacket amsPacket = new AdsReadWriteRequest(configuration.getTargetAmsNetId(), configuration.getTargetAmsPort(),
+            configuration.getSourceAmsNetId(), configuration.getSourceAmsPort(),
+            0, getInvokeId(), ReservedIndexGroups.ADSIGRP_MULTIPLE_READ_WRITE.getValue(),
             symbolicAdsFields.size(), expectedResponseDataSize, symbolicAdsFields.stream().map(symbolicAdsField ->
             new AdsMultiRequestItemReadWrite(ReservedIndexGroups.ADSIGRP_SYM_HNDBYNAME.getValue(), 0,
-                4, symbolicAdsField.getSymbolicAddress().length())
-        ).collect(Collectors.toList()), addressData);
-        AmsPacket amsPacket = new AmsPacket(configuration.getTargetAmsNetId(), configuration.getTargetAmsPort(),
-            configuration.getSourceAmsNetId(), configuration.getSourceAmsPort(),
-            CommandId.ADS_READ_WRITE, DEFAULT_COMMAND_STATE, 0, getInvokeId(), adsData);
+                4, symbolicAdsField.getSymbolicAddress().length())).collect(Collectors.toList()), null);
         AmsTCPPacket amsTCPPacket = new AmsTCPPacket(amsPacket);
 
         // Start a new request-transaction (Is ended in the response-handler)
@@ -988,11 +1082,11 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
             .onTimeout(future::completeExceptionally)
             .onError((p, e) -> future.completeExceptionally(e))
             .check(responseAmsPacket -> responseAmsPacket.getUserdata().getInvokeId() == amsPacket.getInvokeId())
-            .unwrap(response -> response.getUserdata().getData())
+            .unwrap(AmsTCPPacket::getUserdata)
             .check(AdsReadWriteResponse.class::isInstance)
             .unwrap(AdsReadWriteResponse.class::cast)
-            .handle(responseAdsData -> {
-                ReadBuffer readBuffer = new ReadBufferByteBased(responseAdsData.getData(), ByteOrder.LITTLE_ENDIAN);
+            .handle(response -> {
+                ReadBuffer readBuffer = new ReadBufferByteBased(response.getData(), ByteOrder.LITTLE_ENDIAN);
                 Map<SymbolicAdsField, Long> returnCodes = new HashMap<>();
                 // In the response first come the return codes and the data-lengths for each item.
                 symbolicAdsFields.forEach(symbolicAdsField -> {
@@ -1014,17 +1108,10 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                         if (returnCodes.get(symbolicAdsField) == 0) {
                             // Read the handle.
                             long handle = readBuffer.readUnsignedLong(32);
-                            final DirectAdsField directAdsField;
-                            if(symbolicAdsField instanceof AdsStringField)
-                            {
-                                directAdsField = new DirectAdsStringField(
-                                    ReservedIndexGroups.ADSIGRP_SYM_VALBYHND.getValue(), handle,
-                                    symbolicAdsField.getAdsDataType(),((AdsStringField)symbolicAdsField).getStringLength(), symbolicAdsField.getNumberOfElements(), symbolicAdsField.getStringEncoding());
-                            } else {
-                                directAdsField = new DirectAdsField(
-                                    ReservedIndexGroups.ADSIGRP_SYM_VALBYHND.getValue(), handle,
-                                    symbolicAdsField.getAdsDataType(), symbolicAdsField.getNumberOfElements(), symbolicAdsField.getStringEncoding());
-                            }
+
+                            DirectAdsField directAdsField = new DirectAdsField(
+                                ReservedIndexGroups.ADSIGRP_SYM_VALBYHND.getValue(), handle,
+                                symbolicAdsField.getAdsDataType(), symbolicAdsField.getNumberOfElements());
                             symbolicFieldMapping.put(symbolicAdsField, directAdsField);
                         } else {
                             // TODO: Handle the case of unsuccessful resolution ..

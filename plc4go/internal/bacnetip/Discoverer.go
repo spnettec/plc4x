@@ -48,7 +48,7 @@ func NewDiscoverer() *Discoverer {
 	return &Discoverer{}
 }
 
-func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.PlcDiscoveryEvent), discoveryOptions ...options.WithDiscoveryOption) error {
+func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption) error {
 	// TODO: handle ctx
 	interfaces, err := extractInterfaces(discoveryOptions)
 	if err != nil {
@@ -227,7 +227,7 @@ func broadcastAndDiscover(ctx context.Context, communicationChannels []communica
 	return incomingBVLCChannel, nil
 }
 
-func handleIncomingBVLCs(ctx context.Context, callback func(event apiModel.PlcDiscoveryEvent), incomingBVLCChannel chan receivedBvlcMessage) {
+func handleIncomingBVLCs(ctx context.Context, callback func(event apiModel.PlcDiscoveryItem), incomingBVLCChannel chan receivedBvlcMessage) {
 	for {
 		select {
 		case receivedBvlc := <-incomingBVLCChannel:
