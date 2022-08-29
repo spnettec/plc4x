@@ -24,25 +24,18 @@ import org.apache.plc4x.java.api.PlcDriver;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.messages.PlcBrowseItem;
 import org.apache.plc4x.java.api.messages.PlcBrowseRequest;
-import org.apache.plc4x.java.api.messages.PlcBrowseResponse;
 import org.apache.plc4x.java.api.messages.PlcDiscoveryRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.concurrent.CompletableFuture;
+public class HelloPlc4xDiscoverAndBrowse {
 
-public class HelloPlc4x {
-
-    private static final Logger logger = LoggerFactory.getLogger(HelloPlc4x.class);
+    private static final Logger logger = LoggerFactory.getLogger(HelloPlc4xDiscoverAndBrowse.class);
 
     public static void main(String[] args) throws Exception {
         // Iterate over all installed drivers and execute their browse functionality (If they support it)
         PlcDriverManager driverManager = new PlcDriverManager();
         for (String protocolCode : driverManager.listDrivers()) {
-            // For some reason modbus is failing on my machine ... investigate
-            if(protocolCode.startsWith("modbus")) {
-                continue;
-            }
             PlcDriver driver = driverManager.getDriver(protocolCode);
             if(driver.getMetadata().canDiscover()) {
                 logger.info("Performing discovery for {} protocol", driver.getProtocolName());
