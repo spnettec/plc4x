@@ -51,7 +51,9 @@ func (m AdsXmlParserHelper) Parse(typeName string, xmlString string, parserArgum
 			return nil, err
 		}
 		stringLength := int32(parsedInt1)
-		return model.DataItemParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), plcValueType, stringLength)
+		// TODO: find a way to parse the sub types
+		var stringEncoding string
+		return model.DataItemParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), plcValueType, stringLength, stringEncoding)
 	case "AdsTableSizes":
 		return model.AdsTableSizesParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "AdsMultiRequestItem":

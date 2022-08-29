@@ -398,7 +398,7 @@ func (m *Reader) ToPlc4xReadResponse(amsTcpPaket readWriteModel.AmsTCPPacket, re
 
 		// Decode the data according to the information from the request
 		log.Trace().Msg("decode data")
-		value, err := readWriteModel.DataItemParse(rb, field.GetDatatype().PlcValueType(), field.GetStringLength())
+		value, err := readWriteModel.DataItemParse(rb, field.GetDatatype().PlcValueType(), field.GetStringLength(), field.GetStringEncoding())
 		if err != nil {
 			log.Error().Err(err).Msg("Error parsing data item")
 			responseCodes[fieldName] = model.PlcResponseCode_INTERNAL_ERROR

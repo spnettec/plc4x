@@ -74,13 +74,13 @@ public class S7PlcValueHandler implements PlcValueHandler {
             } else if (value instanceof Long) {
                 return PlcLINT.of(value);
             } else if (value instanceof BigInteger) {
-                return new PlcBigInteger((BigInteger) value);
+                return new PlcLINT((BigInteger) value);
             } else if (value instanceof Float) {
                 return PlcREAL.of(value);
             } else if (value instanceof Double) {
                 return PlcLREAL.of(value);
             } else if (value instanceof BigDecimal) {
-                return new PlcBigDecimal((BigDecimal) value);
+                return new PlcLINT((BigDecimal) value);
             } else if (value instanceof Duration) {
                 return new PlcTIME((Duration) value);
             } else if (value instanceof LocalTime) {
