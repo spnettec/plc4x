@@ -26,6 +26,7 @@ import io.netty.util.HashedWheelTimer;
 import io.netty.util.Timeout;
 import io.netty.util.Timer;
 import io.vavr.control.Either;
+import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.events.*;
 import org.apache.plc4x.java.spi.internal.DefaultExpectRequestContext;
@@ -52,16 +53,27 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
     private static final Logger logger = LoggerFactory.getLogger(Plc4xNettyWrapper.class);
 
     private final Plc4xProtocolBase<T> protocolBase;
+
+    private final PlcAuthentication authentication;
+
     private final Queue<HandlerRegistration> registeredHandlers;
     private Timer timer = null;
     private final boolean passive;
 
-    public Plc4xNettyWrapper(ChannelPipeline pipeline, boolean passive, Plc4xProtocolBase<T> protocol, Class<T> clazz) {
+    public Plc4xNettyWrapper(ChannelPipeline pipeline, boolean passive, Plc4xProtocolBase<T> protocol,
+                             PlcAuthentication authentication, Class<T> clazz) {
         super(clazz, Object.class);
         this.passive = passive;
         this.registeredHandlers = new ConcurrentLinkedQueue<>();
         this.protocolBase = protocol;
+        this.authentication = authentication;
         this.protocolBase.setContext(new ConversationContext<T>() {
+
+            @Override
+            public PlcAuthentication getAuthentication() {
+                return authentication;
+            }
+
             @Override
             public Channel getChannel() {
                 return pipeline.channel();
@@ -197,7 +209,7 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
             }
         }
         logger.trace("None of {} registered handlers could handle message {}, using default decode method", this.registeredHandlers.size(), t);
-        protocolBase.decode(new DefaultConversationContext<>(channelHandlerContext, passive), t);
+        protocolBase.decode(new DefaultConversationContext<>(channelHandlerContext, authentication, passive), t);
     }
 
     @Override
@@ -206,13 +218,13 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
         // by sending a connection request to the plc.
         logger.debug("User Event triggered {}", evt);
         if (evt instanceof ConnectEvent) {
-            this.protocolBase.onConnect(new DefaultConversationContext<>(ctx, passive));
+            this.protocolBase.onConnect(new DefaultConversationContext<>(ctx, authentication, passive));
         } else if (evt instanceof DisconnectEvent) {
-            this.protocolBase.onDisconnect(new DefaultConversationContext<>(ctx, passive));
+            this.protocolBase.onDisconnect(new DefaultConversationContext<>(ctx, authentication, passive));
         } else if (evt instanceof DiscoverEvent) {
-            this.protocolBase.onDiscover(new DefaultConversationContext<>(ctx, passive));
+            this.protocolBase.onDiscover(new DefaultConversationContext<>(ctx, authentication, passive));
         } else if (evt instanceof CloseConnectionEvent) {
-            this.protocolBase.close(new DefaultConversationContext<>(ctx, passive));
+            this.protocolBase.close(new DefaultConversationContext<>(ctx, authentication, passive));
             if(this.timer!=null) {
                 this.timer.stop();
                 this.timer = null;
@@ -224,16 +236,25 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
 
     public class DefaultConversationContext<T1> implements ConversationContext<T1> {
         private final ChannelHandlerContext channelHandlerContext;
+
+        private final PlcAuthentication authentication;
         private final boolean passive;
 
-        public DefaultConversationContext(ChannelHandlerContext channelHandlerContext, boolean passive) {
+        public DefaultConversationContext(ChannelHandlerContext channelHandlerContext,
+                                          PlcAuthentication authentication,
+                                          boolean passive) {
             this.channelHandlerContext = channelHandlerContext;
+            this.authentication = authentication;
             this.passive = passive;
         }
 
         @Override
         public Channel getChannel() {
             return channelHandlerContext.channel();
+        }
+
+        public PlcAuthentication getAuthentication() {
+            return authentication;
         }
 
         @Override

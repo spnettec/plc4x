@@ -218,7 +218,7 @@ def checkPythonVenv() {
         def stdErr = new StringBuilder()
         process.consumeProcessOutput(stdOut, stdErr)
         process.waitForOrKill(500)
-        if(stdErr.contains("No module named")) {
+        if (stdErr.contains("No module named")) {
             println "missing"
             allConditionsMet = false
         } else {
@@ -269,9 +269,9 @@ def checkLibPcap(String minVersion, String os, String arch) {
         if (os == "mac") {
             // On my Intel Mac I found the libs in: "/usr/local/Cellar/libpcap/1.10.1/lib"
             // On my M1 Mac I found the libs in: "/opt/homebrew/Cellar/libpcap/1.10.1/lib"
-            if(new File("/usr/local/Cellar/libpcap/1.10.1/lib").exists()) {
+            if (new File("/usr/local/Cellar/libpcap/1.10.1/lib").exists()) {
                 System.getProperties().setProperty("jna.library.path", "/usr/local/Cellar/libpcap/1.10.1/lib");
-            } else if(new File("/opt/homebrew/Cellar/libpcap/1.10.1/lib").exists()) {
+            } else if (new File("/opt/homebrew/Cellar/libpcap/1.10.1/lib").exists()) {
                 System.getProperties().setProperty("jna.library.path", "/opt/homebrew/Cellar/libpcap/1.10.1/lib");
             }
             // java.lang.UnsatisfiedLinkError: Can't load library: /Users/christoferdutz/Library/Caches/JNA/temp/jna877652535357666533.tmp
@@ -280,7 +280,7 @@ def checkLibPcap(String minVersion, String os, String arch) {
         if (arch != "aarch64") {
             output = org.pcap4j.core.Pcaps.libVersion()
             String version = output - ~/^libpcap version /
-            def result =  checkVersionAtLeast(version, minVersion)
+            def result = checkVersionAtLeast(version, minVersion)
             if (!result) {
                 //allConditionsMet = false
             }
@@ -312,16 +312,18 @@ private Matcher extractVersion(input) {
 /////////////////////////////////////////////////////
 // Find out which OS and arch are bring used.
 /////////////////////////////////////////////////////
-
+println "Os name:    ${System.getProperty("os.name")}"
+println "Os arch:    ${System.getProperty("os.arch")}"
+println "Os version: ${System.getProperty("os.version")}"
 def osString = project.properties['os.classifier']
 def osMatcher = osString =~ /(.*)-(.*)/
 if (osMatcher.size() == 0) {
-    throw new RuntimeException("Currently unsupported OS")
+    throw new RuntimeException("Currently unsupported OS. Actual os string: $osString")
 }
 def os = osMatcher[0][1]
 def arch = osMatcher[0][2]
-println "Detected OS:   " + os
-println "Detected Arch: " + arch
+println "Detected OS:   $os"
+println "Detected Arch: $arch"
 
 /////////////////////////////////////////////////////
 // Find out which profiles are enabled.
