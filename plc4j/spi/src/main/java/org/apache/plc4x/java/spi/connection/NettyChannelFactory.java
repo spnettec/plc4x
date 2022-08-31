@@ -45,6 +45,7 @@ public abstract class NettyChannelFactory implements ChannelFactory {
     private static final Logger logger = LoggerFactory.getLogger(NettyChannelFactory.class);
 
     protected static HashedWheelTimer timer = new HashedWheelTimer();
+    @Override
     public Timer getTimer(){
         if(timer==null){
             timer = new HashedWheelTimer();

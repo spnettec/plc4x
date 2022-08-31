@@ -33,15 +33,15 @@ type ICALCommandType interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
-const (
-	CALCommandType_RESET           CALCommandType = 0x00
-	CALCommandType_RECALL          CALCommandType = 0x01
-	CALCommandType_IDENTIFY        CALCommandType = 0x02
-	CALCommandType_GET_STATUS      CALCommandType = 0x03
-	CALCommandType_WRITE           CALCommandType = 0x04
-	CALCommandType_REPLY           CALCommandType = 0x0F
-	CALCommandType_ACKNOWLEDGE     CALCommandType = 0x10
-	CALCommandType_STATUS          CALCommandType = 0x11
+const(
+	CALCommandType_RESET CALCommandType = 0x00
+	CALCommandType_RECALL CALCommandType = 0x01
+	CALCommandType_IDENTIFY CALCommandType = 0x02
+	CALCommandType_GET_STATUS CALCommandType = 0x03
+	CALCommandType_WRITE CALCommandType = 0x04
+	CALCommandType_REPLY CALCommandType = 0x0F
+	CALCommandType_ACKNOWLEDGE CALCommandType = 0x10
+	CALCommandType_STATUS CALCommandType = 0x11
 	CALCommandType_STATUS_EXTENDED CALCommandType = 0x12
 )
 
@@ -49,7 +49,7 @@ var CALCommandTypeValues []CALCommandType
 
 func init() {
 	_ = errors.New
-	CALCommandTypeValues = []CALCommandType{
+	CALCommandTypeValues = []CALCommandType {
 		CALCommandType_RESET,
 		CALCommandType_RECALL,
 		CALCommandType_IDENTIFY,
@@ -64,24 +64,24 @@ func init() {
 
 func CALCommandTypeByValue(value uint8) (enum CALCommandType, ok bool) {
 	switch value {
-	case 0x00:
-		return CALCommandType_RESET, true
-	case 0x01:
-		return CALCommandType_RECALL, true
-	case 0x02:
-		return CALCommandType_IDENTIFY, true
-	case 0x03:
-		return CALCommandType_GET_STATUS, true
-	case 0x04:
-		return CALCommandType_WRITE, true
-	case 0x0F:
-		return CALCommandType_REPLY, true
-	case 0x10:
-		return CALCommandType_ACKNOWLEDGE, true
-	case 0x11:
-		return CALCommandType_STATUS, true
-	case 0x12:
-		return CALCommandType_STATUS_EXTENDED, true
+		case 0x00:
+			return CALCommandType_RESET, true
+		case 0x01:
+			return CALCommandType_RECALL, true
+		case 0x02:
+			return CALCommandType_IDENTIFY, true
+		case 0x03:
+			return CALCommandType_GET_STATUS, true
+		case 0x04:
+			return CALCommandType_WRITE, true
+		case 0x0F:
+			return CALCommandType_REPLY, true
+		case 0x10:
+			return CALCommandType_ACKNOWLEDGE, true
+		case 0x11:
+			return CALCommandType_STATUS, true
+		case 0x12:
+			return CALCommandType_STATUS_EXTENDED, true
 	}
 	return 0, false
 }
@@ -110,13 +110,13 @@ func CALCommandTypeByName(value string) (enum CALCommandType, ok bool) {
 	return 0, false
 }
 
-func CALCommandTypeKnows(value uint8) bool {
+func CALCommandTypeKnows(value uint8)  bool {
 	for _, typeValue := range CALCommandTypeValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastCALCommandType(structType interface{}) CALCommandType {
@@ -182,3 +182,4 @@ func (e CALCommandType) PLC4XEnumName() string {
 func (e CALCommandType) String() string {
 	return e.PLC4XEnumName()
 }
+

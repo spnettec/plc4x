@@ -33,10 +33,10 @@ type IBACnetProtocolLevel interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
-const (
-	BACnetProtocolLevel_PHYSICAL               BACnetProtocolLevel = 0
-	BACnetProtocolLevel_PROTOCOL               BACnetProtocolLevel = 1
-	BACnetProtocolLevel_BACNET_APPLICATION     BACnetProtocolLevel = 2
+const(
+	BACnetProtocolLevel_PHYSICAL BACnetProtocolLevel = 0
+	BACnetProtocolLevel_PROTOCOL BACnetProtocolLevel = 1
+	BACnetProtocolLevel_BACNET_APPLICATION BACnetProtocolLevel = 2
 	BACnetProtocolLevel_NON_BACNET_APPLICATION BACnetProtocolLevel = 3
 )
 
@@ -44,7 +44,7 @@ var BACnetProtocolLevelValues []BACnetProtocolLevel
 
 func init() {
 	_ = errors.New
-	BACnetProtocolLevelValues = []BACnetProtocolLevel{
+	BACnetProtocolLevelValues = []BACnetProtocolLevel {
 		BACnetProtocolLevel_PHYSICAL,
 		BACnetProtocolLevel_PROTOCOL,
 		BACnetProtocolLevel_BACNET_APPLICATION,
@@ -54,14 +54,14 @@ func init() {
 
 func BACnetProtocolLevelByValue(value uint8) (enum BACnetProtocolLevel, ok bool) {
 	switch value {
-	case 0:
-		return BACnetProtocolLevel_PHYSICAL, true
-	case 1:
-		return BACnetProtocolLevel_PROTOCOL, true
-	case 2:
-		return BACnetProtocolLevel_BACNET_APPLICATION, true
-	case 3:
-		return BACnetProtocolLevel_NON_BACNET_APPLICATION, true
+		case 0:
+			return BACnetProtocolLevel_PHYSICAL, true
+		case 1:
+			return BACnetProtocolLevel_PROTOCOL, true
+		case 2:
+			return BACnetProtocolLevel_BACNET_APPLICATION, true
+		case 3:
+			return BACnetProtocolLevel_NON_BACNET_APPLICATION, true
 	}
 	return 0, false
 }
@@ -80,13 +80,13 @@ func BACnetProtocolLevelByName(value string) (enum BACnetProtocolLevel, ok bool)
 	return 0, false
 }
 
-func BACnetProtocolLevelKnows(value uint8) bool {
+func BACnetProtocolLevelKnows(value uint8)  bool {
 	for _, typeValue := range BACnetProtocolLevelValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastBACnetProtocolLevel(structType interface{}) BACnetProtocolLevel {
@@ -142,3 +142,4 @@ func (e BACnetProtocolLevel) PLC4XEnumName() string {
 func (e BACnetProtocolLevel) String() string {
 	return e.PLC4XEnumName()
 }
+

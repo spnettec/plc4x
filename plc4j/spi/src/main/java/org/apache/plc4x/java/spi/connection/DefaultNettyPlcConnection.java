@@ -22,11 +22,13 @@ import io.netty.channel.*;
 import io.netty.util.HashedWheelTimer;
 import io.netty.util.Timer;
 import org.apache.plc4x.java.api.EventPlcConnection;
+import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcIoException;
 import org.apache.plc4x.java.api.listener.ConnectionStateListener;
 import org.apache.plc4x.java.api.listener.EventListener;
 import org.apache.plc4x.java.api.value.PlcValueHandler;
+import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.ConfigurationFactory;
 import org.apache.plc4x.java.spi.events.*;
@@ -223,7 +225,8 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
                         } else if (evt instanceof ConnectEvent) {
                             if (!sessionSetupCompleteFuture.isCompletedExceptionally()) {
                                 if (awaitSessionSetupComplete) {
-                                    setProtocol(stackConfigurer.configurePipeline(configuration, pipeline, channelFactory.isPassive()));
+                                    setProtocol(stackConfigurer.configurePipeline(configuration, pipeline,  getAuthentication(),
+                                        channelFactory.isPassive()));
                                 }
                                 super.userEventTriggered(ctx, evt);
                             }
@@ -244,7 +247,8 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
                 channelFactory.initializePipeline(pipeline);
                 // Initialize Protocol Layer
                 if (!awaitSessionSetupComplete) {
-                    setProtocol(stackConfigurer.configurePipeline(configuration, pipeline, channelFactory.isPassive()));
+                    setProtocol(stackConfigurer.configurePipeline(configuration, pipeline, getAuthentication(),
+                        channelFactory.isPassive()));
                 }
             }
         };

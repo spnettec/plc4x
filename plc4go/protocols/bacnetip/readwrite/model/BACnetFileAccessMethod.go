@@ -33,7 +33,7 @@ type IBACnetFileAccessMethod interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
-const (
+const(
 	BACnetFileAccessMethod_RECORD_ACCESS BACnetFileAccessMethod = 0
 	BACnetFileAccessMethod_STREAM_ACCESS BACnetFileAccessMethod = 1
 )
@@ -42,7 +42,7 @@ var BACnetFileAccessMethodValues []BACnetFileAccessMethod
 
 func init() {
 	_ = errors.New
-	BACnetFileAccessMethodValues = []BACnetFileAccessMethod{
+	BACnetFileAccessMethodValues = []BACnetFileAccessMethod {
 		BACnetFileAccessMethod_RECORD_ACCESS,
 		BACnetFileAccessMethod_STREAM_ACCESS,
 	}
@@ -50,10 +50,10 @@ func init() {
 
 func BACnetFileAccessMethodByValue(value uint8) (enum BACnetFileAccessMethod, ok bool) {
 	switch value {
-	case 0:
-		return BACnetFileAccessMethod_RECORD_ACCESS, true
-	case 1:
-		return BACnetFileAccessMethod_STREAM_ACCESS, true
+		case 0:
+			return BACnetFileAccessMethod_RECORD_ACCESS, true
+		case 1:
+			return BACnetFileAccessMethod_STREAM_ACCESS, true
 	}
 	return 0, false
 }
@@ -68,13 +68,13 @@ func BACnetFileAccessMethodByName(value string) (enum BACnetFileAccessMethod, ok
 	return 0, false
 }
 
-func BACnetFileAccessMethodKnows(value uint8) bool {
+func BACnetFileAccessMethodKnows(value uint8)  bool {
 	for _, typeValue := range BACnetFileAccessMethodValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastBACnetFileAccessMethod(structType interface{}) BACnetFileAccessMethod {
@@ -126,3 +126,4 @@ func (e BACnetFileAccessMethod) PLC4XEnumName() string {
 func (e BACnetFileAccessMethod) String() string {
 	return e.PLC4XEnumName()
 }
+

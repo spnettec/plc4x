@@ -34,7 +34,7 @@ type ITelephonyCommandType interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
-const (
+const(
 	TelephonyCommandType_EVENT TelephonyCommandType = 0x00
 )
 
@@ -42,19 +42,18 @@ var TelephonyCommandTypeValues []TelephonyCommandType
 
 func init() {
 	_ = errors.New
-	TelephonyCommandTypeValues = []TelephonyCommandType{
+	TelephonyCommandTypeValues = []TelephonyCommandType {
 		TelephonyCommandType_EVENT,
 	}
 }
 
+
 func (e TelephonyCommandType) NumberOfArguments() uint8 {
-	switch e {
-	case 0x00:
-		{ /* '0x00' */
-			return 0xFF
+	switch e  {
+		case 0x00: { /* '0x00' */
+            return 0xFF
 		}
-	default:
-		{
+		default: {
 			return 0
 		}
 	}
@@ -70,8 +69,8 @@ func TelephonyCommandTypeFirstEnumForFieldNumberOfArguments(value uint8) (Teleph
 }
 func TelephonyCommandTypeByValue(value uint8) (enum TelephonyCommandType, ok bool) {
 	switch value {
-	case 0x00:
-		return TelephonyCommandType_EVENT, true
+		case 0x00:
+			return TelephonyCommandType_EVENT, true
 	}
 	return 0, false
 }
@@ -84,13 +83,13 @@ func TelephonyCommandTypeByName(value string) (enum TelephonyCommandType, ok boo
 	return 0, false
 }
 
-func TelephonyCommandTypeKnows(value uint8) bool {
+func TelephonyCommandTypeKnows(value uint8)  bool {
 	for _, typeValue := range TelephonyCommandTypeValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastTelephonyCommandType(structType interface{}) TelephonyCommandType {
@@ -140,3 +139,4 @@ func (e TelephonyCommandType) PLC4XEnumName() string {
 func (e TelephonyCommandType) String() string {
 	return e.PLC4XEnumName()
 }
+

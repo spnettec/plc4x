@@ -33,10 +33,10 @@ type IBACnetSecurityPolicy interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
-const (
+const(
 	BACnetSecurityPolicy_PLAIN_NON_TRUSTED BACnetSecurityPolicy = 0
-	BACnetSecurityPolicy_PLAIN_TRUSTED     BACnetSecurityPolicy = 1
-	BACnetSecurityPolicy_SIGNED_TRUSTED    BACnetSecurityPolicy = 2
+	BACnetSecurityPolicy_PLAIN_TRUSTED BACnetSecurityPolicy = 1
+	BACnetSecurityPolicy_SIGNED_TRUSTED BACnetSecurityPolicy = 2
 	BACnetSecurityPolicy_ENCRYPTED_TRUSTED BACnetSecurityPolicy = 3
 )
 
@@ -44,7 +44,7 @@ var BACnetSecurityPolicyValues []BACnetSecurityPolicy
 
 func init() {
 	_ = errors.New
-	BACnetSecurityPolicyValues = []BACnetSecurityPolicy{
+	BACnetSecurityPolicyValues = []BACnetSecurityPolicy {
 		BACnetSecurityPolicy_PLAIN_NON_TRUSTED,
 		BACnetSecurityPolicy_PLAIN_TRUSTED,
 		BACnetSecurityPolicy_SIGNED_TRUSTED,
@@ -54,14 +54,14 @@ func init() {
 
 func BACnetSecurityPolicyByValue(value uint8) (enum BACnetSecurityPolicy, ok bool) {
 	switch value {
-	case 0:
-		return BACnetSecurityPolicy_PLAIN_NON_TRUSTED, true
-	case 1:
-		return BACnetSecurityPolicy_PLAIN_TRUSTED, true
-	case 2:
-		return BACnetSecurityPolicy_SIGNED_TRUSTED, true
-	case 3:
-		return BACnetSecurityPolicy_ENCRYPTED_TRUSTED, true
+		case 0:
+			return BACnetSecurityPolicy_PLAIN_NON_TRUSTED, true
+		case 1:
+			return BACnetSecurityPolicy_PLAIN_TRUSTED, true
+		case 2:
+			return BACnetSecurityPolicy_SIGNED_TRUSTED, true
+		case 3:
+			return BACnetSecurityPolicy_ENCRYPTED_TRUSTED, true
 	}
 	return 0, false
 }
@@ -80,13 +80,13 @@ func BACnetSecurityPolicyByName(value string) (enum BACnetSecurityPolicy, ok boo
 	return 0, false
 }
 
-func BACnetSecurityPolicyKnows(value uint8) bool {
+func BACnetSecurityPolicyKnows(value uint8)  bool {
 	for _, typeValue := range BACnetSecurityPolicyValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastBACnetSecurityPolicy(structType interface{}) BACnetSecurityPolicy {
@@ -142,3 +142,4 @@ func (e BACnetSecurityPolicy) PLC4XEnumName() string {
 func (e BACnetSecurityPolicy) String() string {
 	return e.PLC4XEnumName()
 }
+

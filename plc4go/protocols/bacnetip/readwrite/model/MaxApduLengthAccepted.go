@@ -33,13 +33,13 @@ type IMaxApduLengthAccepted interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
-const (
-	MaxApduLengthAccepted_MINIMUM_MESSAGE_SIZE  MaxApduLengthAccepted = 0x0
-	MaxApduLengthAccepted_NUM_OCTETS_128        MaxApduLengthAccepted = 0x1
-	MaxApduLengthAccepted_NUM_OCTETS_206        MaxApduLengthAccepted = 0x2
-	MaxApduLengthAccepted_NUM_OCTETS_480        MaxApduLengthAccepted = 0x3
-	MaxApduLengthAccepted_NUM_OCTETS_1024       MaxApduLengthAccepted = 0x4
-	MaxApduLengthAccepted_NUM_OCTETS_1476       MaxApduLengthAccepted = 0x5
+const(
+	MaxApduLengthAccepted_MINIMUM_MESSAGE_SIZE MaxApduLengthAccepted = 0x0
+	MaxApduLengthAccepted_NUM_OCTETS_128 MaxApduLengthAccepted = 0x1
+	MaxApduLengthAccepted_NUM_OCTETS_206 MaxApduLengthAccepted = 0x2
+	MaxApduLengthAccepted_NUM_OCTETS_480 MaxApduLengthAccepted = 0x3
+	MaxApduLengthAccepted_NUM_OCTETS_1024 MaxApduLengthAccepted = 0x4
+	MaxApduLengthAccepted_NUM_OCTETS_1476 MaxApduLengthAccepted = 0x5
 	MaxApduLengthAccepted_RESERVED_BY_ASHRAE_01 MaxApduLengthAccepted = 0x6
 	MaxApduLengthAccepted_RESERVED_BY_ASHRAE_02 MaxApduLengthAccepted = 0x7
 	MaxApduLengthAccepted_RESERVED_BY_ASHRAE_03 MaxApduLengthAccepted = 0x8
@@ -56,7 +56,7 @@ var MaxApduLengthAcceptedValues []MaxApduLengthAccepted
 
 func init() {
 	_ = errors.New
-	MaxApduLengthAcceptedValues = []MaxApduLengthAccepted{
+	MaxApduLengthAcceptedValues = []MaxApduLengthAccepted {
 		MaxApduLengthAccepted_MINIMUM_MESSAGE_SIZE,
 		MaxApduLengthAccepted_NUM_OCTETS_128,
 		MaxApduLengthAccepted_NUM_OCTETS_206,
@@ -78,38 +78,38 @@ func init() {
 
 func MaxApduLengthAcceptedByValue(value uint8) (enum MaxApduLengthAccepted, ok bool) {
 	switch value {
-	case 0x0:
-		return MaxApduLengthAccepted_MINIMUM_MESSAGE_SIZE, true
-	case 0x1:
-		return MaxApduLengthAccepted_NUM_OCTETS_128, true
-	case 0x2:
-		return MaxApduLengthAccepted_NUM_OCTETS_206, true
-	case 0x3:
-		return MaxApduLengthAccepted_NUM_OCTETS_480, true
-	case 0x4:
-		return MaxApduLengthAccepted_NUM_OCTETS_1024, true
-	case 0x5:
-		return MaxApduLengthAccepted_NUM_OCTETS_1476, true
-	case 0x6:
-		return MaxApduLengthAccepted_RESERVED_BY_ASHRAE_01, true
-	case 0x7:
-		return MaxApduLengthAccepted_RESERVED_BY_ASHRAE_02, true
-	case 0x8:
-		return MaxApduLengthAccepted_RESERVED_BY_ASHRAE_03, true
-	case 0x9:
-		return MaxApduLengthAccepted_RESERVED_BY_ASHRAE_04, true
-	case 0xA:
-		return MaxApduLengthAccepted_RESERVED_BY_ASHRAE_05, true
-	case 0xB:
-		return MaxApduLengthAccepted_RESERVED_BY_ASHRAE_06, true
-	case 0xC:
-		return MaxApduLengthAccepted_RESERVED_BY_ASHRAE_07, true
-	case 0xD:
-		return MaxApduLengthAccepted_RESERVED_BY_ASHRAE_08, true
-	case 0xE:
-		return MaxApduLengthAccepted_RESERVED_BY_ASHRAE_09, true
-	case 0xF:
-		return MaxApduLengthAccepted_RESERVED_BY_ASHRAE_10, true
+		case 0x0:
+			return MaxApduLengthAccepted_MINIMUM_MESSAGE_SIZE, true
+		case 0x1:
+			return MaxApduLengthAccepted_NUM_OCTETS_128, true
+		case 0x2:
+			return MaxApduLengthAccepted_NUM_OCTETS_206, true
+		case 0x3:
+			return MaxApduLengthAccepted_NUM_OCTETS_480, true
+		case 0x4:
+			return MaxApduLengthAccepted_NUM_OCTETS_1024, true
+		case 0x5:
+			return MaxApduLengthAccepted_NUM_OCTETS_1476, true
+		case 0x6:
+			return MaxApduLengthAccepted_RESERVED_BY_ASHRAE_01, true
+		case 0x7:
+			return MaxApduLengthAccepted_RESERVED_BY_ASHRAE_02, true
+		case 0x8:
+			return MaxApduLengthAccepted_RESERVED_BY_ASHRAE_03, true
+		case 0x9:
+			return MaxApduLengthAccepted_RESERVED_BY_ASHRAE_04, true
+		case 0xA:
+			return MaxApduLengthAccepted_RESERVED_BY_ASHRAE_05, true
+		case 0xB:
+			return MaxApduLengthAccepted_RESERVED_BY_ASHRAE_06, true
+		case 0xC:
+			return MaxApduLengthAccepted_RESERVED_BY_ASHRAE_07, true
+		case 0xD:
+			return MaxApduLengthAccepted_RESERVED_BY_ASHRAE_08, true
+		case 0xE:
+			return MaxApduLengthAccepted_RESERVED_BY_ASHRAE_09, true
+		case 0xF:
+			return MaxApduLengthAccepted_RESERVED_BY_ASHRAE_10, true
 	}
 	return 0, false
 }
@@ -152,13 +152,13 @@ func MaxApduLengthAcceptedByName(value string) (enum MaxApduLengthAccepted, ok b
 	return 0, false
 }
 
-func MaxApduLengthAcceptedKnows(value uint8) bool {
+func MaxApduLengthAcceptedKnows(value uint8)  bool {
 	for _, typeValue := range MaxApduLengthAcceptedValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastMaxApduLengthAccepted(structType interface{}) MaxApduLengthAccepted {
@@ -238,3 +238,4 @@ func (e MaxApduLengthAccepted) PLC4XEnumName() string {
 func (e MaxApduLengthAccepted) String() string {
 	return e.PLC4XEnumName()
 }
+
