@@ -140,7 +140,7 @@
     <jaxb.version>4.0.0</jaxb.version>
     <jetty-util.version>11.0.11</jetty-util.version>
     <jna.version>5.12.1</jna.version>
-    <joda-time.version>2.11.0</joda-time.version>
+    <joda-time.version>2.11.1</joda-time.version>
     <jserialcom.version>2.9.2</jserialcom.version>
     <junit.jupiter.version>5.9.0</junit.jupiter.version>
     <junit.platform.version>1.8.2</junit.platform.version>
@@ -148,9 +148,9 @@
     <maven.clean.plugin.version>3.2.0</maven.clean.plugin.version>
     <!-- version 0.6.7 is newer, however the ExampleServer doesn't seem to run with that -->
     <!-- version 0.6.8 is being released, however the milo-examples artifact is not available yet -->
-    <milo.version>0.6.7</milo.version>
+    <milo.version>0.6.8</milo.version>
     <mockito.version>4.7.0</mockito.version>
-    <netty.version>4.1.79.Final</netty.version>
+    <netty.version>4.1.80.Final</netty.version>
     <owasp-dependency-check.version>7.1.2</owasp-dependency-check.version>
     <pcap4j.version>1.8.2</pcap4j.version>
     <slf4j.version>2.0.0</slf4j.version>
@@ -977,7 +977,7 @@
           <dependency>
             <groupId>org.apache.maven.shared</groupId>
             <artifactId>maven-dependency-tree</artifactId>
-            <version>3.1.1</version>
+            <version>3.2.0</version>
           </dependency>
         </dependencies>
       </plugin>
@@ -1338,7 +1338,7 @@
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>exec-maven-plugin</artifactId>
-          <version>3.0.0</version>
+          <version>3.1.0</version>
         </plugin>
 
         <plugin>
@@ -1591,6 +1591,7 @@
         <cmake.root>${project.build.directory}/cmake-${cmake-version}-linux-x86_64/bin/</cmake.root>
         <cmake.generator>Unix Makefiles</cmake.generator>
         <python.venv.bin>venv/bin/</python.venv.bin>
+        <javafx.classifier>linux</javafx.classifier>
       </properties>
     </profile>
     <!-- Profile for linux x86_64 (Self-Enabling) -->
@@ -1609,6 +1610,7 @@
         <cmake.root>${project.build.directory}/cmake-${cmake-version}-linux-x86_64/bin/</cmake.root>
         <cmake.generator>Unix Makefiles</cmake.generator>
         <python.venv.bin>venv/bin/</python.venv.bin>
+        <javafx.classifier>linux</javafx.classifier>
       </properties>
     </profile>
     <!-- Profile for linux aarch64 (Self-Enabling) -->
@@ -1627,6 +1629,7 @@
         <cmake.root>${project.build.directory}/cmake-${cmake-version}-linux-${os.arch}/bin/</cmake.root>
         <cmake.generator>Unix Makefiles</cmake.generator>
         <python.venv.bin>venv/bin/</python.venv.bin>
+        <javafx.classifier>linux-aarch64</javafx.classifier>
       </properties>
     </profile>
     <!-- Profile for mac amd64 (Self-Enabling) -->
@@ -1645,6 +1648,7 @@
         <cmake.root>${project.build.directory}/cmake-${cmake-version}-macos-universal/CMake.app/Contents/bin</cmake.root>
         <cmake.generator>Unix Makefiles</cmake.generator>
         <python.venv.bin>venv/bin/</python.venv.bin>
+        <javafx.classifier>mac</javafx.classifier>
       </properties>
     </profile>
     <!-- Profile for mac x86_64 (Self-Enabling) -->
@@ -1663,6 +1667,7 @@
         <cmake.root>${project.build.directory}/cmake-${cmake-version}-macos-universal/CMake.app/Contents/bin</cmake.root>
         <cmake.generator>Unix Makefiles</cmake.generator>
         <python.venv.bin>venv/bin/</python.venv.bin>
+        <javafx.classifier>mac</javafx.classifier>
       </properties>
     </profile>
     <!-- Profile for mac (Self-Enabling) -->
@@ -1681,6 +1686,7 @@
         <cmake.root>${project.build.directory}/cmake-${cmake-version}-macos-universal/CMake.app/Contents/bin</cmake.root>
         <cmake.generator>Unix Makefiles</cmake.generator>
         <python.venv.bin>venv/bin/</python.venv.bin>
+        <javafx.classifier>mac-aarch64</javafx.classifier>
       </properties>
     </profile>
     <!-- profile for windows (Self-Enabling) -->
@@ -1698,6 +1704,7 @@
         <cmake.root>${project.build.directory}/cmake-${cmake-version}-windows-x86_64/bin</cmake.root>
         <cmake.generator>MinGW Makefiles</cmake.generator>
         <python.venv.bin>venv/Scripts/</python.venv.bin>
+        <javafx.classifier>win-x86</javafx.classifier>
       </properties>
     </profile>
 
