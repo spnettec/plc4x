@@ -27,4 +27,6 @@ import (
 type PlcSubscriber interface {
 	Subscribe(ctx context.Context, subscriptionRequest model.PlcSubscriptionRequest) <-chan model.PlcSubscriptionRequestResult
 	Unsubscribe(ctx context.Context, unsubscriptionRequest model.PlcUnsubscriptionRequest) <-chan model.PlcUnsubscriptionRequestResult
+	Register(consumer model.PlcSubscriptionEventConsumer, handles []model.PlcSubscriptionHandle) model.PlcConsumerRegistration
+	Unregister(registration model.PlcConsumerRegistration)
 }

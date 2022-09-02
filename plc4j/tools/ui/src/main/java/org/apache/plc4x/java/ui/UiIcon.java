@@ -16,14 +16,39 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.plc4x.java.s7.readwrite.issues;
+package org.apache.plc4x.java.ui;
 
-import org.apache.plc4x.test.driver.DriverTestsuiteRunner;
+import org.kordamp.ikonli.Ikon;
 
-public class PLC4X272 extends DriverTestsuiteRunner {
+public enum UiIcon implements Ikon {
 
-    public PLC4X272() {
-        super("/tests/PLC4X-272.xml");
+    FOLDER("ui-icon-folder", '\ue815');
+
+    private String description;
+    private char icon;
+
+    UiIcon(String description, char icon) {
+        this.description = description;
+        this.icon = icon;
+    }
+
+    @Override
+    public String getDescription() {
+        return description;
+    }
+
+    @Override
+    public int getCode() {
+        return icon;
+    }
+
+    public static UiIcon findByDescription(String description) {
+        for (UiIcon icon : values()) {
+            if (icon.description.equals(description)) {
+                return icon;
+            }
+        }
+        throw new IllegalArgumentException("Icon not supported: " + description);
     }
 
 }

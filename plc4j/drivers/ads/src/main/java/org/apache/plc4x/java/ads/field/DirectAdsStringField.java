@@ -18,7 +18,6 @@
  */
 package org.apache.plc4x.java.ads.field;
 
-import org.apache.plc4x.java.ads.readwrite.AdsDataType;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
@@ -33,18 +32,17 @@ import java.util.regex.Pattern;
  */
 public class DirectAdsStringField extends DirectAdsField implements AdsStringField {
 
-    private static final Pattern RESOURCE_STRING_ADDRESS_PATTERN = Pattern.compile("^((0[xX](?<indexGroupHex>[0-9a-fA-F]+))|(?<indexGroup>\\d+))/((0[xX](?<indexOffsetHex>[0-9a-fA-F]+))|(?<indexOffset>\\d+)):(?<adsDataType>STRING|WSTRING)\\((?<stringLength>\\d{1,3})\\)(\\[(?<numberOfElements>\\d+)])?(\\|(?<stringEncoding>[a-z0-9A-Z_-]+))?");
+    private static final Pattern RESOURCE_STRING_ADDRESS_PATTERN = Pattern.compile("^((0[xX](?<indexGroupHex>[0-9a-fA-F]+))|(?<indexGroup>\\d+))/((0[xX](?<indexOffsetHex>[0-9a-fA-F]+))|(?<indexOffset>\\d+)):(?<adsDataType>STRING|WSTRING)\\((?<stringLength>\\d{1,3})\\)(\\[(?<numberOfElements>\\d+)])?");
 
     private final int stringLength;
 
-
-    public DirectAdsStringField(long indexGroup, long indexOffset, AdsDataType adsDataType, int stringLength, Integer numberOfElements, String stringEncoding) {
-        super(indexGroup, indexOffset, adsDataType, numberOfElements, stringEncoding);
+    public DirectAdsStringField(long indexGroup, long indexOffset, String adsDataTypeName, int stringLength, Integer numberOfElements) {
+        super(indexGroup, indexOffset, adsDataTypeName, numberOfElements);
         this.stringLength = stringLength;
     }
 
-    public static DirectAdsStringField of(long indexGroup, long indexOffset, AdsDataType adsDataType, int stringLength, Integer numberOfElements, String stringEncoding) {
-        return new DirectAdsStringField(indexGroup, indexOffset, adsDataType, stringLength, numberOfElements, stringEncoding);
+    public static DirectAdsStringField of(long indexGroup, long indexOffset, String adsDataTypeName, int stringLength, Integer numberOfElements) {
+        return new DirectAdsStringField(indexGroup, indexOffset, adsDataTypeName, stringLength, numberOfElements);
     }
 
     public static DirectAdsStringField of(String address) {
@@ -73,14 +71,14 @@ public class DirectAdsStringField extends DirectAdsField implements AdsStringFie
             indexOffset = Long.parseLong(indexOffsetString);
         }
 
-        String adsDataTypeString = matcher.group("adsDataType");
-        AdsDataType adsDataType = AdsDataType.valueOf(adsDataTypeString);
+        String adsDataTypeName = matcher.group("adsDataType");
 
         String stringLengthString = matcher.group("stringLength");
-        int stringLength = stringLengthString != null ? Integer.parseInt(stringLengthString) : 256;
+        int stringLength = stringLengthString != null ? Integer.parseInt(stringLengthString) : 0;
 
         String numberOfElementsString = matcher.group("numberOfElements");
         Integer numberOfElements = numberOfElementsString != null ? Integer.valueOf(numberOfElementsString) : null;
+
         String stringEncoding = matcher.group("stringEncoding");
         if (stringEncoding==null || "".equals(stringEncoding))
         {
@@ -90,7 +88,7 @@ public class DirectAdsStringField extends DirectAdsField implements AdsStringFie
                 stringEncoding = "UTF-16";
             }
         }
-        return new DirectAdsStringField(indexGroup, indexOffset, adsDataType, stringLength, numberOfElements, stringEncoding);
+        return new DirectAdsStringField(indexGroup, indexOffset, adsDataTypeName, stringLength, numberOfElements, stringEncoding);
     }
 
     public static boolean matches(String address) {
