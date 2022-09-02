@@ -23,6 +23,4 @@ import org.apache.plc4x.java.spi.utils.Serializable;
 
 public interface AdsField extends PlcField, Serializable {
 
-    String getStringEncoding();
-
 }

@@ -33,7 +33,7 @@ import java.util.regex.Pattern;
  */
 public class DirectAdsField implements AdsField {
 
-    private static final Pattern RESOURCE_ADDRESS_PATTERN = Pattern.compile("^((0[xX](?<indexGroupHex>[0-9a-fA-F]+))|(?<indexGroup>\\d+))/((0[xX](?<indexOffsetHex>[0-9a-fA-F]+))|(?<indexOffset>\\d+)):(?<adsDataType>\\w+)(\\[(?<numberOfElements>\\d+)])?");
+    private static final Pattern RESOURCE_ADDRESS_PATTERN = Pattern.compile("^((0[xX](?<indexGroupHex>[0-9a-fA-F]+))|(?<indexGroup>\\d+))/((0[xX](?<indexOffsetHex>[0-9a-fA-F]+))|(?<indexOffset>\\d+)):(?<adsDataType>\\w+)(\\[(?<numberOfElements>\\d+)])?(\\|(?<stringEncoding>[a-z0-9A-Z_-]+))?");
 
     private final long indexGroup;
 
@@ -42,6 +42,8 @@ public class DirectAdsField implements AdsField {
     private final String adsDataTypeName;
 
     private final int numberOfElements;
+
+    private final String stringEncoding;
 
     public DirectAdsField(long indexGroup, long indexOffset, String adsDataTypeName, Integer numberOfElements, String stringEncoding) {
         //ByteValue.checkUnsignedBounds(indexGroup, 4);
@@ -94,7 +96,7 @@ public class DirectAdsField implements AdsField {
         if (stringEncoding==null || "".equals(stringEncoding))
         {
             stringEncoding = "UTF-8";
-            if ("IEC61131_WSTRING".equals(adsDataTypeString))
+            if ("WSTRING".equals(adsDataTypeString))
             {
                 stringEncoding = "UTF-16";
             }
@@ -113,8 +115,7 @@ public class DirectAdsField implements AdsField {
     public long getIndexOffset() {
         return indexOffset;
     }
-
-    @Override
+    
     public String getStringEncoding() {
         return stringEncoding;
     }
