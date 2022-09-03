@@ -18,6 +18,12 @@
  */
 package org.apache.plc4x.java.api.messages;
 
+import org.apache.plc4x.java.api.types.PlcValueType;
+import org.apache.plc4x.java.api.value.PlcValue;
+
+import java.util.List;
+import java.util.Map;
+
 public interface PlcBrowseItem {
 
     /**
@@ -26,8 +32,38 @@ public interface PlcBrowseItem {
     String getAddress();
 
     /**
+     * @return returns a textual description of this item
+     */
+    String getName();
+
+    /**
      * @return returns the data-type of this item
      */
-    String getDataType();
+    PlcValueType getPlcValueType();
+
+    /**
+     * @return returns 'true' if we can read this variable.
+     */
+    boolean isReadable();
+
+    /**
+     * @return returns 'true' if we can write to this variable.
+     */
+    boolean isWritable();
+
+    /**
+     * @return returns 'true' if we can subscribe this variable.
+     */
+    boolean isSubscribable();
+
+    /**
+     * @return returns any children this item might have
+     */
+    List<PlcBrowseItem> getChildren();
+
+    /**
+     * @return returns a map of additional options the given protocol might provide.
+     */
+    Map<String, PlcValue> getOptions();
 
 }

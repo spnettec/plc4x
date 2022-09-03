@@ -18,10 +18,10 @@
  */
 package org.apache.plc4x.java.examples.helloplc4x.discoverandbrowse;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.PlcDriver;
-import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.messages.PlcBrowseItem;
 import org.apache.plc4x.java.api.messages.PlcBrowseRequest;
 import org.apache.plc4x.java.api.messages.PlcDiscoveryRequest;
@@ -37,7 +37,7 @@ public class HelloPlc4xDiscoverAndBrowse {
         PlcDriverManager driverManager = new PlcDriverManager();
         for (String protocolCode : driverManager.listDrivers()) {
             PlcDriver driver = driverManager.getDriver(protocolCode);
-            if(driver.getMetadata().canDiscover()) {
+            if (driver.getMetadata().canDiscover()) {
                 logger.info("Performing discovery for {} protocol", driver.getProtocolName());
 
                 PlcDiscoveryRequest discoveryRequest = driver.discoveryRequestBuilder().build();
@@ -45,24 +45,37 @@ public class HelloPlc4xDiscoverAndBrowse {
                 discoveryRequest.executeWithHandler(discoveryItem -> {
                     logger.info(" - Found device with connection-url {}", discoveryItem.getConnectionUrl());
                     try (PlcConnection connection = driverManager.getConnection(discoveryItem.getConnectionUrl())) {
-                        if(connection.getMetadata().canBrowse()) {
+                        if (connection.getMetadata().canBrowse()) {
                             PlcBrowseRequest browseRequest = connection.browseRequestBuilder().build();
                             browseRequest.execute().whenComplete((browseResponse, throwable) -> {
-                                if(throwable != null) {
+                                if (throwable != null) {
                                     throwable.printStackTrace();
                                 } else {
                                     for (PlcBrowseItem value : browseResponse.getValues()) {
-                                        System.out.println(String.format("%60s : %60s", value.getAddress(), value.getDataType()));
+                                        outputBrowseItem(value, 0);
                                     }
                                 }
                             });
                         }
-                    } catch (PlcConnectionException e) {
-                        throw new RuntimeException(e);
                     } catch (Exception e) {
                         throw new RuntimeException(e);
                     }
                 });
+            }
+        }
+    }
+
+    protected static void outputBrowseItem(PlcBrowseItem browseItem, int indent) {
+        System.out.printf("%s%s : %s (%s %s %s)%n",
+            StringUtils.repeat("   ", Math.max(0, indent)),
+            browseItem.getAddress(),
+            browseItem.getPlcValueType().name(),
+            browseItem.isReadable() ? "R" : " ",
+            browseItem.isWritable() ? "W" : " ",
+            browseItem.isSubscribable() ? "S" : " ");
+        if (!browseItem.getChildren().isEmpty()) {
+            for (PlcBrowseItem child : browseItem.getChildren()) {
+                outputBrowseItem(child, indent + 1);
             }
         }
     }
