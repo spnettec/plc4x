@@ -16,26 +16,28 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.plc4x.java.spi.messages;
 
-package model
+import org.apache.plc4x.java.api.messages.PlcBrowseItemArrayInfo;
 
-import "github.com/apache/plc4x/plc4go/pkg/api/model"
+public class DefaultBrowseItemArrayInfo implements PlcBrowseItemArrayInfo {
 
-//go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcBrowseRequestResult
-type DefaultPlcBrowseRequestResult struct {
-	Request  model.PlcBrowseRequest
-	Response model.PlcBrowseResponse
-	Err      error
-}
+    private final long lowerBound;
+    private final long upperBound;
 
-func (d *DefaultPlcBrowseRequestResult) GetRequest() model.PlcBrowseRequest {
-	return d.Request
-}
+    public DefaultBrowseItemArrayInfo(long lowerBound, long upperBound) {
+        this.lowerBound = lowerBound;
+        this.upperBound = upperBound;
+    }
 
-func (d *DefaultPlcBrowseRequestResult) GetResponse() model.PlcBrowseResponse {
-	return d.Response
-}
+    @Override
+    public long getLowerBound() {
+        return lowerBound;
+    }
 
-func (d *DefaultPlcBrowseRequestResult) GetErr() error {
-	return d.Err
+    @Override
+    public long getUpperBound() {
+        return upperBound;
+    }
+
 }

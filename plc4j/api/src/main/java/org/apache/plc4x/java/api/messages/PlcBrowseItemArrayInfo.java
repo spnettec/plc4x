@@ -16,26 +16,25 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.plc4x.java.api.messages;
 
-package model
+public interface PlcBrowseItemArrayInfo {
 
-import "github.com/apache/plc4x/plc4go/pkg/api/model"
+    /**
+     * @return returns the size of the array
+     */
+    default long getSize() {
+        return getUpperBound() - getLowerBound();
+    }
 
-//go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcBrowseRequestResult
-type DefaultPlcBrowseRequestResult struct {
-	Request  model.PlcBrowseRequest
-	Response model.PlcBrowseResponse
-	Err      error
-}
+    /**
+     * @return returns the lower bound of the array
+     */
+    long getLowerBound();
 
-func (d *DefaultPlcBrowseRequestResult) GetRequest() model.PlcBrowseRequest {
-	return d.Request
-}
+    /**
+     * @return returns the upper bound of the array
+     */
+    long getUpperBound();
 
-func (d *DefaultPlcBrowseRequestResult) GetResponse() model.PlcBrowseResponse {
-	return d.Response
-}
-
-func (d *DefaultPlcBrowseRequestResult) GetErr() error {
-	return d.Err
 }
