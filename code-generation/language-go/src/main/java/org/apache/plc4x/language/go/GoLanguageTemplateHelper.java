@@ -20,9 +20,11 @@ package org.apache.plc4x.language.go;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.DefaultArgument;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.references.DefaultBooleanTypeReference;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.references.DefaultFloatTypeReference;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.references.DefaultIntegerTypeReference;
+import org.apache.plc4x.plugins.codegenerator.language.mspec.model.references.DefaultVstringTypeReference;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.terms.DefaultStringLiteral;
 import org.apache.plc4x.plugins.codegenerator.protocol.freemarker.BaseFreemarkerLanguageTemplateHelper;
 import org.apache.plc4x.plugins.codegenerator.protocol.freemarker.FreemarkerException;
@@ -81,7 +83,12 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             }
         }
         TypedField typedField = field.asTypedField().orElseThrow();
-        return getLanguageTypeNameForTypeReference(typedField.getType());
+        String encoding = null;
+        Optional<Term> encodingAttribute = field.getAttribute("encoding");
+        if(encodingAttribute.isPresent()) {
+            encoding = encodingAttribute.get().toString();
+        }
+        return getLanguageTypeNameForTypeReference(typedField.getType(), encoding);
     }
 
     public boolean isComplex(Field field) {
@@ -90,6 +97,10 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
 
     @Override
     public String getLanguageTypeNameForTypeReference(TypeReference typeReference) {
+        return getLanguageTypeNameForTypeReference(typeReference, null);
+    }
+
+    public String getLanguageTypeNameForTypeReference(TypeReference typeReference, String encoding) {
         if (typeReference == null) {
             // TODO: shouldn't this be an error case
             return "";
@@ -355,7 +366,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 }
                 String encoding = ((StringLiteral) encodingTerm).getValue();
                 String length = Integer.toString(simpleTypeReference.getSizeInBits());
-                return "readBuffer.ReadString(\"" + logicalName + "\", uint32(" + length + "))";
+                return "readBuffer.ReadString(\"" + logicalName + "\", uint32(" + length + "), \"" + encoding + "\")";
             }
             case VSTRING: {
                 VstringTypeReference vstringTypeReference = (VstringTypeReference) simpleTypeReference;
@@ -363,8 +374,9 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 if (!(encodingTerm instanceof StringLiteral)) {
                     throw new RuntimeException("Encoding must be a quoted string value");
                 }
+                String encoding = ((StringLiteral) encodingTerm).getValue();
                 String lengthExpression = toExpression(field, null, vstringTypeReference.getLengthExpression(), null, null, false, false);
-                return "readBuffer.ReadString(\"" + logicalName + "\", uint32(" + lengthExpression + "))";
+                return "readBuffer.ReadString(\"" + logicalName + "\", uint32(" + lengthExpression + "), \"" + encoding + "\")";
             }
             case TIME:
             case DATE:
@@ -467,7 +479,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                     .orElseThrow(() -> new RuntimeException("Encoding must be a literal"))
                     .asStringLiteral()
                     .orElseThrow(() -> new RuntimeException("Encoding must be a quoted string value")).getValue();
-                String lengthExpression = toExpression(field, null, vstringTypeReference.getLengthExpression(), null, null, true, false);
+                String lengthExpression = toExpression(field, null, vstringTypeReference.getLengthExpression(), null, Collections.singletonList(new DefaultArgument("stringLength", new DefaultIntegerTypeReference(SimpleTypeReference.SimpleBaseType.INT, 32))), true, false);
                 String length = Integer.toString(simpleTypeReference.getSizeInBits());
                 return "writeBuffer.WriteString(\"" + logicalName + "\", uint32(" + lengthExpression + "), \"" +
                     encoding + "\", " + fieldName + writerArgsString + ")";
@@ -847,7 +859,15 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             }
         }
 
+        // This is a special case for DataIo string types, which need to access the stringLength
         if ((serializerArguments != null) && serializerArguments.stream()
+            .anyMatch(argument -> argument.getName().equals(variableLiteralName)) && "stringLength".equals(variableLiteralName)) {
+            tracer = tracer.dive("serialization argument");
+            return tracer + variableLiteralName +
+                variableLiteral.getChild()
+                    .map(child -> "." + capitalize(toVariableExpression(field, typeReference, child, parserArguments, serializerArguments, false, suppressPointerAccess, true)))
+                    .orElse("");
+        } else if ((serializerArguments != null) && serializerArguments.stream()
             .anyMatch(argument -> argument.getName().equals(variableLiteralName))) {
             tracer = tracer.dive("serialization argument");
             return tracer + "m." + capitalize(variableLiteralName) +

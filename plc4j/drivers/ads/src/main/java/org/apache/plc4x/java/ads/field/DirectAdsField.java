@@ -120,7 +120,7 @@ public class DirectAdsField implements AdsField {
         return stringEncoding;
     }
 
-    public String getAdsDataTypeName() {
+    public String getPlcDataType() {
         return adsDataTypeName;
     }
 

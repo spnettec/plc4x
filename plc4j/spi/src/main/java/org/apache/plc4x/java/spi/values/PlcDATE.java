@@ -32,8 +32,8 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalField;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class PlcDATE extends PlcSimpleValue<LocalDate> {
@@ -41,34 +41,9 @@ public class PlcDATE extends PlcSimpleValue<LocalDate> {
     public static PlcDATE of(Object value) {
         if (value instanceof LocalDate) {
             return new PlcDATE((LocalDate) value);
-        }
-        if (value instanceof LocalDateTime) {
-            return new PlcDATE(((LocalDateTime) value).toLocalDate());
-        }
-        if (value instanceof Instant) {
-            return new PlcDATE(((Instant) value).getEpochSecond());
         } else if (value instanceof Long) {
             return new PlcDATE(LocalDateTime.ofInstant(
                 Instant.ofEpochSecond((long) value), ZoneId.systemDefault()).toLocalDate());
-        } else if (value instanceof Integer) {
-            return new PlcDATE((Integer) value);
-        } else if (value instanceof String) {
-            String strValue = (String) value;
-            LocalDate date;
-            try {
-                date = LocalDate.parse(strValue);
-            } catch (DateTimeParseException e) {
-                try {
-                    date = LocalDate.parse(strValue, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-                } catch (DateTimeParseException e1) {
-                    try {
-                        date = LocalDate.parse(strValue, DateTimeFormatter.ofPattern("yyyyMMdd"));
-                    } catch (DateTimeParseException e2) {
-                        date = LocalDate.parse(strValue, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-                    }
-                }
-            }
-            return new PlcDATE(date);
         }
         throw new PlcRuntimeException("Invalid value type");
     }
@@ -83,7 +58,7 @@ public class PlcDATE extends PlcSimpleValue<LocalDate> {
         // In this case the date is the number of days since 1990-01-01
         // So we gotta add 7305 days to the value to have it relative to epoch
         // Then we also need to transform it from days to seconds by multiplying by 86400
-        super(LocalDateTime.ofInstant(Instant.ofEpochSecond(value * 86400L),
+        super(LocalDateTime.ofInstant(Instant.ofEpochSecond((value + 7305L) * 86400L),
             ZoneId.systemDefault()).toLocalDate(), true);
     }
 
@@ -98,9 +73,14 @@ public class PlcDATE extends PlcSimpleValue<LocalDate> {
     }
 
     @Override
-    @JsonIgnore
-    public int getInteger() {
-        return (int) value.toEpochDay();
+    public boolean isLong() {
+        return true;
+    }
+
+    @Override
+    public long getLong() {
+        Instant instant = value.atStartOfDay(ZoneId.systemDefault()).toInstant();
+        return (instant.toEpochMilli() / 1000);
     }
 
     @Override

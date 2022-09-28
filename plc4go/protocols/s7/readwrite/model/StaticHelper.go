@@ -138,7 +138,7 @@ func ParseS7String(io utils.ReadBuffer, stringLength int32, encoding string, str
 	case "UTF-16":
 		multiplier = 16
 	}
-	return io.ReadString("", uint32(stringLength*multiplier))
+	return io.ReadString("", uint32(stringLength*multiplier), encoding)
 }
 
 func SerializeS7String(io utils.WriteBuffer, value values.PlcValue, stringLength int32, encoding string, stringEncoding string) error {

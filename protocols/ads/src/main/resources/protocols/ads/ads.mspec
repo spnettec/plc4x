@@ -397,16 +397,20 @@
         // Bit-strings
         // -----------------------------------------
         // 1 byte
-        ['BYTE' BitString
+        ['BYTE' BYTE
             [simple uint 8 value]
         ]
         // 2 byte (16 bit)
-        ['WORD' BitString
+        ['WORD' WORD
             [simple uint 16 value]
         ]
         // 4 byte (32 bit)
-        ['DWORD' BitString
+        ['DWORD' DWORD
             [simple uint 32 value]
+        ]
+        // 8 byte (64 bit)
+        ['LWORD' LWORD
+            [simple uint 64 value]
         ]
 
         // -----------------------------------------
@@ -454,19 +458,19 @@
         // -----------------------------------------
         // Characters & Strings
         // -----------------------------------------
-        ['CHAR' STRING
-            [simple string 8 value]
+        ['CHAR' CHAR
+            [simple   string 8                       value    encoding='"UTF-8"'   ]
         ]
-        ['WCHAR' STRING
-            [simple string 16 value encoding='"UTF-16"']
+        ['WCHAR' WCHAR
+            [simple   string 16                      value    encoding='"UTF-16LE"']
         ]
         ['STRING' STRING
-            // TODO: Fix this length
-            [manual vstring value 'STATIC_CALL("parseAmsString", readBuffer, stringLength, _type.encoding, stringEncoding)' 'STATIC_CALL("serializeAmsString", writeBuffer, _value, stringLength, _type.encoding, stringEncoding)' 'stringLength * 8']
+            [simple   vstring 'stringLength * 8'     value    encoding='"UTF-8"'   ]
+            [reserved uint 8                         '0x00'                        ]
         ]
-        ['WSTRING' STRING
-            // TODO: Fix this length
-            [manual vstring value 'STATIC_CALL("parseAmsString", readBuffer, stringLength, _type.encoding, stringEncoding)' 'STATIC_CALL("serializeAmsString", writeBuffer, _value, stringLength, _type.encoding, stringEncoding)' 'stringLength * 16' encoding='"UTF-16"']
+        ['WSTRING' WSTRING
+            [simple   vstring 'stringLength * 8 * 2' value    encoding='"UTF-16LE"']
+            [reserved uint 16                        '0x0000'                      ]
         ]
 
         // -----------------------------------------
