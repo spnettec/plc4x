@@ -32,17 +32,17 @@ import java.util.regex.Pattern;
  */
 public class DirectAdsStringField extends DirectAdsField implements AdsStringField {
 
-    private static final Pattern RESOURCE_STRING_ADDRESS_PATTERN = Pattern.compile("^((0[xX](?<indexGroupHex>[0-9a-fA-F]+))|(?<indexGroup>\\d+))/((0[xX](?<indexOffsetHex>[0-9a-fA-F]+))|(?<indexOffset>\\d+)):(?<adsDataType>STRING|WSTRING)\\((?<stringLength>\\d{1,3})\\)(\\[(?<numberOfElements>\\d+)])?(\\|(?<stringEncoding>[a-z0-9A-Z_-]+))?");
+    private static final Pattern RESOURCE_STRING_ADDRESS_PATTERN = Pattern.compile("^((0[xX](?<indexGroupHex>[0-9a-fA-F]+))|(?<indexGroup>\\d+))/((0[xX](?<indexOffsetHex>[0-9a-fA-F]+))|(?<indexOffset>\\d+)):(?<adsDataType>STRING|WSTRING)\\((?<stringLength>\\d{1,3})\\)(\\[(?<numberOfElements>\\d+)])?");
 
     private final int stringLength;
 
-    public DirectAdsStringField(long indexGroup, long indexOffset, String adsDataTypeName, int stringLength, Integer numberOfElements, String stringEncoding) {
-        super(indexGroup, indexOffset, adsDataTypeName, numberOfElements, stringEncoding);
+    public DirectAdsStringField(long indexGroup, long indexOffset, String adsDataTypeName, int stringLength, Integer numberOfElements) {
+        super(indexGroup, indexOffset, adsDataTypeName, numberOfElements);
         this.stringLength = stringLength;
     }
 
-    public static DirectAdsStringField of(long indexGroup, long indexOffset, String adsDataTypeName, int stringLength, Integer numberOfElements, String stringEncoding) {
-        return new DirectAdsStringField(indexGroup, indexOffset, adsDataTypeName, stringLength, numberOfElements, stringEncoding);
+    public static DirectAdsStringField of(long indexGroup, long indexOffset, String adsDataTypeName, int stringLength, Integer numberOfElements) {
+        return new DirectAdsStringField(indexGroup, indexOffset, adsDataTypeName, stringLength, numberOfElements);
     }
 
     public static DirectAdsStringField of(String address) {
@@ -79,16 +79,7 @@ public class DirectAdsStringField extends DirectAdsField implements AdsStringFie
         String numberOfElementsString = matcher.group("numberOfElements");
         Integer numberOfElements = numberOfElementsString != null ? Integer.valueOf(numberOfElementsString) : null;
 
-        String stringEncoding = matcher.group("stringEncoding");
-        if (stringEncoding == null || "".equals(stringEncoding))
-        {
-            stringEncoding = "UTF-8";
-            if ("WSTRING".equalsIgnoreCase(adsDataTypeName) || "WCHAR".equalsIgnoreCase(adsDataTypeName))
-            {
-                stringEncoding = "UTF-16";
-            }
-        }
-        return new DirectAdsStringField(indexGroup, indexOffset, adsDataTypeName, stringLength, numberOfElements, stringEncoding);
+        return new DirectAdsStringField(indexGroup, indexOffset, adsDataTypeName, stringLength, numberOfElements);
     }
 
     public static boolean matches(String address) {

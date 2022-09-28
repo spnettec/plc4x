@@ -32,15 +32,12 @@ import java.util.regex.Pattern;
  */
 public class SymbolicAdsField implements AdsField {
 
-    private static final Pattern SYMBOLIC_ADDRESS_PATTERN = Pattern.compile("^(?<symbolicAddress>.+)(\\|(?<stringEncoding>[a-z0-9A-Z_-]+))?");
+    private static final Pattern SYMBOLIC_ADDRESS_PATTERN = Pattern.compile("^(?<symbolicAddress>.+)");
 
     private final String symbolicAddress;
 
-    private String stringEncoding;
-
-    public SymbolicAdsField(String symbolicAddress, String stringEncoding) {
+    public SymbolicAdsField(String symbolicAddress) {
         this.symbolicAddress = Objects.requireNonNull(symbolicAddress);
-        this.stringEncoding = stringEncoding;
     }
 
     public static SymbolicAdsField of(String address) {
@@ -49,8 +46,8 @@ public class SymbolicAdsField implements AdsField {
             throw new PlcInvalidFieldException(address, SYMBOLIC_ADDRESS_PATTERN, "{address}");
         }
         String symbolicAddress = matcher.group("symbolicAddress");
-        String stringEncoding = matcher.group("stringEncoding");
-        return new SymbolicAdsField(symbolicAddress,stringEncoding);
+
+        return new SymbolicAdsField(symbolicAddress);
     }
 
     public static boolean matches(String address) {
@@ -59,18 +56,6 @@ public class SymbolicAdsField implements AdsField {
 
     public String getSymbolicAddress() {
         return symbolicAddress;
-    }
-
-    public String getStringEncoding(String adsDataTypeName) {
-        if (stringEncoding == null || "".equals(stringEncoding))
-        {
-            stringEncoding = "UTF-8";
-            if ("WSTRING".equalsIgnoreCase(adsDataTypeName) || "WCHAR".equalsIgnoreCase(adsDataTypeName))
-            {
-                stringEncoding = "UTF-16";
-            }
-        }
-        return stringEncoding;
     }
 
     @Override

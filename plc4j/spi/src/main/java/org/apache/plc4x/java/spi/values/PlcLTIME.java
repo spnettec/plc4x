@@ -78,16 +78,7 @@ public class PlcLTIME extends PlcSimpleValue<Duration> {
     public PlcLTIME(@JsonProperty("value") BigInteger value) {
         super(Duration.of(value.longValue(), ChronoUnit.NANOS), true);
     }
-    @Override
-    @JsonIgnore
-    public long getLong() {
-        return value.toNanos();
-    }
-    @Override
-    @JsonIgnore
-    public BigInteger getBigInteger() {
-        return BigInteger.valueOf(value.toNanos());
-    }
+
     @Override
     public PlcValueType getPlcValueType() {
         return PlcValueType.LTIME;

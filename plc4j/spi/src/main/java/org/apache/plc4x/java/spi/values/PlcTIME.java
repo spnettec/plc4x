@@ -74,11 +74,7 @@ public class PlcTIME extends PlcSimpleValue<Duration> {
     public PlcTIME(@JsonProperty("value") Long value) {
         super(Duration.of(value, ChronoUnit.MILLIS), true);
     }
-    @Override
-    @JsonIgnore
-    public long getLong() {
-        return value.toMillis();
-    }
+
     @Override
     public PlcValueType getPlcValueType() {
         return PlcValueType.TIME;

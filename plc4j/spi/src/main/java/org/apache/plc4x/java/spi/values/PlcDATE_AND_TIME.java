@@ -105,12 +105,6 @@ public class PlcDATE_AND_TIME extends PlcSimpleValue<LocalDateTime> {
 
     @Override
     @JsonIgnore
-    public long getLong() {
-        return value.atZone(ZoneId.of("UTC")).toEpochSecond();
-    }
-
-    @Override
-    @JsonIgnore
     public boolean isString() {
         return true;
     }

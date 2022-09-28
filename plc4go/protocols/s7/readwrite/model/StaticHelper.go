@@ -152,8 +152,8 @@ func SerializeS7String(io utils.WriteBuffer, value values.PlcValue, stringLength
 	return io.WriteString("", uint32(stringLength*multiplier), encoding, value.GetString())
 }
 
-func ParseS7Char(io utils.ReadBuffer, encoding string, stringEncoding string) (uint8, error) {
-	return io.ReadUint8("", 8)
+func ParseS7Char(io utils.ReadBuffer, encoding string, stringEncoding string) (string, error) {
+	return io.ReadString("value", uint32(8), encoding)
 }
 
 func SerializeS7Char(io utils.WriteBuffer, value values.PlcValue, encoding string, stringEncoding string) error {

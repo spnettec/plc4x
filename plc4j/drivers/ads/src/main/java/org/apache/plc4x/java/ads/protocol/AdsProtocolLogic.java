@@ -141,95 +141,95 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                         "If you are in need for this feature, please reach out to the community."));
             }
             //if (configuration.isLoadSymbolAndDataTypeTables()) {
-                // Execute a ReadDeviceInfo command
-                AmsPacket readDeviceInfoRequest = new AdsReadDeviceInfoRequest(
-                    configuration.getTargetAmsNetId(), DefaultAmsPorts.RUNTIME_SYSTEM_01.getValue(),
-                    configuration.getSourceAmsNetId(), 800, 0, getInvokeId());
-                RequestTransactionManager.RequestTransaction readDeviceInfoTx = tm.startRequest();
-                readDeviceInfoTx.submit(() -> context.sendRequest(new AmsTCPPacket(readDeviceInfoRequest))
-                    .expectResponse(AmsTCPPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
-                    .onTimeout(future::completeExceptionally)
-                    .onError((p, e) -> future.completeExceptionally(e))
-                    .check(responseAmsPacket -> responseAmsPacket.getUserdata().getInvokeId() == readDeviceInfoRequest.getInvokeId())
-                    .unwrap(response -> (AdsReadDeviceInfoResponse) response.getUserdata())
-                    .handle(readDeviceInfoResponse -> {
-                        readDeviceInfoTx.endRequest();
-                        if (readDeviceInfoResponse.getResult() != ReturnCode.OK) {
-                            // TODO: Handle this
-                            future.completeExceptionally(new PlcException("Result is " + readDeviceInfoResponse.getResult()));
-                            return;
-                        }
+            // Execute a ReadDeviceInfo command
+            AmsPacket readDeviceInfoRequest = new AdsReadDeviceInfoRequest(
+                configuration.getTargetAmsNetId(), DefaultAmsPorts.RUNTIME_SYSTEM_01.getValue(),
+                configuration.getSourceAmsNetId(), 800, 0, getInvokeId());
+            RequestTransactionManager.RequestTransaction readDeviceInfoTx = tm.startRequest();
+            readDeviceInfoTx.submit(() -> context.sendRequest(new AmsTCPPacket(readDeviceInfoRequest))
+                .expectResponse(AmsTCPPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
+                .onTimeout(future::completeExceptionally)
+                .onError((p, e) -> future.completeExceptionally(e))
+                .check(responseAmsPacket -> responseAmsPacket.getUserdata().getInvokeId() == readDeviceInfoRequest.getInvokeId())
+                .unwrap(response -> (AdsReadDeviceInfoResponse) response.getUserdata())
+                .handle(readDeviceInfoResponse -> {
+                    readDeviceInfoTx.endRequest();
+                    if (readDeviceInfoResponse.getResult() != ReturnCode.OK) {
+                        // TODO: Handle this
+                        future.completeExceptionally(new PlcException("Result is " + readDeviceInfoResponse.getResult()));
+                        return;
+                    }
 
-                        // Get the twin-cat version and PLC name.
-                        adsVersion = String.format("%d.%d.%d", readDeviceInfoResponse.getMajorVersion(),
-                            readDeviceInfoResponse.getMinorVersion(), readDeviceInfoResponse.getVersion());
-                        deviceName = new String(readDeviceInfoResponse.getDevice()).trim();
+                    // Get the twin-cat version and PLC name.
+                    adsVersion = String.format("%d.%d.%d", readDeviceInfoResponse.getMajorVersion(),
+                        readDeviceInfoResponse.getMinorVersion(), readDeviceInfoResponse.getVersion());
+                    deviceName = new String(readDeviceInfoResponse.getDevice()).trim();
 
-                        // Read the online version number (Address; GroupID: 0xF004 (read symbol by name),Offset: 0, Read length: 4, ... Payload: "TwinCAT_SystemInfoVarList._AppInfo.OnlineChangeCnt")
-                        AmsPacket readOnlineVersionNumberRequest = new AdsReadWriteRequest(
-                            configuration.getTargetAmsNetId(), DefaultAmsPorts.RUNTIME_SYSTEM_01.getValue(),
-                            configuration.getSourceAmsNetId(), 800, 0, getInvokeId(),
-                            ReservedIndexGroups.ADSIGRP_SYM_VALBYNAME.getValue(), 0, 4, null,
-                            "TwinCAT_SystemInfoVarList._AppInfo.OnlineChangeCnt".getBytes(StandardCharsets.UTF_8));
-                        RequestTransactionManager.RequestTransaction readOnlineVersionNumberTx = tm.startRequest();
-                        readOnlineVersionNumberTx.submit(() -> context.sendRequest(new AmsTCPPacket(readOnlineVersionNumberRequest))
-                            .expectResponse(AmsTCPPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
-                            .onTimeout(future::completeExceptionally)
-                            .onError((p, e) -> future.completeExceptionally(e))
-                            .check(responseAmsPacket -> responseAmsPacket.getUserdata().getInvokeId() == readOnlineVersionNumberRequest.getInvokeId())
-                            .unwrap(response -> (AdsReadWriteResponse) response.getUserdata())
-                            .handle(readOnlineVersionNumberResponse -> {
-                                readOnlineVersionNumberTx.endRequest();
-                                if (readOnlineVersionNumberResponse.getResult() != ReturnCode.OK) {
-                                    // TODO: Handle this
-                                    future.completeExceptionally(new PlcException("Result is " + readOnlineVersionNumberResponse.getResult()));
-                                    return;
-                                }
-                                try {
-                                    ReadBuffer rb = new ReadBufferByteBased(readOnlineVersionNumberResponse.getData());
-                                    onlineVersion = rb.readUnsignedLong(32);
+                    // Read the online version number (Address; GroupID: 0xF004 (read symbol by name),Offset: 0, Read length: 4, ... Payload: "TwinCAT_SystemInfoVarList._AppInfo.OnlineChangeCnt")
+                    AmsPacket readOnlineVersionNumberRequest = new AdsReadWriteRequest(
+                        configuration.getTargetAmsNetId(), DefaultAmsPorts.RUNTIME_SYSTEM_01.getValue(),
+                        configuration.getSourceAmsNetId(), 800, 0, getInvokeId(),
+                        ReservedIndexGroups.ADSIGRP_SYM_VALBYNAME.getValue(), 0, 4, null,
+                        "TwinCAT_SystemInfoVarList._AppInfo.OnlineChangeCnt".getBytes(StandardCharsets.UTF_8));
+                    RequestTransactionManager.RequestTransaction readOnlineVersionNumberTx = tm.startRequest();
+                    readOnlineVersionNumberTx.submit(() -> context.sendRequest(new AmsTCPPacket(readOnlineVersionNumberRequest))
+                        .expectResponse(AmsTCPPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
+                        .onTimeout(future::completeExceptionally)
+                        .onError((p, e) -> future.completeExceptionally(e))
+                        .check(responseAmsPacket -> responseAmsPacket.getUserdata().getInvokeId() == readOnlineVersionNumberRequest.getInvokeId())
+                        .unwrap(response -> (AdsReadWriteResponse) response.getUserdata())
+                        .handle(readOnlineVersionNumberResponse -> {
+                            readOnlineVersionNumberTx.endRequest();
+                            if (readOnlineVersionNumberResponse.getResult() != ReturnCode.OK) {
+                                // TODO: Handle this
+                                future.completeExceptionally(new PlcException("Result is " + readOnlineVersionNumberResponse.getResult()));
+                                return;
+                            }
+                            try {
+                                ReadBuffer rb = new ReadBufferByteBased(readOnlineVersionNumberResponse.getData());
+                                onlineVersion = rb.readUnsignedLong(32);
 
-                                    // Read the offline version number (Address: GroupID: 0xF008, Offset: 0, Read length: 1)
-                                    AmsPacket readSymbolVersionNumberRequest = new AdsReadRequest(
-                                        configuration.getTargetAmsNetId(), DefaultAmsPorts.RUNTIME_SYSTEM_01.getValue(),
-                                        configuration.getSourceAmsNetId(), 800, 0, getInvokeId(),
-                                        ReservedIndexGroups.ADSIGRP_SYM_VERSION.getValue(), 0, 1);
-                                    RequestTransactionManager.RequestTransaction readSymbolVersionNumberTx = tm.startRequest();
-                                    readSymbolVersionNumberTx.submit(() -> context.sendRequest(new AmsTCPPacket(readSymbolVersionNumberRequest))
-                                        .expectResponse(AmsTCPPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
-                                        .onTimeout(future::completeExceptionally)
-                                        .onError((p, e) -> future.completeExceptionally(e))
-                                        .check(responseAmsPacket -> responseAmsPacket.getUserdata().getInvokeId() == readSymbolVersionNumberRequest.getInvokeId())
-                                        .unwrap(response -> (AdsReadResponse) response.getUserdata())
-                                        .handle(readSymbolVersionNumberResponse -> {
-                                            readSymbolVersionNumberTx.endRequest();
-                                            if (readSymbolVersionNumberResponse.getResult() != ReturnCode.OK) {
-                                                // TODO: Handle this
-                                                future.completeExceptionally(new PlcException("Result is " + readSymbolVersionNumberResponse.getResult()));
-                                                return;
-                                            }
-                                            try {
-                                                ReadBuffer rb2 = new ReadBufferByteBased(readSymbolVersionNumberResponse.getData());
-                                                symbolVersion = rb2.readUnsignedInt(8);
+                                // Read the offline version number (Address: GroupID: 0xF008, Offset: 0, Read length: 1)
+                                AmsPacket readSymbolVersionNumberRequest = new AdsReadRequest(
+                                    configuration.getTargetAmsNetId(), DefaultAmsPorts.RUNTIME_SYSTEM_01.getValue(),
+                                    configuration.getSourceAmsNetId(), 800, 0, getInvokeId(),
+                                    ReservedIndexGroups.ADSIGRP_SYM_VERSION.getValue(), 0, 1);
+                                RequestTransactionManager.RequestTransaction readSymbolVersionNumberTx = tm.startRequest();
+                                readSymbolVersionNumberTx.submit(() -> context.sendRequest(new AmsTCPPacket(readSymbolVersionNumberRequest))
+                                    .expectResponse(AmsTCPPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
+                                    .onTimeout(future::completeExceptionally)
+                                    .onError((p, e) -> future.completeExceptionally(e))
+                                    .check(responseAmsPacket -> responseAmsPacket.getUserdata().getInvokeId() == readSymbolVersionNumberRequest.getInvokeId())
+                                    .unwrap(response -> (AdsReadResponse) response.getUserdata())
+                                    .handle(readSymbolVersionNumberResponse -> {
+                                        readSymbolVersionNumberTx.endRequest();
+                                        if (readSymbolVersionNumberResponse.getResult() != ReturnCode.OK) {
+                                            // TODO: Handle this
+                                            future.completeExceptionally(new PlcException("Result is " + readSymbolVersionNumberResponse.getResult()));
+                                            return;
+                                        }
+                                        try {
+                                            ReadBuffer rb2 = new ReadBufferByteBased(readSymbolVersionNumberResponse.getData());
+                                            symbolVersion = rb2.readUnsignedInt(8);
 
-                                                LOGGER.debug("Fetching sizes of symbol and datatype table sizes.");
-                                                CompletableFuture<Void> readSymbolTableFuture = readSymbolTableAndDatatypeTable(context);
-                                                readSymbolTableFuture.whenComplete((unused2, throwable2) -> {
-                                                    if (throwable2 != null) {
-                                                        LOGGER.error("Error fetching symbol and datatype table sizes");
-                                                    } else {
-                                                        context.fireConnected();
-                                                    }
-                                                });
-                                            } catch (ParseException e) {
-                                                future.completeExceptionally(new PlcConnectionException("Error reading the symbol version of data type and symbol data.", e));
-                                            }
-                                        }));
-                                } catch (ParseException e) {
-                                    future.completeExceptionally(new PlcConnectionException("Error reading the online version of data type and symbol data.", e));
-                                }
-                            }));
-                    }));
+                                            LOGGER.debug("Fetching sizes of symbol and datatype table sizes.");
+                                            CompletableFuture<Void> readSymbolTableFuture = readSymbolTableAndDatatypeTable(context);
+                                            readSymbolTableFuture.whenComplete((unused2, throwable2) -> {
+                                                if (throwable2 != null) {
+                                                    LOGGER.error("Error fetching symbol and datatype table sizes");
+                                                } else {
+                                                    context.fireConnected();
+                                                }
+                                            });
+                                        } catch (ParseException e) {
+                                            future.completeExceptionally(new PlcConnectionException("Error reading the symbol version of data type and symbol data.", e));
+                                        }
+                                    }));
+                            } catch (ParseException e) {
+                                future.completeExceptionally(new PlcConnectionException("Error reading the online version of data type and symbol data.", e));
+                            }
+                        }));
+                }));
             /*} else {
                 context.fireConnected();
             }*/
@@ -449,9 +449,9 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                                     });
                                 }));
                         }));
-                    } catch (ParseException e) {
-                        future.completeExceptionally(new PlcException("Error loading the table sizes", e));
-                    }
+                } catch (ParseException e) {
+                    future.completeExceptionally(new PlcException("Error loading the table sizes", e));
+                }
             }));
         return future;
     }
@@ -667,15 +667,15 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
             configuration.getSourceAmsNetId(), configuration.getSourceAmsPort(),
             0, getInvokeId(), ReservedIndexGroups.ADSIGRP_MULTIPLE_READ.getValue(), resolvedFields.size(),
             expectedResponseDataSize, readRequest.getFieldNames().stream().map(fieldName -> {
-                AdsField field = (AdsField) readRequest.getField(fieldName);
-                DirectAdsField directAdsField = resolvedFields.get(field);
-                String dataTypeName = directAdsField.getPlcDataType();
-                AdsDataTypeTableEntry adsDataTypeTableEntry = dataTypeTable.get(dataTypeName);
-                long size = adsDataTypeTableEntry.getSize();
-                return new AdsMultiRequestItemRead(
-                    directAdsField.getIndexGroup(), directAdsField.getIndexOffset(),
-                    (size * directAdsField.getNumberOfElements()));
-            }).collect(Collectors.toList()), null);
+            AdsField field = (AdsField) readRequest.getField(fieldName);
+            DirectAdsField directAdsField = resolvedFields.get(field);
+            String dataTypeName = directAdsField.getPlcDataType();
+            AdsDataTypeTableEntry adsDataTypeTableEntry = dataTypeTable.get(dataTypeName);
+            long size = adsDataTypeTableEntry.getSize();
+            return new AdsMultiRequestItemRead(
+                directAdsField.getIndexGroup(), directAdsField.getIndexOffset(),
+                (size * directAdsField.getNumberOfElements()));
+        }).collect(Collectors.toList()), null);
         AmsTCPPacket amsTCPPacket = new AmsTCPPacket(amsPacket);
 
         // Start a new request-transaction (Is ended in the response-handler)

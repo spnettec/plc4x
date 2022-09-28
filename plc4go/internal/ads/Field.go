@@ -36,7 +36,7 @@ type PlcField struct {
 }
 
 func (m PlcField) GetTypeName() string {
-	return m.Datatype.String()
+	return m.FieldType.GetName()
 }
 
 func (m PlcField) GetQuantity() uint16 {
@@ -63,7 +63,6 @@ type AdsPlcField interface {
 	GetDatatype() model2.AdsDataType
 	GetStringLength() int32
 	GetNumberOfElements() uint32
-	GetStringEncoding() string
 	model.PlcField
 }
 
@@ -75,28 +74,23 @@ func castToAdsFieldFromPlcField(plcField model.PlcField) (AdsPlcField, error) {
 }
 
 type DirectPlcField struct {
-	IndexGroup     uint32
-	IndexOffset    uint32
-	StringEncoding string
+	IndexGroup  uint32
+	IndexOffset uint32
 	PlcField
 }
 
 func (m DirectPlcField) GetAddressString() string {
 	return fmt.Sprintf("%dx%05d%05d%05d%05d:%s", m.FieldType, m.IndexGroup, m.IndexOffset, m.StringLength, m.NumberOfElements, m.Datatype.String())
 }
-func (m DirectPlcField) GetStringEncoding() string {
-	return m.StringEncoding
-}
 
-func newDirectAdsPlcField(indexGroup uint32, indexOffset uint32, adsDataType model2.AdsDataType, stringLength int32, numberOfElements uint32, stringEncoding string) (model.PlcField, error) {
+func newDirectAdsPlcField(indexGroup uint32, indexOffset uint32, adsDataType model2.AdsDataType, stringLength int32, numberOfElements uint32) (model.PlcField, error) {
 	fieldType := DirectAdsField
 	if stringLength > 0 {
 		fieldType = DirectAdsStringField
 	}
 	return DirectPlcField{
-		IndexGroup:     indexGroup,
-		IndexOffset:    indexOffset,
-		StringEncoding: stringEncoding,
+		IndexGroup:  indexGroup,
+		IndexOffset: indexOffset,
 		PlcField: PlcField{
 			FieldType:        fieldType,
 			StringLength:     stringLength,
@@ -151,7 +145,6 @@ func (m DirectPlcField) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
 
 type SymbolicPlcField struct {
 	SymbolicAddress string
-	StringEncoding  string
 	PlcField
 }
 
@@ -159,18 +152,13 @@ func (m SymbolicPlcField) GetAddressString() string {
 	return fmt.Sprintf("%dx%s%05d%05d:%s", m.FieldType, m.SymbolicAddress, m.StringLength, m.NumberOfElements, m.Datatype.String())
 }
 
-func (m SymbolicPlcField) GetStringEncoding() string {
-	return m.StringEncoding
-}
-
-func newAdsSymbolicPlcField(symbolicAddress string, adsDataType model2.AdsDataType, stringLength int32, numberOfElements uint32, stringEncoding string) (model.PlcField, error) {
+func newAdsSymbolicPlcField(symbolicAddress string, adsDataType model2.AdsDataType, stringLength int32, numberOfElements uint32) (model.PlcField, error) {
 	fieldType := SymbolicAdsField
 	if stringLength > 0 {
 		fieldType = SymbolicAdsStringField
 	}
 	return SymbolicPlcField{
 		SymbolicAddress: symbolicAddress,
-		StringEncoding:  stringEncoding,
 		PlcField: PlcField{
 			FieldType:        fieldType,
 			StringLength:     stringLength,

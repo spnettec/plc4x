@@ -383,7 +383,7 @@
     [array byte data count 'sampleSize']
 ]
 
-[dataIo DataItem(PlcValueType plcValueType, int 32 stringLength, vstring stringEncoding)
+[dataIo DataItem(PlcValueType plcValueType, int 32 stringLength)
     [typeSwitch plcValueType
         // -----------------------------------------
         // Bit

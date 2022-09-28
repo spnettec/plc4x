@@ -40,11 +40,7 @@ func (m AdsParserHelper) Parse(typeName string, arguments []string, io utils.Rea
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
-		stringEncoding, err := utils.StrToString(arguments[2])
-		if err != nil {
-			return nil, errors.Wrap(err, "Error parsing")
-		}
-		return model.DataItemParse(io, plcValueType, stringLength, stringEncoding)
+		return model.DataItemParse(io, plcValueType, stringLength)
 	case "AdsTableSizes":
 		return model.AdsTableSizesParse(io)
 	case "AdsMultiRequestItem":

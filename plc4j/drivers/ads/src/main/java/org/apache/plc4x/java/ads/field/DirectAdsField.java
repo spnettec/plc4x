@@ -33,7 +33,7 @@ import java.util.regex.Pattern;
  */
 public class DirectAdsField implements AdsField {
 
-    private static final Pattern RESOURCE_ADDRESS_PATTERN = Pattern.compile("^((0[xX](?<indexGroupHex>[0-9a-fA-F]+))|(?<indexGroup>\\d+))/((0[xX](?<indexOffsetHex>[0-9a-fA-F]+))|(?<indexOffset>\\d+)):(?<adsDataType>\\w+)(\\[(?<numberOfElements>\\d+)])?(\\|(?<stringEncoding>[a-z0-9A-Z_-]+))?");
+    private static final Pattern RESOURCE_ADDRESS_PATTERN = Pattern.compile("^((0[xX](?<indexGroupHex>[0-9a-fA-F]+))|(?<indexGroup>\\d+))/((0[xX](?<indexOffsetHex>[0-9a-fA-F]+))|(?<indexOffset>\\d+)):(?<adsDataType>\\w+)(\\[(?<numberOfElements>\\d+)])?");
 
     private final long indexGroup;
 
@@ -43,23 +43,20 @@ public class DirectAdsField implements AdsField {
 
     private final int numberOfElements;
 
-    private final String stringEncoding;
-
-    public DirectAdsField(long indexGroup, long indexOffset, String adsDataTypeName, Integer numberOfElements, String stringEncoding) {
+    public DirectAdsField(long indexGroup, long indexOffset, String adsDataTypeName, Integer numberOfElements) {
         //ByteValue.checkUnsignedBounds(indexGroup, 4);
         this.indexGroup = indexGroup;
         //ByteValue.checkUnsignedBounds(indexOffset, 4);
         this.indexOffset = indexOffset;
         this.adsDataTypeName = Objects.requireNonNull(adsDataTypeName);
         this.numberOfElements = numberOfElements != null ? numberOfElements : 1;
-        this.stringEncoding = stringEncoding;
         if (this.numberOfElements <= 0) {
             throw new IllegalArgumentException("numberOfElements must be greater then zero. Was " + this.numberOfElements);
         }
     }
 
-    public static DirectAdsField of(long indexGroup, long indexOffset, String adsDataTypeName, Integer numberOfElements, String stringEncoding) {
-        return new DirectAdsField(indexGroup, indexOffset, adsDataTypeName, numberOfElements, stringEncoding);
+    public static DirectAdsField of(long indexGroup, long indexOffset, String adsDataTypeName, Integer numberOfElements) {
+        return new DirectAdsField(indexGroup, indexOffset, adsDataTypeName, numberOfElements);
     }
 
     public static DirectAdsField of(String address) {
@@ -92,16 +89,8 @@ public class DirectAdsField implements AdsField {
 
         String numberOfElementsString = matcher.group("numberOfElements");
         Integer numberOfElements = numberOfElementsString != null ? Integer.valueOf(numberOfElementsString) : null;
-        String stringEncoding = matcher.group("stringEncoding");
-        if (stringEncoding==null || "".equals(stringEncoding))
-        {
-            stringEncoding = "UTF-8";
-            if ("WSTRING".equals(adsDataTypeString))
-            {
-                stringEncoding = "UTF-16";
-            }
-        }
-        return new DirectAdsField(indexGroup, indexOffset, adsDataTypeString, numberOfElements, stringEncoding);
+
+        return new DirectAdsField(indexGroup, indexOffset, adsDataTypeString, numberOfElements);
     }
 
     public static boolean matches(String address) {
@@ -114,10 +103,6 @@ public class DirectAdsField implements AdsField {
 
     public long getIndexOffset() {
         return indexOffset;
-    }
-    
-    public String getStringEncoding() {
-        return stringEncoding;
     }
 
     public String getPlcDataType() {
