@@ -72,6 +72,9 @@ type boxedWriteBuffer struct {
 
 func (b *boxedWriteBuffer) GetBox() AsciiBox {
 	back := b.Back()
+	if back == nil {
+		return AsciiBox{data: "<nil>"}
+	}
 	return back.Value.(AsciiBox)
 }
 

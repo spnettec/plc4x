@@ -35,6 +35,7 @@ func (d *DefaultPlcBrowseRequest) Serialize(writeBuffer utils.WriteBuffer) error
 	if err := d.DefaultRequest.Serialize(writeBuffer); err != nil {
 		return err
 	}
+
 	if d.browser != nil {
 		if serializableField, ok := d.browser.(utils.Serializable); ok {
 			if err := writeBuffer.PushContext("browser"); err != nil {

@@ -24,8 +24,9 @@ import (
 	"github.com/apache/plc4x/plc4go/spi"
 )
 
+//go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcSubscriptionHandle
 type DefaultPlcSubscriptionHandle struct {
-	handleToRegister model.PlcSubscriptionHandle
+	handleToRegister model.PlcSubscriptionHandle `ignore:"true"`
 	plcSubscriber    spi.PlcSubscriber
 }
 

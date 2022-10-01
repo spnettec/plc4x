@@ -81,8 +81,10 @@ func (d *DefaultPlcBrowseQueryResult) Serialize(writeBuffer utils.WriteBuffer) e
 	if err := writeBuffer.PushContext("attributes", utils.WithRenderAsList(true)); err != nil {
 		return err
 	}
-	for name, elemValue := range d.Attributes {
-		if serializable, ok := elemValue.(utils.Serializable); ok {
+	for name, elem := range d.Attributes {
+
+		var elem interface{} = elem
+		if serializable, ok := elem.(utils.Serializable); ok {
 			if err := writeBuffer.PushContext(name); err != nil {
 				return err
 			}
@@ -93,8 +95,8 @@ func (d *DefaultPlcBrowseQueryResult) Serialize(writeBuffer utils.WriteBuffer) e
 				return err
 			}
 		} else {
-			elemValueAsString := fmt.Sprintf("%v", elemValue)
-			if err := writeBuffer.WriteString(name, uint32(len(elemValueAsString)*8), "UTF-8", elemValueAsString); err != nil {
+			elemAsString := fmt.Sprintf("%v", elem)
+			if err := writeBuffer.WriteString(name, uint32(len(elemAsString)*8), "UTF-8", elemAsString); err != nil {
 				return err
 			}
 		}
