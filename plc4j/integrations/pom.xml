@@ -35,6 +35,7 @@
 
   <modules>
     <module>apache-camel</module>
+    <module>apache-edgent</module>
     <module>apache-nifi</module>
     <module>apache-calcite</module>
     <module>opcua-server</module>

@@ -8,7 +8,7 @@
   "License"); you may not use this file except in compliance
   with the License.  You may obtain a copy of the License at
 
-      https://www.apache.org/licenses/LICENSE-2.0
+      http://www.apache.org/licenses/LICENSE-2.0
 
   Unless required by applicable law or agreed to in writing,
   software distributed under the License is distributed on an
@@ -23,81 +23,21 @@
 
   <parent>
     <groupId>org.apache.plc4x</groupId>
-    <artifactId>plc4j</artifactId>
+    <artifactId>plc4j-integrations</artifactId>
     <version>0.11.0-SNAPSHOT</version>
   </parent>
 
-  <groupId>org.apache.plc4x.examples</groupId>
-  <artifactId>plc4j-examples</artifactId>
-  <packaging>pom</packaging>
+  <artifactId>plc4j-apache-edgent</artifactId>
 
-  <name>PLC4J: Examples</name>
-  <description>Parent of all java based application example modules.</description>
+  <name>PLC4J: Integrations: Apache Edgent</name>
+  <description>Integration module for integrating PLC4X into Apache Edgent.</description>
 
   <properties>
-    <app.main.class>override-this-property-in-application-pom</app.main.class>
+    <edgent.version>1.2.0</edgent.version>
   </properties>
-
-  <modules>
-    <module>hello-cloud-azure</module>
-    <module>hello-cloud-google</module>
-    <module>hello-discovery</module>
-    <module>hello-connectivity-mqtt</module>
-    <module>hello-influx-data-collection</module>
-    <module>hello-integration-edgent</module>
-    <module>hello-integration-iotdb</module>
-    <!--module>hello-nats</module-->
-    <module>hello-opm</module>
-    <module>hello-webservice</module>
-    <module>hello-world-kotlin</module>
-    <module>hello-world-plc4x-discover-and-browse</module>
-    <module>hello-world-plc4x-read</module>
-    <module>hello-world-plc4x-subscribe</module>
-    <module>hello-world-plc4x-write</module>
-    <module>poll-loop</module>
-    <module>plc4j-s7event</module>
-  </modules>
 
   <build>
     <plugins>
-      <!-- This is just examples including these checks here requires an insane amount of housekeeping. -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-enforcer-plugin</artifactId>
-        <configuration>
-          <skip>true</skip>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.owasp</groupId>
-        <artifactId>dependency-check-maven</artifactId>
-        <configuration>
-          <!-- Don't fail the examples on CVSS errors -->
-          <failBuildOnCVSS>11</failBuildOnCVSS>
-        </configuration>
-      </plugin>
-      <!-- Build a fat jar containing all dependencies -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-shade-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>generate-uber-jar</id>
-            <phase>package</phase>
-            <goals>
-              <goal>shade</goal>
-            </goals>
-            <configuration>
-              <transformers combine.children="append">
-                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                  <mainClass>${app.main.class}</mainClass>
-                </transformer>
-              </transformers>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
@@ -111,49 +51,33 @@
             <usedDependency>org.apache.plc4x:plc4j-driver-knxnetip</usedDependency>
             <usedDependency>org.apache.plc4x:plc4j-driver-modbus</usedDependency>
             <usedDependency>org.apache.plc4x:plc4j-driver-opcua</usedDependency>
-            <usedDependency>org.apache.plc4x:plc4j-driver-plc4x</usedDependency>
-            <usedDependency>org.apache.plc4x:plc4j-driver-profinet</usedDependency>
             <usedDependency>org.apache.plc4x:plc4j-driver-s7</usedDependency>
             <usedDependency>org.apache.plc4x:plc4j-driver-simulated</usedDependency>
           </usedDependencies>
         </configuration>
       </plugin>
     </plugins>
-
-    <pluginManagement>
-      <plugins>
-        <!-- No need to deploy examples in a maven repo -->
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-deploy-plugin</artifactId>
-          <configuration>
-            <skip>true</skip>
-          </configuration>
-        </plugin>
-      </plugins>
-    </pluginManagement>
   </build>
 
-  <!-- Change the default scope to "compile" to include logback in all examples -->
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>ch.qos.logback</groupId>
-        <artifactId>logback-core</artifactId>
-        <version>${logback.version}</version>
-        <scope>compile</scope>
-      </dependency>
-      <dependency>
-        <groupId>ch.qos.logback</groupId>
-        <artifactId>logback-classic</artifactId>
-        <version>${logback.version}</version>
-        <scope>compile</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
   <dependencies>
-    <!-- Required driver implementation -->
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-api</artifactId>
+      <version>0.11.0-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.edgent</groupId>
+      <artifactId>edgent-api-function</artifactId>
+      <version>${edgent.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.code.gson</groupId>
+      <artifactId>gson</artifactId>
+    </dependency>
+
+    <!-- Include all drivers -->
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-ab-eth</artifactId>
@@ -199,18 +123,6 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-opcua</artifactId>
-      <version>0.11.0-SNAPSHOT</version>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-driver-plc4x</artifactId>
-      <version>0.11.0-SNAPSHOT</version>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-driver-profinet</artifactId>
       <version>0.11.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
