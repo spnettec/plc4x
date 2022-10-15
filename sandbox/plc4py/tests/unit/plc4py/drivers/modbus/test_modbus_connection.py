@@ -16,29 +16,14 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-from enum import Enum, auto
-from typing import Generator
 
 
-# TODO: Figure out what the parameters are and if we need this
-class GenericGenerator(Generator):
-    def __enter__(self):
-        return self
-
-    def send(self, _value, blah):
-        pass
-
-    def throw(self):
-        pass
-
-    def __exit__(self, *args):
-        pass
+from plc4py.PlcDriverManager import PlcDriverManager
 
 
-class ByteOrder(Enum):
-    """
-    Specifies the byte order for a message
-    """
+async def test_plc_driver_modbus_connect():
+    driver_manager = PlcDriverManager()
+    async with driver_manager.connection("modbus://127.0.0.1:502") as connection:
+        assert connection.is_connected()
 
-    LITTLE_ENDIAN = auto()
-    BIG_ENDIAN = auto()
+    assert not connection.is_connected()

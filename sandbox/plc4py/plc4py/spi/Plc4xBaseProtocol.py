@@ -7,7 +7,7 @@
 # "License"); you may not use this file except in compliance
 # with the License.  You may obtain a copy of the License at
 #
-#     https://www.apache.org/licenses/LICENSE-2.0
+#     http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing,
 # software distributed under the License is distributed on an
@@ -16,29 +16,22 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-from enum import Enum, auto
-from typing import Generator
+
+from asyncio import Protocol, Future
+from dataclasses import dataclass
 
 
-# TODO: Figure out what the parameters are and if we need this
-class GenericGenerator(Generator):
-    def __enter__(self):
-        return self
+@dataclass
+class Plc4xBaseProtocol(Protocol):
+    handler: Future
+    connected: bool = False
 
-    def send(self, _value, blah):
-        pass
+    def data_received(self, data) -> None:
+        self.handler.set_result(data)
 
-    def throw(self):
-        pass
+    def connection_made(self):
+        self.connected = True
 
-    def __exit__(self, *args):
-        pass
-
-
-class ByteOrder(Enum):
-    """
-    Specifies the byte order for a message
-    """
-
-    LITTLE_ENDIAN = auto()
-    BIG_ENDIAN = auto()
+    def connection_lost(self, exc: Exception | None) -> None:
+        self.connected = False
+        raise ConnectionError

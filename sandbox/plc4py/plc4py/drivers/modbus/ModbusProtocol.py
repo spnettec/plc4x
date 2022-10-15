@@ -7,7 +7,7 @@
 # "License"); you may not use this file except in compliance
 # with the License.  You may obtain a copy of the License at
 #
-#     https://www.apache.org/licenses/LICENSE-2.0
+#     http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing,
 # software distributed under the License is distributed on an
@@ -16,29 +16,16 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-from enum import Enum, auto
-from typing import Generator
+from dataclasses import dataclass
+
+from plc4py.spi.Plc4xBaseProtocol import Plc4xBaseProtocol
 
 
-# TODO: Figure out what the parameters are and if we need this
-class GenericGenerator(Generator):
-    def __enter__(self):
-        return self
-
-    def send(self, _value, blah):
+@dataclass
+class ModbusProtocol(Plc4xBaseProtocol):
+    def data_received(self, data):
+        # TODO:- Implement Protocol specific stuff
         pass
 
-    def throw(self):
+    def close(self):
         pass
-
-    def __exit__(self, *args):
-        pass
-
-
-class ByteOrder(Enum):
-    """
-    Specifies the byte order for a message
-    """
-
-    LITTLE_ENDIAN = auto()
-    BIG_ENDIAN = auto()
