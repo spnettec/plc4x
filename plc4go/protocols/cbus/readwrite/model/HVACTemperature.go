@@ -21,6 +21,7 @@ package model
 
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -150,7 +151,15 @@ _temperatureValue, _temperatureValueErr := readBuffer.ReadInt16("temperatureValu
 		}, nil
 }
 
-func (m *_HVACTemperature) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_HVACTemperature) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_HVACTemperature) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr :=writeBuffer.PushContext("HVACTemperature"); pushErr != nil {

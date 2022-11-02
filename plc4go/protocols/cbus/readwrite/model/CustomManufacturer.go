@@ -21,6 +21,7 @@ package model
 
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -132,7 +133,15 @@ _customString, _customStringErr := readBuffer.ReadString("customString", uint32(
 		}, nil
 }
 
-func (m *_CustomManufacturer) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_CustomManufacturer) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_CustomManufacturer) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr :=writeBuffer.PushContext("CustomManufacturer"); pushErr != nil {

@@ -21,6 +21,7 @@ package model
 
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -320,7 +321,15 @@ _knxNetIpDeviceMacAddress, _knxNetIpDeviceMacAddressErr := MACAddressParse(readB
 		}, nil
 }
 
-func (m *_DIBDeviceInfo) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_DIBDeviceInfo) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_DIBDeviceInfo) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr :=writeBuffer.PushContext("DIBDeviceInfo"); pushErr != nil {

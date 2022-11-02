@@ -21,6 +21,7 @@ package model
 
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -128,7 +129,15 @@ _dummy, _dummyErr := readBuffer.ReadUint16("dummy", 16)
 		}, nil
 }
 
-func (m *_Dummy) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_Dummy) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_Dummy) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr :=writeBuffer.PushContext("Dummy"); pushErr != nil {

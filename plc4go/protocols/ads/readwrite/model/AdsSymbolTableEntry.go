@@ -21,6 +21,7 @@ package model
 
 
 import (
+	"encoding/binary"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -648,7 +649,15 @@ _comment, _commentErr := readBuffer.ReadString("comment", uint32((commentLength)
 		}, nil
 }
 
-func (m *_AdsSymbolTableEntry) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_AdsSymbolTableEntry) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_AdsSymbolTableEntry) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr :=writeBuffer.PushContext("AdsSymbolTableEntry"); pushErr != nil {

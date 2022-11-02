@@ -21,6 +21,7 @@ package ads
 
 import (
 	"context"
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/ads/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
@@ -105,8 +106,8 @@ func (m *Writer) Write(ctx context.Context, writeRequest model.PlcWriteRequest) 
 
 		// Get the value from the request and serialize it to a byte array
 		value := writeRequest.GetValue(fieldName)
-		io := utils.NewLittleEndianWriteBufferByteBased()
-		if err := readWriteModel.DataItemSerialize(io, value, adsField.Datatype.PlcValueType(), adsField.StringLength); err != nil {
+		io := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
+		if err := readWriteModel.DataItemSerializeWithWriteBuffer(io, value, adsField.Datatype.PlcValueType(), adsField.StringLength); err != nil {
 			result <- &plc4goModel.DefaultPlcWriteRequestResult{
 				Request:  writeRequest,
 				Response: nil,

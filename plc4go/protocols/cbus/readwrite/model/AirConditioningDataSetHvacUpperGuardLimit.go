@@ -21,6 +21,7 @@ package model
 
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -231,7 +232,15 @@ _hvacModeAndFlags, _hvacModeAndFlagsErr := HVACModeAndFlagsParse(readBuffer)
 	return _child, nil
 }
 
-func (m *_AirConditioningDataSetHvacUpperGuardLimit) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_AirConditioningDataSetHvacUpperGuardLimit) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_AirConditioningDataSetHvacUpperGuardLimit) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {

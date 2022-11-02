@@ -21,6 +21,7 @@ package model
 
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -157,7 +158,15 @@ _referenceType, _referenceTypeErr := readBuffer.ReadUint8("referenceType", 8)
 		}, nil
 }
 
-func (m *_ModbusPDUReadFileRecordResponseItem) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_ModbusPDUReadFileRecordResponseItem) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_ModbusPDUReadFileRecordResponseItem) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr :=writeBuffer.PushContext("ModbusPDUReadFileRecordResponseItem"); pushErr != nil {

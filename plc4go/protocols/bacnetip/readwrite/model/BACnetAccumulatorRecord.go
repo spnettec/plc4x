@@ -21,6 +21,7 @@ package model
 
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -206,7 +207,15 @@ _accumulatorStatus, _accumulatorStatusErr := BACnetAccumulatorRecordAccumulatorS
 		}, nil
 }
 
-func (m *_BACnetAccumulatorRecord) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetAccumulatorRecord) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetAccumulatorRecord) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr :=writeBuffer.PushContext("BACnetAccumulatorRecord"); pushErr != nil {

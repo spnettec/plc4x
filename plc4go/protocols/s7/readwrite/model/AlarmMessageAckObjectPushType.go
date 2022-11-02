@@ -21,6 +21,7 @@ package model
 
 
 import (
+	"encoding/binary"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -265,7 +266,15 @@ _ackStateComing, _ackStateComingErr := StateParse(readBuffer)
 		}, nil
 }
 
-func (m *_AlarmMessageAckObjectPushType) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_AlarmMessageAckObjectPushType) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_AlarmMessageAckObjectPushType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr :=writeBuffer.PushContext("AlarmMessageAckObjectPushType"); pushErr != nil {

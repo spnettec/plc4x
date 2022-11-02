@@ -20,6 +20,7 @@
 package ads
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/protocols/ads/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/default"
@@ -48,8 +49,8 @@ func (m *MessageCodec) Send(message spi.Message) error {
 	// Cast the message to the correct type of struct
 	tcpPaket := message.(model.AmsTCPPacket)
 	// Serialize the request
-	wb := utils.NewLittleEndianWriteBufferByteBased()
-	err := tcpPaket.Serialize(wb)
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
+	err := tcpPaket.SerializeWithWriteBuffer(wb)
 	if err != nil {
 		return errors.Wrap(err, "error serializing request")
 	}

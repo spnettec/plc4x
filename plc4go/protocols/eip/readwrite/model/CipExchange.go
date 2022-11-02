@@ -21,6 +21,7 @@ package model
 
 
 import (
+	"encoding/binary"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -211,7 +212,15 @@ _service, _serviceErr := CipServiceParse(readBuffer , uint16( uint16(exchangeLen
 		}, nil
 }
 
-func (m *_CipExchange) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_CipExchange) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_CipExchange) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr :=writeBuffer.PushContext("CipExchange"); pushErr != nil {

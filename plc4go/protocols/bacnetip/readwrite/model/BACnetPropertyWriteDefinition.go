@@ -21,6 +21,7 @@ package model
 
 
 import (
+	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -244,7 +245,15 @@ _val, _err := BACnetContextTagParse(readBuffer , uint8(3) , BACnetDataType_UNSIG
 		}, nil
 }
 
-func (m *_BACnetPropertyWriteDefinition) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetPropertyWriteDefinition) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetPropertyWriteDefinition) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr :=writeBuffer.PushContext("BACnetPropertyWriteDefinition"); pushErr != nil {
