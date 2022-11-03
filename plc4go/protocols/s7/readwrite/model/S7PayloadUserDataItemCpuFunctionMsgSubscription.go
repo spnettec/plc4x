@@ -179,7 +179,11 @@ func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscription) GetLengthInBytes() ui
 	return m.GetLengthInBits() / 8
 }
 
-func S7PayloadUserDataItemCpuFunctionMsgSubscriptionParse(readBuffer utils.ReadBuffer, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemCpuFunctionMsgSubscription, error) {
+func S7PayloadUserDataItemCpuFunctionMsgSubscriptionParse(theBytes []byte, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemCpuFunctionMsgSubscription, error) {
+	return S7PayloadUserDataItemCpuFunctionMsgSubscriptionParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), cpuFunctionType, cpuSubfunction) // TODO: get endianness from mspec
+}
+
+func S7PayloadUserDataItemCpuFunctionMsgSubscriptionParseWithBuffer(readBuffer utils.ReadBuffer, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemCpuFunctionMsgSubscription, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7PayloadUserDataItemCpuFunctionMsgSubscription"); pullErr != nil {
@@ -225,7 +229,7 @@ _magicKey, _magicKeyErr := readBuffer.ReadString("magicKey", uint32(64), "UTF-8"
 		if pullErr := readBuffer.PullContext("Alarmtype"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for Alarmtype")
 		}
-		_val, _err := AlarmStateTypeParse(readBuffer)
+		_val, _err := AlarmStateTypeParseWithBuffer(readBuffer)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'Alarmtype' field of S7PayloadUserDataItemCpuFunctionMsgSubscription")
 		}
