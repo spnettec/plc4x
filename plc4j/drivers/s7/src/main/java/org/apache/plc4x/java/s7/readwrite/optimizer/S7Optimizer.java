@@ -24,6 +24,7 @@ import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.s7.readwrite.*;
 import org.apache.plc4x.java.s7.readwrite.context.S7DriverContext;
+import org.apache.plc4x.java.s7.readwrite.tag.S7StringTag;
 import org.apache.plc4x.java.s7.readwrite.tag.S7Tag;
 import org.apache.plc4x.java.s7.readwrite.MemoryArea;
 import org.apache.plc4x.java.s7.readwrite.TransportSize;
@@ -131,9 +132,9 @@ public class S7Optimizer extends BaseOptimizer {
                 writeRequestItemSize += Math.ceil((double) tag.getNumberOfElements() / 8);
             } else {
                 int length = 1;
-                if(field instanceof S7StringField)
+                if(tag instanceof S7StringTag)
                 {
-                    length = (((S7StringField)field).getStringLength() + 2) * 8;
+                    length = (((S7StringTag)tag).getStringLength() + 2) * 8;
                 }
                 writeRequestItemSize += (tag.getNumberOfElements() * tag.getDataType().getSizeInBytes() * length);
             }

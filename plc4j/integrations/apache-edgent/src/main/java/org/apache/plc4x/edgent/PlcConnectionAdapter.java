@@ -28,7 +28,7 @@ import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
-import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.types.PlcValueType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -161,10 +161,10 @@ public class PlcConnectionAdapter implements AutoCloseable {
         @SuppressWarnings("unchecked")
         public T get() {
             PlcConnection connection = null;
-            PlcField field = null;
+            PlcTag tag = null;
             try {
                 connection = getConnection();
-                PlcReadRequest readRequest = connection.readRequestBuilder().addItem(FIELD_NAME, fieldQuery).build();
+                PlcReadRequest readRequest = connection.readRequestBuilder().addTagAddress(FIELD_NAME, fieldQuery).build();
                 PlcReadResponse readResponse = readRequest.execute().get();
                 Object value = readResponse.getObject(FIELD_NAME);
                 if (value != null) {
@@ -175,7 +175,7 @@ public class PlcConnectionAdapter implements AutoCloseable {
                     }
                 }
             } catch (Exception e) {
-                logger.error("reading from plc device {} {} failed", connection, field, e);
+                logger.error("reading from plc device {} {} failed", connection, tag, e);
             }
             return null;
         }
@@ -199,10 +199,10 @@ public class PlcConnectionAdapter implements AutoCloseable {
         @SuppressWarnings("unchecked")
         public List<T> get() {
             PlcConnection connection = null;
-            PlcField field = null;
+            PlcTag tag = null;
             try {
                 connection = getConnection();
-                PlcReadRequest readRequest = connection.readRequestBuilder().addItem(FIELD_NAME, fieldQuery).build();
+                PlcReadRequest readRequest = connection.readRequestBuilder().addTagAddress(FIELD_NAME, fieldQuery).build();
                 PlcReadResponse readResponse = readRequest.execute().get();
                 Object value = null;
                 switch (clientDatatype) {
@@ -244,7 +244,7 @@ public class PlcConnectionAdapter implements AutoCloseable {
                     return Collections.checkedList((List<T>) value, genericDatatype);
                 }
             } catch (Exception e) {
-                logger.error("reading from plc device {} {} failed", connection, field, e);
+                logger.error("reading from plc device {} {} failed", connection, tag, e);
             }
             return null;
         }
@@ -279,52 +279,52 @@ public class PlcConnectionAdapter implements AutoCloseable {
             switch (clientDatatype) {
                 case BYTE:
                     if (fieldValue instanceof Byte) {
-                        builder.addItem(FIELD_NAME, fieldQuery, (Byte) fieldValue);
+                        builder.addTagAddress(FIELD_NAME, fieldQuery, (Byte) fieldValue);
                     }
                     break;
                 case SINT:
                     if (fieldValue instanceof Short) {
-                        builder.addItem(FIELD_NAME, fieldQuery, (Short) fieldValue);
+                        builder.addTagAddress(FIELD_NAME, fieldQuery, (Short) fieldValue);
                     }
                     break;
                 case INT:
                     if (fieldValue instanceof Integer) {
-                        builder.addItem(FIELD_NAME, fieldQuery, (Integer) fieldValue);
+                        builder.addTagAddress(FIELD_NAME, fieldQuery, (Integer) fieldValue);
                     }
                     break;
                 case LINT:
                     if (fieldValue instanceof Long) {
-                        builder.addItem(FIELD_NAME, fieldQuery, (Long) fieldValue);
+                        builder.addTagAddress(FIELD_NAME, fieldQuery, (Long) fieldValue);
                     }
                     break;
                 case REAL:
                     if (fieldValue instanceof Float) {
-                        builder.addItem(FIELD_NAME, fieldQuery, (Float) fieldValue);
+                        builder.addTagAddress(FIELD_NAME, fieldQuery, (Float) fieldValue);
                     }
                     break;
                 case WORD:
                     if (fieldValue instanceof Double) {
-                        builder.addItem(FIELD_NAME, fieldQuery, (Double) fieldValue);
+                        builder.addTagAddress(FIELD_NAME, fieldQuery, (Double) fieldValue);
                     }
                     break;
                 case STRING:
                     if (fieldValue instanceof String) {
-                        builder.addItem(FIELD_NAME, fieldQuery, (String) fieldValue);
+                        builder.addTagAddress(FIELD_NAME, fieldQuery, (String) fieldValue);
                     }
                     break;
                 case TIME:
                     if (fieldValue instanceof LocalTime) {
-                        builder.addItem(FIELD_NAME, fieldQuery, (LocalTime) fieldValue);
+                        builder.addTagAddress(FIELD_NAME, fieldQuery, (LocalTime) fieldValue);
                     }
                     break;
                 case DATE:
                     if (fieldValue instanceof LocalDate) {
-                        builder.addItem(FIELD_NAME, fieldQuery, (LocalDate) fieldValue);
+                        builder.addTagAddress(FIELD_NAME, fieldQuery, (LocalDate) fieldValue);
                     }
                     break;
                 case DATE_AND_TIME:
                     if (fieldValue instanceof LocalDateTime) {
-                        builder.addItem(FIELD_NAME, fieldQuery, (LocalDateTime) fieldValue);
+                        builder.addTagAddress(FIELD_NAME, fieldQuery, (LocalDateTime) fieldValue);
                     }
                     break;
             }

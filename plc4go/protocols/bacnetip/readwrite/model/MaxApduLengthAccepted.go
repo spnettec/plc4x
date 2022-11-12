@@ -77,74 +77,58 @@ func init() {
 	}
 }
 
+
 func (e MaxApduLengthAccepted) NumberOfOctets() uint16 {
-	switch e {
-	case 0x0:
-		{ /* '0x0' */
-			return 50
+	switch e  {
+		case 0x0: { /* '0x0' */
+            return 50
 		}
-	case 0x1:
-		{ /* '0x1' */
-			return 128
+		case 0x1: { /* '0x1' */
+            return 128
 		}
-	case 0x2:
-		{ /* '0x2' */
-			return 206
+		case 0x2: { /* '0x2' */
+            return 206
 		}
-	case 0x3:
-		{ /* '0x3' */
-			return 480
+		case 0x3: { /* '0x3' */
+            return 480
 		}
-	case 0x4:
-		{ /* '0x4' */
-			return 1024
+		case 0x4: { /* '0x4' */
+            return 1024
 		}
-	case 0x5:
-		{ /* '0x5' */
-			return 1476
+		case 0x5: { /* '0x5' */
+            return 1476
 		}
-	case 0x6:
-		{ /* '0x6' */
-			return 0
+		case 0x6: { /* '0x6' */
+            return 0
 		}
-	case 0x7:
-		{ /* '0x7' */
-			return 0
+		case 0x7: { /* '0x7' */
+            return 0
 		}
-	case 0x8:
-		{ /* '0x8' */
-			return 0
+		case 0x8: { /* '0x8' */
+            return 0
 		}
-	case 0x9:
-		{ /* '0x9' */
-			return 0
+		case 0x9: { /* '0x9' */
+            return 0
 		}
-	case 0xA:
-		{ /* '0xA' */
-			return 0
+		case 0xA: { /* '0xA' */
+            return 0
 		}
-	case 0xB:
-		{ /* '0xB' */
-			return 0
+		case 0xB: { /* '0xB' */
+            return 0
 		}
-	case 0xC:
-		{ /* '0xC' */
-			return 0
+		case 0xC: { /* '0xC' */
+            return 0
 		}
-	case 0xD:
-		{ /* '0xD' */
-			return 0
+		case 0xD: { /* '0xD' */
+            return 0
 		}
-	case 0xE:
-		{ /* '0xE' */
-			return 0
+		case 0xE: { /* '0xE' */
+            return 0
 		}
-	case 0xF:
-		{ /* '0xF' */
-			return 0
+		case 0xF: { /* '0xF' */
+            return 0
 		}
-	default:
-		{
+		default: {
 			return 0
 		}
 	}

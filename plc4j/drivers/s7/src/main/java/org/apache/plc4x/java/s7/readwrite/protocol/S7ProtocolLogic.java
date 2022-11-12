@@ -19,6 +19,7 @@
 package org.apache.plc4x.java.s7.readwrite.protocol;
 
 import org.apache.plc4x.java.api.model.PlcTag;
+import org.apache.plc4x.java.s7.readwrite.configuration.S7Configuration;
 import org.apache.plc4x.java.s7.readwrite.utils.S7PlcSubscriptionHandle;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -30,6 +31,7 @@ import org.apache.plc4x.java.api.messages.PlcResponse;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
+import org.apache.plc4x.java.spi.configuration.HasConfiguration;
 import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionTag;
 import org.apache.plc4x.java.spi.values.PlcNull;
@@ -79,13 +81,12 @@ import org.apache.plc4x.java.spi.messages.DefaultPlcUnsubscriptionRequest;
  * So we need to limit those.
  * Thus, each request goes to a Work Queue and this Queue ensures, that only 3 are open at the same time.
  */
-public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
-
-    public static final Duration REQUEST_TIMEOUT = Duration.ofMillis(10000);
+public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements HasConfiguration<S7Configuration> {
 
     private final Logger logger = LoggerFactory.getLogger(S7ProtocolLogic.class);
     private final AtomicInteger tpduGenerator = new AtomicInteger(1);
 
+    private S7Configuration configuration;
     /*
      * Take into account that the size of this buffer depends on the final device.
      * S7-300 goes from 20 to 300 and for S7-400 it goes from 300 to 10000.
@@ -344,14 +345,14 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
 
         DefaultPlcSubscriptionRequest request = (DefaultPlcSubscriptionRequest) subscriptionRequest;
 
-        List<S7ParameterUserDataItem> parameterItems = new ArrayList<>(request.getNumberOfFields());
-        List<S7PayloadUserDataItem> payloadItems = new ArrayList<>(request.getNumberOfFields());
+        List<S7ParameterUserDataItem> parameterItems = new ArrayList<>(request.getNumberOfTags());
+        List<S7PayloadUserDataItem> payloadItems = new ArrayList<>(request.getNumberOfTags());
 
-        for (String fieldName : request.getFieldNames()) {
-            final DefaultPlcSubscriptionField sf = (DefaultPlcSubscriptionField) request.getField(fieldName);
-            final S7SubscriptionField field = (S7SubscriptionField) sf.getPlcField();
+        for (String tagName : request.getTagNames()) {
+            final DefaultPlcSubscriptionTag sf = (DefaultPlcSubscriptionTag) request.getTag(tagName);
+            final S7SubscriptionTag tag = (S7SubscriptionTag) sf.getTag();
 
-            switch (field.getFieldType()) {
+            switch (tag.getTagType()) {
                 case EVENT_SUBSCRIPTION:
                     encodeEventSubscriptionRequest(request, parameterItems, payloadItems);
                     break;
@@ -372,9 +373,9 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                     break;
                 default:
             }
-            //final PlcValue plcValue = request.getPlcValue(fieldName);
-            //parameterItems.add(new S7VarRequestParameterItemAddress(encodeS7Address(field)));
-            //payloadItems.add(serializePlcValue(field, plcValue));
+            //final PlcValue plcValue = request.getPlcValue(tagName);
+            //parameterItems.add(new S7VarRequestParameterItemAddress(encodeS7Address(tag)));
+            //payloadItems.add(serializePlcValue(tag, plcValue));
         }
         final int tpduId = tpduGenerator.getAndIncrement();
         // If we've reached the max value for a 16 bit transaction identifier, reset back to 1
@@ -876,9 +877,9 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
             int stringLength = (tag instanceof S7StringTag) ? ((S7StringTag) tag).getStringLength() : 254;
             ByteBuffer byteBuffer = null;
             for (int i = 0; i < tag.getNumberOfElements(); i++) {
-                final int lengthInBytes = DataItem.getLengthInBytes(plcValue.getIndex(i), tag.getDataType().getDataProtocolId(), stringLength, field.getStringEncoding());
+                final int lengthInBytes = DataItem.getLengthInBytes(plcValue.getIndex(i), tag.getDataType().getDataProtocolId(), stringLength, tag.getStringEncoding());
                 final WriteBufferByteBased writeBuffer = new WriteBufferByteBased(lengthInBytes);
-                DataItem.staticSerialize(writeBuffer, plcValue.getIndex(i), tag.getDataType().getDataProtocolId(), stringLength);
+                DataItem.staticSerialize(writeBuffer, plcValue.getIndex(i), tag.getDataType().getDataProtocolId(), stringLength, tag.getStringEncoding());
                 // Allocate enough space for all items.
                 if (byteBuffer == null) {
                     byteBuffer = ByteBuffer.allocate(lengthInBytes * tag.getNumberOfElements());
@@ -907,7 +908,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                 final PlcValue[] resultItems = IntStream.range(0, tag.getNumberOfElements()).mapToObj(i -> {
                     try {
                         return DataItem.staticParse(readBuffer, tag.getDataType().getDataProtocolId(),
-                            stringLength);
+                            stringLength, tag.getStringEncoding());
                     } catch (ParseException e) {
                         logger.warn("Error parsing tag item of type: '{}' (at position {}})", tag.getDataType().name(), i, e);
                     }

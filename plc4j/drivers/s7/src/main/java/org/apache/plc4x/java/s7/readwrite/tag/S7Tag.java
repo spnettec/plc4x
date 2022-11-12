@@ -46,24 +46,23 @@ public class S7Tag implements PlcTag, Serializable {
 
     //byteOffset theoretically can reach up to 2097151 ... see checkByteOffset() below --> 7digits
     private static final Pattern ADDRESS_PATTERN =
-        Pattern.compile("^%(?<memoryArea>.)(?<transferSizeCode>[XBWD]?)(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?:(?<dataType>[a-zA-Z_]+)(\\[(?<numElements>\\d+)])?");
+        Pattern.compile("^%(?<memoryArea>.)(?<transferSizeCode>[XBWD]?)(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?:(?<dataType>[a-zA-Z_]+)(\\[(?<numElements>\\d+)])?(\\|(?<stringEncoding>[a-z0-9A-Z_-]+))?");
 
     //blockNumber usually has its max hat around 64000 --> 5digits
     private static final Pattern DATA_BLOCK_ADDRESS_PATTERN =
-        Pattern.compile("^%DB(?<blockNumber>\\d{1,5}).DB(?<transferSizeCode>[XBWD]?)(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?:(?<dataType>[a-zA-Z_]+)(\\[(?<numElements>\\d+)])?");
+        Pattern.compile("^%DB(?<blockNumber>\\d{1,5}).DB(?<transferSizeCode>[XBWD]?)(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?:(?<dataType>[a-zA-Z_]+)(\\[(?<numElements>\\d+)])?(\\|(?<stringEncoding>[a-z0-9A-Z_-]+))?");
 
     private static final Pattern DATA_BLOCK_SHORT_PATTERN =
-        Pattern.compile("^%DB(?<blockNumber>\\d{1,5}):(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?:(?<dataType>[a-zA-Z_]+)(\\[(?<numElements>\\d+)])?");
+        Pattern.compile("^%DB(?<blockNumber>\\d{1,5}):(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?:(?<dataType>[a-zA-Z_]+)(\\[(?<numElements>\\d+)])?(\\|(?<stringEncoding>[a-z0-9A-Z_-]+))?");
 
     private static final Pattern DATA_BLOCK_STRING_ADDRESS_PATTERN =
-        Pattern.compile("^%DB(?<blockNumber>\\d{1,5}).DB(?<transferSizeCode>[XBWD]?)(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?:(?<dataType>STRING|WSTRING)\\((?<stringLength>\\d{1,3})\\)(\\[(?<numElements>\\d+)])?");
+        Pattern.compile("^%DB(?<blockNumber>\\d{1,5}).DB(?<transferSizeCode>[XBWD]?)(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?:(?<dataType>STRING|WSTRING)\\((?<stringLength>\\d{1,3})\\)(\\[(?<numElements>\\d+)])?(\\|(?<stringEncoding>[a-z0-9A-Z_-]+))?");
 
     private static final Pattern DATA_BLOCK_STRING_SHORT_PATTERN =
-        Pattern.compile("^%DB(?<blockNumber>\\d{1,5}):(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?:(?<dataType>STRING|WSTRING)\\((?<stringLength>\\d{1,3})\\)(\\[(?<numElements>\\d+)])?");
+        Pattern.compile("^%DB(?<blockNumber>\\d{1,5}):(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?:(?<dataType>STRING|WSTRING)\\((?<stringLength>\\d{1,3})\\)(\\[(?<numElements>\\d+)])?(\\|(?<stringEncoding>[a-z0-9A-Z_-]+))?");
 
     private static final Pattern PLC_PROXY_ADDRESS_PATTERN =
-        Pattern.compile("[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}");
-
+        Pattern.compile("[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}(\\|(?<stringEncoding>[a-z0-9A-Z_-]+))?");
     private static final String DATA_TYPE = "dataType";
     private static final String STRING_LENGTH = "stringLength";
     private static final String TRANSFER_SIZE_CODE = "transferSizeCode";
@@ -80,6 +79,8 @@ public class S7Tag implements PlcTag, Serializable {
     private final int byteOffset;
     private final byte bitOffset;
     private final int numElements;
+
+    private final String stringEncoding;
 
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
     protected S7Tag(@JsonProperty("dataType") TransportSize dataType, @JsonProperty("memoryArea") MemoryArea memoryArea,
@@ -141,7 +142,6 @@ public class S7Tag implements PlcTag, Serializable {
         return stringEncoding;
     }
 
-    @Override
     public int getNumberOfElements() {
         return numElements;
     }
@@ -268,7 +268,7 @@ public class S7Tag implements PlcTag, Serializable {
                 }
             }
             return new S7Tag(dataType, memoryArea, blockNumber, byteOffset, bitOffset, numElements, stringEncoding);
-        } else if (PLC_PROXY_ADDRESS_PATTERN.matcher(tagString).matches()) {
+        } else if ((matcher = PLC_PROXY_ADDRESS_PATTERN.matcher(tagString)).matches()) {
             try {
                 byte[] addressData = Hex.decodeHex(tagString.replaceAll("[-]", ""));
                 ReadBuffer rb = new ReadBufferByteBased(addressData);

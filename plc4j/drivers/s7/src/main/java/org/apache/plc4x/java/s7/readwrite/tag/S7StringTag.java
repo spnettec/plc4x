@@ -37,7 +37,7 @@ public class S7StringTag extends S7Tag {
                           @JsonProperty("bitOffset") byte bitOffset, @JsonProperty("numElements") int numElements,
                           @JsonProperty("stringLength") int stringLength,
                           @JsonProperty("stringEncoding") String stringEncoding) {
-        super(dataType, memoryArea, blockNumber, byteOffset, bitOffset, numElements);
+        super(dataType, memoryArea, blockNumber, byteOffset, bitOffset, numElements,stringEncoding);
         this.stringLength = stringLength;
     }
 

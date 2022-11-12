@@ -53,9 +53,9 @@ func main() {
 
 	// Prepare a read-request
 	readRequest, err := connection.ReadRequestBuilder().
-		AddQuery("errorMsg", "GVLMES.sErrorMessage:STRING(20)|GBK").
-		AddQuery("sDrumID", "GVLMES.sDrumID:STRING(20)").
-		AddQuery("status", "GVLMES.iConnectionStatus:INT").
+		AddTagAddress("errorMsg", "GVLMES.sErrorMessage:STRING(20)|GBK").
+		AddTagAddress("sDrumID", "GVLMES.sDrumID:STRING(20)").
+		AddTagAddress("status", "GVLMES.iConnectionStatus:INT").
 		Build()
 	if err != nil {
 		fmt.Printf("error preparing read-request: %s", connectionResult.GetErr().Error())
@@ -77,7 +77,7 @@ func main() {
 	//	fmt.Printf("error an non-ok return code: %s", rrr.GetResponse().GetResponseCode("field").GetName())
 	//	return
 	//}
-	for _, name := range rrr.GetRequest().GetFieldNames() {
+	for _, name := range rrr.GetRequest().GetTagNames() {
 		if rrr.GetResponse().GetResponseCode(name) != model.PlcResponseCode_OK {
 			fmt.Printf("error an non-ok return code: %s", rrr.GetResponse().GetResponseCode(name).GetName())
 			continue

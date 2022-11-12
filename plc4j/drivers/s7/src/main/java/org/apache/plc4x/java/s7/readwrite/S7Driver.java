@@ -87,7 +87,7 @@ public class S7Driver extends GeneratedDriverBase<TPKTPacket> {
 
     @Override
     protected org.apache.plc4x.java.api.value.PlcValueHandler getValueHandler() {
-        return new S7PlcValueHandler();
+        return new PlcValueHandler();
     }
 
     /**
