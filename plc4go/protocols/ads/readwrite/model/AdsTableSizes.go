@@ -154,7 +154,7 @@ func (m *_AdsTableSizes) GetLengthInBytes() uint16 {
 }
 
 func AdsTableSizesParse(theBytes []byte) (AdsTableSizes, error) {
-	return AdsTableSizesParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return AdsTableSizesParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian)))
 }
 
 func AdsTableSizesParseWithBuffer(readBuffer utils.ReadBuffer) (AdsTableSizes, error) {
@@ -224,7 +224,7 @@ _extraLength, _extraLengthErr := readBuffer.ReadUint32("extraLength", 32)
 }
 
 func (m *_AdsTableSizes) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())), utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

@@ -21,7 +21,6 @@ package model
 
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -154,7 +153,7 @@ func (m *_AmsNetId) GetLengthInBytes() uint16 {
 }
 
 func AmsNetIdParse(theBytes []byte) (AmsNetId, error) {
-	return AmsNetIdParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return AmsNetIdParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func AmsNetIdParseWithBuffer(readBuffer utils.ReadBuffer) (AmsNetId, error) {
@@ -224,7 +223,7 @@ _octet6, _octet6Err := readBuffer.ReadUint8("octet6", 8)
 }
 
 func (m *_AmsNetId) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

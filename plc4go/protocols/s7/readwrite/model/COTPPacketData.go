@@ -21,7 +21,6 @@ package model
 
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -143,7 +142,7 @@ func (m *_COTPPacketData) GetLengthInBytes() uint16 {
 }
 
 func COTPPacketDataParse(theBytes []byte, cotpLen uint16) (COTPPacketData, error) {
-	return COTPPacketDataParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), cotpLen) // TODO: get endianness from mspec
+	return COTPPacketDataParseWithBuffer(utils.NewReadBufferByteBased(theBytes), cotpLen)
 }
 
 func COTPPacketDataParseWithBuffer(readBuffer utils.ReadBuffer, cotpLen uint16) (COTPPacketData, error) {
@@ -186,7 +185,7 @@ _tpduRef, _tpduRefErr := readBuffer.ReadUint8("tpduRef", 7)
 }
 
 func (m *_COTPPacketData) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

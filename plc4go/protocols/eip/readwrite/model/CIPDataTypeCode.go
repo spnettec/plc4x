@@ -20,8 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
-
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -36,24 +34,23 @@ type ICIPDataTypeCode interface {
 	Size() uint8
 }
 
-const(
-	CIPDataTypeCode_BOOL CIPDataTypeCode = 0X00C1
-	CIPDataTypeCode_SINT CIPDataTypeCode = 0X00C2
-	CIPDataTypeCode_INT CIPDataTypeCode = 0X00C3
-	CIPDataTypeCode_DINT CIPDataTypeCode = 0X00C4
-	CIPDataTypeCode_LINT CIPDataTypeCode = 0X00C5
-	CIPDataTypeCode_REAL CIPDataTypeCode = 0X00CA
-	CIPDataTypeCode_DWORD CIPDataTypeCode = 0X00D3
-	CIPDataTypeCode_STRUCTURED CIPDataTypeCode = 0X02A0
-	CIPDataTypeCode_STRING CIPDataTypeCode = 0X02A0
-	CIPDataTypeCode_STRING36 CIPDataTypeCode = 0X02A0
+const (
+	CIPDataTypeCode_BOOL   CIPDataTypeCode = 0x00C1
+	CIPDataTypeCode_SINT   CIPDataTypeCode = 0x00C2
+	CIPDataTypeCode_INT    CIPDataTypeCode = 0x00C3
+	CIPDataTypeCode_DINT   CIPDataTypeCode = 0x00C4
+	CIPDataTypeCode_LINT   CIPDataTypeCode = 0x00C5
+	CIPDataTypeCode_REAL   CIPDataTypeCode = 0x00CA
+	CIPDataTypeCode_DWORD  CIPDataTypeCode = 0x00D3
+	CIPDataTypeCode_Struct CIPDataTypeCode = 0x02A0
+	CIPDataTypeCode_STRING CIPDataTypeCode = 0x02A0
 )
 
 var CIPDataTypeCodeValues []CIPDataTypeCode
 
 func init() {
 	_ = errors.New
-	CIPDataTypeCodeValues = []CIPDataTypeCode {
+	CIPDataTypeCodeValues = []CIPDataTypeCode{
 		CIPDataTypeCode_BOOL,
 		CIPDataTypeCode_SINT,
 		CIPDataTypeCode_INT,
@@ -61,40 +58,47 @@ func init() {
 		CIPDataTypeCode_LINT,
 		CIPDataTypeCode_REAL,
 		CIPDataTypeCode_DWORD,
-		CIPDataTypeCode_STRUCTURED,
+		CIPDataTypeCode_Struct,
 		CIPDataTypeCode_STRING,
-		CIPDataTypeCode_STRING36,
 	}
 }
 
-
 func (e CIPDataTypeCode) Size() uint8 {
-	switch e  {
-		case 0X00C1: { /* '0X00C1' */
-            return 1
+	switch e {
+	case 0x00C1:
+		{ /* '0X00C1' */
+			return 1
 		}
-		case 0X00C2: { /* '0X00C2' */
-            return 1
+	case 0x00C2:
+		{ /* '0X00C2' */
+			return 1
 		}
-		case 0X00C3: { /* '0X00C3' */
-            return 2
+	case 0x00C3:
+		{ /* '0X00C3' */
+			return 2
 		}
-		case 0X00C4: { /* '0X00C4' */
-            return 4
+	case 0x00C4:
+		{ /* '0X00C4' */
+			return 4
 		}
-		case 0X00C5: { /* '0X00C5' */
-            return 8
+	case 0x00C5:
+		{ /* '0X00C5' */
+			return 8
 		}
-		case 0X00CA: { /* '0X00CA' */
-            return 4
+	case 0x00CA:
+		{ /* '0X00CA' */
+			return 4
 		}
-		case 0X00D3: { /* '0X00D3' */
-            return 4
+	case 0x00D3:
+		{ /* '0X00D3' */
+			return 4
 		}
-		case 0X02A0: { /* '0X02A0' */
-            return 88
+	case 0x02A0:
+		{ /* '0X02A0' */
+			return 88
 		}
-		default: {
+	default:
+		{
 			return 0
 		}
 	}
@@ -110,22 +114,22 @@ func CIPDataTypeCodeFirstEnumForFieldSize(value uint8) (CIPDataTypeCode, error) 
 }
 func CIPDataTypeCodeByValue(value uint16) (enum CIPDataTypeCode, ok bool) {
 	switch value {
-		case 0X00C1:
-			return CIPDataTypeCode_BOOL, true
-		case 0X00C2:
-			return CIPDataTypeCode_SINT, true
-		case 0X00C3:
-			return CIPDataTypeCode_INT, true
-		case 0X00C4:
-			return CIPDataTypeCode_DINT, true
-		case 0X00C5:
-			return CIPDataTypeCode_LINT, true
-		case 0X00CA:
-			return CIPDataTypeCode_REAL, true
-		case 0X00D3:
-			return CIPDataTypeCode_DWORD, true
-		case 0X02A0:
-			return CIPDataTypeCode_STRUCTURED, true
+	case 0x00C1:
+		return CIPDataTypeCode_BOOL, true
+	case 0x00C2:
+		return CIPDataTypeCode_SINT, true
+	case 0x00C3:
+		return CIPDataTypeCode_INT, true
+	case 0x00C4:
+		return CIPDataTypeCode_DINT, true
+	case 0x00C5:
+		return CIPDataTypeCode_LINT, true
+	case 0x00CA:
+		return CIPDataTypeCode_REAL, true
+	case 0x00D3:
+		return CIPDataTypeCode_DWORD, true
+	case 0x02A0:
+		return CIPDataTypeCode_Struct, true
 	}
 	return 0, false
 }
@@ -146,19 +150,19 @@ func CIPDataTypeCodeByName(value string) (enum CIPDataTypeCode, ok bool) {
 		return CIPDataTypeCode_REAL, true
 	case "DWORD":
 		return CIPDataTypeCode_DWORD, true
-	case "STRUCTURED":
-		return CIPDataTypeCode_STRUCTURED, true
+	case "Struct":
+		return CIPDataTypeCode_Struct, true
 	}
 	return 0, false
 }
 
-func CIPDataTypeCodeKnows(value uint16)  bool {
+func CIPDataTypeCodeKnows(value uint16) bool {
 	for _, typeValue := range CIPDataTypeCodeValues {
 		if uint16(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastCIPDataTypeCode(structType interface{}) CIPDataTypeCode {
@@ -180,7 +184,7 @@ func (m CIPDataTypeCode) GetLengthInBytes() uint16 {
 }
 
 func CIPDataTypeCodeParse(theBytes []byte) (CIPDataTypeCode, error) {
-	return CIPDataTypeCodeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return CIPDataTypeCodeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func CIPDataTypeCodeParseWithBuffer(readBuffer utils.ReadBuffer) (CIPDataTypeCode, error) {
@@ -197,7 +201,7 @@ func CIPDataTypeCodeParseWithBuffer(readBuffer utils.ReadBuffer) (CIPDataTypeCod
 }
 
 func (e CIPDataTypeCode) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased()
 	if err := e.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}
@@ -225,8 +229,8 @@ func (e CIPDataTypeCode) PLC4XEnumName() string {
 		return "REAL"
 	case CIPDataTypeCode_DWORD:
 		return "DWORD"
-	case CIPDataTypeCode_STRUCTURED:
-		return "STRUCTURED"
+	case CIPDataTypeCode_Struct:
+		return "Struct"
 	}
 	return ""
 }
@@ -234,4 +238,3 @@ func (e CIPDataTypeCode) PLC4XEnumName() string {
 func (e CIPDataTypeCode) String() string {
 	return e.PLC4XEnumName()
 }
-

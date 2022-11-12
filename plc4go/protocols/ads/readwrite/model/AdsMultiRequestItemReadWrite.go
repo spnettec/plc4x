@@ -21,7 +21,6 @@ package model
 
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -163,7 +162,7 @@ func (m *_AdsMultiRequestItemReadWrite) GetLengthInBytes() uint16 {
 }
 
 func AdsMultiRequestItemReadWriteParse(theBytes []byte, indexGroup uint32) (AdsMultiRequestItemReadWrite, error) {
-	return AdsMultiRequestItemReadWriteParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), indexGroup) // TODO: get endianness from mspec
+	return AdsMultiRequestItemReadWriteParseWithBuffer(utils.NewReadBufferByteBased(theBytes), indexGroup)
 }
 
 func AdsMultiRequestItemReadWriteParseWithBuffer(readBuffer utils.ReadBuffer, indexGroup uint32) (AdsMultiRequestItemReadWrite, error) {
@@ -221,7 +220,7 @@ _itemWriteLength, _itemWriteLengthErr := readBuffer.ReadUint32("itemWriteLength"
 }
 
 func (m *_AdsMultiRequestItemReadWrite) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

@@ -21,7 +21,6 @@ package model
 
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -160,7 +159,7 @@ func (m *_S7ParameterSetupCommunication) GetLengthInBytes() uint16 {
 }
 
 func S7ParameterSetupCommunicationParse(theBytes []byte, messageType uint8) (S7ParameterSetupCommunication, error) {
-	return S7ParameterSetupCommunicationParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), messageType) // TODO: get endianness from mspec
+	return S7ParameterSetupCommunicationParseWithBuffer(utils.NewReadBufferByteBased(theBytes), messageType)
 }
 
 func S7ParameterSetupCommunicationParseWithBuffer(readBuffer utils.ReadBuffer, messageType uint8) (S7ParameterSetupCommunication, error) {
@@ -228,7 +227,7 @@ _pduLength, _pduLengthErr := readBuffer.ReadUint16("pduLength", 16)
 }
 
 func (m *_S7ParameterSetupCommunication) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

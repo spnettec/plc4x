@@ -21,7 +21,6 @@ package model
 
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -139,7 +138,7 @@ func (m *_AdsDeleteDeviceNotificationRequest) GetLengthInBytes() uint16 {
 }
 
 func AdsDeleteDeviceNotificationRequestParse(theBytes []byte) (AdsDeleteDeviceNotificationRequest, error) {
-	return AdsDeleteDeviceNotificationRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return AdsDeleteDeviceNotificationRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func AdsDeleteDeviceNotificationRequestParseWithBuffer(readBuffer utils.ReadBuffer) (AdsDeleteDeviceNotificationRequest, error) {
@@ -173,7 +172,7 @@ _notificationHandle, _notificationHandleErr := readBuffer.ReadUint32("notificati
 }
 
 func (m *_AdsDeleteDeviceNotificationRequest) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

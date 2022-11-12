@@ -143,7 +143,7 @@ func (m *_FirmataMessageDigitalIO) GetLengthInBytes() uint16 {
 }
 
 func FirmataMessageDigitalIOParse(theBytes []byte, response bool) (FirmataMessageDigitalIO, error) {
-	return FirmataMessageDigitalIOParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), response) // TODO: get endianness from mspec
+	return FirmataMessageDigitalIOParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), response)
 }
 
 func FirmataMessageDigitalIOParseWithBuffer(readBuffer utils.ReadBuffer, response bool) (FirmataMessageDigitalIO, error) {
@@ -202,7 +202,7 @@ _item, _err := readBuffer.ReadInt8("", 8)
 }
 
 func (m *_FirmataMessageDigitalIO) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

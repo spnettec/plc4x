@@ -21,7 +21,6 @@ package model
 
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -137,7 +136,7 @@ func (m *_TamperStatus) GetLengthInBytes() uint16 {
 }
 
 func TamperStatusParse(theBytes []byte) (TamperStatus, error) {
-	return TamperStatusParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return TamperStatusParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func TamperStatusParseWithBuffer(readBuffer utils.ReadBuffer) (TamperStatus, error) {
@@ -182,7 +181,7 @@ _status, _statusErr := readBuffer.ReadUint8("status", 8)
 }
 
 func (m *_TamperStatus) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

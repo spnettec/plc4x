@@ -21,7 +21,6 @@ package model
 
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -132,7 +131,7 @@ func (m *_COTPParameterDisconnectAdditionalInformation) GetLengthInBytes() uint1
 }
 
 func COTPParameterDisconnectAdditionalInformationParse(theBytes []byte, rest uint8) (COTPParameterDisconnectAdditionalInformation, error) {
-	return COTPParameterDisconnectAdditionalInformationParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), rest) // TODO: get endianness from mspec
+	return COTPParameterDisconnectAdditionalInformationParseWithBuffer(utils.NewReadBufferByteBased(theBytes), rest)
 }
 
 func COTPParameterDisconnectAdditionalInformationParseWithBuffer(readBuffer utils.ReadBuffer, rest uint8) (COTPParameterDisconnectAdditionalInformation, error) {
@@ -166,7 +165,7 @@ func COTPParameterDisconnectAdditionalInformationParseWithBuffer(readBuffer util
 }
 
 func (m *_COTPParameterDisconnectAdditionalInformation) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

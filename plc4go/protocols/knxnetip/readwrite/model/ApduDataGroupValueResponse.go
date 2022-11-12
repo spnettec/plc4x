@@ -21,7 +21,6 @@ package model
 
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -143,7 +142,7 @@ func (m *_ApduDataGroupValueResponse) GetLengthInBytes() uint16 {
 }
 
 func ApduDataGroupValueResponseParse(theBytes []byte, dataLength uint8) (ApduDataGroupValueResponse, error) {
-	return ApduDataGroupValueResponseParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), dataLength) // TODO: get endianness from mspec
+	return ApduDataGroupValueResponseParseWithBuffer(utils.NewReadBufferByteBased(theBytes), dataLength)
 }
 
 func ApduDataGroupValueResponseParseWithBuffer(readBuffer utils.ReadBuffer, dataLength uint8) (ApduDataGroupValueResponse, error) {
@@ -185,7 +184,7 @@ _dataFirstByte, _dataFirstByteErr := readBuffer.ReadInt8("dataFirstByte", 6)
 }
 
 func (m *_ApduDataGroupValueResponse) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

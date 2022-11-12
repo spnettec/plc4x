@@ -20,8 +20,6 @@
 package model
 
 import (
-	"encoding/binary"
-
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -113,7 +111,7 @@ func (m TemperatureBroadcastCommandType) GetLengthInBytes() uint16 {
 }
 
 func TemperatureBroadcastCommandTypeParse(theBytes []byte) (TemperatureBroadcastCommandType, error) {
-	return TemperatureBroadcastCommandTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return TemperatureBroadcastCommandTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func TemperatureBroadcastCommandTypeParseWithBuffer(readBuffer utils.ReadBuffer) (TemperatureBroadcastCommandType, error) {
@@ -130,7 +128,7 @@ func TemperatureBroadcastCommandTypeParseWithBuffer(readBuffer utils.ReadBuffer)
 }
 
 func (e TemperatureBroadcastCommandType) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian)) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased()
 	if err := e.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

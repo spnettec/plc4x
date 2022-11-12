@@ -21,7 +21,6 @@ package model
 
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -109,7 +108,7 @@ func (m *_CALDataReset) GetLengthInBytes() uint16 {
 }
 
 func CALDataResetParse(theBytes []byte, requestContext RequestContext) (CALDataReset, error) {
-	return CALDataResetParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), requestContext) // TODO: get endianness from mspec
+	return CALDataResetParseWithBuffer(utils.NewReadBufferByteBased(theBytes), requestContext)
 }
 
 func CALDataResetParseWithBuffer(readBuffer utils.ReadBuffer, requestContext RequestContext) (CALDataReset, error) {
@@ -136,7 +135,7 @@ func CALDataResetParseWithBuffer(readBuffer utils.ReadBuffer, requestContext Req
 }
 
 func (m *_CALDataReset) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

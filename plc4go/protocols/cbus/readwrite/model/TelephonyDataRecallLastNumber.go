@@ -21,7 +21,6 @@ package model
 
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -165,7 +164,7 @@ func (m *_TelephonyDataRecallLastNumber) GetLengthInBytes() uint16 {
 }
 
 func TelephonyDataRecallLastNumberParse(theBytes []byte, commandTypeContainer TelephonyCommandTypeContainer) (TelephonyDataRecallLastNumber, error) {
-	return TelephonyDataRecallLastNumberParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), commandTypeContainer) // TODO: get endianness from mspec
+	return TelephonyDataRecallLastNumberParseWithBuffer(utils.NewReadBufferByteBased(theBytes), commandTypeContainer)
 }
 
 func TelephonyDataRecallLastNumberParseWithBuffer(readBuffer utils.ReadBuffer, commandTypeContainer TelephonyCommandTypeContainer) (TelephonyDataRecallLastNumber, error) {
@@ -217,7 +216,7 @@ _number, _numberErr := readBuffer.ReadString("number", uint32((((commandTypeCont
 }
 
 func (m *_TelephonyDataRecallLastNumber) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

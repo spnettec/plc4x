@@ -21,7 +21,6 @@ package model
 
 
 import (
-	"encoding/binary"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -205,7 +204,7 @@ func (m *_CEMIAdditionalInformationBusmonitorInfo) GetLengthInBytes() uint16 {
 }
 
 func CEMIAdditionalInformationBusmonitorInfoParse(theBytes []byte) (CEMIAdditionalInformationBusmonitorInfo, error) {
-	return CEMIAdditionalInformationBusmonitorInfoParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return CEMIAdditionalInformationBusmonitorInfoParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func CEMIAdditionalInformationBusmonitorInfoParseWithBuffer(readBuffer utils.ReadBuffer) (CEMIAdditionalInformationBusmonitorInfo, error) {
@@ -288,7 +287,7 @@ _sequenceNumber, _sequenceNumberErr := readBuffer.ReadUint8("sequenceNumber", 3)
 }
 
 func (m *_CEMIAdditionalInformationBusmonitorInfo) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

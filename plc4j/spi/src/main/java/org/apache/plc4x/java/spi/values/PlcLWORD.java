@@ -20,7 +20,7 @@ package org.apache.plc4x.java.spi.values;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
+import org.apache.plc4x.java.api.exceptions.PlcInvalidTagException;
 import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
@@ -70,7 +70,7 @@ public class PlcLWORD extends PlcIECValue<BigInteger> {
     public PlcLWORD(Byte value) {
         BigInteger val = BigInteger.valueOf(value);
         if ((val.compareTo(minValue) < 0) || (val.compareTo(maxValue) > 0)) {
-            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
         this.value = val;
         this.isNullable = false;
@@ -79,7 +79,7 @@ public class PlcLWORD extends PlcIECValue<BigInteger> {
     public PlcLWORD(Short value) {
         BigInteger val = BigInteger.valueOf(value);
         if ((val.compareTo(minValue) < 0) || (val.compareTo(maxValue) > 0)) {
-            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
         this.value = val;
         this.isNullable = false;
@@ -88,7 +88,7 @@ public class PlcLWORD extends PlcIECValue<BigInteger> {
     public PlcLWORD(Integer value) {
         BigInteger val = BigInteger.valueOf(value);
         if ((val.compareTo(minValue) < 0) || (val.compareTo(maxValue) > 0)) {
-            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
         this.value = val;
         this.isNullable = false;
@@ -97,7 +97,7 @@ public class PlcLWORD extends PlcIECValue<BigInteger> {
     public PlcLWORD(Long value) {
         BigInteger val = BigInteger.valueOf(value);
         if ((val.compareTo(minValue) < 0) || (val.compareTo(maxValue) > 0)) {
-            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
         this.value = val;
         this.isNullable = false;
@@ -107,12 +107,12 @@ public class PlcLWORD extends PlcIECValue<BigInteger> {
         try {
             BigInteger val = BigDecimal.valueOf(value).toBigInteger();
             if ((val.compareTo(minValue) < 0) || (val.compareTo(maxValue) > 0)) {
-                throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+                throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
             }
             this.value = val;
             this.isNullable = false;
         } catch (Exception e) {
-            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()), e);
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()), e);
         }
     }
 
@@ -120,18 +120,18 @@ public class PlcLWORD extends PlcIECValue<BigInteger> {
         try {
             BigInteger val = BigDecimal.valueOf(value).toBigInteger();
             if ((val.compareTo(minValue) < 0) || (val.compareTo(maxValue) > 0)) {
-                throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+                throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
             }
             this.value = val;
             this.isNullable = false;
         } catch (Exception e) {
-            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()), e);
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()), e);
         }
     }
 
     public PlcLWORD(BigInteger value) {
         if ((value.compareTo(minValue) < 0) || (value.compareTo(maxValue) > 0)) {
-            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
         this.value = value;
         this.isNullable = false;
@@ -141,12 +141,12 @@ public class PlcLWORD extends PlcIECValue<BigInteger> {
         try {
             BigInteger val = value.toBigInteger();
             if ((val.compareTo(minValue) < 0) || (val.compareTo(maxValue) > 0)) {
-                throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+                throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
             }
             this.value = val;
             this.isNullable = false;
         } catch (Exception e) {
-            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()), e);
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()), e);
         }
     }
 
@@ -154,12 +154,12 @@ public class PlcLWORD extends PlcIECValue<BigInteger> {
         try {
             BigInteger val = new BigInteger(value.trim());
             if ((val.compareTo(minValue) < 0) || (val.compareTo(maxValue) > 0)) {
-                throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+                throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
             }
             this.value = val;
             this.isNullable = false;
         } catch (Exception e) {
-            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()), e);
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()), e);
         }
     }
 

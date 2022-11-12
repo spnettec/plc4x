@@ -21,7 +21,6 @@ package model
 
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -129,7 +128,7 @@ func (m *_TriggerControlDataTriggerEvent) GetLengthInBytes() uint16 {
 }
 
 func TriggerControlDataTriggerEventParse(theBytes []byte) (TriggerControlDataTriggerEvent, error) {
-	return TriggerControlDataTriggerEventParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return TriggerControlDataTriggerEventParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func TriggerControlDataTriggerEventParseWithBuffer(readBuffer utils.ReadBuffer) (TriggerControlDataTriggerEvent, error) {
@@ -163,7 +162,7 @@ _actionSelector, _actionSelectorErr := readBuffer.ReadByte("actionSelector")
 }
 
 func (m *_TriggerControlDataTriggerEvent) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

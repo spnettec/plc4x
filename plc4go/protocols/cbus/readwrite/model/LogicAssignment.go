@@ -21,7 +21,6 @@ package model
 
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -163,7 +162,7 @@ func (m *_LogicAssignment) GetLengthInBytes() uint16 {
 }
 
 func LogicAssignmentParse(theBytes []byte) (LogicAssignment, error) {
-	return LogicAssignmentParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return LogicAssignmentParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func LogicAssignmentParseWithBuffer(readBuffer utils.ReadBuffer) (LogicAssignment, error) {
@@ -269,7 +268,7 @@ _assignedToGav13, _assignedToGav13Err := readBuffer.ReadBit("assignedToGav13")
 }
 
 func (m *_LogicAssignment) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

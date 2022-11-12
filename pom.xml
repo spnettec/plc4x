@@ -151,7 +151,7 @@
     <!-- version 0.6.8 is being released, however the milo-examples artifact is not available yet -->
     <milo.version>0.6.8</milo.version>
     <mockito.version>4.8.1</mockito.version>
-    <netty.version>4.1.84.Final</netty.version>
+    <netty.version>4.1.85.Final</netty.version>
     <pcap4j.version>1.8.2</pcap4j.version>
     <slf4j.version>2.0.3</slf4j.version>
     <vavr.version>0.10.4</vavr.version>
@@ -163,8 +163,8 @@
     <asciidoctorj.diagram.version>2.2.3</asciidoctorj.diagram.version>
 
     <skip-code-generation-tests>true</skip-code-generation-tests>
-    <skip-dependency-cve-scan>true</skip-dependency-cve-scan>
     <enable-all-tests>false</enable-all-tests>
+    <excluded-test-groups>require-all-tests</excluded-test-groups>
   </properties>
 
   <modules>
@@ -806,6 +806,7 @@
             <!-- Temporarily exclude generated code from thrift in python modules -->
             <!--exclude>generated/**</exclude-->
             <!-- Temporary Python files -->
+            <exclude>**/.eggs/**</exclude>
             <exclude>**/plc4py.egg-info/**</exclude>
 
             <!-- Temporary Python virtualenv files-->
@@ -1134,7 +1135,7 @@
             </dependency>
           </dependencies>
           <configuration>
-            <excludedGroups>require-all-tests</excludedGroups>
+            <excludedGroups>${excluded-test-groups}</excludedGroups>
           </configuration>
         </plugin>
 
@@ -1710,9 +1711,8 @@
       <id>jenkins-build</id>
       <properties>
         <skip-code-generation-tests>false</skip-code-generation-tests>
-        <!-- Disabled this for now as it was just continiuously reporting false positives -->
-        <skip-dependency-cve-scan>true</skip-dependency-cve-scan>
         <enable-all-tests>true</enable-all-tests>
+        <excluded-test-groups/>
       </properties>
     </profile>
 
@@ -1720,23 +1720,9 @@
       <id>enable-all-checks</id>
       <properties>
         <skip-code-generation-tests>false</skip-code-generation-tests>
-        <!-- Disabled this for now as it was just continiuously reporting false positives -->
-        <skip-dependency-cve-scan>true</skip-dependency-cve-scan>
         <enable-all-tests>true</enable-all-tests>
+        <excluded-test-groups/>
       </properties>
-      <build>
-        <pluginManagement>
-          <plugins>
-            <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-surefire-plugin</artifactId>
-              <configuration>
-                <excludedGroups />
-              </configuration>
-            </plugin>
-          </plugins>
-        </pluginManagement>
-      </build>
     </profile>
 
     <!--

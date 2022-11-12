@@ -21,7 +21,6 @@ package model
 
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -126,7 +125,7 @@ func (m *_AdsNotificationSample) GetLengthInBytes() uint16 {
 }
 
 func AdsNotificationSampleParse(theBytes []byte) (AdsNotificationSample, error) {
-	return AdsNotificationSampleParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return AdsNotificationSampleParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func AdsNotificationSampleParseWithBuffer(readBuffer utils.ReadBuffer) (AdsNotificationSample, error) {
@@ -171,7 +170,7 @@ _sampleSize, _sampleSizeErr := readBuffer.ReadUint32("sampleSize", 32)
 }
 
 func (m *_AdsNotificationSample) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

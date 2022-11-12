@@ -21,7 +21,6 @@ package model
 
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -119,7 +118,7 @@ func (m *_NetworkProtocolControlInformation) GetLengthInBytes() uint16 {
 }
 
 func NetworkProtocolControlInformationParse(theBytes []byte) (NetworkProtocolControlInformation, error) {
-	return NetworkProtocolControlInformationParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return NetworkProtocolControlInformationParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func NetworkProtocolControlInformationParseWithBuffer(readBuffer utils.ReadBuffer) (NetworkProtocolControlInformation, error) {
@@ -175,7 +174,7 @@ _stackDepth, _stackDepthErr := readBuffer.ReadUint8("stackDepth", 3)
 }
 
 func (m *_NetworkProtocolControlInformation) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

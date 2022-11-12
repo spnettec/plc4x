@@ -21,7 +21,6 @@ package model
 
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -155,7 +154,7 @@ func (m *_SysexCommandReportFirmwareResponse) GetLengthInBytes() uint16 {
 }
 
 func SysexCommandReportFirmwareResponseParse(theBytes []byte, response bool) (SysexCommandReportFirmwareResponse, error) {
-	return SysexCommandReportFirmwareResponseParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), response) // TODO: get endianness from mspec
+	return SysexCommandReportFirmwareResponseParseWithBuffer(utils.NewReadBufferByteBased(theBytes), response)
 }
 
 func SysexCommandReportFirmwareResponseParseWithBuffer(readBuffer utils.ReadBuffer, response bool) (SysexCommandReportFirmwareResponse, error) {
@@ -216,7 +215,7 @@ _minorVersion, _minorVersionErr := readBuffer.ReadUint8("minorVersion", 8)
 }
 
 func (m *_SysexCommandReportFirmwareResponse) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

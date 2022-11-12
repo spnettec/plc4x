@@ -21,7 +21,6 @@ package model
 
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -144,7 +143,7 @@ func (m *_ModbusPDUReadFifoQueueResponse) GetLengthInBytes() uint16 {
 }
 
 func ModbusPDUReadFifoQueueResponseParse(theBytes []byte, response bool) (ModbusPDUReadFifoQueueResponse, error) {
-	return ModbusPDUReadFifoQueueResponseParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), response) // TODO: get endianness from mspec
+	return ModbusPDUReadFifoQueueResponseParseWithBuffer(utils.NewReadBufferByteBased(theBytes), response)
 }
 
 func ModbusPDUReadFifoQueueResponseParseWithBuffer(readBuffer utils.ReadBuffer, response bool) (ModbusPDUReadFifoQueueResponse, error) {
@@ -208,7 +207,7 @@ _item, _err := readBuffer.ReadUint16("", 16)
 }
 
 func (m *_ModbusPDUReadFifoQueueResponse) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

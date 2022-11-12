@@ -21,7 +21,6 @@ package model
 
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -124,7 +123,7 @@ func (m *_KnxAddress) GetLengthInBytes() uint16 {
 }
 
 func KnxAddressParse(theBytes []byte) (KnxAddress, error) {
-	return KnxAddressParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return KnxAddressParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func KnxAddressParseWithBuffer(readBuffer utils.ReadBuffer) (KnxAddress, error) {
@@ -170,7 +169,7 @@ _subGroup, _subGroupErr := readBuffer.ReadUint8("subGroup", 8)
 }
 
 func (m *_KnxAddress) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

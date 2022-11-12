@@ -22,71 +22,56 @@ import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
-import org.apache.plc4x.java.api.messages.PlcWriteRequest;
-import org.apache.plc4x.java.api.messages.PlcWriteResponse;
-import org.apache.plc4x.java.utils.connectionpool.PooledPlcDriverManager;
 
 public class DatatypesTest {
 
-    private PlcReadResponse readResponse;
-
     public static void main(String[] args) throws Exception {
-        PooledPlcDriverManager pooledPlcDriverManager = new PooledPlcDriverManager();
-
-        try (PlcConnection connection = pooledPlcDriverManager.getConnection("s7://10.166.11.18?remote-rack=0&remote-slot=1")) {
+        try (PlcConnection connection = new PlcDriverManager().getConnection("s7://192.168.23.30")) {
             final PlcReadRequest.Builder builder = connection.readRequestBuilder();
-            builder.addItem("CTray01_BarDiameter","%DB4:242:REAL");
-            builder.addItem("CTray01_Length","%DB4:246:REAL");
-            builder.addItem("CTray01_Status","%DB4:250:REAL");
-            builder.addItem("CTray01_StickName","%DB4:200:STRING(40)");
-            builder.addItem("CTray02_BarDiameter","%DB4:342:REAL");
-            builder.addItem("CTray02_Length","%DB4:346:REAL");
-            builder.addItem("CTray02_Status","%DB4:350:REAL");
-            builder.addItem("CTray02_StickName","%DB4:300:STRING(40)");
-            builder.addItem("MTray01_BarDiameter","%DB4:42:REAL");
-            builder.addItem("MTray01_Length","%DB4:46:REAL");
-            builder.addItem("MTray01_Status","%DB4:50:REAL");
-            builder.addItem("MTray01_StickName","%DB4:0:STRING(40)");
-            builder.addItem("MTray02_BarDiameter","%DB4:142:REAL");
-            builder.addItem("MTray02_Length","%DB4:146:REAL");
-            builder.addItem("MTray02_Status","%DB4:150:REAL");
-            builder.addItem("MTray02_StickName","%DB4:100:STRING(40)");
-            builder.addItem("PMS1301_(P|G)EndPoint","%DB131:54:INT");
-            builder.addItem("PMS1301_BarDiameter","%DB131:56:REAL");
-            builder.addItem("PMS1301_JobNum","%DB131:60:STRING(20)");
-            builder.addItem("PMS1301_MeasurePoint","%DB131:166:STRING(200)");
-            builder.addItem("PMS1301_StickName","%DB131:82:STRING(40)");
-            builder.addItem("PMS1301_Template","%DB131:124:STRING(40)");
-            builder.addItem("PMS1302_(P|G)EndPoint","%DB132:54:INT");
-            builder.addItem("PMS1302_BarDiameter","%DB132:56:REAL");
-            builder.addItem("PMS1302_JobNum","%DB132:60:STRING(20)");
-            builder.addItem("PMS1302_StickName","%DB132:82:STRING(40)");
-            builder.addItem("PMS1302_Template","%DB132:124:STRING(40)");
-            builder.addItem("PMS1302_MeasurePoint","%DB132:166:STRING(200)");
-            builder.addItem("DD","%DB1:0:BYTE[10]");
-
-
-
-
-
+            builder.addTagAddress("bool-value-1", "%DB2:0.0:BOOL"); // true
+            builder.addTagAddress("bool-value-2", "%DB2:2.1:BOOL"); // false
+            // It seems S7 PLCs ignores the array notation for BOOL
+            //builder.addField("bool-array", "%DB2:2.1:BOOL[4]");
+            builder.addTagAddress("byte-value", "%DB2:2:BYTE");
+            builder.addTagAddress("byte-array", "%DB2:2:BYTE[2]");
+            builder.addTagAddress("word-value", "%DB2:2:WORD");
+            builder.addTagAddress("word-array", "%DB2:2:WORD[2]");
+            builder.addTagAddress("dword-value", "%DB2:2:DWORD");
+            builder.addTagAddress("dword-array", "%DB2:2:DWORD[2]");
+            builder.addTagAddress("sint-value", "%DB2:12:SINT"); // 7
+            builder.addTagAddress("sint-array", "%DB2:14:SINT[2]"); // 1, -2
+            builder.addTagAddress("int-value", "%DB2:18:INT"); // 23
+            builder.addTagAddress("int-array", "%DB2:20:INT[2]"); // 123, -142
+            builder.addTagAddress("dint-value", "%DB2:24:DINT"); // 24
+            builder.addTagAddress("dint-array", "%DB2:28:DINT[2]"); // 1234, -2345
+            builder.addTagAddress("usint-value", "%DB2:36:USINT"); // 42
+            builder.addTagAddress("usint-array", "%DB2:38:USINT[2]"); // 3, 4
+            builder.addTagAddress("uint-value", "%DB2:40:UINT"); // 3
+            builder.addTagAddress("uint-array", "%DB2:42:UINT[2]"); // 242, 223
+            builder.addTagAddress("udint-value", "%DB2:46:UDINT"); // 815
+            builder.addTagAddress("udint-array", "%DB2:50:UDINT[2]"); // 12345, 23456
+            builder.addTagAddress("real-value", "%DB2:58:REAL"); // 3.14159
+            builder.addTagAddress("real-array", "%DB2:62:REAL[2]"); // 12.345, 12.345
+            builder.addTagAddress("lreal-value", "%DB2:70:LREAL"); // 3.14159265358979
+            builder.addTagAddress("lreal-array", "%DB2:78:LREAL[2]"); // 1.2345, -1.2345
+            builder.addTagAddress("string-value", "%DB2:94:STRING(10)"); // "Hurz"
+            // When reading a sized STRING string array, this has to be translated into multiple items
+            //builder.addField("string-array", "%DB2:350:STRING(10)[2]"); // "Wolf", "Lamm"
+            builder.addTagAddress("time-value", "%DB2:862:TIME"); // 1234ms
+            builder.addTagAddress("time-array", "%DB2:866:TIME[2]"); // 123ms, 234ms
+            builder.addTagAddress("date-value", "%DB2:874:DATE"); // D#2020-08-20
+            builder.addTagAddress("date-array", "%DB2:876:DATE[2]"); // D#1990-03-28, D#2020-10-25
+            builder.addTagAddress("time-of-day-value", "%DB2:880:TIME_OF_DAY"); // TOD#12:34:56
+            builder.addTagAddress("time-of-day-array", "%DB2:884:TIME_OF_DAY[2]"); // TOD#16:34:56, TOD#08:15:00
+            builder.addTagAddress("date-and-time-value", "%DB2:892:DATE_AND_TIME"); // DTL#1978-03-28-12:34:56
+            builder.addTagAddress("date-and-time-array", "%DB2:904:DATE_AND_TIME[2]"); // DTL#1978-03-28-12:34:56, DTL#1978-03-28-12:34:56
+            builder.addTagAddress("char-value", "%DB2:928:CHAR"); // "H"
+            builder.addTagAddress("char-array", "%DB2:930:CHAR[4]"); // "H", "u", "r", "z"
             final PlcReadRequest readRequest = builder.build();
+
             final PlcReadResponse readResponse = readRequest.execute().get();
-            // Object o = readResponse.getObject("bool-value-1");
-            System.out.println(readResponse.getAsPlcValue());
 
-
-
-
-
-            final PlcWriteRequest.Builder rbuilder = connection.writeRequestBuilder();
-            rbuilder.addItem("PMS1302_Template", "%DB1:0:BYTE[10]", "[0,1,3,4,5,6,7,8,9,10]"); // true
-
-            final PlcWriteRequest writeRequest = rbuilder.build();
-
-            final PlcWriteResponse writeResponse = writeRequest.execute().get();
-
-            System.out.println(writeResponse);
-
+            System.out.println(readResponse);
 
         }
     }

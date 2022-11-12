@@ -21,7 +21,6 @@ package model
 
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -191,7 +190,7 @@ func (m *_HVACZoneList) GetLengthInBytes() uint16 {
 }
 
 func HVACZoneListParse(theBytes []byte) (HVACZoneList, error) {
-	return HVACZoneListParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return HVACZoneListParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func HVACZoneListParseWithBuffer(readBuffer utils.ReadBuffer) (HVACZoneList, error) {
@@ -282,7 +281,7 @@ _zone0, _zone0Err := readBuffer.ReadBit("zone0")
 }
 
 func (m *_HVACZoneList) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}

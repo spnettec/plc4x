@@ -21,7 +21,6 @@ package model
 
 
 import (
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -154,7 +153,7 @@ func (m *_AmsSerialAcknowledgeFrame) GetLengthInBytes() uint16 {
 }
 
 func AmsSerialAcknowledgeFrameParse(theBytes []byte) (AmsSerialAcknowledgeFrame, error) {
-	return AmsSerialAcknowledgeFrameParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian))) // TODO: get endianness from mspec
+	return AmsSerialAcknowledgeFrameParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
 }
 
 func AmsSerialAcknowledgeFrameParseWithBuffer(readBuffer utils.ReadBuffer) (AmsSerialAcknowledgeFrame, error) {
@@ -224,7 +223,7 @@ _crc, _crcErr := readBuffer.ReadUint16("crc", 16)
 }
 
 func (m *_AmsSerialAcknowledgeFrame) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian), utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))) // TODO: get endianness from mspec
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
 	if err := m.SerializeWithWriteBuffer(wb); err != nil {
 		return nil, err
 	}
