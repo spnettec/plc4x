@@ -20,6 +20,7 @@ package org.apache.plc4x.java.plc4x.protocol;
 
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
+import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.plc4x.config.Plc4xConfiguration;
 import org.apache.plc4x.java.plc4x.tag.Plc4xTag;
@@ -96,7 +97,7 @@ public class Plc4xProtocolLogic extends Plc4xProtocolBase<Plc4xMessage> implemen
             final Plc4xTag plc4xTag =
                 (Plc4xTag) apiReadRequest.getTag(tagName);
             Plc4xTagRequest plc4XTagRequest = new Plc4xTagRequest(
-                new org.apache.plc4x.java.plc4x.readwrite.Plc4xTag(tagName, plc4xTag.getAddressString() + ":" + plc4xTag.getPlcValueType().name()));
+                new org.apache.plc4x.java.plc4x.readwrite.Plc4xTag(tagName, plc4xTag.getAddressString()));
             plc4xTags.add(plc4XTagRequest);
         }
         final int requestId = txIdGenerator.getAndIncrement();

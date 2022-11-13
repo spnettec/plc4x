@@ -30,21 +30,14 @@ import java.util.List;
 public class Plc4xTag implements PlcTag, Serializable {
 
     private final String address;
-    private final PlcValueType valueType;
 
-    public Plc4xTag(String address, PlcValueType valueType) {
+    public Plc4xTag(String address) {
         this.address = address;
-        this.valueType = valueType;
     }
 
     @Override
     public String getAddressString() {
         return address;
-    }
-
-    @Override
-    public PlcValueType getPlcValueType() {
-        return valueType;
     }
 
     @Override

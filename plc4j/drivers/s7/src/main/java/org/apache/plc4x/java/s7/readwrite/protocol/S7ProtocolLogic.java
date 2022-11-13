@@ -992,17 +992,34 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
         // For these date-types we have to convert the requests to simple byte-array requests
         // As otherwise the S7 will deny them with "Data type not supported" replies.
         if ((transportSize == TransportSize.TIME) /*|| (transportSize == TransportSize.S7_S5TIME)*/ ||
-            (transportSize == TransportSize.LTIME) || (transportSize == TransportSize.DATE) ||
-            (transportSize == TransportSize.TIME_OF_DAY) || (transportSize == TransportSize.DATE_AND_TIME)) {
+            (transportSize == TransportSize.LINT) ||
+            (transportSize == TransportSize.ULINT) ||
+            (transportSize == TransportSize.LWORD) ||
+            (transportSize == TransportSize.LREAL) ||
+            (transportSize == TransportSize.REAL) ||
+            (transportSize == TransportSize.LTIME) ||
+            (transportSize == TransportSize.DATE) ||
+            (transportSize == TransportSize.TIME_OF_DAY) ||
+            (transportSize == TransportSize.DATE_AND_TIME)
+        ) {
             numElements = numElements * transportSize.getSizeInBytes();
+            //((S7Field) field).setDataType(transportSize);
             transportSize = TransportSize.BYTE;
         }
+        if (transportSize == TransportSize.CHAR) {
+            transportSize = TransportSize.BYTE;
+            numElements = numElements * transportSize.getSizeInBytes();
+        }
+        if (transportSize == TransportSize.WCHAR) {
+            transportSize = TransportSize.BYTE;
+            numElements = numElements * transportSize.getSizeInBytes() * 2;
+        }
         if (transportSize == TransportSize.STRING) {
-            transportSize = TransportSize.CHAR;
+            transportSize = TransportSize.BYTE;
             int stringLength = (s7Tag instanceof S7StringTag) ? ((S7StringTag) s7Tag).getStringLength() : 254;
             numElements = numElements * (stringLength + 2);
         } else if (transportSize == TransportSize.WSTRING) {
-            transportSize = TransportSize.CHAR;
+            transportSize = TransportSize.BYTE;
             int stringLength = (s7Tag instanceof S7StringTag) ? ((S7StringTag) s7Tag).getStringLength() : 254;
             numElements = numElements * (stringLength + 2) * 2;
         }

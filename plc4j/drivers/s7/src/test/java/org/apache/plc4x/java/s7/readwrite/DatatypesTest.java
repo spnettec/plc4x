@@ -32,37 +32,17 @@ public class DatatypesTest {
     public static void main(String[] args) throws Exception {
         PooledPlcDriverManager pooledPlcDriverManager = new PooledPlcDriverManager();
 
-        try (PlcConnection connection = pooledPlcDriverManager.getConnection("s7://10.166.11.18?remote-rack=0&remote-slot=1")) {
+        try (PlcConnection connection = pooledPlcDriverManager.getConnection("s7://10.166.11.20?remote-rack=0&remote-slot=1")) {
             final PlcReadRequest.Builder builder = connection.readRequestBuilder();
-            builder.addTagAddress("CTray01_BarDiameter","%DB4:242:REAL");
-            builder.addTagAddress("CTray01_Length","%DB4:246:REAL");
-            builder.addTagAddress("CTray01_Status","%DB4:250:REAL");
-            builder.addTagAddress("CTray01_StickName","%DB4:200:STRING(40)");
-            builder.addTagAddress("CTray02_BarDiameter","%DB4:342:REAL");
-            builder.addTagAddress("CTray02_Length","%DB4:346:REAL");
-            builder.addTagAddress("CTray02_Status","%DB4:350:REAL");
-            builder.addTagAddress("CTray02_StickName","%DB4:300:STRING(40)");
-            builder.addTagAddress("MTray01_BarDiameter","%DB4:42:REAL");
-            builder.addTagAddress("MTray01_Length","%DB4:46:REAL");
-            builder.addTagAddress("MTray01_Status","%DB4:50:REAL");
-            builder.addTagAddress("MTray01_StickName","%DB4:0:STRING(40)");
-            builder.addTagAddress("MTray02_BarDiameter","%DB4:142:REAL");
-            builder.addTagAddress("MTray02_Length","%DB4:146:REAL");
-            builder.addTagAddress("MTray02_Status","%DB4:150:REAL");
-            builder.addTagAddress("MTray02_StickName","%DB4:100:STRING(40)");
-            builder.addTagAddress("PMS1301_(P|G)EndPoint","%DB131:54:INT");
-            builder.addTagAddress("PMS1301_BarDiameter","%DB131:56:REAL");
-            builder.addTagAddress("PMS1301_JobNum","%DB131:60:STRING(20)");
-            builder.addTagAddress("PMS1301_MeasurePoint","%DB131:166:STRING(200)");
-            builder.addTagAddress("PMS1301_StickName","%DB131:82:STRING(40)");
-            builder.addTagAddress("PMS1301_Template","%DB131:124:STRING(40)");
-            builder.addTagAddress("PMS1302_(P|G)EndPoint","%DB132:54:INT");
-            builder.addTagAddress("PMS1302_BarDiameter","%DB132:56:REAL");
-            builder.addTagAddress("PMS1302_JobNum","%DB132:60:STRING(20)");
-            builder.addTagAddress("PMS1302_StickName","%DB132:82:STRING(40)");
-            builder.addTagAddress("PMS1302_Template","%DB132:124:STRING(40)");
-            builder.addTagAddress("PMS1302_MeasurePoint","%DB132:166:STRING(200)");
-            builder.addTagAddress("DD","%DB1:0:BYTE[10]");
+            builder.addTagAddress("CTray01_BarDiameter","%DB3:192.0:BOOL");
+            builder.addTagAddress("CTray01_Length","%DB3:0:STRING(22)");
+            builder.addTagAddress("CTray01_Status","%DB3:48:STRING(22)");
+            builder.addTagAddress("CTray01_StickName","%DB3:72:STRING(22)");
+            builder.addTagAddress("CTray02_BarDiameter","%DB3:96:STRING(22)");
+            builder.addTagAddress("CTray02_Length","%DB3:120:STRING(22)");
+            builder.addTagAddress("CTray02_Status","%DB3:144:STRING(22)");
+            builder.addTagAddress("CTray02_StickName","%DB3:168:STRING(22)");
+            builder.addTagAddress("MTray01_BarDiameter","%DB3:24:STRING(22)");
 
 
 
@@ -72,19 +52,6 @@ public class DatatypesTest {
             final PlcReadResponse readResponse = readRequest.execute().get();
             // Object o = readResponse.getObject("bool-value-1");
             System.out.println(readResponse.getAsPlcValue());
-
-
-
-
-
-            final PlcWriteRequest.Builder rbuilder = connection.writeRequestBuilder();
-            rbuilder.addTagAddress("PMS1302_Template", "%DB1:0:BYTE[10]", "[0,1,3,4,5,6,7,8,9,10]"); // true
-
-            final PlcWriteRequest writeRequest = rbuilder.build();
-
-            final PlcWriteResponse writeResponse = writeRequest.execute().get();
-
-            System.out.println(writeResponse);
 
 
         }
