@@ -18,16 +18,12 @@
  */
 package org.apache.plc4x.java.s7.readwrite;
 
-import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
-import org.apache.plc4x.java.api.messages.PlcWriteRequest;
-import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.utils.connectionpool.PooledPlcDriverManager;
 
 public class DatatypesTest {
-    private PlcReadResponse readResponse;
 
     public static void main(String[] args) throws Exception {
         PooledPlcDriverManager pooledPlcDriverManager = new PooledPlcDriverManager();

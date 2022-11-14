@@ -136,7 +136,7 @@ public class PlcValueHandler implements org.apache.plc4x.java.api.value.PlcValue
             case BOOL:
                 return PlcBOOL.of(value);
             case BYTE:
-                if (tag.getArrayInfo().size() == 1 && tag.getArrayInfo().get(0).getSize() > 1) {
+                if (tag.getNumberOfElements() > 1) {
                     if (value instanceof byte[]) {
                         return of(tag, ArrayUtils.toObject((byte[]) value));
                     } else if (value instanceof String && ((String) value).contains(",")) {

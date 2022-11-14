@@ -30,6 +30,7 @@ import java.util.List;
 public class Plc4xTag implements PlcTag, Serializable {
 
     private final String address;
+    private PlcValueType valueType = PlcValueType.NULL;
 
     public Plc4xTag(String address) {
         this.address = address;
@@ -40,6 +41,13 @@ public class Plc4xTag implements PlcTag, Serializable {
         return address;
     }
 
+    @Override
+    public PlcValueType getPlcValueType() {
+        return valueType;
+    }
+    public void setValueType(PlcValueType valueType) {
+        this.valueType = valueType;
+    }
     @Override
     public List<ArrayInfo> getArrayInfo() {
         return PlcTag.super.getArrayInfo();

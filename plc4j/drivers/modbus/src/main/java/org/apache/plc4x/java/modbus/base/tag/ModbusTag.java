@@ -82,7 +82,7 @@ public abstract class ModbusTag implements PlcTag, Serializable {
     public int getAddress() {
         return address;
     }
-
+    @Override
     public int getNumberOfElements() {
         return quantity;
     }

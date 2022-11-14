@@ -91,7 +91,7 @@ public class DefaultPlcWriteRequest implements PlcWriteRequest, Serializable {
     public List<PlcTag> getTags() {
         return tags.values().stream().map(TagValueItem::getTag).collect(Collectors.toCollection(LinkedList::new));
     }
-
+    @Override
     @JsonIgnore
     public PlcValue getPlcValue(String name) {
         return tags.get(name).getValue();

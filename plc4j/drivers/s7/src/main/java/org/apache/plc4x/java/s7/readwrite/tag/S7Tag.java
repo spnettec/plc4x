@@ -141,7 +141,7 @@ public class S7Tag implements PlcTag, Serializable {
     public String getStringEncoding() {
         return stringEncoding;
     }
-
+    @Override
     public int getNumberOfElements() {
         return numElements;
     }

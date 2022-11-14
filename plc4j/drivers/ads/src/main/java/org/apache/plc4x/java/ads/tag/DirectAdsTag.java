@@ -113,7 +113,7 @@ public class DirectAdsTag implements AdsTag {
     public String getPlcDataType() {
         return adsDataTypeName;
     }
-
+    @Override
     public int getNumberOfElements() {
         return numberOfElements;
     }
