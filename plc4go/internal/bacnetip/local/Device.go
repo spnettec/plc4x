@@ -17,17 +17,11 @@
  * under the License.
  */
 
-package bacnetip
+package local
 
-import readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
-
-type WhoIsIAmServices struct {
-}
-
-func NewWhoIsIAmServices() (*WhoIsIAmServices, error) {
-	// TODO: implement me
-	return nil, nil
-}
+import (
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
+)
 
 type LocalDeviceObject struct {
 	NumberOfAPDURetries       uint
@@ -36,15 +30,7 @@ type LocalDeviceObject struct {
 	APDUSegmentTimeout        uint
 	MaxSegmentsAccepted       *readWriteModel.MaxSegmentsAccepted
 	MaximumApduLengthAccepted *readWriteModel.MaxApduLengthAccepted
-}
-
-func NewLocalDeviceObject() *LocalDeviceObject {
-	return &LocalDeviceObject{
-		NumberOfAPDURetries:       0,
-		APDUTimeout:               0,
-		SegmentationSupported:     0,
-		APDUSegmentTimeout:        0,
-		MaxSegmentsAccepted:       nil,
-		MaximumApduLengthAccepted: nil,
-	}
+	App                       interface{}
+	ObjectName                string
+	ObjectIdentifier          string
 }
