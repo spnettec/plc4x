@@ -17,26 +17,12 @@
  * under the License.
  */
 
-package bacnetip
+package service
 
-type NetworkServiceAccessPoint struct {
-	// TODO: implement me
+type WhoIsIAmServices struct {
 }
 
-func NewNetworkServiceAccessPoint() (*NetworkServiceAccessPoint, error) {
-	// TODO: implement me
-	return nil, nil
-}
-
-func (n *NetworkServiceAccessPoint) bind(server _Server, net interface{}, address interface{}) error {
-	panic("not implemented yet")
-}
-
-type NetworkServiceElement struct {
-	// TODO: implement me
-}
-
-func NewNetworkServiceElement() (*NetworkServiceElement, error) {
+func NewWhoIsIAmServices() (*WhoIsIAmServices, error) {
 	// TODO: implement me
 	return nil, nil
 }

@@ -17,12 +17,20 @@
  * under the License.
  */
 
-package bacnetip
+package local
 
-type WhoIsIAmServices struct {
-}
+import (
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
+)
 
-func NewWhoIsIAmServices() (*WhoIsIAmServices, error) {
-	// TODO: implement me
-	return nil, nil
+type LocalDeviceObject struct {
+	NumberOfAPDURetries       uint
+	APDUTimeout               uint
+	SegmentationSupported     readWriteModel.BACnetSegmentation
+	APDUSegmentTimeout        uint
+	MaxSegmentsAccepted       *readWriteModel.MaxSegmentsAccepted
+	MaximumApduLengthAccepted *readWriteModel.MaxApduLengthAccepted
+	App                       interface{}
+	ObjectName                string
+	ObjectIdentifier          string
 }
