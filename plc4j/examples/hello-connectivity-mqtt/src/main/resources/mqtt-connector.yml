@@ -22,14 +22,14 @@ mqtt:
   server-host: test.mosquitto.org
   server-port: 1883
 plc:
-  connection: test:plc4x-example-mqtt
+  connection: simulated://127.0.0.1
   addresses:
     - name: intParam
-      address: RANDOM/foo:INTEGER
+      address: RANDOM/foo:INT
       size: 1
       type: java.lang.Integer
     - name: intParam2
-      address: RANDOM/bar:INTEGER
+      address: RANDOM/bar:INT
       size: 1
       type: java.lang.Integer
 polling-interval: 2000

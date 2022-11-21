@@ -45,6 +45,10 @@ public class Plc4xTag implements PlcTag, Serializable {
     public PlcValueType getPlcValueType() {
         return valueType;
     }
+    @Override
+    public void setPlcValueType(PlcValueType plcValueType) {
+        this.valueType = plcValueType;
+    }
     public void setValueType(PlcValueType valueType) {
         this.valueType = valueType;
     }
