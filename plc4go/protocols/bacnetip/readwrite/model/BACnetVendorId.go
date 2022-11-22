@@ -1417,6 +1417,9 @@ const(
 	BACnetVendorId_BEVER_INNOVATIONS BACnetVendorId = 1385
 	BACnetVendorId_PELICAN_WIRELESS_SYSTEMS BACnetVendorId = 1386
 	BACnetVendorId_CONTROL_CONCEPTS_INC BACnetVendorId = 1387
+	BACnetVendorId_AUGMATIC_TECHNOLOGIES_PVT_LTD BACnetVendorId = 1388
+	BACnetVendorId_XIAMEN_MILESIGHTLOT_CO_LTD BACnetVendorId = 1389
+	BACnetVendorId_TIANJIN_ANJIELOT_SCHIENCEAND_TECHNOLOGY_CO_LTD BACnetVendorId = 1390
 	BACnetVendorId_UNKNOWN_VENDOR BACnetVendorId = 0xFFFF
 )
 
@@ -2806,6 +2809,9 @@ func init() {
 		BACnetVendorId_BEVER_INNOVATIONS,
 		BACnetVendorId_PELICAN_WIRELESS_SYSTEMS,
 		BACnetVendorId_CONTROL_CONCEPTS_INC,
+		BACnetVendorId_AUGMATIC_TECHNOLOGIES_PVT_LTD,
+		BACnetVendorId_XIAMEN_MILESIGHTLOT_CO_LTD,
+		BACnetVendorId_TIANJIN_ANJIELOT_SCHIENCEAND_TECHNOLOGY_CO_LTD,
 		BACnetVendorId_UNKNOWN_VENDOR,
 	}
 }
@@ -4112,8 +4118,17 @@ func (e BACnetVendorId) VendorId() uint16 {
 		case 1387: { /* '1387' */
             return 1387
 		}
+		case 1388: { /* '1388' */
+            return 1388
+		}
+		case 1389: { /* '1389' */
+            return 1389
+		}
 		case 139: { /* '139' */
             return 139
+		}
+		case 1390: { /* '1390' */
+            return 1390
 		}
 		case 14: { /* '14' */
             return 14
@@ -8275,8 +8290,17 @@ func (e BACnetVendorId) VendorName() string {
 		case 1387: { /* '1387' */
             return "Control Concepts Inc."
 		}
+		case 1388: { /* '1388' */
+            return "Augmatic Technologies Pvt. Ltd."
+		}
+		case 1389: { /* '1389' */
+            return "Xiamen Milesight loT Co., Ltd"
+		}
 		case 139: { /* '139' */
             return "I Controls"
+		}
+		case 1390: { /* '1390' */
+            return "Tianjin Anjie loT Schience and Technology Co., Ltd"
 		}
 		case 14: { /* '14' */
             return "Cimetrics Technology"
@@ -12004,8 +12028,14 @@ func BACnetVendorIdByValue(value uint16) (enum BACnetVendorId, ok bool) {
 			return BACnetVendorId_PELICAN_WIRELESS_SYSTEMS, true
 		case 1387:
 			return BACnetVendorId_CONTROL_CONCEPTS_INC, true
+		case 1388:
+			return BACnetVendorId_AUGMATIC_TECHNOLOGIES_PVT_LTD, true
+		case 1389:
+			return BACnetVendorId_XIAMEN_MILESIGHTLOT_CO_LTD, true
 		case 139:
 			return BACnetVendorId_I_CONTROLS, true
+		case 1390:
+			return BACnetVendorId_TIANJIN_ANJIELOT_SCHIENCEAND_TECHNOLOGY_CO_LTD, true
 		case 14:
 			return BACnetVendorId_CIMETRICS_TECHNOLOGY, true
 		case 140:
@@ -14774,8 +14804,14 @@ func BACnetVendorIdByName(value string) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_PELICAN_WIRELESS_SYSTEMS, true
 	case "CONTROL_CONCEPTS_INC":
 		return BACnetVendorId_CONTROL_CONCEPTS_INC, true
+	case "AUGMATIC_TECHNOLOGIES_PVT_LTD":
+		return BACnetVendorId_AUGMATIC_TECHNOLOGIES_PVT_LTD, true
+	case "XIAMEN_MILESIGHTLOT_CO_LTD":
+		return BACnetVendorId_XIAMEN_MILESIGHTLOT_CO_LTD, true
 	case "I_CONTROLS":
 		return BACnetVendorId_I_CONTROLS, true
+	case "TIANJIN_ANJIELOT_SCHIENCEAND_TECHNOLOGY_CO_LTD":
+		return BACnetVendorId_TIANJIN_ANJIELOT_SCHIENCEAND_TECHNOLOGY_CO_LTD, true
 	case "CIMETRICS_TECHNOLOGY":
 		return BACnetVendorId_CIMETRICS_TECHNOLOGY, true
 	case "VICONICS_ELECTRONICS_INC":
@@ -17601,8 +17637,14 @@ func (e BACnetVendorId) PLC4XEnumName() string {
 		return "PELICAN_WIRELESS_SYSTEMS"
 	case BACnetVendorId_CONTROL_CONCEPTS_INC:
 		return "CONTROL_CONCEPTS_INC"
+	case BACnetVendorId_AUGMATIC_TECHNOLOGIES_PVT_LTD:
+		return "AUGMATIC_TECHNOLOGIES_PVT_LTD"
+	case BACnetVendorId_XIAMEN_MILESIGHTLOT_CO_LTD:
+		return "XIAMEN_MILESIGHTLOT_CO_LTD"
 	case BACnetVendorId_I_CONTROLS:
 		return "I_CONTROLS"
+	case BACnetVendorId_TIANJIN_ANJIELOT_SCHIENCEAND_TECHNOLOGY_CO_LTD:
+		return "TIANJIN_ANJIELOT_SCHIENCEAND_TECHNOLOGY_CO_LTD"
 	case BACnetVendorId_CIMETRICS_TECHNOLOGY:
 		return "CIMETRICS_TECHNOLOGY"
 	case BACnetVendorId_VICONICS_ELECTRONICS_INC:
