@@ -179,7 +179,7 @@
             [manual vstring value  'STATIC_CALL("parseString", readBuffer, _type.encoding)' 'STATIC_CALL("serializeString", writeBuffer, _value, _type.encoding)' '(STR_LEN(_value) + 1) * 8']
         ]
         ['WSTRING'       STRING
-            [manual vstring value 'STATIC_CALL("parseString", readBuffer, _type.encoding)' 'STATIC_CALL("serializeString", writeBuffer, _value, _type.encoding)' '(STR_LEN(_value) + 1) * 16' encoding='"UTF-16"']
+            [manual vstring value  'STATIC_CALL("parseString", readBuffer, _type.encoding)' 'STATIC_CALL("serializeString", writeBuffer, _value, _type.encoding)' '(STR_LEN(_value) + 1) * 16' encoding='"UTF-16"']
         ]
 
         // Times and Dates
