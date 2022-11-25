@@ -18,47 +18,38 @@
  */
 package org.apache.plc4x.java.spi.values;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.exceptions.PlcUnsupportedDataTypeException;
 import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.value.PlcValue;
 
-import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 public class PlcValueHandler implements org.apache.plc4x.java.api.value.PlcValueHandler {
 
-    @Override
     public PlcValue newPlcValue(Object value) {
-        return of(new Object[] { value });
+        return of(new Object[]{value});
     }
 
-    @Override
     public PlcValue newPlcValue(Object[] values) {
         return of(values);
     }
 
-    @Override
     public PlcValue newPlcValue(PlcTag tag, Object value) {
-        return of(tag, new Object[] { value });
+        return of(tag, new Object[]{value});
     }
 
-    @Override
     public PlcValue newPlcValue(PlcTag tag, Object[] values) {
         return of(tag, values);
     }
 
     public static PlcValue of(Object value) {
-        return of(new Object[] { value });
+        return of(new Object[]{value});
     }
 
     public static PlcValue of(List<?> value) {
@@ -66,45 +57,7 @@ public class PlcValueHandler implements org.apache.plc4x.java.api.value.PlcValue
     }
 
     public static PlcValue of(Object[] values) {
-        if (values.length == 1) {
-            Object value = values[0];
-            if (value instanceof Boolean) {
-                return PlcBOOL.of(value);
-            } else if (value instanceof Byte) {
-                return PlcSINT.of(value);
-            } else if (value instanceof Short) {
-                return PlcINT.of(value);
-            } else if (value instanceof Integer) {
-                return PlcDINT.of(value);
-            } else if (value instanceof Long) {
-                return PlcLINT.of(value);
-            } else if (value instanceof BigInteger) {
-                return new PlcLINT((BigInteger) value);
-            } else if (value instanceof Float) {
-                return PlcREAL.of(value);
-            } else if (value instanceof Double) {
-                return PlcLREAL.of(value);
-            } else if (value instanceof BigDecimal) {
-                return new PlcLINT((BigDecimal) value);
-            } else if (value instanceof Duration) {
-                return new PlcTIME((Duration) value);
-            } else if (value instanceof LocalTime) {
-                return new PlcTIME_OF_DAY((LocalTime) value);
-            } else if (value instanceof LocalDate) {
-                return new PlcDATE((LocalDate) value);
-            } else if (value instanceof LocalDateTime) {
-                return new PlcDATE_AND_TIME((LocalDateTime) value);
-            } else if (value instanceof String) {
-                return new PlcSTRING((String) value);
-            } else if (value instanceof PlcValue) {
-                return (PlcValue) value;
-            } else if (value instanceof byte[]) {
-                return PlcRawByteArray.of(value);
-            } else {
-                throw new PlcUnsupportedDataTypeException("Data Type " + value.getClass()
-                    + " Is not supported");
-            }
-        } else {
+        if (values.length != 1) {
             Object vo = ((Object[]) values)[0];
             if (vo instanceof PlcCHAR) {
                 String v = Arrays.stream(values).map(Objects::toString).collect(Collectors.joining());
@@ -120,16 +73,58 @@ public class PlcValueHandler implements org.apache.plc4x.java.api.value.PlcValue
             }
             return list;
         }
+        Object value = values[0];
+        if (value instanceof Boolean) {
+            return PlcBOOL.of(value);
+        } else if (value instanceof Byte) {
+            return PlcSINT.of(value);
+        } else if (value instanceof Short) {
+            return PlcINT.of(value);
+        } else if (value instanceof Integer) {
+            return PlcDINT.of(value);
+        } else if (value instanceof Long) {
+            return PlcLINT.of(value);
+        } else if (value instanceof BigInteger) {
+            return new PlcLINT((BigInteger) value);
+        } else if (value instanceof Float) {
+            return PlcREAL.of(value);
+        } else if (value instanceof Double) {
+            return PlcLREAL.of(value);
+        } else if (value instanceof BigDecimal) {
+            return new PlcLINT((BigDecimal) value);
+        } else if (value instanceof Duration) {
+            return new PlcTIME((Duration) value);
+        } else if (value instanceof LocalTime) {
+            return new PlcTIME_OF_DAY((LocalTime) value);
+        } else if (value instanceof LocalDate) {
+            return new PlcDATE((LocalDate) value);
+        } else if (value instanceof LocalDateTime) {
+            return new PlcDATE_AND_TIME((LocalDateTime) value);
+        } else if (value instanceof String) {
+            return new PlcSTRING((String) value);
+        } else if (value instanceof PlcValue) {
+            return (PlcValue) value;
+        } else if (value instanceof byte[]) {
+            return PlcRawByteArray.of(value);
+        } else {
+            throw new PlcUnsupportedDataTypeException("Data Type " + value.getClass()
+                + " Is not supported");
     }
 
+
     public static PlcValue of(PlcTag tag, Object value) {
-        return of(tag, new Object[] { value });
+        return of(tag, new Object[]{value});
     }
+
 
     public static PlcValue of(PlcTag tag, Object[] values) {
         if (values.length == 1) {
             Object value = values[0];
-            if (tag.getPlcValueType() == null) {
+            if(tag.getPlcValueType() == null) {
+                // TODO: This is a hacky shortcut ..
+                if(value instanceof PlcValue) {
+                    return (PlcValue) value;
+                }
                 return new PlcNull();
             }
             switch (tag.getPlcValueType()) {
@@ -219,7 +214,7 @@ public class PlcValueHandler implements org.apache.plc4x.java.api.value.PlcValue
         } else {
             PlcList list = new PlcList();
             for (Object value : values) {
-                list.add(of(tag, new Object[] { value }));
+                list.add(of(tag, new Object[]{value}));
             }
             return list;
         }

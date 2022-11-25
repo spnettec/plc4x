@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache</groupId>
     <artifactId>apache</artifactId>
-    <version>27</version>
+    <version>28</version>
   </parent>
 
   <groupId>org.apache.plc4x</groupId>
@@ -1768,6 +1768,47 @@
             </plugin>
           </plugins>
         </pluginManagement>
+      </build>
+    </profile>
+
+    <!--
+      This is an experiment to get things working for VSCode (IntelliJ and Maven pick them up automatically)
+      Only if a "target/generated-source/plc4x" directory exists, will it be added. With this trick we don't need
+      to add this block to every module with generated code. If this causes problems with IntelliJ, Eclipse or Maven
+      we should probably come up with some other solution. It might also help people using Eclipse.
+     -->
+    <profile>
+      <id>add-generated-sources</id>
+      <activation>
+        <file>
+          <!--
+            Please don't change "target" to "${project.build.directory}" as profile-activation happens before
+            property resolution ... it won't work with a property.
+          -->
+          <exists>target/generated-sources/plc4x</exists>
+        </file>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>build-helper-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>add-plc4x-sources</id>
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>add-source</goal>
+                </goals>
+                <configuration>
+                  <sources>
+                    <source>${project.build.directory}/generated-sources/plc4x/</source>
+                  </sources>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
       </build>
     </profile>
 
