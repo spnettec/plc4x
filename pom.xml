@@ -1785,7 +1785,7 @@
             Please don't change "target" to "${project.build.directory}" as profile-activation happens before
             property resolution ... it won't work with a property.
           -->
-          <exists>target/generated-sources/plc4x</exists>
+          <exists>src/main/generated/</exists>
         </file>
       </activation>
       <build>
@@ -1802,7 +1802,7 @@
                 </goals>
                 <configuration>
                   <sources>
-                    <source>${project.build.directory}/generated-sources/plc4x/</source>
+                    <source>${project.basedir}/src/main/generated/</source>
                   </sources>
                 </configuration>
               </execution>
