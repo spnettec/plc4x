@@ -240,14 +240,14 @@ plc4c_return_code plc4c_plc4x_read_write_plc4x_value_parse(plc4c_spi_read_buffer
                 // Manual Field (value)
                 char* value = (char*) (plc4c_plc4x_read_write_parse_string(readBuffer, "UTF-8"));
 
-                *data_item = plc4c_data_create_string_data(stringLength, value);
+                                    *data_item = plc4c_data_create_string_data(strlen(value), value);
 
     } else         if(valueType == plc4c_plc4x_read_write_plc4x_value_type_WSTRING) { /* STRING */
 
                 // Manual Field (value)
                 char* value = (char*) (plc4c_plc4x_read_write_parse_string(readBuffer, "UTF-16"));
 
-                *data_item = plc4c_data_create_string_data(stringLength, value);
+                                    *data_item = plc4c_data_create_string_data(strlen(value), value);
 
     } else         if(valueType == plc4c_plc4x_read_write_plc4x_value_type_TIME) { /* TIME */
 

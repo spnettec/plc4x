@@ -41,7 +41,8 @@ public class DataItem {
   private static final Logger LOGGER = LoggerFactory.getLogger(DataItem.class);
 
   public static PlcValue staticParse(
-      ReadBuffer readBuffer, String dataProtocolId, Integer stringLength) throws ParseException {
+      ReadBuffer readBuffer, String dataProtocolId, Integer stringLength, String stringEncoding)
+      throws ParseException {
     if (EvaluationHelper.equals(dataProtocolId, "IEC61131_BOOL")) { // BOOL
 
       // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
@@ -146,16 +147,20 @@ public class DataItem {
       return new PlcLREAL(value);
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_CHAR")) { // CHAR
 
-      // Simple Field (value)
-      String value = /*TODO: migrate me*/ /*TODO: migrate me*/
-          readBuffer.readString("", 8, "UTF-8");
+      // Manual Field (value)
+      String value =
+          (String)
+              (org.apache.plc4x.java.s7.readwrite.utils.StaticHelper.parseS7Char(
+                  readBuffer, "UTF-8", stringEncoding));
 
       return new PlcCHAR(value);
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_WCHAR")) { // CHAR
 
-      // Simple Field (value)
-      String value = /*TODO: migrate me*/ /*TODO: migrate me*/
-          readBuffer.readString("", 16, "UTF-16");
+      // Manual Field (value)
+      String value =
+          (String)
+              (org.apache.plc4x.java.s7.readwrite.utils.StaticHelper.parseS7Char(
+                  readBuffer, "UTF-16", stringEncoding));
 
       return new PlcCHAR(value);
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_STRING")) { // STRING
@@ -164,7 +169,7 @@ public class DataItem {
       String value =
           (String)
               (org.apache.plc4x.java.s7.readwrite.utils.StaticHelper.parseS7String(
-                  readBuffer, stringLength, "UTF-8"));
+                  readBuffer, stringLength, "UTF-8", stringEncoding));
 
       return new PlcSTRING(value);
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_WSTRING")) { // STRING
@@ -173,7 +178,7 @@ public class DataItem {
       String value =
           (String)
               (org.apache.plc4x.java.s7.readwrite.utils.StaticHelper.parseS7String(
-                  readBuffer, stringLength, "UTF-16"));
+                  readBuffer, stringLength, "UTF-16", stringEncoding));
 
       return new PlcSTRING(value);
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_TIME")) { // TIME
@@ -252,9 +257,14 @@ public class DataItem {
   }
 
   public static void staticSerialize(
-      WriteBuffer writeBuffer, PlcValue _value, String dataProtocolId, Integer stringLength)
+      WriteBuffer writeBuffer,
+      PlcValue _value,
+      String dataProtocolId,
+      Integer stringLength,
+      String stringEncoding)
       throws SerializationException {
-    staticSerialize(writeBuffer, _value, dataProtocolId, stringLength, ByteOrder.BIG_ENDIAN);
+    staticSerialize(
+        writeBuffer, _value, dataProtocolId, stringLength, stringEncoding, ByteOrder.BIG_ENDIAN);
   }
 
   public static void staticSerialize(
@@ -262,6 +272,7 @@ public class DataItem {
       PlcValue _value,
       String dataProtocolId,
       Integer stringLength,
+      String stringEncoding,
       ByteOrder byteOrder)
       throws SerializationException {
     if (EvaluationHelper.equals(dataProtocolId, "IEC61131_BOOL")) { // BOOL
@@ -344,23 +355,21 @@ public class DataItem {
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeDouble("", 64, (value));
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_CHAR")) { // CHAR
-      // Simple Field (value)
-      String value = (String) _value.getString();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeString("", 8, "UTF-8", (String) (value));
+      // Manual Field (value)
+      org.apache.plc4x.java.s7.readwrite.utils.StaticHelper.serializeS7Char(
+          writeBuffer, _value, "UTF-8", stringEncoding);
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_WCHAR")) { // CHAR
-      // Simple Field (value)
-      String value = (String) _value.getString();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeString("", 16, "UTF-16", (String) (value));
+      // Manual Field (value)
+      org.apache.plc4x.java.s7.readwrite.utils.StaticHelper.serializeS7Char(
+          writeBuffer, _value, "UTF-16", stringEncoding);
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_STRING")) { // STRING
       // Manual Field (value)
       org.apache.plc4x.java.s7.readwrite.utils.StaticHelper.serializeS7String(
-          writeBuffer, _value, stringLength, "UTF-8");
+          writeBuffer, _value, stringLength, "UTF-8", stringEncoding);
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_WSTRING")) { // STRING
       // Manual Field (value)
       org.apache.plc4x.java.s7.readwrite.utils.StaticHelper.serializeS7String(
-          writeBuffer, _value, stringLength, "UTF-16");
+          writeBuffer, _value, stringLength, "UTF-16", stringEncoding);
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_TIME")) { // TIME
       // Simple Field (milliseconds)
       long milliseconds = (long) _value.getLong();
@@ -428,11 +437,15 @@ public class DataItem {
     }
   }
 
-  public static int getLengthInBytes(PlcValue _value, String dataProtocolId, Integer stringLength) {
-    return (int) Math.ceil((float) getLengthInBits(_value, dataProtocolId, stringLength) / 8.0);
+  public static int getLengthInBytes(
+      PlcValue _value, String dataProtocolId, Integer stringLength, String stringEncoding) {
+    return (int)
+        Math.ceil(
+            (float) getLengthInBits(_value, dataProtocolId, stringLength, stringEncoding) / 8.0);
   }
 
-  public static int getLengthInBits(PlcValue _value, String dataProtocolId, Integer stringLength) {
+  public static int getLengthInBits(
+      PlcValue _value, String dataProtocolId, Integer stringLength, String stringEncoding) {
     int sizeInBits = 0;
     if (EvaluationHelper.equals(dataProtocolId, "IEC61131_BOOL")) { // BOOL
       // Reserved Field
@@ -482,17 +495,17 @@ public class DataItem {
       // Simple Field (value)
       sizeInBits += 64;
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_CHAR")) { // CHAR
-      // Simple Field (value)
+      // Manual Field (value)
       sizeInBits += 8;
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_WCHAR")) { // CHAR
-      // Simple Field (value)
+      // Manual Field (value)
       sizeInBits += 16;
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_STRING")) { // STRING
       // Manual Field (value)
-      sizeInBits += (STR_LEN(_value)) + (2);
+      sizeInBits += (((stringLength) + (2))) * (8);
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_WSTRING")) { // STRING
       // Manual Field (value)
-      sizeInBits += (((STR_LEN(_value)) * (2))) + (2);
+      sizeInBits += (((stringLength) + (2))) * (16);
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_TIME")) { // TIME
       // Simple Field (milliseconds)
       sizeInBits += 32;

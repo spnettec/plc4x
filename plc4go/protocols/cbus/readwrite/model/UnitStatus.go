@@ -33,9 +33,9 @@ type IUnitStatus interface {
 	utils.Serializable
 }
 
-const (
-	UnitStatus_OK          UnitStatus = 0
-	UnitStatus_NACK        UnitStatus = 1
+const(
+	UnitStatus_OK UnitStatus = 0
+	UnitStatus_NACK UnitStatus = 1
 	UnitStatus_NO_RESPONSE UnitStatus = 2
 )
 
@@ -43,7 +43,7 @@ var UnitStatusValues []UnitStatus
 
 func init() {
 	_ = errors.New
-	UnitStatusValues = []UnitStatus{
+	UnitStatusValues = []UnitStatus {
 		UnitStatus_OK,
 		UnitStatus_NACK,
 		UnitStatus_NO_RESPONSE,
@@ -52,12 +52,12 @@ func init() {
 
 func UnitStatusByValue(value uint8) (enum UnitStatus, ok bool) {
 	switch value {
-	case 0:
-		return UnitStatus_OK, true
-	case 1:
-		return UnitStatus_NACK, true
-	case 2:
-		return UnitStatus_NO_RESPONSE, true
+		case 0:
+			return UnitStatus_OK, true
+		case 1:
+			return UnitStatus_NACK, true
+		case 2:
+			return UnitStatus_NO_RESPONSE, true
 	}
 	return 0, false
 }
@@ -74,13 +74,13 @@ func UnitStatusByName(value string) (enum UnitStatus, ok bool) {
 	return 0, false
 }
 
-func UnitStatusKnows(value uint8) bool {
+func UnitStatusKnows(value uint8)  bool {
 	for _, typeValue := range UnitStatusValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastUnitStatus(structType interface{}) UnitStatus {
@@ -146,3 +146,4 @@ func (e UnitStatus) PLC4XEnumName() string {
 func (e UnitStatus) String() string {
 	return e.PLC4XEnumName()
 }
+

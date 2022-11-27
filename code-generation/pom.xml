@@ -39,6 +39,8 @@
     <module>protocol-test</module>
 
     <module>language-java</module>
+    <module>language-c</module>
+    <module>language-go</module>
   </modules>
 
   <profiles>

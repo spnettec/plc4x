@@ -33,9 +33,9 @@ type IBACnetNotifyType interface {
 	utils.Serializable
 }
 
-const (
-	BACnetNotifyType_ALARM            BACnetNotifyType = 0x0
-	BACnetNotifyType_EVENT            BACnetNotifyType = 0x1
+const(
+	BACnetNotifyType_ALARM BACnetNotifyType = 0x0
+	BACnetNotifyType_EVENT BACnetNotifyType = 0x1
 	BACnetNotifyType_ACK_NOTIFICATION BACnetNotifyType = 0x2
 )
 
@@ -43,7 +43,7 @@ var BACnetNotifyTypeValues []BACnetNotifyType
 
 func init() {
 	_ = errors.New
-	BACnetNotifyTypeValues = []BACnetNotifyType{
+	BACnetNotifyTypeValues = []BACnetNotifyType {
 		BACnetNotifyType_ALARM,
 		BACnetNotifyType_EVENT,
 		BACnetNotifyType_ACK_NOTIFICATION,
@@ -52,12 +52,12 @@ func init() {
 
 func BACnetNotifyTypeByValue(value uint8) (enum BACnetNotifyType, ok bool) {
 	switch value {
-	case 0x0:
-		return BACnetNotifyType_ALARM, true
-	case 0x1:
-		return BACnetNotifyType_EVENT, true
-	case 0x2:
-		return BACnetNotifyType_ACK_NOTIFICATION, true
+		case 0x0:
+			return BACnetNotifyType_ALARM, true
+		case 0x1:
+			return BACnetNotifyType_EVENT, true
+		case 0x2:
+			return BACnetNotifyType_ACK_NOTIFICATION, true
 	}
 	return 0, false
 }
@@ -74,13 +74,13 @@ func BACnetNotifyTypeByName(value string) (enum BACnetNotifyType, ok bool) {
 	return 0, false
 }
 
-func BACnetNotifyTypeKnows(value uint8) bool {
+func BACnetNotifyTypeKnows(value uint8)  bool {
 	for _, typeValue := range BACnetNotifyTypeValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastBACnetNotifyType(structType interface{}) BACnetNotifyType {
@@ -146,3 +146,4 @@ func (e BACnetNotifyType) PLC4XEnumName() string {
 func (e BACnetNotifyType) String() string {
 	return e.PLC4XEnumName()
 }
+
