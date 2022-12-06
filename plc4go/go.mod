@@ -42,7 +42,7 @@ require (
 	github.com/subchen/go-xmldom v1.1.2
 	github.com/viney-shih/go-lock v1.1.2
 	golang.org/x/exp v0.0.0-20221109205753-fc8884afc316
-	golang.org/x/tools v0.3.0
+	golang.org/x/tools v0.4.0
 	gopkg.in/yaml.v3 v3.0.1
 )
 
@@ -63,7 +63,6 @@ require (
 	github.com/pelletier/go-toml v1.9.5 // indirect
 	github.com/pelletier/go-toml/v2 v2.0.5 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
-	github.com/reiver/go-fck v0.0.1 // indirect
 	github.com/rivo/uniseg v0.4.2 // indirect
 	github.com/spf13/afero v1.9.2 // indirect
 	github.com/spf13/cast v1.5.0 // indirect
@@ -72,7 +71,7 @@ require (
 	github.com/subosito/gotenv v1.4.1 // indirect
 	golang.org/x/mod v0.7.0 // indirect
 	golang.org/x/sync v0.1.0 // indirect
-	golang.org/x/sys v0.2.0 // indirect
+	golang.org/x/sys v0.3.0 // indirect
 	golang.org/x/term v0.1.0 // indirect
 	golang.org/x/text v0.4.0 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
