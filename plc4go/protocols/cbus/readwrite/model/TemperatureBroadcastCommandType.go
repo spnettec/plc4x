@@ -34,7 +34,7 @@ type ITemperatureBroadcastCommandType interface {
 	NumberOfArguments() uint8
 }
 
-const(
+const (
 	TemperatureBroadcastCommandType_BROADCAST_EVENT TemperatureBroadcastCommandType = 0x00
 )
 
@@ -42,18 +42,19 @@ var TemperatureBroadcastCommandTypeValues []TemperatureBroadcastCommandType
 
 func init() {
 	_ = errors.New
-	TemperatureBroadcastCommandTypeValues = []TemperatureBroadcastCommandType {
+	TemperatureBroadcastCommandTypeValues = []TemperatureBroadcastCommandType{
 		TemperatureBroadcastCommandType_BROADCAST_EVENT,
 	}
 }
 
-
 func (e TemperatureBroadcastCommandType) NumberOfArguments() uint8 {
-	switch e  {
-		case 0x00: { /* '0x00' */
-            return 2
+	switch e {
+	case 0x00:
+		{ /* '0x00' */
+			return 2
 		}
-		default: {
+	default:
+		{
 			return 0
 		}
 	}
@@ -69,8 +70,8 @@ func TemperatureBroadcastCommandTypeFirstEnumForFieldNumberOfArguments(value uin
 }
 func TemperatureBroadcastCommandTypeByValue(value uint8) (enum TemperatureBroadcastCommandType, ok bool) {
 	switch value {
-		case 0x00:
-			return TemperatureBroadcastCommandType_BROADCAST_EVENT, true
+	case 0x00:
+		return TemperatureBroadcastCommandType_BROADCAST_EVENT, true
 	}
 	return 0, false
 }
@@ -83,13 +84,13 @@ func TemperatureBroadcastCommandTypeByName(value string) (enum TemperatureBroadc
 	return 0, false
 }
 
-func TemperatureBroadcastCommandTypeKnows(value uint8)  bool {
+func TemperatureBroadcastCommandTypeKnows(value uint8) bool {
 	for _, typeValue := range TemperatureBroadcastCommandTypeValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastTemperatureBroadcastCommandType(structType interface{}) TemperatureBroadcastCommandType {
@@ -151,4 +152,3 @@ func (e TemperatureBroadcastCommandType) PLC4XEnumName() string {
 func (e TemperatureBroadcastCommandType) String() string {
 	return e.PLC4XEnumName()
 }
-
