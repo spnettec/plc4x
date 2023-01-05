@@ -25,6 +25,12 @@ on:
       - code-generation/**
       - protocols/**
       - sandbox/plc4py**
+  pull_request:
+    branches: [ "develop", "plc4py" ]
+    paths:
+      - code-generation/**
+      - protocols/**
+      - sandbox/plc4py**
   workflow_dispatch:
     inputs:
       forceUpdates:
@@ -124,15 +130,21 @@ jobs:
           python -m pip install --upgrade pip
           pip install flake8 pytest          
 
-      - name: Lint with flake8
-        run: |
-          # stop the build if there are Python syntax errors or undefined names
-          flake8 ./sandbox/plc4py --count --select=E9,F63,F7,F82 --show-source --statistics
-          # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-          flake8 ./sandbox/plc4py --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+#      - name: Lint with flake8
+#        run: |
+#          # stop the build if there are Python syntax errors or undefined names
+#          flake8 ./sandbox/plc4py --count --select=E9,F63,F7,F82 --show-source --statistics
+#          # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+#          flake8 ./sandbox/plc4py --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+
+#      - name: Initialize CodeQL
+#        uses: github/codeql-action/init@v2
+#        with:
+#          languages: python
 
       - name: Run mvnw
         run: |
-          ./mvnw${{ steps.platform_suffix.outputs.platform_suffix }} ${{ steps.extra_options.outputs.extra_options }} -T 1C -B -P'with-sandbox,with-python' -pl :plc4py -am ${{ steps.platform_opts.outputs.platform_opts }} install || ./mvnw${{ steps.platform_suffix.outputs.platform_suffix }} ${{ steps.extra_options.outputs.extra_options }} -B -P'with-sandbox,with-python' -pl :plc4py -am ${{ steps.platform_opts.outputs.platform_opts }} install
-      
-          
+          ./mvnw${{ steps.platform_suffix.outputs.platform_suffix }} ${{ steps.extra_options.outputs.extra_options }} -B -P'with-sandbox,with-python,enable-all-checks' -pl :plc4py -am ${{ steps.platform_opts.outputs.platform_opts }} install
+
+#      - name: Perform CodeQL Analysis
+#        uses: github/codeql-action/analyze@v2
