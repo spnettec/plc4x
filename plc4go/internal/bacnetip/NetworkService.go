@@ -459,6 +459,7 @@ func buildNPDU(hopCount uint8, source *Address, destination *Address, expectingR
 	var destinationNetworkAddress *uint16
 	var destinationLength *uint8
 	var destinationAddress []uint8
+	var destinationHopCount *uint8
 	if destinationSpecified {
 		destinationSpecified = true
 		destinationNetworkAddress = destination.AddrNet
@@ -473,9 +474,10 @@ func buildNPDU(hopCount uint8, source *Address, destination *Address, expectingR
 			// If we define the len 0 we must not send the array
 			destinationAddress = nil
 		}
+		destinationHopCount = &hopCount
 	}
 	control := readWriteModel.NewNPDUControl(false, destinationSpecified, sourceSpecified, expectingReply, networkPriority)
-	return readWriteModel.NewNPDU(1, control, destinationNetworkAddress, destinationLength, destinationAddress, sourceNetworkAddress, sourceLength, sourceAddress, &hopCount, nil, apdu, 0), nil
+	return readWriteModel.NewNPDU(1, control, destinationNetworkAddress, destinationLength, destinationAddress, sourceNetworkAddress, sourceLength, sourceAddress, destinationHopCount, nil, apdu, 0), nil
 }
 
 func (n *NetworkServiceAccessPoint) ProcessNPDU(adapter *NetworkAdapter, pdu _PDU) error {
@@ -568,13 +570,14 @@ func NewNetworkServiceElement(eid *int) (*NetworkServiceElement, error) {
 	return n, nil
 }
 
-func (n *NetworkServiceElement) Startup() {
+func (n *NetworkServiceElement) Startup() error {
 	log.Debug().Msg("Startup")
 
 	// reference the service access point
-	sap := n.elementService.(*NetworkServiceAccessPoint) // TODO: hard cast but seems like adapters apears first in network service access point (so hard binding)
+	sap := n.elementService.(*NetworkServiceAccessPoint) // TODO: hard cast but seems like adapters appears first in network service access point (so hard binding)
 	log.Debug().Msgf("sap: %v", sap)
 
 	// loop through all the adapters
 	// TODO: no adapters yet
+	return nil
 }
