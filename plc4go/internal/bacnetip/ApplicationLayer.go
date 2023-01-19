@@ -1528,7 +1528,7 @@ type StateMachineAccessPoint struct {
 	*ServiceAccessPoint
 
 	localDevice           *LocalDeviceObject
-	deviceInventory       *DeviceInfoCache
+	deviceInfoCache       *DeviceInfoCache
 	nextInvokeId          uint8
 	clientTransactions    []*ClientSSM
 	serverTransactions    []*ServerSSM
@@ -1543,13 +1543,13 @@ type StateMachineAccessPoint struct {
 	applicationTimeout    uint
 }
 
-func NewStateMachineAccessPoint(localDevice *LocalDeviceObject, deviceInventory *DeviceInfoCache, sapID *int, cid *int) (*StateMachineAccessPoint, error) {
-	log.Debug().Msgf("NewStateMachineAccessPoint localDevice=%v deviceInventory=%v sap=%v cid=%v", localDevice, deviceInventory, sapID, cid)
+func NewStateMachineAccessPoint(localDevice *LocalDeviceObject, deviceInfoCache *DeviceInfoCache, sapID *int, cid *int) (*StateMachineAccessPoint, error) {
+	log.Debug().Msgf("NewStateMachineAccessPoint localDevice=%v deviceInventory=%v sap=%v cid=%v", localDevice, deviceInfoCache, sapID, cid)
 
 	s := &StateMachineAccessPoint{
 		// save a reference to the device information cache
 		localDevice:     localDevice,
-		deviceInventory: deviceInventory,
+		deviceInfoCache: deviceInfoCache,
 
 		// client settings
 		nextInvokeId:       1,
@@ -1702,8 +1702,9 @@ func (s *StateMachineAccessPoint) Confirmation(apdu _PDU) error { // TODO: note 
 	case readWriteModel.APDUSimpleAckExactly, readWriteModel.APDUComplexAckExactly, readWriteModel.APDUErrorExactly, readWriteModel.APDURejectExactly:
 		// find the client transaction this is acking
 		var tr *ClientSSM
-		for _, tr := range s.clientTransactions {
-			if apdu.(interface{ GetOriginalInvokeId() uint8 }).GetOriginalInvokeId() == tr.invokeId && pduSource.Equals(tr.pduAddress) {
+		for _, _tr := range s.clientTransactions {
+			if _apdu.(interface{ GetOriginalInvokeId() uint8 }).GetOriginalInvokeId() == _tr.invokeId && pduSource.Equals(_tr.pduAddress) {
+				tr = _tr
 				break
 			}
 		}
@@ -1887,7 +1888,7 @@ func (s *StateMachineAccessPoint) SapConfirmation(apdu _PDU) error {
 }
 
 func (s *StateMachineAccessPoint) GetDeviceInfoCache() *DeviceInfoCache {
-	return s.deviceInventory
+	return s.deviceInfoCache
 }
 
 func (s *StateMachineAccessPoint) GetLocalDevice() *LocalDeviceObject {

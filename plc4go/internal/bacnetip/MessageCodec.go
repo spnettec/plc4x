@@ -102,11 +102,11 @@ func (m *ApplicationLayerMessageCodec) IsRunning() bool {
 }
 
 func (m *ApplicationLayerMessageCodec) Send(message spi.Message) error {
-	address, err2 := NewAddress(m.remoteAddress)
-	if err2 != nil {
-		panic(err2)
+	address, err := NewAddress(m.remoteAddress)
+	if err != nil {
+		return err
 	}
-	iocb, err := NewIOCB(NewPDU(message, WithPDUDestination(address)), m.remoteAddress)
+	iocb, err := NewIOCB(NewPDU(message, WithPDUDestination(address)), address)
 	if err != nil {
 		return errors.Wrap(err, "error creating IOCB")
 	}
@@ -115,10 +115,10 @@ func (m *ApplicationLayerMessageCodec) Send(message spi.Message) error {
 		iocb.Wait()
 		if iocb.ioError != nil {
 			// TODO: handle error
-			println(iocb.ioError)
+			fmt.Printf("Err: %v\n", iocb.ioError)
 		} else if iocb.ioResponse != nil {
 			// TODO: response?
-			println(iocb.ioResponse)
+			fmt.Printf("Response: %v\n", iocb.ioResponse)
 		} else {
 			// TODO: what now?
 		}
@@ -128,14 +128,63 @@ func (m *ApplicationLayerMessageCodec) Send(message spi.Message) error {
 
 func (m *ApplicationLayerMessageCodec) Expect(ctx context.Context, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError, ttl time.Duration) error {
 	// TODO: implement me
-	return nil
+	panic("not yet implemented")
 }
 
 func (m *ApplicationLayerMessageCodec) SendRequest(ctx context.Context, message spi.Message, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError, ttl time.Duration) error {
-
-	// TODO: implement me
-	m.Send(message)
-
+	address, err := NewAddress(m.remoteAddress)
+	if err != nil {
+		return err
+	}
+	iocb, err := NewIOCB(NewPDU(message, WithPDUDestination(address)), address)
+	if err != nil {
+		return errors.Wrap(err, "error creating IOCB")
+	}
+	go func() {
+		go m.bipSimpleApplication.RequestIO(iocb)
+		iocb.Wait()
+		if err := iocb.ioError; err != nil {
+			if err := handleError(err); err != nil {
+				log.Debug().Err(err).Msg("error handling error")
+				return
+			}
+		} else if response := iocb.ioResponse; response != nil {
+			// TODO: we wrap it into a BVLC for now. Once we change the Readers etc. to accept apdus we can remove that
+			tempBVLC := model.NewBVLCOriginalUnicastNPDU(
+				model.NewNPDU(
+					0,
+					model.NewNPDUControl(
+						false,
+						false,
+						false,
+						false,
+						model.NPDUNetworkPriority_NORMAL_MESSAGE,
+					),
+					nil,
+					nil,
+					nil,
+					nil,
+					nil,
+					nil,
+					nil,
+					nil,
+					response.GetMessage().(model.APDU),
+					0,
+				),
+				0,
+			)
+			if acceptsMessage(tempBVLC) {
+				if err := handleMessage(
+					tempBVLC,
+				); err != nil {
+					log.Debug().Err(err).Msg("error handling message")
+					return
+				}
+			}
+		} else {
+			// TODO: what now?
+		}
+	}()
 	return nil
 }
 
