@@ -21,6 +21,7 @@ package org.apache.plc4x.java.tools.plc4xserver.protocol;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.api.PlcConnectionManager;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
@@ -28,7 +29,7 @@ import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.plc4x.readwrite.*;
-import org.apache.plc4x.java.utils.connectionpool2.PooledDriverManager;
+import org.apache.plc4x.java.utils.cache.CachedPlcConnectionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,12 +43,12 @@ public class Plc4xServerAdapter extends ChannelInboundHandlerAdapter {
 
     private final Logger logger = LoggerFactory.getLogger(Plc4xServerAdapter.class);
 
-    private final PooledDriverManager driverManager;
+    private final PlcConnectionManager connectionManager;
     private final AtomicInteger connectionIdGenerator;
     private final ConcurrentHashMap<Integer, String> connectionUrls;
 
     public Plc4xServerAdapter() {
-        driverManager = new PooledDriverManager();
+        connectionManager = CachedPlcConnectionManager.getBuilder().build();
         connectionIdGenerator = new AtomicInteger(1);
         connectionUrls = new ConcurrentHashMap<>();
     }
@@ -60,7 +61,7 @@ public class Plc4xServerAdapter extends ChannelInboundHandlerAdapter {
             switch (plc4xRequestType) {
                 case CONNECT_REQUEST: {
                     Plc4xConnectRequest request = (Plc4xConnectRequest) plc4xMessage;
-                    try (final PlcConnection ignored = driverManager.getConnection(request.getConnectionString())) {
+                    try (final PlcConnection ignored = connectionManager.getConnection(request.getConnectionString())) {
                         //connection.ping().get();
                         final int connectionId = connectionIdGenerator.getAndIncrement();
                         connectionUrls.put(connectionId, request.getConnectionString());
@@ -77,7 +78,7 @@ public class Plc4xServerAdapter extends ChannelInboundHandlerAdapter {
                 case READ_REQUEST: {
                     final Plc4xReadRequest request = (Plc4xReadRequest) plc4xMessage;
                     String connectionUrl = connectionUrls.get(request.getConnectionId());
-                    try (final PlcConnection connection = driverManager.getConnection(connectionUrl)) {
+                    try (final PlcConnection connection = connectionManager.getConnection(connectionUrl)) {
                         // Build a read request for all tags in the request.
                         final PlcReadRequest.Builder builder = connection.readRequestBuilder();
                         for (Plc4xTagRequest requestTag : request.getTags()) {
@@ -128,7 +129,7 @@ public class Plc4xServerAdapter extends ChannelInboundHandlerAdapter {
                 case WRITE_REQUEST:
                     final Plc4xWriteRequest plc4xWriteRequest = (Plc4xWriteRequest) plc4xMessage;
                     String connectionUrl = connectionUrls.get(plc4xWriteRequest.getConnectionId());
-                    try (final PlcConnection connection = driverManager.getConnection(connectionUrl)) {
+                    try (final PlcConnection connection = connectionManager.getConnection(connectionUrl)) {
                         // Build a write request for all tags in the request.
                         final PlcWriteRequest.Builder builder = connection.writeRequestBuilder();
                         for (Plc4xTagValueRequest plc4xRequestTag : plc4xWriteRequest.getTags()) {

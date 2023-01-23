@@ -136,7 +136,7 @@
     <httpcore.version>4.4.16</httpcore.version>
     <!-- ! 2.13.4 has a known CVE and 2.14.0-rc1 seems to fix that, even if not finally released -->
     <jackson.version>2.14.1</jackson.version>
-    <woodstox-core.version>6.4.0</woodstox-core.version>
+    <woodstox-core.version>6.5.0</woodstox-core.version>
     <!-- When updating this to the latest version, we're getting errors in the opcua server tests -->
     <jaxb.version>4.0.1</jaxb.version>
     <jetty-util.version>11.0.13</jetty-util.version>
@@ -1135,9 +1135,15 @@
           <dependencies>
             <dependency>
               <groupId>org.codehaus.plexus</groupId>
-              <artifactId>plexus-compiler-eclipse</artifactId>
-              <version>2.12.1</version>
+              <artifactId>plexus-compiler-api</artifactId>
+              <version>2.13.0</version>
             </dependency>
+            <dependency>
+              <groupId>org.codehaus.plexus</groupId>
+              <artifactId>plexus-compiler-eclipse</artifactId>
+              <version>2.13.0</version>
+            </dependency>
+            <!-- Redundant import, however we might need to bump this version more often -->
             <dependency>
               <groupId>org.eclipse.jdt</groupId>
               <artifactId>ecj</artifactId>
@@ -1867,30 +1873,51 @@
             <inherited>false</inherited>
             <executions>
               <execution>
+                <phase>verify</phase>
                 <goals>
                   <goal>files</goal>
                 </goals>
+                <configuration>
+                  <algorithms>
+                    <algorithm>SHA-512</algorithm>
+                  </algorithms>
+                  <includeRelativePath>true</includeRelativePath>
+                  <fileSets>
+                    <fileSet>
+                      <directory>${project.build.directory}</directory>
+                      <includes>
+                        <include>apache-plc4x-${project.version}-source-release.zip</include>
+                      </includes>
+                    </fileSet>
+                  </fileSets>
+                </configuration>
               </execution>
             </executions>
+          </plugin>
+          <!--
+            Generate an SBOM for the project
+          -->
+          <plugin>
+            <groupId>org.cyclonedx</groupId>
+            <artifactId>cyclonedx-maven-plugin</artifactId>
+            <version>2.7.4</version>
+            <!-- Only run this in the root module of the project -->
+            <inherited>false</inherited>
             <configuration>
-              <algorithms>
-                <algorithm>SHA-512</algorithm>
-              </algorithms>
-              <includeRelativePath>true</includeRelativePath>
-              <fileSets>
-                <fileSet>
-                  <directory>${project.build.directory}</directory>
-                  <includes>
-                    <include>apache-plc4x-${project.version}-source-release.zip</include>
-                  </includes>
-                </fileSet>
-              </fileSets>
+              <outputName>apache-${project.artifactId}-${project.version}-sbom</outputName>
             </configuration>
+            <executions>
+              <execution>
+                <phase>package</phase>
+                <goals>
+                  <goal>makeAggregateBom</goal>
+                </goals>
+              </execution>
+            </executions>
           </plugin>
         </plugins>
       </build>
     </profile>
-
   </profiles>
 
 </project>
