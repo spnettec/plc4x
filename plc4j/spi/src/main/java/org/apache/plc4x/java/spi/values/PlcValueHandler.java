@@ -19,6 +19,7 @@
 package org.apache.plc4x.java.spi.values;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.plc4x.java.api.exceptions.PlcInvalidTagException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.exceptions.PlcUnsupportedDataTypeException;
 import org.apache.plc4x.java.api.model.PlcTag;
@@ -98,7 +99,11 @@ public class PlcValueHandler implements org.apache.plc4x.java.api.value.PlcValue
             return PlcLINT.of(value);
         }
         if (value instanceof BigInteger) {
-            return new PlcLINT((BigInteger) value);
+            try {
+                return new PlcLINT((BigInteger) value);
+            }catch (PlcInvalidTagException e) {
+                return new PlcULINT((BigInteger) value);
+            }
         }
         if (value instanceof BigDecimal) {
             return new PlcLINT((BigDecimal) value);

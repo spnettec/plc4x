@@ -63,12 +63,14 @@ public class CachedPlcConnectionManager implements PlcConnectionManager {
         ConnectionContainer connectionContainer;
         synchronized (connectionContainers) {
             connectionContainer = connectionContainers.get(url);
-            if (connectionContainers.get(url) == null) {
+            if (connectionContainer == null) {
                 LOG.debug("Creating new connection");
 
                 // Establish the real connection to the plc
                 PlcConnection connection = connectionManager.getConnection(url);
-
+                //if(connection == null) {
+                //    throw new PlcConnectionException("can't get connection from url:" + url);
+                //}
                 // Crate a connection container to manage handling this connection
                 connectionContainer = new ConnectionContainer(connection, maxLeaseTime);
                 connectionContainers.put(url, connectionContainer);
@@ -86,6 +88,7 @@ public class CachedPlcConnectionManager implements PlcConnectionManager {
         }
     }
 
+    @Override
     public PlcConnection getConnection(String url, PlcAuthentication authentication) throws PlcConnectionException {
         throw new PlcConnectionException("the cached driver manager currently doesn't support authentication");
     }
