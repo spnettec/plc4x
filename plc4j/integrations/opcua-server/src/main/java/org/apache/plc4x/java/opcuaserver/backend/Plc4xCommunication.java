@@ -53,8 +53,6 @@ import static org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.Unsigned.
 
 
 public class Plc4xCommunication extends AbstractLifecycle {
-
-    private PlcDriverManager driverManager;
     private CachedPlcConnectionManager cachedPlcConnectionManager;
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final Integer DEFAULT_TIMEOUT = 1000000;
@@ -80,16 +78,15 @@ public class Plc4xCommunication extends AbstractLifecycle {
     }
 
     public PlcDriverManager getDriverManager() {
-        return driverManager;
+        return cachedPlcConnectionManager.getDriverManager();
     }
 
     public void setDriverManager(PlcDriverManager driverManager) {
-        this.driverManager = driverManager;
         this.cachedPlcConnectionManager = CachedPlcConnectionManager.getBuilder(driverManager.getConnectionManager()).build();
     }
 
     public PlcTag getTag(String tag, String connectionString) throws PlcConnectionException {
-        return driverManager.getDriverForUrl(connectionString).prepareTag(tag);
+        return cachedPlcConnectionManager.getDriverManager().getDriverForUrl(connectionString).prepareTag(tag);
     }
 
     public void addTag(DataItem item) {

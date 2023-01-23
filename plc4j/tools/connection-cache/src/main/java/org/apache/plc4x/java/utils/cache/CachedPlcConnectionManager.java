@@ -21,6 +21,7 @@ package org.apache.plc4x.java.utils.cache;
 import org.apache.plc4x.java.DefaultPlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.PlcConnectionManager;
+import org.apache.plc4x.java.api.PlcDriverManager;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.slf4j.Logger;
@@ -87,6 +88,11 @@ public class CachedPlcConnectionManager implements PlcConnectionManager {
 
     public PlcConnection getConnection(String url, PlcAuthentication authentication) throws PlcConnectionException {
         throw new PlcConnectionException("the cached driver manager currently doesn't support authentication");
+    }
+
+    @Override
+    public PlcDriverManager getDriverManager() {
+        return connectionManager.getDriverManager();
     }
 
     public static class Builder {
