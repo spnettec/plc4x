@@ -33,19 +33,19 @@ type IBACnetAccessCredentialDisable interface {
 	utils.Serializable
 }
 
-const(
-	BACnetAccessCredentialDisable_NONE BACnetAccessCredentialDisable = 0
-	BACnetAccessCredentialDisable_DISABLE BACnetAccessCredentialDisable = 1
-	BACnetAccessCredentialDisable_DISABLE_MANUAL BACnetAccessCredentialDisable = 2
-	BACnetAccessCredentialDisable_DISABLE_LOCKOUT BACnetAccessCredentialDisable = 3
-	BACnetAccessCredentialDisable_VENDOR_PROPRIETARY_VALUE BACnetAccessCredentialDisable = 0XFFFF
+const (
+	BACnetAccessCredentialDisable_NONE                     BACnetAccessCredentialDisable = 0
+	BACnetAccessCredentialDisable_DISABLE                  BACnetAccessCredentialDisable = 1
+	BACnetAccessCredentialDisable_DISABLE_MANUAL           BACnetAccessCredentialDisable = 2
+	BACnetAccessCredentialDisable_DISABLE_LOCKOUT          BACnetAccessCredentialDisable = 3
+	BACnetAccessCredentialDisable_VENDOR_PROPRIETARY_VALUE BACnetAccessCredentialDisable = 0xFFFF
 )
 
 var BACnetAccessCredentialDisableValues []BACnetAccessCredentialDisable
 
 func init() {
 	_ = errors.New
-	BACnetAccessCredentialDisableValues = []BACnetAccessCredentialDisable {
+	BACnetAccessCredentialDisableValues = []BACnetAccessCredentialDisable{
 		BACnetAccessCredentialDisable_NONE,
 		BACnetAccessCredentialDisable_DISABLE,
 		BACnetAccessCredentialDisable_DISABLE_MANUAL,
@@ -56,16 +56,16 @@ func init() {
 
 func BACnetAccessCredentialDisableByValue(value uint16) (enum BACnetAccessCredentialDisable, ok bool) {
 	switch value {
-		case 0:
-			return BACnetAccessCredentialDisable_NONE, true
-		case 0XFFFF:
-			return BACnetAccessCredentialDisable_VENDOR_PROPRIETARY_VALUE, true
-		case 1:
-			return BACnetAccessCredentialDisable_DISABLE, true
-		case 2:
-			return BACnetAccessCredentialDisable_DISABLE_MANUAL, true
-		case 3:
-			return BACnetAccessCredentialDisable_DISABLE_LOCKOUT, true
+	case 0:
+		return BACnetAccessCredentialDisable_NONE, true
+	case 0xFFFF:
+		return BACnetAccessCredentialDisable_VENDOR_PROPRIETARY_VALUE, true
+	case 1:
+		return BACnetAccessCredentialDisable_DISABLE, true
+	case 2:
+		return BACnetAccessCredentialDisable_DISABLE_MANUAL, true
+	case 3:
+		return BACnetAccessCredentialDisable_DISABLE_LOCKOUT, true
 	}
 	return 0, false
 }
@@ -86,13 +86,13 @@ func BACnetAccessCredentialDisableByName(value string) (enum BACnetAccessCredent
 	return 0, false
 }
 
-func BACnetAccessCredentialDisableKnows(value uint16)  bool {
+func BACnetAccessCredentialDisableKnows(value uint16) bool {
 	for _, typeValue := range BACnetAccessCredentialDisableValues {
 		if uint16(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastBACnetAccessCredentialDisable(structType interface{}) BACnetAccessCredentialDisable {
@@ -162,4 +162,3 @@ func (e BACnetAccessCredentialDisable) PLC4XEnumName() string {
 func (e BACnetAccessCredentialDisable) String() string {
 	return e.PLC4XEnumName()
 }
-
