@@ -59,7 +59,13 @@ public class CachedPlcConnectionManager implements PlcConnectionManager {
         this.connectionContainers = new HashMap<>();
     }
 
+    @Override
     public PlcConnection getConnection(String url) throws PlcConnectionException {
+        return getConnection(url,null);
+    }
+
+    @Override
+    public PlcConnection getConnection(String url, PlcAuthentication authentication) throws PlcConnectionException {
         ConnectionContainer connectionContainer;
         synchronized (connectionContainers) {
             connectionContainer = connectionContainers.get(url);
@@ -67,11 +73,12 @@ public class CachedPlcConnectionManager implements PlcConnectionManager {
                 LOG.debug("Creating new connection");
 
                 // Establish the real connection to the plc
-                PlcConnection connection = connectionManager.getConnection(url);
-                //if(connection == null) {
-                //    throw new PlcConnectionException("can't get connection from url:" + url);
-                //}
-                // Crate a connection container to manage handling this connection
+                PlcConnection connection;
+                if(authentication!=null) {
+                    connection = connectionManager.getConnection(url,authentication);
+                } else{
+                    connection = connectionManager.getConnection(url);
+                }
                 connectionContainer = new ConnectionContainer(connection, maxLeaseTime);
                 connectionContainers.put(url, connectionContainer);
             } else {
@@ -86,11 +93,6 @@ public class CachedPlcConnectionManager implements PlcConnectionManager {
         } catch (ExecutionException | InterruptedException | TimeoutException e) {
             throw new PlcConnectionException("Error acquiring lease for connection", e);
         }
-    }
-
-    @Override
-    public PlcConnection getConnection(String url, PlcAuthentication authentication) throws PlcConnectionException {
-        throw new PlcConnectionException("the cached driver manager currently doesn't support authentication");
     }
 
     @Override
