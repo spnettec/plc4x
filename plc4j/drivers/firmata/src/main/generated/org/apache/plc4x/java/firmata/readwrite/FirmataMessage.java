@@ -57,7 +57,11 @@ public abstract class FirmataMessage implements Message {
     writeBuffer.pushContext("FirmataMessage");
 
     // Discriminator Field (messageType) (Used as input to a switch field)
-    writeDiscriminatorField("messageType", getMessageType(), writeUnsignedByte(writeBuffer, 4));
+    writeDiscriminatorField(
+        "messageType",
+        getMessageType(),
+        writeUnsignedByte(writeBuffer, 4),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Switch field (Serialize the sub-type)
     serializeFirmataMessageChild(writeBuffer);
@@ -119,15 +123,19 @@ public abstract class FirmataMessage implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     FirmataMessageBuilder builder = null;
     if (EvaluationHelper.equals(messageType, (byte) 0xE)) {
-      builder = FirmataMessageAnalogIO.staticParseBuilder(readBuffer, response);
+      builder = FirmataMessageAnalogIO.staticParseFirmataMessageBuilder(readBuffer, response);
     } else if (EvaluationHelper.equals(messageType, (byte) 0x9)) {
-      builder = FirmataMessageDigitalIO.staticParseBuilder(readBuffer, response);
+      builder = FirmataMessageDigitalIO.staticParseFirmataMessageBuilder(readBuffer, response);
     } else if (EvaluationHelper.equals(messageType, (byte) 0xC)) {
-      builder = FirmataMessageSubscribeAnalogPinValue.staticParseBuilder(readBuffer, response);
+      builder =
+          FirmataMessageSubscribeAnalogPinValue.staticParseFirmataMessageBuilder(
+              readBuffer, response);
     } else if (EvaluationHelper.equals(messageType, (byte) 0xD)) {
-      builder = FirmataMessageSubscribeDigitalPinValue.staticParseBuilder(readBuffer, response);
+      builder =
+          FirmataMessageSubscribeDigitalPinValue.staticParseFirmataMessageBuilder(
+              readBuffer, response);
     } else if (EvaluationHelper.equals(messageType, (byte) 0xF)) {
-      builder = FirmataMessageCommand.staticParseBuilder(readBuffer, response);
+      builder = FirmataMessageCommand.staticParseFirmataMessageBuilder(readBuffer, response);
     }
     if (builder == null) {
       throw new ParseException(
@@ -145,7 +153,7 @@ public abstract class FirmataMessage implements Message {
     return _firmataMessage;
   }
 
-  public static interface FirmataMessageBuilder {
+  public interface FirmataMessageBuilder {
     FirmataMessage build(Boolean response);
   }
 

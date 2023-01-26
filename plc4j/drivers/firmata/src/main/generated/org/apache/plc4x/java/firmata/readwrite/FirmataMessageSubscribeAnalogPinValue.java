@@ -84,7 +84,8 @@ public class FirmataMessageSubscribeAnalogPinValue extends FirmataMessage implem
     writeReservedField(
         "reserved",
         reservedField0 != null ? reservedField0 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 7));
+        writeUnsignedShort(writeBuffer, 7),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (enable)
     writeSimpleField(
@@ -118,7 +119,7 @@ public class FirmataMessageSubscribeAnalogPinValue extends FirmataMessage implem
     return lengthInBits;
   }
 
-  public static FirmataMessageSubscribeAnalogPinValueBuilder staticParseBuilder(
+  public static FirmataMessageBuilder staticParseFirmataMessageBuilder(
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("FirmataMessageSubscribeAnalogPinValue");
     PositionAware positionAware = readBuffer;
@@ -142,17 +143,18 @@ public class FirmataMessageSubscribeAnalogPinValue extends FirmataMessage implem
 
     readBuffer.closeContext("FirmataMessageSubscribeAnalogPinValue");
     // Create the instance
-    return new FirmataMessageSubscribeAnalogPinValueBuilder(pin, enable, response, reservedField0);
+    return new FirmataMessageSubscribeAnalogPinValueBuilderImpl(
+        pin, enable, response, reservedField0);
   }
 
-  public static class FirmataMessageSubscribeAnalogPinValueBuilder
+  public static class FirmataMessageSubscribeAnalogPinValueBuilderImpl
       implements FirmataMessage.FirmataMessageBuilder {
     private final byte pin;
     private final boolean enable;
     private final Boolean response;
     private final Short reservedField0;
 
-    public FirmataMessageSubscribeAnalogPinValueBuilder(
+    public FirmataMessageSubscribeAnalogPinValueBuilderImpl(
         byte pin, boolean enable, Boolean response, Short reservedField0) {
       this.pin = pin;
       this.enable = enable;

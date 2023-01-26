@@ -88,7 +88,8 @@ public class ModbusRtuADU extends ModbusADU implements Message {
     writeChecksumField(
         "crc",
         (int) (org.apache.plc4x.java.modbus.readwrite.utils.StaticHelper.rtuCrcCheck(address, pdu)),
-        writeUnsignedInt(writeBuffer, 16));
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("ModbusRtuADU");
   }
@@ -115,7 +116,7 @@ public class ModbusRtuADU extends ModbusADU implements Message {
     return lengthInBits;
   }
 
-  public static ModbusRtuADUBuilder staticParseBuilder(
+  public static ModbusADUBuilder staticParseModbusADUBuilder(
       ReadBuffer readBuffer, DriverType driverType, Boolean response) throws ParseException {
     readBuffer.pullContext("ModbusRtuADU");
     PositionAware positionAware = readBuffer;
@@ -146,15 +147,15 @@ public class ModbusRtuADU extends ModbusADU implements Message {
 
     readBuffer.closeContext("ModbusRtuADU");
     // Create the instance
-    return new ModbusRtuADUBuilder(address, pdu, response);
+    return new ModbusRtuADUBuilderImpl(address, pdu, response);
   }
 
-  public static class ModbusRtuADUBuilder implements ModbusADU.ModbusADUBuilder {
+  public static class ModbusRtuADUBuilderImpl implements ModbusADU.ModbusADUBuilder {
     private final short address;
     private final ModbusPDU pdu;
     private final Boolean response;
 
-    public ModbusRtuADUBuilder(short address, ModbusPDU pdu, Boolean response) {
+    public ModbusRtuADUBuilderImpl(short address, ModbusPDU pdu, Boolean response) {
 
       this.address = address;
       this.pdu = pdu;

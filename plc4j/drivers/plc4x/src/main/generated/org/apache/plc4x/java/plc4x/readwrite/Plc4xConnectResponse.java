@@ -81,7 +81,8 @@ public class Plc4xConnectResponse extends Plc4xMessage implements Message {
         new DataWriterEnumDefault<>(
             Plc4xResponseCode::getValue,
             Plc4xResponseCode::name,
-            writeUnsignedShort(writeBuffer, 8)));
+            writeUnsignedShort(writeBuffer, 8)),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("Plc4xConnectResponse");
   }
@@ -105,7 +106,7 @@ public class Plc4xConnectResponse extends Plc4xMessage implements Message {
     return lengthInBits;
   }
 
-  public static Plc4xConnectResponseBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static Plc4xMessageBuilder staticParsePlc4xMessageBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("Plc4xConnectResponse");
     PositionAware positionAware = readBuffer;
@@ -128,14 +129,14 @@ public class Plc4xConnectResponse extends Plc4xMessage implements Message {
 
     readBuffer.closeContext("Plc4xConnectResponse");
     // Create the instance
-    return new Plc4xConnectResponseBuilder(connectionId, responseCode);
+    return new Plc4xConnectResponseBuilderImpl(connectionId, responseCode);
   }
 
-  public static class Plc4xConnectResponseBuilder implements Plc4xMessage.Plc4xMessageBuilder {
+  public static class Plc4xConnectResponseBuilderImpl implements Plc4xMessage.Plc4xMessageBuilder {
     private final int connectionId;
     private final Plc4xResponseCode responseCode;
 
-    public Plc4xConnectResponseBuilder(int connectionId, Plc4xResponseCode responseCode) {
+    public Plc4xConnectResponseBuilderImpl(int connectionId, Plc4xResponseCode responseCode) {
 
       this.connectionId = connectionId;
       this.responseCode = responseCode;

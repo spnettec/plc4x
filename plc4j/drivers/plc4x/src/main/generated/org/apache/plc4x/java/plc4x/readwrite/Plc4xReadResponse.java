@@ -91,15 +91,21 @@ public class Plc4xReadResponse extends Plc4xMessage implements Message {
         new DataWriterEnumDefault<>(
             Plc4xResponseCode::getValue,
             Plc4xResponseCode::name,
-            writeUnsignedShort(writeBuffer, 8)));
+            writeUnsignedShort(writeBuffer, 8)),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Implicit Field (numTags) (Used for parsing, but its value is not stored as it's implicitly
     // given by the objects content)
     short numTags = (short) (COUNT(getTags()));
-    writeImplicitField("numTags", numTags, writeUnsignedShort(writeBuffer, 8));
+    writeImplicitField(
+        "numTags",
+        numTags,
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Array Field (tags)
-    writeComplexTypeArrayField("tags", tags, writeBuffer);
+    writeComplexTypeArrayField(
+        "tags", tags, writeBuffer, WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("Plc4xReadResponse");
   }
@@ -135,7 +141,7 @@ public class Plc4xReadResponse extends Plc4xMessage implements Message {
     return lengthInBits;
   }
 
-  public static Plc4xReadResponseBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static Plc4xMessageBuilder staticParsePlc4xMessageBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("Plc4xReadResponse");
     PositionAware positionAware = readBuffer;
@@ -172,15 +178,15 @@ public class Plc4xReadResponse extends Plc4xMessage implements Message {
 
     readBuffer.closeContext("Plc4xReadResponse");
     // Create the instance
-    return new Plc4xReadResponseBuilder(connectionId, responseCode, tags);
+    return new Plc4xReadResponseBuilderImpl(connectionId, responseCode, tags);
   }
 
-  public static class Plc4xReadResponseBuilder implements Plc4xMessage.Plc4xMessageBuilder {
+  public static class Plc4xReadResponseBuilderImpl implements Plc4xMessage.Plc4xMessageBuilder {
     private final int connectionId;
     private final Plc4xResponseCode responseCode;
     private final List<Plc4xTagValueResponse> tags;
 
-    public Plc4xReadResponseBuilder(
+    public Plc4xReadResponseBuilderImpl(
         int connectionId, Plc4xResponseCode responseCode, List<Plc4xTagValueResponse> tags) {
 
       this.connectionId = connectionId;

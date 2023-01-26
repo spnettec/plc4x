@@ -76,10 +76,15 @@ public class Plc4xReadRequest extends Plc4xMessage implements Message {
     // Implicit Field (numTags) (Used for parsing, but its value is not stored as it's implicitly
     // given by the objects content)
     short numTags = (short) (COUNT(getTags()));
-    writeImplicitField("numTags", numTags, writeUnsignedShort(writeBuffer, 8));
+    writeImplicitField(
+        "numTags",
+        numTags,
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Array Field (tags)
-    writeComplexTypeArrayField("tags", tags, writeBuffer);
+    writeComplexTypeArrayField(
+        "tags", tags, writeBuffer, WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("Plc4xReadRequest");
   }
@@ -112,7 +117,7 @@ public class Plc4xReadRequest extends Plc4xMessage implements Message {
     return lengthInBits;
   }
 
-  public static Plc4xReadRequestBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static Plc4xMessageBuilder staticParsePlc4xMessageBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("Plc4xReadRequest");
     PositionAware positionAware = readBuffer;
@@ -141,14 +146,14 @@ public class Plc4xReadRequest extends Plc4xMessage implements Message {
 
     readBuffer.closeContext("Plc4xReadRequest");
     // Create the instance
-    return new Plc4xReadRequestBuilder(connectionId, tags);
+    return new Plc4xReadRequestBuilderImpl(connectionId, tags);
   }
 
-  public static class Plc4xReadRequestBuilder implements Plc4xMessage.Plc4xMessageBuilder {
+  public static class Plc4xReadRequestBuilderImpl implements Plc4xMessage.Plc4xMessageBuilder {
     private final int connectionId;
     private final List<Plc4xTagRequest> tags;
 
-    public Plc4xReadRequestBuilder(int connectionId, List<Plc4xTagRequest> tags) {
+    public Plc4xReadRequestBuilderImpl(int connectionId, List<Plc4xTagRequest> tags) {
 
       this.connectionId = connectionId;
       this.tags = tags;

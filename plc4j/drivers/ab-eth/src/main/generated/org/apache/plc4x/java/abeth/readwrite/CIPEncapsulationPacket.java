@@ -82,12 +82,20 @@ public abstract class CIPEncapsulationPacket implements Message {
     writeBuffer.pushContext("CIPEncapsulationPacket");
 
     // Discriminator Field (commandType) (Used as input to a switch field)
-    writeDiscriminatorField("commandType", getCommandType(), writeUnsignedInt(writeBuffer, 16));
+    writeDiscriminatorField(
+        "commandType",
+        getCommandType(),
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Implicit Field (packetLen) (Used for parsing, but its value is not stored as it's implicitly
     // given by the objects content)
     int packetLen = (int) ((getLengthInBytes()) - (28));
-    writeImplicitField("packetLen", packetLen, writeUnsignedInt(writeBuffer, 16));
+    writeImplicitField(
+        "packetLen",
+        packetLen,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (sessionHandle)
     writeSimpleField(
@@ -104,7 +112,11 @@ public abstract class CIPEncapsulationPacket implements Message {
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Array Field (senderContext)
-    writeSimpleTypeArrayField("senderContext", senderContext, writeUnsignedShort(writeBuffer, 8));
+    writeSimpleTypeArrayField(
+        "senderContext",
+        senderContext,
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (options)
     writeSimpleField(
@@ -117,7 +129,8 @@ public abstract class CIPEncapsulationPacket implements Message {
     writeReservedField(
         "reserved",
         reservedField0 != null ? reservedField0 : (long) 0x00000000,
-        writeUnsignedLong(writeBuffer, 32));
+        writeUnsignedLong(writeBuffer, 32),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Switch field (Serialize the sub-type)
     serializeCIPEncapsulationPacketChild(writeBuffer);
@@ -222,13 +235,17 @@ public abstract class CIPEncapsulationPacket implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     CIPEncapsulationPacketBuilder builder = null;
     if (EvaluationHelper.equals(commandType, (int) 0x0101)) {
-      builder = CIPEncapsulationConnectionRequest.staticParseBuilder(readBuffer);
+      builder =
+          CIPEncapsulationConnectionRequest.staticParseCIPEncapsulationPacketBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, (int) 0x0201)) {
-      builder = CIPEncapsulationConnectionResponse.staticParseBuilder(readBuffer);
+      builder =
+          CIPEncapsulationConnectionResponse.staticParseCIPEncapsulationPacketBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, (int) 0x0107)) {
-      builder = CIPEncapsulationReadRequest.staticParseBuilder(readBuffer);
+      builder = CIPEncapsulationReadRequest.staticParseCIPEncapsulationPacketBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, (int) 0x0207)) {
-      builder = CIPEncapsulationReadResponse.staticParseBuilder(readBuffer, packetLen);
+      builder =
+          CIPEncapsulationReadResponse.staticParseCIPEncapsulationPacketBuilder(
+              readBuffer, packetLen);
     }
     if (builder == null) {
       throw new ParseException(
@@ -247,7 +264,7 @@ public abstract class CIPEncapsulationPacket implements Message {
     return _cIPEncapsulationPacket;
   }
 
-  public static interface CIPEncapsulationPacketBuilder {
+  public interface CIPEncapsulationPacketBuilder {
     CIPEncapsulationPacket build(
         long sessionHandle, long status, List<Short> senderContext, long options);
   }

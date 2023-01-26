@@ -79,7 +79,11 @@ public class FirmataMessageAnalogIO extends FirmataMessage implements Message {
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Array Field (data)
-    writeSimpleTypeArrayField("data", data, writeSignedByte(writeBuffer, 8));
+    writeSimpleTypeArrayField(
+        "data",
+        data,
+        writeSignedByte(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("FirmataMessageAnalogIO");
   }
@@ -105,7 +109,7 @@ public class FirmataMessageAnalogIO extends FirmataMessage implements Message {
     return lengthInBits;
   }
 
-  public static FirmataMessageAnalogIOBuilder staticParseBuilder(
+  public static FirmataMessageBuilder staticParseFirmataMessageBuilder(
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("FirmataMessageAnalogIO");
     PositionAware positionAware = readBuffer;
@@ -125,16 +129,16 @@ public class FirmataMessageAnalogIO extends FirmataMessage implements Message {
 
     readBuffer.closeContext("FirmataMessageAnalogIO");
     // Create the instance
-    return new FirmataMessageAnalogIOBuilder(pin, data, response);
+    return new FirmataMessageAnalogIOBuilderImpl(pin, data, response);
   }
 
-  public static class FirmataMessageAnalogIOBuilder
+  public static class FirmataMessageAnalogIOBuilderImpl
       implements FirmataMessage.FirmataMessageBuilder {
     private final byte pin;
     private final List<Byte> data;
     private final Boolean response;
 
-    public FirmataMessageAnalogIOBuilder(byte pin, List<Byte> data, Boolean response) {
+    public FirmataMessageAnalogIOBuilderImpl(byte pin, List<Byte> data, Boolean response) {
 
       this.pin = pin;
       this.data = data;

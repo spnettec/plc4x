@@ -66,7 +66,8 @@ public class BVLCResult extends BVLC implements Message {
         "BVLCResultCode",
         code,
         new DataWriterEnumDefault<>(
-            BVLCResultCode::getValue, BVLCResultCode::name, writeUnsignedInt(writeBuffer, 16)));
+            BVLCResultCode::getValue, BVLCResultCode::name, writeUnsignedInt(writeBuffer, 16)),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("BVLCResult");
   }
@@ -87,7 +88,7 @@ public class BVLCResult extends BVLC implements Message {
     return lengthInBits;
   }
 
-  public static BVLCResultBuilder staticParseBuilder(ReadBuffer readBuffer) throws ParseException {
+  public static BVLCBuilder staticParseBVLCBuilder(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BVLCResult");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -103,13 +104,13 @@ public class BVLCResult extends BVLC implements Message {
 
     readBuffer.closeContext("BVLCResult");
     // Create the instance
-    return new BVLCResultBuilder(code);
+    return new BVLCResultBuilderImpl(code);
   }
 
-  public static class BVLCResultBuilder implements BVLC.BVLCBuilder {
+  public static class BVLCResultBuilderImpl implements BVLC.BVLCBuilder {
     private final BVLCResultCode code;
 
-    public BVLCResultBuilder(BVLCResultCode code) {
+    public BVLCResultBuilderImpl(BVLCResultCode code) {
 
       this.code = code;
     }

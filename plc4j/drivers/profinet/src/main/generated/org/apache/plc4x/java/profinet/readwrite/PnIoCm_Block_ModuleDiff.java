@@ -64,10 +64,15 @@ public class PnIoCm_Block_ModuleDiff extends PnIoCm_Block implements Message {
     // Implicit Field (numberOfApis) (Used for parsing, but its value is not stored as it's
     // implicitly given by the objects content)
     int numberOfApis = (int) (COUNT(getApis()));
-    writeImplicitField("numberOfApis", numberOfApis, writeUnsignedInt(writeBuffer, 16));
+    writeImplicitField(
+        "numberOfApis",
+        numberOfApis,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Array Field (apis)
-    writeComplexTypeArrayField("apis", apis, writeBuffer);
+    writeComplexTypeArrayField(
+        "apis", apis, writeBuffer, WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("PnIoCm_Block_ModuleDiff");
   }
@@ -97,7 +102,7 @@ public class PnIoCm_Block_ModuleDiff extends PnIoCm_Block implements Message {
     return lengthInBits;
   }
 
-  public static PnIoCm_Block_ModuleDiffBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static PnIoCm_BlockBuilder staticParsePnIoCm_BlockBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("PnIoCm_Block_ModuleDiff");
     PositionAware positionAware = readBuffer;
@@ -120,13 +125,14 @@ public class PnIoCm_Block_ModuleDiff extends PnIoCm_Block implements Message {
 
     readBuffer.closeContext("PnIoCm_Block_ModuleDiff");
     // Create the instance
-    return new PnIoCm_Block_ModuleDiffBuilder(apis);
+    return new PnIoCm_Block_ModuleDiffBuilderImpl(apis);
   }
 
-  public static class PnIoCm_Block_ModuleDiffBuilder implements PnIoCm_Block.PnIoCm_BlockBuilder {
+  public static class PnIoCm_Block_ModuleDiffBuilderImpl
+      implements PnIoCm_Block.PnIoCm_BlockBuilder {
     private final List<PnIoCm_ModuleDiffBlockApi> apis;
 
-    public PnIoCm_Block_ModuleDiffBuilder(List<PnIoCm_ModuleDiffBlockApi> apis) {
+    public PnIoCm_Block_ModuleDiffBuilderImpl(List<PnIoCm_ModuleDiffBlockApi> apis) {
 
       this.apis = apis;
     }

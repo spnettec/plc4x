@@ -96,21 +96,24 @@ public class ConnectionResponse extends KnxNetIpMessage implements Message {
         "Status",
         status,
         new DataWriterEnumDefault<>(
-            Status::getValue, Status::name, writeUnsignedShort(writeBuffer, 8)));
+            Status::getValue, Status::name, writeUnsignedShort(writeBuffer, 8)),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Optional Field (hpaiDataEndpoint) (Can be skipped, if the value is null)
     writeOptionalField(
         "hpaiDataEndpoint",
         hpaiDataEndpoint,
         new DataWriterComplexDefault<>(writeBuffer),
-        (getStatus()) == (Status.NO_ERROR));
+        (getStatus()) == (Status.NO_ERROR),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Optional Field (connectionResponseDataBlock) (Can be skipped, if the value is null)
     writeOptionalField(
         "connectionResponseDataBlock",
         connectionResponseDataBlock,
         new DataWriterComplexDefault<>(writeBuffer),
-        (getStatus()) == (Status.NO_ERROR));
+        (getStatus()) == (Status.NO_ERROR),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("ConnectionResponse");
   }
@@ -144,7 +147,7 @@ public class ConnectionResponse extends KnxNetIpMessage implements Message {
     return lengthInBits;
   }
 
-  public static ConnectionResponseBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static KnxNetIpMessageBuilder staticParseKnxNetIpMessageBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("ConnectionResponse");
     PositionAware positionAware = readBuffer;
@@ -182,17 +185,18 @@ public class ConnectionResponse extends KnxNetIpMessage implements Message {
 
     readBuffer.closeContext("ConnectionResponse");
     // Create the instance
-    return new ConnectionResponseBuilder(
+    return new ConnectionResponseBuilderImpl(
         communicationChannelId, status, hpaiDataEndpoint, connectionResponseDataBlock);
   }
 
-  public static class ConnectionResponseBuilder implements KnxNetIpMessage.KnxNetIpMessageBuilder {
+  public static class ConnectionResponseBuilderImpl
+      implements KnxNetIpMessage.KnxNetIpMessageBuilder {
     private final short communicationChannelId;
     private final Status status;
     private final HPAIDataEndpoint hpaiDataEndpoint;
     private final ConnectionResponseDataBlock connectionResponseDataBlock;
 
-    public ConnectionResponseBuilder(
+    public ConnectionResponseBuilderImpl(
         short communicationChannelId,
         Status status,
         HPAIDataEndpoint hpaiDataEndpoint,

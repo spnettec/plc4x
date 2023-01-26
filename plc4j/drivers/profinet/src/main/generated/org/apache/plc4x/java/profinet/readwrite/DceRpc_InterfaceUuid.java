@@ -95,16 +95,32 @@ public abstract class DceRpc_InterfaceUuid implements Message {
     writeConstField("data2", DATA2, writeUnsignedInt(writeBuffer, 16));
 
     // Const Field (data3)
-    writeConstField("data3", DATA3, writeUnsignedInt(writeBuffer, 16));
+    writeConstField(
+        "data3",
+        DATA3,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Const Field (data4)
-    writeConstField("data4", DATA4, writeUnsignedInt(writeBuffer, 16));
+    writeConstField(
+        "data4",
+        DATA4,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Const Field (data5)
-    writeConstField("data5", DATA5, writeUnsignedInt(writeBuffer, 16));
+    writeConstField(
+        "data5",
+        DATA5,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Const Field (data6)
-    writeConstField("data6", DATA6, writeUnsignedInt(writeBuffer, 16));
+    writeConstField(
+        "data6",
+        DATA6,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Switch field (Serialize the sub-type)
     serializeDceRpc_InterfaceUuidChild(writeBuffer);
@@ -199,13 +215,20 @@ public abstract class DceRpc_InterfaceUuid implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     DceRpc_InterfaceUuidBuilder builder = null;
     if (EvaluationHelper.equals(interfaceType, (long) 0xDEA00001L)) {
-      builder = DceRpc_InterfaceUuid_DeviceInterface.staticParseBuilder(readBuffer);
+      builder =
+          DceRpc_InterfaceUuid_DeviceInterface.staticParseDceRpc_InterfaceUuidBuilder(readBuffer);
     } else if (EvaluationHelper.equals(interfaceType, (long) 0xDEA00002L)) {
-      builder = DceRpc_InterfaceUuid_ControllerInterface.staticParseBuilder(readBuffer);
+      builder =
+          DceRpc_InterfaceUuid_ControllerInterface.staticParseDceRpc_InterfaceUuidBuilder(
+              readBuffer);
     } else if (EvaluationHelper.equals(interfaceType, (long) 0xDEA00003L)) {
-      builder = DceRpc_InterfaceUuid_SupervisorInterface.staticParseBuilder(readBuffer);
+      builder =
+          DceRpc_InterfaceUuid_SupervisorInterface.staticParseDceRpc_InterfaceUuidBuilder(
+              readBuffer);
     } else if (EvaluationHelper.equals(interfaceType, (long) 0xDEA00004L)) {
-      builder = DceRpc_InterfaceUuid_ParameterInterface.staticParseBuilder(readBuffer);
+      builder =
+          DceRpc_InterfaceUuid_ParameterInterface.staticParseDceRpc_InterfaceUuidBuilder(
+              readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -222,7 +245,7 @@ public abstract class DceRpc_InterfaceUuid implements Message {
     return _dceRpc_InterfaceUuid;
   }
 
-  public static interface DceRpc_InterfaceUuidBuilder {
+  public interface DceRpc_InterfaceUuidBuilder {
     DceRpc_InterfaceUuid build();
   }
 
