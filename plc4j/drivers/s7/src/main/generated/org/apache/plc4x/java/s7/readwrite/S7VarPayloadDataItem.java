@@ -42,19 +42,12 @@ public class S7VarPayloadDataItem implements Message {
   protected final DataTransportSize transportSize;
   protected final byte[] data;
 
-  // Arguments.
-  protected final Boolean hasNext;
-
   public S7VarPayloadDataItem(
-      DataTransportErrorCode returnCode,
-      DataTransportSize transportSize,
-      byte[] data,
-      Boolean hasNext) {
+      DataTransportErrorCode returnCode, DataTransportSize transportSize, byte[] data) {
     super();
     this.returnCode = returnCode;
     this.transportSize = transportSize;
     this.data = data;
-    this.hasNext = hasNext;
   }
 
   public DataTransportErrorCode getReturnCode() {
@@ -204,7 +197,7 @@ public class S7VarPayloadDataItem implements Message {
     readBuffer.closeContext("S7VarPayloadDataItem");
     // Create the instance
     S7VarPayloadDataItem _s7VarPayloadDataItem;
-    _s7VarPayloadDataItem = new S7VarPayloadDataItem(returnCode, transportSize, data, hasNext);
+    _s7VarPayloadDataItem = new S7VarPayloadDataItem(returnCode, transportSize, data);
     return _s7VarPayloadDataItem;
   }
 
