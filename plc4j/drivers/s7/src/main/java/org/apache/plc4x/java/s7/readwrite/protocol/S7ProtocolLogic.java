@@ -119,10 +119,6 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
         EventLogic.start();
     }
     @Override
-    public void onDisconnect(ConversationContext<TPKTPacket> context) {
-        context.fireDisconnected();
-    }
-    @Override
     public void setConfiguration(S7Configuration configuration) {
         this.configuration = configuration;
     }
@@ -211,6 +207,21 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
             });
     }
 
+
+  /*
+    * It performs the sequential and safe shutdown of the driver.
+    * Completion of pending requests, executors and associated tasks.
+    */
+    @Override
+    public void onDisconnect(ConversationContext<TPKTPacket> context) {
+        tm.shutdown();
+        //4. Finish the execution of the tasks for the handling of Events.
+        EventLogic.stop();
+        context.fireDisconnected();
+        //6. Here is the stop of any task or state machine that is added.
+    }
+
+
     @Override
     public CompletableFuture<PlcReadResponse> read(PlcReadRequest readRequest) {
         DefaultPlcReadRequest request = (DefaultPlcReadRequest) readRequest;
@@ -292,12 +303,29 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
         DefaultPlcWriteRequest request = (DefaultPlcWriteRequest) writeRequest;
         List<S7VarRequestParameterItem> parameterItems = new ArrayList<>(request.getNumberOfTags());
         List<S7VarPayloadDataItem> payloadItems = new ArrayList<>(request.getNumberOfTags());
-        for (String tagName : request.getTagNames()) {
+
+        Iterator<String> iter = request.getTagNames().iterator();
+
+        String tagName = null;
+        while(iter.hasNext()) {
+            tagName = iter.next();
             final S7Tag tag = (S7Tag) request.getTag(tagName);
             final PlcValue plcValue = request.getPlcValue(tagName);
             parameterItems.add(new S7VarRequestParameterItemAddress(encodeS7Address(tag)));
-            payloadItems.add(serializePlcValue(tag, plcValue));
+            payloadItems.add(serializePlcValue(tag, plcValue, iter.hasNext()));
         }
+
+
+//        for (String tagName : request.getTagNames()) {
+//            final S7Tag tag = (S7Tag) request.getTag(tagName);
+//            final PlcValue plcValue = request.getPlcValue(tagName);
+//            parameterItems.add(new S7VarRequestParameterItemAddress(encodeS7Address(tag)));
+//            payloadItems.add(serializePlcValue(tag, plcValue));
+//
+//        }
+
+
+
         final int tpduId = tpduGenerator.getAndIncrement();
         // If we've reached the max value for a 16 bit transaction identifier, reset back to 1
         if (tpduGenerator.get() == 0xFFFF) {
@@ -865,7 +893,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
         return new DefaultPlcWriteResponse(plcWriteRequest, responses);
     }
 
-    private S7VarPayloadDataItem serializePlcValue(S7Tag tag, PlcValue plcValue) {
+    private S7VarPayloadDataItem serializePlcValue(S7Tag tag, PlcValue plcValue, Boolean hasNext) {
         try {
             DataTransportSize transportSize = tag.getDataType().getDataTransportSize();
             int stringLength = (tag instanceof S7StringTag) ? ((S7StringTag) tag).getStringLength() : 254;
@@ -882,7 +910,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
             }
             if (byteBuffer != null) {
                 byte[] data = byteBuffer.array();
-                return new S7VarPayloadDataItem(DataTransportErrorCode.OK, transportSize, data);
+                return new S7VarPayloadDataItem(DataTransportErrorCode.OK, transportSize, data, hasNext);
             }
         } catch (SerializationException e) {
             logger.warn("Error serializing tag item of type: '{}'", tag.getDataType().name(), e);
@@ -1046,5 +1074,4 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
             future.completeExceptionally(e);
         }
     }
-
 }
