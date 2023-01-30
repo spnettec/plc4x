@@ -102,10 +102,7 @@ public class S7VarPayloadDataItem implements Message {
 
     // Padding Field (padding)
     writePaddingField(
-        "padding",
-        (int) (((PADCOUNT(data, hasNext)) % (2))),
-        (short) 0x00,
-        writeUnsignedShort(writeBuffer, 8));
+        "padding", (int) (((COUNT(data)) % (2))), (short) 0x00, writeUnsignedShort(writeBuffer, 8));
 
     writeBuffer.popContext("S7VarPayloadDataItem");
   }
@@ -135,7 +132,7 @@ public class S7VarPayloadDataItem implements Message {
     }
 
     // Padding Field (padding)
-    int _timesPadding = (int) (((PADCOUNT(data, hasNext)) % (2)));
+    int _timesPadding = (int) (((COUNT(data)) % (2)));
     while (_timesPadding-- > 0) {
       lengthInBits += 8;
     }
@@ -146,25 +143,10 @@ public class S7VarPayloadDataItem implements Message {
   public static S7VarPayloadDataItem staticParse(ReadBuffer readBuffer, Object... args)
       throws ParseException {
     PositionAware positionAware = readBuffer;
-    if ((args == null) || (args.length != 1)) {
-      throw new PlcRuntimeException(
-          "Wrong number of arguments, expected 1, but got " + args.length);
-    }
-    Boolean hasNext;
-    if (args[0] instanceof Boolean) {
-      hasNext = (Boolean) args[0];
-    } else if (args[0] instanceof String) {
-      hasNext = Boolean.valueOf((String) args[0]);
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 0 expected to be of type Boolean or a string which is parseable but was "
-              + args[0].getClass().getName());
-    }
-    return staticParse(readBuffer, hasNext);
+    return staticParse(readBuffer);
   }
 
-  public static S7VarPayloadDataItem staticParse(ReadBuffer readBuffer, Boolean hasNext)
-      throws ParseException {
+  public static S7VarPayloadDataItem staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("S7VarPayloadDataItem");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -192,7 +174,7 @@ public class S7VarPayloadDataItem implements Message {
             Math.toIntExact(
                 ((transportSize.getSizeInBits()) ? CEIL((dataLength) / (8.0)) : dataLength)));
 
-    readPaddingField(readUnsignedShort(readBuffer, 8), (int) (((PADCOUNT(data, hasNext)) % (2))));
+    readPaddingField(readUnsignedShort(readBuffer, 8), (int) (((COUNT(data)) % (2))));
 
     readBuffer.closeContext("S7VarPayloadDataItem");
     // Create the instance
