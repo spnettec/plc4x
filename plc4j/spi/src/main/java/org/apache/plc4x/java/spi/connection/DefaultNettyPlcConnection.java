@@ -35,7 +35,6 @@ import org.apache.plc4x.java.spi.events.*;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.apache.plc4x.java.api.value.PlcValueHandler;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -56,6 +55,7 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
 
     protected final Configuration configuration;
     protected final ChannelFactory channelFactory;
+
     protected final boolean awaitSessionSetupComplete;
     protected final boolean awaitSessionDisconnectComplete;
     protected final boolean awaitSessionDiscoverComplete;
