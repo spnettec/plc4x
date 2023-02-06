@@ -52,7 +52,12 @@ class ConnectionContainer {
         }
         return connectionFuture;
     }
-
+    public synchronized void close(){
+        CompletableFuture<PlcConnection> leaseFuture;
+        while((leaseFuture = queue.poll())!=null){
+            leaseFuture.complete(null);
+        }
+    }
     public synchronized void returnConnection(LeasedPlcConnection returnedLeasedConnection) {
         if(returnedLeasedConnection != leasedConnection) {
             throw new PlcRuntimeException("Error trying to return lease from invalid connection");

@@ -89,12 +89,14 @@ public class CachedPlcConnectionManager implements PlcConnectionManager {
         try {
             PlcConnection plcConnection = leaseFuture.get(this.maxWaitTime.toMillis(), TimeUnit.MILLISECONDS);
             if(!plcConnection.isConnected()) {
+                connectionContainer.close();
                 connectionContainers.remove(url);
                 return getConnection(url, authentication);
             } else {
                 return plcConnection;
             }
         } catch (ExecutionException | InterruptedException | TimeoutException e) {
+            connectionContainer.close();
             connectionContainers.remove(url);
             throw new PlcConnectionException("Error acquiring lease for connection", e);
         }
