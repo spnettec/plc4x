@@ -337,50 +337,15 @@ plc4c_return_code plc4c_driver_s7_encode_address(char* address, void** item) {
 
     // TODO: THis should be moved to "driver_s7_packets.c->plc4c_return_code plc4c_driver_s7_create_s7_read_request"
     if (any_address->s7_address_any_transport_size ==
-        plc4c_s7_read_write_transport_size_TIME ||
-        any_address->s7_address_any_transport_size ==
-            plc4c_s7_read_write_transport_size_LINT ||
-        any_address->s7_address_any_transport_size ==
-            plc4c_s7_read_write_transport_size_ULINT ||
-        any_address->s7_address_any_transport_size ==
-            plc4c_s7_read_write_transport_size_LWORD ||
-        any_address->s7_address_any_transport_size ==
-            plc4c_s7_read_write_transport_size_LREAL ||
-        any_address->s7_address_any_transport_size ==
-            plc4c_s7_read_write_transport_size_REAL ||
-        any_address->s7_address_any_transport_size ==
-            plc4c_s7_read_write_transport_size_LTIME ||
-        any_address->s7_address_any_transport_size ==
-            plc4c_s7_read_write_transport_size_DATE ||
-        any_address->s7_address_any_transport_size ==
-            plc4c_s7_read_write_transport_size_TIME_OF_DAY ||
-        any_address->s7_address_any_transport_size ==
-            plc4c_s7_read_write_transport_size_DATE_AND_TIME) {
-      any_address->s7_address_any_transport_size = plc4c_s7_read_write_transport_size_BYTE;
-        any_address->s7_address_any_number_of_elements =
-          plc4c_s7_read_write_transport_size_length_in_bytes(&(any_address->s7_address_any_transport_size)) *
-            any_address->s7_address_any_number_of_elements;
-    } else if (any_address->s7_address_any_transport_size ==
          plc4c_s7_read_write_transport_size_STRING) {
-      any_address->s7_address_any_transport_size = plc4c_s7_read_write_transport_size_BYTE;
       if (string_length != NULL) {
         any_address->s7_address_any_number_of_elements =
-            (strtol(string_length, 0, 10) +2) *
+            strtol(string_length, 0, 10) *
                 any_address->s7_address_any_number_of_elements;
-      } else {
+      } else if (any_address->s7_address_any_transport_size ==
+                 plc4c_s7_read_write_transport_size_STRING) {
         any_address->s7_address_any_number_of_elements =
-            256 * any_address->s7_address_any_number_of_elements;
-      }
-    } else if (any_address->s7_address_any_transport_size ==
-        plc4c_s7_read_write_transport_size_WSTRING) {
-      any_address->s7_address_any_transport_size = plc4c_s7_read_write_transport_size_BYTE;
-      if (string_length != NULL) {
-        any_address->s7_address_any_number_of_elements =
-            (strtol(string_length, 0, 10) +2) * 2 *
-            any_address->s7_address_any_number_of_elements;
-      } else {
-        any_address->s7_address_any_number_of_elements =
-            512 * any_address->s7_address_any_number_of_elements;
+            254 * any_address->s7_address_any_number_of_elements;
       }
     } else if (any_address->s7_address_any_transport_size ==
                plc4c_s7_read_write_transport_size_TOD) {
