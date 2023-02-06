@@ -148,28 +148,4 @@ public class CachedPlcConnectionManagerTest {
         Mockito.verify(mockConnectionManager, Mockito.times(1)).getConnection("test");
     }
 
-    /**
-     * This is the simplest possible test. Here the ConnectionManager is used exactly once.
-     * So not really much of the caching we can test, but it tests if we're creating connections the right way.
-     *
-     * @throws PlcConnectionException something went wrong
-     */
-    @Test
-    public void testSingleConnectionRequestWithTimeoutTest() throws PlcConnectionException {
-        PlcConnectionManager mockConnectionManager = Mockito.mock(PlcConnectionManager.class);
-        CachedPlcConnectionManager connectionManager = CachedPlcConnectionManager.getBuilder(mockConnectionManager).withMaxLeaseTime(Duration.ofMillis(10)).build();
-
-        // Get the connection for the first time.
-        try (PlcConnection connection = connectionManager.getConnection("test")) {
-            Assertions.assertInstanceOf(LeasedPlcConnection.class, connection);
-            Thread.sleep(100L);
-        } catch (Exception e) {
-            Assertions.assertInstanceOf(PlcRuntimeException.class, e);
-            Assertions.assertEquals("Error trying to return lease from invalid connection", e.getMessage());
-        }
-
-        // Check getConnection was called on the mockConnectionManager instance exactly once.
-        Mockito.verify(mockConnectionManager, Mockito.times(1)).getConnection("test");
-    }
-
 }

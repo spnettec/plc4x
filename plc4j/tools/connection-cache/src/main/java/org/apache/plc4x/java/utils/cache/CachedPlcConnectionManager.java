@@ -87,14 +87,7 @@ public class CachedPlcConnectionManager implements PlcConnectionManager {
         // Get a lease (a future for a connection)
         Future<PlcConnection> leaseFuture = connectionContainer.lease();
         try {
-            PlcConnection plcConnection = leaseFuture.get(this.maxWaitTime.toMillis(), TimeUnit.MILLISECONDS);
-            if(!plcConnection.isConnected()) {
-                connectionContainer.close();
-                connectionContainers.remove(url);
-                return getConnection(url, authentication);
-            } else {
-                return plcConnection;
-            }
+            return leaseFuture.get(this.maxWaitTime.toMillis(), TimeUnit.MILLISECONDS);
         } catch (ExecutionException | InterruptedException | TimeoutException e) {
             connectionContainer.close();
             connectionContainers.remove(url);
