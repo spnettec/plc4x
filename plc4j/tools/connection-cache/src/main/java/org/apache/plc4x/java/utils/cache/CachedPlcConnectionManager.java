@@ -39,7 +39,6 @@ public class CachedPlcConnectionManager implements PlcConnectionManager {
     private static final Logger LOG = LoggerFactory.getLogger(CachedPlcConnectionManager.class);
 
     private final PlcConnectionManager connectionManager;
-    private final Duration maxLeaseTime;
     private final Duration maxWaitTime;
 
     private final Map<String, ConnectionContainer> connectionContainers;
@@ -52,9 +51,8 @@ public class CachedPlcConnectionManager implements PlcConnectionManager {
         return new Builder(connectionManager);
     }
 
-    public CachedPlcConnectionManager(PlcConnectionManager connectionManager, Duration maxLeaseTime, Duration maxWaitTime) {
+    public CachedPlcConnectionManager(PlcConnectionManager connectionManager, Duration maxWaitTime) {
         this.connectionManager = connectionManager;
-        this.maxLeaseTime = maxLeaseTime;
         this.maxWaitTime = maxWaitTime;
         this.connectionContainers = new HashMap<>();
     }
@@ -79,7 +77,7 @@ public class CachedPlcConnectionManager implements PlcConnectionManager {
                 } else{
                     connection = connectionManager.getConnection(url);
                 }
-                connectionContainer = new ConnectionContainer(connection, maxLeaseTime);
+                connectionContainer = new ConnectionContainer(connection);
                 connectionContainers.put(url, connectionContainer);
             } else {
                 LOG.debug("Reusing exising connection");
@@ -89,8 +87,15 @@ public class CachedPlcConnectionManager implements PlcConnectionManager {
         // Get a lease (a future for a connection)
         Future<PlcConnection> leaseFuture = connectionContainer.lease();
         try {
-            return leaseFuture.get(this.maxWaitTime.toMillis(), TimeUnit.MILLISECONDS);
+            PlcConnection plcConnection = leaseFuture.get(this.maxWaitTime.toMillis(), TimeUnit.MILLISECONDS);
+            if(!plcConnection.isConnected()) {
+                connectionContainers.remove(url);
+                return getConnection(url, authentication);
+            } else {
+                return plcConnection;
+            }
         } catch (ExecutionException | InterruptedException | TimeoutException e) {
+            connectionContainers.remove(url);
             throw new PlcConnectionException("Error acquiring lease for connection", e);
         }
     }
@@ -103,22 +108,15 @@ public class CachedPlcConnectionManager implements PlcConnectionManager {
     public static class Builder {
 
         private final PlcConnectionManager connectionManager;
-        private Duration maxLeaseTime;
         private Duration maxWaitTime;
 
         public Builder(PlcConnectionManager connectionManager) {
             this.connectionManager = connectionManager;
-            this.maxLeaseTime = Duration.ofSeconds(4);
             this.maxWaitTime = Duration.ofSeconds(20);
         }
 
         public CachedPlcConnectionManager build() {
-            return new CachedPlcConnectionManager(this.connectionManager, this.maxLeaseTime, this.maxWaitTime);
-        }
-
-        public CachedPlcConnectionManager.Builder withMaxLeaseTime(Duration maxLeaseTime) {
-            this.maxLeaseTime = maxLeaseTime;
-            return this;
+            return new CachedPlcConnectionManager(this.connectionManager, this.maxWaitTime);
         }
 
         public CachedPlcConnectionManager.Builder withMaxWaitTime(Duration maxWaitTime) {

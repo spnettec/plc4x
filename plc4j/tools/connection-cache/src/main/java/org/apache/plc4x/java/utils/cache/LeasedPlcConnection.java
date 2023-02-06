@@ -36,25 +36,13 @@ public class LeasedPlcConnection implements PlcConnection {
 
     private ConnectionContainer connectionContainer;
     private PlcConnection connection;
-    private Timer usageTimer;
-    public LeasedPlcConnection(ConnectionContainer connectionContainer, PlcConnection connection, Duration maxUseTime) {
+    public LeasedPlcConnection(ConnectionContainer connectionContainer, PlcConnection connection) {
         this.connectionContainer = connectionContainer;
         this.connection = connection;
-        usageTimer = new Timer();
-        usageTimer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                close();
-            }
-        }, Date.from(LocalDateTime.now().plusNanos(maxUseTime.toNanos()).atZone(ZoneId.systemDefault()).toInstant()));
     }
 
     @Override
     public synchronized void close() {
-        if(usageTimer != null){
-            usageTimer.cancel();
-            usageTimer = null;
-        }
         if(connectionContainer == null) {
             return;
         }
@@ -73,7 +61,7 @@ public class LeasedPlcConnection implements PlcConnection {
     @Override
     public boolean isConnected() {
         if(connection == null) {
-            throw new PlcRuntimeException("Error using leased connection after returning it to the cache.");
+            return false;
         }
         return connection.isConnected();
     }
