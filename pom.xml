@@ -108,7 +108,7 @@
     <!-- The currently available version is 2.0.5 and anything above 1.4.3 is no longer compatible with our code -->
     <bit-io.version>1.4.3</bit-io.version>
     <bouncycastle.version>1.71</bouncycastle.version>
-    <byte-buddy.version>1.12.22</byte-buddy.version>
+    <byte-buddy.version>1.12.23</byte-buddy.version>
     <!-- Be sure to keep this version set to the version of the cmake-maven-plugin -->
     <cmake-version>3.22.1</cmake-version>
     <commons-beanutils.version>1.9.4</commons-beanutils.version>
@@ -138,7 +138,7 @@
     <jackson.version>2.14.2</jackson.version>
     <woodstox-core.version>6.5.0</woodstox-core.version>
     <!-- When updating this to the latest version, we're getting errors in the opcua server tests -->
-    <jaxb.version>4.0.1</jaxb.version>
+    <jaxb.version>4.0.2</jaxb.version>
     <jetty-util.version>11.0.13</jetty-util.version>
     <jna.version>5.13.0</jna.version>
     <joda-time.version>2.12.2</joda-time.version>
@@ -160,7 +160,7 @@
     <!-- Site properties -->
     <asciidoctor.maven.plugin.version>2.2.2</asciidoctor.maven.plugin.version>
     <asciidoctorj.version>2.5.7</asciidoctorj.version>
-    <asciidoctorj.diagram.version>2.2.3</asciidoctorj.diagram.version>
+    <asciidoctorj.diagram.version>2.2.4</asciidoctorj.diagram.version>
 
     <skip-code-generation-tests>true</skip-code-generation-tests>
     <enable-all-tests>false</enable-all-tests>
