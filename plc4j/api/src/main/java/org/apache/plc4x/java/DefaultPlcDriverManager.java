@@ -70,6 +70,7 @@ public class DefaultPlcDriverManager implements PlcDriverManager, PlcConnectionM
      * @return PlcConnection object.
      * @throws PlcConnectionException an exception if the connection attempt failed.
      */
+    @Override
     public PlcConnection getConnection(String url) throws PlcConnectionException {
         PlcConnection connection;
         if (this.classLoader == null) {
@@ -97,6 +98,7 @@ public class DefaultPlcDriverManager implements PlcDriverManager, PlcConnectionM
      * @return PlcConnection object.
      * @throws PlcConnectionException an exception if the connection attempt failed.
      */
+    @Override
     public PlcConnection getConnection(String url, PlcAuthentication authentication) throws PlcConnectionException {
         PlcConnection connection;
         if (this.classLoader == null) {
@@ -125,6 +127,7 @@ public class DefaultPlcDriverManager implements PlcDriverManager, PlcConnectionM
      * Returns the codes of all of the drivers which are currently registered at the PlcDriverManager
      * @return Set of driver codes for all drivers registered
      */
+    @Override
     public Set<String> listDrivers() {
         return driverMap.keySet();
     }
@@ -135,6 +138,7 @@ public class DefaultPlcDriverManager implements PlcDriverManager, PlcConnectionM
      * @return Driver instance for the given protocol
      * @throws PlcConnectionException If no Suitable Driver can be found
      */
+    @Override
     public PlcDriver getDriver(String protocolCode) throws PlcConnectionException {
         PlcDriver driver = driverMap.get(protocolCode);
         if (driver == null) {
@@ -149,6 +153,7 @@ public class DefaultPlcDriverManager implements PlcDriverManager, PlcConnectionM
      * @return Driver instance for the given url
      * @throws PlcConnectionException If no Suitable Driver can be found
      */
+    @Override
     public PlcDriver getDriverForUrl(String url) throws PlcConnectionException {
         try {
             URI connectionUri = new URI(url);
@@ -158,6 +163,7 @@ public class DefaultPlcDriverManager implements PlcDriverManager, PlcConnectionM
             throw new PlcConnectionException("Invalid plc4j connection string '" + url + "'", e);
         }
     }
+    @Override
 
     public PlcConnectionManager getConnectionManager() {
         return this;

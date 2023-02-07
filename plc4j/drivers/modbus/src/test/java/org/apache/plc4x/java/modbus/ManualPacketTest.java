@@ -21,15 +21,15 @@ package org.apache.plc4x.java.modbus;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
-import org.apache.plc4x.java.utils.connectionpool.PooledPlcDriverManager;
+import org.apache.plc4x.java.utils.connectionpool.PooledPlcConnectionManager;
 import org.junit.jupiter.api.Disabled;
 
 @Disabled("Manual Test")
 public class ManualPacketTest {
 
     public static void main(String[] args) throws Exception {
-        PooledPlcDriverManager pooledPlcDriverManager = new PooledPlcDriverManager();
-        try (PlcConnection connection = pooledPlcDriverManager.getConnection("modbus-tcp://10.110.20.154:509")) {
+        PooledPlcConnectionManager pooledPlcConnectionManager = new PooledPlcConnectionManager();
+        try (PlcConnection connection = pooledPlcConnectionManager.getConnection("modbus-tcp://10.110.20.154:509")) {
             final PlcReadRequest.Builder builder = connection.readRequestBuilder();
             builder.addTagAddress("01", "holding-register:30001:REAL[20]");
             final PlcReadRequest readRequest = builder.build();
