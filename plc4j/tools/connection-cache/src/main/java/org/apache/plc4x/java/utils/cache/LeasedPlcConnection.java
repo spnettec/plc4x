@@ -24,6 +24,7 @@ import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.metadata.PlcConnectionMetadata;
 import org.apache.plc4x.java.api.model.PlcTag;
+import org.apache.plc4x.java.api.value.PlcValue;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -54,7 +55,14 @@ public class LeasedPlcConnection implements PlcConnection {
         connection = null;
         connectionContainer = null;
     }
-
+    public void destroy(){
+        try {
+            connection.close();
+        } catch (Exception e) {
+        }
+        close();
+        connectionContainer.close();
+    }
     @Override
     public void connect() throws PlcConnectionException {
         throw new PlcConnectionException("Error connecting leased connection");
@@ -101,17 +109,14 @@ public class LeasedPlcConnection implements PlcConnection {
                     public CompletableFuture<? extends PlcReadResponse> execute() {
                         CompletableFuture<? extends PlcReadResponse> future = innerPlcReadRequest.execute();
                         final CompletableFuture<PlcReadResponse> responseFuture = new CompletableFuture<>();
-                        future.handle((BiFunction<PlcReadResponse, Throwable, Object>) (plcReadResponse, throwable) -> {
+                        future.handle((plcReadResponse, throwable) -> {
                             if (plcReadResponse != null) {
                                 responseFuture.complete(plcReadResponse);
                             } else {
                                 try {
-                                    connection.close();
+                                    destroy();
                                 } catch (Exception e) {
-
                                 }
-                                close();
-                                connectionContainer.close();
                                 responseFuture.completeExceptionally(throwable);
                             }
                             return null;
@@ -158,7 +163,73 @@ public class LeasedPlcConnection implements PlcConnection {
         if(connection == null) {
             throw new PlcRuntimeException("Error using leased connection after returning it to the cache.");
         }
-        return connection.writeRequestBuilder();
+        final PlcWriteRequest.Builder innerBuilder =  connection.writeRequestBuilder();
+        return new PlcWriteRequest.Builder() {
+            @Override
+            public PlcWriteRequest build() {
+                PlcWriteRequest innerPlcWriteRequest = innerBuilder.build();
+                return new PlcWriteRequest() {
+                    @Override
+                    public CompletableFuture<? extends PlcWriteResponse> execute() {
+                        CompletableFuture<? extends PlcWriteResponse> future = innerPlcWriteRequest.execute();
+                        final CompletableFuture<PlcWriteResponse> responseFuture = new CompletableFuture<>();
+                        future.handle((plcWriteResponse,throwable)->{
+                            if (plcWriteResponse != null) {
+                                responseFuture.complete(plcWriteResponse);
+                            } else {
+                                try {
+                                    destroy();
+                                } catch (Exception e) {
+                                }
+                                responseFuture.completeExceptionally(throwable);
+                            }
+                            return null;
+                        });
+                        return responseFuture;
+                    }
+
+                    @Override
+                    public int getNumberOfValues(String name) {
+                        return innerPlcWriteRequest.getNumberOfValues(name);
+                    }
+
+                    @Override
+                    public PlcValue getPlcValue(String name) {
+                        return innerPlcWriteRequest.getPlcValue(name);
+                    }
+
+                    @Override
+                    public int getNumberOfTags() {
+                        return innerPlcWriteRequest.getNumberOfTags();
+                    }
+
+                    @Override
+                    public LinkedHashSet<String> getTagNames() {
+                        return innerPlcWriteRequest.getTagNames();
+                    }
+
+                    @Override
+                    public PlcTag getTag(String name) {
+                        return innerPlcWriteRequest.getTag(name);
+                    }
+
+                    @Override
+                    public List<PlcTag> getTags() {
+                        return innerPlcWriteRequest.getTags();
+                    }
+                };
+            }
+
+            @Override
+            public PlcWriteRequest.Builder addTagAddress(String name, String tagAddress, Object... values) {
+                return innerBuilder.addTagAddress(name,tagAddress,values);
+            }
+
+            @Override
+            public PlcWriteRequest.Builder addTag(String name, PlcTag tag, Object... values) {
+                return innerBuilder.addTag(name,tag,values);
+            }
+        };
     }
 
     @Override

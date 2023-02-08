@@ -102,7 +102,10 @@ public class CachedPlcConnectionManager implements PlcConnectionManager {
     public PlcDriverManager getDriverManager() {
         return connectionManager.getDriverManager();
     }
-
+    public void destroy(){
+        connectionContainers.values().forEach(ConnectionContainer::close);
+        connectionContainers.clear();
+    }
     public static class Builder {
 
         private final PlcConnectionManager connectionManager;

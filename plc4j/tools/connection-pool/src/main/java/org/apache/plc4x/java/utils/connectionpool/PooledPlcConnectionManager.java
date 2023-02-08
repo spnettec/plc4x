@@ -19,8 +19,8 @@
 package org.apache.plc4x.java.utils.connectionpool;
 
 import org.apache.commons.lang3.reflect.FieldUtils;
-import org.apache.commons.pool2.KeyedObjectPool;
 import org.apache.commons.pool2.impl.GenericKeyedObjectPool;
+import org.apache.commons.pool2.impl.GenericKeyedObjectPoolConfig;
 import org.apache.plc4x.java.DefaultPlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
@@ -42,9 +42,8 @@ public class PooledPlcConnectionManager extends DefaultPlcDriverManager {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PooledPlcConnectionManager.class);
 
-    private KeyedObjectPool<AbstractPoolKey, PlcConnection> keyedObjectPool;
+    private GenericKeyedObjectPool<AbstractPoolKey, PlcConnection> keyedObjectPool;
 
-    // Marker class do detected a non null value
     static final NoPlcAuthentication noPlcAuthentication = new NoPlcAuthentication();
 
     private final PoolKeyFactory poolKeyFactory;
@@ -81,7 +80,9 @@ public class PooledPlcConnectionManager extends DefaultPlcDriverManager {
         setFromPoolCreator(poolCreator);
         poolKeyFactory = new PoolKeyFactory();
     }
-
+    public void setConfig(GenericKeyedObjectPoolConfig<PlcConnection> config) {
+        this.keyedObjectPool.setConfig(config);
+    }
     private void setFromPoolCreator(PoolCreator poolCreator) {
         this.keyedObjectPool = poolCreator.createPool(new PooledPlcConnectionFactory() {
             @Override
@@ -151,7 +152,7 @@ public class PooledPlcConnectionManager extends DefaultPlcDriverManager {
 
     @FunctionalInterface
     public interface PoolCreator {
-        KeyedObjectPool<AbstractPoolKey, PlcConnection> createPool(PooledPlcConnectionFactory pooledPlcConnectionFactory);
+        GenericKeyedObjectPool<AbstractPoolKey, PlcConnection> createPool(PooledPlcConnectionFactory pooledPlcConnectionFactory);
     }
 
     // TODO: maybe export to jmx // generic poolKey has builtin jmx too
@@ -178,6 +179,9 @@ public class PooledPlcConnectionManager extends DefaultPlcDriverManager {
     }
 
     private static final class NoPlcAuthentication implements PlcAuthentication {
+
+    }
+    public static class Builder {
 
     }
 }
