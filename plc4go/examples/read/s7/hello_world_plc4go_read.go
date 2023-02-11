@@ -29,10 +29,12 @@ import (
 
 func main() {
 	driverManager := plc4go.NewPlcDriverManager()
-	drivers.RegisterModbusTcpDriver(driverManager)
+	drivers.RegisterS7Driver(driverManager)
+	//var ip = "10.80.41.18"
 
 	// Get a connection to a remote PLC
-	crc := driverManager.GetConnection("modbus-tcp://192.168.23.30")
+	var connectionString = "s7://10.166.11.18?remote-rack=0&remote-slot=1"
+	crc := driverManager.GetConnection(connectionString)
 
 	// Wait for the driver to connect (or not)
 	connectionResult := <-crc
@@ -47,7 +49,7 @@ func main() {
 
 	// Prepare a read-request
 	readRequest, err := connection.ReadRequestBuilder().
-		AddTagAddress("tag", "holding-register:26:REAL").
+		AddTagAddress("field", "%DB132:124:STRING(40)|GBK").
 		Build()
 	if err != nil {
 		fmt.Printf("error preparing read-request: %s", connectionResult.GetErr().Error())
@@ -65,11 +67,11 @@ func main() {
 	}
 
 	// Do something with the response
-	if rrr.GetResponse().GetResponseCode("tag") != model.PlcResponseCode_OK {
-		fmt.Printf("error an non-ok return code: %s", rrr.GetResponse().GetResponseCode("tag").GetName())
+	if rrr.GetResponse().GetResponseCode("field") != model.PlcResponseCode_OK {
+		fmt.Printf("error an non-ok return code: %s", rrr.GetResponse().GetResponseCode("field").GetName())
 		return
 	}
 
-	value := rrr.GetResponse().GetValue("tag")
-	fmt.Printf("Got result %f", value.GetFloat32())
+	value := rrr.GetResponse().GetValue("field")
+	fmt.Printf("Got result %s", value.GetString())
 }
