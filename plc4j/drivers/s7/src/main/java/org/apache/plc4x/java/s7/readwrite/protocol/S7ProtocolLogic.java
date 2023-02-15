@@ -743,7 +743,12 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
                 s7DriverContext.getMaxAmqCaller(), s7DriverContext.getMaxAmqCallee(), s7DriverContext.getPduSize());
         S7Message s7Message = new S7MessageRequest(0, s7ParameterSetupCommunication,
             null);
-        COTPPacketData cotpPacketData = new COTPPacketData(null, s7Message, true, (short) 1);
+        int tpduId = 1;
+        if (this.s7DriverContext.getControllerType() == S7ControllerType.S7_200)
+        {
+            tpduId = 0;
+        }
+        COTPPacketData cotpPacketData = new COTPPacketData(null, s7Message, true, (short) tpduId);
         return new TPKTPacket(cotpPacketData);
     }
 
