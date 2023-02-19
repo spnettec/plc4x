@@ -902,10 +902,15 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
         try {
             DataTransportSize transportSize = tag.getDataType().getDataTransportSize();
             int stringLength = (tag instanceof S7StringTag) ? ((S7StringTag) tag).getStringLength() : 254;
+
             ByteBuffer byteBuffer = null;
             for (int i = 0; i < tag.getNumberOfElements(); i++) {
                 final int lengthInBytes = DataItem.getLengthInBytes(plcValue.getIndex(i), tag.getDataType().getDataProtocolId(), stringLength, tag.getStringEncoding());
                 final WriteBufferByteBased writeBuffer = new WriteBufferByteBased(lengthInBytes);
+                if(tag.getDataType()==TransportSize.BOOL && tag.getNumberOfElements()==1){
+                    writeBuffer.writeUnsignedShort(
+                        "", 7, ((Number) (short) 0x00).shortValue());
+                }
                 DataItem.staticSerialize(writeBuffer, plcValue.getIndex(i), tag.getDataType().getDataProtocolId(), stringLength, tag.getStringEncoding());
                 // Allocate enough space for all items.
                 if (byteBuffer == null) {
@@ -928,6 +933,13 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
         try {
             int stringLength = (tag instanceof S7StringTag) ? ((S7StringTag) tag).getStringLength() : 254;
             if (tag.getNumberOfElements() == 1) {
+                if(tag.getDataType()==TransportSize.BOOL){
+                    short reserved = readBuffer.readUnsignedShort("", 7);
+                    if (reserved != (short) 0x00) {
+                        logger.info(
+                            "Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
+                    }
+                }
                 return DataItem.staticParse(readBuffer, tag.getDataType().getDataProtocolId(),
                     stringLength, tag.getStringEncoding());
             } else {
@@ -1032,6 +1044,12 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
             numElements = numElements * transportSize.getSizeInBytes();
             //((S7Field) field).setDataType(transportSize);
             transportSize = TransportSize.BYTE;
+        }
+        if (transportSize == TransportSize.BOOL) {
+            if(numElements>1) {
+                transportSize = TransportSize.BYTE;
+            }
+            numElements = numElements * transportSize.getSizeInBytes();
         }
         if (transportSize == TransportSize.CHAR) {
             transportSize = TransportSize.BYTE;

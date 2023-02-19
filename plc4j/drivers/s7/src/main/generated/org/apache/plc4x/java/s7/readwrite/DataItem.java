@@ -45,16 +45,6 @@ public class DataItem {
       throws ParseException {
     if (EvaluationHelper.equals(dataProtocolId, "IEC61131_BOOL")) { // BOOL
 
-      // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-      {
-        short reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
-            readBuffer.readUnsignedShort("", 7);
-        if (reserved != (short) 0x00) {
-          LOGGER.info(
-              "Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
-        }
-      }
-
       // Simple Field (value)
       Boolean value = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readBit("");
 
@@ -276,10 +266,6 @@ public class DataItem {
       ByteOrder byteOrder)
       throws SerializationException {
     if (EvaluationHelper.equals(dataProtocolId, "IEC61131_BOOL")) { // BOOL
-      // Reserved Field
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 7, ((Number) (short) 0x00).shortValue());
       // Simple Field (value)
       boolean value = (boolean) _value.getBoolean();
       /*TODO: migrate me*/
@@ -448,8 +434,6 @@ public class DataItem {
       PlcValue _value, String dataProtocolId, Integer stringLength, String stringEncoding) {
     int sizeInBits = 0;
     if (EvaluationHelper.equals(dataProtocolId, "IEC61131_BOOL")) { // BOOL
-      // Reserved Field
-      sizeInBits += 7;
       // Simple Field (value)
       sizeInBits += 1;
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_BYTE")) { // BYTE

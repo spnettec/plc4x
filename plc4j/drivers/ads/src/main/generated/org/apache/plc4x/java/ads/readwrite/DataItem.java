@@ -42,7 +42,7 @@ public class DataItem {
   private static final Logger LOGGER = LoggerFactory.getLogger(DataItem.class);
 
   public static PlcValue staticParse(
-      ReadBuffer readBuffer, PlcValueType plcValueType, Integer stringLength)
+      ReadBuffer readBuffer, PlcValueType plcValueType, Integer stringLength, String stringEncoding)
       throws ParseException {
     if (EvaluationHelper.equals(plcValueType, PlcValueType.BOOL)) { // BOOL
 
@@ -162,42 +162,22 @@ public class DataItem {
       return new PlcWCHAR(value);
     } else if (EvaluationHelper.equals(plcValueType, PlcValueType.STRING)) { // STRING
 
-      // Simple Field (value)
-      String value = /*TODO: migrate me*/ /*TODO: migrate me*/
-          readBuffer.readString("", (stringLength) * (8), WithOption.WithEncoding("UTF-8"));
-
-      // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-      {
-        short reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
-            readBuffer.readUnsignedShort("", 8);
-        if (reserved != (short) 0x00) {
-          LOGGER.info(
-              "Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
-        }
-      }
+      // Manual Field (value)
+      String value =
+          (String)
+              (org.apache.plc4x.java.ads.readwrite.utils.StaticHelper.parseAmsString(
+                  readBuffer, stringLength, "UTF-8", stringEncoding));
 
       return new PlcSTRING(value);
-    } else if (EvaluationHelper.equals(plcValueType, PlcValueType.WSTRING)) { // WSTRING
+    } else if (EvaluationHelper.equals(plcValueType, PlcValueType.WSTRING)) { // STRING
 
-      // Simple Field (value)
-      String value = /*TODO: migrate me*/ /*TODO: migrate me*/
-          readBuffer.readString(
-              "", ((stringLength) * (8)) * (2), WithOption.WithEncoding("UTF-16LE"));
+      // Manual Field (value)
+      String value =
+          (String)
+              (org.apache.plc4x.java.ads.readwrite.utils.StaticHelper.parseAmsString(
+                  readBuffer, stringLength, "UTF-16", stringEncoding));
 
-      // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-      {
-        int reserved = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedInt("", 16);
-        if (reserved != (int) 0x0000) {
-          LOGGER.info(
-              "Expected constant value "
-                  + 0x0000
-                  + " but got "
-                  + reserved
-                  + " for reserved field.");
-        }
-      }
-
-      return new PlcWSTRING(value);
+      return new PlcSTRING(value);
     } else if (EvaluationHelper.equals(plcValueType, PlcValueType.TIME)) { // TIME
 
       // Simple Field (milliseconds)
@@ -260,9 +240,14 @@ public class DataItem {
   }
 
   public static void staticSerialize(
-      WriteBuffer writeBuffer, PlcValue _value, PlcValueType plcValueType, Integer stringLength)
+      WriteBuffer writeBuffer,
+      PlcValue _value,
+      PlcValueType plcValueType,
+      Integer stringLength,
+      String stringEncoding)
       throws SerializationException {
-    staticSerialize(writeBuffer, _value, plcValueType, stringLength, ByteOrder.BIG_ENDIAN);
+    staticSerialize(
+        writeBuffer, _value, plcValueType, stringLength, stringEncoding, ByteOrder.BIG_ENDIAN);
   }
 
   public static void staticSerialize(
@@ -270,6 +255,7 @@ public class DataItem {
       PlcValue _value,
       PlcValueType plcValueType,
       Integer stringLength,
+      String stringEncoding,
       ByteOrder byteOrder)
       throws SerializationException {
     if (EvaluationHelper.equals(plcValueType, PlcValueType.BOOL)) { // BOOL
@@ -364,24 +350,13 @@ public class DataItem {
       /*TODO: migrate me*/ writeBuffer.writeString(
           "", 16, (String) (value), WithOption.WithEncoding("UTF-16LE"));
     } else if (EvaluationHelper.equals(plcValueType, PlcValueType.STRING)) { // STRING
-      // Simple Field (value)
-      String value = (String) _value.getString();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeString(
-          "", (stringLength) * (8), (String) (value), WithOption.WithEncoding("UTF-8"));
-      // Reserved Field
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 8, ((Number) (short) 0x00).shortValue());
-    } else if (EvaluationHelper.equals(plcValueType, PlcValueType.WSTRING)) { // WSTRING
-      // Simple Field (value)
-      String value = (String) _value.getString();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeString(
-          "", ((stringLength) * (8)) * (2), (String) (value), WithOption.WithEncoding("UTF-16LE"));
-      // Reserved Field
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedInt("", 16, ((Number) (int) 0x0000).intValue());
+      // Manual Field (value)
+      org.apache.plc4x.java.ads.readwrite.utils.StaticHelper.serializeAmsString(
+          writeBuffer, _value, stringLength, "UTF-8", stringEncoding);
+    } else if (EvaluationHelper.equals(plcValueType, PlcValueType.WSTRING)) { // STRING
+      // Manual Field (value)
+      org.apache.plc4x.java.ads.readwrite.utils.StaticHelper.serializeAmsString(
+          writeBuffer, _value, stringLength, "UTF-16", stringEncoding);
     } else if (EvaluationHelper.equals(plcValueType, PlcValueType.TIME)) { // TIME
       // Simple Field (milliseconds)
       long milliseconds = (long) _value.getLong();
@@ -434,12 +409,14 @@ public class DataItem {
   }
 
   public static int getLengthInBytes(
-      PlcValue _value, PlcValueType plcValueType, Integer stringLength) {
-    return (int) Math.ceil((float) getLengthInBits(_value, plcValueType, stringLength) / 8.0);
+      PlcValue _value, PlcValueType plcValueType, Integer stringLength, String stringEncoding) {
+    return (int)
+        Math.ceil(
+            (float) getLengthInBits(_value, plcValueType, stringLength, stringEncoding) / 8.0);
   }
 
   public static int getLengthInBits(
-      PlcValue _value, PlcValueType plcValueType, Integer stringLength) {
+      PlcValue _value, PlcValueType plcValueType, Integer stringLength, String stringEncoding) {
     int sizeInBits = 0;
     if (EvaluationHelper.equals(plcValueType, PlcValueType.BOOL)) { // BOOL
       // Reserved Field
@@ -495,15 +472,11 @@ public class DataItem {
       // Simple Field (value)
       sizeInBits += 16;
     } else if (EvaluationHelper.equals(plcValueType, PlcValueType.STRING)) { // STRING
-      // Simple Field (value)
-      sizeInBits += -1;
-      // Reserved Field
-      sizeInBits += 8;
-    } else if (EvaluationHelper.equals(plcValueType, PlcValueType.WSTRING)) { // WSTRING
-      // Simple Field (value)
-      sizeInBits += -1;
-      // Reserved Field
-      sizeInBits += 16;
+      // Manual Field (value)
+      sizeInBits += (stringLength) * (8);
+    } else if (EvaluationHelper.equals(plcValueType, PlcValueType.WSTRING)) { // STRING
+      // Manual Field (value)
+      sizeInBits += (stringLength) * (16);
     } else if (EvaluationHelper.equals(plcValueType, PlcValueType.TIME)) { // TIME
       // Simple Field (milliseconds)
       sizeInBits += 32;

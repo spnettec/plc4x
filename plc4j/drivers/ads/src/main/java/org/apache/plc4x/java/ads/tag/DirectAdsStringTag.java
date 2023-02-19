@@ -37,13 +37,13 @@ public class DirectAdsStringTag extends DirectAdsTag implements AdsStringTag {
 
     private final int stringLength;
 
-    public DirectAdsStringTag(long indexGroup, long indexOffset, String adsDataTypeName, int stringLength, Integer numberOfElements) {
-        super(indexGroup, indexOffset, adsDataTypeName, numberOfElements);
+    public DirectAdsStringTag(long indexGroup, long indexOffset, String adsDataTypeName, int stringLength, Integer numberOfElements, String stringEncoding) {
+        super(indexGroup, indexOffset, adsDataTypeName, numberOfElements, stringEncoding);
         this.stringLength = stringLength;
     }
 
-    public static DirectAdsStringTag of(long indexGroup, long indexOffset, String adsDataTypeName, int stringLength, Integer numberOfElements) {
-        return new DirectAdsStringTag(indexGroup, indexOffset, adsDataTypeName, stringLength, numberOfElements);
+    public static DirectAdsStringTag of(long indexGroup, long indexOffset, String adsDataTypeName, int stringLength, Integer numberOfElements, String stringEncoding) {
+        return new DirectAdsStringTag(indexGroup, indexOffset, adsDataTypeName, stringLength, numberOfElements, stringEncoding);
     }
 
     public static DirectAdsStringTag of(String address) {
@@ -79,8 +79,16 @@ public class DirectAdsStringTag extends DirectAdsTag implements AdsStringTag {
 
         String numberOfElementsString = matcher.group("numberOfElements");
         Integer numberOfElements = numberOfElementsString != null ? Integer.valueOf(numberOfElementsString) : null;
-
-        return new DirectAdsStringTag(indexGroup, indexOffset, adsDataTypeName, stringLength, numberOfElements);
+        String stringEncoding = matcher.group("stringEncoding");
+        if (stringEncoding == null || "".equals(stringEncoding))
+        {
+            stringEncoding = "UTF-8";
+            if ("WSTRING".equalsIgnoreCase(adsDataTypeName) || "WCHAR".equalsIgnoreCase(adsDataTypeName))
+            {
+                stringEncoding = "UTF-16";
+            }
+        }
+        return new DirectAdsStringTag(indexGroup, indexOffset, adsDataTypeName, stringLength, numberOfElements, stringEncoding);
     }
 
     public static boolean matches(String address) {

@@ -529,7 +529,6 @@
         // Bit
         // -----------------------------------------
         ['"IEC61131_BOOL"' BOOL
-            [reserved uint 7 '0x00']
             [simple   bit    value]
         ]
 

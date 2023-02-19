@@ -386,7 +386,7 @@
     [array byte data count 'sampleSize']
 ]
 
-[dataIo DataItem(PlcValueType plcValueType, int 32 stringLength)
+[dataIo DataItem(PlcValueType plcValueType, int 32 stringLength, vstring stringEncoding)
     [typeSwitch plcValueType
         // -----------------------------------------
         // Bit
@@ -468,12 +468,12 @@
             [simple   string 16                      value    encoding='"UTF-16LE"']
         ]
         ['STRING' STRING
-            [simple   vstring 'stringLength * 8'     value    encoding='"UTF-8"'   ]
-            [reserved uint 8                         '0x00'                        ]
+            // TODO: Fix this length
+            [manual vstring value 'STATIC_CALL("parseAmsString", readBuffer, stringLength, _type.encoding, stringEncoding)' 'STATIC_CALL("serializeAmsString", writeBuffer, _value, stringLength, _type.encoding, stringEncoding)' 'stringLength * 8']
         ]
-        ['WSTRING' WSTRING
-            [simple   vstring 'stringLength * 8 * 2' value    encoding='"UTF-16LE"']
-            [reserved uint 16                        '0x0000'                      ]
+        ['WSTRING' STRING
+            // TODO: Fix this length
+            [manual vstring value 'STATIC_CALL("parseAmsString", readBuffer, stringLength, _type.encoding, stringEncoding)' 'STATIC_CALL("serializeAmsString", writeBuffer, _value, stringLength, _type.encoding, stringEncoding)' 'stringLength * 16' encoding='"UTF-16"']
         ]
 
         // -----------------------------------------

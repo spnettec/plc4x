@@ -243,6 +243,10 @@ public class S7Tag implements PlcTag, Serializable {
                     stringEncoding = "UTF-16";
                 }
             }
+            if(dataType==TransportSize.STRING) {
+                return new S7StringTag(dataType, memoryArea, blockNumber,
+                    byteOffset, bitOffset, numElements, 254, stringEncoding);
+            }
             return new S7Tag(dataType, memoryArea, blockNumber, byteOffset, bitOffset, numElements, stringEncoding);
         } else if ((matcher = DATA_BLOCK_SHORT_PATTERN.matcher(tagString)).matches()) {
             TransportSize dataType = TransportSize.valueOf(matcher.group(DATA_TYPE));
@@ -267,6 +271,10 @@ public class S7Tag implements PlcTag, Serializable {
                 {
                     stringEncoding = "UTF-16";
                 }
+            }
+            if(dataType==TransportSize.STRING) {
+                return new S7StringTag(dataType, memoryArea, blockNumber,
+                    byteOffset, bitOffset, numElements, 254, stringEncoding);
             }
             return new S7Tag(dataType, memoryArea, blockNumber, byteOffset, bitOffset, numElements, stringEncoding);
         } else if ((matcher = PLC_PROXY_ADDRESS_PATTERN.matcher(tagString)).matches()) {

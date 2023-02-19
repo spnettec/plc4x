@@ -39,7 +39,7 @@ import java.util.regex.Pattern;
  */
 public class DirectAdsTag implements AdsTag {
 
-    private static final Pattern RESOURCE_ADDRESS_PATTERN = Pattern.compile("^((0[xX](?<indexGroupHex>[0-9a-fA-F]+))|(?<indexGroup>\\d+))/((0[xX](?<indexOffsetHex>[0-9a-fA-F]+))|(?<indexOffset>\\d+)):(?<adsDataType>\\w+)(\\[(?<numberOfElements>\\d+)])?");
+    private static final Pattern RESOURCE_ADDRESS_PATTERN = Pattern.compile("^((0[xX](?<indexGroupHex>[0-9a-fA-F]+))|(?<indexGroup>\\d+))/((0[xX](?<indexOffsetHex>[0-9a-fA-F]+))|(?<indexOffset>\\d+)):(?<adsDataType>\\w+)(\\[(?<numberOfElements>\\d+)])?(\\|(?<stringEncoding>[a-z0-9A-Z_-]+))?");
 
     private final long indexGroup;
 
@@ -49,20 +49,23 @@ public class DirectAdsTag implements AdsTag {
 
     private final int numberOfElements;
 
-    public DirectAdsTag(long indexGroup, long indexOffset, String adsDataTypeName, Integer numberOfElements) {
+    private final String stringEncoding;
+
+    public DirectAdsTag(long indexGroup, long indexOffset, String adsDataTypeName, Integer numberOfElements, String stringEncoding) {
         //ByteValue.checkUnsignedBounds(indexGroup, 4);
         this.indexGroup = indexGroup;
         //ByteValue.checkUnsignedBounds(indexOffset, 4);
         this.indexOffset = indexOffset;
         this.adsDataTypeName = Objects.requireNonNull(adsDataTypeName);
         this.numberOfElements = numberOfElements != null ? numberOfElements : 1;
+        this.stringEncoding = stringEncoding;
         if (this.numberOfElements <= 0) {
             throw new IllegalArgumentException("numberOfElements must be greater then zero. Was " + this.numberOfElements);
         }
     }
 
-    public static DirectAdsTag of(long indexGroup, long indexOffset, String adsDataTypeName, Integer numberOfElements) {
-        return new DirectAdsTag(indexGroup, indexOffset, adsDataTypeName, numberOfElements);
+    public static DirectAdsTag of(long indexGroup, long indexOffset, String adsDataTypeName, Integer numberOfElements, String stringEncoding) {
+        return new DirectAdsTag(indexGroup, indexOffset, adsDataTypeName, numberOfElements, stringEncoding);
     }
 
     public static DirectAdsTag of(String address) {
@@ -95,8 +98,16 @@ public class DirectAdsTag implements AdsTag {
 
         String numberOfElementsString = matcher.group("numberOfElements");
         Integer numberOfElements = numberOfElementsString != null ? Integer.valueOf(numberOfElementsString) : null;
-
-        return new DirectAdsTag(indexGroup, indexOffset, adsDataTypeString, numberOfElements);
+        String stringEncoding = matcher.group("stringEncoding");
+        if (stringEncoding==null || "".equals(stringEncoding))
+        {
+            stringEncoding = "UTF-8";
+            if ("WSTRING".equals(adsDataTypeString))
+            {
+                stringEncoding = "UTF-16";
+            }
+        }
+        return new DirectAdsTag(indexGroup, indexOffset, adsDataTypeString, numberOfElements, stringEncoding);
     }
 
     public static boolean matches(String address) {
@@ -109,6 +120,10 @@ public class DirectAdsTag implements AdsTag {
 
     public long getIndexOffset() {
         return indexOffset;
+    }
+
+    public String getStringEncoding() {
+        return stringEncoding;
     }
 
     public String getPlcDataType() {
