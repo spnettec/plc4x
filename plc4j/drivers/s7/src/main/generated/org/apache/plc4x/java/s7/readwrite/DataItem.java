@@ -358,65 +358,66 @@ public class DataItem {
           writeBuffer, _value, stringLength, "UTF-16", stringEncoding);
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_TIME")) { // TIME
       // Simple Field (milliseconds)
-      long milliseconds = (long) _value.getLong();
+      long milliseconds = (long) _value.getPropertyByName("milliseconds");
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedLong(
           "", 32, ((Number) (milliseconds)).longValue());
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_LTIME")) { // LTIME
       // Simple Field (nanoseconds)
-      BigInteger nanoseconds = (BigInteger) _value.getBigInteger();
+      BigInteger nanoseconds = (BigInteger) _value.getPropertyByName("nanoseconds");
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedBigInteger("", 64, (BigInteger) (nanoseconds));
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_DATE")) { // DATE
       // Simple Field (daysSinceSiemensEpoch)
-      int daysSinceSiemensEpoch = (int) _value.getInt();
+      int daysSinceSiemensEpoch = (int) _value.getPropertyByName("daysSinceSiemensEpoch");
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedInt(
           "", 16, ((Number) (daysSinceSiemensEpoch)).intValue());
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_TIME_OF_DAY")) { // TIME_OF_DAY
       // Simple Field (millisecondsSinceMidnight)
-      long millisecondsSinceMidnight = (long) _value.getLong();
+      long millisecondsSinceMidnight = (long) _value.getPropertyByName("millisecondsSinceMidnight");
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedLong(
           "", 32, ((Number) (millisecondsSinceMidnight)).longValue());
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_LTIME_OF_DAY")) { // LTIME_OF_DAY
       // Simple Field (nanosecondsSinceMidnight)
-      BigInteger nanosecondsSinceMidnight = (BigInteger) _value.getBigInteger();
+      BigInteger nanosecondsSinceMidnight =
+          (BigInteger) _value.getPropertyByName("nanosecondsSinceMidnight");
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedBigInteger(
           "", 64, (BigInteger) (nanosecondsSinceMidnight));
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_DATE_AND_TIME")) { // DATE_AND_TIME
       // Simple Field (year)
-      int year = (int) _value.getInt();
+      int year = (int) _value.getPropertyByName("year");
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedInt("", 16, ((Number) (year)).intValue());
       // Simple Field (month)
-      short month = (short) _value.getShort();
+      short month = (short) _value.getPropertyByName("month");
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedShort("", 8, ((Number) (month)).shortValue());
       // Simple Field (day)
-      short day = (short) _value.getShort();
+      short day = (short) _value.getPropertyByName("day");
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedShort("", 8, ((Number) (day)).shortValue());
       // Simple Field (dayOfWeek)
-      short dayOfWeek = (short) _value.getShort();
+      short dayOfWeek = (short) _value.getPropertyByName("dayOfWeek");
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
           "", 8, ((Number) (dayOfWeek)).shortValue());
       // Simple Field (hour)
-      short hour = (short) _value.getShort();
+      short hour = (short) _value.getPropertyByName("hour");
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedShort("", 8, ((Number) (hour)).shortValue());
       // Simple Field (minutes)
-      short minutes = (short) _value.getShort();
+      short minutes = (short) _value.getPropertyByName("minutes");
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedShort("", 8, ((Number) (minutes)).shortValue());
       // Simple Field (seconds)
-      short seconds = (short) _value.getShort();
+      short seconds = (short) _value.getPropertyByName("seconds");
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedShort("", 8, ((Number) (seconds)).shortValue());
       // Simple Field (nanoseconds)
-      long nanoseconds = (long) _value.getLong();
+      long nanoseconds = (long) _value.getPropertyByName("nanoseconds");
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedLong(
           "", 32, ((Number) (nanoseconds)).longValue());

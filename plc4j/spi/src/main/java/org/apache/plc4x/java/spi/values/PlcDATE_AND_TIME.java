@@ -215,5 +215,27 @@ public class PlcDATE_AND_TIME extends PlcSimpleValue<LocalDateTime> {
             valueString.getBytes(StandardCharsets.UTF_8).length*8,
             valueString, WithOption.WithEncoding(StandardCharsets.UTF_8.name()));
     }
-
+    @Override
+    public Object getPropertyByName(String property){
+        switch (property){
+        case "year":
+            return this.getYear();
+        case "month":
+            return (short)this.getMonth();
+        case "day":
+            return (short)this.getDay();
+        case "dayOfWeek":
+            return (short)this.getDayOfWeek();
+        case "hour":
+            return (short)this.getHour();
+        case "minutes":
+            return (short)this.getMinutes();
+        case "seconds":
+            return (short)this.getSeconds();
+        case "nanoseconds":
+            return (long)this.getNanoseconds();
+        default:
+            throw new PlcRuntimeException("Invalid property name");
+        }
+    }
 }

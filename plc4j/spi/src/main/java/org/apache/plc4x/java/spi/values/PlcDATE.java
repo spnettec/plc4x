@@ -146,5 +146,13 @@ public class PlcDATE extends PlcSimpleValue<LocalDate> {
             valueString.getBytes(StandardCharsets.UTF_8).length * 8,
             valueString, WithOption.WithEncoding(StandardCharsets.UTF_8.name()));
     }
-
+    @Override
+    public Object getPropertyByName(String property){
+        switch (property){
+        case "daysSinceSiemensEpoch":
+            return this.getDaysSinceSiemensEpoch();
+        default:
+            throw new PlcRuntimeException("Invalid property name");
+        }
+    }
 }

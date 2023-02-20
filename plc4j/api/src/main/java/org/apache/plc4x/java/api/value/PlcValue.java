@@ -19,6 +19,7 @@
 package org.apache.plc4x.java.api.value;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.types.PlcValueType;
 
 import java.math.BigDecimal;
@@ -40,6 +41,10 @@ public interface PlcValue {
     PlcValueType getPlcValueType();
     
     Object getObject();
+
+    default Object getPropertyByName(String property){
+        throw new PlcRuntimeException("Invalid property name");
+    }
 
     // Simple Types
 

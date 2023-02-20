@@ -117,5 +117,13 @@ public class PlcTIME_OF_DAY extends PlcSimpleValue<LocalTime> {
             valueString.getBytes(StandardCharsets.UTF_8).length*8,
             valueString, WithOption.WithEncoding(StandardCharsets.UTF_8.name()));
     }
-
+    @Override
+    public Object getPropertyByName(String property){
+        switch (property){
+        case "millisecondsSinceMidnight":
+            return this.getMillisecondsSinceMidnight();
+        default:
+            throw new PlcRuntimeException("Invalid property name");
+        }
+    }
 }

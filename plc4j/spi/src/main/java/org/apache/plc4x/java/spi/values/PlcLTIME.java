@@ -163,5 +163,13 @@ public class PlcLTIME extends PlcSimpleValue<Duration> {
             valueString.getBytes(StandardCharsets.UTF_8).length*8,
             valueString, WithOption.WithEncoding(StandardCharsets.UTF_8.name()));
     }
-
+    @Override
+    public Object getPropertyByName(String property){
+        switch (property){
+        case "nanoseconds":
+            return this.getNanoseconds();
+        default:
+            throw new PlcRuntimeException("Invalid property name");
+        }
+    }
 }
