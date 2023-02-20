@@ -207,6 +207,7 @@ public class PlcCHAR extends PlcIECValue<Short> {
                 s = " ";
             }
             short val = (short) s.charAt(0);
+            this.value = val;
             this.isNullable = false;
             /*
             if ((val >= minValue) && (val <= maxValue)) {

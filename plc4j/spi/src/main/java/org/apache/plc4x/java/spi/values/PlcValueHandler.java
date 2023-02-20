@@ -151,6 +151,9 @@ public class PlcValueHandler implements org.apache.plc4x.java.api.value.PlcValue
                 }
                 return new PlcNull();
             }
+            if (value instanceof PlcValue) {
+                value = ((PlcValue) value).getObject();
+            }
             switch (tag.getPlcValueType()) {
                 case BOOL:
                     return PlcBOOL.of(value);

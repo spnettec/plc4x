@@ -1,0 +1,77 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+package org.apache.plc4x.java.s7.readwrite;
+
+import org.apache.plc4x.java.DefaultPlcDriverManager;
+import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.api.messages.PlcReadRequest;
+import org.apache.plc4x.java.api.messages.PlcReadResponse;
+import org.apache.plc4x.java.api.messages.PlcWriteRequest;
+import org.apache.plc4x.java.api.messages.PlcWriteResponse;
+import org.apache.plc4x.java.spi.values.PlcCHAR;
+import org.apache.plc4x.java.spi.values.PlcDATE;
+import org.apache.plc4x.java.spi.values.PlcDATE_AND_TIME;
+import org.apache.plc4x.java.spi.values.PlcTIME_OF_DAY;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+
+public class WriteDatatypesTest {
+
+    public static void main(String[] args) throws Exception {
+        try (PlcConnection connection = new DefaultPlcDriverManager().getConnection("s7://10.15.72.52")) {
+            final PlcWriteRequest.Builder builder = connection.writeRequestBuilder();
+            builder.addTagAddress("bool-value-1", "%DB100:0.0:BOOL",true); // true
+            builder.addTagAddress("bool-value-2", "%DB100:2.1:BOOL",true); // false
+            builder.addTagAddress("bool-array", "%DB100:2:BOOL[16]",true,false,true,true,false,true,true,false,true,true,false,true,true,false,true,true);
+            builder.addTagAddress("byte-value", "%DB100:4:BYTE",'a');
+            builder.addTagAddress("byte-array", "%DB100:6:BYTE[2]",'a','b');
+            builder.addTagAddress("word-value", "%DB100:8:WORD",42424);
+            builder.addTagAddress("word-array", "%DB100:10:WORD[2]",42423,42425);
+            builder.addTagAddress("dword-value", "%DB100:14:DWORD",4242442424L);
+            builder.addTagAddress("dword-array", "%DB100:18:DWORD[2]",4242442423L,4242442425L);
+            builder.addTagAddress("int-value", "%DB100:26:INT",12); // 23
+            builder.addTagAddress("int-array", "%DB100:28:INT[2]",123,-142); // 123, -142
+            builder.addTagAddress("dint-value", "%DB100:32:DINT",24); // 24
+            builder.addTagAddress("dint-array", "%DB100:36:DINT[2]",1234,-2345); // 1234, -2345
+            builder.addTagAddress("real-value", "%DB100:44:REAL",3.14159); // 3.14159
+            builder.addTagAddress("real-array", "%DB100:48:REAL[2]",12.345,12.345); // 12.345, 12.345
+            builder.addTagAddress("string-value", "%DB100:56:STRING","Hurz"); // "Hurz"
+            builder.addTagAddress("string-array", "%DB100:312:STRING[2]","Wolf", "Lamm"); // "Wolf", "Lamm"
+            builder.addTagAddress("time-value", "%DB100:824:TIME","PT1.234S"); // 1234ms
+            builder.addTagAddress("time-array", "%DB100:828:TIME[2]","PT1.234S","PT1.235S"); // 123ms, 234ms
+            builder.addTagAddress("date-value", "%DB100:836:DATE",new PlcDATE(LocalDate.parse("1998-03-28"))); // D#2020-08-20
+            builder.addTagAddress("date-array", "%DB100:838:DATE[2]",new PlcDATE(LocalDate.parse("1998-03-28")),new PlcDATE(LocalDate.parse("1998-04-28"))); // D#1990-03-28, D#2020-10-25
+            builder.addTagAddress("time-of-day-value", "%DB100:842:TIME_OF_DAY",new PlcTIME_OF_DAY(LocalTime.parse("15:36:30.123"))); // TOD#12:34:56
+            builder.addTagAddress("time-of-day-array", "%DB100:846:TIME_OF_DAY[2]",new PlcTIME_OF_DAY(LocalTime.parse("15:36:30.123")),new PlcTIME_OF_DAY(LocalTime.parse("15:36:30.124"))); // TOD#16:34:56, TOD#08:15:00
+            builder.addTagAddress("date-and-time-value", "%DB100:854:DATE_AND_TIME",new PlcDATE_AND_TIME(LocalDateTime.parse("1996-05-06T15:36:30"))); // DTL#1978-03-28-12:34:56
+            builder.addTagAddress("date-and-time-array", "%DB100:862:DATE_AND_TIME[2]",new PlcDATE_AND_TIME(LocalDateTime.parse("1996-05-06T15:36:30")),new PlcDATE_AND_TIME(LocalDateTime.parse("1996-06-06T15:36:30"))); // DTL#1978-03-28-12:34:56, DTL#1978-03-28-12:34:56
+            builder.addTagAddress("char-value", "%DB100:870:CHAR",new PlcCHAR("H")); // "H"
+            builder.addTagAddress("char-array", "%DB100:872:CHAR[2]",new PlcCHAR("H"),new PlcCHAR("v")); // "H", "u", "r", "z"
+            final PlcWriteRequest writeRequest = builder.build();
+
+            final PlcWriteResponse writeResponse = writeRequest.execute().get();
+
+            System.out.println(writeResponse);
+
+        }
+    }
+
+}

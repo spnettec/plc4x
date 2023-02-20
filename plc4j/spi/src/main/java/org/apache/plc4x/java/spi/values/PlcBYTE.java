@@ -59,6 +59,8 @@ public class PlcBYTE extends PlcIECValue<Short> {
             return new PlcBYTE((BigDecimal) value);
         } else if (value instanceof Number) {
             return new PlcBYTE(((Number) value).intValue());
+        } else if (value instanceof Character) {
+            return new PlcBYTE(Character.getNumericValue((Character)value));
         } else {
             return new PlcBYTE((String) value);
         }
