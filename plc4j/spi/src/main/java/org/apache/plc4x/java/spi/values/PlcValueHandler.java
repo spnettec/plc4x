@@ -25,6 +25,7 @@ import org.apache.plc4x.java.api.exceptions.PlcUnsupportedDataTypeException;
 import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.value.PlcValue;
 
+import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.Duration;
@@ -149,7 +150,7 @@ public class PlcValueHandler implements org.apache.plc4x.java.api.value.PlcValue
                 if (value instanceof PlcValue) {
                     return (PlcValue) value;
                 }
-                return new PlcNull();
+                return customDataType(getArray(value));
             }
             if (value instanceof PlcValue) {
                 value = ((PlcValue) value).getObject();
@@ -236,7 +237,7 @@ public class PlcValueHandler implements org.apache.plc4x.java.api.value.PlcValue
                 case DATE_AND_TIME:
                     return PlcDATE_AND_TIME.of(value);
                 default:
-                    return customDataType(new Object[]{value});
+                    return customDataType(getArray(value));
             }
         } else {
             PlcList list = new PlcList();
@@ -260,5 +261,16 @@ public class PlcValueHandler implements org.apache.plc4x.java.api.value.PlcValue
             bytes[i] = (byte) (intvalue & 0xff);
         }
         return bytes;
+    }
+    private static Object[] getArray(Object val){
+        if (val instanceof Object[]) {
+            return (Object[])val;
+        }
+        int arrLength = Array.getLength(val);
+        Object[] outputArray = new Object[arrLength];
+        for(int i = 0; i < arrLength; ++i){
+            outputArray[i] = Array.get(val, i);
+        }
+        return outputArray;
     }
 }
