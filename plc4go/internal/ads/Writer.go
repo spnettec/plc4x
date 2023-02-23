@@ -103,7 +103,7 @@ func (m *Connection) singleWrite(ctx context.Context, writeRequest apiModel.PlcW
 	// Get the value from the request and serialize it to a byte array
 	value := writeRequest.GetValue(tagName)
 	io := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
-	err := m.serializePlcValue(directAdsTag.DataType, directAdsTag.GetArrayInfo(), value, io)
+	err := m.serializePlcValue(directAdsTag.DataType, directAdsTag.GetArrayInfo(), value, io, directAdsTag.GetStringEncoding())
 	if err != nil {
 		result <- &internalModel.DefaultPlcWriteRequestResult{
 			Request:  writeRequest,
@@ -190,7 +190,7 @@ func (m *Connection) multiWrite(ctx context.Context, writeRequest apiModel.PlcWr
 		directAdsTags[tagName] = directAdsTag
 
 		// Serialize the plc value
-		err := m.serializePlcValue(directAdsTag.DataType, directAdsTag.GetArrayInfo(), writeRequest.GetValue(tagName), io)
+		err := m.serializePlcValue(directAdsTag.DataType, directAdsTag.GetArrayInfo(), writeRequest.GetValue(tagName), io, directAdsTag.GetStringEncoding())
 		if err != nil {
 			result <- &internalModel.DefaultPlcWriteRequestResult{
 				Request:  writeRequest,
@@ -263,7 +263,7 @@ func (m *Connection) multiWrite(ctx context.Context, writeRequest apiModel.PlcWr
 	}
 }
 
-func (m *Connection) serializePlcValue(dataType driverModel.AdsDataTypeTableEntry, arrayInfo []apiModel.ArrayInfo, plcValue values.PlcValue, wb utils.WriteBufferByteBased) error {
+func (m *Connection) serializePlcValue(dataType driverModel.AdsDataTypeTableEntry, arrayInfo []apiModel.ArrayInfo, plcValue values.PlcValue, wb utils.WriteBufferByteBased, StringEncode string) error {
 	// Decode the data according to the information from the request
 	// Based on the AdsDataTypeTableEntry in tag.DataType() parse the data
 	if len(arrayInfo) > 0 {
@@ -286,7 +286,7 @@ func (m *Connection) serializePlcValue(dataType driverModel.AdsDataTypeTableEntr
 
 		for _, plcValue := range plcValues {
 			restArrayInfo := arrayInfo[1:]
-			err := m.serializePlcValue(arrayItemType, restArrayInfo, plcValue, wb)
+			err := m.serializePlcValue(arrayItemType, restArrayInfo, plcValue, wb, StringEncode)
 			if err != nil {
 				return errors.Wrap(err, "error encoding list item")
 			}
@@ -325,7 +325,7 @@ func (m *Connection) serializePlcValue(dataType driverModel.AdsDataTypeTableEntr
 					UpperBound: adsArrayInfo.GetUpperBound(),
 				})
 			}
-			err := m.serializePlcValue(childDataType, childArrayInfo, plcValues[childName], wb)
+			err := m.serializePlcValue(childDataType, childArrayInfo, plcValues[childName], wb, StringEncode)
 			if err != nil {
 				return errors.Wrap(err, fmt.Sprintf("error parsing propery %s of type %s", childName, dataType.GetDataTypeName()))
 			}
@@ -342,6 +342,6 @@ func (m *Connection) serializePlcValue(dataType driverModel.AdsDataTypeTableEntr
 		if !ok {
 			return errors.New(fmt.Sprintf("error converting plc4x plc-value type %s into ads plc-value type", valueType.String()))
 		}
-		return driverModel.DataItemSerializeWithWriteBuffer(context.Background(), wb, plcValue, adsValueType, stringLength)
+		return driverModel.DataItemSerializeWithWriteBuffer(context.Background(), wb, plcValue, adsValueType, stringLength, StringEncode)
 	}
 }

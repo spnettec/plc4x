@@ -929,10 +929,10 @@ func (e TransportSize) DataTransportSize() DataTransportSize {
 			return DataTransportSize_BYTE_WORD_DWORD
 		}
 		case 0x14: { /* '0x14' */
-			return 0
+			return DataTransportSize_BYTE_WORD_DWORD
 		}
 		case 0x16: { /* '0x16' */
-			return 0
+			return DataTransportSize_BYTE_WORD_DWORD
 		}
 		case 0x17: { /* '0x17' */
 			return DataTransportSize_BYTE_WORD_DWORD
@@ -944,10 +944,10 @@ func (e TransportSize) DataTransportSize() DataTransportSize {
 			return DataTransportSize_BYTE_WORD_DWORD
 		}
 		case 0x1A: { /* '0x1A' */
-			return 0
+			return DataTransportSize_BYTE_WORD_DWORD
 		}
 		case 0x1B: { /* '0x1B' */
-			return 0
+			return DataTransportSize_BYTE_WORD_DWORD
 		}
 		default: {
 			return 0

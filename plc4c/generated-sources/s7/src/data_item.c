@@ -38,18 +38,6 @@ plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4x_spi_context ctx, plc
 
         if(strcmp(dataProtocolId, "IEC61131_BOOL") == 0) { /* BOOL */
 
-                // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-                {
-                    uint8_t _reserved = 0;
-                    _res = plc4c_spi_read_unsigned_byte(readBuffer, 7, (uint8_t*) &_reserved);
-                    if(_res != OK) {
-                        return _res;
-                    }
-                    if(_reserved != 0x00) {
-                      printf("Expected constant value '%d' but got '%d' for reserved field.", 0x00, _reserved);
-                    }
-                }
-
                 // Simple Field (value)
                 bool value = false;
                 _res = plc4c_spi_read_bit(readBuffer, (bool*) &value);
@@ -386,8 +374,6 @@ plc4c_return_code plc4c_s7_read_write_data_item_serialize(plc4x_spi_context ctx,
   plc4c_return_code _res = OK;
         if(strcmp(dataProtocolId, "IEC61131_BOOL") == 0) { /* BOOL */
 
-                    // Reserved Field (reserved)
-
                     // Simple field (value)
                     _res = plc4c_spi_write_bit(writeBuffer, (*data_item)->data.bool_value);
                     if(_res != OK) {
@@ -598,9 +584,6 @@ uint16_t plc4c_s7_read_write_data_item_length_in_bytes(plc4x_spi_context ctx, pl
 uint16_t plc4c_s7_read_write_data_item_length_in_bits(plc4x_spi_context ctx, plc4c_data* data_item, char* dataProtocolId, int32_t stringLength, char* stringEncoding) {
   uint16_t lengthInBits = 0;
     if(strcmp(dataProtocolId, "IEC61131_BOOL") == 0) { /* BOOL */
-
-        // Reserved Field (reserved)
-        lengthInBits += 7;
 
         // Simple field (value)
         lengthInBits += 1;

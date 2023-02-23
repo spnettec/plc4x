@@ -8380,7 +8380,7 @@ public class KnxDatapoint {
       /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
           "", 8, ((Number) (short) 0x00).shortValue());
       // Simple Field (milliseconds)
-      long milliseconds = (long) _value.getLong();
+      long milliseconds = (long) _value.getPropertyByName("milliseconds");
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedLong(
           "", 32, ((Number) (milliseconds)).longValue());
@@ -8390,7 +8390,7 @@ public class KnxDatapoint {
       /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
           "", 8, ((Number) (short) 0x00).shortValue());
       // Simple Field (nanoseconds)
-      BigInteger nanoseconds = (BigInteger) _value.getBigInteger();
+      BigInteger nanoseconds = (BigInteger) _value.getPropertyByName("nanoseconds");
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedBigInteger("", 64, (BigInteger) (nanoseconds));
     } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DATE)) { // DATE
@@ -8399,7 +8399,7 @@ public class KnxDatapoint {
       /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
           "", 8, ((Number) (short) 0x00).shortValue());
       // Simple Field (secondsSinceEpoch)
-      long secondsSinceEpoch = (long) _value.getLong();
+      long secondsSinceEpoch = (long) _value.getPropertyByName("secondsSinceEpoch");
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedLong(
           "", 32, ((Number) (secondsSinceEpoch)).longValue());
@@ -8410,7 +8410,7 @@ public class KnxDatapoint {
       /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
           "", 8, ((Number) (short) 0x00).shortValue());
       // Simple Field (millisecondsSinceMidnight)
-      long millisecondsSinceMidnight = (long) _value.getLong();
+      long millisecondsSinceMidnight = (long) _value.getPropertyByName("millisecondsSinceMidnight");
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedLong(
           "", 32, ((Number) (millisecondsSinceMidnight)).longValue());
@@ -8420,7 +8420,7 @@ public class KnxDatapoint {
       /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
           "", 8, ((Number) (short) 0x00).shortValue());
       // Simple Field (millisecondsSinceMidnight)
-      long millisecondsSinceMidnight = (long) _value.getLong();
+      long millisecondsSinceMidnight = (long) _value.getPropertyByName("millisecondsSinceMidnight");
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedLong(
           "", 32, ((Number) (millisecondsSinceMidnight)).longValue());
@@ -8431,36 +8431,36 @@ public class KnxDatapoint {
       /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
           "", 8, ((Number) (short) 0x00).shortValue());
       // Simple Field (year)
-      int year = (int) _value.getInt();
+      int year = (int) _value.getPropertyByName("year");
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedInt("", 16, ((Number) (year)).intValue());
       // Simple Field (month)
-      short month = (short) _value.getShort();
+      short month = (short) _value.getPropertyByName("month");
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedShort("", 8, ((Number) (month)).shortValue());
       // Simple Field (day)
-      short day = (short) _value.getShort();
+      short day = (short) _value.getPropertyByName("day");
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedShort("", 8, ((Number) (day)).shortValue());
       // Simple Field (dayOfWeek)
-      short dayOfWeek = (short) _value.getShort();
+      short dayOfWeek = (short) _value.getPropertyByName("dayOfWeek");
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
           "", 8, ((Number) (dayOfWeek)).shortValue());
       // Simple Field (hour)
-      short hour = (short) _value.getShort();
+      short hour = (short) _value.getPropertyByName("hour");
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedShort("", 8, ((Number) (hour)).shortValue());
       // Simple Field (minutes)
-      short minutes = (short) _value.getShort();
+      short minutes = (short) _value.getPropertyByName("minutes");
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedShort("", 8, ((Number) (minutes)).shortValue());
       // Simple Field (seconds)
-      short seconds = (short) _value.getShort();
+      short seconds = (short) _value.getPropertyByName("seconds");
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedShort("", 8, ((Number) (seconds)).shortValue());
       // Simple Field (nanoseconds)
-      long nanoseconds = (long) _value.getLong();
+      long nanoseconds = (long) _value.getPropertyByName("nanoseconds");
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedLong(
           "", 32, ((Number) (nanoseconds)).longValue());
@@ -8470,36 +8470,36 @@ public class KnxDatapoint {
       /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
           "", 8, ((Number) (short) 0x00).shortValue());
       // Simple Field (year)
-      int year = (int) _value.getInt();
+      int year = (int) _value.getPropertyByName("year");
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedInt("", 16, ((Number) (year)).intValue());
       // Simple Field (month)
-      short month = (short) _value.getShort();
+      short month = (short) _value.getPropertyByName("month");
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedShort("", 8, ((Number) (month)).shortValue());
       // Simple Field (day)
-      short day = (short) _value.getShort();
+      short day = (short) _value.getPropertyByName("day");
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedShort("", 8, ((Number) (day)).shortValue());
       // Simple Field (dayOfWeek)
-      short dayOfWeek = (short) _value.getShort();
+      short dayOfWeek = (short) _value.getPropertyByName("dayOfWeek");
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
           "", 8, ((Number) (dayOfWeek)).shortValue());
       // Simple Field (hour)
-      short hour = (short) _value.getShort();
+      short hour = (short) _value.getPropertyByName("hour");
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedShort("", 8, ((Number) (hour)).shortValue());
       // Simple Field (minutes)
-      short minutes = (short) _value.getShort();
+      short minutes = (short) _value.getPropertyByName("minutes");
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedShort("", 8, ((Number) (minutes)).shortValue());
       // Simple Field (seconds)
-      short seconds = (short) _value.getShort();
+      short seconds = (short) _value.getPropertyByName("seconds");
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedShort("", 8, ((Number) (seconds)).shortValue());
       // Simple Field (nanoseconds)
-      long nanoseconds = (long) _value.getLong();
+      long nanoseconds = (long) _value.getPropertyByName("nanoseconds");
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedLong(
           "", 32, ((Number) (nanoseconds)).longValue());

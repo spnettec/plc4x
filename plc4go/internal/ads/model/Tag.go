@@ -54,11 +54,16 @@ func NeedsResolving(plcTag model.PlcTag) bool {
 type DirectPlcTag struct {
 	PlcTag
 
-	IndexGroup   uint32
-	IndexOffset  uint32
-	ValueType    values.PlcValueType
-	StringLength int32
-	DataType     driverModel.AdsDataTypeTableEntry
+	IndexGroup     uint32
+	IndexOffset    uint32
+	ValueType      values.PlcValueType
+	StringLength   int32
+	StringEncoding string
+	DataType       driverModel.AdsDataTypeTableEntry
+}
+
+func (m DirectPlcTag) GetStringEncoding() string {
+	return m.StringEncoding
 }
 
 func NewDirectAdsPlcTag(indexGroup uint32, indexOffset uint32, valueType values.PlcValueType, stringLength int32, arrayInfo []model.ArrayInfo) (model.PlcTag, error) {

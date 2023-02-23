@@ -359,49 +359,52 @@ public class DataItem {
           writeBuffer, _value, stringLength, "UTF-16", stringEncoding);
     } else if (EvaluationHelper.equals(plcValueType, PlcValueType.TIME)) { // TIME
       // Simple Field (milliseconds)
-      long milliseconds = (long) _value.getLong();
+      long milliseconds = (long) _value.getPropertyByName("milliseconds");
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedLong(
           "", 32, ((Number) (milliseconds)).longValue());
     } else if (EvaluationHelper.equals(plcValueType, PlcValueType.LTIME)) { // LTIME
       // Simple Field (nanoseconds)
-      BigInteger nanoseconds = (BigInteger) _value.getBigInteger();
+      BigInteger nanoseconds = (BigInteger) _value.getPropertyByName("nanoseconds");
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedBigInteger("", 64, (BigInteger) (nanoseconds));
     } else if (EvaluationHelper.equals(plcValueType, PlcValueType.DATE)) { // DATE
       // Simple Field (secondsSinceEpoch)
-      long secondsSinceEpoch = (long) _value.getLong();
+      long secondsSinceEpoch = (long) _value.getPropertyByName("secondsSinceEpoch");
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedLong(
           "", 32, ((Number) (secondsSinceEpoch)).longValue());
     } else if (EvaluationHelper.equals(plcValueType, PlcValueType.LDATE)) { // LDATE
       // Simple Field (nanosecondsSinceEpoch)
-      BigInteger nanosecondsSinceEpoch = (BigInteger) _value.getBigInteger();
+      BigInteger nanosecondsSinceEpoch =
+          (BigInteger) _value.getPropertyByName("nanosecondsSinceEpoch");
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedBigInteger(
           "", 64, (BigInteger) (nanosecondsSinceEpoch));
     } else if (EvaluationHelper.equals(plcValueType, PlcValueType.TIME_OF_DAY)) { // TIME_OF_DAY
       // Simple Field (millisecondsSinceMidnight)
-      long millisecondsSinceMidnight = (long) _value.getLong();
+      long millisecondsSinceMidnight = (long) _value.getPropertyByName("millisecondsSinceMidnight");
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedLong(
           "", 32, ((Number) (millisecondsSinceMidnight)).longValue());
     } else if (EvaluationHelper.equals(plcValueType, PlcValueType.LTIME_OF_DAY)) { // LTIME_OF_DAY
       // Simple Field (nanosecondsSinceMidnight)
-      BigInteger nanosecondsSinceMidnight = (BigInteger) _value.getBigInteger();
+      BigInteger nanosecondsSinceMidnight =
+          (BigInteger) _value.getPropertyByName("nanosecondsSinceMidnight");
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedBigInteger(
           "", 64, (BigInteger) (nanosecondsSinceMidnight));
     } else if (EvaluationHelper.equals(plcValueType, PlcValueType.DATE_AND_TIME)) { // DATE_AND_TIME
       // Simple Field (secondsSinceEpoch)
-      long secondsSinceEpoch = (long) _value.getLong();
+      long secondsSinceEpoch = (long) _value.getPropertyByName("secondsSinceEpoch");
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedLong(
           "", 32, ((Number) (secondsSinceEpoch)).longValue());
     } else if (EvaluationHelper.equals(
         plcValueType, PlcValueType.LDATE_AND_TIME)) { // LDATE_AND_TIME
       // Simple Field (nanosecondsSinceEpoch)
-      BigInteger nanosecondsSinceEpoch = (BigInteger) _value.getBigInteger();
+      BigInteger nanosecondsSinceEpoch =
+          (BigInteger) _value.getPropertyByName("nanosecondsSinceEpoch");
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedBigInteger(
           "", 64, (BigInteger) (nanosecondsSinceEpoch));

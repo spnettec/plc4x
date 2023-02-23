@@ -38,11 +38,6 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 	readBuffer.PullContext("DataItem")
 	switch {
 case dataProtocolId == "IEC61131_BOOL" : // BOOL
-			// Reserved Field (Just skip the bytes)
-			if _, _err := readBuffer.ReadUint8("reserved", 7); _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing reserved field")
-			}
-
 			// Simple Field (value)
 			value, _valueErr := readBuffer.ReadBit("value")
 			if _valueErr != nil {
@@ -311,11 +306,6 @@ func DataItemSerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.Wri
 	writeBuffer.PushContext("DataItem")
 	switch {
 case dataProtocolId == "IEC61131_BOOL" : // BOOL
-			// Reserved Field (Just skip the bytes)
-			if _err := writeBuffer.WriteUint8("reserved", 7, uint8(0x00)); _err != nil {
-				return errors.Wrap(_err, "Error serializing reserved field")
-			}
-
 			// Simple Field (value)
 			if _err := writeBuffer.WriteBit("value", value.GetBool()); _err != nil {
 				return errors.Wrap(_err, "Error serializing 'value' field")
