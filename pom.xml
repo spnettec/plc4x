@@ -101,14 +101,14 @@
 
     <plc4x-code-generation.version>1.7.0-SNAPSHOT</plc4x-code-generation.version>
 
-    <antlr.version>4.11.1</antlr.version>
+    <antlr.version>4.12.0</antlr.version>
     <apiguardian.version>1.1.2</apiguardian.version>
     <assertj.version>3.24.2</assertj.version>
     <awaitility.version>4.2.0</awaitility.version>
     <!-- The currently available version is 2.0.5 and anything above 1.4.3 is no longer compatible with our code -->
     <bit-io.version>1.4.3</bit-io.version>
     <bouncycastle.version>1.72</bouncycastle.version>
-    <byte-buddy.version>1.12.23</byte-buddy.version>
+    <byte-buddy.version>1.14.0</byte-buddy.version>
     <!-- Be sure to keep this version set to the version of the cmake-maven-plugin -->
     <cmake-version>3.22.1</cmake-version>
     <commons-beanutils.version>1.9.4</commons-beanutils.version>
