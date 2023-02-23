@@ -31,7 +31,7 @@ public class DatatypesTest {
             builder.addTagAddress("bool-value-1", "%DB1:0.0:BOOL"); // true
             builder.addTagAddress("bool-value-2", "%DB1:2.1:BOOL"); // false
             // It seems S7 PLCs ignores the array notation for BOOL
-            //builder.addTagAddress("bool-array", "%DB1:2:BOOL[16]");
+            builder.addTagAddress("bool-array", "%DB1:2:BOOL[16]");
             builder.addTagAddress("byte-value", "%DB1:4:BYTE");
             builder.addTagAddress("byte-array", "%DB1:6:BYTE[2]");
             builder.addTagAddress("word-value", "%DB1:8:WORD");
@@ -52,10 +52,10 @@ public class DatatypesTest {
             builder.addTagAddress("date-array", "%DB1:838:DATE[2]"); // D#1990-03-28, D#2020-10-25
             builder.addTagAddress("time-of-day-value", "%DB1:842:TIME_OF_DAY"); // TOD#12:34:56
             builder.addTagAddress("time-of-day-array", "%DB1:846:TIME_OF_DAY[2]"); // TOD#16:34:56, TOD#08:15:00
-            builder.addTagAddress("date-and-time-value", "%DB1:854:DATE_AND_TIME"); // DTL#1978-03-28-12:34:56
-            builder.addTagAddress("date-and-time-array", "%DB1:862:DATE_AND_TIME[2]"); // DTL#1978-03-28-12:34:56, DTL#1978-03-28-12:34:56
-            builder.addTagAddress("char-value", "%DB1:870:CHAR"); // "H"
-            builder.addTagAddress("char-array", "%DB1:872:CHAR[2]"); // "H", "u", "r", "z"
+            //builder.addTagAddress("date-and-time-value", "%DB1:854:DATE_AND_TIME"); // DTL#1978-03-28-12:34:56
+            //builder.addTagAddress("date-and-time-array", "%DB1:862:DATE_AND_TIME[2]"); // DTL#1978-03-28-12:34:56, DTL#1978-03-28-12:34:56
+            builder.addTagAddress("char-value", "%DB1:878:CHAR"); // "H"
+            builder.addTagAddress("char-array", "%DB1:880:CHAR[2]"); // "H", "u", "r", "z"
             final PlcReadRequest readRequest = builder.build();
 
             final PlcReadResponse readResponse = readRequest.execute().get();
