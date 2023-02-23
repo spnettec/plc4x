@@ -266,6 +266,10 @@ public class PlcValueHandler implements org.apache.plc4x.java.api.value.PlcValue
         if (val instanceof Object[]) {
             return (Object[])val;
         }
+        if(!val.getClass().isArray())
+        {
+            return new Object[]{val};
+        }
         int arrLength = Array.getLength(val);
         Object[] outputArray = new Object[arrLength];
         for(int i = 0; i < arrLength; ++i){
