@@ -2016,6 +2016,57 @@ public class StaticHelper {
         }
     }
 
+    public static LocalDateTime parseS7DCDDateAndTime(ReadBuffer io) {
+        try {
+            int year = byteToYear(io.readByte());
+            int month = decodeBcd(io.readByte());
+            int dayOfMonth = decodeBcd(io.readByte());
+            int hour = decodeBcd(io.readByte());
+            int minute = decodeBcd(io.readByte());
+            int second = decodeBcd(io.readByte());
+            int hsec = decodeBcd(io.readByte());
+            int msec = io.readByte() >> 4;
+            int dayOfWeek = io.readByte() & 0b00001111;
+
+            return LocalDateTime.of(year, month, dayOfMonth, hour, minute, second, hsec * 10 + msec);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+    public static void serializeBCDDateAndTime(WriteBuffer io, PlcValue value) throws SerializationException {
+        LocalDateTime dateTime = value.getDateTime();
+        io.writeByte(encodeBcd(encodeYear(dateTime.getYear())));
+        io.writeByte(encodeBcd(dateTime.getMonth().getValue()));
+        io.writeByte(encodeBcd(dateTime.getDayOfMonth()));
+        io.writeByte(encodeBcd(dateTime.getHour()));
+        io.writeByte(encodeBcd(dateTime.getMinute()));
+        io.writeByte(encodeBcd(dateTime.getSecond()));
+        io.writeByte(encodeBcd(dateTime.getNano() / 10));
+        io.writeByte((byte) (dateTime.getNano() % 10 << 4 | dateTime.getDayOfWeek().getValue()));
+    }
+    private static int decodeBcd(byte input){
+        return 10 * (input >> 4) + (input & 0b00001111);
+    }
+    private static byte encodeBcd(int value)
+    {
+        return (byte) ((value / 10 << 4) | value % 10);
+    }
+    private static int byteToYear(byte bcdYear)
+    {
+        int input = decodeBcd(bcdYear);
+        if (input < 90) {
+            return input + 2000;
+        }
+        if (input < 100) {
+            return input + 1900;
+        }
+
+        throw new PlcRuntimeException("Bcd year is exceed");
+    }
+    private static int encodeYear(int year)
+    {
+        return (byte) (year < 2000 ? year - 1900 : year - 2000);
+    }
     public static void serializeTiaDateTime(WriteBuffer io, PlcValue value) {
         throw new NotImplementedException("Serializing DATE_AND_TIME not implemented");
     }
