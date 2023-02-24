@@ -36,10 +36,12 @@ public class LeasedPlcConnection implements PlcConnection {
 
     private ConnectionContainer connectionContainer;
     private PlcConnection connection;
+
+    private Timer usageTimer = new Timer();
+
     public LeasedPlcConnection(ConnectionContainer connectionContainer, PlcConnection connection, Duration maxUseTime) {
         this.connectionContainer = connectionContainer;
         this.connection = connection;
-        Timer usageTimer = new Timer();
         usageTimer.schedule(new TimerTask() {
             @Override
             public void run() {
@@ -50,6 +52,7 @@ public class LeasedPlcConnection implements PlcConnection {
 
     @Override
     public synchronized void close() {
+        usageTimer.cancel();
         if(connectionContainer == null) {
             return;
         }
@@ -77,7 +80,11 @@ public class LeasedPlcConnection implements PlcConnection {
         if(connection == null) {
             return false;
         }
-        return connection.isConnected();
+        if (!connection.isConnected())
+        {
+            throw new PlcRuntimeException("Error connecting leased connection.The connection have some problem");
+        }
+        return true;
     }
 
     @Override
@@ -114,7 +121,7 @@ public class LeasedPlcConnection implements PlcConnection {
                         CompletableFuture<? extends PlcReadResponse> future = innerPlcReadRequest.execute();
                         final CompletableFuture<PlcReadResponse> responseFuture = new CompletableFuture<>();
                         future.handle((plcReadResponse, throwable) -> {
-                            if (plcReadResponse != null) {
+                            if (throwable == null) {
                                 responseFuture.complete(plcReadResponse);
                             } else {
                                 try {
@@ -178,7 +185,7 @@ public class LeasedPlcConnection implements PlcConnection {
                         CompletableFuture<? extends PlcWriteResponse> future = innerPlcWriteRequest.execute();
                         final CompletableFuture<PlcWriteResponse> responseFuture = new CompletableFuture<>();
                         future.handle((plcWriteResponse,throwable)->{
-                            if (plcWriteResponse != null) {
+                            if (throwable == null) {
                                 responseFuture.complete(plcWriteResponse);
                             } else {
                                 try {

@@ -83,8 +83,16 @@ public class CachedPlcConnectionManager implements PlcConnectionManager {
                 connectionContainers.put(url, connectionContainer);
             } else {
                 LOG.debug("Reusing exising connection");
-                if(connectionContainer.getRawConnection()!=null && !connectionContainer.getRawConnection().isConnected()){
-                    connectionContainer.getRawConnection().connect();
+                if (connectionContainer.getRawConnection() != null && !connectionContainer.getRawConnection().isConnected()) {
+                    connectionContainer.close();
+                    PlcConnection connection;
+                    if(authentication!=null) {
+                        connection = connectionManager.getConnection(url,authentication);
+                    } else{
+                        connection = connectionManager.getConnection(url);
+                    }
+                    connectionContainer = new ConnectionContainer(connection, maxLeaseTime);
+                    connectionContainers.put(url, connectionContainer);
                 }
             }
         }

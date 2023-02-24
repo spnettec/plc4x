@@ -22,11 +22,13 @@ import org.apache.plc4x.java.DefaultPlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
+import org.apache.plc4x.java.utils.cache.CachedPlcConnectionManager;
 
 public class DatatypesTest {
 
     public static void main(String[] args) throws Exception {
-        try (PlcConnection connection = new DefaultPlcDriverManager().getConnection("s7://10.166.11.19")) {
+        CachedPlcConnectionManager plcConnectionManager = CachedPlcConnectionManager.getBuilder().build();
+        try (PlcConnection connection = plcConnectionManager.getConnection("s7://10.166.11.19")) {
             final PlcReadRequest.Builder builder = connection.readRequestBuilder();
             builder.addTagAddress("bool-value-1", "%DB1:0.0:BOOL"); // true
             builder.addTagAddress("bool-value-2", "%DB1:2.1:BOOL"); // false
@@ -52,8 +54,8 @@ public class DatatypesTest {
             builder.addTagAddress("date-array", "%DB1:838:DATE[2]"); // D#1990-03-28, D#2020-10-25
             builder.addTagAddress("time-of-day-value", "%DB1:842:TIME_OF_DAY"); // TOD#12:34:56
             builder.addTagAddress("time-of-day-array", "%DB1:846:TIME_OF_DAY[2]"); // TOD#16:34:56, TOD#08:15:00
-            //builder.addTagAddress("date-and-time-value", "%DB1:854:DATE_AND_TIME"); // DTL#1978-03-28-12:34:56
-            //builder.addTagAddress("date-and-time-array", "%DB1:862:DATE_AND_TIME[2]"); // DTL#1978-03-28-12:34:56, DTL#1978-03-28-12:34:56
+            builder.addTagAddress("date-and-time-value", "%DB1:854:DATE_AND_TIME"); // DTL#1978-03-28-12:34:56
+            builder.addTagAddress("date-and-time-array", "%DB1:862:DATE_AND_TIME[2]"); // DTL#1978-03-28-12:34:56, DTL#1978-03-28-12:34:56
             builder.addTagAddress("char-value", "%DB1:878:CHAR"); // "H"
             builder.addTagAddress("char-array", "%DB1:880:CHAR[2]"); // "H", "u", "r", "z"
             final PlcReadRequest readRequest = builder.build();
