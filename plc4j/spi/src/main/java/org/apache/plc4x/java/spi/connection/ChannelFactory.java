@@ -21,11 +21,10 @@ package org.apache.plc4x.java.spi.connection;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelPipeline;
-import io.netty.util.Timer;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 
 public interface ChannelFactory {
-    Timer getTimer();
+
     Channel createChannel(ChannelHandler channelHandler) throws PlcConnectionException;
 
     boolean isPassive();

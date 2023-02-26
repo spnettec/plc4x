@@ -253,11 +253,7 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
             }
         };
     }
-    @Override
-    public void setProtocol(Plc4xProtocolBase<?> protocol) {
-        super.setProtocol(protocol);
-        protocol.setTimer(channelFactory.getTimer());
-    }
+
     protected void sendChannelCreatedEvent() {
         logger.trace("Channel was created, firing ChannelCreated Event");
         // Send an event to the pipeline telling the Protocol filters what's going on.
