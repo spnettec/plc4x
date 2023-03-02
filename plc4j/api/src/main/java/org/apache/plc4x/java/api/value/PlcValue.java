@@ -18,7 +18,6 @@
  */
 package org.apache.plc4x.java.api.value;
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.types.PlcValueType;
 
@@ -35,7 +34,6 @@ import java.util.Set;
 /**
  * Base Type of all Types.
  */
-@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public interface PlcValue {
 
     PlcValueType getPlcValueType();

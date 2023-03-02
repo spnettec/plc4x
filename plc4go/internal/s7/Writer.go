@@ -21,6 +21,7 @@ package s7
 
 import (
 	"context"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"time"
 
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
@@ -230,6 +231,18 @@ func serializePlcValue(tag model.PlcTag, plcValue values.PlcValue) (readWriteMod
 	stringLength := uint16(254)
 	if s7StringTag, ok := tag.(*PlcStringTag); ok {
 		stringLength = s7StringTag.stringLength
+	}
+	if s7Tag.GetNumElements() == 1 && s7Tag.GetDataType() == readWriteModel.TransportSize_BOOL {
+		wb := utils.NewWriteBufferByteBased()
+		wb.WriteUint8("", 7, 0x00)
+		if err0 := readWriteModel.DataItemSerializeWithWriteBuffer(context.Background(), wb, plcValue, s7Tag.GetDataType().DataProtocolId(), int32(stringLength), s7Tag.GetStringEncoding()); err0 != nil {
+			return nil, errors.Wrapf(err0, "Error serializing tag item of type: '%v'", s7Tag.GetDataType())
+		}
+		data1 := wb.GetBytes()
+		return readWriteModel.NewS7VarPayloadDataItem(
+			readWriteModel.DataTransportErrorCode_OK,
+			transportSize, data1,
+		), nil
 	}
 	data, err := readWriteModel.DataItemSerialize(plcValue, s7Tag.GetDataType().DataProtocolId(), int32(stringLength), s7Tag.GetStringEncoding())
 	if err != nil {

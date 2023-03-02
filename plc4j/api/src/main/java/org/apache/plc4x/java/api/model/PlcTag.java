@@ -66,7 +66,6 @@ public interface PlcTag {
     default PlcValueType getPlcValueType() {
         return PlcValueType.NULL;
     }
-    @JsonIgnore
     default void setPlcValueType(PlcValueType plcValueType){
     }
 

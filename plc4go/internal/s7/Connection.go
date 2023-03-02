@@ -68,7 +68,7 @@ type Connection struct {
 
 func NewConnection(messageCodec spi.MessageCodec, configuration Configuration, driverContext DriverContext, tagHandler spi.PlcTagHandler, tm *spi.RequestTransactionManager, options map[string][]string) *Connection {
 	connection := &Connection{
-		tpduGenerator: TpduGenerator{currentTpduId: 10},
+		tpduGenerator: TpduGenerator{currentTpduId: 1},
 		messageCodec:  messageCodec,
 		configuration: configuration,
 		driverContext: driverContext,

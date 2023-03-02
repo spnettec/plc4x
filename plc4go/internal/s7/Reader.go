@@ -21,6 +21,7 @@ package s7
 
 import (
 	"context"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"time"
 
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
@@ -219,11 +220,21 @@ func (m *Reader) ToPlc4xReadResponse(response readWriteModel.S7Message, readRequ
 		log.Trace().Msg("decode data")
 		responseCodes[tagName] = responseCode
 		if responseCode == model.PlcResponseCode_OK {
-			plcValue, err := readWriteModel.DataItemParse(context.Background(), payloadItem.GetData(), tag.GetDataType().DataProtocolId(), int32(stringLength), tag.GetStringEncoding())
-			if err != nil {
-				return nil, errors.Wrap(err, "Error parsing data item")
+			if tag.GetNumElements() == 1 && tag.GetDataType() == readWriteModel.TransportSize_BOOL {
+				readBuffer := utils.NewReadBufferByteBased(payloadItem.GetData())
+				readBuffer.ReadUint8("", 7)
+				plcValue0, err0 := readWriteModel.DataItemParseWithBuffer(context.Background(), readBuffer, tag.GetDataType().DataProtocolId(), int32(stringLength), tag.GetStringEncoding())
+				if err0 != nil {
+					return nil, errors.Wrap(err0, "Error parsing data item")
+				}
+				plcValues[tagName] = plcValue0
+			} else {
+				plcValue, err := readWriteModel.DataItemParse(context.Background(), payloadItem.GetData(), tag.GetDataType().DataProtocolId(), int32(stringLength), tag.GetStringEncoding())
+				if err != nil {
+					return nil, errors.Wrap(err, "Error parsing data item")
+				}
+				plcValues[tagName] = plcValue
 			}
-			plcValues[tagName] = plcValue
 		}
 	}
 

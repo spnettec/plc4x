@@ -310,7 +310,7 @@
                 <ignoredDependency>org.apache.groovy:groovy-test-junit5</ignoredDependency>
                 <ignoredDependency>org.apache.groovy:groovy</ignoredDependency>
                 <ignoredDependency>com.athaydes:spock-reports</ignoredDependency>
-                <ignoredDependency>org.apache.nifi:nifi-standard-nar</ignoredDependency>                
+                <ignoredDependency>org.apache.nifi:nifi-standard-nar</ignoredDependency>
               </ignoredDependencies>
             </configuration>
           </execution>
