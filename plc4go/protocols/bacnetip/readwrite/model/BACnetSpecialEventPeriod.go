@@ -55,6 +55,7 @@ type _BACnetSpecialEventPeriod struct {
 type _BACnetSpecialEventPeriodChildRequirements interface {
 	utils.Serializable
 	GetLengthInBits(ctx context.Context) uint16
+	GetPeekedTagNumber() uint8
 }
 
 

@@ -55,6 +55,7 @@ type _BACnetShedLevel struct {
 type _BACnetShedLevelChildRequirements interface {
 	utils.Serializable
 	GetLengthInBits(ctx context.Context) uint16
+	GetPeekedTagNumber() uint8
 }
 
 

@@ -18,10 +18,6 @@
  */
 package org.apache.plc4x.java.spi.values;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.spi.codegen.WithOption;
@@ -33,7 +29,6 @@ import java.time.Instant;
 import java.time.LocalTime;
 import java.time.ZoneId;
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class PlcTIME_OF_DAY extends PlcSimpleValue<LocalTime> {
 
     public static PlcTIME_OF_DAY of(Object value) {
@@ -51,13 +46,11 @@ public class PlcTIME_OF_DAY extends PlcSimpleValue<LocalTime> {
         return new PlcTIME_OF_DAY(LocalTime.ofNanoOfDay(millisecondsSinceMidnight * 1000_000));
     }
 
-    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public PlcTIME_OF_DAY(@JsonProperty("value") LocalTime value) {
+    public PlcTIME_OF_DAY(LocalTime value) {
         super(value, true);
     }
 
-    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public PlcTIME_OF_DAY(@JsonProperty("value") long millisecondsSinceMidnight) {
+    public PlcTIME_OF_DAY(long millisecondsSinceMidnight) {
         super(LocalTime.ofNanoOfDay(millisecondsSinceMidnight * 1000_000), true);
     }
 
@@ -81,31 +74,26 @@ public class PlcTIME_OF_DAY extends PlcSimpleValue<LocalTime> {
     }
 
     @Override
-    @JsonIgnore
     public boolean isString() {
         return true;
     }
 
     @Override
-    @JsonIgnore
     public String getString() {
         return value.toString();
     }
 
     @Override
-    @JsonIgnore
     public boolean isTime() {
         return true;
     }
 
     @Override
-    @JsonIgnore
     public LocalTime getTime() {
         return value;
     }
 
     @Override
-    @JsonIgnore
     public String toString() {
         return String.valueOf(value);
     }

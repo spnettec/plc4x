@@ -55,6 +55,7 @@ type _BACnetOptionalCharacterString struct {
 type _BACnetOptionalCharacterStringChildRequirements interface {
 	utils.Serializable
 	GetLengthInBits(ctx context.Context) uint16
+	GetPeekedTagNumber() uint8
 }
 
 

@@ -55,6 +55,7 @@ type _BACnetOptionalREAL struct {
 type _BACnetOptionalREALChildRequirements interface {
 	utils.Serializable
 	GetLengthInBits(ctx context.Context) uint16
+	GetPeekedTagNumber() uint8
 }
 
 

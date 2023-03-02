@@ -57,6 +57,8 @@ type _BACnetFaultParameterFaultExtendedParametersEntry struct {
 type _BACnetFaultParameterFaultExtendedParametersEntryChildRequirements interface {
 	utils.Serializable
 	GetLengthInBits(ctx context.Context) uint16
+	GetPeekedTagNumber() uint8
+	GetPeekedIsContextTag() bool
 }
 
 

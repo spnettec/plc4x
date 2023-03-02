@@ -64,6 +64,7 @@ type _BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass struct {
 type _BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassChildRequirements interface {
 	utils.Serializable
 	GetLengthInBits(ctx context.Context) uint16
+	GetPeekedTagNumber() uint8
 }
 
 

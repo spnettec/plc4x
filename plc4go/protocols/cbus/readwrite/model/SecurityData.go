@@ -58,6 +58,8 @@ type _SecurityData struct {
 type _SecurityDataChildRequirements interface {
 	utils.Serializable
 	GetLengthInBits(ctx context.Context) uint16
+	GetCommandType() SecurityCommandType
+	GetArgument() byte
 }
 
 

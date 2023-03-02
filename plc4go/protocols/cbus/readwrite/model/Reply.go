@@ -57,6 +57,7 @@ type _Reply struct {
 type _ReplyChildRequirements interface {
 	utils.Serializable
 	GetLengthInBits(ctx context.Context) uint16
+	GetPeekedByte() byte
 }
 
 

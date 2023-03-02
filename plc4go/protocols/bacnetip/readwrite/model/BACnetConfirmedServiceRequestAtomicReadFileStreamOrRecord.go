@@ -61,6 +61,7 @@ type _BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord struct {
 type _BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordChildRequirements interface {
 	utils.Serializable
 	GetLengthInBits(ctx context.Context) uint16
+	GetPeekedTagNumber() uint8
 }
 
 

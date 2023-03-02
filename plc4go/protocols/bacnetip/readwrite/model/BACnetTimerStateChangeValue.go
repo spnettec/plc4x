@@ -60,6 +60,8 @@ type _BACnetTimerStateChangeValue struct {
 type _BACnetTimerStateChangeValueChildRequirements interface {
 	utils.Serializable
 	GetLengthInBits(ctx context.Context) uint16
+	GetPeekedTagNumber() uint8
+	GetPeekedIsContextTag() bool
 }
 
 

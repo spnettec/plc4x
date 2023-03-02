@@ -55,6 +55,7 @@ type _BACnetHostAddress struct {
 type _BACnetHostAddressChildRequirements interface {
 	utils.Serializable
 	GetLengthInBits(ctx context.Context) uint16
+	GetPeekedTagNumber() uint8
 }
 
 

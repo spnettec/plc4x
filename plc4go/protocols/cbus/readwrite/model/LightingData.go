@@ -55,6 +55,7 @@ type _LightingData struct {
 type _LightingDataChildRequirements interface {
 	utils.Serializable
 	GetLengthInBits(ctx context.Context) uint16
+	GetCommandType() LightingCommandType
 }
 
 

@@ -59,6 +59,8 @@ type _ReplyOrConfirmation struct {
 type _ReplyOrConfirmationChildRequirements interface {
 	utils.Serializable
 	GetLengthInBits(ctx context.Context) uint16
+	GetIsAlpha() bool
+	GetPeekedByte() byte
 }
 
 

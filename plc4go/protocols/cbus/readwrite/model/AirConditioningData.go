@@ -55,6 +55,7 @@ type _AirConditioningData struct {
 type _AirConditioningDataChildRequirements interface {
 	utils.Serializable
 	GetLengthInBits(ctx context.Context) uint16
+	GetCommandType() AirConditioningCommandType
 }
 
 

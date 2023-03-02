@@ -55,6 +55,7 @@ type _MeasurementData struct {
 type _MeasurementDataChildRequirements interface {
 	utils.Serializable
 	GetLengthInBits(ctx context.Context) uint16
+	GetCommandType() MeasurementCommandType
 }
 
 

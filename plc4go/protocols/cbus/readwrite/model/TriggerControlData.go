@@ -60,6 +60,7 @@ type _TriggerControlData struct {
 type _TriggerControlDataChildRequirements interface {
 	utils.Serializable
 	GetLengthInBits(ctx context.Context) uint16
+	GetCommandType() TriggerControlCommandType
 }
 
 

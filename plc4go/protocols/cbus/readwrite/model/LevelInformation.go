@@ -69,6 +69,8 @@ type _LevelInformation struct {
 type _LevelInformationChildRequirements interface {
 	utils.Serializable
 	GetLengthInBits(ctx context.Context) uint16
+	GetIsAbsent() bool
+	GetIsCorrupted() bool
 }
 
 

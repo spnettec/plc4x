@@ -55,6 +55,7 @@ type _BACnetCalendarEntry struct {
 type _BACnetCalendarEntryChildRequirements interface {
 	utils.Serializable
 	GetLengthInBits(ctx context.Context) uint16
+	GetPeekedTagNumber() uint8
 }
 
 

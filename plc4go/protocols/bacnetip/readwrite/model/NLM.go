@@ -58,6 +58,7 @@ type _NLMChildRequirements interface {
 	utils.Serializable
 	GetLengthInBits(ctx context.Context) uint16
 	GetMessageType() uint8
+	GetIsVendorProprietaryMessage() bool
 }
 
 

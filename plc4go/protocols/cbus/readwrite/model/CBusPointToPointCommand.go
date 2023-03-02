@@ -61,6 +61,7 @@ type _CBusPointToPointCommand struct {
 type _CBusPointToPointCommandChildRequirements interface {
 	utils.Serializable
 	GetLengthInBits(ctx context.Context) uint16
+	GetIsDirect() bool
 }
 
 

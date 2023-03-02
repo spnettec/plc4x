@@ -57,6 +57,7 @@ type _BACnetApplicationTag struct {
 type _BACnetApplicationTagChildRequirements interface {
 	utils.Serializable
 	GetLengthInBits(ctx context.Context) uint16
+	GetActualTagNumber() uint8
 }
 
 

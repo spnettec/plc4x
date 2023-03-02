@@ -61,6 +61,7 @@ type _AccessControlData struct {
 type _AccessControlDataChildRequirements interface {
 	utils.Serializable
 	GetLengthInBits(ctx context.Context) uint16
+	GetCommandType() AccessControlCommandType
 }
 
 

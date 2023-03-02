@@ -20,6 +20,7 @@
 package s7
 
 import (
+	"context"
 	"encoding/binary"
 	"fmt"
 
@@ -32,6 +33,7 @@ import (
 
 type PlcTag interface {
 	model.PlcTag
+	utils.Serializable
 
 	GetDataType() readWriteModel.TransportSize
 	GetNumElements() uint16
@@ -39,30 +41,27 @@ type PlcTag interface {
 	GetMemoryArea() readWriteModel.MemoryArea
 	GetByteOffset() uint16
 	GetBitOffset() uint8
-	GetStringEncoding() string
 }
 
 type plcTag struct {
-	TagType        TagType
-	MemoryArea     readWriteModel.MemoryArea
-	BlockNumber    uint16
-	ByteOffset     uint16
-	BitOffset      uint8
-	NumElements    uint16
-	Datatype       readWriteModel.TransportSize
-	StringEncoding string
+	TagType     TagType
+	MemoryArea  readWriteModel.MemoryArea
+	BlockNumber uint16
+	ByteOffset  uint16
+	BitOffset   uint8
+	NumElements uint16
+	Datatype    readWriteModel.TransportSize
 }
 
-func NewTag(memoryArea readWriteModel.MemoryArea, blockNumber uint16, byteOffset uint16, bitOffset uint8, numElements uint16, datatype readWriteModel.TransportSize, stringEncoding string) PlcTag {
+func NewTag(memoryArea readWriteModel.MemoryArea, blockNumber uint16, byteOffset uint16, bitOffset uint8, numElements uint16, datatype readWriteModel.TransportSize) PlcTag {
 	return plcTag{
-		TagType:        S7Tag,
-		MemoryArea:     memoryArea,
-		BlockNumber:    blockNumber,
-		ByteOffset:     byteOffset,
-		BitOffset:      bitOffset,
-		NumElements:    numElements,
-		Datatype:       datatype,
-		StringEncoding: stringEncoding,
+		TagType:     S7Tag,
+		MemoryArea:  memoryArea,
+		BlockNumber: blockNumber,
+		ByteOffset:  byteOffset,
+		BitOffset:   bitOffset,
+		NumElements: numElements,
+		Datatype:    datatype,
 	}
 }
 
@@ -71,17 +70,16 @@ type PlcStringTag struct {
 	stringLength uint16
 }
 
-func NewStringTag(memoryArea readWriteModel.MemoryArea, blockNumber uint16, byteOffset uint16, bitOffset uint8, numElements uint16, stringLength uint16, datatype readWriteModel.TransportSize, stringEncoding string) PlcStringTag {
+func NewStringTag(memoryArea readWriteModel.MemoryArea, blockNumber uint16, byteOffset uint16, bitOffset uint8, numElements uint16, stringLength uint16, datatype readWriteModel.TransportSize) PlcStringTag {
 	return PlcStringTag{
 		plcTag: plcTag{
-			TagType:        S7StringTag,
-			MemoryArea:     memoryArea,
-			BlockNumber:    blockNumber,
-			ByteOffset:     byteOffset,
-			BitOffset:      bitOffset,
-			NumElements:    numElements,
-			Datatype:       datatype,
-			StringEncoding: stringEncoding,
+			TagType:     S7StringTag,
+			MemoryArea:  memoryArea,
+			BlockNumber: blockNumber,
+			ByteOffset:  byteOffset,
+			BitOffset:   bitOffset,
+			NumElements: numElements,
+			Datatype:    datatype,
 		},
 		stringLength: stringLength,
 	}
@@ -138,19 +136,16 @@ func (m plcTag) GetBitOffset() uint8 {
 func (m plcTag) GetQuantity() uint16 {
 	return m.NumElements
 }
+
 func (m plcTag) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m plcTag) GetStringEncoding() string {
-	return m.StringEncoding
-}
-
-func (m plcTag) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m plcTag) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	if err := writeBuffer.PushContext(m.TagType.GetName()); err != nil {
 		return err
 	}
@@ -182,13 +177,13 @@ func (m plcTag) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 
 func (m PlcStringTag) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m PlcStringTag) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m PlcStringTag) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	if err := writeBuffer.PushContext(m.TagType.GetName()); err != nil {
 		return err
 	}

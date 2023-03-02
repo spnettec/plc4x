@@ -71,6 +71,7 @@ type _BACnetConstructedDataChildRequirements interface {
 	GetLengthInBits(ctx context.Context) uint16
 	GetObjectTypeArgument() BACnetObjectType
 	GetPropertyIdentifierArgument() BACnetPropertyIdentifier
+	GetPeekedTagNumber() uint8
 }
 
 

@@ -55,6 +55,7 @@ type _BACnetOptionalBinaryPV struct {
 type _BACnetOptionalBinaryPVChildRequirements interface {
 	utils.Serializable
 	GetLengthInBits(ctx context.Context) uint16
+	GetPeekedTagNumber() uint8
 }
 
 
