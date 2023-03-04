@@ -286,84 +286,10 @@ plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4x_spi_context ctx, plc
 
     } else         if(strcmp(dataProtocolId, "IEC61131_DATE_AND_TIME") == 0) { /* DATE_AND_TIME */
 
-                // Simple Field (year)
-                uint16_t year = 0;
-                _res = plc4c_spi_read_unsigned_short(readBuffer, 16, (uint16_t*) &year);
-                if(_res != OK) {
-                    return _res;
-                }
+                // Manual Field (value)
+                time_t value = (time_t) (plc4c_s7_read_write_parse_s7_bcd_date_and_time(readBuffer));
 
-                *data_item = plc4c_data_create_date_and_time_data(year);
-
-
-                // Simple Field (month)
-                uint8_t month = 0;
-                _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &month);
-                if(_res != OK) {
-                    return _res;
-                }
-
-                *data_item = plc4c_data_create_date_and_time_data(month);
-
-
-                // Simple Field (day)
-                uint8_t day = 0;
-                _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &day);
-                if(_res != OK) {
-                    return _res;
-                }
-
-                *data_item = plc4c_data_create_date_and_time_data(day);
-
-
-                // Simple Field (dayOfWeek)
-                uint8_t dayOfWeek = 0;
-                _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &dayOfWeek);
-                if(_res != OK) {
-                    return _res;
-                }
-
-                *data_item = plc4c_data_create_date_and_time_data(dayOfWeek);
-
-
-                // Simple Field (hour)
-                uint8_t hour = 0;
-                _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &hour);
-                if(_res != OK) {
-                    return _res;
-                }
-
-                *data_item = plc4c_data_create_date_and_time_data(hour);
-
-
-                // Simple Field (minutes)
-                uint8_t minutes = 0;
-                _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &minutes);
-                if(_res != OK) {
-                    return _res;
-                }
-
-                *data_item = plc4c_data_create_date_and_time_data(minutes);
-
-
-                // Simple Field (seconds)
-                uint8_t seconds = 0;
-                _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &seconds);
-                if(_res != OK) {
-                    return _res;
-                }
-
-                *data_item = plc4c_data_create_date_and_time_data(seconds);
-
-
-                // Simple Field (nanoseconds)
-                uint32_t nanoseconds = 0;
-                _res = plc4c_spi_read_unsigned_int(readBuffer, 32, (uint32_t*) &nanoseconds);
-                if(_res != OK) {
-                    return _res;
-                }
-
-                *data_item = plc4c_data_create_date_and_time_data(nanoseconds);
+                *data_item = plc4c_data_create_date_and_time_data(value);
 
     }
 
@@ -526,53 +452,7 @@ plc4c_return_code plc4c_s7_read_write_data_item_serialize(plc4x_spi_context ctx,
                     }
         } else         if(strcmp(dataProtocolId, "IEC61131_DATE_AND_TIME") == 0) { /* DATE_AND_TIME */
 
-                    // Simple field (year)
-                    _res = plc4c_spi_write_unsigned_short(writeBuffer, 16, (*data_item)->data.date_and_time_value);
-                    if(_res != OK) {
-                        return _res;
-                    }
-
-                    // Simple field (month)
-                    _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, (*data_item)->data.date_and_time_value);
-                    if(_res != OK) {
-                        return _res;
-                    }
-
-                    // Simple field (day)
-                    _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, (*data_item)->data.date_and_time_value);
-                    if(_res != OK) {
-                        return _res;
-                    }
-
-                    // Simple field (dayOfWeek)
-                    _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, (*data_item)->data.date_and_time_value);
-                    if(_res != OK) {
-                        return _res;
-                    }
-
-                    // Simple field (hour)
-                    _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, (*data_item)->data.date_and_time_value);
-                    if(_res != OK) {
-                        return _res;
-                    }
-
-                    // Simple field (minutes)
-                    _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, (*data_item)->data.date_and_time_value);
-                    if(_res != OK) {
-                        return _res;
-                    }
-
-                    // Simple field (seconds)
-                    _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, (*data_item)->data.date_and_time_value);
-                    if(_res != OK) {
-                        return _res;
-                    }
-
-                    // Simple field (nanoseconds)
-                    _res = plc4c_spi_write_unsigned_int(writeBuffer, 32, (*data_item)->data.date_and_time_value);
-                    if(_res != OK) {
-                        return _res;
-                    }
+                    // Manual Field (value)
         }
   return OK;
 }
@@ -681,29 +561,8 @@ uint16_t plc4c_s7_read_write_data_item_length_in_bits(plc4x_spi_context ctx, plc
         lengthInBits += 64;
     } else     if(strcmp(dataProtocolId, "IEC61131_DATE_AND_TIME") == 0) { /* DATE_AND_TIME */
 
-        // Simple field (year)
-        lengthInBits += 16;
-
-        // Simple field (month)
-        lengthInBits += 8;
-
-        // Simple field (day)
-        lengthInBits += 8;
-
-        // Simple field (dayOfWeek)
-        lengthInBits += 8;
-
-        // Simple field (hour)
-        lengthInBits += 8;
-
-        // Simple field (minutes)
-        lengthInBits += 8;
-
-        // Simple field (seconds)
-        lengthInBits += 8;
-
-        // Simple field (nanoseconds)
-        lengthInBits += 32;
+        // Manual Field (value)
+        lengthInBits += 64;
     }
   return lengthInBits;
 }

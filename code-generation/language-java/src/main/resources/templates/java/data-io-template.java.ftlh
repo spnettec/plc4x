@@ -325,11 +325,15 @@ public class ${type.name} {
             return PlcDATE_AND_TIME.ofSegments(year.intValue(), (month == 0) ? 1 : month.intValue(), (day == 0) ? 1 : day.intValue(), hour.intValue(), minutes.intValue(), seconds.intValue(), nanoseconds.intValue());
                     <#elseif helper.hasFieldsWithNames(case.fields, "secondsSinceEpoch")>
             return PlcDATE_AND_TIME.ofSecondsSinceEpoch(secondsSinceEpoch);
+                    <#else>
+                        return PlcDATE_AND_TIME.of(value);
                     </#if>
                     <#break>
                 <#case "LDATE_AND_TIME">
                     <#if helper.hasFieldsWithNames(case.fields, "nanosecondsSinceEpoch")>
             return PlcLDATE_AND_TIME.ofNanosecondsSinceEpoch(nanosecondsSinceEpoch);
+                    <#else>
+                        return PlcLDATE_AND_TIME.of(value);
                     </#if>
                     <#break>
                 <#case "Struct">

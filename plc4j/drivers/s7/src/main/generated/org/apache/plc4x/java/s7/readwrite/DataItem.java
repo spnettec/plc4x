@@ -208,40 +208,13 @@ public class DataItem {
       return PlcLTIME_OF_DAY.ofNanosecondsSinceMidnight(nanosecondsSinceMidnight);
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_DATE_AND_TIME")) { // DATE_AND_TIME
 
-      // Simple Field (year)
-      Integer year = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedInt("", 16);
+      // Manual Field (value)
+      LocalDateTime value =
+          (LocalDateTime)
+              (org.apache.plc4x.java.s7.readwrite.utils.StaticHelper.parseS7BCDDateAndTime(
+                  readBuffer));
 
-      // Simple Field (month)
-      Short month = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedShort("", 8);
-
-      // Simple Field (day)
-      Short day = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedShort("", 8);
-
-      // Simple Field (dayOfWeek)
-      Short dayOfWeek = /*TODO: migrate me*/ /*TODO: migrate me*/
-          readBuffer.readUnsignedShort("", 8);
-
-      // Simple Field (hour)
-      Short hour = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedShort("", 8);
-
-      // Simple Field (minutes)
-      Short minutes = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedShort("", 8);
-
-      // Simple Field (seconds)
-      Short seconds = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedShort("", 8);
-
-      // Simple Field (nanoseconds)
-      Long nanoseconds = /*TODO: migrate me*/ /*TODO: migrate me*/
-          readBuffer.readUnsignedLong("", 32);
-
-      return PlcDATE_AND_TIME.ofSegments(
-          year.intValue(),
-          (month == 0) ? 1 : month.intValue(),
-          (day == 0) ? 1 : day.intValue(),
-          hour.intValue(),
-          minutes.intValue(),
-          seconds.intValue(),
-          nanoseconds.intValue());
+      return PlcDATE_AND_TIME.of(value);
     }
     return null;
   }
@@ -387,40 +360,9 @@ public class DataItem {
       /*TODO: migrate me*/ writeBuffer.writeUnsignedBigInteger(
           "", 64, (BigInteger) (nanosecondsSinceMidnight));
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_DATE_AND_TIME")) { // DATE_AND_TIME
-      // Simple Field (year)
-      int year = (int) _value.getPropertyByName("year");
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedInt("", 16, ((Number) (year)).intValue());
-      // Simple Field (month)
-      short month = (short) _value.getPropertyByName("month");
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort("", 8, ((Number) (month)).shortValue());
-      // Simple Field (day)
-      short day = (short) _value.getPropertyByName("day");
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort("", 8, ((Number) (day)).shortValue());
-      // Simple Field (dayOfWeek)
-      short dayOfWeek = (short) _value.getPropertyByName("dayOfWeek");
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 8, ((Number) (dayOfWeek)).shortValue());
-      // Simple Field (hour)
-      short hour = (short) _value.getPropertyByName("hour");
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort("", 8, ((Number) (hour)).shortValue());
-      // Simple Field (minutes)
-      short minutes = (short) _value.getPropertyByName("minutes");
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort("", 8, ((Number) (minutes)).shortValue());
-      // Simple Field (seconds)
-      short seconds = (short) _value.getPropertyByName("seconds");
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort("", 8, ((Number) (seconds)).shortValue());
-      // Simple Field (nanoseconds)
-      long nanoseconds = (long) _value.getPropertyByName("nanoseconds");
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedLong(
-          "", 32, ((Number) (nanoseconds)).longValue());
+      // Manual Field (value)
+      org.apache.plc4x.java.s7.readwrite.utils.StaticHelper.serializeBCDDateAndTime(
+          writeBuffer, _value);
     }
   }
 
@@ -507,22 +449,8 @@ public class DataItem {
       // Simple Field (nanosecondsSinceMidnight)
       sizeInBits += 64;
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_DATE_AND_TIME")) { // DATE_AND_TIME
-      // Simple Field (year)
-      sizeInBits += 16;
-      // Simple Field (month)
-      sizeInBits += 8;
-      // Simple Field (day)
-      sizeInBits += 8;
-      // Simple Field (dayOfWeek)
-      sizeInBits += 8;
-      // Simple Field (hour)
-      sizeInBits += 8;
-      // Simple Field (minutes)
-      sizeInBits += 8;
-      // Simple Field (seconds)
-      sizeInBits += 8;
-      // Simple Field (nanoseconds)
-      sizeInBits += 32;
+      // Manual Field (value)
+      sizeInBits += 64;
     }
     return sizeInBits;
   }

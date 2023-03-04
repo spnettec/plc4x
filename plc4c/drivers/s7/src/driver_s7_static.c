@@ -113,6 +113,11 @@ time_t plc4c_s7_read_write_parse_tia_time(plc4c_spi_read_buffer* io) {
   return 0;
 }
 
+time_t plc4c_s7_read_write_parse_s7_bcd_date_and_time(plc4c_spi_read_buffer* io) {
+  // TODO: Implement ...
+  return 0;
+}
+
 time_t plc4c_s7_read_write_parse_s5_time(plc4c_spi_read_buffer* io) {
   // TODO: Implement ...
   return 0;

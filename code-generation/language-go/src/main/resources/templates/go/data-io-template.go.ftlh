@@ -211,12 +211,16 @@ func ${type.name}ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 			return values.NewPlcDATA_AND_TIMEFromSegments(uint32(year), uint32(month), uint32(day), uint32(hour), uint32(minutes), uint32(seconds), uint32(nanoseconds)), nil
                 <#elseif helper.hasFieldsWithNames(case.fields, "secondsSinceEpoch")>
 			return values.NewPlcDATA_AND_TIMEFromSecondsSinceEpoch(secondsSinceEpoch), nil
+                <#else>
+					return values.NewPlcDATE_AND_TIME(value), nil
                 </#if>
                 <#break>
             <#case "LDATE_AND_TIME">
 			readBuffer.CloseContext("${type.name}")
                 <#if helper.hasFieldsWithNames(case.fields, "nanosecondsSinceEpoch")>
 			return values.NewPlcLDATE_AND_TIMEFromNanosecondsSinceEpoch(uint64(nanosecondsSinceEpoch)), nil
+                <#else>
+					return values.NewPlcLDATE_AND_TIME(value), nil
                 </#if>
                 <#break>
 			<#case "Struct">

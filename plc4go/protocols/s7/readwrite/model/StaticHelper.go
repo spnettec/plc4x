@@ -97,7 +97,10 @@ func SerializeTiaDate(io utils.WriteBuffer, value values.PlcValue) error {
 	//throw new NotImplementedException("Serializing DATE not implemented");
 	return nil
 }
-
+func SerializeBCDDateAndTime(io utils.WriteBuffer, value values.PlcValue) error {
+	//throw new NotImplementedException("Serializing DATE not implemented");
+	return nil
+}
 func ParseTiaDateTime(io utils.ReadBuffer) (time.Time, error) {
 	/*try {
 	      int year = io.readUnsignedInt(16);
@@ -114,6 +117,9 @@ func ParseTiaDateTime(io utils.ReadBuffer) (time.Time, error) {
 	  } catch (Exception e) {
 	      return null;
 	  }*/
+	return time.Time{}, nil
+}
+func ParseS7BCDDateAndTime(io utils.ReadBuffer) (time.Time, error) {
 	return time.Time{}, nil
 }
 

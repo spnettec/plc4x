@@ -51,6 +51,7 @@ plc4c_return_code plc4c_s7_read_write_int_to_s7msec(plc4c_spi_write_buffer* writ
 char* plc4c_s7_read_write_parse_s7_string(plc4c_spi_read_buffer* io, int32_t stringLength, char* encoding, char* stringEncoding);
 
 char* plc4c_s7_read_write_parse_s7_char(plc4c_spi_read_buffer* io, char* encoding, char* stringEncoding);
+time_t plc4c_s7_read_write_parse_s7_bcd_date_and_time(plc4c_spi_read_buffer* io);
 
 time_t plc4c_s7_read_write_parse_tia_time(plc4c_spi_read_buffer* io);
 

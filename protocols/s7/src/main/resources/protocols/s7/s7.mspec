@@ -648,14 +648,7 @@
         ]
         // - Date & Time: interpreted as individual components.
         ['"IEC61131_DATE_AND_TIME"' DATE_AND_TIME
-            [simple uint 16 year]
-            [simple uint 8  month]
-            [simple uint 8  day]
-            [simple uint 8  dayOfWeek]
-            [simple uint 8  hour]
-            [simple uint 8  minutes]
-            [simple uint 8  seconds]
-            [simple uint 32 nanoseconds]
+            [manual dateTime value 'STATIC_CALL("parseS7BCDDateAndTime", readBuffer)' 'STATIC_CALL("serializeBCDDateAndTime", writeBuffer, _value)' '64']
         ]
         // - Date & Time: Interpreted as "number of nanoseconds since 1990-01-01"
         //['"IEC61131_LDATE_AND_TIME"' LDATE_AND_TIME

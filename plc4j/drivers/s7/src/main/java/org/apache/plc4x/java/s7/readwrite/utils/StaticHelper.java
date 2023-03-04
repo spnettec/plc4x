@@ -2016,7 +2016,7 @@ public class StaticHelper {
         }
     }
 
-    public static LocalDateTime parseS7DCDDateAndTime(ReadBuffer io) {
+    public static LocalDateTime parseS7BCDDateAndTime(ReadBuffer io) {
         try {
             int year = byteToYear(io.readByte());
             int month = decodeBcd(io.readByte());
@@ -2025,12 +2025,13 @@ public class StaticHelper {
             int minute = decodeBcd(io.readByte());
             int second = decodeBcd(io.readByte());
             int hsec = decodeBcd(io.readByte());
-            int msec = io.readByte() >> 4;
-            int dayOfWeek = io.readByte() & 0b00001111;
+            byte byte7 = io.readByte();
+            int msec = byte7 >> 4;
+            int dayOfWeek = byte7 & 0b00001111;
 
             return LocalDateTime.of(year, month, dayOfMonth, hour, minute, second, hsec * 10 + msec);
         } catch (Exception e) {
-            return null;
+            throw new PlcRuntimeException(e);
         }
     }
     public static void serializeBCDDateAndTime(WriteBuffer io, PlcValue value) throws SerializationException {
@@ -2045,11 +2046,11 @@ public class StaticHelper {
         io.writeByte((byte) (dateTime.getNano() % 10 << 4 | dateTime.getDayOfWeek().getValue()));
     }
     private static int decodeBcd(byte input){
-        return 10 * (input >> 4) + (input & 0b00001111);
+        return 10 * ((input >> 4) & 0b00001111) + (input & 0b00001111);
     }
     private static byte encodeBcd(int value)
     {
-        return (byte) ((value / 10 << 4) | value % 10);
+        return (byte) (((value / 10) << 4) | ((value % 10) & 0b00001111));
     }
     private static int byteToYear(byte bcdYear)
     {
