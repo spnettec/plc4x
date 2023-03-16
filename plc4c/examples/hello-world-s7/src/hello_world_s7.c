@@ -25,7 +25,7 @@
 
 #include "../../../spi/include/plc4c/spi/types_private.h"
 
-#define DEFAULT_CONNECTION_TEST_STRING "s7:tcp://192.168.23.30:102"
+#define DEFAULT_CONNECTION_TEST_STRING "s7:tcp://10.166.11.19:102"
 
 int numOpenConnections = 0;
 
@@ -165,67 +165,67 @@ int main(int argc, char** argv) {
         printf("SUCCESS\n");
 
         result = plc4c_read_request_add_tag_address(read_request, "BOOL",
-                                                    "%DB4:0.0:BOOL");
+                                                    "%DB1:0.0:BOOL");
         if (result != OK) {
           printf("FAILED\n");
           return -1;
         }
         result = plc4c_read_request_add_tag_address(read_request, "BYTE",
-                                                    "%DB4.1:BYTE");
+                                                    "%DB1:4:BYTE");
         if (result != OK) {
           printf("FAILED\n");
           return -1;
         }
         result = plc4c_read_request_add_tag_address(read_request, "WORD",
-                                                    "%DB4.2:WORD");
+                                                    "%DB1:8:WORD");
         if (result != OK) {
           printf("FAILED\n");
           return -1;
         }
         result = plc4c_read_request_add_tag_address(read_request, "DWORD",
-                                                    "%DB4.4:DWORD");
+                                                    "%DB1:14:DWORD");
         if (result != OK) {
           printf("FAILED\n");
           return -1;
         }
         result = plc4c_read_request_add_tag_address(read_request, "SINT",
-                                                    "%DB4.16:SINT");
+                                                    "%DB1.882:SINT");
         if (result != OK) {
           printf("FAILED\n");
           return -1;
         }
         result = plc4c_read_request_add_tag_address(read_request, "USINT",
-                                                    "%DB4.17:USINT");
+                                                    "%DB1.886:USINT");
         if (result != OK) {
           printf("FAILED\n");
           return -1;
         }
         result = plc4c_read_request_add_tag_address(read_request, "INT",
-                                                    "%DB4.18:INT");
+                                                    "%DB1:26:INT");
         if (result != OK) {
           printf("FAILED\n");
           return -1;
         }
         result = plc4c_read_request_add_tag_address(read_request, "UINT",
-                                                    "%DB4.20:UINT");
+                                                    "%DB1.890:UINT");
         if (result != OK) {
           printf("FAILED\n");
           return -1;
         }
         result = plc4c_read_request_add_tag_address(read_request, "DINT",
-                                                    "%DB4.22:DINT");
+                                                    "%DB1.32:DINT");
         if (result != OK) {
           printf("FAILED\n");
           return -1;
         }
         result = plc4c_read_request_add_tag_address(read_request, "UDINT",
-                                                    "%DB4.26:UDINT");
+                                                    "%DB1.896:UDINT");
         if (result != OK) {
           printf("FAILED\n");
           return -1;
         }
         result = plc4c_read_request_add_tag_address(read_request, "REAL",
-                                                    "%DB4.46:REAL");
+                                                    "%DB1.44:REAL");
         if (result != OK) {
           printf("FAILED\n");
           return -1;
