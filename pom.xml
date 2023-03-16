@@ -718,7 +718,10 @@
             <exclude>**/.git/**</exclude>
             <exclude>**/.gitignore</exclude>
             <exclude>**/cmake-*/**</exclude>
+            <exclude>**/.cmake/**</exclude>
             <exclude>**/.lock/**</exclude>
+            <exclude>**/downloads/**</exclude>
+            <exclude>plc4go/**</exclude>
 
             <!-- License Files for other licenses -->
             <exclude>**/UNLICENSE</exclude>
