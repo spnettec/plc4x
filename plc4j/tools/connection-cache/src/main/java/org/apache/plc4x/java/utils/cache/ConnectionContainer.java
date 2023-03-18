@@ -19,6 +19,8 @@
 package org.apache.plc4x.java.utils.cache;
 
 import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.api.PlcConnectionManager;
+import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 
 import java.time.Duration;
@@ -28,29 +30,36 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 
 class ConnectionContainer {
-
-    private PlcConnection connection;
+    private final PlcConnectionManager connectionManager;
+    private final String connectionUrl;
     private final Duration maxLeaseTime;
-    private boolean closed = false;
     private final Queue<CompletableFuture<PlcConnection>> queue;
 
+    private PlcConnection connection;
     private LeasedPlcConnection leasedConnection;
 
-    public boolean isClosed() {
-        return closed;
-    }
-    public PlcConnection getRawConnection() {
-        return connection;
-    }
-    public ConnectionContainer(PlcConnection connection, Duration maxLeaseTime) {
-        this.connection = connection;
+    public ConnectionContainer(PlcConnectionManager connectionManager, String connectionUrl, Duration maxLeaseTime) {
+        this.connectionManager = connectionManager;
+        this.connectionUrl = connectionUrl;
         this.maxLeaseTime = maxLeaseTime;
         this.queue = new LinkedList<>();
+        this.connection = null;
         this.leasedConnection = null;
     }
 
     public synchronized Future<PlcConnection> lease() {
         CompletableFuture<PlcConnection> connectionFuture = new CompletableFuture<>();
+
+        // Try to get a new connection, if we haven't got one yet.
+        if(connection == null) {
+            try {
+                connection = connectionManager.getConnection(connectionUrl);
+            } catch (PlcConnectionException e) {
+                connectionFuture.completeExceptionally(e);
+                return connectionFuture;
+            }
+        }
+
         // If the connection is currently idle, return the connection immediately.
         if (leasedConnection == null) {
             leasedConnection = new LeasedPlcConnection(this, connection, maxLeaseTime);
@@ -62,21 +71,30 @@ class ConnectionContainer {
         }
         return connectionFuture;
     }
-    public synchronized void close(){
-        CompletableFuture<PlcConnection> leaseFuture;
-        while((leaseFuture = queue.poll())!=null){
-            leaseFuture.completeExceptionally(new PlcRuntimeException("connection Container is cloned"));
-        }
-        leasedConnection = null;
-        connection = null;
-        closed = true;
-    }
-    public synchronized void returnConnection(LeasedPlcConnection returnedLeasedConnection) {
-        if(closed){
-            return;
-        }
+
+    public synchronized void returnConnection(LeasedPlcConnection returnedLeasedConnection, boolean invalidateConnection) {
         if(returnedLeasedConnection != leasedConnection) {
             throw new PlcRuntimeException("Error trying to return lease from invalid connection");
+        }
+
+        // If something happened while using the connection, invalidate this one and create a new connection.
+        if(invalidateConnection) {
+            // Close the old connection.
+            try {
+                connection.close();
+            } catch (Exception e) {
+                // We're ignoring this as we have no idea, what state the connection is in.
+            }
+
+            // Try to get a new connection.
+            try {
+                connection = connectionManager.getConnection(connectionUrl);
+            } catch (PlcConnectionException e) {
+                // If something goes wrong, close all waiting futures exceptionally.
+                queue.forEach(future -> {
+                    future.completeExceptionally(e);
+                });
+            }
         }
 
         // If the queue is empty, simply return.
@@ -88,7 +106,9 @@ class ConnectionContainer {
         // Create a new lease and complete the next future in the queue with this.
         leasedConnection = new LeasedPlcConnection(this, connection, maxLeaseTime);
         CompletableFuture<PlcConnection> leaseFuture = queue.poll();
-        leaseFuture.complete(leasedConnection);
+        if(leaseFuture != null) {
+            leaseFuture.complete(leasedConnection);
+        }
     }
 
 }
