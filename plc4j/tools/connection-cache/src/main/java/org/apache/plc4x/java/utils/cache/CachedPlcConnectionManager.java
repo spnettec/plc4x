@@ -21,6 +21,7 @@ package org.apache.plc4x.java.utils.cache;
 import org.apache.plc4x.java.DefaultPlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.PlcConnectionManager;
+import org.apache.plc4x.java.api.PlcDriverManager;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.slf4j.Logger;
@@ -62,7 +63,7 @@ public class CachedPlcConnectionManager implements PlcConnectionManager {
         ConnectionContainer connectionContainer;
         synchronized (connectionContainers) {
             connectionContainer = connectionContainers.get(url);
-            if (connectionContainers.get(url) == null) {
+            if (connectionContainer == null) {
                 LOG.debug("Creating new connection");
 
                 // Crate a connection container to manage handling this connection
@@ -80,6 +81,11 @@ public class CachedPlcConnectionManager implements PlcConnectionManager {
         } catch (ExecutionException | InterruptedException | TimeoutException e) {
             throw new PlcConnectionException("Error acquiring lease for connection", e);
         }
+    }
+
+    @Override
+    public PlcDriverManager getDriverManager() {
+        return connectionManager.getDriverManager();
     }
 
     public PlcConnection getConnection(String url, PlcAuthentication authentication) throws PlcConnectionException {

@@ -42,11 +42,11 @@ public class LeasedPlcConnection implements PlcConnection {
     private PlcConnection connection;
     private boolean invalidateConnection;
 
+    private final Timer usageTimer = new Timer();
+
     public LeasedPlcConnection(ConnectionContainer connectionContainer, PlcConnection connection, Duration maxUseTime) {
         this.connectionContainer = connectionContainer;
         this.connection = connection;
-        this.invalidateConnection = false;
-        Timer usageTimer = new Timer();
         usageTimer.schedule(new TimerTask() {
             @Override
             public void run() {
@@ -57,6 +57,7 @@ public class LeasedPlcConnection implements PlcConnection {
 
     @Override
     public synchronized void close() {
+        usageTimer.cancel();
         // Make the connection unusable.
         connection = null;
 
