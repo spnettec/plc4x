@@ -41,7 +41,7 @@ public class LeasedPlcConnection implements PlcConnection {
     private ConnectionContainer connectionContainer;
     private PlcConnection connection;
 
-    private Timer usageTimer = new Timer();
+    private final Timer usageTimer = new Timer();
 
     public LeasedPlcConnection(ConnectionContainer connectionContainer, PlcConnection connection, Duration maxUseTime) {
         this.connectionContainer = connectionContainer;
@@ -67,12 +67,16 @@ public class LeasedPlcConnection implements PlcConnection {
         connectionContainer = null;
     }
     public void destroy(){
-        try {
-            connection.close();
-        } catch (Exception e) {
+        if(connection!=null) {
+            try {
+                connection.close();
+            } catch (Exception e) {
+            }
         }
         close();
-        connectionContainer.close();
+        if(connectionContainer!=null){
+            connectionContainer.close();
+        }
     }
     @Override
     public void connect() throws PlcConnectionException {
