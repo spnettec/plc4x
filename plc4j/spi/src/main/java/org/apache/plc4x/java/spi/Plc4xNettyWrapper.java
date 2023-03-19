@@ -56,7 +56,6 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
     private final PlcAuthentication authentication;
 
     private final Queue<HandlerRegistration> registeredHandlers;
-    private final ChannelPipeline pipeline;
     private final boolean passive;
     private final TimeoutManager timeoutManager;
 
@@ -68,7 +67,6 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
     public Plc4xNettyWrapper(TimeoutManager timeoutManager, ChannelPipeline pipeline, boolean passive, Plc4xProtocolBase<T> protocol,
                              PlcAuthentication authentication, Class<T> clazz) {
         super(clazz, Object.class);
-        this.pipeline = pipeline;
         this.passive = passive;
         this.registeredHandlers = new ConcurrentLinkedQueue<>();
         this.protocolBase = protocol;
