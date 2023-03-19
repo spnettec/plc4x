@@ -38,8 +38,9 @@ import java.util.function.Consumer;
 
 public class LeasedPlcConnection implements PlcConnection {
 
-    private ConnectionContainer connectionContainer;
+    private final ConnectionContainer connectionContainer;
     private PlcConnection connection;
+    private boolean invalidateConnection;
 
     private final Timer usageTimer = new Timer();
 
@@ -57,27 +58,13 @@ public class LeasedPlcConnection implements PlcConnection {
     @Override
     public synchronized void close() {
         usageTimer.cancel();
-        if(connectionContainer == null) {
-            return;
-        }
-        // Tell the connection container that the connection is free to be reused.
-        connectionContainer.returnConnection(this);
         // Make the connection unusable.
         connection = null;
-        connectionContainer = null;
+
+        // Tell the connection container that the connection is free to be reused.
+        connectionContainer.returnConnection(this, invalidateConnection);
     }
-    public void destroy(){
-        if(connection!=null) {
-            try {
-                connection.close();
-            } catch (Exception e) {
-            }
-        }
-        close();
-        if(connectionContainer!=null){
-            connectionContainer.close();
-        }
-    }
+
     @Override
     public void connect() throws PlcConnectionException {
         throw new PlcConnectionException("Error connecting leased connection");
@@ -86,13 +73,9 @@ public class LeasedPlcConnection implements PlcConnection {
     @Override
     public boolean isConnected() {
         if(connection == null) {
-            return false;
+            throw new PlcRuntimeException("Error using leased connection after returning it to the cache.");
         }
-        if (!connection.isConnected())
-        {
-            throw new PlcRuntimeException("Error connecting leased connection.The connection have some problem");
-        }
-        return true;
+        return connection.isConnected();
     }
 
     @Override
@@ -117,13 +100,11 @@ public class LeasedPlcConnection implements PlcConnection {
             throw new PlcRuntimeException("Error using leased connection after returning it to the cache.");
         }
         final PlcReadRequest.Builder innerBuilder = connection.readRequestBuilder();
-        return new PlcReadRequest.Builder(){
-
+        return new PlcReadRequest.Builder() {
             @Override
             public PlcReadRequest build() {
                 final PlcReadRequest innerPlcReadRequest = innerBuilder.build();
                 return new PlcReadRequest(){
-
                     @Override
                     public CompletableFuture<? extends PlcReadResponse> execute() {
                         CompletableFuture<? extends PlcReadResponse> future = innerPlcReadRequest.execute();
@@ -132,10 +113,8 @@ public class LeasedPlcConnection implements PlcConnection {
                             if (throwable == null) {
                                 responseFuture.complete(plcReadResponse);
                             } else {
-                                try {
-                                    destroy();
-                                } catch (Exception e) {
-                                }
+                                // Mark the connection as invalid.
+                                invalidateConnection = true;
                                 responseFuture.completeExceptionally(throwable);
                             }
                             return null;
@@ -196,10 +175,8 @@ public class LeasedPlcConnection implements PlcConnection {
                             if (throwable == null) {
                                 responseFuture.complete(plcWriteResponse);
                             } else {
-                                try {
-                                    destroy();
-                                } catch (Exception e) {
-                                }
+                                // Mark the connection as invalid.
+                                invalidateConnection = true;
                                 responseFuture.completeExceptionally(throwable);
                             }
                             return null;
@@ -270,10 +247,8 @@ public class LeasedPlcConnection implements PlcConnection {
                             if (throwable == null) {
                                 responseFuture.complete(plcSubscriptionResponse);
                             } else {
-                                try {
-                                    destroy();
-                                } catch (Exception e) {
-                                }
+                                // Mark the connection as invalid.
+                                invalidateConnection = true;
                                 responseFuture.completeExceptionally(throwable);
                             }
                             return null;
@@ -364,10 +339,8 @@ public class LeasedPlcConnection implements PlcConnection {
                             if (throwable == null) {
                                 responseFuture.complete(plcUnsubscriptionResponse);
                             } else {
-                                try {
-                                    destroy();
-                                } catch (Exception e) {
-                                }
+                                // Mark the connection as invalid.
+                                invalidateConnection = true;
                                 responseFuture.completeExceptionally(throwable);
                             }
                             return null;
@@ -418,10 +391,8 @@ public class LeasedPlcConnection implements PlcConnection {
                             if (throwable == null) {
                                 responseFuture.complete(plcBrowseResponse);
                             } else {
-                                try {
-                                    destroy();
-                                } catch (Exception e) {
-                                }
+                                // Mark the connection as invalid.
+                                invalidateConnection = true;
                                 responseFuture.completeExceptionally(throwable);
                             }
                             return null;
@@ -437,10 +408,8 @@ public class LeasedPlcConnection implements PlcConnection {
                             if (throwable == null) {
                                 responseFuture.complete(plcBrowseResponse);
                             } else {
-                                try {
-                                    destroy();
-                                } catch (Exception e) {
-                                }
+                                // Mark the connection as invalid.
+                                invalidateConnection = true;
                                 responseFuture.completeExceptionally(throwable);
                             }
                             return null;

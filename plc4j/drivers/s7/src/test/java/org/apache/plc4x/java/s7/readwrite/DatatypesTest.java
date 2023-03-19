@@ -65,7 +65,7 @@ public class DatatypesTest {
                 builder.addTagAddress("char-array", "%DB1:880:CHAR[2]"); // "H", "u", "r", "z"
                 final PlcReadRequest readRequest = builder.build();
 
-                final PlcReadResponse readResponse = readRequest.execute().get(3000, TimeUnit.MILLISECONDS);
+                final PlcReadResponse readResponse = readRequest.execute().get();
 
                 //System.out.println(readResponse.getAsPlcValue());
 
@@ -73,7 +73,7 @@ public class DatatypesTest {
                 System.out.println("error:"+e.getMessage());
             }
             try {
-                Thread.sleep(3000);
+                Thread.sleep(300);
             } catch (InterruptedException e) {
                 System.out.println("sleep:"+e.getMessage());
             }

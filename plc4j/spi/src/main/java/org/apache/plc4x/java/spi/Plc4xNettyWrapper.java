@@ -246,7 +246,8 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
     }
 
     private Consumer<TimeoutException> onTimeout(AtomicReference<HandlerRegistration> reference, Consumer<TimeoutException> onTimeoutConsumer) {
-        return new Consumer<TimeoutException>() {
+        return new Consumer<>() {
+
             @Override
             public void accept(TimeoutException e) {
                 registeredHandlers.remove(reference.get());
