@@ -58,13 +58,21 @@ public class NettyHashTimerTimeoutManager implements TimeoutManager {
     @Override
     public void stop() {
         Set<Timeout> timeouts = timer.stop();
-        timeouts.forEach(Timeout::cancel);
+        timeouts.forEach(timeout -> {
+            if (!timeout.isCancelled()) {
+                timeout.cancel();
+                try {
+                    timeout.task().run(timeout);
+                } catch (Exception ignore) {
+
+                }
+            }
+        });
     }
 
     static class TimeoutCompletionCallback implements CompletionCallback {
 
         private final Timeout timeout;
-        private Consumer<TimeoutException> onTimeout;
 
         TimeoutCompletionCallback(Timeout timeout) {
             this.timeout = timeout;

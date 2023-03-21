@@ -23,6 +23,9 @@ import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.metadata.PlcConnectionMetadata;
+import org.apache.plc4x.java.api.model.PlcQuery;
+import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
+import org.apache.plc4x.java.api.model.PlcSubscriptionTag;
 import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.value.PlcValue;
 
@@ -31,13 +34,15 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 
 public class LeasedPlcConnection implements PlcConnection {
 
-    private ConnectionContainer connectionContainer;
+    private final ConnectionContainer connectionContainer;
     private PlcConnection connection;
+    private boolean invalidateConnection;
 
-    private Timer usageTimer = new Timer();
+    private final Timer usageTimer = new Timer();
 
     public LeasedPlcConnection(ConnectionContainer connectionContainer, PlcConnection connection, Duration maxUseTime) {
         this.connectionContainer = connectionContainer;
@@ -53,23 +58,13 @@ public class LeasedPlcConnection implements PlcConnection {
     @Override
     public synchronized void close() {
         usageTimer.cancel();
-        if(connectionContainer == null) {
-            return;
-        }
-        // Tell the connection container that the connection is free to be reused.
-        connectionContainer.returnConnection(this);
         // Make the connection unusable.
         connection = null;
-        connectionContainer = null;
+
+        // Tell the connection container that the connection is free to be reused.
+        connectionContainer.returnConnection(this, invalidateConnection);
     }
-    public void destroy(){
-        try {
-            connection.close();
-        } catch (Exception e) {
-        }
-        close();
-        connectionContainer.close();
-    }
+
     @Override
     public void connect() throws PlcConnectionException {
         throw new PlcConnectionException("Error connecting leased connection");
@@ -78,13 +73,9 @@ public class LeasedPlcConnection implements PlcConnection {
     @Override
     public boolean isConnected() {
         if(connection == null) {
-            return false;
+            throw new PlcRuntimeException("Error using leased connection after returning it to the cache.");
         }
-        if (!connection.isConnected())
-        {
-            throw new PlcRuntimeException("Error connecting leased connection.The connection have some problem");
-        }
-        return true;
+        return connection.isConnected();
     }
 
     @Override
@@ -109,13 +100,11 @@ public class LeasedPlcConnection implements PlcConnection {
             throw new PlcRuntimeException("Error using leased connection after returning it to the cache.");
         }
         final PlcReadRequest.Builder innerBuilder = connection.readRequestBuilder();
-        return new PlcReadRequest.Builder(){
-
+        return new PlcReadRequest.Builder() {
             @Override
             public PlcReadRequest build() {
                 final PlcReadRequest innerPlcReadRequest = innerBuilder.build();
                 return new PlcReadRequest(){
-
                     @Override
                     public CompletableFuture<? extends PlcReadResponse> execute() {
                         CompletableFuture<? extends PlcReadResponse> future = innerPlcReadRequest.execute();
@@ -124,10 +113,8 @@ public class LeasedPlcConnection implements PlcConnection {
                             if (throwable == null) {
                                 responseFuture.complete(plcReadResponse);
                             } else {
-                                try {
-                                    destroy();
-                                } catch (Exception e) {
-                                }
+                                // Mark the connection as invalid.
+                                invalidateConnection = true;
                                 responseFuture.completeExceptionally(throwable);
                             }
                             return null;
@@ -164,7 +151,7 @@ public class LeasedPlcConnection implements PlcConnection {
 
             @Override
             public PlcReadRequest.Builder addTag(String name, PlcTag tag) {
-                return innerBuilder.addTag(name,tag);
+                return innerBuilder.addTag(name, tag);
             }
         };
     }
@@ -174,7 +161,7 @@ public class LeasedPlcConnection implements PlcConnection {
         if(connection == null) {
             throw new PlcRuntimeException("Error using leased connection after returning it to the cache.");
         }
-        final PlcWriteRequest.Builder innerBuilder =  connection.writeRequestBuilder();
+        final PlcWriteRequest.Builder innerBuilder = connection.writeRequestBuilder();
         return new PlcWriteRequest.Builder() {
             @Override
             public PlcWriteRequest build() {
@@ -184,14 +171,12 @@ public class LeasedPlcConnection implements PlcConnection {
                     public CompletableFuture<? extends PlcWriteResponse> execute() {
                         CompletableFuture<? extends PlcWriteResponse> future = innerPlcWriteRequest.execute();
                         final CompletableFuture<PlcWriteResponse> responseFuture = new CompletableFuture<>();
-                        future.handle((plcWriteResponse,throwable)->{
+                        future.handle((plcWriteResponse, throwable)->{
                             if (throwable == null) {
                                 responseFuture.complete(plcWriteResponse);
                             } else {
-                                try {
-                                    destroy();
-                                } catch (Exception e) {
-                                }
+                                // Mark the connection as invalid.
+                                invalidateConnection = true;
                                 responseFuture.completeExceptionally(throwable);
                             }
                             return null;
@@ -233,12 +218,12 @@ public class LeasedPlcConnection implements PlcConnection {
 
             @Override
             public PlcWriteRequest.Builder addTagAddress(String name, String tagAddress, Object... values) {
-                return innerBuilder.addTagAddress(name,tagAddress,values);
+                return innerBuilder.addTagAddress(name, tagAddress, values);
             }
 
             @Override
             public PlcWriteRequest.Builder addTag(String name, PlcTag tag, Object... values) {
-                return innerBuilder.addTag(name,tag,values);
+                return innerBuilder.addTag(name, tag, values);
             }
         };
     }
@@ -248,7 +233,91 @@ public class LeasedPlcConnection implements PlcConnection {
         if(connection == null) {
             throw new PlcRuntimeException("Error using leased connection after returning it to the cache.");
         }
-        return connection.subscriptionRequestBuilder();
+        final PlcSubscriptionRequest.Builder innerBuilder = connection.subscriptionRequestBuilder();
+        return new PlcSubscriptionRequest.Builder() {
+            @Override
+            public PlcSubscriptionRequest build() {
+                PlcSubscriptionRequest innerPlcSubscriptionRequest = innerBuilder.build();
+                return new PlcSubscriptionRequest() {
+                    @Override
+                    public CompletableFuture<? extends PlcSubscriptionResponse> execute() {
+                        CompletableFuture<? extends PlcSubscriptionResponse> future = innerPlcSubscriptionRequest.execute();
+                        final CompletableFuture<PlcSubscriptionResponse> responseFuture = new CompletableFuture<>();
+                        future.handle((plcSubscriptionResponse, throwable)->{
+                            if (throwable == null) {
+                                responseFuture.complete(plcSubscriptionResponse);
+                            } else {
+                                // Mark the connection as invalid.
+                                invalidateConnection = true;
+                                responseFuture.completeExceptionally(throwable);
+                            }
+                            return null;
+                        });
+                        return responseFuture;
+                    }
+
+                    @Override
+                    public int getNumberOfTags() {
+                        return innerPlcSubscriptionRequest.getNumberOfTags();
+                    }
+
+                    @Override
+                    public LinkedHashSet<String> getTagNames() {
+                        return innerPlcSubscriptionRequest.getTagNames();
+                    }
+
+                    @Override
+                    public PlcSubscriptionTag getTag(String name) {
+                        return innerPlcSubscriptionRequest.getTag(name);
+                    }
+
+                    @Override
+                    public List<PlcSubscriptionTag> getTags() {
+                        return innerPlcSubscriptionRequest.getTags();
+                    }
+
+                    @Override
+                    public Map<String, List<Consumer<PlcSubscriptionEvent>>> getPreRegisteredConsumers() {
+                        return innerPlcSubscriptionRequest.getPreRegisteredConsumers();
+                    }
+                };
+            }
+
+            @Override
+            public PlcSubscriptionRequest.Builder addCyclicTagAddress(String name, String tagAddress, Duration pollingInterval) {
+                return innerBuilder.addCyclicTagAddress(name, tagAddress, pollingInterval);
+            }
+
+            @Override
+            public PlcSubscriptionRequest.Builder addCyclicTag(String name, PlcTag tag, Duration pollingInterval) {
+                return innerBuilder.addCyclicTag(name, tag, pollingInterval);
+            }
+
+            @Override
+            public PlcSubscriptionRequest.Builder addChangeOfStateTagAddress(String name, String tagAddress) {
+                return innerBuilder.addChangeOfStateTagAddress(name, tagAddress);
+            }
+
+            @Override
+            public PlcSubscriptionRequest.Builder addChangeOfStateTag(String name, PlcTag tag) {
+                return innerBuilder.addChangeOfStateTag(name, tag);
+            }
+
+            @Override
+            public PlcSubscriptionRequest.Builder addEventTagAddress(String name, String tagAddress) {
+                return innerBuilder.addEventTagAddress(name, tagAddress);
+            }
+
+            @Override
+            public PlcSubscriptionRequest.Builder addEventTag(String name, PlcTag tag) {
+                return innerBuilder.addEventTag(name, tag);
+            }
+
+            @Override
+            public PlcSubscriptionRequest.Builder addPreRegisteredConsumer(String name, Consumer<PlcSubscriptionEvent> preRegisteredConsumer) {
+                return innerBuilder.addPreRegisteredConsumer(name, preRegisteredConsumer);
+            }
+        };
     }
 
     @Override
@@ -256,7 +325,51 @@ public class LeasedPlcConnection implements PlcConnection {
         if(connection == null) {
             throw new PlcRuntimeException("Error using leased connection after returning it to the cache.");
         }
-        return connection.unsubscriptionRequestBuilder();
+        final PlcUnsubscriptionRequest.Builder innerBuilder = connection.unsubscriptionRequestBuilder();
+        return new PlcUnsubscriptionRequest.Builder() {
+            @Override
+            public PlcUnsubscriptionRequest build() {
+                PlcUnsubscriptionRequest innerPlcUnsubscriptionRequest = innerBuilder.build();
+                return new PlcUnsubscriptionRequest() {
+                    @Override
+                    public CompletableFuture<PlcUnsubscriptionResponse> execute() {
+                        CompletableFuture<? extends PlcUnsubscriptionResponse> future = innerPlcUnsubscriptionRequest.execute();
+                        final CompletableFuture<PlcUnsubscriptionResponse> responseFuture = new CompletableFuture<>();
+                        future.handle((plcUnsubscriptionResponse, throwable)->{
+                            if (throwable == null) {
+                                responseFuture.complete(plcUnsubscriptionResponse);
+                            } else {
+                                // Mark the connection as invalid.
+                                invalidateConnection = true;
+                                responseFuture.completeExceptionally(throwable);
+                            }
+                            return null;
+                        });
+                        return responseFuture;
+                    }
+
+                    @Override
+                    public List<PlcSubscriptionHandle> getSubscriptionHandles() {
+                        return innerPlcUnsubscriptionRequest.getSubscriptionHandles();
+                    }
+                };
+            }
+
+            @Override
+            public PlcUnsubscriptionRequest.Builder addHandles(PlcSubscriptionHandle plcSubscriptionHandle) {
+                return innerBuilder.addHandles(plcSubscriptionHandle);
+            }
+
+            @Override
+            public PlcUnsubscriptionRequest.Builder addHandles(PlcSubscriptionHandle plcSubscriptionHandle1, PlcSubscriptionHandle... plcSubscriptionHandles) {
+                return innerBuilder.addHandles(plcSubscriptionHandle1, plcSubscriptionHandles);
+            }
+
+            @Override
+            public PlcUnsubscriptionRequest.Builder addHandles(Collection<PlcSubscriptionHandle> plcSubscriptionHandle) {
+                return innerBuilder.addHandles(plcSubscriptionHandle);
+            }
+        };
     }
 
     @Override
@@ -264,7 +377,63 @@ public class LeasedPlcConnection implements PlcConnection {
         if(connection == null) {
             throw new PlcRuntimeException("Error using leased connection after returning it to the cache.");
         }
-        return connection.browseRequestBuilder();
+        final PlcBrowseRequest.Builder innerBuilder = connection.browseRequestBuilder();
+        return new PlcBrowseRequest.Builder() {
+            @Override
+            public PlcBrowseRequest build() {
+                PlcBrowseRequest innerPlcBrowseRequest = innerBuilder.build();
+                return new PlcBrowseRequest() {
+                    @Override
+                    public CompletableFuture<? extends PlcBrowseResponse> execute() {
+                        CompletableFuture<? extends PlcBrowseResponse> future = innerPlcBrowseRequest.execute();
+                        final CompletableFuture<PlcBrowseResponse> responseFuture = new CompletableFuture<>();
+                        future.handle((plcBrowseResponse, throwable)->{
+                            if (throwable == null) {
+                                responseFuture.complete(plcBrowseResponse);
+                            } else {
+                                // Mark the connection as invalid.
+                                invalidateConnection = true;
+                                responseFuture.completeExceptionally(throwable);
+                            }
+                            return null;
+                        });
+                        return responseFuture;
+                    }
+
+                    @Override
+                    public CompletableFuture<? extends PlcBrowseResponse> executeWithInterceptor(PlcBrowseRequestInterceptor interceptor) {
+                        CompletableFuture<? extends PlcBrowseResponse> future = innerPlcBrowseRequest.executeWithInterceptor(interceptor);
+                        final CompletableFuture<PlcBrowseResponse> responseFuture = new CompletableFuture<>();
+                        future.handle((plcBrowseResponse, throwable)->{
+                            if (throwable == null) {
+                                responseFuture.complete(plcBrowseResponse);
+                            } else {
+                                // Mark the connection as invalid.
+                                invalidateConnection = true;
+                                responseFuture.completeExceptionally(throwable);
+                            }
+                            return null;
+                        });
+                        return responseFuture;
+                    }
+
+                    @Override
+                    public LinkedHashSet<String> getQueryNames() {
+                        return innerPlcBrowseRequest.getQueryNames();
+                    }
+
+                    @Override
+                    public PlcQuery getQuery(String name) {
+                        return innerPlcBrowseRequest.getQuery(name);
+                    }
+                };
+            }
+
+            @Override
+            public PlcBrowseRequest.Builder addQuery(String name, String query) {
+                return innerBuilder.addQuery(name, query);
+            }
+        };
     }
 
 }

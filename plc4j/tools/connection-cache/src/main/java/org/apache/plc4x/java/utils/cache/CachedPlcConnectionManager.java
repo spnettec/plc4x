@@ -59,41 +59,18 @@ public class CachedPlcConnectionManager implements PlcConnectionManager {
         this.connectionContainers = new HashMap<>();
     }
 
-    @Override
     public PlcConnection getConnection(String url) throws PlcConnectionException {
-        return getConnection(url,null);
-    }
-
-    @Override
-    public PlcConnection getConnection(String url, PlcAuthentication authentication) throws PlcConnectionException {
         ConnectionContainer connectionContainer;
         synchronized (connectionContainers) {
             connectionContainer = connectionContainers.get(url);
-            if (connectionContainer == null || connectionContainer.isClosed()) {
+            if (connectionContainer == null) {
                 LOG.debug("Creating new connection");
 
-                // Establish the real connection to the plc
-                PlcConnection connection;
-                if(authentication!=null) {
-                    connection = connectionManager.getConnection(url,authentication);
-                } else{
-                    connection = connectionManager.getConnection(url);
-                }
-                connectionContainer = new ConnectionContainer(connection, maxLeaseTime);
+                // Crate a connection container to manage handling this connection
+                connectionContainer = new ConnectionContainer(connectionManager, url, maxLeaseTime);
                 connectionContainers.put(url, connectionContainer);
             } else {
                 LOG.debug("Reusing exising connection");
-                if (connectionContainer.getRawConnection() != null && !connectionContainer.getRawConnection().isConnected()) {
-                    connectionContainer.close();
-                    PlcConnection connection;
-                    if(authentication!=null) {
-                        connection = connectionManager.getConnection(url,authentication);
-                    } else{
-                        connection = connectionManager.getConnection(url);
-                    }
-                    connectionContainer = new ConnectionContainer(connection, maxLeaseTime);
-                    connectionContainers.put(url, connectionContainer);
-                }
             }
         }
 
@@ -102,8 +79,6 @@ public class CachedPlcConnectionManager implements PlcConnectionManager {
         try {
             return leaseFuture.get(this.maxWaitTime.toMillis(), TimeUnit.MILLISECONDS);
         } catch (ExecutionException | InterruptedException | TimeoutException e) {
-            connectionContainer.close();
-            connectionContainers.remove(url);
             throw new PlcConnectionException("Error acquiring lease for connection", e);
         }
     }
@@ -112,10 +87,11 @@ public class CachedPlcConnectionManager implements PlcConnectionManager {
     public PlcDriverManager getDriverManager() {
         return connectionManager.getDriverManager();
     }
-    public void destroy(){
-        connectionContainers.values().forEach(ConnectionContainer::close);
-        connectionContainers.clear();
+
+    public PlcConnection getConnection(String url, PlcAuthentication authentication) throws PlcConnectionException {
+        throw new PlcConnectionException("the cached driver manager currently doesn't support authentication");
     }
+
     public static class Builder {
 
         private final PlcConnectionManager connectionManager;
