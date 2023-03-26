@@ -72,7 +72,7 @@ type TagHandler struct {
 func NewTagHandler() TagHandler {
 	return TagHandler{
 		statusRequestPattern: regexp.MustCompile(`^status/(?P<statusRequestType>(?P<binary>binary)|level=0x(?P<startingGroupAddressLabel>00|20|40|60|80|A0|C0|E0))/(?P<application>.*)`),
-		calPattern:           regexp.MustCompile(`^cal/(?P<unitAddress>.+)/(?P<calType>reset|recall=\[(?P<recallParamNo>\w+), ?(?P<recallCount>\d+)]|identify=(?P<identifyAttribute>\w+)|getstatus=(?P<getstatusParamNo>\w+), ?(?P<getstatusCount>\d+)|write=\[(?P<writeParamNo>\w+), ?(?P<writeCode>0[xX][0-9a-fA-F][0-9a-fA-F])]|identifyReply=(?P<replyAttribute>\w+)|reply=(?P<replyParamNo>\w+)|status=(?P<statusApplication>.*)|statusExtended=(?P<statusExtendedApplication>.*))`),
+		calPattern:           regexp.MustCompile(`^cal/(?P<unitAddress>.+)/(?P<calType>reset|recall=\[(?P<recallParamNo>\w+), ?(?P<recallCount>\d+)]|identify=(?P<identifyAttribute>\w+)|getStatus=(?P<getStatusParamNo>\w+), ?(?P<getStatusCount>\d+)|write=\[(?P<writeParamNo>\w+), ?(?P<writeCode>0[xX][0-9a-fA-F][0-9a-fA-F])]|identifyReply=(?P<replyAttribute>\w+)|reply=(?P<replyParamNo>\w+)|status=(?P<statusApplication>.*)|statusExtended=(?P<statusExtendedApplication>.*))`),
 		salPattern:           regexp.MustCompile(`^sal/(?P<application>.*)/(?P<salCommand>.*)`),
 		salMonitorPattern:    regexp.MustCompile(`^salmonitor/(?P<unitAddress>.+)/(?P<application>.+)`),
 		mmiMonitorPattern:    regexp.MustCompile(`^mmimonitor/(?P<unitAddress>.+)/(?P<application>.+)`),
@@ -137,6 +137,8 @@ func (m TagHandler) ParseQuery(query string) (model.PlcQuery, error) {
 }
 
 func (m TagHandler) handleStatusRequestPattern(match map[string]string) (model.PlcTag, error) {
+	var bridgeAddresses []readWriteModel.BridgeAddress
+	// TODO: extract bridge addresses
 	var startingGroupAddressLabel *byte
 	var statusRequestType StatusRequestType
 	statusRequestArgument := match["statusRequestType"]
@@ -159,7 +161,7 @@ func (m TagHandler) handleStatusRequestPattern(match map[string]string) (model.P
 	if err != nil {
 		return nil, errors.Wrap(err, "Error getting application id from argument")
 	}
-	return NewStatusTag(statusRequestType, startingGroupAddressLabel, application, 1), nil
+	return NewStatusTag(bridgeAddresses, statusRequestType, startingGroupAddressLabel, application, 1), nil
 }
 
 func (m TagHandler) handleCalPattern(match map[string]string) (model.PlcTag, error) {
@@ -181,6 +183,8 @@ func (m TagHandler) handleCalPattern(match map[string]string) (model.PlcTag, err
 		}
 		unitAddress = readWriteModel.NewUnitAddress(byte(atoi))
 	}
+	var bridgeAddresses []readWriteModel.BridgeAddress
+	// TODO: extract bridge addresses
 
 	calTypeArgument := match["calType"]
 	switch {
@@ -216,7 +220,7 @@ func (m TagHandler) handleCalPattern(match map[string]string) (model.PlcTag, err
 			return nil, errors.Wrap(err, "recallCount not a valid number")
 		}
 		count = uint8(atoi)
-		return NewCALRecallTag(unitAddress, recalParamNo, count, 1), nil
+		return NewCALRecallTag(unitAddress, bridgeAddresses, recalParamNo, count, 1), nil
 	case strings.HasPrefix(calTypeArgument, "identify="):
 		var attribute readWriteModel.Attribute
 		attributeArgument := match["identifyAttribute"]
@@ -240,10 +244,10 @@ func (m TagHandler) handleCalPattern(match map[string]string) (model.PlcTag, err
 				attribute = parameterByName
 			}
 		}
-		return NewCALIdentifyTag(unitAddress, attribute, 1), nil
-	case strings.HasPrefix(calTypeArgument, "getstatus="):
+		return NewCALIdentifyTag(unitAddress, bridgeAddresses, attribute, 1), nil
+	case strings.HasPrefix(calTypeArgument, "getStatus="):
 		var recalParamNo readWriteModel.Parameter
-		recallParamNoArgument := match["getstatusParamNo"]
+		recallParamNoArgument := match["getStatusParamNo"]
 		if strings.HasPrefix(recallParamNoArgument, "0x") {
 			decodedHex, err := hex.DecodeString(recallParamNoArgument[2:])
 			if err != nil {
@@ -259,18 +263,18 @@ func (m TagHandler) handleCalPattern(match map[string]string) (model.PlcTag, err
 			} else {
 				parameterByName, ok := readWriteModel.ParameterByName(recallParamNoArgument)
 				if !ok {
-					return nil, errors.Errorf("Unknown getstatusParamNo %s", recallParamNoArgument)
+					return nil, errors.Errorf("Unknown getStatusParamNo %s", recallParamNoArgument)
 				}
 				recalParamNo = parameterByName
 			}
 		}
 		var count uint8
-		atoi, err := strconv.ParseUint(match["getstatusCount"], 10, 8)
+		atoi, err := strconv.ParseUint(match["getStatusCount"], 10, 8)
 		if err != nil {
-			return nil, errors.Wrap(err, "getstatusCount not a valid number")
+			return nil, errors.Wrap(err, "getStatusCount not a valid number")
 		}
 		count = uint8(atoi)
-		return NewCALGetstatusTag(unitAddress, recalParamNo, count, 1), nil
+		return NewCALGetStatusTag(unitAddress, bridgeAddresses, recalParamNo, count, 1), nil
 	case strings.HasPrefix(calTypeArgument, "write="):
 		panic("Not implemented") // TODO: implement me
 	case strings.HasPrefix(calTypeArgument, "identifyReply="):
@@ -287,6 +291,8 @@ func (m TagHandler) handleCalPattern(match map[string]string) (model.PlcTag, err
 }
 
 func (m TagHandler) handleSALPattern(match map[string]string) (model.PlcTag, error) {
+	var bridgeAddresses []readWriteModel.BridgeAddress
+	// TODO: extract bridge addresses
 	application, err := applicationIdFromArgument(match["application"])
 	if err != nil {
 		return nil, errors.Wrap(err, "Error getting application id from argument")
@@ -307,7 +313,7 @@ func (m TagHandler) handleSALPattern(match map[string]string) (model.PlcTag, err
 	if !isValid {
 		return nil, errors.Errorf("Invalid sal command %s for %s. Allowed requests: %s", salCommand, application, PossibleSalCommands[application.ApplicationId()])
 	}
-	return NewSALTag(application, salCommand, numElements), nil
+	return NewSALTag(bridgeAddresses, application, salCommand, numElements), nil
 }
 
 func (m TagHandler) handleSALMonitorPattern(match map[string]string) (model.PlcTag, error) {

@@ -707,9 +707,11 @@ public enum KnxManufacturer {
   M_OJEAELECTRONICS((int) 615, (int) 674, (String) "OjeaElectronics"),
   M_SMART_NODE((int) 616, (int) 675, (String) "Smart Node"),
   M_NEXHOME((int) 617, (int) 676, (String) "NEXhome"),
-  M_ABB___RESERVED((int) 618, (int) 43954, (String) "ABB - reserved"),
+  M_HUOTENG_WULIAN_JIANGSU_CO___LTD(
+      (int) 618, (int) 677, (String) "Huoteng Wulian (Jiangsu) Co., Ltd"),
+  M_ABB___RESERVED((int) 619, (int) 43954, (String) "ABB - reserved"),
   M_BUSCH_JAEGER_ELEKTRO___RESERVED(
-      (int) 619, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
+      (int) 620, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
   private static final Map<Integer, KnxManufacturer> map;
 
   static {
