@@ -164,6 +164,7 @@
     <skip-code-generation-tests>true</skip-code-generation-tests>
     <enable-all-tests>false</enable-all-tests>
     <excluded-test-groups>require-all-tests</excluded-test-groups>
+    <h2.version>2.1.214</h2.version>
   </properties>
 
   <modules>

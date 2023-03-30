@@ -21,5 +21,6 @@ package org.apache.plc4x.java.simulated.types;
 public enum SimulatedTagType {
     RANDOM,
     STATE,
-    STDOUT
+    STDOUT,
+    FILE
 }

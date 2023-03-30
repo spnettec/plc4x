@@ -18,18 +18,22 @@
  */
 package org.apache.plc4x.java.simulated.connection;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.plc4x.java.api.model.PlcTag;
-import org.apache.plc4x.java.api.model.PlcSubscriptionTag;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
-import org.apache.plc4x.java.api.value.*;
-import org.apache.plc4x.java.simulated.tag.SimulatedTag;
+import org.apache.plc4x.java.api.model.PlcSubscriptionTag;
+import org.apache.plc4x.java.api.model.PlcTag;
+import org.apache.plc4x.java.api.value.PlcValue;
+import org.apache.plc4x.java.simulated.configuration.SimulatedConfiguration;
 import org.apache.plc4x.java.simulated.readwrite.DataItem;
 import org.apache.plc4x.java.simulated.readwrite.SimulatedDataTypeSizes;
+import org.apache.plc4x.java.simulated.tag.SimulatedTag;
+import org.apache.plc4x.java.simulated.types.SimulatedTagType;
 import org.apache.plc4x.java.spi.generation.*;
-
 import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionTag;
-
+import org.apache.plc4x.java.spi.values.PlcValueHandler;
+import org.h2.mvstore.MVMap;
+import org.h2.mvstore.MVStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,6 +57,7 @@ public class SimulatedDevice {
 
     private final Map<SimulatedTag, PlcValue> state = new HashMap<>();
 
+
     private final Map<PlcSubscriptionHandle, ScheduledFuture<?>> cyclicSubscriptions = new HashMap<>();
 
     private final Map<PlcSubscriptionHandle, Future<?>> eventSubscriptions = new HashMap<>();
@@ -61,10 +66,37 @@ public class SimulatedDevice {
 
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
+    private SimulatedConfiguration configuration;
+
     private final ExecutorService pool = Executors.newCachedThreadPool();
 
     public SimulatedDevice(String name) {
         this.name = name;
+    }
+    public SimulatedDevice(String name, SimulatedConfiguration configuration) {
+        this.name = name;
+        this.configuration = configuration;
+    }
+
+    private synchronized Optional<PlcValue> getMvValue(PlcTag tag){
+        if(this.configuration!=null && StringUtils.isNotEmpty(this.configuration.getFile())) {
+            try (MVStore s = MVStore.open(configuration.getFile())) {
+                s.setVersionsToKeep(0);
+                MVMap<String, String> client = s.openMap(configuration.getData());
+                return Optional.ofNullable(PlcValueHandler.of(tag,client.get(tag.getAddressString())));
+            }
+        }
+        return Optional.empty();
+    }
+
+    private synchronized void writeMvValue(String key,String value){
+        if(this.configuration!=null && StringUtils.isNotEmpty(this.configuration.getFile())) {
+            try (MVStore s = MVStore.open(configuration.getFile())) {
+                s.setVersionsToKeep(0);
+                MVMap<String, String> client = s.openMap(configuration.getData());
+                client.put(key,value);
+            }
+        }
     }
 
     public Optional<PlcValue> get(SimulatedTag tag) {
@@ -77,6 +109,10 @@ public class SimulatedDevice {
                 return Optional.ofNullable(randomValue(tag));
             case STDOUT:
                 return Optional.empty();
+            case FILE:
+                if(configuration == null || StringUtils.isBlank(configuration.getFile()))
+                    return Optional.empty();
+                return getMvValue(tag);
         }
         throw new IllegalArgumentException("Unsupported tag type: " + tag.getType().name());
     }
@@ -112,6 +148,14 @@ public class SimulatedDevice {
                 }
                 LOGGER.info("TEST PLC RANDOM [{}]: {}", tag.getName(), value);
                 return;
+            case FILE:
+                changeOfStateSubscriptions.values().stream()
+                    .filter(pair -> pair.getKey().equals(tag))
+                    .map(Pair::getValue)
+                    .peek(plcValueConsumer -> LOGGER.debug("{} is getting notified with {}", plcValueConsumer, value))
+                    .forEach(baseDefaultPlcValueConsumer -> baseDefaultPlcValueConsumer.accept(value));
+                writeMvValue(tag.getAddressString(), value.getString());
+                return;
         }
         throw new IllegalArgumentException("Unsupported tag type: " + tag.getType().name());
     }
@@ -142,7 +186,12 @@ public class SimulatedDevice {
         ScheduledFuture<?> scheduledFuture = scheduler.scheduleAtFixedRate(() -> {
             PlcTag innerPlcTag = ((DefaultPlcSubscriptionTag) subscriptionTag).getTag();
             assert innerPlcTag instanceof SimulatedTag;
-            PlcValue baseDefaultPlcValue = state.get(innerPlcTag);
+            PlcValue baseDefaultPlcValue;
+            if(((SimulatedTag) innerPlcTag).getType()== SimulatedTagType.STATE) {
+                baseDefaultPlcValue = state.get(innerPlcTag);
+            } else {
+                baseDefaultPlcValue = PlcValueHandler.of(innerPlcTag,getMvValue(innerPlcTag).orElse(null));
+            }
             if (baseDefaultPlcValue == null) {
                 return;
             }
@@ -165,7 +214,12 @@ public class SimulatedDevice {
                 LOGGER.debug("WORKER: running for {}, {}, {}", consumer, handle, subscriptionTag);
                 PlcTag innerPlcTag = ((DefaultPlcSubscriptionTag) subscriptionTag).getTag();
                 assert innerPlcTag instanceof SimulatedTag;
-                PlcValue baseDefaultPlcValue = state.get(innerPlcTag);
+                PlcValue baseDefaultPlcValue;
+                if(((SimulatedTag) innerPlcTag).getType()== SimulatedTagType.STATE) {
+                    baseDefaultPlcValue = state.get(innerPlcTag);
+                } else {
+                    baseDefaultPlcValue = PlcValueHandler.of(innerPlcTag,getMvValue(innerPlcTag).orElse(null));
+                }
                 if (baseDefaultPlcValue == null) {
                     LOGGER.debug("WORKER: no value for {}, {}, {}", consumer, handle, subscriptionTag);
                     continue;

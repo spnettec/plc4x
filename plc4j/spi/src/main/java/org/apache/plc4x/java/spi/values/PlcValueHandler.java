@@ -184,6 +184,8 @@ public class PlcValueHandler implements org.apache.plc4x.java.api.value.PlcValue
                         return new PlcWORD(((Long) value).intValue());
                     } else if (value instanceof BigInteger) {
                         return new PlcWORD(((BigInteger) value).intValue());
+                    } else if (value instanceof String) {
+                        return new PlcWORD((String)value);
                     }
                     throw new PlcRuntimeException("WORD requires int");
                 case DINT:
@@ -199,6 +201,8 @@ public class PlcValueHandler implements org.apache.plc4x.java.api.value.PlcValue
                         return new PlcDWORD((long) value);
                     } else if (value instanceof BigInteger) {
                         return new PlcDWORD(((BigInteger) value).longValue());
+                    } else if (value instanceof String) {
+                        return new PlcDWORD((String)value);
                     }
                     throw new PlcRuntimeException("DWORD requires long");
                 case LINT:
@@ -214,6 +218,8 @@ public class PlcValueHandler implements org.apache.plc4x.java.api.value.PlcValue
                         return new PlcLWORD(BigInteger.valueOf((long) value));
                     } else if (value instanceof BigInteger) {
                         return new PlcLWORD((BigInteger) value);
+                    } else if (value instanceof String) {
+                        return new PlcDWORD((String)value);
                     }
                     throw new PlcRuntimeException("LWORD requires BigInteger");
                 case REAL:
