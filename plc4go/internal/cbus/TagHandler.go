@@ -137,8 +137,6 @@ func (m TagHandler) ParseQuery(query string) (model.PlcQuery, error) {
 }
 
 func (m TagHandler) handleStatusRequestPattern(match map[string]string) (model.PlcTag, error) {
-	var bridgeAddresses []readWriteModel.BridgeAddress
-	// TODO: extract bridge addresses
 	var startingGroupAddressLabel *byte
 	var statusRequestType StatusRequestType
 	statusRequestArgument := match["statusRequestType"]
@@ -161,7 +159,7 @@ func (m TagHandler) handleStatusRequestPattern(match map[string]string) (model.P
 	if err != nil {
 		return nil, errors.Wrap(err, "Error getting application id from argument")
 	}
-	return NewStatusTag(bridgeAddresses, statusRequestType, startingGroupAddressLabel, application, 1), nil
+	return NewStatusTag(statusRequestType, startingGroupAddressLabel, application, 1), nil
 }
 
 func (m TagHandler) handleCalPattern(match map[string]string) (model.PlcTag, error) {
@@ -291,8 +289,6 @@ func (m TagHandler) handleCalPattern(match map[string]string) (model.PlcTag, err
 }
 
 func (m TagHandler) handleSALPattern(match map[string]string) (model.PlcTag, error) {
-	var bridgeAddresses []readWriteModel.BridgeAddress
-	// TODO: extract bridge addresses
 	application, err := applicationIdFromArgument(match["application"])
 	if err != nil {
 		return nil, errors.Wrap(err, "Error getting application id from argument")
@@ -313,7 +309,7 @@ func (m TagHandler) handleSALPattern(match map[string]string) (model.PlcTag, err
 	if !isValid {
 		return nil, errors.Errorf("Invalid sal command %s for %s. Allowed requests: %s", salCommand, application, PossibleSalCommands[application.ApplicationId()])
 	}
-	return NewSALTag(bridgeAddresses, application, salCommand, numElements), nil
+	return NewSALTag(application, salCommand, numElements), nil
 }
 
 func (m TagHandler) handleSALMonitorPattern(match map[string]string) (model.PlcTag, error) {

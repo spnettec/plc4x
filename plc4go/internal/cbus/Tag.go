@@ -58,15 +58,13 @@ type Tag interface {
 type StatusTag interface {
 	Tag
 
-	GetBridgeAddresses() []readWriteModel.BridgeAddress
 	GetStatusRequestType() StatusRequestType
 	GetStartingGroupAddressLabel() *byte
 	GetApplication() readWriteModel.ApplicationIdContainer
 }
 
-func NewStatusTag(bridgeAddresses []readWriteModel.BridgeAddress, statusRequestType StatusRequestType, startingGroupAddressLabel *byte, application readWriteModel.ApplicationIdContainer, numElements uint16) StatusTag {
+func NewStatusTag(statusRequestType StatusRequestType, startingGroupAddressLabel *byte, application readWriteModel.ApplicationIdContainer, numElements uint16) StatusTag {
 	return &statusTag{
-		bridgeAddresses:           bridgeAddresses,
 		tagType:                   STATUS,
 		startingGroupAddressLabel: startingGroupAddressLabel,
 		statusRequestType:         statusRequestType,
@@ -139,18 +137,16 @@ func NewCALGetStatusTag(unitAddress readWriteModel.UnitAddress, bridgeAddresses 
 type SALTag interface {
 	Tag
 
-	GetBridgeAddresses() []readWriteModel.BridgeAddress
 	GetApplication() readWriteModel.ApplicationIdContainer
 	GetSALCommand() string
 }
 
-func NewSALTag(bridgeAddresses []readWriteModel.BridgeAddress, application readWriteModel.ApplicationIdContainer, salCommand string, numElements uint16) SALTag {
+func NewSALTag(application readWriteModel.ApplicationIdContainer, salCommand string, numElements uint16) SALTag {
 	return &salTag{
-		bridgeAddresses: bridgeAddresses,
-		tagType:         SAL,
-		application:     application,
-		salCommand:      salCommand,
-		numElements:     numElements,
+		tagType:     SAL,
+		application: application,
+		salCommand:  salCommand,
+		numElements: numElements,
 	}
 }
 
@@ -195,7 +191,6 @@ func NewMMIMonitorTag(unitAddress *readWriteModel.UnitAddress, application *read
 //
 
 type statusTag struct {
-	bridgeAddresses           []readWriteModel.BridgeAddress
 	tagType                   TagType
 	statusRequestType         StatusRequestType
 	startingGroupAddressLabel *byte
@@ -232,13 +227,11 @@ type calGetStatusTag struct {
 }
 
 type salTag struct {
-	bridgeAddresses []readWriteModel.BridgeAddress
-	tagType         TagType
-	application     readWriteModel.ApplicationIdContainer
-	salCommand      string
-	numElements     uint16
+	tagType     TagType
+	application readWriteModel.ApplicationIdContainer
+	salCommand  string
+	numElements uint16
 }
-
 type salMonitorTag struct {
 	tagType     TagType
 	unitAddress *readWriteModel.UnitAddress
@@ -258,10 +251,6 @@ type mmiMonitorTag struct {
 //
 ///////////////////////////////////////
 ///////////////////////////////////////
-
-func (s statusTag) GetBridgeAddresses() []readWriteModel.BridgeAddress {
-	return s.bridgeAddresses
-}
 
 func (s statusTag) GetAddressString() string {
 	statusRequestType := ""
@@ -315,23 +304,9 @@ func (s statusTag) Serialize() ([]byte, error) {
 	return wb.GetBytes(), nil
 }
 
-func (s statusTag) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
+func (s statusTag) SerializeWithWriteBuffer(_ context.Context, writeBuffer utils.WriteBuffer) error {
 	if err := writeBuffer.PushContext(s.tagType.GetName()); err != nil {
 		return err
-	}
-
-	if len(s.bridgeAddresses) > 0 {
-		if err := writeBuffer.PushContext("bridgeAddresses"); err != nil {
-			return err
-		}
-		for _, address := range s.bridgeAddresses {
-			if err := address.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
-				return err
-			}
-		}
-		if err := writeBuffer.PopContext("bridgeAddresses"); err != nil {
-			return err
-		}
 	}
 
 	if err := writeBuffer.WriteUint8("statusRequestType", 8, uint8(s.statusRequestType), utils.WithAdditionalStringRepresentation(s.statusRequestType.String())); err != nil {
@@ -609,10 +584,6 @@ func (c calGetStatusTag) String() string {
 	return writeBuffer.GetBox().String()
 }
 
-func (s salTag) GetBridgeAddresses() []readWriteModel.BridgeAddress {
-	return s.bridgeAddresses
-}
-
 func (s salTag) GetApplication() readWriteModel.ApplicationIdContainer {
 	return s.application
 }
@@ -656,20 +627,6 @@ func (s salTag) Serialize() ([]byte, error) {
 func (s salTag) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	if err := writeBuffer.PushContext(s.tagType.GetName()); err != nil {
 		return err
-	}
-
-	if len(s.bridgeAddresses) > 0 {
-		if err := writeBuffer.PushContext("bridgeAddresses"); err != nil {
-			return err
-		}
-		for _, address := range s.bridgeAddresses {
-			if err := address.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
-				return err
-			}
-		}
-		if err := writeBuffer.PopContext("bridgeAddresses"); err != nil {
-			return err
-		}
 	}
 
 	if err := s.application.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
