@@ -86,6 +86,11 @@ public class PlcList extends PlcValueAdapter {
     }
 
     @Override
+    public String getString() {
+        return toString();
+    }
+
+    @Override
     public void serialize(WriteBuffer writeBuffer) throws SerializationException {
         writeBuffer.pushContext("PlcList");
         for (PlcValue listItem : listItems) {

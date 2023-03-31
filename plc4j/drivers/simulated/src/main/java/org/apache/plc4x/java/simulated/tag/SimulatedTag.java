@@ -105,6 +105,10 @@ public class SimulatedTag implements PlcTag {
     }
 
     @Override
+    public int getNumberOfElements() {
+        return numElements;
+    }
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
