@@ -33,6 +33,9 @@ public class PlcBOOL extends PlcIECValue<Boolean> {
     static int maxValue = 1;
 
     public static PlcBOOL of(Object value) {
+        if(value == null) {
+            value = 0;
+        }
         if (value instanceof Boolean) {
             return new PlcBOOL((Boolean) value);
         } else if (value instanceof Byte) {

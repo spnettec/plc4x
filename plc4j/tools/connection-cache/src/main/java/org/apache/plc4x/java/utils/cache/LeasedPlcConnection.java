@@ -38,16 +38,17 @@ import java.util.function.Consumer;
 
 public class LeasedPlcConnection implements PlcConnection {
 
-    private final ConnectionContainer connectionContainer;
+    private ConnectionContainer connectionContainer;
     private PlcConnection connection;
     private boolean invalidateConnection;
-
-    private final Timer usageTimer = new Timer();
+    private final Timer usageTimer;
 
     public LeasedPlcConnection(ConnectionContainer connectionContainer, PlcConnection connection, Duration maxUseTime) {
         this.connectionContainer = connectionContainer;
         this.connection = connection;
-        usageTimer.schedule(new TimerTask() {
+        this.invalidateConnection = false;
+        this.usageTimer = new Timer();
+        this.usageTimer.schedule(new TimerTask() {
             @Override
             public void run() {
                 close();
@@ -57,12 +58,18 @@ public class LeasedPlcConnection implements PlcConnection {
 
     @Override
     public synchronized void close() {
+        // Cancel automatically timing out.
         usageTimer.cancel();
+
         // Make the connection unusable.
         connection = null;
 
         // Tell the connection container that the connection is free to be reused.
-        connectionContainer.returnConnection(this, invalidateConnection);
+        if (connectionContainer!=null) {
+            connectionContainer.returnConnection(this, invalidateConnection);
+        }
+
+        connectionContainer = null;
     }
 
     @Override

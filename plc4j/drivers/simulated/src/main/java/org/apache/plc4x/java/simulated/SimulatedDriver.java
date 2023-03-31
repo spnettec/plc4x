@@ -19,12 +19,17 @@
 package org.apache.plc4x.java.simulated;
 
 import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.api.PlcDriver;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
+import org.apache.plc4x.java.simulated.configuration.SimulatedConfiguration;
 import org.apache.plc4x.java.simulated.connection.SimulatedConnection;
 import org.apache.plc4x.java.simulated.connection.SimulatedDevice;
-import org.apache.plc4x.java.api.PlcDriver;
 import org.apache.plc4x.java.simulated.tag.SimulatedTag;
+import org.apache.plc4x.java.spi.configuration.ConfigurationFactory;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Test driver holding its state in the client process.
@@ -35,6 +40,8 @@ import org.apache.plc4x.java.simulated.tag.SimulatedTag;
  */
 public class SimulatedDriver implements PlcDriver {
 
+    private static final Pattern URI_PATTERN = Pattern.compile(
+        "^(?<protocolCode>[a-z0-9\\-]*)(:(?<transportCode>[a-z0-9]*))?:(?<transportConfig>[^?]*)(\\?(?<paramString>.*))?");
     @Override
     public String getProtocolCode() {
         return "simulated";
@@ -48,11 +55,32 @@ public class SimulatedDriver implements PlcDriver {
     @Override
     public PlcConnection getConnection(String url) throws PlcConnectionException {
         // TODO: perform further checks
-        String deviceName = url.substring(getProtocolCode().length() + 1);
+        Matcher matcher = URI_PATTERN.matcher(url);
+        if (!matcher.matches()) {
+            throw new PlcConnectionException(
+                "Connection string doesn't match the format '{protocol-code}:({transport-code})?//{transport-address}(?{parameter-string)?'");
+        }
+        final String protocolCode = matcher.group("protocolCode");
+        final String deviceName = matcher.group("transportConfig");
+        final String paramString = matcher.group("paramString");
+
+        // Check if the protocol code matches this driver.
+        if (!protocolCode.equals(getProtocolCode())) {
+            // Actually this shouldn't happen as the DriverManager should have not used this driver in the first place.
+            throw new PlcConnectionException(
+                "This driver is not suited to handle this connection string");
+        }
+
         if (deviceName.isEmpty()) {
             throw new PlcConnectionException("Invalid URL: no device name given.");
         }
-        SimulatedDevice device = new SimulatedDevice(deviceName);
+        // Create the configuration object.
+        SimulatedConfiguration configuration = new ConfigurationFactory().createConfiguration(
+            SimulatedConfiguration.class, paramString);
+        if (configuration == null) {
+            throw new PlcConnectionException("Unsupported configuration");
+        }
+        SimulatedDevice device = new SimulatedDevice(deviceName,configuration);
         return new SimulatedConnection(device);
     }
 

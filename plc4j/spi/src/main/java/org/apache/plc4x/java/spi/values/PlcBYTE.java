@@ -34,6 +34,9 @@ public class PlcBYTE extends PlcIECValue<Short> {
     static Short maxValue = (short) Byte.MAX_VALUE * 2 + 1;
 
     public static PlcBYTE of(Object value) {
+        if(value == null) {
+            value = 0;
+        }
         if (value instanceof Boolean) {
             return new PlcBYTE((Boolean) value);
         } else if (value instanceof Byte) {
