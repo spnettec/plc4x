@@ -33,6 +33,9 @@ public class PlcLINT extends PlcIECValue<Long> {
     static Long maxValue = Long.MAX_VALUE;
 
     public static PlcLINT of(Object value) {
+        if(value == null) {
+            value = 0;
+        }
         if (value instanceof Boolean) {
             return new PlcLINT((Boolean) value);
         } else if (value instanceof Byte) {

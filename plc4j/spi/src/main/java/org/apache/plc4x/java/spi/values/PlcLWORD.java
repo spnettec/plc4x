@@ -34,6 +34,9 @@ public class PlcLWORD extends PlcIECValue<BigInteger> {
     static BigInteger maxValue = BigInteger.valueOf(Long.MAX_VALUE).multiply(BigInteger.valueOf(2)).add(BigInteger.valueOf(1));
 
     public static PlcLWORD of(Object value) {
+        if(value == null) {
+            value = 0;
+        }
         if (value instanceof Boolean) {
             return new PlcLWORD((Boolean) value);
         } else if (value instanceof Byte) {

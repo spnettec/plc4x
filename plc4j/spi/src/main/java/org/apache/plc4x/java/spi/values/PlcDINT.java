@@ -33,6 +33,9 @@ public class PlcDINT extends PlcIECValue<Integer> {
     static Integer maxValue = Integer.MAX_VALUE;
 
     public static PlcDINT of(Object value) {
+        if(value == null) {
+            value = 0;
+        }
         if (value instanceof Boolean) {
             return new PlcDINT((Boolean) value);
         } else if (value instanceof Byte) {

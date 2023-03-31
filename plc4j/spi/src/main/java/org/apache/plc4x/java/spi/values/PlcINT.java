@@ -33,6 +33,9 @@ public class PlcINT extends PlcIECValue<Short> {
     static Short maxValue = Short.MAX_VALUE;
 
     public static PlcINT of(Object value) {
+        if(value == null) {
+            value = 0;
+        }
         if (value instanceof Boolean) {
             return new PlcINT((Boolean) value);
         } else if (value instanceof Byte) {

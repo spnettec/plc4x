@@ -33,6 +33,9 @@ public class PlcLREAL extends PlcIECValue<Double> {
     static Double maxValue = Double.MAX_VALUE;
 
     public static PlcLREAL of(Object value) {
+        if(value == null) {
+            value = 0;
+        }
         if (value instanceof Boolean) {
             return new PlcLREAL((Boolean) value);
         } else if (value instanceof Byte) {
