@@ -23,6 +23,7 @@ import org.apache.plc4x.java.api.exceptions.PlcInvalidTagException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.exceptions.PlcUnsupportedDataTypeException;
 import org.apache.plc4x.java.api.model.PlcTag;
+import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.api.value.PlcValue;
 
 import java.lang.reflect.Array;
@@ -58,11 +59,100 @@ public class PlcValueHandler implements org.apache.plc4x.java.api.value.PlcValue
     public static PlcValue of(Object value) {
         return of(new Object[]{value});
     }
-
     public static PlcValue of(List<?> value) {
         return of(value.toArray());
     }
-
+    public static PlcValue of(PlcValueType valueType, Object value) {
+        switch (valueType) {
+        case BOOL:
+            return PlcBOOL.of(value);
+        case BYTE:
+            return PlcBYTE.of(value);
+        case SINT:
+            return PlcSINT.of(value);
+        case USINT:
+            return PlcUSINT.of(value);
+        case INT:
+            return PlcINT.of(value);
+        case UINT:
+            return PlcUINT.of(value);
+        case WORD:
+            if(value == null){
+                return new PlcWORD(0);
+            } else if (value instanceof Short) {
+                return new PlcWORD((int) value);
+            } else if (value instanceof Integer) {
+                return new PlcWORD((int) value);
+            } else if (value instanceof Long) {
+                return new PlcWORD(((Long) value).intValue());
+            } else if (value instanceof BigInteger) {
+                return new PlcWORD(((BigInteger) value).intValue());
+            } else if (value instanceof String) {
+                return new PlcWORD((String)value);
+            }
+            throw new PlcRuntimeException("WORD requires int");
+        case DINT:
+            return PlcDINT.of(value);
+        case UDINT:
+            return PlcUDINT.of(value);
+        case DWORD:
+            if(value == null){
+                return new PlcWORD(0L);
+            } else if (value instanceof Short) {
+                return new PlcDWORD((long) value);
+            } else if (value instanceof Integer) {
+                return new PlcDWORD((long) value);
+            } else if (value instanceof Long) {
+                return new PlcDWORD((long) value);
+            } else if (value instanceof BigInteger) {
+                return new PlcDWORD(((BigInteger) value).longValue());
+            } else if (value instanceof String) {
+                return new PlcDWORD((String)value);
+            }
+            throw new PlcRuntimeException("DWORD requires long");
+        case LINT:
+            return PlcLINT.of(value);
+        case ULINT:
+            return PlcULINT.of(value);
+        case LWORD:
+            if(value == null){
+                return new PlcWORD(0);
+            } else if (value instanceof Short) {
+                return new PlcLWORD(BigInteger.valueOf((long) value));
+            } else if (value instanceof Integer) {
+                return new PlcLWORD(BigInteger.valueOf((long) value));
+            } else if (value instanceof Long) {
+                return new PlcLWORD(BigInteger.valueOf((long) value));
+            } else if (value instanceof BigInteger) {
+                return new PlcLWORD((BigInteger) value);
+            } else if (value instanceof String) {
+                return new PlcDWORD((String)value);
+            }
+            throw new PlcRuntimeException("LWORD requires BigInteger");
+        case REAL:
+            return PlcREAL.of(value);
+        case LREAL:
+            return PlcLREAL.of(value);
+        case CHAR:
+            return PlcCHAR.of(value);
+        case WCHAR:
+            return PlcWCHAR.of(value);
+        case STRING:
+            return PlcSTRING.of(value);
+        case WSTRING:
+            return PlcWSTRING.of(value);
+        case TIME:
+            return PlcTIME.of(value);
+        case DATE:
+            return PlcDATE.of(value);
+        case TIME_OF_DAY:
+            return PlcTIME_OF_DAY.of(value);
+        case DATE_AND_TIME:
+            return PlcDATE_AND_TIME.of(value);
+        default:
+            return customDataType(getArray(value));
+        }
+    }
     public static PlcValue of(Object[] values) {
         if (values.length != 1) {
             Object vo = ((Object[]) values)[0];
@@ -156,6 +246,9 @@ public class PlcValueHandler implements org.apache.plc4x.java.api.value.PlcValue
                 value = ((PlcValue) value).getObject();
             }
             if (tag.getNumberOfElements() > 1) {
+                if(value==null){
+                    value = new Object[tag.getNumberOfElements()];
+                }
                 int len = 1;
                 try {
                     len = ArrayUtils.getLength(value);
@@ -281,9 +374,19 @@ public class PlcValueHandler implements org.apache.plc4x.java.api.value.PlcValue
                     return customDataType(getArray(value));
             }
         } else {
+            if(tag.getNumberOfElements() == 1){
+                return of(tag,ArrayUtils.toString(values,""));
+            }
             PlcList list = new PlcList();
             for (Object value : values) {
-                list.add(of(tag, new Object[]{value}));
+                list.add(of(tag.getPlcValueType(), value));
+            }
+            int rest = tag.getNumberOfElements() - values.length;
+            if(rest > 0){
+                while(rest > 0) {
+                    list.add(of(tag.getPlcValueType(), null));
+                    rest--;
+                }
             }
             return list;
         }
