@@ -110,9 +110,15 @@ public class SimulatedDevice {
             case STDOUT:
                 return Optional.empty();
             case FILE:
-                if(configuration == null || StringUtils.isBlank(configuration.getFile()))
+                if(configuration == null || StringUtils.isBlank(configuration.getFile())) {
                     return Optional.empty();
-                return getMvValue(tag);
+                }
+                if(state.containsKey(tag)) {
+                    return Optional.ofNullable(state.get(tag));
+                }
+                Optional<PlcValue> optionalPlcValue = getMvValue(tag);
+                optionalPlcValue.ifPresent(plcValue -> state.put(tag, plcValue));
+                return optionalPlcValue;
         }
         throw new IllegalArgumentException("Unsupported tag type: " + tag.getType().name());
     }
@@ -154,6 +160,7 @@ public class SimulatedDevice {
                     .map(Pair::getValue)
                     .peek(plcValueConsumer -> LOGGER.debug("{} is getting notified with {}", plcValueConsumer, value))
                     .forEach(baseDefaultPlcValueConsumer -> baseDefaultPlcValueConsumer.accept(value));
+                state.put(tag, value);
                 writeMvValue(tag.getAddressString(), value.getString());
                 return;
         }
@@ -186,16 +193,11 @@ public class SimulatedDevice {
         ScheduledFuture<?> scheduledFuture = scheduler.scheduleAtFixedRate(() -> {
             PlcTag innerPlcTag = ((DefaultPlcSubscriptionTag) subscriptionTag).getTag();
             assert innerPlcTag instanceof SimulatedTag;
-            PlcValue baseDefaultPlcValue;
-            if(((SimulatedTag) innerPlcTag).getType()== SimulatedTagType.STATE) {
-                baseDefaultPlcValue = state.get(innerPlcTag);
-            } else {
-                baseDefaultPlcValue = PlcValueHandler.of(innerPlcTag,getMvValue(innerPlcTag).orElse(null));
-            }
-            if (baseDefaultPlcValue == null) {
+            Optional<PlcValue> baseDefaultPlcValue = get((SimulatedTag)innerPlcTag);
+            if (baseDefaultPlcValue.isEmpty()) {
                 return;
             }
-            consumer.accept(baseDefaultPlcValue);
+            consumer.accept(baseDefaultPlcValue.get());
         }, duration.toMillis(), duration.toMillis(), TimeUnit.MILLISECONDS);
         cyclicSubscriptions.put(handle, scheduledFuture);
     }
@@ -214,18 +216,13 @@ public class SimulatedDevice {
                 LOGGER.debug("WORKER: running for {}, {}, {}", consumer, handle, subscriptionTag);
                 PlcTag innerPlcTag = ((DefaultPlcSubscriptionTag) subscriptionTag).getTag();
                 assert innerPlcTag instanceof SimulatedTag;
-                PlcValue baseDefaultPlcValue;
-                if(((SimulatedTag) innerPlcTag).getType()== SimulatedTagType.STATE) {
-                    baseDefaultPlcValue = state.get(innerPlcTag);
-                } else {
-                    baseDefaultPlcValue = PlcValueHandler.of(innerPlcTag,getMvValue(innerPlcTag).orElse(null));
-                }
-                if (baseDefaultPlcValue == null) {
+                Optional<PlcValue> baseDefaultPlcValue = get((SimulatedTag)innerPlcTag);
+                if (baseDefaultPlcValue.isEmpty()) {
                     LOGGER.debug("WORKER: no value for {}, {}, {}", consumer, handle, subscriptionTag);
                     continue;
                 }
                 LOGGER.debug("WORKER: accepting {} for {}, {}, {}", baseDefaultPlcValue, consumer, handle, subscriptionTag);
-                consumer.accept(baseDefaultPlcValue);
+                consumer.accept(baseDefaultPlcValue.get());
                 try {
                     long sleepTime = Math.min(random.nextInt((int) TimeUnit.SECONDS.toNanos(5)), TimeUnit.MILLISECONDS.toNanos(500));
                     LOGGER.debug("WORKER: sleeping {} milliseconds for {}, {}, {}", TimeUnit.NANOSECONDS.toMillis(sleepTime), consumer, handle, subscriptionTag);
