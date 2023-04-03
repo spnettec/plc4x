@@ -28,7 +28,6 @@ import org.apache.plc4x.java.simulated.configuration.SimulatedConfiguration;
 import org.apache.plc4x.java.simulated.readwrite.DataItem;
 import org.apache.plc4x.java.simulated.readwrite.SimulatedDataTypeSizes;
 import org.apache.plc4x.java.simulated.tag.SimulatedTag;
-import org.apache.plc4x.java.simulated.types.SimulatedTagType;
 import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionTag;
 import org.apache.plc4x.java.spi.values.PlcValueHandler;
