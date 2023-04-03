@@ -95,6 +95,10 @@ public class SimulatedDevice {
     }
 
     private synchronized void writeMvValue(SimulatedTag tag,PlcValue value){
+        String valueString = value.getString() == null? "": value.getString();
+        if(state.containsKey(tag) && valueString.equals(state.get(tag).getString())) {
+            return;
+        }
         if(this.configuration!=null && StringUtils.isNotEmpty(this.configuration.getFile())) {
             try (MVStore s = MVStore.open(configuration.getFile())) {
                 s.setVersionsToKeep(0);
