@@ -78,23 +78,30 @@ public class SimulatedDevice {
         this.configuration = configuration;
     }
 
-    private synchronized Optional<PlcValue> getMvValue(PlcTag tag){
+    private synchronized Optional<PlcValue> getMvValue(SimulatedTag tag){
         if(this.configuration!=null && StringUtils.isNotEmpty(this.configuration.getFile())) {
+            if(state.containsKey(tag)) {
+                return Optional.ofNullable(state.get(tag));
+            }
             try (MVStore s = MVStore.open(configuration.getFile())) {
                 s.setVersionsToKeep(0);
                 MVMap<String, String> client = s.openMap(configuration.getData());
-                return Optional.ofNullable(PlcValueHandler.of(tag,client.get(tag.getAddressString())));
+                String stringValue = client.get(tag.getAddressString());
+                PlcValue value = PlcValueHandler.of(tag,stringValue);
+                state.put(tag,value);
+                return Optional.ofNullable(value);
             }
         }
         return Optional.empty();
     }
 
-    private synchronized void writeMvValue(String key,String value){
+    private synchronized void writeMvValue(SimulatedTag tag,PlcValue value){
         if(this.configuration!=null && StringUtils.isNotEmpty(this.configuration.getFile())) {
             try (MVStore s = MVStore.open(configuration.getFile())) {
                 s.setVersionsToKeep(0);
                 MVMap<String, String> client = s.openMap(configuration.getData());
-                client.put(key,value);
+                client.put(tag.getAddressString(),value.getString());
+                state.put(tag,value);
             }
         }
     }
@@ -113,12 +120,7 @@ public class SimulatedDevice {
                 if(configuration == null || StringUtils.isBlank(configuration.getFile())) {
                     return Optional.empty();
                 }
-                if(state.containsKey(tag)) {
-                    return Optional.ofNullable(state.get(tag));
-                }
-                Optional<PlcValue> optionalPlcValue = getMvValue(tag);
-                optionalPlcValue.ifPresent(plcValue -> state.put(tag, plcValue));
-                return optionalPlcValue;
+                return getMvValue(tag);
         }
         throw new IllegalArgumentException("Unsupported tag type: " + tag.getType().name());
     }
@@ -160,8 +162,7 @@ public class SimulatedDevice {
                     .map(Pair::getValue)
                     .peek(plcValueConsumer -> LOGGER.debug("{} is getting notified with {}", plcValueConsumer, value))
                     .forEach(baseDefaultPlcValueConsumer -> baseDefaultPlcValueConsumer.accept(value));
-                state.put(tag, value);
-                writeMvValue(tag.getAddressString(), value.getString());
+                writeMvValue(tag, value);
                 return;
         }
         throw new IllegalArgumentException("Unsupported tag type: " + tag.getType().name());
