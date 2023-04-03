@@ -86,7 +86,7 @@
 
   <properties>
     <java.version>11</java.version>
-
+    <maven.version>3.9.1</maven.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputencoding>UTF-8</project.reporting.outputencoding>
 
@@ -1303,7 +1303,7 @@
             <!--
               Set the source level to 8 as otherwise with newer JDKs we're getting trouble.
             -->
-            <source>8</source>
+            <source>11</source>
             <!--
               Disable the detection of links as we have some artifacts without api-docs and
               the errors were polluting the build output.

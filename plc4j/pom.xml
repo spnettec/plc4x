@@ -169,7 +169,7 @@
               <goal>compile</goal>
             </goals>
             <configuration>
-              <release>8</release>
+              <release>11</release>
             </configuration>
           </execution>
           <execution>
