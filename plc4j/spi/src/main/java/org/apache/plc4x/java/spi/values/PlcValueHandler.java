@@ -374,18 +374,17 @@ public class PlcValueHandler implements org.apache.plc4x.java.api.value.PlcValue
                     return customDataType(getArray(value));
             }
         } else {
-            if(tag.getNumberOfElements() == 1){
-                return of(tag,ArrayUtils.toString(values,""));
-            }
             PlcList list = new PlcList();
             for (Object value : values) {
                 list.add(of(tag.getPlcValueType(), value));
             }
-            int rest = tag.getNumberOfElements() - values.length;
-            if(rest > 0){
-                while(rest > 0) {
-                    list.add(of(tag.getPlcValueType(), null));
-                    rest--;
+            if(tag.getNumberOfElements() > 1) {
+                int rest = tag.getNumberOfElements() - values.length;
+                if (rest > 0) {
+                    while (rest > 0) {
+                        list.add(of(tag.getPlcValueType(), null));
+                        rest--;
+                    }
                 }
             }
             return list;
