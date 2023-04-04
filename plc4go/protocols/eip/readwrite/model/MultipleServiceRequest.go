@@ -36,6 +36,7 @@ const MultipleServiceRequest_REQUESTPATH uint32 = 0x01240220
 
 // MultipleServiceRequest is the corresponding interface of MultipleServiceRequest
 type MultipleServiceRequest interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	CipService

@@ -22,6 +22,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,7 @@ import (
 
 // GroupObjectDescriptorRealisationType1 is the corresponding interface of GroupObjectDescriptorRealisationType1
 type GroupObjectDescriptorRealisationType1 interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetDataPointer returns DataPointer (property field)

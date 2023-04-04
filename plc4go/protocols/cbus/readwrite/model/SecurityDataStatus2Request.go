@@ -22,6 +22,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,7 @@ import (
 
 // SecurityDataStatus2Request is the corresponding interface of SecurityDataStatus2Request
 type SecurityDataStatus2Request interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	SecurityData

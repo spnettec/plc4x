@@ -22,6 +22,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,7 @@ import (
 
 // TunnelingResponseDataBlock is the corresponding interface of TunnelingResponseDataBlock
 type TunnelingResponseDataBlock interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetCommunicationChannelId returns CommunicationChannelId (property field)

@@ -22,6 +22,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,7 @@ import (
 
 // CustomTypes is the corresponding interface of CustomTypes
 type CustomTypes interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetCustomString returns CustomString (property field)

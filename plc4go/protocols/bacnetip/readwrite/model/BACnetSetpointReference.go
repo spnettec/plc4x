@@ -22,6 +22,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -32,6 +33,7 @@ import (
 
 // BACnetSetpointReference is the corresponding interface of BACnetSetpointReference
 type BACnetSetpointReference interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetSetPointReference returns SetPointReference (property field)

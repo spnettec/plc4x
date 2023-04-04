@@ -22,6 +22,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,7 @@ import (
 
 // DeviceDescriptorType2 is the corresponding interface of DeviceDescriptorType2
 type DeviceDescriptorType2 interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetManufacturerId returns ManufacturerId (property field)

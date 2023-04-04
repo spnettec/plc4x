@@ -23,6 +23,7 @@ package model
 import (
 	"context"
 	"encoding/binary"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -32,6 +33,7 @@ import (
 
 // DF1SymbolMessageFrameACK is the corresponding interface of DF1SymbolMessageFrameACK
 type DF1SymbolMessageFrameACK interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	DF1Symbol

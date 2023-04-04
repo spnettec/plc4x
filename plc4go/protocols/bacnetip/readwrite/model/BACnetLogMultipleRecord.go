@@ -22,6 +22,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,7 @@ import (
 
 // BACnetLogMultipleRecord is the corresponding interface of BACnetLogMultipleRecord
 type BACnetLogMultipleRecord interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetTimestamp returns Timestamp (property field)

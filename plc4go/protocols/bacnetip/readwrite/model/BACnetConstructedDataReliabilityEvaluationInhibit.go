@@ -22,6 +22,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,7 @@ import (
 
 // BACnetConstructedDataReliabilityEvaluationInhibit is the corresponding interface of BACnetConstructedDataReliabilityEvaluationInhibit
 type BACnetConstructedDataReliabilityEvaluationInhibit interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData

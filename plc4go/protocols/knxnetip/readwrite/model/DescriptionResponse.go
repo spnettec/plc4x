@@ -23,6 +23,7 @@ package model
 import (
 	"context"
 	"encoding/binary"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -32,6 +33,7 @@ import (
 
 // DescriptionResponse is the corresponding interface of DescriptionResponse
 type DescriptionResponse interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	KnxNetIpMessage

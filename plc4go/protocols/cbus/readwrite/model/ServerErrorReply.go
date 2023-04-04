@@ -35,6 +35,7 @@ const ServerErrorReply_ERRORMARKER byte = 0x21
 
 // ServerErrorReply is the corresponding interface of ServerErrorReply
 type ServerErrorReply interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	ReplyOrConfirmation

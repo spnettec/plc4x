@@ -22,6 +22,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,7 @@ import (
 
 // FirmataCommand is the corresponding interface of FirmataCommand
 type FirmataCommand interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetCommandCode returns CommandCode (discriminator field)

@@ -35,6 +35,7 @@ const ModbusConstants_MODBUSTCPDEFAULTPORT uint16 = uint16(502)
 
 // ModbusConstants is the corresponding interface of ModbusConstants
 type ModbusConstants interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 }

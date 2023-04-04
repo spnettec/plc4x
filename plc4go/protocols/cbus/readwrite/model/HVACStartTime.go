@@ -22,6 +22,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,7 @@ import (
 
 // HVACStartTime is the corresponding interface of HVACStartTime
 type HVACStartTime interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetMinutesSinceSunday12AM returns MinutesSinceSunday12AM (property field)

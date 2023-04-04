@@ -35,6 +35,7 @@ const AdsConstants_ADSTCPDEFAULTPORT uint16 = uint16(48898)
 
 // AdsConstants is the corresponding interface of AdsConstants
 type AdsConstants interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 }

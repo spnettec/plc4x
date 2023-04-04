@@ -22,6 +22,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,7 @@ import (
 
 // S7Address is the corresponding interface of S7Address
 type S7Address interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetAddressType returns AddressType (discriminator field)

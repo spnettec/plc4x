@@ -22,6 +22,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,7 @@ import (
 
 // SecurityDataZoneShort is the corresponding interface of SecurityDataZoneShort
 type SecurityDataZoneShort interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	SecurityData

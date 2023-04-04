@@ -36,6 +36,7 @@ const ModbusTcpADU_PROTOCOLIDENTIFIER uint16 = 0x0000
 
 // ModbusTcpADU is the corresponding interface of ModbusTcpADU
 type ModbusTcpADU interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	ModbusADU

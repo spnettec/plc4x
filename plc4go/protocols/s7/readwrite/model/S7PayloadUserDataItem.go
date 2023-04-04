@@ -22,6 +22,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,7 @@ import (
 
 // S7PayloadUserDataItem is the corresponding interface of S7PayloadUserDataItem
 type S7PayloadUserDataItem interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetCpuFunctionType returns CpuFunctionType (discriminator field)

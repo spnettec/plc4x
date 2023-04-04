@@ -39,6 +39,7 @@ const AdsDataTypeTableChildEntry_COMMENTTERMINATOR uint8 = 0x00
 
 // AdsDataTypeTableChildEntry is the corresponding interface of AdsDataTypeTableChildEntry
 type AdsDataTypeTableChildEntry interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetEntryLength returns EntryLength (property field)

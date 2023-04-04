@@ -22,6 +22,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -32,6 +33,7 @@ import (
 
 // BACnetNameValue is the corresponding interface of BACnetNameValue
 type BACnetNameValue interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetName returns Name (property field)

@@ -35,6 +35,7 @@ const CBusConstants_CBUSTCPDEFAULTPORT uint16 = uint16(10001)
 
 // CBusConstants is the corresponding interface of CBusConstants
 type CBusConstants interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 }

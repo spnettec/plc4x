@@ -35,6 +35,7 @@ const BacnetConstants_BACNETUDPDEFAULTPORT uint16 = uint16(47808)
 
 // BacnetConstants is the corresponding interface of BacnetConstants
 type BacnetConstants interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 }

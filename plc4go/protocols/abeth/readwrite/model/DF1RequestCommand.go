@@ -22,6 +22,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,7 @@ import (
 
 // DF1RequestCommand is the corresponding interface of DF1RequestCommand
 type DF1RequestCommand interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetFunctionCode returns FunctionCode (discriminator field)

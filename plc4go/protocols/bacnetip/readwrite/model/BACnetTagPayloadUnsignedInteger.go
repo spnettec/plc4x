@@ -22,6 +22,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,7 @@ import (
 
 // BACnetTagPayloadUnsignedInteger is the corresponding interface of BACnetTagPayloadUnsignedInteger
 type BACnetTagPayloadUnsignedInteger interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetValueUint8 returns ValueUint8 (property field)

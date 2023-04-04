@@ -35,6 +35,7 @@ const AdsDiscoveryConstants_ADSDISCOVERYUDPDEFAULTPORT uint16 = uint16(48899)
 
 // AdsDiscoveryConstants is the corresponding interface of AdsDiscoveryConstants
 type AdsDiscoveryConstants interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 }
