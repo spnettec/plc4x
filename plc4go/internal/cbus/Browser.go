@@ -22,29 +22,28 @@ package cbus
 import (
 	"context"
 	"fmt"
-	"github.com/apache/plc4x/plc4go/pkg/api/values"
-	"github.com/apache/plc4x/plc4go/spi/model"
 	"time"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	_default "github.com/apache/plc4x/plc4go/spi/default"
+	spiModel "github.com/apache/plc4x/plc4go/spi/model"
+
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 )
 
 type Browser struct {
 	_default.DefaultBrowser
-	connection      *Connection
-	messageCodec    spi.MessageCodec
+	connection      spi.PlcConnection
 	sequenceCounter uint8
 }
 
-func NewBrowser(connection *Connection, messageCodec spi.MessageCodec) *Browser {
+func NewBrowser(connection spi.PlcConnection) *Browser {
 	browser := Browser{
 		connection:      connection,
-		messageCodec:    messageCodec,
 		sequenceCounter: 0,
 	}
 	browser.DefaultBrowser = _default.NewDefaultBrowser(browser)
@@ -132,7 +131,7 @@ func (m Browser) BrowseQuery(ctx context.Context, interceptor func(result apiMod
 					event.Msgf("unit %d: error reading tag %s. Code %s", unitAddress, attribute, code)
 					continue unitLoop
 				}
-				queryResult := &model.DefaultPlcBrowseItem{
+				queryResult := &spiModel.DefaultPlcBrowseItem{
 					Tag:          NewCALIdentifyTag(unit, nil /*TODO: add bridge support*/, attribute, 1),
 					Name:         queryName,
 					Readable:     true,
@@ -155,7 +154,7 @@ func (m Browser) BrowseQuery(ctx context.Context, interceptor func(result apiMod
 }
 
 func (m Browser) getInstalledUnitAddressBytes(ctx context.Context) (map[byte]any, error) {
-	// We need to presubscribe to catch the 2 followup responses
+	// We need to pre-subscribe to catch the 2 followup responses
 	subscriptionRequest, err := m.connection.SubscriptionRequestBuilder().
 		AddEventTagAddress("installationMMIMonitor", "mmimonitor/*/NETWORK_CONTROL").
 		Build()
