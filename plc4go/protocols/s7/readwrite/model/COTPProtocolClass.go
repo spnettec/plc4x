@@ -37,7 +37,7 @@ type ICOTPProtocolClass interface {
 	utils.Serializable
 }
 
-const(
+const (
 	COTPProtocolClass_CLASS_0 COTPProtocolClass = 0x00
 	COTPProtocolClass_CLASS_1 COTPProtocolClass = 0x10
 	COTPProtocolClass_CLASS_2 COTPProtocolClass = 0x20
@@ -49,7 +49,7 @@ var COTPProtocolClassValues []COTPProtocolClass
 
 func init() {
 	_ = errors.New
-	COTPProtocolClassValues = []COTPProtocolClass {
+	COTPProtocolClassValues = []COTPProtocolClass{
 		COTPProtocolClass_CLASS_0,
 		COTPProtocolClass_CLASS_1,
 		COTPProtocolClass_CLASS_2,
@@ -60,16 +60,16 @@ func init() {
 
 func COTPProtocolClassByValue(value uint8) (enum COTPProtocolClass, ok bool) {
 	switch value {
-		case 0x00:
-			return COTPProtocolClass_CLASS_0, true
-		case 0x10:
-			return COTPProtocolClass_CLASS_1, true
-		case 0x20:
-			return COTPProtocolClass_CLASS_2, true
-		case 0x30:
-			return COTPProtocolClass_CLASS_3, true
-		case 0x40:
-			return COTPProtocolClass_CLASS_4, true
+	case 0x00:
+		return COTPProtocolClass_CLASS_0, true
+	case 0x10:
+		return COTPProtocolClass_CLASS_1, true
+	case 0x20:
+		return COTPProtocolClass_CLASS_2, true
+	case 0x30:
+		return COTPProtocolClass_CLASS_3, true
+	case 0x40:
+		return COTPProtocolClass_CLASS_4, true
 	}
 	return 0, false
 }
@@ -90,13 +90,13 @@ func COTPProtocolClassByName(value string) (enum COTPProtocolClass, ok bool) {
 	return 0, false
 }
 
-func COTPProtocolClassKnows(value uint8)  bool {
+func COTPProtocolClassKnows(value uint8) bool {
 	for _, typeValue := range COTPProtocolClassValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastCOTPProtocolClass(structType interface{}) COTPProtocolClass {
@@ -166,4 +166,3 @@ func (e COTPProtocolClass) PLC4XEnumName() string {
 func (e COTPProtocolClass) String() string {
 	return e.PLC4XEnumName()
 }
-

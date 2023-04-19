@@ -37,10 +37,10 @@ type IModbusDeviceInformationLevel interface {
 	utils.Serializable
 }
 
-const(
-	ModbusDeviceInformationLevel_BASIC ModbusDeviceInformationLevel = 0x01
-	ModbusDeviceInformationLevel_REGULAR ModbusDeviceInformationLevel = 0x02
-	ModbusDeviceInformationLevel_EXTENDED ModbusDeviceInformationLevel = 0x03
+const (
+	ModbusDeviceInformationLevel_BASIC      ModbusDeviceInformationLevel = 0x01
+	ModbusDeviceInformationLevel_REGULAR    ModbusDeviceInformationLevel = 0x02
+	ModbusDeviceInformationLevel_EXTENDED   ModbusDeviceInformationLevel = 0x03
 	ModbusDeviceInformationLevel_INDIVIDUAL ModbusDeviceInformationLevel = 0x04
 )
 
@@ -48,7 +48,7 @@ var ModbusDeviceInformationLevelValues []ModbusDeviceInformationLevel
 
 func init() {
 	_ = errors.New
-	ModbusDeviceInformationLevelValues = []ModbusDeviceInformationLevel {
+	ModbusDeviceInformationLevelValues = []ModbusDeviceInformationLevel{
 		ModbusDeviceInformationLevel_BASIC,
 		ModbusDeviceInformationLevel_REGULAR,
 		ModbusDeviceInformationLevel_EXTENDED,
@@ -58,14 +58,14 @@ func init() {
 
 func ModbusDeviceInformationLevelByValue(value uint8) (enum ModbusDeviceInformationLevel, ok bool) {
 	switch value {
-		case 0x01:
-			return ModbusDeviceInformationLevel_BASIC, true
-		case 0x02:
-			return ModbusDeviceInformationLevel_REGULAR, true
-		case 0x03:
-			return ModbusDeviceInformationLevel_EXTENDED, true
-		case 0x04:
-			return ModbusDeviceInformationLevel_INDIVIDUAL, true
+	case 0x01:
+		return ModbusDeviceInformationLevel_BASIC, true
+	case 0x02:
+		return ModbusDeviceInformationLevel_REGULAR, true
+	case 0x03:
+		return ModbusDeviceInformationLevel_EXTENDED, true
+	case 0x04:
+		return ModbusDeviceInformationLevel_INDIVIDUAL, true
 	}
 	return 0, false
 }
@@ -84,13 +84,13 @@ func ModbusDeviceInformationLevelByName(value string) (enum ModbusDeviceInformat
 	return 0, false
 }
 
-func ModbusDeviceInformationLevelKnows(value uint8)  bool {
+func ModbusDeviceInformationLevelKnows(value uint8) bool {
 	for _, typeValue := range ModbusDeviceInformationLevelValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastModbusDeviceInformationLevel(structType interface{}) ModbusDeviceInformationLevel {
@@ -158,4 +158,3 @@ func (e ModbusDeviceInformationLevel) PLC4XEnumName() string {
 func (e ModbusDeviceInformationLevel) String() string {
 	return e.PLC4XEnumName()
 }
-

@@ -37,17 +37,17 @@ type IAccessControlDirection interface {
 	utils.Serializable
 }
 
-const(
+const (
 	AccessControlDirection_NOT_USED AccessControlDirection = 0x00
-	AccessControlDirection_IN AccessControlDirection = 0x01
-	AccessControlDirection_OUT AccessControlDirection = 0x02
+	AccessControlDirection_IN       AccessControlDirection = 0x01
+	AccessControlDirection_OUT      AccessControlDirection = 0x02
 )
 
 var AccessControlDirectionValues []AccessControlDirection
 
 func init() {
 	_ = errors.New
-	AccessControlDirectionValues = []AccessControlDirection {
+	AccessControlDirectionValues = []AccessControlDirection{
 		AccessControlDirection_NOT_USED,
 		AccessControlDirection_IN,
 		AccessControlDirection_OUT,
@@ -56,12 +56,12 @@ func init() {
 
 func AccessControlDirectionByValue(value uint8) (enum AccessControlDirection, ok bool) {
 	switch value {
-		case 0x00:
-			return AccessControlDirection_NOT_USED, true
-		case 0x01:
-			return AccessControlDirection_IN, true
-		case 0x02:
-			return AccessControlDirection_OUT, true
+	case 0x00:
+		return AccessControlDirection_NOT_USED, true
+	case 0x01:
+		return AccessControlDirection_IN, true
+	case 0x02:
+		return AccessControlDirection_OUT, true
 	}
 	return 0, false
 }
@@ -78,13 +78,13 @@ func AccessControlDirectionByName(value string) (enum AccessControlDirection, ok
 	return 0, false
 }
 
-func AccessControlDirectionKnows(value uint8)  bool {
+func AccessControlDirectionKnows(value uint8) bool {
 	for _, typeValue := range AccessControlDirectionValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastAccessControlDirection(structType interface{}) AccessControlDirection {
@@ -150,4 +150,3 @@ func (e AccessControlDirection) PLC4XEnumName() string {
 func (e AccessControlDirection) String() string {
 	return e.PLC4XEnumName()
 }
-
