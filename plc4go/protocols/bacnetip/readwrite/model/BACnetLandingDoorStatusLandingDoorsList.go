@@ -233,7 +233,7 @@ func (m *_BACnetLandingDoorStatusLandingDoorsList) SerializeWithWriteBuffer(ctx 
 	}
 	for _curItem, _element := range m.GetLandingDoors() {
 		_ = _curItem
-		arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetLandingDoors()), _curItem)
+		arrayCtx := utils.CreateArrayContext(ctx, len(m.GetLandingDoors()), _curItem)
 		_ = arrayCtx
 		_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 		if _elementErr != nil {

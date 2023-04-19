@@ -182,7 +182,7 @@ func BVLCForwardedNPDUParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	{
 		_numItems := uint16(uint16(4))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := spiContext.CreateArrayContext(ctx, int(_numItems), int(_curItem))
+			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
 			_ = _curItem
 _item, _err := readBuffer.ReadUint8("", 8)

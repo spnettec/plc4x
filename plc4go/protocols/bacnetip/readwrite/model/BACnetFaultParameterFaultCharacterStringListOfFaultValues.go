@@ -233,7 +233,7 @@ func (m *_BACnetFaultParameterFaultCharacterStringListOfFaultValues) SerializeWi
 	}
 	for _curItem, _element := range m.GetListOfFaultValues() {
 		_ = _curItem
-		arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetListOfFaultValues()), _curItem)
+		arrayCtx := utils.CreateArrayContext(ctx, len(m.GetListOfFaultValues()), _curItem)
 		_ = arrayCtx
 		_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 		if _elementErr != nil {

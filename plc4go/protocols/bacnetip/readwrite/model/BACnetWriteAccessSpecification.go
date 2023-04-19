@@ -265,7 +265,7 @@ func (m *_BACnetWriteAccessSpecification) SerializeWithWriteBuffer(ctx context.C
 	}
 	for _curItem, _element := range m.GetListOfPropertyWriteDefinition() {
 		_ = _curItem
-		arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetListOfPropertyWriteDefinition()), _curItem)
+		arrayCtx := utils.CreateArrayContext(ctx, len(m.GetListOfPropertyWriteDefinition()), _curItem)
 		_ = arrayCtx
 		_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 		if _elementErr != nil {

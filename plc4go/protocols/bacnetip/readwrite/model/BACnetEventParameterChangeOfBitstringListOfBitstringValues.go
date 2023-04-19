@@ -233,7 +233,7 @@ func (m *_BACnetEventParameterChangeOfBitstringListOfBitstringValues) SerializeW
 	}
 	for _curItem, _element := range m.GetListOfBitstringValues() {
 		_ = _curItem
-		arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetListOfBitstringValues()), _curItem)
+		arrayCtx := utils.CreateArrayContext(ctx, len(m.GetListOfBitstringValues()), _curItem)
 		_ = arrayCtx
 		_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 		if _elementErr != nil {

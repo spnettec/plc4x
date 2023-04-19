@@ -233,7 +233,7 @@ func (m *_BACnetTimeStampsEnclosed) SerializeWithWriteBuffer(ctx context.Context
 	}
 	for _curItem, _element := range m.GetTimestamps() {
 		_ = _curItem
-		arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetTimestamps()), _curItem)
+		arrayCtx := utils.CreateArrayContext(ctx, len(m.GetTimestamps()), _curItem)
 		_ = arrayCtx
 		_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 		if _elementErr != nil {

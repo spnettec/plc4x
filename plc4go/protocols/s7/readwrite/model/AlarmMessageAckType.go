@@ -114,7 +114,7 @@ func (m *_AlarmMessageAckType) GetLengthInBits(ctx context.Context) uint16 {
 	// Array field
 	if len(m.MessageObjects) > 0 {
 		for _curItem, element := range m.MessageObjects {
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.MessageObjects), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.MessageObjects), _curItem)
 			_ = arrayCtx
 			_ = _curItem
 			lengthInBits += element.(interface{GetLengthInBits(context.Context) uint16}).GetLengthInBits(arrayCtx)
@@ -169,7 +169,7 @@ _numberOfObjects, _numberOfObjectsErr := readBuffer.ReadUint8("numberOfObjects",
 	{
 		_numItems := uint16(numberOfObjects)
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := spiContext.CreateArrayContext(ctx, int(_numItems), int(_curItem))
+			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
 			_ = _curItem
 _item, _err := AlarmMessageObjectAckTypeParseWithBuffer(arrayCtx, readBuffer)
@@ -230,7 +230,7 @@ func (m *_AlarmMessageAckType) SerializeWithWriteBuffer(ctx context.Context, wri
 	}
 	for _curItem, _element := range m.GetMessageObjects() {
 		_ = _curItem
-		arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetMessageObjects()), _curItem)
+		arrayCtx := utils.CreateArrayContext(ctx, len(m.GetMessageObjects()), _curItem)
 		_ = arrayCtx
 		_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 		if _elementErr != nil {

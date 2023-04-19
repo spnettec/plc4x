@@ -162,7 +162,7 @@ _unusedBits, _unusedBitsErr := readBuffer.ReadUint8("unusedBits", 8)
 	{
 		_numItems := uint16(uint16((uint16((uint16(actualLength) - uint16(uint16(1)))) * uint16(uint16(8)))) - uint16(unusedBits))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := spiContext.CreateArrayContext(ctx, int(_numItems), int(_curItem))
+			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
 			_ = _curItem
 _item, _err := readBuffer.ReadBit("")
@@ -189,7 +189,7 @@ _item, _err := readBuffer.ReadBit("")
 	{
 		_numItems := uint16(unusedBits)
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := spiContext.CreateArrayContext(ctx, int(_numItems), int(_curItem))
+			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
 			_ = _curItem
 _item, _err := readBuffer.ReadBit("")

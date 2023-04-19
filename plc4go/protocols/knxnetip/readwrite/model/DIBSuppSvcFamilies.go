@@ -213,7 +213,7 @@ func (m *_DIBSuppSvcFamilies) SerializeWithWriteBuffer(ctx context.Context, writ
 	}
 	for _curItem, _element := range m.GetServiceIds() {
 		_ = _curItem
-		arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetServiceIds()), _curItem)
+		arrayCtx := utils.CreateArrayContext(ctx, len(m.GetServiceIds()), _curItem)
 		_ = arrayCtx
 		_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 		if _elementErr != nil {

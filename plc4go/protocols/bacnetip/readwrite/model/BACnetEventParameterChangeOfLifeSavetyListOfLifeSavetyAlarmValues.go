@@ -233,7 +233,7 @@ func (m *_BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues) Ser
 	}
 	for _curItem, _element := range m.GetListOfLifeSavetyAlarmValues() {
 		_ = _curItem
-		arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetListOfLifeSavetyAlarmValues()), _curItem)
+		arrayCtx := utils.CreateArrayContext(ctx, len(m.GetListOfLifeSavetyAlarmValues()), _curItem)
 		_ = arrayCtx
 		_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 		if _elementErr != nil {

@@ -233,7 +233,7 @@ func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification) Seria
 	}
 	for _curItem, _element := range m.GetListOfCovSubscriptionSpecificationEntry() {
 		_ = _curItem
-		arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetListOfCovSubscriptionSpecificationEntry()), _curItem)
+		arrayCtx := utils.CreateArrayContext(ctx, len(m.GetListOfCovSubscriptionSpecificationEntry()), _curItem)
 		_ = arrayCtx
 		_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 		if _elementErr != nil {

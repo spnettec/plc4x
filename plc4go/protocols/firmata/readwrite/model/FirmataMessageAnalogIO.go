@@ -175,7 +175,7 @@ _pin, _pinErr := readBuffer.ReadUint8("pin", 4)
 	{
 		_numItems := uint16(uint16(2))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := spiContext.CreateArrayContext(ctx, int(_numItems), int(_curItem))
+			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
 			_ = _curItem
 _item, _err := readBuffer.ReadInt8("", 8)

@@ -233,7 +233,7 @@ func (m *_BACnetLiftCarCallListFloorList) SerializeWithWriteBuffer(ctx context.C
 	}
 	for _curItem, _element := range m.GetFloorNumbers() {
 		_ = _curItem
-		arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetFloorNumbers()), _curItem)
+		arrayCtx := utils.CreateArrayContext(ctx, len(m.GetFloorNumbers()), _curItem)
 		_ = arrayCtx
 		_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 		if _elementErr != nil {

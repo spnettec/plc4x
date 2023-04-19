@@ -283,7 +283,7 @@ func (m *_AdsDataTypeTableChildEntry) GetLengthInBits(ctx context.Context) uint1
 	// Array field
 	if len(m.ArrayInfo) > 0 {
 		for _curItem, element := range m.ArrayInfo {
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.ArrayInfo), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.ArrayInfo), _curItem)
 			_ = arrayCtx
 			_ = _curItem
 			lengthInBits += element.(interface{GetLengthInBits(context.Context) uint16}).GetLengthInBits(arrayCtx)
@@ -293,7 +293,7 @@ func (m *_AdsDataTypeTableChildEntry) GetLengthInBits(ctx context.Context) uint1
 	// Array field
 	if len(m.Children) > 0 {
 		for _curItem, element := range m.Children {
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.Children), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.Children), _curItem)
 			_ = arrayCtx
 			_ = _curItem
 			lengthInBits += element.(interface{GetLengthInBits(context.Context) uint16}).GetLengthInBits(arrayCtx)
@@ -480,7 +480,7 @@ _comment, _commentErr := readBuffer.ReadString("comment", uint32((commentLength)
 	{
 		_numItems := uint16(arrayDimensions)
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := spiContext.CreateArrayContext(ctx, int(_numItems), int(_curItem))
+			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
 			_ = _curItem
 _item, _err := AdsDataTypeArrayInfoParseWithBuffer(arrayCtx, readBuffer)
@@ -507,7 +507,7 @@ _item, _err := AdsDataTypeArrayInfoParseWithBuffer(arrayCtx, readBuffer)
 	{
 		_numItems := uint16(numChildren)
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := spiContext.CreateArrayContext(ctx, int(_numItems), int(_curItem))
+			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
 			_ = _curItem
 _item, _err := AdsDataTypeTableEntryParseWithBuffer(arrayCtx, readBuffer)
@@ -703,7 +703,7 @@ func (m *_AdsDataTypeTableChildEntry) SerializeWithWriteBuffer(ctx context.Conte
 	}
 	for _curItem, _element := range m.GetArrayInfo() {
 		_ = _curItem
-		arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetArrayInfo()), _curItem)
+		arrayCtx := utils.CreateArrayContext(ctx, len(m.GetArrayInfo()), _curItem)
 		_ = arrayCtx
 		_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 		if _elementErr != nil {
@@ -720,7 +720,7 @@ func (m *_AdsDataTypeTableChildEntry) SerializeWithWriteBuffer(ctx context.Conte
 	}
 	for _curItem, _element := range m.GetChildren() {
 		_ = _curItem
-		arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetChildren()), _curItem)
+		arrayCtx := utils.CreateArrayContext(ctx, len(m.GetChildren()), _curItem)
 		_ = arrayCtx
 		_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 		if _elementErr != nil {

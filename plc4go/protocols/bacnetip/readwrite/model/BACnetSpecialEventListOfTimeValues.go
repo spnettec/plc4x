@@ -233,7 +233,7 @@ func (m *_BACnetSpecialEventListOfTimeValues) SerializeWithWriteBuffer(ctx conte
 	}
 	for _curItem, _element := range m.GetListOfTimeValues() {
 		_ = _curItem
-		arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetListOfTimeValues()), _curItem)
+		arrayCtx := utils.CreateArrayContext(ctx, len(m.GetListOfTimeValues()), _curItem)
 		_ = arrayCtx
 		_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 		if _elementErr != nil {
