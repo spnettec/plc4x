@@ -21,40 +21,72 @@ package model
 
 import (
 	"fmt"
+	"github.com/apache/plc4x/plc4go/spi/utils"
+	"reflect"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
 
-func TestNonPanickingStrings(t *testing.T) {
-	suts := []fmt.Stringer{
+// TestRenderTest is a lazy test of Default* structs without proper initialization
+func TestRenderTest(t *testing.T) {
+	suts := []interface {
+		fmt.Stringer
+		utils.Serializable
+	}{
+		&DefaultArrayInfo{},
+		&DefaultPlcBrowseEvent{},
+		&DefaultPlcBrowseItem{},
+		&DefaultPlcBrowseRequest{},
+		&DefaultPlcBrowseRequestResult{},
 		&DefaultPlcBrowseResponse{},
+		&DefaultPlcBrowseResponseItem{},
 		&DefaultPlcConsumerRegistration{},
 		&DefaultPlcDiscoveryItem{},
 		&DefaultPlcReadRequest{},
 		&DefaultPlcReadRequestResult{},
 		&DefaultPlcReadResponse{},
 		&DefaultPlcSubscriptionEvent{},
+		&DefaultPlcSubscriptionEventItem{},
 		&DefaultPlcSubscriptionHandle{},
 		&DefaultPlcSubscriptionRequest{},
 		&DefaultPlcSubscriptionRequestResult{},
 		&DefaultPlcSubscriptionResponse{},
+		&DefaultPlcSubscriptionResponseItem{},
+		&DefaultPlcTagRequest{},
 		//&DefaultPlcUnsubscriptionRequest{}, //TODO: empty file
 		&DefaultPlcUnsubscriptionRequestResult{},
 		//&DefaultPlcUnsubscriptionResponse{}, //TODO: empty file
 		&DefaultPlcWriteRequest{},
 		&DefaultPlcWriteRequestResult{},
 		&DefaultPlcWriteResponse{},
-		&DefaultPlcRequest{},
-		&DefaultResponse{},
-		&DefaultPlcBrowseRequestResult{},
-		&DefaultPlcBrowseRequest{},
-		&DefaultPlcBrowseItem{},
-		&DefaultPlcBrowseEvent{},
 	}
 	for _, sut := range suts {
 		t.Run(fmt.Sprintf("%T", sut), func(t *testing.T) {
-			assert.NotEmptyf(t, sut.String(), "string should at least return type informations")
+			t.Run("String", func(t *testing.T) {
+				assert.NotEmptyf(t, sut.String(), "string should at least return type informations")
+			})
+			t.Run("Get*/IsÜ*", func(t *testing.T) {
+				valueOf := reflect.ValueOf(sut)
+				for i := 0; i < valueOf.NumMethod(); i++ {
+					method := valueOf.Method(i)
+					methodName := valueOf.Type().Method(i).Name
+					if strings.HasPrefix(methodName, "Get") || strings.HasPrefix(methodName, "Is") {
+						t.Run(methodName, func(t *testing.T) {
+							if na := method.Type().NumIn(); na != 0 {
+								t.Skipf("skipping because to many argument: %d", na)
+							}
+							method.Call(nil)
+						})
+					}
+				}
+			})
+			t.Run("Serialize", func(t *testing.T) {
+				serialize, err := sut.Serialize()
+				assert.NoError(t, err)
+				_ = serialize
+			})
 		})
 	}
 }
