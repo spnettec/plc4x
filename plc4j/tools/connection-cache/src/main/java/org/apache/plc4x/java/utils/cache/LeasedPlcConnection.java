@@ -342,16 +342,20 @@ public class LeasedPlcConnection implements PlcConnection {
                     public CompletableFuture<PlcUnsubscriptionResponse> execute() {
                         CompletableFuture<? extends PlcUnsubscriptionResponse> future = innerPlcUnsubscriptionRequest.execute();
                         final CompletableFuture<PlcUnsubscriptionResponse> responseFuture = new CompletableFuture<>();
-                        future.handle((plcUnsubscriptionResponse, throwable)->{
-                            if (throwable == null) {
-                                responseFuture.complete(plcUnsubscriptionResponse);
-                            } else {
-                                // Mark the connection as invalid.
-                                invalidateConnection = true;
-                                responseFuture.completeExceptionally(throwable);
-                            }
-                            return null;
-                        });
+                        if(future!=null) {
+                            future.handle((plcUnsubscriptionResponse, throwable) -> {
+                                if (throwable == null) {
+                                    responseFuture.complete(plcUnsubscriptionResponse);
+                                } else {
+                                    // Mark the connection as invalid.
+                                    invalidateConnection = true;
+                                    responseFuture.completeExceptionally(throwable);
+                                }
+                                return null;
+                            });
+                        } else {
+                            responseFuture.complete(null);
+                        }
                         return responseFuture;
                     }
 
