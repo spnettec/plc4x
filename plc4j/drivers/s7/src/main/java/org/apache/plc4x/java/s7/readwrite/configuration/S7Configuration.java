@@ -26,6 +26,13 @@ import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultVa
 import org.apache.plc4x.java.transport.tcp.TcpTransportConfiguration;
 
 public class S7Configuration implements Configuration, TcpTransportConfiguration {
+    @ConfigurationParameter("local-group")
+    @IntDefaultValue(3)
+    public int localGroup = 3;
+
+    @ConfigurationParameter("remote-group")
+    @IntDefaultValue(1)
+    public int remoteGroup = 1;
 
     @ConfigurationParameter("local-rack")
     @IntDefaultValue(1)
@@ -78,6 +85,10 @@ public class S7Configuration implements Configuration, TcpTransportConfiguration
     @ConfigurationParameter("read-timeout")
     @IntDefaultValue(8)
     public int readTimeout = 8;
+
+    @ConfigurationParameter("timeout-request")
+    @IntDefaultValue(4000)
+    protected int timeoutRequest;
 
     @ConfigurationParameter("ping")
     @BooleanDefaultValue(false)
@@ -196,6 +207,14 @@ public class S7Configuration implements Configuration, TcpTransportConfiguration
         this.readTimeout = readTimeOut;
     }
 
+    public int getTimeoutRequest() {
+        return timeoutRequest;
+    }
+
+    public void setTimeoutRequest(int timeoutRequest) {
+        this.timeoutRequest = timeoutRequest;
+    }
+
     public boolean getPing() {
         return ping;
     }
@@ -235,8 +254,10 @@ public class S7Configuration implements Configuration, TcpTransportConfiguration
     public String toString() {
         return "Configuration{" +
             "local-rack=" + localRack +
+            ", local-group=" + localGroup +
             ", local-slot=" + localSlot +
             ", local-tsap=" + localTsap +
+            ", remote-group=" + remoteGroup +
             ", remote-rack=" + remoteRack +
             ", remote-slot=" + remoteSlot +
             ", remote-rack2=" + remoteRack2 +
@@ -247,6 +268,7 @@ public class S7Configuration implements Configuration, TcpTransportConfiguration
             ", maxAmqCallee=" + maxAmqCallee +
             ", controllerType=" + controllerType +
             ", readTimeOut=" + readTimeout +
+            ", timeoutRequest=" + timeoutRequest +
             ", ping=" + ping +
             ", pingTime=" + pingTime +
             ", retryTime=" + retryTime +

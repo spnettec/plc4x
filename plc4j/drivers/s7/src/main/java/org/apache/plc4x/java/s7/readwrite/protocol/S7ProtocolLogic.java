@@ -33,6 +33,7 @@ import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.s7.events.S7CyclicEvent;
 import org.apache.plc4x.java.s7.readwrite.*;
+import org.apache.plc4x.java.s7.readwrite.configuration.S7Configuration;
 import org.apache.plc4x.java.s7.readwrite.context.S7DriverContext;
 import org.apache.plc4x.java.s7.readwrite.tag.*;
 import org.apache.plc4x.java.s7.readwrite.types.S7ControllerType;
@@ -41,6 +42,7 @@ import org.apache.plc4x.java.s7.readwrite.utils.S7PlcSubscriptionHandle;
 import org.apache.plc4x.java.s7.utils.S7ParamErrorCode;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
+import org.apache.plc4x.java.spi.configuration.HasConfiguration;
 import org.apache.plc4x.java.spi.context.DriverContext;
 import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.java.spi.messages.*;
@@ -69,13 +71,13 @@ import java.util.stream.IntStream;
  * So we need to limit those.
  * Thus, each request goes to a Work Queue and this Queue ensures, that only 3 are open at the same time.
  */
-public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
+public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements HasConfiguration<S7Configuration> {
 
     private final Logger logger = LoggerFactory.getLogger(S7ProtocolLogic.class);
 
-    public static final Duration REQUEST_TIMEOUT = Duration.ofMillis(10000);
-    private final AtomicInteger tpduGenerator = new AtomicInteger(10);
+    private final AtomicInteger tpduGenerator = new AtomicInteger(1);
 
+    private S7Configuration configuration;
     /*
      * Task group for managing connection redundancy.
      */
@@ -128,7 +130,10 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         this.tm = new RequestTransactionManager(1);
         EventLogic.start();
     }
-
+    @Override
+    public void setConfiguration(S7Configuration configuration) {
+        this.configuration = configuration;
+    }
     @Override
     public void onConnect(ConversationContext<TPKTPacket> context) {
         if (context.isPassive()) {
@@ -154,7 +159,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                 logger.warn("Timeout during Connection establishing, closing channel...");
                 context.getChannel().close();
             })
-            .expectResponse(TPKTPacket.class, REQUEST_TIMEOUT)
+            .expectResponse(TPKTPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
             .check(p -> p.getPayload() instanceof COTPPacketConnectionResponse)
             .unwrap(p -> (COTPPacketConnectionResponse) p.getPayload())
             .handle(cotpPacketConnectionResponse -> {
@@ -165,7 +170,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                         logger.warn("Timeout during Connection establishing, closing channel...");
                         context.getChannel().close();
                     })
-                    .expectResponse(TPKTPacket.class, REQUEST_TIMEOUT)
+                    .expectResponse(TPKTPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
                     .unwrap(TPKTPacket::getPayload)
                     .only(COTPPacketData.class)
                     .unwrap(COTPPacket::getPayload)
@@ -202,7 +207,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                                 logger.warn("Timeout during Connection establishing, closing channel...");
                                 context.getChannel().close();
                             })
-                            .expectResponse(TPKTPacket.class, REQUEST_TIMEOUT)
+                            .expectResponse(TPKTPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
                             .check(p -> p.getPayload() instanceof COTPPacketData)
                             .unwrap(p -> ((COTPPacketData) p.getPayload()))
                             .check(p -> p.getPayload() instanceof S7MessageUserData)
@@ -350,7 +355,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         transaction.submit(() -> context.sendRequest(tpktPacket)
             .onTimeout(new TransactionErrorCallback<>(future, transaction))
             .onError(new TransactionErrorCallback<>(future, transaction))
-            .expectResponse(TPKTPacket.class, REQUEST_TIMEOUT)
+            .expectResponse(TPKTPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
             .check(p -> p.getPayload() instanceof COTPPacketData)
             .unwrap(p -> (COTPPacketData) p.getPayload())
             .check(p -> p.getPayload() != null)
@@ -417,7 +422,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         transaction.submit(() -> context.sendRequest(tpktPacket)
             .onTimeout(new TransactionErrorCallback<>(future, transaction))
             .onError(new TransactionErrorCallback<>(future, transaction))
-            .expectResponse(TPKTPacket.class, REQUEST_TIMEOUT)
+            .expectResponse(TPKTPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
             .check(p -> p.getPayload() instanceof COTPPacketData)
             .unwrap(p -> ((COTPPacketData) p.getPayload()))
             .unwrap(COTPPacket::getPayload)
@@ -514,7 +519,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                 transaction.submit(() -> context.sendRequest(tpktPacket)
                     .onTimeout(new TransactionErrorCallback<>(future, transaction))
                     .onError(new TransactionErrorCallback<>(future, transaction))
-                    .expectResponse(TPKTPacket.class, REQUEST_TIMEOUT)
+                    .expectResponse(TPKTPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
                     .check(p -> p.getPayload() instanceof COTPPacketData)
                     .unwrap(p -> ((COTPPacketData) p.getPayload()))
                     .unwrap(COTPPacket::getPayload)
@@ -1323,7 +1328,12 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                 s7DriverContext.getMaxAmqCaller(), s7DriverContext.getMaxAmqCallee(), s7DriverContext.getPduSize());
         S7Message s7Message = new S7MessageRequest(0, s7ParameterSetupCommunication,
             null);
-        COTPPacketData cotpPacketData = new COTPPacketData(null, s7Message, true, (short) 1);
+        int tpduId = 1;
+        if (this.s7DriverContext.getControllerType() == S7ControllerType.S7_200)
+        {
+            tpduId = 0;
+        }
+        COTPPacketData cotpPacketData = new COTPPacketData(null, s7Message, true, (short) tpduId);
         return new TPKTPacket(cotpPacketData);
     }
 
@@ -1570,12 +1580,16 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
             int stringLength = (tag instanceof S7StringTag) ? ((S7StringTag) tag).getStringLength() : 254;
             ByteBuffer byteBuffer = null;
             for (int i = 0; i < tag.getNumberOfElements(); i++) {
-                final int lengthInBits = DataItem.getLengthInBits(plcValue.getIndex(i), tag.getDataType().getDataProtocolId(), stringLength);
-                final WriteBufferByteBased writeBuffer = new WriteBufferByteBased((int) Math.ceil(((float) lengthInBits) / 8.0f));
-                DataItem.staticSerialize(writeBuffer, plcValue.getIndex(i), tag.getDataType().getDataProtocolId(), stringLength);
+                final int lengthInBytes = DataItem.getLengthInBytes(plcValue.getIndex(i), tag.getDataType().getDataProtocolId(), stringLength, tag.getStringEncoding());
+                final WriteBufferByteBased writeBuffer = new WriteBufferByteBased(lengthInBytes);
+                if(tag.getDataType()==TransportSize.BOOL && tag.getNumberOfElements()==1){
+                    writeBuffer.writeUnsignedShort(
+                        "", 7, ((Number) (short) 0x00).shortValue());
+                }
+                DataItem.staticSerialize(writeBuffer, plcValue.getIndex(i), tag.getDataType().getDataProtocolId(), stringLength, tag.getStringEncoding());
                 // Allocate enough space for all items.
                 if (byteBuffer == null) {
-                    byteBuffer = ByteBuffer.allocate(writeBuffer.getBytes().length * tag.getNumberOfElements());
+                    byteBuffer = ByteBuffer.allocate(lengthInBytes * tag.getNumberOfElements());
                 }
                 byteBuffer.put(writeBuffer.getBytes());
             }
@@ -1594,14 +1608,21 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         try {
             int stringLength = (tag instanceof S7StringTag) ? ((S7StringTag) tag).getStringLength() : 254;
             if (tag.getNumberOfElements() == 1) {
+                if(tag.getDataType()==TransportSize.BOOL){
+                    short reserved = readBuffer.readUnsignedShort("", 7);
+                    if (reserved != (short) 0x00) {
+                        logger.info(
+                            "Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
+                    }
+                }
                 return DataItem.staticParse(readBuffer, tag.getDataType().getDataProtocolId(),
-                    stringLength);
+                    stringLength, tag.getStringEncoding());
             } else {
                 // Fetch all
                 final PlcValue[] resultItems = IntStream.range(0, tag.getNumberOfElements()).mapToObj(i -> {
                     try {
                         return DataItem.staticParse(readBuffer, tag.getDataType().getDataProtocolId(),
-                            stringLength);
+                            stringLength, tag.getStringEncoding());
                     } catch (ParseException e) {
                         logger.warn("Error parsing tag item of type: '{}' (at position {}})", tag.getDataType().name(), i, e);
                     }
@@ -1685,17 +1706,40 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         // For these date-types we have to convert the requests to simple byte-array requests
         // As otherwise the S7 will deny them with "Data type not supported" replies.
         if ((transportSize == TransportSize.TIME) /*|| (transportSize == TransportSize.S7_S5TIME)*/ ||
-            (transportSize == TransportSize.LTIME) || (transportSize == TransportSize.DATE) ||
-            (transportSize == TransportSize.TIME_OF_DAY) || (transportSize == TransportSize.DATE_AND_TIME)) {
+            (transportSize == TransportSize.LINT) ||
+            (transportSize == TransportSize.ULINT) ||
+            (transportSize == TransportSize.LWORD) ||
+            (transportSize == TransportSize.LREAL) ||
+            (transportSize == TransportSize.REAL) ||
+            (transportSize == TransportSize.LTIME) ||
+            (transportSize == TransportSize.DATE) ||
+            (transportSize == TransportSize.TIME_OF_DAY) ||
+            (transportSize == TransportSize.DATE_AND_TIME)
+        ) {
             numElements = numElements * transportSize.getSizeInBytes();
+            //((S7Field) field).setDataType(transportSize);
             transportSize = TransportSize.BYTE;
         }
+        if (transportSize == TransportSize.BOOL) {
+            if(numElements>1) {
+                transportSize = TransportSize.BYTE;
+            }
+            numElements = numElements * transportSize.getSizeInBytes();
+        }
+        if (transportSize == TransportSize.CHAR) {
+            transportSize = TransportSize.BYTE;
+            numElements = numElements * transportSize.getSizeInBytes();
+        }
+        if (transportSize == TransportSize.WCHAR) {
+            transportSize = TransportSize.BYTE;
+            numElements = numElements * transportSize.getSizeInBytes() * 2;
+        }
         if (transportSize == TransportSize.STRING) {
-            transportSize = TransportSize.CHAR;
+            transportSize = TransportSize.BYTE;
             int stringLength = (s7Tag instanceof S7StringTag) ? ((S7StringTag) s7Tag).getStringLength() : 254;
             numElements = numElements * (stringLength + 2);
         } else if (transportSize == TransportSize.WSTRING) {
-            transportSize = TransportSize.CHAR;
+            transportSize = TransportSize.BYTE;
             int stringLength = (s7Tag instanceof S7StringTag) ? ((S7StringTag) s7Tag).getStringLength() : 254;
             numElements = numElements * (stringLength + 2) * 2;
         }
