@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -21,9 +21,9 @@ package org.apache.plc4x.java.s7.readwrite.protocol;
 import io.netty.channel.Channel;
 
 public interface S7HMux {
-    
-public void setEmbededhannel(Channel embeded_channel);     
-public void setPrimaryChannel(Channel primary_channel);  
-public void setSecondaryChannel(Channel secondary_channel); 
-    
+    void setEmbeddedChannel(Channel embeded_channel);
+
+    void setPrimaryChannel(Channel primary_channel);
+
+    void setSecondaryChannel(Channel secondary_channel);
 }

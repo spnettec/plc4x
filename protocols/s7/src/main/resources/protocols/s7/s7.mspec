@@ -441,7 +441,7 @@
         ['0x10' CycServiceItemAnyType
             [simple  TransportSize   transportSize]
             [simple uint 16 length]
-            [simple uint 16 dbNumber]            
+            [simple uint 16 dbNumber]
             [simple MemoryArea memoryArea]
             [simple uint 24 address]
         ]
@@ -490,7 +490,7 @@
 [discriminatedType S7PayloadUserDataItem(uint 4 cpuFunctionGroup, uint 4 cpuFunctionType, uint 8 cpuSubfunction)
     [simple     DataTransportErrorCode returnCode]
     [simple     DataTransportSize      transportSize]
-    [simple         uint 16                dataLength]
+    [simple     uint 16                dataLength]
     //[implicit   uint 16                dataLength    'lengthInBytes - 4']
 
     [typeSwitch cpuFunctionGroup, cpuFunctionType, cpuSubfunction, dataLength
@@ -576,6 +576,7 @@
             [simple   uint 16                szlIndex]
         ]
 
+        // TODO: carcia: explain why you out commented this? the byte array variant below looks hacky
         //['0x04', '0x08', '0x01' S7PayloadUserDataItemCpuFunctionReadSzlResponse
         //    [simple   SzlId           szlId]
         //    [simple   uint 16         szlIndex]

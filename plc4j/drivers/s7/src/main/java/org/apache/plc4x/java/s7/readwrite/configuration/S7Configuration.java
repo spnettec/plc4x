@@ -1,4 +1,4 @@
-/* 
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -26,13 +26,6 @@ import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultVa
 import org.apache.plc4x.java.transport.tcp.TcpTransportConfiguration;
 
 public class S7Configuration implements Configuration, TcpTransportConfiguration {
-    @ConfigurationParameter("local-group")
-    @IntDefaultValue(3)
-    public int localGroup = 3;
-
-    @ConfigurationParameter("remote-group")
-    @IntDefaultValue(1)
-    public int remoteGroup = 1;
 
     @ConfigurationParameter("local-rack")
     @IntDefaultValue(1)
@@ -41,7 +34,7 @@ public class S7Configuration implements Configuration, TcpTransportConfiguration
     @ConfigurationParameter("local-slot")
     @IntDefaultValue(1)
     public int localSlot = 1;
-    
+
     @ConfigurationParameter("local-tsap")
     @IntDefaultValue(0)
     public int localTsap = 0;
@@ -86,10 +79,6 @@ public class S7Configuration implements Configuration, TcpTransportConfiguration
     @IntDefaultValue(8)
     public int readTimeout = 8;
 
-    @ConfigurationParameter("timeout-request")
-    @IntDefaultValue(4000)
-    protected int timeoutRequest;
-
     @ConfigurationParameter("ping")
     @BooleanDefaultValue(false)
     public boolean ping = false;
@@ -126,7 +115,7 @@ public class S7Configuration implements Configuration, TcpTransportConfiguration
     public void setLocalTsap(int localTsap) {
         this.localTsap = localTsap;
     }
-    
+
     public int getRemoteRack() {
         return remoteRack;
     }
@@ -166,7 +155,7 @@ public class S7Configuration implements Configuration, TcpTransportConfiguration
     public void setRemoteTsap(int remoteTsap) {
         this.remoteTsap = remoteTsap;
     }
-    
+
     public int getPduSize() {
         return pduSize;
     }
@@ -207,14 +196,6 @@ public class S7Configuration implements Configuration, TcpTransportConfiguration
         this.readTimeout = readTimeOut;
     }
 
-    public int getTimeoutRequest() {
-        return timeoutRequest;
-    }
-
-    public void setTimeoutRequest(int timeoutRequest) {
-        this.timeoutRequest = timeoutRequest;
-    }
-
     public boolean getPing() {
         return ping;
     }
@@ -242,6 +223,7 @@ public class S7Configuration implements Configuration, TcpTransportConfiguration
 
     /**
      * Per default port for the S7 protocol is 102.
+     *
      * @return 102
      */
     @Override
@@ -253,10 +235,8 @@ public class S7Configuration implements Configuration, TcpTransportConfiguration
     public String toString() {
         return "Configuration{" +
             "local-rack=" + localRack +
-            ", local-group=" + localGroup +
             ", local-slot=" + localSlot +
             ", local-tsap=" + localTsap +
-            ", remote-group=" + remoteGroup +
             ", remote-rack=" + remoteRack +
             ", remote-slot=" + remoteSlot +
             ", remote-rack2=" + remoteRack2 +
@@ -265,14 +245,13 @@ public class S7Configuration implements Configuration, TcpTransportConfiguration
             ", pduSize=" + pduSize +
             ", maxAmqCaller=" + maxAmqCaller +
             ", maxAmqCallee=" + maxAmqCallee +
-            ", controllerType='" + controllerType +
-            ", readTimeOut='" + readTimeout +
-            ", timeoutRequest='" + timeoutRequest +
-            ", ping='" + ping +
-            ", pingTime='" + pingTime +
-            ", retryTime='" + retryTime +
-                '\'' +
+            ", controllerType=" + controllerType +
+            ", readTimeOut=" + readTimeout +
+            ", ping=" + ping +
+            ", pingTime=" + pingTime +
+            ", retryTime=" + retryTime +
             '}';
     }
 
 }
+
