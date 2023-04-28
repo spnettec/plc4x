@@ -1,4 +1,4 @@
-/*
+/* 
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   https://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -29,21 +29,22 @@ public class S7Configuration implements Configuration, TcpTransportConfiguration
     @IntDefaultValue(3)
     public int localGroup = 3;
 
+    @ConfigurationParameter("remote-group")
+    @IntDefaultValue(1)
+    public int remoteGroup = 1;
+
     @ConfigurationParameter("local-rack")
     @IntDefaultValue(1)
     public int localRack = 1;
 
+    @ConfigurationParameter("local-slot")
+    @IntDefaultValue(1)
+    public int localSlot = 1;
+    
     @ConfigurationParameter("local-tsap")
     @IntDefaultValue(0)
     public int localTsap = 0;
 
-    @ConfigurationParameter("local-slot")
-    @IntDefaultValue(1)
-    public int localSlot = 1;
-
-    @ConfigurationParameter("remote-group")
-    @IntDefaultValue(1)
-    public int remoteGroup = 1;
     @ConfigurationParameter("remote-rack")
     @IntDefaultValue(0)
     public int remoteRack = 0;
@@ -51,6 +52,15 @@ public class S7Configuration implements Configuration, TcpTransportConfiguration
     @ConfigurationParameter("remote-slot")
     @IntDefaultValue(0)
     public int remoteSlot = 0;
+
+    @ConfigurationParameter("remote-rack2")
+    @IntDefaultValue(0)
+    public int remoteRack2 = 0;
+
+    @ConfigurationParameter("remote-slot2")
+    @IntDefaultValue(0)
+    public int remoteSlot2 = 0;
+
 
     @ConfigurationParameter("remote-tsap")
     @IntDefaultValue(0)
@@ -71,30 +81,22 @@ public class S7Configuration implements Configuration, TcpTransportConfiguration
     @ConfigurationParameter("controller-type")
     public String controllerType;
 
-    @ConfigurationParameter("timeout-request")
-    @IntDefaultValue(4000)
-    protected int timeoutRequest;
-    public int getLocalGroup() {
-        return localGroup;
-    }
+    @ConfigurationParameter("read-timeout")
+    @IntDefaultValue(8)
+    public int readTimeout = 8;
 
-    public void setLocalGroup(int localGroup) {
-        this.localGroup = localGroup;
-    }
-    public int getLocalTsap() {
-        return localTsap;
-    }
+    @ConfigurationParameter("ping")
+    @BooleanDefaultValue(false)
+    public boolean ping = false;
 
-    public void setLocalTsap(int localTsap) {
-        this.localTsap = localTsap;
-    }
-    public int getRemoteGroup() {
-        return remoteGroup;
-    }
+    @ConfigurationParameter("ping-time")
+    @IntDefaultValue(-1)
+    public int pingTime = -1;
 
-    public void setRemoteGroup(int remoteGroup) {
-        this.remoteGroup = remoteGroup;
-    }
+    @ConfigurationParameter("retry-time")
+    @IntDefaultValue(4)
+    public int retryTime = 4;
+
 
     public int getLocalRack() {
         return localRack;
@@ -112,6 +114,14 @@ public class S7Configuration implements Configuration, TcpTransportConfiguration
         this.localSlot = localSlot;
     }
 
+    public int getLocalTsap() {
+        return localTsap;
+    }
+
+    public void setLocalTsap(int localTsap) {
+        this.localTsap = localTsap;
+    }
+    
     public int getRemoteRack() {
         return remoteRack;
     }
@@ -127,6 +137,23 @@ public class S7Configuration implements Configuration, TcpTransportConfiguration
     public void setRemoteSlot(int remoteSlot) {
         this.remoteSlot = remoteSlot;
     }
+
+    public int getRemoteRack2() {
+        return remoteRack2;
+    }
+
+    public void setRemoteRack2(int remoteRack2) {
+        this.remoteRack2 = remoteRack2;
+    }
+
+    public int getRemoteSlot2() {
+        return remoteSlot2;
+    }
+
+    public void setRemoteSlot2(int remoteSlot2) {
+        this.remoteSlot2 = remoteSlot2;
+    }
+
     public int getRemoteTsap() {
         return remoteTsap;
     }
@@ -134,6 +161,7 @@ public class S7Configuration implements Configuration, TcpTransportConfiguration
     public void setRemoteTsap(int remoteTsap) {
         this.remoteTsap = remoteTsap;
     }
+    
     public int getPduSize() {
         return pduSize;
     }
@@ -165,13 +193,40 @@ public class S7Configuration implements Configuration, TcpTransportConfiguration
     public void setControllerType(String controllerType) {
         this.controllerType = controllerType;
     }
-    public int getTimeoutRequest() {
-        return timeoutRequest;
+
+    public int getReadTimeout() {
+        return readTimeout;
     }
 
-    public void setTimeoutRequest(int timeoutRequest) {
-        this.timeoutRequest = timeoutRequest;
+    public void setReadTimeout(int readTimeOut) {
+        this.readTimeout = readTimeOut;
     }
+
+    public boolean getPing() {
+        return ping;
+    }
+
+    public void setPing(boolean ping) {
+        this.ping = ping;
+    }
+
+    public int getPingTime() {
+        return pingTime;
+    }
+
+    public void setPingTime(int pingTime) {
+        this.pingTime = pingTime;
+    }
+
+    public int getRetryTime() {
+        return pingTime;
+    }
+
+    public void setRetryTime(int retryTime) {
+        this.retryTime = retryTime;
+    }
+
+
     /**
      * Per default port for the S7 protocol is 102.
      * @return 102
@@ -191,12 +246,18 @@ public class S7Configuration implements Configuration, TcpTransportConfiguration
             ", remote-group=" + remoteGroup +
             ", remote-rack=" + remoteRack +
             ", remote-slot=" + remoteSlot +
+            ", remote-rack2=" + remoteRack2 +
+            ", remote-slot2=" + remoteSlot2 +
             ", remote-tsap=" + remoteTsap +
             ", pduSize=" + pduSize +
             ", maxAmqCaller=" + maxAmqCaller +
             ", maxAmqCallee=" + maxAmqCallee +
             ", controllerType='" + controllerType +
-            ", timeoutRequest='" + timeoutRequest + '\'' +
+            ", readTimeOut='" + readTimeout +
+            ", ping='" + ping +
+            ", pingTime='" + pingTime +
+            ", retryTime='" + retryTime +
+                '\'' +
             '}';
     }
 
