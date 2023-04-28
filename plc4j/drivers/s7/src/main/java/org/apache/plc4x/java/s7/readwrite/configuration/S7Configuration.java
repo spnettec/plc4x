@@ -21,6 +21,7 @@ package org.apache.plc4x.java.s7.readwrite.configuration;
 import org.apache.plc4x.java.s7.readwrite.S7Driver;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
+import org.apache.plc4x.java.spi.configuration.annotations.defaults.BooleanDefaultValue;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultValue;
 import org.apache.plc4x.java.transport.tcp.TcpTransportConfiguration;
 
@@ -84,6 +85,10 @@ public class S7Configuration implements Configuration, TcpTransportConfiguration
     @ConfigurationParameter("read-timeout")
     @IntDefaultValue(8)
     public int readTimeout = 8;
+
+    @ConfigurationParameter("timeout-request")
+    @IntDefaultValue(4000)
+    protected int timeoutRequest;
 
     @ConfigurationParameter("ping")
     @BooleanDefaultValue(false)
@@ -202,6 +207,14 @@ public class S7Configuration implements Configuration, TcpTransportConfiguration
         this.readTimeout = readTimeOut;
     }
 
+    public int getTimeoutRequest() {
+        return timeoutRequest;
+    }
+
+    public void setTimeoutRequest(int timeoutRequest) {
+        this.timeoutRequest = timeoutRequest;
+    }
+
     public boolean getPing() {
         return ping;
     }
@@ -254,6 +267,7 @@ public class S7Configuration implements Configuration, TcpTransportConfiguration
             ", maxAmqCallee=" + maxAmqCallee +
             ", controllerType='" + controllerType +
             ", readTimeOut='" + readTimeout +
+            ", timeoutRequest='" + timeoutRequest +
             ", ping='" + ping +
             ", pingTime='" + pingTime +
             ", retryTime='" + retryTime +

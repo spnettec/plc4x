@@ -67,7 +67,7 @@ public class DatatypesTest {
 
                 final PlcReadResponse readResponse = readRequest.execute().get();
 
-                //System.out.println(readResponse.getAsPlcValue());
+                System.out.println(readResponse.getAsPlcValue());
 
             } catch (Exception e){
                 System.out.println("error:"+e.getMessage());

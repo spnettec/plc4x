@@ -64,7 +64,7 @@ func (m *_S7PayloadUserData) GetMessageType() uint8 {
 	return 0x07
 }
 
-///////////////////////
+///////////////////////-1
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -84,7 +84,7 @@ func (m *_S7PayloadUserData) GetItems() []S7PayloadUserDataItem {
 	return m.Items
 }
 
-///////////////////////
+///////////////////////-2
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -163,7 +163,7 @@ func S7PayloadUserDataParseWithBuffer(ctx context.Context, readBuffer utils.Read
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
 			_ = _curItem
-			_item, _err := S7PayloadUserDataItemParseWithBuffer(arrayCtx, readBuffer, CastS7ParameterUserDataItemCPUFunctions(CastS7ParameterUserData(parameter).GetItems()[0]).GetCpuFunctionType(), CastS7ParameterUserDataItemCPUFunctions(CastS7ParameterUserData(parameter).GetItems()[0]).GetCpuSubfunction())
+			_item, _err := S7PayloadUserDataItemParseWithBuffer(arrayCtx, readBuffer, CastS7ParameterUserDataItemCPUFunctions(CastS7ParameterUserData(parameter).GetItems()[0]).GetCpuFunctionGroup(), CastS7ParameterUserDataItemCPUFunctions(CastS7ParameterUserData(parameter).GetItems()[0]).GetCpuFunctionType(), CastS7ParameterUserDataItemCPUFunctions(CastS7ParameterUserData(parameter).GetItems()[0]).GetCpuSubfunction())
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'items' field of S7PayloadUserData")
 			}

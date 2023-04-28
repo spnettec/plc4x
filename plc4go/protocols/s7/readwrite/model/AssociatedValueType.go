@@ -79,7 +79,7 @@ func (m *_AssociatedValueType) GetData() []uint8 {
 	return m.Data
 }
 
-///////////////////////
+///////////////////////-2
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -114,7 +114,7 @@ func (m *_AssociatedValueType) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits += 8
 
 	// Manual Field (valueLength)
-	lengthInBits += uint16(int32(16))
+	lengthInBits += uint16(int32(2))
 
 	// Array field
 	if len(m.Data) > 0 {
@@ -168,7 +168,7 @@ func AssociatedValueTypeParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	}
 
 	// Manual Field (valueLength)
-	_valueLength, _valueLengthErr := RightShift3(readBuffer)
+	_valueLength, _valueLengthErr := RightShift3(readBuffer, transportSize)
 	if _valueLengthErr != nil {
 		return nil, errors.Wrap(_valueLengthErr, "Error parsing 'valueLength' field of AssociatedValueType")
 	}
