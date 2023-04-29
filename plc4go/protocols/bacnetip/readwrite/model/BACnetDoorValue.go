@@ -37,10 +37,10 @@ type IBACnetDoorValue interface {
 	utils.Serializable
 }
 
-const (
-	BACnetDoorValue_LOCK                  BACnetDoorValue = 0
-	BACnetDoorValue_UNLOCK                BACnetDoorValue = 1
-	BACnetDoorValue_PULSE_UNLOCK          BACnetDoorValue = 2
+const(
+	BACnetDoorValue_LOCK BACnetDoorValue = 0
+	BACnetDoorValue_UNLOCK BACnetDoorValue = 1
+	BACnetDoorValue_PULSE_UNLOCK BACnetDoorValue = 2
 	BACnetDoorValue_EXTENDED_PULSE_UNLOCK BACnetDoorValue = 3
 )
 
@@ -48,7 +48,7 @@ var BACnetDoorValueValues []BACnetDoorValue
 
 func init() {
 	_ = errors.New
-	BACnetDoorValueValues = []BACnetDoorValue{
+	BACnetDoorValueValues = []BACnetDoorValue {
 		BACnetDoorValue_LOCK,
 		BACnetDoorValue_UNLOCK,
 		BACnetDoorValue_PULSE_UNLOCK,
@@ -58,14 +58,14 @@ func init() {
 
 func BACnetDoorValueByValue(value uint8) (enum BACnetDoorValue, ok bool) {
 	switch value {
-	case 0:
-		return BACnetDoorValue_LOCK, true
-	case 1:
-		return BACnetDoorValue_UNLOCK, true
-	case 2:
-		return BACnetDoorValue_PULSE_UNLOCK, true
-	case 3:
-		return BACnetDoorValue_EXTENDED_PULSE_UNLOCK, true
+		case 0:
+			return BACnetDoorValue_LOCK, true
+		case 1:
+			return BACnetDoorValue_UNLOCK, true
+		case 2:
+			return BACnetDoorValue_PULSE_UNLOCK, true
+		case 3:
+			return BACnetDoorValue_EXTENDED_PULSE_UNLOCK, true
 	}
 	return 0, false
 }
@@ -84,13 +84,13 @@ func BACnetDoorValueByName(value string) (enum BACnetDoorValue, ok bool) {
 	return 0, false
 }
 
-func BACnetDoorValueKnows(value uint8) bool {
+func BACnetDoorValueKnows(value uint8)  bool {
 	for _, typeValue := range BACnetDoorValueValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastBACnetDoorValue(structType any) BACnetDoorValue {
@@ -158,3 +158,4 @@ func (e BACnetDoorValue) PLC4XEnumName() string {
 func (e BACnetDoorValue) String() string {
 	return e.PLC4XEnumName()
 }
+
