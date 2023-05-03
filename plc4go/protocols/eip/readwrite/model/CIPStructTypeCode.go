@@ -37,7 +37,7 @@ type ICIPStructTypeCode interface {
 	utils.Serializable
 }
 
-const(
+const (
 	CIPStructTypeCode_STRING CIPStructTypeCode = 0x0FCE
 )
 
@@ -45,15 +45,15 @@ var CIPStructTypeCodeValues []CIPStructTypeCode
 
 func init() {
 	_ = errors.New
-	CIPStructTypeCodeValues = []CIPStructTypeCode {
+	CIPStructTypeCodeValues = []CIPStructTypeCode{
 		CIPStructTypeCode_STRING,
 	}
 }
 
 func CIPStructTypeCodeByValue(value uint16) (enum CIPStructTypeCode, ok bool) {
 	switch value {
-		case 0x0FCE:
-			return CIPStructTypeCode_STRING, true
+	case 0x0FCE:
+		return CIPStructTypeCode_STRING, true
 	}
 	return 0, false
 }
@@ -66,13 +66,13 @@ func CIPStructTypeCodeByName(value string) (enum CIPStructTypeCode, ok bool) {
 	return 0, false
 }
 
-func CIPStructTypeCodeKnows(value uint16)  bool {
+func CIPStructTypeCodeKnows(value uint16) bool {
 	for _, typeValue := range CIPStructTypeCodeValues {
 		if uint16(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastCIPStructTypeCode(structType any) CIPStructTypeCode {
@@ -134,4 +134,3 @@ func (e CIPStructTypeCode) PLC4XEnumName() string {
 func (e CIPStructTypeCode) String() string {
 	return e.PLC4XEnumName()
 }
-

@@ -37,7 +37,7 @@ type IDialInFailureReason interface {
 	utils.Serializable
 }
 
-const(
+const (
 	DialInFailureReason_PHONE_STOPPED_RINGING DialInFailureReason = 0x01
 )
 
@@ -45,15 +45,15 @@ var DialInFailureReasonValues []DialInFailureReason
 
 func init() {
 	_ = errors.New
-	DialInFailureReasonValues = []DialInFailureReason {
+	DialInFailureReasonValues = []DialInFailureReason{
 		DialInFailureReason_PHONE_STOPPED_RINGING,
 	}
 }
 
 func DialInFailureReasonByValue(value uint8) (enum DialInFailureReason, ok bool) {
 	switch value {
-		case 0x01:
-			return DialInFailureReason_PHONE_STOPPED_RINGING, true
+	case 0x01:
+		return DialInFailureReason_PHONE_STOPPED_RINGING, true
 	}
 	return 0, false
 }
@@ -66,13 +66,13 @@ func DialInFailureReasonByName(value string) (enum DialInFailureReason, ok bool)
 	return 0, false
 }
 
-func DialInFailureReasonKnows(value uint8)  bool {
+func DialInFailureReasonKnows(value uint8) bool {
 	for _, typeValue := range DialInFailureReasonValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastDialInFailureReason(structType any) DialInFailureReason {
@@ -134,4 +134,3 @@ func (e DialInFailureReason) PLC4XEnumName() string {
 func (e DialInFailureReason) String() string {
 	return e.PLC4XEnumName()
 }
-

@@ -37,17 +37,17 @@ type IEiPCommand interface {
 	utils.Serializable
 }
 
-const(
-	EiPCommand_RegisterSession EiPCommand = 0x0065
+const (
+	EiPCommand_RegisterSession   EiPCommand = 0x0065
 	EiPCommand_UnregisterSession EiPCommand = 0x0066
-	EiPCommand_SendRRData EiPCommand = 0x006F
+	EiPCommand_SendRRData        EiPCommand = 0x006F
 )
 
 var EiPCommandValues []EiPCommand
 
 func init() {
 	_ = errors.New
-	EiPCommandValues = []EiPCommand {
+	EiPCommandValues = []EiPCommand{
 		EiPCommand_RegisterSession,
 		EiPCommand_UnregisterSession,
 		EiPCommand_SendRRData,
@@ -56,12 +56,12 @@ func init() {
 
 func EiPCommandByValue(value uint16) (enum EiPCommand, ok bool) {
 	switch value {
-		case 0x0065:
-			return EiPCommand_RegisterSession, true
-		case 0x0066:
-			return EiPCommand_UnregisterSession, true
-		case 0x006F:
-			return EiPCommand_SendRRData, true
+	case 0x0065:
+		return EiPCommand_RegisterSession, true
+	case 0x0066:
+		return EiPCommand_UnregisterSession, true
+	case 0x006F:
+		return EiPCommand_SendRRData, true
 	}
 	return 0, false
 }
@@ -78,13 +78,13 @@ func EiPCommandByName(value string) (enum EiPCommand, ok bool) {
 	return 0, false
 }
 
-func EiPCommandKnows(value uint16)  bool {
+func EiPCommandKnows(value uint16) bool {
 	for _, typeValue := range EiPCommandValues {
 		if uint16(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastEiPCommand(structType any) EiPCommand {
@@ -150,4 +150,3 @@ func (e EiPCommand) PLC4XEnumName() string {
 func (e EiPCommand) String() string {
 	return e.PLC4XEnumName()
 }
-

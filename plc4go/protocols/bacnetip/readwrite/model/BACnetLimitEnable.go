@@ -37,8 +37,8 @@ type IBACnetLimitEnable interface {
 	utils.Serializable
 }
 
-const(
-	BACnetLimitEnable_LOW_LIMIT_ENABLE BACnetLimitEnable = 0
+const (
+	BACnetLimitEnable_LOW_LIMIT_ENABLE  BACnetLimitEnable = 0
 	BACnetLimitEnable_HIGH_LIMIT_ENABLE BACnetLimitEnable = 1
 )
 
@@ -46,7 +46,7 @@ var BACnetLimitEnableValues []BACnetLimitEnable
 
 func init() {
 	_ = errors.New
-	BACnetLimitEnableValues = []BACnetLimitEnable {
+	BACnetLimitEnableValues = []BACnetLimitEnable{
 		BACnetLimitEnable_LOW_LIMIT_ENABLE,
 		BACnetLimitEnable_HIGH_LIMIT_ENABLE,
 	}
@@ -54,10 +54,10 @@ func init() {
 
 func BACnetLimitEnableByValue(value uint8) (enum BACnetLimitEnable, ok bool) {
 	switch value {
-		case 0:
-			return BACnetLimitEnable_LOW_LIMIT_ENABLE, true
-		case 1:
-			return BACnetLimitEnable_HIGH_LIMIT_ENABLE, true
+	case 0:
+		return BACnetLimitEnable_LOW_LIMIT_ENABLE, true
+	case 1:
+		return BACnetLimitEnable_HIGH_LIMIT_ENABLE, true
 	}
 	return 0, false
 }
@@ -72,13 +72,13 @@ func BACnetLimitEnableByName(value string) (enum BACnetLimitEnable, ok bool) {
 	return 0, false
 }
 
-func BACnetLimitEnableKnows(value uint8)  bool {
+func BACnetLimitEnableKnows(value uint8) bool {
 	for _, typeValue := range BACnetLimitEnableValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastBACnetLimitEnable(structType any) BACnetLimitEnable {
@@ -142,4 +142,3 @@ func (e BACnetLimitEnable) PLC4XEnumName() string {
 func (e BACnetLimitEnable) String() string {
 	return e.PLC4XEnumName()
 }
-

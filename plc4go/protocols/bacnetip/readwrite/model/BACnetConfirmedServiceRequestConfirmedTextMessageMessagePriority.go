@@ -37,7 +37,7 @@ type IBACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority interface
 	utils.Serializable
 }
 
-const(
+const (
 	BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority_NORMAL BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority = 0
 	BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority_URGENT BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority = 1
 )
@@ -46,7 +46,7 @@ var BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityValues []BAC
 
 func init() {
 	_ = errors.New
-	BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityValues = []BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority {
+	BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityValues = []BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority{
 		BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority_NORMAL,
 		BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority_URGENT,
 	}
@@ -54,10 +54,10 @@ func init() {
 
 func BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityByValue(value uint8) (enum BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority, ok bool) {
 	switch value {
-		case 0:
-			return BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority_NORMAL, true
-		case 1:
-			return BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority_URGENT, true
+	case 0:
+		return BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority_NORMAL, true
+	case 1:
+		return BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority_URGENT, true
 	}
 	return 0, false
 }
@@ -72,13 +72,13 @@ func BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityByName(valu
 	return 0, false
 }
 
-func BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityKnows(value uint8)  bool {
+func BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityKnows(value uint8) bool {
 	for _, typeValue := range BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastBACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority(structType any) BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority {
@@ -142,4 +142,3 @@ func (e BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority) PLC4XE
 func (e BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority) String() string {
 	return e.PLC4XEnumName()
 }
-

@@ -37,18 +37,18 @@ type IBACnetWriteStatus interface {
 	utils.Serializable
 }
 
-const(
-	BACnetWriteStatus_IDLE BACnetWriteStatus = 0
+const (
+	BACnetWriteStatus_IDLE        BACnetWriteStatus = 0
 	BACnetWriteStatus_IN_PROGRESS BACnetWriteStatus = 1
-	BACnetWriteStatus_SUCCESSFUL BACnetWriteStatus = 2
-	BACnetWriteStatus_FAILED BACnetWriteStatus = 3
+	BACnetWriteStatus_SUCCESSFUL  BACnetWriteStatus = 2
+	BACnetWriteStatus_FAILED      BACnetWriteStatus = 3
 )
 
 var BACnetWriteStatusValues []BACnetWriteStatus
 
 func init() {
 	_ = errors.New
-	BACnetWriteStatusValues = []BACnetWriteStatus {
+	BACnetWriteStatusValues = []BACnetWriteStatus{
 		BACnetWriteStatus_IDLE,
 		BACnetWriteStatus_IN_PROGRESS,
 		BACnetWriteStatus_SUCCESSFUL,
@@ -58,14 +58,14 @@ func init() {
 
 func BACnetWriteStatusByValue(value uint8) (enum BACnetWriteStatus, ok bool) {
 	switch value {
-		case 0:
-			return BACnetWriteStatus_IDLE, true
-		case 1:
-			return BACnetWriteStatus_IN_PROGRESS, true
-		case 2:
-			return BACnetWriteStatus_SUCCESSFUL, true
-		case 3:
-			return BACnetWriteStatus_FAILED, true
+	case 0:
+		return BACnetWriteStatus_IDLE, true
+	case 1:
+		return BACnetWriteStatus_IN_PROGRESS, true
+	case 2:
+		return BACnetWriteStatus_SUCCESSFUL, true
+	case 3:
+		return BACnetWriteStatus_FAILED, true
 	}
 	return 0, false
 }
@@ -84,13 +84,13 @@ func BACnetWriteStatusByName(value string) (enum BACnetWriteStatus, ok bool) {
 	return 0, false
 }
 
-func BACnetWriteStatusKnows(value uint8)  bool {
+func BACnetWriteStatusKnows(value uint8) bool {
 	for _, typeValue := range BACnetWriteStatusValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastBACnetWriteStatus(structType any) BACnetWriteStatus {
@@ -158,4 +158,3 @@ func (e BACnetWriteStatus) PLC4XEnumName() string {
 func (e BACnetWriteStatus) String() string {
 	return e.PLC4XEnumName()
 }
-

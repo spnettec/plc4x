@@ -37,7 +37,7 @@ type IHostProtocolCode interface {
 	utils.Serializable
 }
 
-const(
+const (
 	HostProtocolCode_IPV4_UDP HostProtocolCode = 0x01
 	HostProtocolCode_IPV4_TCP HostProtocolCode = 0x02
 )
@@ -46,7 +46,7 @@ var HostProtocolCodeValues []HostProtocolCode
 
 func init() {
 	_ = errors.New
-	HostProtocolCodeValues = []HostProtocolCode {
+	HostProtocolCodeValues = []HostProtocolCode{
 		HostProtocolCode_IPV4_UDP,
 		HostProtocolCode_IPV4_TCP,
 	}
@@ -54,10 +54,10 @@ func init() {
 
 func HostProtocolCodeByValue(value uint8) (enum HostProtocolCode, ok bool) {
 	switch value {
-		case 0x01:
-			return HostProtocolCode_IPV4_UDP, true
-		case 0x02:
-			return HostProtocolCode_IPV4_TCP, true
+	case 0x01:
+		return HostProtocolCode_IPV4_UDP, true
+	case 0x02:
+		return HostProtocolCode_IPV4_TCP, true
 	}
 	return 0, false
 }
@@ -72,13 +72,13 @@ func HostProtocolCodeByName(value string) (enum HostProtocolCode, ok bool) {
 	return 0, false
 }
 
-func HostProtocolCodeKnows(value uint8)  bool {
+func HostProtocolCodeKnows(value uint8) bool {
 	for _, typeValue := range HostProtocolCodeValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastHostProtocolCode(structType any) HostProtocolCode {
@@ -142,4 +142,3 @@ func (e HostProtocolCode) PLC4XEnumName() string {
 func (e HostProtocolCode) String() string {
 	return e.PLC4XEnumName()
 }
-
