@@ -117,7 +117,7 @@ public class MqttConnector {
                 config.getPollingInterval(), TimeUnit.MILLISECONDS), (publish, aLong) -> publish);
 
             final Single<Mqtt5ConnAck> connectScenario = connAckSingle
-                .doOnSuccess(connAck -> System.out.println("Connected with return code " + connAck.getReturnCode()))
+                .doOnSuccess(connAck -> System.out.println("Connected with return code " + connAck.getReasonCode()))
                 .doOnError(throwable -> System.out.println("Connection failed, " + throwable.getMessage()));
 
             final Flowable<Mqtt5PublishResult> publishScenario = client.publish(messagesToPublish)

@@ -37,16 +37,16 @@ type IBACnetAccessRuleTimeRangeSpecifier interface {
 	utils.Serializable
 }
 
-const (
+const(
 	BACnetAccessRuleTimeRangeSpecifier_SPECIFIED BACnetAccessRuleTimeRangeSpecifier = 0
-	BACnetAccessRuleTimeRangeSpecifier_ALWAYS    BACnetAccessRuleTimeRangeSpecifier = 1
+	BACnetAccessRuleTimeRangeSpecifier_ALWAYS BACnetAccessRuleTimeRangeSpecifier = 1
 )
 
 var BACnetAccessRuleTimeRangeSpecifierValues []BACnetAccessRuleTimeRangeSpecifier
 
 func init() {
 	_ = errors.New
-	BACnetAccessRuleTimeRangeSpecifierValues = []BACnetAccessRuleTimeRangeSpecifier{
+	BACnetAccessRuleTimeRangeSpecifierValues = []BACnetAccessRuleTimeRangeSpecifier {
 		BACnetAccessRuleTimeRangeSpecifier_SPECIFIED,
 		BACnetAccessRuleTimeRangeSpecifier_ALWAYS,
 	}
@@ -54,10 +54,10 @@ func init() {
 
 func BACnetAccessRuleTimeRangeSpecifierByValue(value uint8) (enum BACnetAccessRuleTimeRangeSpecifier, ok bool) {
 	switch value {
-	case 0:
-		return BACnetAccessRuleTimeRangeSpecifier_SPECIFIED, true
-	case 1:
-		return BACnetAccessRuleTimeRangeSpecifier_ALWAYS, true
+		case 0:
+			return BACnetAccessRuleTimeRangeSpecifier_SPECIFIED, true
+		case 1:
+			return BACnetAccessRuleTimeRangeSpecifier_ALWAYS, true
 	}
 	return 0, false
 }
@@ -72,13 +72,13 @@ func BACnetAccessRuleTimeRangeSpecifierByName(value string) (enum BACnetAccessRu
 	return 0, false
 }
 
-func BACnetAccessRuleTimeRangeSpecifierKnows(value uint8) bool {
+func BACnetAccessRuleTimeRangeSpecifierKnows(value uint8)  bool {
 	for _, typeValue := range BACnetAccessRuleTimeRangeSpecifierValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastBACnetAccessRuleTimeRangeSpecifier(structType any) BACnetAccessRuleTimeRangeSpecifier {
@@ -142,3 +142,4 @@ func (e BACnetAccessRuleTimeRangeSpecifier) PLC4XEnumName() string {
 func (e BACnetAccessRuleTimeRangeSpecifier) String() string {
 	return e.PLC4XEnumName()
 }
+
