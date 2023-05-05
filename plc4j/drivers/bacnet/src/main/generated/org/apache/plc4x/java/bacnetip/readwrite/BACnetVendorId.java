@@ -1641,9 +1641,9 @@ public enum BACnetVendorId {
     }
   }
 
-  private int value;
-  private int vendorId;
-  private String vendorName;
+  private final int value;
+  private final int vendorId;
+  private final String vendorName;
 
   BACnetVendorId(int value, int vendorId, String vendorName) {
     this.value = value;
@@ -1669,7 +1669,7 @@ public enum BACnetVendorId {
   }
 
   public static List<BACnetVendorId> enumsForFieldVendorId(int fieldValue) {
-    List<BACnetVendorId> _values = new ArrayList();
+    List<BACnetVendorId> _values = new ArrayList<>();
     for (BACnetVendorId _val : BACnetVendorId.values()) {
       if (_val.getVendorId() == fieldValue) {
         _values.add(_val);
@@ -1692,7 +1692,7 @@ public enum BACnetVendorId {
   }
 
   public static List<BACnetVendorId> enumsForFieldVendorName(String fieldValue) {
-    List<BACnetVendorId> _values = new ArrayList();
+    List<BACnetVendorId> _values = new ArrayList<>();
     for (BACnetVendorId _val : BACnetVendorId.values()) {
       if (_val.getVendorName().equals(fieldValue)) {
         _values.add(_val);

@@ -1782,7 +1782,7 @@ public enum OpcuaNodeIdServices {
     }
   }
 
-  private int value;
+  private final int value;
 
   OpcuaNodeIdServices(int value) {
     this.value = value;

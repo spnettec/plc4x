@@ -43,7 +43,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -60,12 +59,8 @@ public class MqttConnector {
         }
         File propsFile = new File(propsPath);
         if (!(propsFile.exists() && propsFile.isFile())) {
-            URL url = getClass().getClassLoader().getResource(propsPath);
-            if (url == null) {
-                logger.error("Invalid configuration file {}", propsFile.getPath());
-                throw new IllegalArgumentException("Invalid configuration file " + propsFile.getPath());
-            }
-            propsFile = new File(url.getFile());
+            logger.error("Invalid configuration file {}", propsFile.getPath());
+            throw new IllegalArgumentException("Invalid configuration file " + propsFile.getPath());
         }
         ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
         try {
@@ -104,36 +99,32 @@ public class MqttConnector {
             PlcReadRequest readRequest = builder.build();
 
             // Send a message containing the PLC read response.
-            Flowable<Mqtt5Publish> messagesToPublish = Flowable.generate(emitter -> {
-                readRequest.execute().whenComplete((response, err) -> {
-                    String jsonPayload = new JsonObject().toString();
-                    if (err == null) {
-                        jsonPayload = getPayload(response);
-                    }
-
-                    final Mqtt5Publish publishMessage = Mqtt5Publish.builder()
-                        .topic(config.getMqttConfig().getTopicName())
-                        .qos(MqttQos.AT_LEAST_ONCE)
-                        .payload(jsonPayload.getBytes())
-                        .build();
-                    emitter.onNext(publishMessage);
-                });
-
-            });
+            Flowable<Mqtt5Publish> messagesToPublish = Flowable.generate(emitter ->
+                readRequest.execute()
+                    .thenAccept(response ->
+                        emitter.onNext(
+                            Mqtt5Publish.builder()
+                                .topic(config.getMqttConfig().getTopicName())
+                                .qos(MqttQos.AT_LEAST_ONCE)
+                                .payload(getPayload(response).getBytes())
+                                .build()
+                        )
+                    )
+            );
 
             // Emit 1 message only every 100 milliseconds.
             messagesToPublish = messagesToPublish.zipWith(Flowable.interval(
                 config.getPollingInterval(), TimeUnit.MILLISECONDS), (publish, aLong) -> publish);
 
             final Single<Mqtt5ConnAck> connectScenario = connAckSingle
-                .doOnSuccess(connAck -> System.out.println("Connected with return code " + connAck.getReasonCode()))
+                .doOnSuccess(connAck -> System.out.println("Connected with return code " + connAck.getReturnCode()))
                 .doOnError(throwable -> System.out.println("Connection failed, " + throwable.getMessage()));
 
             final Flowable<Mqtt5PublishResult> publishScenario = client.publish(messagesToPublish)
                 .doOnNext(publishResult -> System.out.println(
                     "Publish acknowledged: " + new String(publishResult.getPublish().getPayloadAsBytes())));
 
-            connectScenario.ignoreElement().andThen(publishScenario).blockingSubscribe();
+            connectScenario.toCompletable().andThen(publishScenario).blockingSubscribe();
         } catch (Exception e) {
             throw new PlcException("Error creating connection to " + config.getPlcConfig().getConnection(), e);
         }
@@ -154,11 +145,10 @@ public class MqttConnector {
     }
 
     public static void main(String[] args) throws Exception {
-        String fileName = "mqtt-connector.yml";
-        if (args.length >= 1) {
-            fileName = args[0];
+        if(args.length != 1) {
+            System.out.println("Usage: MqttConnector {path-to-mqtt-connector.yml}");
         }
-        MqttConnector mqttConnector = new MqttConnector(fileName);
+        MqttConnector mqttConnector = new MqttConnector(args[0]);
         mqttConnector.run();
     }
 

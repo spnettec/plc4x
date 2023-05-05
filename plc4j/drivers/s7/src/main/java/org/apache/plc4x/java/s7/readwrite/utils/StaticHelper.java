@@ -2265,7 +2265,7 @@ public class StaticHelper {
     private static byte[] wordToBytes(long data) {
         return new byte[]{
             (byte) ((data >> 8) & 0xff),
-            (byte) ((data >> 0) & 0xff),
+            (byte) ((data) & 0xff),
         };
     }
 
@@ -2274,7 +2274,7 @@ public class StaticHelper {
             (byte) ((data >> 24) & 0xff),
             (byte) ((data >> 16) & 0xff),
             (byte) ((data >> 8) & 0xff),
-            (byte) ((data >> 0) & 0xff),
+            (byte) ((data) & 0xff),
         };
     }
 
