@@ -17,14 +17,25 @@
  * under the License.
  */
 
-package org.apache.plc4x.java.profinet.device;
+package options
 
-import org.apache.plc4x.java.api.exceptions.PlcException;
+import "testing"
 
-public interface ProfinetCallable<T> {
-    void handle(T packet);
-
-    T create();
-
-    long getId();
+func TestOption_isOption(t *testing.T) {
+	tests := []struct {
+		name string
+		want bool
+	}{
+		{
+			want: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			op := Option{}
+			if got := op.isOption(); got != tt.want {
+				t.Errorf("isOption() = %v, want %v", got, tt.want)
+			}
+		})
+	}
 }
