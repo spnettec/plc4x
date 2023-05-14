@@ -130,6 +130,11 @@ func (m *TransportInstance) Connect() error {
 	m.reader = bufio.NewReader(buffer)
 
 	go func(m *TransportInstance, buffer *bytes.Buffer) {
+		defer func() {
+			if err := recover(); err != nil {
+				log.Error().Msgf("panic-ed %v", err)
+			}
+		}()
 		packageCount := 0
 		var lastPacketTime *time.Time
 		for m.connected {
@@ -142,7 +147,8 @@ func (m *TransportInstance) Connect() error {
 					break
 				}
 				log.Warn().Err(err).Msg("Error reading")
-				panic(err)
+				m.connected = false
+				return
 			}
 			if lastPacketTime != nil && m.speedFactor != 0 {
 				timeToSleep := captureInfo.Timestamp.Sub(*lastPacketTime)
@@ -183,7 +189,9 @@ func (m *TransportInstance) Connect() error {
 }
 
 func (m *TransportInstance) Close() error {
-	m.handle.Close()
+	if handle := m.handle; handle != nil {
+		handle.Close()
+	}
 	m.connected = false
 	return nil
 }

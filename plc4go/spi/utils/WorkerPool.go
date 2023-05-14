@@ -25,6 +25,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
+	"runtime/debug"
 	"sync"
 	"sync/atomic"
 	"time"
@@ -53,7 +54,7 @@ func (w *worker) initialize() {
 func (w *worker) work() {
 	defer func() {
 		if recovered := recover(); recovered != nil {
-			log.Error().Msgf("Recovering from panic()=%v", recovered)
+			log.Error().Msgf("Recovering from panic():%v. Stack: %s", recovered, debug.Stack())
 		}
 		if !w.shutdown.Load() {
 			// if we are not in shutdown we continue
@@ -156,6 +157,11 @@ func NewDynamicExecutor(maxNumberOfWorkers, queueDepth int, options ...ExecutorO
 	mutex := sync.Mutex{}
 	// Worker spawner
 	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				log.Error().Msgf("panic-ed %v", err)
+			}
+		}()
 		for {
 			time.Sleep(100 * time.Millisecond)
 			mutex.Lock()
@@ -173,6 +179,11 @@ func NewDynamicExecutor(maxNumberOfWorkers, queueDepth int, options ...ExecutorO
 	}()
 	// Worker killer
 	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				log.Error().Msgf("panic-ed %v", err)
+			}
+		}()
 		for {
 			time.Sleep(5 * time.Second)
 			mutex.Lock()
@@ -201,6 +212,11 @@ func WithExecutorOptionTracerWorkers(traceWorkers bool) ExecutorOption {
 }
 
 func (e *executor) Submit(ctx context.Context, workItemId int32, runnable Runnable) CompletionFuture {
+	if runnable == nil {
+		value := atomic.Value{}
+		value.Store(errors.New("runnable must not be nil"))
+		return &future{err: value}
+	}
 	log.Trace().Int32("workItemId", workItemId).Msg("Submitting runnable")
 	completionFuture := &future{}
 	select {

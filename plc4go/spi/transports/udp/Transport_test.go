@@ -21,11 +21,15 @@ package udp
 
 import (
 	"bufio"
+	"bytes"
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/transports"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+	"golang.org/x/net/nettest"
 	"net"
 	"net/url"
-	"reflect"
 	"testing"
 )
 
@@ -34,11 +38,14 @@ func TestNewTransport(t *testing.T) {
 		name string
 		want *Transport
 	}{
-		// TODO: Add test cases.
+		{
+			name: "create it",
+			want: &Transport{},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := NewTransport(); !reflect.DeepEqual(got, tt.want) {
+			if got := NewTransport(); !assert.Equal(t, tt.want, got) {
 				t.Errorf("NewTransport() = %v, want %v", got, tt.want)
 			}
 		})
@@ -58,11 +65,14 @@ func TestNewTransportInstance(t *testing.T) {
 		args args
 		want *TransportInstance
 	}{
-		// TODO: Add test cases.
+		{
+			name: "create it",
+			want: &TransportInstance{},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := NewTransportInstance(tt.args.localAddress, tt.args.remoteAddress, tt.args.connectTimeout, tt.args.soReUse, tt.args.transport); !reflect.DeepEqual(got, tt.want) {
+			if got := NewTransportInstance(tt.args.localAddress, tt.args.remoteAddress, tt.args.connectTimeout, tt.args.soReUse, tt.args.transport); !assert.Equal(t, tt.want, got) {
 				t.Errorf("NewTransportInstance() = %v, want %v", got, tt.want)
 			}
 		})
@@ -84,7 +94,29 @@ func TestTransportInstance_Close(t *testing.T) {
 		fields  fields
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "close it",
+		},
+		{
+			name: "close it failing",
+			fields: fields{
+				udpConn: &net.UDPConn{},
+			},
+			wantErr: true,
+		},
+		{
+			name: "close success",
+			fields: fields{
+				udpConn: func() *net.UDPConn {
+					listener, err := nettest.NewLocalPacketListener("udp")
+					require.NoError(t, err)
+					t.Cleanup(func() {
+						assert.Error(t, listener.Close()) // Note: connection should have been closed
+					})
+					return listener.(*net.UDPConn)
+				}(),
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -119,7 +151,9 @@ func TestTransportInstance_Connect(t *testing.T) {
 		fields  fields
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "connect it (error)",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -158,7 +192,104 @@ func TestTransportInstance_ConnectWithContext(t *testing.T) {
 		args    args
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "connect it",
+			args: args{ctx: context.Background()},
+		},
+		{
+			name: "connect",
+			fields: fields{
+				RemoteAddress: func() *net.UDPAddr {
+					listener, err := nettest.NewLocalPacketListener("udp")
+					require.NoError(t, err)
+					t.Logf("remote listener %#q", listener.LocalAddr())
+					t.Cleanup(func() {
+						assert.NoError(t, listener.Close())
+					})
+					return listener.LocalAddr().(*net.UDPAddr)
+				}(),
+			},
+			args: args{ctx: context.Background()},
+		},
+		{
+			name: "connect with wrong address", // TODO: not sure how to tests undialable ips here
+			fields: fields{
+				RemoteAddress: &net.UDPAddr{IP: net.IPv4(255, 255, 255, 255), Port: 12},
+			},
+			args: args{ctx: context.Background()},
+		},
+		{
+			name: "connect with localAddress",
+			fields: fields{
+				LocalAddress: func() *net.UDPAddr {
+					listener, err := nettest.NewLocalPacketListener("udp")
+					require.NoError(t, err)
+					t.Logf("local listener %#q", listener.LocalAddr())
+					t.Cleanup(func() {
+						assert.NoError(t, listener.Close())
+					})
+					return listener.LocalAddr().(*net.UDPAddr)
+				}(),
+				RemoteAddress: func() *net.UDPAddr {
+					listener, err := nettest.NewLocalPacketListener("udp")
+					require.NoError(t, err)
+					t.Logf("remote listener %#q", listener.LocalAddr())
+					t.Cleanup(func() {
+						assert.NoError(t, listener.Close())
+					})
+					return listener.LocalAddr().(*net.UDPAddr)
+				}(),
+			},
+			args:    args{ctx: context.Background()},
+			wantErr: true,
+		},
+		{
+			name: "connect reuse",
+			fields: fields{
+				LocalAddress: func() *net.UDPAddr {
+					listener, err := nettest.NewLocalPacketListener("udp")
+					require.NoError(t, err)
+					t.Logf("local listener %#q", listener.LocalAddr())
+					assert.NoError(t, listener.Close()) // We close directly again
+					return listener.LocalAddr().(*net.UDPAddr)
+				}(),
+				SoReUse: true,
+			},
+			args: args{ctx: context.Background()},
+		},
+		{
+			name: "connect reuse (used)",
+			fields: fields{
+				LocalAddress: func() *net.UDPAddr {
+					listener, err := nettest.NewLocalPacketListener("udp")
+					require.NoError(t, err)
+					t.Logf("local listener %#q", listener.LocalAddr())
+					t.Cleanup(func() {
+						assert.NoError(t, listener.Close())
+					})
+					return listener.LocalAddr().(*net.UDPAddr)
+				}(),
+				SoReUse: true,
+			},
+			args:    args{ctx: context.Background()},
+			wantErr: true,
+		},
+		{
+			name: "connect reuse (used)",
+			fields: fields{
+				LocalAddress: func() *net.UDPAddr {
+					listener, err := nettest.NewLocalPacketListener("udp")
+					require.NoError(t, err)
+					t.Logf("local listener %#q", listener.LocalAddr())
+					t.Cleanup(func() {
+						assert.NoError(t, listener.Close())
+					})
+					return listener.LocalAddr().(*net.UDPAddr)
+				}(),
+			},
+			args:    args{ctx: context.Background()},
+			wantErr: true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -197,7 +328,21 @@ func TestTransportInstance_FillBuffer(t *testing.T) {
 		args    args
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name:    "do it",
+			wantErr: true,
+		},
+		{
+			name: "do it with reader",
+			fields: fields{
+				reader: bufio.NewReader(bytes.NewReader([]byte{1, 2, 3, 4})),
+			},
+			args: args{
+				until: func(pos uint, currentByte byte, reader *bufio.Reader) bool {
+					return pos < 2
+				},
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -233,7 +378,16 @@ func TestTransportInstance_GetNumBytesAvailableInBuffer(t *testing.T) {
 		want    uint32
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "get em",
+			fields: fields{
+				reader: bufio.NewReader(bytes.NewReader([]byte{1, 2, 3, 4})),
+			},
+			want: 4,
+		},
+		{
+			name: "get em (no reader)",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -273,7 +427,9 @@ func TestTransportInstance_IsConnected(t *testing.T) {
 		fields fields
 		want   bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "check it",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -313,7 +469,27 @@ func TestTransportInstance_PeekReadableBytes(t *testing.T) {
 		want    []byte
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "peek it",
+			fields: fields{
+				reader: bufio.NewReader(bytes.NewReader([]byte{1, 2, 3, 4})),
+			},
+			want: []byte{},
+		},
+		{
+			name: "peek it 3",
+			fields: fields{
+				reader: bufio.NewReader(bytes.NewReader([]byte{1, 2, 3, 4})),
+			},
+			args: args{
+				numBytes: 3,
+			},
+			want: []byte{1, 2, 3},
+		},
+		{
+			name:    "peek it (no reader)",
+			wantErr: true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -331,7 +507,7 @@ func TestTransportInstance_PeekReadableBytes(t *testing.T) {
 				t.Errorf("PeekReadableBytes() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if !reflect.DeepEqual(got, tt.want) {
+			if !assert.Equal(t, tt.want, got) {
 				t.Errorf("PeekReadableBytes() got = %v, want %v", got, tt.want)
 			}
 		})
@@ -358,7 +534,37 @@ func TestTransportInstance_Read(t *testing.T) {
 		want    []byte
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "read it",
+			fields: fields{
+				reader: bufio.NewReader(bytes.NewReader([]byte{1, 2, 3, 4})),
+			},
+			want: []byte{},
+		},
+		{
+			name: "read it 3",
+			fields: fields{
+				reader: bufio.NewReader(bytes.NewReader([]byte{1, 2, 3, 4})),
+			},
+			args: args{
+				numBytes: 3,
+			},
+			want: []byte{1, 2, 3},
+		},
+		{
+			name: "read it 5",
+			fields: fields{
+				reader: bufio.NewReader(bytes.NewReader([]byte{1, 2, 3, 4})),
+			},
+			args: args{
+				numBytes: 5,
+			},
+			wantErr: true,
+		},
+		{
+			name:    "read it (no reader available)",
+			wantErr: true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -376,7 +582,7 @@ func TestTransportInstance_Read(t *testing.T) {
 				t.Errorf("Read() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if !reflect.DeepEqual(got, tt.want) {
+			if !assert.Equal(t, tt.want, got) {
 				t.Errorf("Read() got = %v, want %v", got, tt.want)
 			}
 		})
@@ -398,7 +604,18 @@ func TestTransportInstance_String(t *testing.T) {
 		fields fields
 		want   string
 	}{
-		// TODO: Add test cases.
+		{
+			name: "string it",
+			want: "udp:<nil>-><nil>",
+		},
+		{
+			name: "string it with content",
+			fields: fields{
+				LocalAddress:  &net.UDPAddr{IP: net.IPv4(1, 2, 3, 4), Port: 5},
+				RemoteAddress: &net.UDPAddr{IP: net.IPv4(6, 7, 8, 9), Port: 10},
+			},
+			want: "udp:1.2.3.4:5->6.7.8.9:10",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -437,7 +654,45 @@ func TestTransportInstance_Write(t *testing.T) {
 		args    args
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name:    "write it (no con)",
+			wantErr: true,
+		},
+		{
+			name: "write it",
+			fields: fields{
+				udpConn: func() *net.UDPConn {
+					listener, err := nettest.NewLocalPacketListener("udp")
+					require.NoError(t, err)
+					t.Cleanup(func() {
+						assert.NoError(t, listener.Close())
+					})
+					udp, err := net.DialUDP("udp", nil, listener.LocalAddr().(*net.UDPAddr))
+					require.NoError(t, err)
+					return udp
+				}(),
+			},
+		},
+		{
+			name: "write it with remote",
+			fields: func() fields {
+				listener, err := nettest.NewLocalPacketListener("udp")
+				require.NoError(t, err)
+				t.Cleanup(func() {
+					assert.NoError(t, listener.Close())
+				})
+				remoteAddress := listener.LocalAddr().(*net.UDPAddr)
+				return fields{
+					RemoteAddress: remoteAddress,
+					udpConn: func() *net.UDPConn {
+						udp, err := net.ListenUDP("udp", nil)
+						require.NoError(t, err)
+						return udp
+					}(),
+				}
+			}(),
+			args: args{data: []byte{1, 2, 3, 4}},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -468,7 +723,18 @@ func TestTransport_CreateTransportInstance(t *testing.T) {
 		want    transports.TransportInstance
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "create it",
+			want: func() transports.TransportInstance {
+				remoteAddress, err := net.ResolveUDPAddr("udp", ":0")
+				require.NoError(t, err)
+				return &TransportInstance{
+					ConnectTimeout: 1000,
+					RemoteAddress:  remoteAddress,
+					transport:      NewTransport(),
+				}
+			}(),
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -478,7 +744,7 @@ func TestTransport_CreateTransportInstance(t *testing.T) {
 				t.Errorf("CreateTransportInstance() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if !reflect.DeepEqual(got, tt.want) {
+			if !assert.Equal(t, tt.want, got) {
 				t.Errorf("CreateTransportInstance() got = %v, want %v", got, tt.want)
 			}
 		})
@@ -497,7 +763,144 @@ func TestTransport_CreateTransportInstanceForLocalAddress(t *testing.T) {
 		want    transports.TransportInstance
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "Create it",
+			want: &TransportInstance{
+				transport:      NewTransport(),
+				RemoteAddress:  &net.UDPAddr{},
+				ConnectTimeout: 1000,
+			},
+		},
+		{
+			name: "Create it with transport url",
+			args: args{
+				transportUrl: url.URL{Host: "127.0.0.1:123"},
+			},
+			want: func() transports.TransportInstance {
+				udpAddr, err := net.ResolveUDPAddr("udp", fmt.Sprintf("%s:%d", "127.0.0.1", 123))
+				assert.NoError(t, err)
+				ti := &TransportInstance{
+					transport:      NewTransport(),
+					RemoteAddress:  udpAddr,
+					ConnectTimeout: 1000,
+				}
+				return ti
+			}(),
+		},
+		{
+			name: "Create it with transport url (named host)",
+			args: args{
+				transportUrl: url.URL{Host: "localhost:123"},
+			},
+			want: func() transports.TransportInstance {
+				udpAddr, err := net.ResolveUDPAddr("udp", fmt.Sprintf("%s:%d", "localhost", 123))
+				assert.NoError(t, err)
+				ti := &TransportInstance{
+					transport:      NewTransport(),
+					RemoteAddress:  udpAddr,
+					ConnectTimeout: 1000,
+				}
+				return ti
+			}(),
+		},
+		{
+			name: "Create it with transport url (without port)",
+			args: args{
+				transportUrl: url.URL{Host: "127.0.0.1"},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Create it with transport url (with nonsense port)",
+			args: args{
+				transportUrl: url.URL{Host: "127.0.0.1:banana"},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Create it with transport url (with default port)",
+			args: args{
+				transportUrl: url.URL{Host: "127.0.0.1"},
+				options: map[string][]string{
+					"defaultUdpPort": {"123"},
+				},
+			},
+			want: func() transports.TransportInstance {
+				udpAddr, err := net.ResolveUDPAddr("udp", fmt.Sprintf("%s:%d", "127.0.0.1", 123))
+				assert.NoError(t, err)
+				ti := &TransportInstance{
+					transport:      NewTransport(),
+					RemoteAddress:  udpAddr,
+					ConnectTimeout: 1000,
+				}
+				return ti
+			}(),
+		},
+		{
+			name: "Create it with transport url (with broken default port)",
+			args: args{
+				transportUrl: url.URL{Host: "127.0.0.1"},
+				options: map[string][]string{
+					"defaultTcpPort": {"default"},
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Create it with transport url (with default port and connection timeout and reuse)",
+			args: args{
+				transportUrl: url.URL{Host: "127.0.0.1"},
+				options: map[string][]string{
+					"defaultUdpPort":  {"123"},
+					"connect-timeout": {"123"},
+					"so-reuse":        {"true"},
+				},
+			},
+			want: func() transports.TransportInstance {
+				udpAddr, err := net.ResolveUDPAddr("udp", fmt.Sprintf("%s:%d", "127.0.0.1", 123))
+				assert.NoError(t, err)
+				ti := &TransportInstance{
+					transport:      NewTransport(),
+					RemoteAddress:  udpAddr,
+					ConnectTimeout: 123,
+					SoReUse:        true,
+				}
+				return ti
+			}(),
+		},
+		{
+			name: "Create it with transport url (with default port and connection timeout and reuse broken)",
+			args: args{
+				transportUrl: url.URL{Host: "127.0.0.1"},
+				options: map[string][]string{
+					"defaultUdpPort":  {"123"},
+					"connect-timeout": {"123"},
+					"so-reuse":        {"banana"},
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Create it with transport url (with default port and connection timeout broken)",
+			args: args{
+				transportUrl: url.URL{Host: "127.0.0.1"},
+				options: map[string][]string{
+					"defaultUdpPort":  {"123"},
+					"connect-timeout": {"banana"},
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Create it with unresolvable host",
+			args: args{
+				transportUrl: url.URL{Host: "plc4xhostnothere"},
+				options: map[string][]string{
+					"defaultUdpPort": {"123"},
+				},
+			},
+			wantErr: true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -507,7 +910,7 @@ func TestTransport_CreateTransportInstanceForLocalAddress(t *testing.T) {
 				t.Errorf("CreateTransportInstanceForLocalAddress() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if !reflect.DeepEqual(got, tt.want) {
+			if !assert.Equal(t, tt.want, got) {
 				t.Errorf("CreateTransportInstanceForLocalAddress() got = %v, want %v", got, tt.want)
 			}
 		})
@@ -519,7 +922,10 @@ func TestTransport_GetTransportCode(t *testing.T) {
 		name string
 		want string
 	}{
-		// TODO: Add test cases.
+		{
+			name: "get it",
+			want: "udp",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -536,7 +942,10 @@ func TestTransport_GetTransportName(t *testing.T) {
 		name string
 		want string
 	}{
-		// TODO: Add test cases.
+		{
+			name: "get it",
+			want: "UDP Datagram Transport",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -553,7 +962,10 @@ func TestTransport_String(t *testing.T) {
 		name string
 		want string
 	}{
-		// TODO: Add test cases.
+		{
+			name: "string it",
+			want: "udp(UDP Datagram Transport)",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

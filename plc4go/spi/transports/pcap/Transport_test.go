@@ -140,9 +140,10 @@ func TestTransportInstance_Connect(t *testing.T) {
 		reader                           *bufio.Reader
 	}
 	tests := []struct {
-		name    string
-		fields  fields
-		wantErr bool
+		name      string
+		fields    fields
+		mockSetup func(t *testing.T, fields *fields)
+		wantErr   bool
 	}{
 		{
 			name: "already connected",
@@ -157,13 +158,16 @@ func TestTransportInstance_Connect(t *testing.T) {
 		},
 		{
 			name: "connect with file",
-			fields: fields{
-				transportFile: createPcap(t),
+			mockSetup: func(t *testing.T, fields *fields) {
+				fields.transportFile = createPcap(t)
 			},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			if tt.mockSetup != nil {
+				tt.mockSetup(t, &tt.fields)
+			}
 			m := &TransportInstance{
 				DefaultBufferedTransportInstance: tt.fields.DefaultBufferedTransportInstance,
 				transportFile:                    tt.fields.transportFile,
@@ -178,6 +182,11 @@ func TestTransportInstance_Connect(t *testing.T) {
 			if err := m.Connect(); (err != nil) != tt.wantErr {
 				t.Errorf("Connect() error = %v, wantErr %v", err, tt.wantErr)
 			}
+			t.Cleanup(func() {
+				if err := m.Close(); err != nil {
+					t.Logf("Error during close %v", err)
+				}
+			})
 		})
 	}
 }

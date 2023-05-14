@@ -23,8 +23,8 @@ import (
 	"bufio"
 	"context"
 	"github.com/apache/plc4x/plc4go/spi/transports"
+	"github.com/stretchr/testify/assert"
 	"net/url"
-	"reflect"
 	"testing"
 )
 
@@ -33,11 +33,16 @@ func TestNewTransport(t *testing.T) {
 		name string
 		want *Transport
 	}{
-		// TODO: Add test cases.
+		{
+			name: "create it",
+			want: &Transport{
+				preregisteredInstances: map[url.URL]transports.TransportInstance{},
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := NewTransport(); !reflect.DeepEqual(got, tt.want) {
+			if got := NewTransport(); !assert.Equal(t, tt.want, got) {
 				t.Errorf("NewTransport() = %v, want %v", got, tt.want)
 			}
 		})
@@ -53,11 +58,17 @@ func TestNewTransportInstance(t *testing.T) {
 		args args
 		want *TransportInstance
 	}{
-		// TODO: Add test cases.
+		{
+			name: "create it",
+			want: &TransportInstance{
+				readBuffer:  []byte{},
+				writeBuffer: []byte{},
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := NewTransportInstance(tt.args.transport); !reflect.DeepEqual(got, tt.want) {
+			if got := NewTransportInstance(tt.args.transport); !assert.Equal(t, tt.want, got) {
 				t.Errorf("NewTransportInstance() = %v, want %v", got, tt.want)
 			}
 		})
@@ -77,7 +88,9 @@ func TestTransportInstance_Close(t *testing.T) {
 		fields  fields
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "close it",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -108,7 +121,9 @@ func TestTransportInstance_Connect(t *testing.T) {
 		fields  fields
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "connect it",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -143,7 +158,9 @@ func TestTransportInstance_ConnectWithContext(t *testing.T) {
 		args    args
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "connect it",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -178,7 +195,9 @@ func TestTransportInstance_DrainWriteBuffer(t *testing.T) {
 		args   args
 		want   []byte
 	}{
-		// TODO: Add test cases.
+		{
+			name: "drain it",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -189,7 +208,7 @@ func TestTransportInstance_DrainWriteBuffer(t *testing.T) {
 				transport:        tt.fields.transport,
 				writeInterceptor: tt.fields.writeInterceptor,
 			}
-			if got := m.DrainWriteBuffer(tt.args.numBytes); !reflect.DeepEqual(got, tt.want) {
+			if got := m.DrainWriteBuffer(tt.args.numBytes); !assert.Equal(t, tt.want, got) {
 				t.Errorf("DrainWriteBuffer() = %v, want %v", got, tt.want)
 			}
 		})
@@ -213,7 +232,26 @@ func TestTransportInstance_FillBuffer(t *testing.T) {
 		args    args
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "fill it (errors)",
+			args: args{
+				until: func(pos uint, currentByte byte, reader *bufio.Reader) bool {
+					return pos < 3
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "fill it",
+			fields: fields{
+				readBuffer: []byte{1, 2, 3, 4},
+			},
+			args: args{
+				until: func(pos uint, currentByte byte, reader *bufio.Reader) bool {
+					return pos < 3
+				},
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -247,7 +285,15 @@ func TestTransportInstance_FillReadBuffer(t *testing.T) {
 		fields fields
 		args   args
 	}{
-		// TODO: Add test cases.
+		{
+			name: "fill it",
+			fields: fields{
+				readBuffer: []byte{1, 2, 3, 4},
+			},
+			args: args{
+				data: []byte{1, 2, 3, 4},
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -277,7 +323,16 @@ func TestTransportInstance_GetNumBytesAvailableInBuffer(t *testing.T) {
 		want    uint32
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "get it",
+		},
+		{
+			name: "get it",
+			fields: fields{
+				readBuffer: []byte{1, 2, 3, 4},
+			},
+			want: 4,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -313,7 +368,9 @@ func TestTransportInstance_GetNumDrainableBytes(t *testing.T) {
 		fields fields
 		want   uint32
 	}{
-		// TODO: Add test cases.
+		{
+			name: "get it",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -344,7 +401,9 @@ func TestTransportInstance_IsConnected(t *testing.T) {
 		fields fields
 		want   bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "check it",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -380,7 +439,9 @@ func TestTransportInstance_PeekReadableBytes(t *testing.T) {
 		want    []byte
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "peek it",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -396,7 +457,7 @@ func TestTransportInstance_PeekReadableBytes(t *testing.T) {
 				t.Errorf("PeekReadableBytes() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if !reflect.DeepEqual(got, tt.want) {
+			if !assert.Equal(t, tt.want, got) {
 				t.Errorf("PeekReadableBytes() got = %v, want %v", got, tt.want)
 			}
 		})
@@ -421,7 +482,9 @@ func TestTransportInstance_Read(t *testing.T) {
 		want    []byte
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "read it",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -437,7 +500,7 @@ func TestTransportInstance_Read(t *testing.T) {
 				t.Errorf("Read() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if !reflect.DeepEqual(got, tt.want) {
+			if !assert.Equal(t, tt.want, got) {
 				t.Errorf("Read() got = %v, want %v", got, tt.want)
 			}
 		})
@@ -460,7 +523,9 @@ func TestTransportInstance_SetWriteInterceptor(t *testing.T) {
 		fields fields
 		args   args
 	}{
-		// TODO: Add test cases.
+		{
+			name: "set it",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -489,7 +554,10 @@ func TestTransportInstance_String(t *testing.T) {
 		fields fields
 		want   string
 	}{
-		// TODO: Add test cases.
+		{
+			name: "string it",
+			want: "test",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -524,7 +592,21 @@ func TestTransportInstance_Write(t *testing.T) {
 		args    args
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "write it",
+		},
+		{
+			name: "write it",
+			fields: fields{
+				writeInterceptor: func(transportInstance *TransportInstance, data []byte) {
+					assert.NotNil(t, transportInstance)
+					assert.Equal(t, []byte{1, 2, 3, 4}, data)
+				},
+			},
+			args: args{
+				data: []byte{1, 2, 3, 4},
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -556,7 +638,24 @@ func TestTransport_AddPreregisteredInstances(t *testing.T) {
 		args    args
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "add it",
+			fields: fields{
+				preregisteredInstances: map[url.URL]transports.TransportInstance{},
+			},
+		},
+		{
+			name: "add it (existing)",
+			fields: fields{
+				preregisteredInstances: map[url.URL]transports.TransportInstance{
+					url.URL{Host: "abcdefg"}: nil,
+				},
+			},
+			args: args{
+				transportUrl: url.URL{Host: "abcdefg"},
+			},
+			wantErr: true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -585,7 +684,38 @@ func TestTransport_CreateTransportInstance(t *testing.T) {
 		want    transports.TransportInstance
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "create it",
+			fields: fields{
+				preregisteredInstances: map[url.URL]transports.TransportInstance{},
+			},
+			want: &TransportInstance{
+				readBuffer:  []byte{},
+				writeBuffer: []byte{},
+				transport:   NewTransport(),
+			},
+		},
+		{
+			name: "create it (pre registered",
+			fields: fields{
+				preregisteredInstances: map[url.URL]transports.TransportInstance{
+					url.URL{Host: "abcdefg"}: nil,
+				},
+			},
+			args: args{
+				transportUrl: url.URL{Host: "abcdefg"},
+			},
+			want: nil,
+		},
+		{
+			name: "fail it on purpose",
+			args: args{
+				options: map[string][]string{
+					"failTestTransport": {"yes please"},
+				},
+			},
+			wantErr: true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -597,7 +727,7 @@ func TestTransport_CreateTransportInstance(t *testing.T) {
 				t.Errorf("CreateTransportInstance() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if !reflect.DeepEqual(got, tt.want) {
+			if !assert.Equal(t, tt.want, got) {
 				t.Errorf("CreateTransportInstance() got = %v, want %v", got, tt.want)
 			}
 		})
@@ -613,7 +743,10 @@ func TestTransport_GetTransportCode(t *testing.T) {
 		fields fields
 		want   string
 	}{
-		// TODO: Add test cases.
+		{
+			name: "get it",
+			want: "test",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -636,7 +769,10 @@ func TestTransport_GetTransportName(t *testing.T) {
 		fields fields
 		want   string
 	}{
-		// TODO: Add test cases.
+		{
+			name: "get it",
+			want: "Test Transport",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -659,7 +795,10 @@ func TestTransport_String(t *testing.T) {
 		fields fields
 		want   string
 	}{
-		// TODO: Add test cases.
+		{
+			name: "string it",
+			want: "test(Test Transport)",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

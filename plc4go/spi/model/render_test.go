@@ -43,6 +43,7 @@ func TestRenderTest(t *testing.T) {
 		&DefaultArrayInfo{},
 		&DefaultPlcBrowseItem{},
 		&DefaultPlcBrowseRequest{},
+		&DefaultPlcBrowseRequestBuilder{},
 		&DefaultPlcBrowseRequestResult{},
 		&DefaultPlcBrowseResponse{},
 		&DefaultPlcBrowseResponseItem{},
@@ -96,52 +97,7 @@ func TestRenderTest(t *testing.T) {
 	}
 }
 
-type _TestRenderTestCustomPlcTag struct {
-}
-
-func (_ _TestRenderTestCustomPlcTag) GetAddressString() string {
-	return "address string"
-}
-
-func (_ _TestRenderTestCustomPlcTag) GetValueType() apiValues.PlcValueType {
-	return 1
-}
-
-func (_ _TestRenderTestCustomPlcTag) GetArrayInfo() []apiModel.ArrayInfo {
-	return nil
-}
-
-type _TestRenderTestCustomPlcBrowseItem struct {
-}
-
-func (_ _TestRenderTestCustomPlcBrowseItem) GetTag() apiModel.PlcTag {
-	return _TestRenderTestCustomPlcTag{}
-}
-
-func (_ _TestRenderTestCustomPlcBrowseItem) GetName() string {
-	return "tagid"
-}
-
-func (_ _TestRenderTestCustomPlcBrowseItem) IsReadable() bool {
-	return true
-}
-
-func (_ _TestRenderTestCustomPlcBrowseItem) IsWritable() bool {
-	return true
-}
-
-func (_ _TestRenderTestCustomPlcBrowseItem) IsSubscribable() bool {
-	return true
-}
-
-func (_ _TestRenderTestCustomPlcBrowseItem) GetChildren() map[string]apiModel.PlcBrowseItem {
-	return nil // TODO: maybe we return something here... or not
-}
-
-func (_ _TestRenderTestCustomPlcBrowseItem) GetOptions() map[string]apiValues.PlcValue {
-	return nil // TODO: maybe we return something here... or not
-}
-
+// TODO: ensure mocks are created in test context...
 // TestRenderTestCustom test some custom objects
 func TestRenderTestCustom(t *testing.T) {
 	tests := []struct {
@@ -154,17 +110,20 @@ func TestRenderTestCustom(t *testing.T) {
 	}{
 		{
 			sut: NewDefaultPlcBrowseItem(
-				_TestRenderTestCustomPlcTag{},
+				NewMockPlcTag(t),
 				"some name",
 				"some datatype",
 				true,
 				true,
 				true,
 				map[string]apiModel.PlcBrowseItem{
-					"tagid": _TestRenderTestCustomPlcBrowseItem{},
+					"tagid1": NewMockPlcBrowseItem(t),
+					"tagid2": NewMockPlcBrowseItem(t),
 				},
 				map[string]apiValues.PlcValue{
-					"tagid": spiValue.PlcNull{},
+					"tagid1": spiValue.PlcNull{},
+					"tagid2": spiValue.PlcNull{},
+					"tagid3": nil,
 				},
 			).(interface { // TODO: workaround
 				fmt.Stringer
@@ -174,10 +133,12 @@ func TestRenderTestCustom(t *testing.T) {
 		{
 			sut: NewDefaultPlcBrowseRequest(
 				map[string]apiModel.PlcQuery{
-					"tagid": nil,
+					"tagid1": NewMockPlcQuery(t),
+					"tagid2": NewMockPlcQuery(t),
 				},
 				[]string{
-					"tagid",
+					"tagid1",
+					"tagid2",
 				},
 				nil,
 			),
