@@ -24,7 +24,7 @@ import (
 
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	"github.com/apache/plc4x/plc4go/pkg/api/drivers"
-	"github.com/apache/plc4x/plc4go/pkg/api/model"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 )
 
 func main() {
@@ -32,7 +32,7 @@ func main() {
 	drivers.RegisterModbusTcpDriver(driverManager)
 
 	// Get a connection to a remote PLC
-	crc := driverManager.GetConnection("modbus-tcp://localhost")
+	crc := driverManager.GetConnection("modbus-tcp://192.168.23.30")
 
 	// Wait for the driver to connect (or not)
 	connectionResult := <-crc
@@ -47,9 +47,7 @@ func main() {
 
 	// Prepare a read-request
 	readRequest, err := connection.ReadRequestBuilder().
-		AddTagAddress("field", "holding-register:26:REAL").
-		AddTagAddress("field_bool_single", "holding-register:1:BOOL[1]").
-		AddTagAddress("field_bool_list", "holding-register:10:BOOL[20]").
+		AddTagAddress("tag", "holding-register:26:REAL").
 		Build()
 	if err != nil {
 		fmt.Printf("error preparing read-request: %s", connectionResult.GetErr().Error())
@@ -67,19 +65,11 @@ func main() {
 	}
 
 	// Do something with the response
-	if rrr.GetResponse().GetResponseCode("field") != model.PlcResponseCode_OK {
-		fmt.Printf("error an non-ok return code: %s", rrr.GetResponse().GetResponseCode("tag").GetName())
-		return
-	}
-	if rrr.GetResponse().GetResponseCode("field_bool_single") != model.PlcResponseCode_OK {
-		fmt.Printf("error an non-ok return code: %s", rrr.GetResponse().GetResponseCode("tag").GetName())
-		return
-	}
-	if rrr.GetResponse().GetResponseCode("field_bool_list") != model.PlcResponseCode_OK {
+	if rrr.GetResponse().GetResponseCode("tag") != apiModel.PlcResponseCode_OK {
 		fmt.Printf("error an non-ok return code: %s", rrr.GetResponse().GetResponseCode("tag").GetName())
 		return
 	}
 
-	value := rrr.GetResponse().GetValue("field")
+	value := rrr.GetResponse().GetValue("tag")
 	fmt.Printf("Got result %f", value.GetFloat32())
 }

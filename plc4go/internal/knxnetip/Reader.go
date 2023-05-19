@@ -30,7 +30,7 @@ import (
 	driverModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
-	internalValues "github.com/apache/plc4x/plc4go/spi/values"
+	spiValues "github.com/apache/plc4x/plc4go/spi/values"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
@@ -48,7 +48,7 @@ func NewReader(connection *Connection) *Reader {
 
 func (m Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) <-chan apiModel.PlcReadRequestResult {
 	// TODO: handle ctx
-	resultChan := make(chan apiModel.PlcReadRequestResult)
+	resultChan := make(chan apiModel.PlcReadRequestResult, 1)
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {
@@ -163,11 +163,11 @@ func (m Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) <
 
 		// Assemble the results
 		result := spiModel.NewDefaultPlcReadResponse(readRequest, responseCodes, plcValues)
-		resultChan <- &spiModel.DefaultPlcReadRequestResult{
-			Request:  readRequest,
-			Response: result,
-			Err:      nil,
-		}
+		resultChan <- spiModel.NewDefaultPlcReadRequestResult(
+			readRequest,
+			result,
+			nil,
+		)
 	}()
 	return resultChan
 }
@@ -220,7 +220,7 @@ func (m Reader) readGroupAddress(ctx context.Context, tag GroupAddressTag) (apiM
 		} else {
 			// If we don't have any tag-type information, add the raw data
 			if tag.GetTagType() == nil {
-				values[stringAddress] = internalValues.NewPlcRawByteArray(int8s)
+				values[stringAddress] = spiValues.NewPlcRawByteArray(int8s)
 			} else {
 				// Decode the data according to the tags type
 				rb := utils.NewReadBufferByteBased(int8s)
@@ -252,7 +252,7 @@ func (m Reader) readGroupAddress(ctx context.Context, tag GroupAddressTag) (apiM
 		return apiModel.PlcResponseCode_OK, values[stringAddress]
 	} else if len(rawAddresses) > 1 {
 		// Add it to the result
-		return apiModel.PlcResponseCode_OK, internalValues.NewPlcStruct(values)
+		return apiModel.PlcResponseCode_OK, spiValues.NewPlcStruct(values)
 	} else {
 		// Add it to the result
 		return apiModel.PlcResponseCode_NOT_FOUND, nil
