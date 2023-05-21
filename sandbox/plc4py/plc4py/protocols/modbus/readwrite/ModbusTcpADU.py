@@ -40,7 +40,7 @@ class ModbusTcpADU(PlcMessage, ModbusADU):
     response: c_bool
     PROTOCOLIDENTIFIER: c_uint16 = 0x0000
     # Accessors for discriminator values.
-    driver_type: DriverType = DriverType.get_modbu_s__tcp()
+    driver_type: DriverType = DriverType.MODBUS_TCP
 
     def __post_init__(self):
         super().__init__(self.response)
@@ -60,9 +60,7 @@ class ModbusTcpADU(PlcMessage, ModbusADU):
         )
 
         # Implicit Field (length) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-        length: c_uint16 = c_uint16(self.pdu.getlength_in_bytes(ctx)) + c_uint16(
-            c_uint16(1)
-        )
+        length: c_uint16 = self.pdu.getlength_in_bytes(ctx) + c_uint16(1)
         write_buffer.write_unsigned_short(length, logical_name="length")
 
         # Simple Field (unitIdentifier)
@@ -71,9 +69,7 @@ class ModbusTcpADU(PlcMessage, ModbusADU):
         )
 
         # Simple Field (pdu)
-        write_buffer.DataWriterComplexDefault(write_buffer)(
-            self.pdu, logical_name="pdu"
-        )
+        write_buffer.write_serializable(self.pdu, logical_name="pdu")
 
         write_buffer.pop_context("ModbusTcpADU")
 
@@ -111,26 +107,24 @@ class ModbusTcpADU(PlcMessage, ModbusADU):
 
         transaction_identifier: c_uint16 = read_simple_field(
             "transactionIdentifier",
-            read_unsigned_int(read_buffer, 16),
+            read_unsigned_int,
             WithOption.WithByteOrder(get_bi_g__endian()),
         )
 
         protocol_identifier: c_uint16 = read_const_field(
             "protocolIdentifier",
-            read_unsigned_int(read_buffer, 16),
+            read_unsigned_int,
             ModbusTcpADU.PROTOCOLIDENTIFIER,
             WithOption.WithByteOrder(get_bi_g__endian()),
         )
 
         length: c_uint16 = read_implicit_field(
-            "length",
-            read_unsigned_int(read_buffer, 16),
-            WithOption.WithByteOrder(get_bi_g__endian()),
+            "length", read_unsigned_int, WithOption.WithByteOrder(get_bi_g__endian())
         )
 
         unit_identifier: c_uint8 = read_simple_field(
             "unitIdentifier",
-            read_unsigned_short(read_buffer, 8),
+            read_unsigned_short,
             WithOption.WithByteOrder(get_bi_g__endian()),
         )
 

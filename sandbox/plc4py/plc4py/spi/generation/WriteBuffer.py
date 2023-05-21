@@ -36,6 +36,7 @@ from bitarray import bitarray
 from bitarray.util import zeros
 
 from plc4py.api.exceptions.exceptions import SerializationException
+from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.utils.GenericTypes import ByteOrder, ByteOrderAware
 
 
@@ -126,13 +127,18 @@ class WriteBuffer(ByteOrderAware, PositionAware):
     def write_virtual(self, value: str, logical_name: str = "", **kwargs) -> None:
         raise NotImplementedError
 
+    def write_complex_array(
+        self, value: List[PlcMessage], logical_name: str = "", **kwargs
+    ) -> None:
+        raise NotImplementedError
+
     #
     # This method can be used to influence serializing (e.g. intercept whole types and render them in a simplified form)
     #
     # @param value the value to be serialized
     # @throws SerializationException if something goes wrong
     #
-    def write_serializable(self, value) -> None:
+    def write_serializable(self, value, logical_name="") -> None:
         value.serialize(self)
 
 
@@ -275,6 +281,14 @@ class WriteBufferByteBased(WriteBuffer):
         elif bit_length > 64:
             raise SerializationException("Double can only contain max 64 bits")
         self._handle_numeric_encoding(c_double(value.value), bit_length, **kwargs)
+
+    def write_complex_array(
+        self, value: List[PlcMessage], logical_name: str = "", **kwargs
+    ) -> None:
+        for item in value:
+            self.push_context(logical_name, **kwargs)
+            self.write_serializable(item, logical_name="")
+            self.pop_context(logical_name, **kwargs)
 
     def _handle_numeric_encoding(self, value: NUMERIC_UNION, bit_length: int, **kwargs):
         byte_order = kwargs.get("byte_order", self.byte_order)

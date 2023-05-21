@@ -23,6 +23,7 @@ from ctypes import c_bool
 from ctypes import c_uint16
 from ctypes import c_uint8
 from plc4py.api.messages.PlcMessage import PlcMessage
+from plc4py.protocols.modbus import StaticHelper
 from plc4py.protocols.modbus.readwrite.DriverType import DriverType
 from plc4py.protocols.modbus.readwrite.ModbusADU import ModbusADU
 from plc4py.protocols.modbus.readwrite.ModbusADU import ModbusADUBuilder
@@ -38,7 +39,7 @@ class ModbusRtuADU(PlcMessage, ModbusADU):
     # Arguments.
     response: c_bool
     # Accessors for discriminator values.
-    driver_type: DriverType = DriverType.get_modbu_s__rtu()
+    driver_type: DriverType = DriverType.MODBUS_RTU
 
     def __post_init__(self):
         super().__init__(self.response)
@@ -51,13 +52,12 @@ class ModbusRtuADU(PlcMessage, ModbusADU):
         write_buffer.write_unsigned_byte(self.address, logical_name="address")
 
         # Simple Field (pdu)
-        write_buffer.DataWriterComplexDefault(write_buffer)(
-            self.pdu, logical_name="pdu"
-        )
+        write_buffer.write_serializable(self.pdu, logical_name="pdu")
 
         # Checksum Field (checksum) (Calculated)
         write_buffer.write_unsigned_short(
-            c_uint16(rtu_crc_check(address, pdu)), logical_name="crc"
+            c_uint16(StaticHelper.rtu_crc_check(self.address, self.pdu)),
+            logical_name="crc",
         )
 
         write_buffer.pop_context("ModbusRtuADU")
@@ -89,9 +89,7 @@ class ModbusRtuADU(PlcMessage, ModbusADU):
         cur_pos: int = 0
 
         address: c_uint8 = read_simple_field(
-            "address",
-            read_unsigned_short(read_buffer, 8),
-            WithOption.WithByteOrder(get_bi_g__endian()),
+            "address", read_unsigned_short, WithOption.WithByteOrder(get_bi_g__endian())
         )
 
         pdu: ModbusPDU = read_simple_field(
@@ -104,8 +102,8 @@ class ModbusRtuADU(PlcMessage, ModbusADU):
 
         crc: c_uint16 = read_checksum_field(
             "crc",
-            read_unsigned_int(read_buffer, 16),
-            (c_uint16)(rtu_crc_check(address, pdu)),
+            read_unsigned_int,
+            (c_uint16)(rtu_crc_check(self.address, self.pdu)),
             WithOption.WithByteOrder(get_bi_g__endian()),
         )
 

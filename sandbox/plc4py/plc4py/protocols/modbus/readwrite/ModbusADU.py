@@ -43,7 +43,7 @@ class ModbusADU(ABC, PlcMessage):
         pass
 
     @abstractmethod
-    def serialize_modbus_adu_child(write_buffer: WriteBuffer) -> None:
+    def serialize_modbus_adu_child(self, write_buffer: WriteBuffer) -> None:
         pass
 
     def serialize(self, write_buffer: WriteBuffer):
