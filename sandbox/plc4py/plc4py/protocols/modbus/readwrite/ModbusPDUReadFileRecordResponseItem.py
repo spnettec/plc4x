@@ -37,7 +37,6 @@ class ModbusPDUReadFileRecordResponseItem(PlcMessage):
         super().__init__()
 
     def serialize(self, write_buffer: WriteBuffer):
-        start_pos: int = write_buffer.get_pos()
         write_buffer.push_context("ModbusPDUReadFileRecordResponseItem")
 
         # Implicit Field (data_length) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
@@ -79,7 +78,6 @@ class ModbusPDUReadFileRecordResponseItem(PlcMessage):
     @staticmethod
     def static_parse_context(read_buffer: ReadBuffer):
         read_buffer.pull_context("ModbusPDUReadFileRecordResponseItem")
-        start_pos: int = read_buffer.get_pos()
         cur_pos: int = 0
 
         data_length: c_uint8 = read_implicit_field("dataLength", read_unsigned_short)

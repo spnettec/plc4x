@@ -54,7 +54,6 @@ class ModbusPDU(ABC, PlcMessage):
         pass
 
     def serialize(self, write_buffer: WriteBuffer):
-        start_pos: int = write_buffer.get_pos()
         write_buffer.push_context("ModbusPDU")
 
         # Discriminator Field (errorFlag) (Used as input to a switch field)
@@ -109,7 +108,6 @@ class ModbusPDU(ABC, PlcMessage):
     @staticmethod
     def static_parse_context(read_buffer: ReadBuffer, response: c_bool):
         read_buffer.pull_context("ModbusPDU")
-        start_pos: int = read_buffer.get_pos()
         cur_pos: int = 0
 
         error_flag: c_bool = read_discriminator_field("errorFlag", read_boolean)

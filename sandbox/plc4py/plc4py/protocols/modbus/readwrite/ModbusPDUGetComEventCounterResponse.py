@@ -42,7 +42,6 @@ class ModbusPDUGetComEventCounterResponse(PlcMessage, ModbusPDU):
         super().__init__()
 
     def serialize_modbus_pdu_child(self, write_buffer: WriteBuffer):
-        start_pos: int = write_buffer.get_pos()
         write_buffer.push_context("ModbusPDUGetComEventCounterResponse")
 
         # Simple Field (status)
@@ -71,7 +70,6 @@ class ModbusPDUGetComEventCounterResponse(PlcMessage, ModbusPDU):
     @staticmethod
     def static_parse_builder(read_buffer: ReadBuffer, response: c_bool):
         read_buffer.pull_context("ModbusPDUGetComEventCounterResponse")
-        start_pos: int = read_buffer.get_pos()
         cur_pos: int = 0
 
         status: c_uint16 = read_simple_field("status", read_unsigned_int)

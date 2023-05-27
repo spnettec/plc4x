@@ -47,7 +47,6 @@ class ModbusADU(ABC, PlcMessage):
         pass
 
     def serialize(self, write_buffer: WriteBuffer):
-        start_pos: int = write_buffer.get_pos()
         write_buffer.push_context("ModbusADU")
 
         # Switch field (Serialize the sub-type)
@@ -101,7 +100,6 @@ class ModbusADU(ABC, PlcMessage):
         read_buffer: ReadBuffer, driver_type: DriverType, response: c_bool
     ):
         read_buffer.pull_context("ModbusADU")
-        start_pos: int = read_buffer.get_pos()
         cur_pos: int = 0
 
         # Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)

@@ -44,7 +44,6 @@ class ModbusAsciiADU(PlcMessage, ModbusADU):
         super().__init__(self.response)
 
     def serialize_modbus_adu_child(self, write_buffer: WriteBuffer):
-        start_pos: int = write_buffer.get_pos()
         write_buffer.push_context("ModbusAsciiADU")
 
         # Simple Field (address)
@@ -84,7 +83,6 @@ class ModbusAsciiADU(PlcMessage, ModbusADU):
         read_buffer: ReadBuffer, driver_type: DriverType, response: c_bool
     ):
         read_buffer.pull_context("ModbusAsciiADU")
-        start_pos: int = read_buffer.get_pos()
         cur_pos: int = 0
 
         address: c_uint8 = read_simple_field(

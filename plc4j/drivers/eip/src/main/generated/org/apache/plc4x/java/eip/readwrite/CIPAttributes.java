@@ -39,11 +39,12 @@ public class CIPAttributes implements Message {
 
   // Properties.
   protected final List<Integer> classId;
-  protected final int numberAvailable;
-  protected final int numberActive;
+  protected final Integer numberAvailable;
+  protected final Integer numberActive;
   protected final byte[] data;
 
-  public CIPAttributes(List<Integer> classId, int numberAvailable, int numberActive, byte[] data) {
+  public CIPAttributes(
+      List<Integer> classId, Integer numberAvailable, Integer numberActive, byte[] data) {
     super();
     this.classId = classId;
     this.numberAvailable = numberAvailable;
@@ -55,11 +56,11 @@ public class CIPAttributes implements Message {
     return classId;
   }
 
-  public int getNumberAvailable() {
+  public Integer getNumberAvailable() {
     return numberAvailable;
   }
 
-  public int getNumberActive() {
+  public Integer getNumberActive() {
     return numberActive;
   }
 
@@ -70,7 +71,6 @@ public class CIPAttributes implements Message {
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
-    int startPos = positionAware.getPos();
     writeBuffer.pushContext("CIPAttributes");
 
     // Implicit Field (numberOfClasses) (Used for parsing, but its value is not stored as it's
@@ -81,11 +81,11 @@ public class CIPAttributes implements Message {
     // Array Field (classId)
     writeSimpleTypeArrayField("classId", classId, writeUnsignedInt(writeBuffer, 16));
 
-    // Simple Field (numberAvailable)
-    writeSimpleField("numberAvailable", numberAvailable, writeUnsignedInt(writeBuffer, 16));
+    // Optional Field (numberAvailable) (Can be skipped, if the value is null)
+    writeOptionalField("numberAvailable", numberAvailable, writeUnsignedInt(writeBuffer, 16));
 
-    // Simple Field (numberActive)
-    writeSimpleField("numberActive", numberActive, writeUnsignedInt(writeBuffer, 16));
+    // Optional Field (numberActive) (Can be skipped, if the value is null)
+    writeOptionalField("numberActive", numberActive, writeUnsignedInt(writeBuffer, 16));
 
     // Array Field (data)
     writeByteArrayField("data", data, writeByteArray(writeBuffer, 8));
@@ -112,11 +112,15 @@ public class CIPAttributes implements Message {
       lengthInBits += 16 * classId.size();
     }
 
-    // Simple field (numberAvailable)
-    lengthInBits += 16;
+    // Optional Field (numberAvailable)
+    if (numberAvailable != null) {
+      lengthInBits += 16;
+    }
 
-    // Simple field (numberActive)
-    lengthInBits += 16;
+    // Optional Field (numberActive)
+    if (numberActive != null) {
+      lengthInBits += 16;
+    }
 
     // Array field
     if (data != null) {
@@ -150,8 +154,6 @@ public class CIPAttributes implements Message {
       throws ParseException {
     readBuffer.pullContext("CIPAttributes");
     PositionAware positionAware = readBuffer;
-    int startPos = positionAware.getPos();
-    int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int numberOfClasses = readImplicitField("numberOfClasses", readUnsignedInt(readBuffer, 16));
@@ -159,13 +161,25 @@ public class CIPAttributes implements Message {
     List<Integer> classId =
         readCountArrayField("classId", readUnsignedInt(readBuffer, 16), numberOfClasses);
 
-    int numberAvailable = readSimpleField("numberAvailable", readUnsignedInt(readBuffer, 16));
+    Integer numberAvailable =
+        readOptionalField(
+            "numberAvailable",
+            readUnsignedInt(readBuffer, 16),
+            (packetLength) >= (((((numberOfClasses) * (2))) + (4))));
 
-    int numberActive = readSimpleField("numberActive", readUnsignedInt(readBuffer, 16));
+    Integer numberActive =
+        readOptionalField(
+            "numberActive",
+            readUnsignedInt(readBuffer, 16),
+            (packetLength) >= (((((numberOfClasses) * (2))) + (6))));
 
     byte[] data =
         readBuffer.readByteArray(
-            "data", Math.toIntExact((((packetLength) - (2)) - (((COUNT(classId)) * (2)))) - (4)));
+            "data",
+            Math.toIntExact(
+                ((((packetLength) > (((((numberOfClasses) * (2))) + (6)))))
+                    ? (packetLength) - (((((numberOfClasses) * (2))) + (6)))
+                    : 0)));
 
     readBuffer.closeContext("CIPAttributes");
     // Create the instance
