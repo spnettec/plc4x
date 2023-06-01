@@ -21,6 +21,7 @@ package knxnetip
 
 import (
 	"context"
+	"github.com/rs/zerolog"
 	"net/url"
 
 	"github.com/apache/plc4x/plc4go/pkg/api"
@@ -29,15 +30,18 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/pkg/errors"
-	"github.com/rs/zerolog/log"
 )
 
 type Driver struct {
 	_default.DefaultDriver
+
+	log zerolog.Logger // TODO: use it
 }
 
-func NewDriver() *Driver {
-	driver := &Driver{}
+func NewDriver(_options ...options.WithOption) *Driver {
+	driver := &Driver{
+		log: options.ExtractCustomLogger(_options...),
+	}
 	driver.DefaultDriver = _default.NewDefaultDriver(driver, "knxnet-ip", "KNXNet/IP", "udp", NewTagHandler())
 	return driver
 }
@@ -67,7 +71,7 @@ func (m *Driver) GetConnectionWithContext(ctx context.Context, transportUrl url.
 
 	// Create the new connection
 	connection := NewConnection(transportInstance, options, m.GetPlcTagHandler())
-	log.Trace().Str("transport", transportUrl.String()).Stringer("connection", connection).Msg("created new connection instance, trying to connect now")
+	m.log.Trace().Str("transport", transportUrl.String()).Stringer("connection", connection).Msg("created new connection instance, trying to connect now")
 	return connection.ConnectWithContext(ctx)
 }
 

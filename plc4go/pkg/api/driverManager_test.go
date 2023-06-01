@@ -21,7 +21,9 @@ package plc4go
 
 import (
 	"context"
+	"github.com/apache/plc4x/plc4go/pkg/api/config"
 	"github.com/apache/plc4x/plc4go/spi/utils"
+	"github.com/rs/zerolog"
 	"testing"
 	"time"
 
@@ -44,12 +46,13 @@ func TestNewPlcDriverManager(t *testing.T) {
 			want: &plcDriverManger{
 				drivers:    map[string]PlcDriver{},
 				transports: map[string]transports.Transport{},
+				log:        zerolog.Nop(),
 			},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := NewPlcDriverManager(); !assert.Equal(t, got, tt.want) {
+			if got := NewPlcDriverManager(config.WithCustomLogger(zerolog.Nop())); !assert.Equal(t, got, tt.want) {
 				t.Errorf("NewPlcDriverManager() = %v, want %v", got, tt.want)
 			}
 		})
@@ -329,6 +332,7 @@ func Test_plcDriverManger_Discover(t *testing.T) {
 				drivers:    tt.fields.drivers,
 				transports: tt.fields.transports,
 			}
+			m.log = zerolog.New(zerolog.NewConsoleWriter(zerolog.ConsoleTestWriter(t)))
 			if err := m.Discover(tt.args.callback, tt.args.discoveryOptions...); (err != nil) != tt.wantErr {
 				t.Errorf("Discover() error = %v, wantErr %v", err, tt.wantErr)
 			}
@@ -412,6 +416,7 @@ func Test_plcDriverManger_DiscoverWithContext(t *testing.T) {
 				drivers:    tt.fields.drivers,
 				transports: tt.fields.transports,
 			}
+			m.log = zerolog.New(zerolog.NewConsoleWriter(zerolog.ConsoleTestWriter(t)))
 			if err := m.DiscoverWithContext(tt.args.ctx, tt.args.callback, tt.args.discoveryOptions...); (err != nil) != tt.wantErr {
 				t.Errorf("DiscoverWithContext() error = %v, wantErr %v", err, tt.wantErr)
 			}
@@ -520,6 +525,7 @@ func Test_plcDriverManger_GetConnection(t *testing.T) {
 				drivers:    tt.fields.drivers,
 				transports: tt.fields.transports,
 			}
+			m.log = zerolog.New(zerolog.NewConsoleWriter(zerolog.ConsoleTestWriter(t)))
 			if got := m.GetConnection(tt.args.connectionString); !tt.wantVerifier(t, got) {
 				t.Errorf("GetConnection() = %v", got)
 			}
@@ -561,6 +567,7 @@ func Test_plcDriverManger_GetDriver(t *testing.T) {
 				drivers:    tt.fields.drivers,
 				transports: tt.fields.transports,
 			}
+			m.log = zerolog.New(zerolog.NewConsoleWriter(zerolog.ConsoleTestWriter(t)))
 			got, err := m.GetDriver(tt.args.driverName)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("GetDriver() error = %v, wantErr %v", err, tt.wantErr)
@@ -609,6 +616,7 @@ func Test_plcDriverManger_GetTransport(t *testing.T) {
 				drivers:    tt.fields.drivers,
 				transports: tt.fields.transports,
 			}
+			m.log = zerolog.New(zerolog.NewConsoleWriter(zerolog.ConsoleTestWriter(t)))
 			got, err := m.GetTransport(tt.args.transportName, tt.args.in1, tt.args.in2)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("GetTransport() error = %v, wantErr %v", err, tt.wantErr)
@@ -650,6 +658,7 @@ func Test_plcDriverManger_ListDriverNames(t *testing.T) {
 				drivers:    tt.fields.drivers,
 				transports: tt.fields.transports,
 			}
+			m.log = zerolog.New(zerolog.NewConsoleWriter(zerolog.ConsoleTestWriter(t)))
 			if got := m.ListDriverNames(); !assert.Equal(t, got, tt.want) {
 				t.Errorf("ListDriverNames() = %v, want %v", got, tt.want)
 			}
@@ -686,6 +695,7 @@ func Test_plcDriverManger_ListTransportNames(t *testing.T) {
 				drivers:    tt.fields.drivers,
 				transports: tt.fields.transports,
 			}
+			m.log = zerolog.New(zerolog.NewConsoleWriter(zerolog.ConsoleTestWriter(t)))
 			if got := m.ListTransportNames(); !assert.Equal(t, got, tt.want) {
 				t.Errorf("ListTransportNames() = %v, want %v", got, tt.want)
 			}
@@ -745,6 +755,7 @@ func Test_plcDriverManger_RegisterDriver(t *testing.T) {
 				drivers:    tt.fields.drivers,
 				transports: tt.fields.transports,
 			}
+			m.log = zerolog.New(zerolog.NewConsoleWriter(zerolog.ConsoleTestWriter(t)))
 			m.RegisterDriver(tt.args.driver)
 		})
 	}
@@ -800,6 +811,7 @@ func Test_plcDriverManger_RegisterTransport(t *testing.T) {
 				drivers:    tt.fields.drivers,
 				transports: tt.fields.transports,
 			}
+			m.log = zerolog.New(zerolog.NewConsoleWriter(zerolog.ConsoleTestWriter(t)))
 			m.RegisterTransport(tt.args.transport)
 		})
 	}

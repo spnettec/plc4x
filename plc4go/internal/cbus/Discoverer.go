@@ -22,6 +22,7 @@ package cbus
 import (
 	"context"
 	"fmt"
+	"github.com/apache/plc4x/plc4go/spi/pool"
 	"github.com/apache/plc4x/plc4go/spi/transports/tcp"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
@@ -37,22 +38,24 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/spi/utils"
-
-	"github.com/rs/zerolog/log"
 )
 
 type Discoverer struct {
 	transportInstanceCreationWorkItemId atomic.Int32
-	transportInstanceCreationQueue      utils.Executor
+	transportInstanceCreationQueue      pool.Executor
 	deviceScanningWorkItemId            atomic.Int32
-	deviceScanningQueue                 utils.Executor
+	deviceScanningQueue                 pool.Executor
+
+	log zerolog.Logger
 }
 
-func NewDiscoverer() *Discoverer {
+func NewDiscoverer(_options ...options.WithOption) *Discoverer {
 	return &Discoverer{
 		// TODO: maybe a dynamic executor would be better to not waste cycles when not in use
-		transportInstanceCreationQueue: utils.NewFixedSizeExecutor(50, 100),
-		deviceScanningQueue:            utils.NewFixedSizeExecutor(50, 100),
+		transportInstanceCreationQueue: pool.NewFixedSizeExecutor(50, 100, _options...),
+		deviceScanningQueue:            pool.NewFixedSizeExecutor(50, 100, _options...),
+
+		log: options.ExtractCustomLogger(_options...),
 	}
 }
 
@@ -61,14 +64,14 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 	d.deviceScanningQueue.Start()
 
 	deviceNames := d.extractDeviceNames(discoveryOptions...)
-	interfaces, err := addressProviderRetriever(deviceNames)
+	interfaces, err := addressProviderRetriever(d.log, deviceNames)
 	if err != nil {
 		return errors.Wrap(err, "error getting addresses")
 	}
-	if log.Debug().Enabled() {
+	if d.log.Debug().Enabled() {
 		for _, provider := range interfaces {
-			log.Debug().Msgf("Discover on %s", provider)
-			log.Trace().Msgf("Discover on %#v", provider.containedInterface())
+			d.log.Debug().Msgf("Discover on %s", provider)
+			d.log.Trace().Msgf("Discover on %#v", provider.containedInterface())
 		}
 	}
 
@@ -77,7 +80,7 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 	tcpTransport := tcp.NewTransport()
 	// Iterate over all network devices of this system.
 	for _, netInterface := range interfaces {
-		interfaceLog := log.With().Stringer("interface", netInterface).Logger()
+		interfaceLog := d.log.With().Stringer("interface", netInterface).Logger()
 		interfaceLog.Debug().Msg("Scanning")
 		addrs, err := netInterface.Addrs()
 		if err != nil {
@@ -112,7 +115,7 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 				if ipv4Addr == nil || ipv4Addr.IsLoopback() {
 					continue
 				}
-				addresses, err := utils.GetIPAddresses(ctx, netInterface.containedInterface(), false)
+				addresses, err := utils.GetIPAddresses(d.log, ctx, netInterface.containedInterface(), false)
 				if err != nil {
 					addressLogger.Warn().Err(err).Msgf("Can't get addresses for %v", netInterface)
 					continue
@@ -147,25 +150,25 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 	}
 	go func() {
 		wg.Wait()
-		log.Trace().Msg("Closing transport instance channel")
+		d.log.Trace().Msg("Closing transport instance channel")
 		close(transportInstances)
 	}()
 
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {
-				log.Error().Msgf("panic-ed %v", err)
+				d.log.Error().Msgf("panic-ed %v", err)
 			}
 		}()
 		for transportInstance := range transportInstances {
-			log.Debug().Stringer("transportInstance", transportInstance).Msg("submitting device scan")
+			d.log.Debug().Stringer("transportInstance", transportInstance).Msg("submitting device scan")
 			d.deviceScanningQueue.Submit(ctx, d.deviceScanningWorkItemId.Add(1), d.createDeviceScanDispatcher(transportInstance.(*tcp.TransportInstance), callback))
 		}
 	}()
 	return nil
 }
 
-func (d *Discoverer) createTransportInstanceDispatcher(ctx context.Context, wg *sync.WaitGroup, ip net.IP, tcpTransport *tcp.Transport, transportInstances chan transports.TransportInstance, cBusPort uint16, addressLogger zerolog.Logger) utils.Runnable {
+func (d *Discoverer) createTransportInstanceDispatcher(ctx context.Context, wg *sync.WaitGroup, ip net.IP, tcpTransport *tcp.Transport, transportInstances chan transports.TransportInstance, cBusPort uint16, addressLogger zerolog.Logger) pool.Runnable {
 	wg.Add(1)
 	return func() {
 		defer wg.Done()
@@ -199,17 +202,23 @@ func (d *Discoverer) createTransportInstanceDispatcher(ctx context.Context, wg *
 	}
 }
 
-func (d *Discoverer) createDeviceScanDispatcher(tcpTransportInstance *tcp.TransportInstance, callback func(event apiModel.PlcDiscoveryItem)) utils.Runnable {
+func (d *Discoverer) createDeviceScanDispatcher(tcpTransportInstance *tcp.TransportInstance, callback func(event apiModel.PlcDiscoveryItem)) pool.Runnable {
 	return func() {
-		transportInstanceLogger := log.With().Stringer("transportInstance", tcpTransportInstance).Logger()
+		transportInstanceLogger := d.log.With().Stringer("transportInstance", tcpTransportInstance).Logger()
 		transportInstanceLogger.Debug().Msgf("Scanning %v", tcpTransportInstance)
 		// Create a codec for sending and receiving messages.
-		codec := NewMessageCodec(tcpTransportInstance)
+		codec := NewMessageCodec(tcpTransportInstance, options.WithCustomLogger(d.log))
 		// Explicitly start the worker
 		if err := codec.Connect(); err != nil {
 			transportInstanceLogger.Debug().Err(err).Msg("Error connecting")
 			return
 		}
+		defer func() {
+			// Disconnect codec when done
+			if err := codec.Disconnect(); err != nil {
+				d.log.Warn().Err(err).Msg("Error disconnecting codec")
+			}
+		}()
 
 		// Prepare the discovery packet data
 		cBusOptions := readWriteModel.NewCBusOptions(false, false, false, false, false, false, false, false, true)
@@ -337,12 +346,12 @@ func (w *wrappedInterface) String() string {
 }
 
 // allInterfaceRetriever can be exchanged in tests
-var allInterfaceRetriever = func() ([]addressProvider, error) {
+var allInterfaceRetriever = func(localLog zerolog.Logger) ([]addressProvider, error) {
 	interfaces, err := net.Interfaces()
 	if err != nil {
 		return nil, errors.Wrap(err, "could not retrieve all interfaces")
 	}
-	log.Debug().Msgf("Mapping %d interfaces", len(interfaces))
+	localLog.Debug().Msgf("Mapping %d interfaces", len(interfaces))
 	addressProviders := make([]addressProvider, len(interfaces))
 	for i, networkInterface := range interfaces {
 		var copyInterface = networkInterface
@@ -352,8 +361,8 @@ var allInterfaceRetriever = func() ([]addressProvider, error) {
 }
 
 // addressProviderRetriever can be exchanged in tests
-var addressProviderRetriever = func(deviceNames []string) ([]addressProvider, error) {
-	allInterfaces, err := allInterfaceRetriever()
+var addressProviderRetriever = func(localLog zerolog.Logger, deviceNames []string) ([]addressProvider, error) {
+	allInterfaces, err := allInterfaceRetriever(localLog)
 	if err != nil {
 		return nil, errors.Wrap(err, "error getting all interfaces")
 	}
@@ -362,7 +371,7 @@ var addressProviderRetriever = func(deviceNames []string) ([]addressProvider, er
 	// However if a discovery option is present to select a device by name, only
 	// add those devices matching any of the given names.
 	if len(deviceNames) <= 0 {
-		log.Info().Msgf("no devices selected, use all devices (%d)", len(allInterfaces))
+		localLog.Info().Msgf("no devices selected, use all devices (%d)", len(allInterfaces))
 		return allInterfaces, nil
 	}
 

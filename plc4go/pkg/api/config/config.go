@@ -19,6 +19,11 @@
 
 package config
 
+import (
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/rs/zerolog"
+)
+
 // TraceTransactionManagerWorkers when set to true the transaction manager displays worker states in log
 var (
 	TraceTransactionManagerWorkers      bool
@@ -30,3 +35,13 @@ var (
 var (
 	TraceConnectionCache bool
 )
+
+// WithCustomLogger is a global option to supply a custom logger
+func WithCustomLogger(logger zerolog.Logger) WithOption {
+	return options.WithCustomLogger(logger)
+}
+
+// WithOption is a marker interface for options
+type WithOption interface {
+	options.WithOption
+}

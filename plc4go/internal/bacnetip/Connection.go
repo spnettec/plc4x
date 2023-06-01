@@ -22,8 +22,12 @@ package bacnetip
 import (
 	"context"
 	"fmt"
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/tracer"
+	"github.com/apache/plc4x/plc4go/spi/transactions"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 	"sync"
 	"time"
 
@@ -40,21 +44,24 @@ type Connection struct {
 	invokeIdGenerator InvokeIdGenerator
 	messageCodec      spi.MessageCodec
 	subscribers       []*Subscriber
-	tm                spi.RequestTransactionManager
+	tm                transactions.RequestTransactionManager
 
 	connectionId string
-	tracer       *spi.Tracer
+	tracer       *tracer.Tracer
+
+	log zerolog.Logger
 }
 
-func NewConnection(messageCodec spi.MessageCodec, tagHandler spi.PlcTagHandler, tm spi.RequestTransactionManager, options map[string][]string) *Connection {
+func NewConnection(messageCodec spi.MessageCodec, tagHandler spi.PlcTagHandler, tm transactions.RequestTransactionManager, connectionOptions map[string][]string, _options ...options.WithOption) *Connection {
 	connection := &Connection{
 		invokeIdGenerator: InvokeIdGenerator{currentInvokeId: 0},
 		messageCodec:      messageCodec,
 		tm:                tm,
+		log:               options.ExtractCustomLogger(_options...),
 	}
-	if traceEnabledOption, ok := options["traceEnabled"]; ok {
+	if traceEnabledOption, ok := connectionOptions["traceEnabled"]; ok {
 		if len(traceEnabledOption) == 1 {
-			connection.tracer = spi.NewTracer(connection.connectionId)
+			connection.tracer = tracer.NewTracer(connection.connectionId, _options...)
 		}
 	}
 	connection.DefaultConnection = _default.NewDefaultConnection(connection,
@@ -72,12 +79,12 @@ func (c *Connection) IsTraceEnabled() bool {
 	return c.tracer != nil
 }
 
-func (c *Connection) GetTracer() *spi.Tracer {
+func (c *Connection) GetTracer() *tracer.Tracer {
 	return c.tracer
 }
 
 func (c *Connection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcConnectionConnectResult {
-	log.Trace().Msg("Connecting")
+	c.log.Trace().Msg("Connecting")
 	ch := make(chan plc4go.PlcConnectionConnectResult, 1)
 	go func() {
 		defer func() {
@@ -93,7 +100,7 @@ func (c *Connection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcCo
 				}
 			}()
 			for c.IsConnected() {
-				log.Trace().Msg("Polling data")
+				c.log.Trace().Msg("Polling data")
 				incomingMessageChannel := c.messageCodec.GetDefaultIncomingMessageChannel()
 				timeout := time.NewTimer(20 * time.Millisecond)
 				defer utils.CleanupTimer(timeout)
@@ -104,7 +111,7 @@ func (c *Connection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcCo
 				case <-timeout.C:
 				}
 			}
-			log.Info().Msg("Ending incoming message transfer")
+			c.log.Info().Msg("Ending incoming message transfer")
 		}()
 		ch <- connectionConnectResult
 	}()
@@ -124,13 +131,13 @@ func (c *Connection) ReadRequestBuilder() apiModel.PlcReadRequestBuilder {
 }
 
 func (c *Connection) SubscriptionRequestBuilder() apiModel.PlcSubscriptionRequestBuilder {
-	return spiModel.NewDefaultPlcSubscriptionRequestBuilder(c.GetPlcTagHandler(), c.GetPlcValueHandler(), NewSubscriber(c))
+	return spiModel.NewDefaultPlcSubscriptionRequestBuilder(c.GetPlcTagHandler(), c.GetPlcValueHandler(), NewSubscriber(c, options.WithCustomLogger(c.log)))
 }
 
 func (c *Connection) addSubscriber(subscriber *Subscriber) {
 	for _, sub := range c.subscribers {
 		if sub == subscriber {
-			log.Debug().Msgf("Subscriber %v already added", subscriber)
+			c.log.Debug().Msgf("Subscriber %v already added", subscriber)
 			return
 		}
 	}

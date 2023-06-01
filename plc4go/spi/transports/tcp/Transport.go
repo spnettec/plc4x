@@ -28,16 +28,23 @@ import (
 	"regexp"
 	"strconv"
 
+	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transports"
+	transportUtils "github.com/apache/plc4x/plc4go/spi/transports/utils"
 	"github.com/apache/plc4x/plc4go/spi/utils"
+
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 )
 
 type Transport struct {
+	log zerolog.Logger
 }
 
-func NewTransport() *Transport {
-	return &Transport{}
+func NewTransport(_options ...options.WithOption) *Transport {
+	return &Transport{
+		log: options.ExtractCustomLogger(_options...),
+	}
 }
 
 func (m Transport) GetTransportCode() string {
@@ -48,7 +55,7 @@ func (m Transport) GetTransportName() string {
 	return "TCP/IP Socket Transport"
 }
 
-func (m Transport) CreateTransportInstance(transportUrl url.URL, options map[string][]string) (transports.TransportInstance, error) {
+func (m Transport) CreateTransportInstance(transportUrl url.URL, options map[string][]string, _options ...options.WithOption) (transports.TransportInstance, error) {
 	connectionStringRegexp := regexp.MustCompile(`^((?P<ip>[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3})|(?P<hostname>[a-zA-Z0-9.\-]+))(:(?P<port>[0-9]{1,5}))?`)
 	var address string
 	var port int
@@ -85,7 +92,7 @@ func (m Transport) CreateTransportInstance(transportUrl url.URL, options map[str
 		return nil, errors.Wrap(err, "error resolving typ address")
 	}
 
-	return NewTcpTransportInstance(tcpAddr, connectTimeout, &m), nil
+	return NewTcpTransportInstance(tcpAddr, connectTimeout, &m, _options...), nil
 }
 
 func (m Transport) String() string {
@@ -93,22 +100,26 @@ func (m Transport) String() string {
 }
 
 type TransportInstance struct {
-	transports.DefaultBufferedTransportInstance
+	transportUtils.DefaultBufferedTransportInstance
 	RemoteAddress  *net.TCPAddr
 	LocalAddress   *net.TCPAddr
 	ConnectTimeout uint32
 	transport      *Transport
 	tcpConn        net.Conn
 	reader         *bufio.Reader
+
+	log zerolog.Logger
 }
 
-func NewTcpTransportInstance(remoteAddress *net.TCPAddr, connectTimeout uint32, transport *Transport) *TransportInstance {
+func NewTcpTransportInstance(remoteAddress *net.TCPAddr, connectTimeout uint32, transport *Transport, _options ...options.WithOption) *TransportInstance {
 	transportInstance := &TransportInstance{
 		RemoteAddress:  remoteAddress,
 		ConnectTimeout: connectTimeout,
 		transport:      transport,
+
+		log: options.ExtractCustomLogger(_options...),
 	}
-	transportInstance.DefaultBufferedTransportInstance = transports.NewDefaultBufferedTransportInstance(transportInstance)
+	transportInstance.DefaultBufferedTransportInstance = transportUtils.NewDefaultBufferedTransportInstance(transportInstance, _options...)
 	return transportInstance
 }
 
