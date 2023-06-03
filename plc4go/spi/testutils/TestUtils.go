@@ -20,6 +20,7 @@
 package testutils
 
 import (
+	"context"
 	"github.com/rs/zerolog/log"
 	"os"
 	"runtime/debug"
@@ -104,9 +105,29 @@ func CompareResults(t *testing.T, actualString []byte, referenceString []byte) e
 	return errors.New("there were differences: Expected: \n" + string(referenceString) + "\nBut Got: \n" + string(actualString))
 }
 
+// TestContext produces a context which is getting cleaned up by testing.T
+func TestContext(t *testing.T) context.Context {
+	ctx, cancel := context.WithCancel(context.Background())
+	t.Cleanup(cancel)
+	return ctx
+}
+
 // ProduceTestingLogger produces a logger which redirects to testing.T
 func ProduceTestingLogger(t *testing.T) zerolog.Logger {
-	return zerolog.New(zerolog.NewConsoleWriter(zerolog.ConsoleTestWriter(t)))
+	return zerolog.New(
+		zerolog.NewConsoleWriter(
+			zerolog.ConsoleTestWriter(t),
+			func(w *zerolog.ConsoleWriter) {
+				// TODO: this is really an issue with go-junit-report not sanitizing output before dumping into xml...
+				onJenkins := os.Getenv("JENKINS_URL") != ""
+				onGithubAction := os.Getenv("GITHUB_ACTIONS") != ""
+				onCI := os.Getenv("CI") != ""
+				if onJenkins || onGithubAction || onCI {
+					w.NoColor = true
+				}
+			},
+		),
+	)
 }
 
 // SetToTestingLogger sets logger to  ProduceTestingLogger and resets it on cleanup

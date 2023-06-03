@@ -27,6 +27,7 @@ import (
 	"github.com/rs/zerolog"
 	"github.com/stretchr/testify/assert"
 	"math/rand"
+	"os"
 	"testing"
 	"time"
 )
@@ -246,6 +247,7 @@ func TestNewFixedSizeExecutor(t *testing.T) {
 	tests := []struct {
 		name              string
 		args              args
+		setup             func(t *testing.T, args *args)
 		executorValidator func(*testing.T, *executor) bool
 	}{
 		{
@@ -255,6 +257,9 @@ func TestNewFixedSizeExecutor(t *testing.T) {
 				queueDepth:      14,
 				options:         []options.WithOption{WithExecutorOptionTracerWorkers(true)},
 			},
+			setup: func(t *testing.T, args *args) {
+				args.options = append(args.options, options.WithCustomLogger(produceTestLogger(t)))
+			},
 			executorValidator: func(t *testing.T, e *executor) bool {
 				return !e.running && !e.shutdown && len(e.worker) == 13 && cap(e.workItems) == 14
 			},
@@ -262,6 +267,9 @@ func TestNewFixedSizeExecutor(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			if tt.setup != nil {
+				tt.setup(t, &tt.args)
+			}
 			fixedSizeExecutor := NewFixedSizeExecutor(tt.args.numberOfWorkers, tt.args.queueDepth, tt.args.options...)
 			defer fixedSizeExecutor.Stop()
 			assert.True(t, tt.executorValidator(t, fixedSizeExecutor.(*executor)), "NewFixedSizeExecutor(%v, %v, %v)", tt.args.numberOfWorkers, tt.args.queueDepth, tt.args.options)
@@ -279,8 +287,8 @@ func TestNewDynamicExecutor(t *testing.T) {
 		name              string
 		args              args
 		setup             func(*testing.T, *args)
-		manipulator       func(*testing.T, *executor)
-		executorValidator func(*testing.T, *executor) bool
+		manipulator       func(*testing.T, *dynamicExecutor)
+		executorValidator func(*testing.T, *dynamicExecutor) bool
 	}{
 		{
 			name: "new Executor",
@@ -290,9 +298,9 @@ func TestNewDynamicExecutor(t *testing.T) {
 				options:         []options.WithOption{WithExecutorOptionTracerWorkers(true)},
 			},
 			setup: func(t *testing.T, args *args) {
-				args.options = append(args.options, options.WithCustomLogger(zerolog.New(zerolog.NewConsoleWriter(zerolog.ConsoleTestWriter(t)))))
+				args.options = append(args.options, options.WithCustomLogger(produceTestLogger(t)))
 			},
-			executorValidator: func(t *testing.T, e *executor) bool {
+			executorValidator: func(t *testing.T, e *dynamicExecutor) bool {
 				assert.False(t, e.running)
 				assert.False(t, e.shutdown)
 				assert.Len(t, e.worker, 1)
@@ -308,9 +316,9 @@ func TestNewDynamicExecutor(t *testing.T) {
 				options:         []options.WithOption{WithExecutorOptionTracerWorkers(true)},
 			},
 			setup: func(t *testing.T, args *args) {
-				args.options = append(args.options, options.WithCustomLogger(zerolog.New(zerolog.NewConsoleWriter(zerolog.ConsoleTestWriter(t)))))
+				args.options = append(args.options, options.WithCustomLogger(produceTestLogger(t)))
 			},
-			manipulator: func(t *testing.T, e *executor) {
+			manipulator: func(t *testing.T, e *dynamicExecutor) {
 				{
 					oldUpScaleInterval := upScaleInterval
 					t.Cleanup(func() {
@@ -354,7 +362,7 @@ func TestNewDynamicExecutor(t *testing.T) {
 					}
 				}()
 			},
-			executorValidator: func(t *testing.T, e *executor) bool {
+			executorValidator: func(t *testing.T, e *dynamicExecutor) bool {
 				time.Sleep(500 * time.Millisecond)
 				assert.False(t, e.running)
 				assert.False(t, e.shutdown)
@@ -367,12 +375,12 @@ func TestNewDynamicExecutor(t *testing.T) {
 			if tt.setup != nil {
 				tt.setup(t, &tt.args)
 			}
-			fixedSizeExecutor := NewDynamicExecutor(tt.args.numberOfWorkers, tt.args.queueDepth, tt.args.options...)
-			defer fixedSizeExecutor.Stop()
+			dynamicSizedExecutor := NewDynamicExecutor(tt.args.numberOfWorkers, tt.args.queueDepth, tt.args.options...)
+			defer dynamicSizedExecutor.Stop()
 			if tt.manipulator != nil {
-				tt.manipulator(t, fixedSizeExecutor.(*executor))
+				tt.manipulator(t, dynamicSizedExecutor.(*dynamicExecutor))
 			}
-			assert.True(t, tt.executorValidator(t, fixedSizeExecutor.(*executor)), "NewFixedSizeExecutor(%v, %v, %v)", tt.args.numberOfWorkers, tt.args.queueDepth, tt.args.options)
+			assert.True(t, tt.executorValidator(t, dynamicSizedExecutor.(*dynamicExecutor)), "NewFixedSizeExecutor(%v, %v, %v)", tt.args.numberOfWorkers, tt.args.queueDepth, tt.args.options)
 		})
 	}
 }
@@ -412,7 +420,7 @@ func TestWorkItem_String(t *testing.T) {
 	}{
 		{
 			name: "Simple test",
-			want: "Workitem{wid:0}",
+			want: "Workitem{wid:0, runnable(false)}, completionFuture(<nil>)}",
 		},
 	}
 	for _, tt := range tests {
@@ -735,9 +743,168 @@ func Test_future_complete(t *testing.T) {
 	}
 }
 
+func Test_dynamicExecutor_Start(t *testing.T) {
+	type fields struct {
+		executor           *executor
+		maxNumberOfWorkers int
+	}
+	tests := []struct {
+		name       string
+		fields     fields
+		setup      func(t *testing.T, fields *fields)
+		startTwice bool
+	}{
+		{
+			name: "just start",
+			fields: fields{
+				executor: &executor{
+					workItems:    make(chan workItem, 1),
+					worker:       make([]*worker, 0),
+					traceWorkers: true,
+				},
+				maxNumberOfWorkers: 100,
+			},
+			setup: func(t *testing.T, fields *fields) {
+				fields.executor.log = produceTestLogger(t)
+				fields.executor.workItems <- workItem{1, func() {}, &future{}}
+			},
+		},
+		{
+			name: "start twice",
+			fields: fields{
+				executor: &executor{
+					workItems:    make(chan workItem, 1),
+					worker:       make([]*worker, 0),
+					traceWorkers: true,
+				},
+				maxNumberOfWorkers: 100,
+			},
+			setup: func(t *testing.T, fields *fields) {
+				fields.executor.log = produceTestLogger(t)
+				fields.executor.workItems <- workItem{1, func() {}, &future{}}
+			},
+			startTwice: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if tt.setup != nil {
+				tt.setup(t, &tt.fields)
+			}
+			e := &dynamicExecutor{
+				executor:           tt.fields.executor,
+				maxNumberOfWorkers: tt.fields.maxNumberOfWorkers,
+			}
+			e.Start()
+			if tt.startTwice {
+				e.Start()
+			}
+			// Let it work a bit
+			time.Sleep(20 * time.Millisecond)
+			t.Log("done with test")
+			t.Cleanup(e.Stop)
+		})
+	}
+}
+
+func Test_dynamicExecutor_Stop(t *testing.T) {
+	type fields struct {
+		executor           *executor
+		maxNumberOfWorkers int
+		interrupter        chan struct{}
+	}
+	tests := []struct {
+		name      string
+		fields    fields
+		setup     func(t *testing.T, fields *fields)
+		startIt   bool
+		stopTwice bool
+	}{
+		{
+			name: "just stop",
+			fields: fields{
+				executor: &executor{
+					workItems:    make(chan workItem, 1),
+					worker:       make([]*worker, 0),
+					traceWorkers: true,
+				},
+				maxNumberOfWorkers: 100,
+			},
+			setup: func(t *testing.T, fields *fields) {
+				fields.executor.log = produceTestLogger(t)
+				fields.executor.workItems <- workItem{1, func() {}, &future{}}
+			},
+		},
+		{
+			name: "stop started",
+			fields: fields{
+				executor: &executor{
+					workItems:    make(chan workItem, 1),
+					worker:       make([]*worker, 0),
+					traceWorkers: true,
+				},
+				maxNumberOfWorkers: 100,
+			},
+			setup: func(t *testing.T, fields *fields) {
+				fields.executor.log = produceTestLogger(t)
+				fields.executor.workItems <- workItem{1, func() {}, &future{}}
+			},
+		},
+		{
+			name: "stop twice",
+			fields: fields{
+				executor: &executor{
+					workItems:    make(chan workItem, 1),
+					worker:       make([]*worker, 0),
+					traceWorkers: true,
+				},
+				maxNumberOfWorkers: 100,
+			},
+			setup: func(t *testing.T, fields *fields) {
+				fields.executor.log = produceTestLogger(t)
+				fields.executor.workItems <- workItem{1, func() {}, &future{}}
+			},
+			stopTwice: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if tt.setup != nil {
+				tt.setup(t, &tt.fields)
+			}
+			e := &dynamicExecutor{
+				executor:           tt.fields.executor,
+				maxNumberOfWorkers: tt.fields.maxNumberOfWorkers,
+				interrupter:        tt.fields.interrupter,
+			}
+			if tt.startIt {
+				e.Start()
+			}
+			e.Stop()
+			if tt.stopTwice {
+				e.Stop()
+			}
+		})
+	}
+}
+
 // from: https://github.com/golang/go/issues/36532#issuecomment-575535452
 func testContext(t *testing.T) context.Context {
 	ctx, cancel := context.WithCancel(context.Background())
 	t.Cleanup(cancel)
 	return ctx
+}
+
+// note: we can't use testutils here due to import cycle
+func produceTestLogger(t *testing.T) zerolog.Logger {
+	return zerolog.New(zerolog.NewConsoleWriter(zerolog.ConsoleTestWriter(t),
+		func(w *zerolog.ConsoleWriter) {
+			// TODO: this is really an issue with go-junit-report not sanitizing output before dumping into xml...
+			onJenkins := os.Getenv("JENKINS_URL") != ""
+			onGithubAction := os.Getenv("GITHUB_ACTIONS") != ""
+			onCI := os.Getenv("CI") != ""
+			if onJenkins || onGithubAction || onCI {
+				w.NoColor = true
+			}
+		}))
 }

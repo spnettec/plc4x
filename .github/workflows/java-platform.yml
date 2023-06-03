@@ -134,5 +134,14 @@ jobs:
         if: ${{ failure() }}
         run: ./mvnw${{ steps.platform_suffix.outputs.platform_suffix }} ${{ steps.extra_options.outputs.extra_options }} -B -P'skip-bacnet-regression-test' ${{ steps.platform_opts.outputs.platform_opts }} install
 
+      - name: Test Report
+        uses: dorny/test-reporter@v1
+        # TODO: apparently the reporter only works on windows
+        if: (success() || failure()) && matrix.os == 'windows-latest'
+        with:
+          name: "Java Tests (OS: ${{ matrix.os }}, Java: ${{ matrix.java }})"
+          path: '**/(surefire|failsafe)-reports/TEST-*.xml'
+          reporter: java-junit
+
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2

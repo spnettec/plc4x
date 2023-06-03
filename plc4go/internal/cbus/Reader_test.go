@@ -29,12 +29,13 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/testutils"
 	"github.com/apache/plc4x/plc4go/spi/transactions"
 	"github.com/apache/plc4x/plc4go/spi/transports/test"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
+	"github.com/stretchr/testify/require"
 	"net/url"
 	"strings"
-	"sync"
 	"sync/atomic"
 	"testing"
 	"time"
@@ -160,26 +161,6 @@ func TestReader_readSync(t *testing.T) {
 		},
 		{
 			name: "unmapped tag",
-			fields: fields{
-				messageCodec: func() *MessageCodec {
-					transport := test.NewTransport()
-					transportUrl := url.URL{Scheme: "test"}
-					transportInstance, err := transport.CreateTransportInstance(transportUrl, nil)
-					if err != nil {
-						t.Error(err)
-						t.FailNow()
-						return nil
-					}
-					codec := NewMessageCodec(transportInstance)
-					err = codec.Connect()
-					if err != nil {
-						t.Error(err)
-						t.FailNow()
-						return nil
-					}
-					return codec
-				}(),
-			},
 			args: args{
 				ctx: context.Background(),
 				readRequest: spiModel.NewDefaultPlcReadRequest(
@@ -195,6 +176,25 @@ func TestReader_readSync(t *testing.T) {
 				result: make(chan apiModel.PlcReadRequestResult, 1),
 			},
 			setup: func(t *testing.T, fields *fields) {
+				// Setup logger
+				logger := testutils.ProduceTestingLogger(t)
+
+				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
+
+				// Custom option for that
+				loggerOption := options.WithCustomLogger(logger)
+
+				transport := test.NewTransport()
+				transportUrl := url.URL{Scheme: "test"}
+				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil)
+				require.NoError(t, err)
+				codec := NewMessageCodec(transportInstance, loggerOption)
+				err = codec.Connect()
+				require.NoError(t, err)
+				t.Cleanup(func() {
+					assert.NoError(t, codec.Disconnect())
+				})
+				fields.messageCodec = codec
 				fields.tm = transactions.NewRequestTransactionManager(10, options.WithCustomLogger(testutils.ProduceTestingLogger(t)))
 			},
 			resultEvaluator: func(t *testing.T, results chan apiModel.PlcReadRequestResult) bool {
@@ -270,10 +270,7 @@ func TestReader_readSync(t *testing.T) {
 				transport := test.NewTransport()
 				transportUrl := url.URL{Scheme: "test"}
 				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, loggerOption)
-				if err != nil {
-					t.Error(err)
-					t.FailNow()
-				}
+				require.NoError(t, err)
 				type MockState uint8
 				const (
 					INITIAL MockState = iota
@@ -293,10 +290,10 @@ func TestReader_readSync(t *testing.T) {
 				})
 				codec := NewMessageCodec(transportInstance, loggerOption)
 				err = codec.Connect()
-				if err != nil {
-					t.Error(err)
-					t.FailNow()
-				}
+				require.NoError(t, err)
+				t.Cleanup(func() {
+					assert.NoError(t, codec.Disconnect())
+				})
 				fields.messageCodec = codec
 			},
 			resultEvaluator: func(t *testing.T, results chan apiModel.PlcReadRequestResult) bool {
@@ -353,17 +350,13 @@ func TestReader_readSync(t *testing.T) {
 				transport := test.NewTransport()
 				transportUrl := url.URL{Scheme: "test"}
 				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, loggerOption)
-				if err != nil {
-					t.Error(err)
-					t.FailNow()
-				}
+				require.NoError(t, err)
 				codec := NewMessageCodec(transportInstance, loggerOption)
 				err = codec.Connect()
-				if err != nil {
-					t.Error(err)
-					t.FailNow()
-				}
-
+				require.NoError(t, err)
+				t.Cleanup(func() {
+					assert.NoError(t, codec.Disconnect())
+				})
 				fields.messageCodec = codec
 			},
 			resultEvaluator: func(t *testing.T, results chan apiModel.PlcReadRequestResult) bool {
@@ -405,16 +398,15 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 		ctx             context.Context
 		transaction     transactions.RequestTransaction
 		messageToSend   readWriteModel.CBusMessage
-		addResponseCode func(t *testing.T, wg *sync.WaitGroup) func(name string, responseCode apiModel.PlcResponseCode)
+		addResponseCode func(t *testing.T) func(name string, responseCode apiModel.PlcResponseCode)
 		tagName         string
-		addPlcValue     func(t *testing.T, wg *sync.WaitGroup) func(name string, plcValue apiValues.PlcValue)
+		addPlcValue     func(t *testing.T) func(name string, plcValue apiValues.PlcValue)
 	}
 	tests := []struct {
 		name   string
 		fields fields
 		args   args
-		setup  func(t *testing.T, fields *fields, args *args)
-		wg     *sync.WaitGroup
+		setup  func(t *testing.T, fields *fields, args *args, ch chan struct{})
 	}{
 		{
 			name: "Send message empty message",
@@ -428,23 +420,21 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 					return timeout
 				}(),
 				messageToSend: nil,
-				addResponseCode: func(t *testing.T, wg *sync.WaitGroup) func(name string, responseCode apiModel.PlcResponseCode) {
+				addResponseCode: func(t *testing.T) func(name string, responseCode apiModel.PlcResponseCode) {
 					return func(name string, responseCode apiModel.PlcResponseCode) {
 						t.Logf("Got response code %s for %s", responseCode, name)
 						assert.Equal(t, "horst", name)
 						assert.Equal(t, apiModel.PlcResponseCode_INTERNAL_ERROR, responseCode)
-						wg.Done()
 					}
 				},
 				tagName: "horst",
-				addPlcValue: func(t *testing.T, wg *sync.WaitGroup) func(name string, plcValue apiValues.PlcValue) {
+				addPlcValue: func(t *testing.T) func(name string, plcValue apiValues.PlcValue) {
 					return func(name string, plcValue apiValues.PlcValue) {
 						t.Logf("Got response %s for %s", plcValue, name)
-						wg.Done()
 					}
 				},
 			},
-			setup: func(t *testing.T, fields *fields, args *args) {
+			setup: func(t *testing.T, fields *fields, args *args, ch chan struct{}) {
 				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
 
 				loggerOption := options.WithCustomLogger(testutils.ProduceTestingLogger(t))
@@ -452,74 +442,27 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 				transport := test.NewTransport(loggerOption)
 				transportUrl := url.URL{Scheme: "test"}
 				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, loggerOption)
-				if err != nil {
-					t.Error(err)
-					t.FailNow()
-				}
+				require.NoError(t, err)
 				codec := NewMessageCodec(transportInstance, loggerOption)
-				t.Cleanup(func() {
-					if err := codec.Disconnect(); err != nil {
-						t.Error(err)
-					}
-				})
 				err = codec.Connect()
-				if err != nil {
-					t.Error(err)
-					t.FailNow()
-				}
+				require.NoError(t, err)
+				t.Cleanup(func() {
+					assert.NoError(t, codec.Disconnect())
+				})
 				fields.messageCodec = codec
 
 				transaction := NewMockRequestTransaction(t)
 				expect := transaction.EXPECT()
-				expect.FailRequest(mock.Anything).Return(errors.New("no I say"))
+				expect.FailRequest(mock.Anything).Return(errors.New("no I say")).Run(func(_ error) {
+					close(ch)
+				})
 				args.transaction = transaction
 			},
-			wg: &sync.WaitGroup{},
 		},
 		{
 			name: "Send message which responds with message to client",
 			fields: fields{
 				alphaGenerator: &AlphaGenerator{currentAlpha: 'g'},
-				messageCodec: func() *MessageCodec {
-					transport := test.NewTransport()
-					transportUrl := url.URL{Scheme: "test"}
-					transportInstance, err := transport.CreateTransportInstance(transportUrl, nil)
-					if err != nil {
-						t.Error(err)
-						t.FailNow()
-						return nil
-					}
-					type MockState uint8
-					const (
-						INITIAL MockState = iota
-						DONE
-					)
-					currentState := atomic.Value{}
-					currentState.Store(INITIAL)
-					transportInstance.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
-						switch currentState.Load().(MockState) {
-						case INITIAL:
-							t.Log("Dispatching read response")
-							transportInstance.FillReadBuffer([]byte("@1A2001\r@"))
-							currentState.Store(DONE)
-						case DONE:
-							t.Log("Done")
-						}
-					})
-					codec := NewMessageCodec(transportInstance)
-					t.Cleanup(func() {
-						if err := codec.Disconnect(); err != nil {
-							t.Error(err)
-						}
-					})
-					err = codec.Connect()
-					if err != nil {
-						t.Error(err)
-						t.FailNow()
-						return nil
-					}
-					return codec
-				}(),
 			},
 			args: args{
 				ctx: func() context.Context {
@@ -543,45 +486,83 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 					nil,
 					nil,
 				),
-				addResponseCode: func(t *testing.T, wg *sync.WaitGroup) func(name string, responseCode apiModel.PlcResponseCode) {
+				addResponseCode: func(t *testing.T) func(name string, responseCode apiModel.PlcResponseCode) {
 					return func(name string, responseCode apiModel.PlcResponseCode) {
 						t.Logf("Got response code %s for %s", responseCode, name)
 						assert.Equal(t, "horst", name)
 						assert.Equal(t, apiModel.PlcResponseCode_REQUEST_TIMEOUT, responseCode)
-						wg.Done()
 					}
 				},
 				tagName: "horst",
-				addPlcValue: func(t *testing.T, wg *sync.WaitGroup) func(name string, plcValue apiValues.PlcValue) {
+				addPlcValue: func(t *testing.T) func(name string, plcValue apiValues.PlcValue) {
 					return func(name string, plcValue apiValues.PlcValue) {
 						t.Logf("Got response %s for %s", plcValue, name)
-						wg.Done()
 					}
 				},
 			},
-			setup: func(t *testing.T, fields *fields, args *args) {
+			setup: func(t *testing.T, fields *fields, args *args, ch chan struct{}) {
+				// Setup logger
+				logger := testutils.ProduceTestingLogger(t)
+
 				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
+
+				// Custom option for that
+				loggerOption := options.WithCustomLogger(logger)
 
 				transaction := NewMockRequestTransaction(t)
 				expect := transaction.EXPECT()
-				expect.FailRequest(mock.Anything).Return(errors.New("Nope"))
+				expect.FailRequest(mock.Anything).Return(errors.New("Nope")).Run(func(_ error) {
+					close(ch)
+				})
 				args.transaction = transaction
+
+				transport := test.NewTransport(loggerOption)
+				transportUrl := url.URL{Scheme: "test"}
+				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, loggerOption)
+				require.NoError(t, err)
+				type MockState uint8
+				const (
+					INITIAL MockState = iota
+					DONE
+				)
+				currentState := atomic.Value{}
+				currentState.Store(INITIAL)
+				transportInstance.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
+					switch currentState.Load().(MockState) {
+					case INITIAL:
+						t.Log("Dispatching read response")
+						transportInstance.FillReadBuffer([]byte("@1A2001\r@"))
+						currentState.Store(DONE)
+					case DONE:
+						t.Log("Done")
+					}
+				})
+				codec := NewMessageCodec(transportInstance, loggerOption)
+				err = codec.Connect()
+				require.NoError(t, err)
+				t.Cleanup(func() {
+					assert.NoError(t, codec.Disconnect())
+				})
+				fields.messageCodec = codec
 			},
-			wg: &sync.WaitGroup{},
 		},
 		{
 			name: "Send message which responds with server error",
 			fields: fields{
 				alphaGenerator: &AlphaGenerator{currentAlpha: 'g'},
 				messageCodec: func() *MessageCodec {
-					transport := test.NewTransport()
+					// Setup logger
+					logger := testutils.ProduceTestingLogger(t)
+
+					testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
+
+					// Custom option for that
+					loggerOption := options.WithCustomLogger(logger)
+
+					transport := test.NewTransport(loggerOption)
 					transportUrl := url.URL{Scheme: "test"}
-					transportInstance, err := transport.CreateTransportInstance(transportUrl, nil)
-					if err != nil {
-						t.Error(err)
-						t.FailNow()
-						return nil
-					}
+					transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, loggerOption)
+					require.NoError(t, err)
 					type MockState uint8
 					const (
 						INITIAL MockState = iota
@@ -599,18 +580,12 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 							t.Log("Done")
 						}
 					})
-					codec := NewMessageCodec(transportInstance)
-					t.Cleanup(func() {
-						if err := codec.Disconnect(); err != nil {
-							t.Error(err)
-						}
-					})
+					codec := NewMessageCodec(transportInstance, loggerOption)
 					err = codec.Connect()
-					if err != nil {
-						t.Error(err)
-						t.FailNow()
-						return nil
-					}
+					require.NoError(t, err)
+					t.Cleanup(func() {
+						assert.NoError(t, codec.Disconnect())
+					})
 					return codec
 				}(),
 			},
@@ -636,31 +611,30 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 					nil,
 					nil,
 				),
-				addResponseCode: func(t *testing.T, wg *sync.WaitGroup) func(name string, responseCode apiModel.PlcResponseCode) {
+				addResponseCode: func(t *testing.T) func(name string, responseCode apiModel.PlcResponseCode) {
 					return func(name string, responseCode apiModel.PlcResponseCode) {
 						t.Logf("Got response code %s for %s", responseCode, name)
 						assert.Equal(t, "horst", name)
 						assert.Equal(t, apiModel.PlcResponseCode_INVALID_DATA, responseCode)
-						wg.Done()
 					}
 				},
 				tagName: "horst",
-				addPlcValue: func(t *testing.T, wg *sync.WaitGroup) func(name string, plcValue apiValues.PlcValue) {
+				addPlcValue: func(t *testing.T) func(name string, plcValue apiValues.PlcValue) {
 					return func(name string, plcValue apiValues.PlcValue) {
 						t.Logf("Got response %s for %s", plcValue, name)
-						wg.Done()
 					}
 				},
 			},
-			setup: func(t *testing.T, fields *fields, args *args) {
+			setup: func(t *testing.T, fields *fields, args *args, ch chan struct{}) {
 				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
 
 				transaction := NewMockRequestTransaction(t)
 				expect := transaction.EXPECT()
-				expect.EndRequest().Return(nil)
+				expect.EndRequest().Return(nil).Run(func() {
+					close(ch)
+				})
 				args.transaction = transaction
 			},
-			wg: &sync.WaitGroup{},
 		},
 		{
 			name: "Send message which responds with too many retransmissions",
@@ -692,26 +666,26 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 					nil,
 					nil,
 				),
-				addResponseCode: func(t *testing.T, wg *sync.WaitGroup) func(name string, responseCode apiModel.PlcResponseCode) {
+				addResponseCode: func(t *testing.T) func(name string, responseCode apiModel.PlcResponseCode) {
 					return func(name string, responseCode apiModel.PlcResponseCode) {
 						t.Logf("Got response code %s for %s", responseCode, name)
 						assert.Equal(t, "horst", name)
 						assert.Equal(t, apiModel.PlcResponseCode_REMOTE_ERROR, responseCode)
-						wg.Done()
 					}
 				},
 				tagName: "horst",
-				addPlcValue: func(t *testing.T, wg *sync.WaitGroup) func(name string, plcValue apiValues.PlcValue) {
+				addPlcValue: func(t *testing.T) func(name string, plcValue apiValues.PlcValue) {
 					return func(name string, plcValue apiValues.PlcValue) {
 						t.Logf("Got response %s for %s", plcValue, name)
-						wg.Done()
 					}
 				},
 			},
-			setup: func(t *testing.T, fields *fields, args *args) {
+			setup: func(t *testing.T, fields *fields, args *args, ch chan struct{}) {
 				transaction := NewMockRequestTransaction(t)
 				expect := transaction.EXPECT()
-				expect.EndRequest().Return(nil)
+				expect.EndRequest().Return(nil).Run(func() {
+					close(ch)
+				})
 				args.transaction = transaction
 
 				// Setup logger
@@ -725,10 +699,7 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 				transport := test.NewTransport(loggerOption)
 				transportUrl := url.URL{Scheme: "test"}
 				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, loggerOption)
-				if err != nil {
-					t.Error(err)
-					t.FailNow()
-				}
+				require.NoError(t, err)
 				type MockState uint8
 				const (
 					INITIAL MockState = iota
@@ -747,19 +718,13 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 					}
 				})
 				codec := NewMessageCodec(transportInstance, loggerOption)
-				t.Cleanup(func() {
-					if err := codec.Disconnect(); err != nil {
-						t.Error(err)
-					}
-				})
 				err = codec.Connect()
-				if err != nil {
-					t.Error(err)
-					t.FailNow()
-				}
+				require.NoError(t, err)
+				t.Cleanup(func() {
+					assert.NoError(t, codec.Disconnect())
+				})
 				fields.messageCodec = codec
 			},
-			wg: &sync.WaitGroup{},
 		},
 		{
 			name: "Send message which responds with corruption",
@@ -791,26 +756,26 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 					nil,
 					nil,
 				),
-				addResponseCode: func(t *testing.T, wg *sync.WaitGroup) func(name string, responseCode apiModel.PlcResponseCode) {
+				addResponseCode: func(t *testing.T) func(name string, responseCode apiModel.PlcResponseCode) {
 					return func(name string, responseCode apiModel.PlcResponseCode) {
 						t.Logf("Got response code %s for %s", responseCode, name)
 						assert.Equal(t, "horst", name)
 						assert.Equal(t, apiModel.PlcResponseCode_INVALID_DATA, responseCode)
-						wg.Done()
 					}
 				},
 				tagName: "horst",
-				addPlcValue: func(t *testing.T, wg *sync.WaitGroup) func(name string, plcValue apiValues.PlcValue) {
+				addPlcValue: func(t *testing.T) func(name string, plcValue apiValues.PlcValue) {
 					return func(name string, plcValue apiValues.PlcValue) {
 						t.Logf("Got response %s for %s", plcValue, name)
-						wg.Done()
 					}
 				},
 			},
-			setup: func(t *testing.T, fields *fields, args *args) {
+			setup: func(t *testing.T, fields *fields, args *args, ch chan struct{}) {
 				transaction := NewMockRequestTransaction(t)
 				expect := transaction.EXPECT()
-				expect.EndRequest().Return(nil)
+				expect.EndRequest().Return(nil).Run(func() {
+					close(ch)
+				})
 				args.transaction = transaction
 
 				// Setup logger
@@ -824,10 +789,7 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 				transport := test.NewTransport(loggerOption)
 				transportUrl := url.URL{Scheme: "test"}
 				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, loggerOption)
-				if err != nil {
-					t.Error(err)
-					t.FailNow()
-				}
+				require.NoError(t, err)
 				type MockState uint8
 				const (
 					INITIAL MockState = iota
@@ -846,19 +808,13 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 					}
 				})
 				codec := NewMessageCodec(transportInstance, loggerOption)
-				t.Cleanup(func() {
-					if err := codec.Disconnect(); err != nil {
-						t.Error(err)
-					}
-				})
 				err = codec.Connect()
-				if err != nil {
-					t.Error(err)
-					t.FailNow()
-				}
+				require.NoError(t, err)
+				t.Cleanup(func() {
+					assert.NoError(t, codec.Disconnect())
+				})
 				fields.messageCodec = codec
 			},
-			wg: &sync.WaitGroup{},
 		},
 		{
 			name: "Send message which responds with sync loss",
@@ -890,26 +846,26 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 					nil,
 					nil,
 				),
-				addResponseCode: func(t *testing.T, wg *sync.WaitGroup) func(name string, responseCode apiModel.PlcResponseCode) {
+				addResponseCode: func(t *testing.T) func(name string, responseCode apiModel.PlcResponseCode) {
 					return func(name string, responseCode apiModel.PlcResponseCode) {
 						t.Logf("Got response code %s for %s", responseCode, name)
 						assert.Equal(t, "horst", name)
 						assert.Equal(t, apiModel.PlcResponseCode_REMOTE_BUSY, responseCode)
-						wg.Done()
 					}
 				},
 				tagName: "horst",
-				addPlcValue: func(t *testing.T, wg *sync.WaitGroup) func(name string, plcValue apiValues.PlcValue) {
+				addPlcValue: func(t *testing.T) func(name string, plcValue apiValues.PlcValue) {
 					return func(name string, plcValue apiValues.PlcValue) {
 						t.Logf("Got response %s for %s", plcValue, name)
-						wg.Done()
 					}
 				},
 			},
-			setup: func(t *testing.T, fields *fields, args *args) {
+			setup: func(t *testing.T, fields *fields, args *args, ch chan struct{}) {
 				transaction := NewMockRequestTransaction(t)
 				expect := transaction.EXPECT()
-				expect.EndRequest().Return(nil)
+				expect.EndRequest().Return(nil).Run(func() {
+					close(ch)
+				})
 				args.transaction = transaction
 
 				// Setup logger
@@ -923,10 +879,7 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 				transport := test.NewTransport(loggerOption)
 				transportUrl := url.URL{Scheme: "test"}
 				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, loggerOption)
-				if err != nil {
-					t.Error(err)
-					t.FailNow()
-				}
+				require.NoError(t, err)
 				type MockState uint8
 				const (
 					INITIAL MockState = iota
@@ -945,19 +898,13 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 					}
 				})
 				codec := NewMessageCodec(transportInstance, loggerOption)
-				t.Cleanup(func() {
-					if err := codec.Disconnect(); err != nil {
-						t.Error(err)
-					}
-				})
 				err = codec.Connect()
-				if err != nil {
-					t.Error(err)
-					t.FailNow()
-				}
+				require.NoError(t, err)
+				t.Cleanup(func() {
+					assert.NoError(t, codec.Disconnect())
+				})
 				fields.messageCodec = codec
 			},
-			wg: &sync.WaitGroup{},
 		},
 		{
 			name: "Send message which responds with too long",
@@ -989,26 +936,26 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 					nil,
 					nil,
 				),
-				addResponseCode: func(t *testing.T, wg *sync.WaitGroup) func(name string, responseCode apiModel.PlcResponseCode) {
+				addResponseCode: func(t *testing.T) func(name string, responseCode apiModel.PlcResponseCode) {
 					return func(name string, responseCode apiModel.PlcResponseCode) {
 						t.Logf("Got response code %s for %s", responseCode, name)
 						assert.Equal(t, "horst", name)
 						assert.Equal(t, apiModel.PlcResponseCode_INVALID_DATA, responseCode)
-						wg.Done()
 					}
 				},
 				tagName: "horst",
-				addPlcValue: func(t *testing.T, wg *sync.WaitGroup) func(name string, plcValue apiValues.PlcValue) {
+				addPlcValue: func(t *testing.T) func(name string, plcValue apiValues.PlcValue) {
 					return func(name string, plcValue apiValues.PlcValue) {
 						t.Logf("Got response %s for %s", plcValue, name)
-						wg.Done()
 					}
 				},
 			},
-			setup: func(t *testing.T, fields *fields, args *args) {
+			setup: func(t *testing.T, fields *fields, args *args, ch chan struct{}) {
 				transaction := NewMockRequestTransaction(t)
 				expect := transaction.EXPECT()
-				expect.EndRequest().Return(nil)
+				expect.EndRequest().Return(nil).Run(func() {
+					close(ch)
+				})
 				args.transaction = transaction
 
 				// Setup logger
@@ -1022,10 +969,7 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 				transport := test.NewTransport(loggerOption)
 				transportUrl := url.URL{Scheme: "test"}
 				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, loggerOption)
-				if err != nil {
-					t.Error(err)
-					t.FailNow()
-				}
+				require.NoError(t, err)
 				type MockState uint8
 				const (
 					INITIAL MockState = iota
@@ -1044,19 +988,13 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 					}
 				})
 				codec := NewMessageCodec(transportInstance, loggerOption)
-				t.Cleanup(func() {
-					if err := codec.Disconnect(); err != nil {
-						t.Error(err)
-					}
-				})
 				err = codec.Connect()
-				if err != nil {
-					t.Error(err)
-					t.FailNow()
-				}
+				require.NoError(t, err)
+				t.Cleanup(func() {
+					assert.NoError(t, codec.Disconnect())
+				})
 				fields.messageCodec = codec
 			},
-			wg: &sync.WaitGroup{},
 		},
 		{
 			name: "Send message which responds with confirm only",
@@ -1088,26 +1026,26 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 					nil,
 					nil,
 				),
-				addResponseCode: func(t *testing.T, wg *sync.WaitGroup) func(name string, responseCode apiModel.PlcResponseCode) {
+				addResponseCode: func(t *testing.T) func(name string, responseCode apiModel.PlcResponseCode) {
 					return func(name string, responseCode apiModel.PlcResponseCode) {
 						t.Logf("Got response code %s for %s", responseCode, name)
 						assert.Equal(t, "horst", name)
 						assert.Equal(t, apiModel.PlcResponseCode_NOT_FOUND, responseCode)
-						wg.Done()
 					}
 				},
 				tagName: "horst",
-				addPlcValue: func(t *testing.T, wg *sync.WaitGroup) func(name string, plcValue apiValues.PlcValue) {
+				addPlcValue: func(t *testing.T) func(name string, plcValue apiValues.PlcValue) {
 					return func(name string, plcValue apiValues.PlcValue) {
 						t.Logf("Got response %s for %s", plcValue, name)
-						wg.Done()
 					}
 				},
 			},
-			setup: func(t *testing.T, fields *fields, args *args) {
+			setup: func(t *testing.T, fields *fields, args *args, ch chan struct{}) {
 				transaction := NewMockRequestTransaction(t)
 				expect := transaction.EXPECT()
-				expect.EndRequest().Return(nil)
+				expect.EndRequest().Return(nil).Run(func() {
+					close(ch)
+				})
 				args.transaction = transaction
 
 				// Setup logger
@@ -1121,10 +1059,7 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 				transport := test.NewTransport(loggerOption)
 				transportUrl := url.URL{Scheme: "test"}
 				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, loggerOption)
-				if err != nil {
-					t.Error(err)
-					t.FailNow()
-				}
+				require.NoError(t, err)
 				type MockState uint8
 				const (
 					INITIAL MockState = iota
@@ -1143,19 +1078,13 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 					}
 				})
 				codec := NewMessageCodec(transportInstance, loggerOption)
-				t.Cleanup(func() {
-					if err := codec.Disconnect(); err != nil {
-						t.Error(err)
-					}
-				})
 				err = codec.Connect()
-				if err != nil {
-					t.Error(err)
-					t.FailNow()
-				}
+				require.NoError(t, err)
+				t.Cleanup(func() {
+					assert.NoError(t, codec.Disconnect())
+				})
 				fields.messageCodec = codec
 			},
-			wg: &sync.WaitGroup{},
 		},
 		{
 			name: "Send message which responds with ok",
@@ -1187,26 +1116,26 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 					nil,
 					nil,
 				),
-				addResponseCode: func(t *testing.T, wg *sync.WaitGroup) func(name string, responseCode apiModel.PlcResponseCode) {
+				addResponseCode: func(t *testing.T) func(name string, responseCode apiModel.PlcResponseCode) {
 					return func(name string, responseCode apiModel.PlcResponseCode) {
 						t.Logf("Got response code %s for %s", responseCode, name)
 						assert.Equal(t, "horst", name)
 						assert.Equal(t, apiModel.PlcResponseCode_OK, responseCode)
-						wg.Done()
 					}
 				},
 				tagName: "horst",
-				addPlcValue: func(t *testing.T, wg *sync.WaitGroup) func(name string, plcValue apiValues.PlcValue) {
+				addPlcValue: func(t *testing.T) func(name string, plcValue apiValues.PlcValue) {
 					return func(name string, plcValue apiValues.PlcValue) {
 						t.Logf("Got response %s for %s", plcValue, name)
-						wg.Done()
 					}
 				},
 			},
-			setup: func(t *testing.T, fields *fields, args *args) {
+			setup: func(t *testing.T, fields *fields, args *args, ch chan struct{}) {
 				transaction := NewMockRequestTransaction(t)
 				expect := transaction.EXPECT()
-				expect.EndRequest().Return(nil)
+				expect.EndRequest().Return(nil).Run(func() {
+					close(ch)
+				})
 				args.transaction = transaction
 
 				// Setup logger
@@ -1220,10 +1149,7 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 				transport := test.NewTransport(loggerOption)
 				transportUrl := url.URL{Scheme: "test"}
 				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, loggerOption)
-				if err != nil {
-					t.Error(err)
-					t.FailNow()
-				}
+				require.NoError(t, err)
 				type MockState uint8
 				const (
 					INITIAL MockState = iota
@@ -1242,40 +1168,36 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 					}
 				})
 				codec := NewMessageCodec(transportInstance, loggerOption)
-				t.Cleanup(func() {
-					if err := codec.Disconnect(); err != nil {
-						t.Error(err)
-					}
-				})
 				err = codec.Connect()
-				if err != nil {
-					t.Error(err)
-					t.FailNow()
-				}
+				require.NoError(t, err)
+				t.Cleanup(func() {
+					assert.NoError(t, codec.Disconnect())
+				})
 				fields.messageCodec = codec
 			},
-			wg: func() *sync.WaitGroup {
-				wg := &sync.WaitGroup{}
-				wg.Add(1) // We getting an response and a value
-				return wg
-			}(),
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			ch := make(chan struct{})
 			if tt.setup != nil {
-				tt.setup(t, &tt.fields, &tt.args)
+				tt.setup(t, &tt.fields, &tt.args, ch)
 			}
 			m := &Reader{
 				alphaGenerator: tt.fields.alphaGenerator,
 				messageCodec:   tt.fields.messageCodec,
 				tm:             tt.fields.tm,
 			}
-			tt.wg.Add(1)
-			m.sendMessageOverTheWire(tt.args.ctx, tt.args.transaction, tt.args.messageToSend, tt.args.addResponseCode(t, tt.wg), tt.args.tagName, tt.args.addPlcValue(t, tt.wg))
+			m.sendMessageOverTheWire(tt.args.ctx, tt.args.transaction, tt.args.messageToSend, tt.args.addResponseCode(t), tt.args.tagName, tt.args.addPlcValue(t))
 			t.Log("Waiting now")
-			tt.wg.Wait() // TODO: we need to timeout this too
-			t.Log("Done waiting")
+			timer := time.NewTimer(3 * time.Second)
+			defer utils.CleanupTimer(timer)
+			select {
+			case <-ch:
+				t.Log("Done waiting")
+			case <-timer.C:
+				t.Error("Timeout")
+			}
 		})
 	}
 }

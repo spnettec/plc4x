@@ -23,6 +23,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 	"io"
@@ -35,11 +36,15 @@ import (
 type Runnable func()
 
 type worker struct {
-	id           int
-	shutdown     atomic.Bool
-	interrupted  atomic.Bool
-	interrupter  chan struct{}
-	executor     *executor
+	id          int
+	shutdown    atomic.Bool
+	interrupted atomic.Bool
+	interrupter chan struct{}
+	executor    interface {
+		isTraceWorkers() bool
+		getWorksItems() chan workItem
+		getWorkerWaitGroup() *sync.WaitGroup
+	}
 	hasEnded     atomic.Bool
 	lastReceived time.Time
 
@@ -55,6 +60,8 @@ func (w *worker) initialize() {
 }
 
 func (w *worker) work() {
+	w.executor.getWorkerWaitGroup().Add(1)
+	defer w.executor.getWorkerWaitGroup().Done()
 	defer func() {
 		if recovered := recover(); recovered != nil {
 			w.log.Error().Msgf("Recovering from panic():%v. Stack: %s", recovered, debug.Stack())
@@ -65,7 +72,7 @@ func (w *worker) work() {
 		}
 	}()
 	workerLog := w.log.With().Int("Worker id", w.id).Logger()
-	if !w.executor.traceWorkers {
+	if !w.executor.isTraceWorkers() {
 		workerLog = zerolog.Nop()
 	}
 	workerLog.Debug().Msgf("current ended state: %t", w.hasEnded.Load())
@@ -75,7 +82,7 @@ func (w *worker) work() {
 	for !w.shutdown.Load() {
 		workerLog.Debug().Msg("Working")
 		select {
-		case _workItem := <-w.executor.workItems:
+		case _workItem := <-w.executor.getWorksItems():
 			w.lastReceived = time.Now()
 			workerLog.Debug().Msgf("Got work item %v", _workItem)
 			if _workItem.completionFuture.cancelRequested.Load() || (w.shutdown.Load() && w.interrupted.Load()) {
@@ -101,8 +108,8 @@ type workItem struct {
 	completionFuture *future
 }
 
-func (w *workItem) String() string {
-	return fmt.Sprintf("Workitem{wid:%d}", w.workItemId)
+func (w workItem) String() string {
+	return fmt.Sprintf("Workitem{wid:%d, runnable(%t)}, completionFuture(%v)}", w.workItemId, w.runnable != nil, w.completionFuture)
 }
 
 type Executor interface {
@@ -114,15 +121,40 @@ type Executor interface {
 }
 
 type executor struct {
-	maxNumberOfWorkers int
-	running            bool
-	shutdown           bool
-	stateChange        sync.Mutex
-	worker             []*worker
-	workItems          chan workItem
-	traceWorkers       bool
+	running      bool
+	shutdown     bool
+	stateChange  sync.Mutex
+	worker       []*worker
+	queueDepth   int
+	workItems    chan workItem
+	traceWorkers bool
+
+	workerWaitGroup sync.WaitGroup
 
 	log zerolog.Logger
+}
+
+func (e *executor) isTraceWorkers() bool {
+	return e.traceWorkers
+}
+
+func (e *executor) getWorksItems() chan workItem {
+	return e.workItems
+}
+
+func (e *executor) getWorkerWaitGroup() *sync.WaitGroup {
+	return &e.workerWaitGroup
+}
+
+type dynamicExecutor struct {
+	*executor
+
+	maxNumberOfWorkers     int
+	currentNumberOfWorkers atomic.Int32
+	dynamicStateChange     sync.Mutex
+	interrupter            chan struct{}
+
+	dynamicWorkers sync.WaitGroup
 }
 
 func NewFixedSizeExecutor(numberOfWorkers, queueDepth int, _options ...options.WithOption) Executor {
@@ -135,10 +167,10 @@ func NewFixedSizeExecutor(numberOfWorkers, queueDepth int, _options ...options.W
 		}
 	}
 	_executor := &executor{
-		maxNumberOfWorkers: numberOfWorkers,
-		workItems:          make(chan workItem, queueDepth),
-		worker:             workers,
-		log:                customLogger,
+		queueDepth: queueDepth,
+		workItems:  make(chan workItem, queueDepth),
+		worker:     workers,
+		log:        customLogger,
 	}
 	for _, option := range _options {
 		switch option := option.(type) {
@@ -158,11 +190,13 @@ var timeToBecomeUnused = 5 * time.Second
 
 func NewDynamicExecutor(maxNumberOfWorkers, queueDepth int, _options ...options.WithOption) Executor {
 	customLogger := options.ExtractCustomLogger(_options...)
-	_executor := &executor{
+	_executor := &dynamicExecutor{
+		executor: &executor{
+			workItems: make(chan workItem, queueDepth),
+			worker:    make([]*worker, 0),
+			log:       customLogger,
+		},
 		maxNumberOfWorkers: maxNumberOfWorkers,
-		workItems:          make(chan workItem, queueDepth),
-		worker:             make([]*worker, 0),
-		log:                customLogger,
 	}
 	for _, option := range _options {
 		switch option := option.(type) {
@@ -178,75 +212,6 @@ func NewDynamicExecutor(maxNumberOfWorkers, queueDepth int, _options ...options.
 		lastReceived: time.Now(),
 		log:          customLogger,
 	})
-	mutex := sync.Mutex{}
-	// Worker spawner
-	go func() {
-		defer func() {
-			if err := recover(); err != nil {
-				customLogger.Error().Msgf("panic-ed %v", err)
-			}
-		}()
-		workerLog := customLogger.With().Str("Worker type", "spawner").Logger()
-		if !_executor.traceWorkers {
-			workerLog = zerolog.Nop()
-		}
-		for {
-			workerLog.Debug().Msgf("Sleeping for %v", upScaleInterval)
-			time.Sleep(upScaleInterval)
-			mutex.Lock()
-			numberOfItemsInQueue := len(_executor.workItems)
-			numberOfWorkers := len(_executor.worker)
-			workerLog.Debug().Msgf("Checking if %d > %d && %d < %d", numberOfItemsInQueue, numberOfWorkers, numberOfWorkers, maxNumberOfWorkers)
-			if numberOfItemsInQueue > numberOfWorkers && numberOfWorkers < maxNumberOfWorkers {
-				_worker := &worker{
-					id:           numberOfWorkers - 1,
-					interrupter:  make(chan struct{}, 1),
-					executor:     _executor,
-					lastReceived: time.Now(),
-					log:          customLogger,
-				}
-				_executor.worker = append(_executor.worker, _worker)
-				_worker.initialize()
-				workerLog.Info().Int("Worker id", _worker.id).Msg("spawning")
-				go _worker.work()
-			} else {
-				workerLog.Trace().Msg("Nothing to scale")
-			}
-			mutex.Unlock()
-		}
-	}()
-	// Worker killer
-	go func() {
-		defer func() {
-			if err := recover(); err != nil {
-				_executor.log.Error().Msgf("panic-ed %v", err)
-			}
-		}()
-		workerLog := customLogger.With().Str("Worker type", "killer").Logger()
-		if !_executor.traceWorkers {
-			workerLog = zerolog.Nop()
-		}
-		for {
-			workerLog.Debug().Msgf("Sleeping for %v", downScaleInterval)
-			time.Sleep(downScaleInterval)
-			mutex.Lock()
-			newWorkers := make([]*worker, 0)
-			for _, _worker := range _executor.worker {
-				deadline := time.Now().Add(-timeToBecomeUnused)
-				workerLog.Debug().Int("Worker id", _worker.id).Msgf("Checking if %v is before %v", _worker.lastReceived, deadline)
-				if _worker.lastReceived.Before(deadline) {
-					workerLog.Info().Int("Worker id", _worker.id).Msg("killing")
-					_worker.interrupted.Store(true)
-					close(_worker.interrupter)
-				} else {
-					workerLog.Debug().Int("Worker id", _worker.id).Msg("still ok")
-					newWorkers = append(newWorkers, _worker)
-				}
-			}
-			_executor.worker = newWorkers
-			mutex.Unlock()
-		}
-	}()
 	return _executor
 }
 
@@ -290,6 +255,7 @@ func (e *executor) Start() {
 	e.stateChange.Lock()
 	defer e.stateChange.Unlock()
 	if e.running || e.shutdown {
+		e.log.Warn().Msg("Already started")
 		return
 	}
 	e.running = true
@@ -301,10 +267,125 @@ func (e *executor) Start() {
 	}
 }
 
+func (e *dynamicExecutor) Start() {
+	e.dynamicStateChange.Lock()
+	defer e.dynamicStateChange.Unlock()
+	if e.running || e.shutdown {
+		e.log.Warn().Msg("Already started")
+		return
+	}
+	if e.interrupter != nil {
+		e.log.Debug().Msg("Ensuring that the old spawner/killers are not running")
+		close(e.interrupter)
+		e.dynamicWorkers.Wait()
+	}
+
+	e.executor.Start()
+	mutex := sync.Mutex{}
+	e.interrupter = make(chan struct{})
+	// Worker spawner
+	go func() {
+		e.dynamicWorkers.Add(1)
+		defer e.dynamicWorkers.Done()
+		defer func() {
+			if err := recover(); err != nil {
+				e.log.Error().Msgf("panic-ed %v", err)
+			}
+		}()
+		workerLog := e.log.With().Str("Worker type", "spawner").Logger()
+		if !e.traceWorkers {
+			workerLog = zerolog.Nop()
+		}
+		for e.running && !e.shutdown {
+			workerLog.Trace().Msg("running")
+			mutex.Lock()
+			numberOfItemsInQueue := len(e.workItems)
+			numberOfWorkers := len(e.worker)
+			workerLog.Debug().Msgf("Checking if numberOfItemsInQueue(%d) > numberOfWorkers(%d) && numberOfWorkers(%d) < maxNumberOfWorkers(%d)", numberOfItemsInQueue, numberOfWorkers, numberOfWorkers, e.maxNumberOfWorkers)
+			if numberOfItemsInQueue > numberOfWorkers && numberOfWorkers < e.maxNumberOfWorkers {
+				workerLog.Trace().Msg("spawning new worker")
+				_worker := &worker{
+					id:           numberOfWorkers - 1,
+					interrupter:  make(chan struct{}, 1),
+					executor:     e,
+					lastReceived: time.Now(),
+					log:          e.log,
+				}
+				e.worker = append(e.worker, _worker)
+				_worker.initialize()
+				workerLog.Info().Int("Worker id", _worker.id).Msg("spawning")
+				go _worker.work()
+				e.currentNumberOfWorkers.Add(1)
+			} else {
+				workerLog.Trace().Msg("Nothing to scale")
+			}
+			mutex.Unlock()
+			func() {
+				workerLog.Debug().Msgf("Sleeping for %v", upScaleInterval)
+				timer := time.NewTimer(upScaleInterval)
+				defer utils.CleanupTimer(timer)
+				select {
+				case <-timer.C:
+				case <-e.interrupter:
+					workerLog.Info().Msg("interrupted")
+				}
+			}()
+		}
+		workerLog.Info().Msg("Terminated")
+	}()
+	// Worker killer
+	go func() {
+		e.dynamicWorkers.Add(1)
+		defer e.dynamicWorkers.Done()
+		defer func() {
+			if err := recover(); err != nil {
+				e.log.Error().Msgf("panic-ed %v", err)
+			}
+		}()
+		workerLog := e.log.With().Str("Worker type", "killer").Logger()
+		if !e.traceWorkers {
+			workerLog = zerolog.Nop()
+		}
+		for e.running && !e.shutdown {
+			workerLog.Trace().Msg("running")
+			mutex.Lock()
+			newWorkers := make([]*worker, 0)
+			for _, _worker := range e.worker {
+				deadline := time.Now().Add(-timeToBecomeUnused)
+				workerLog.Debug().Int("Worker id", _worker.id).Msgf("Checking if %v is before %v", _worker.lastReceived, deadline)
+				if _worker.lastReceived.Before(deadline) {
+					workerLog.Info().Int("Worker id", _worker.id).Msg("killing")
+					_worker.interrupted.Store(true)
+					close(_worker.interrupter)
+					e.currentNumberOfWorkers.Add(-1)
+				} else {
+					workerLog.Debug().Int("Worker id", _worker.id).Msg("still ok")
+					newWorkers = append(newWorkers, _worker)
+				}
+			}
+			e.worker = newWorkers
+			mutex.Unlock()
+			func() {
+				workerLog.Debug().Msgf("Sleeping for %v", downScaleInterval)
+				timer := time.NewTimer(downScaleInterval)
+				defer utils.CleanupTimer(timer)
+				select {
+				case <-timer.C:
+				case <-e.interrupter:
+					workerLog.Info().Msg("interrupted")
+				}
+			}()
+		}
+		workerLog.Info().Msg("Terminated")
+	}()
+}
+
 func (e *executor) Stop() {
+	e.log.Trace().Msg("stopping now")
 	e.stateChange.Lock()
 	defer e.stateChange.Unlock()
 	if !e.running || e.shutdown {
+		e.log.Warn().Msg("already stopped")
 		return
 	}
 	e.shutdown = true
@@ -314,9 +395,27 @@ func (e *executor) Stop() {
 		worker.interrupted.Store(true)
 		close(worker.interrupter)
 	}
-	close(e.workItems)
 	e.running = false
 	e.shutdown = false
+	e.log.Debug().Msgf("waiting for %d workers to stop", len(e.worker))
+	e.workerWaitGroup.Wait()
+	e.log.Trace().Msg("stopped")
+}
+
+func (e *dynamicExecutor) Stop() {
+	e.log.Trace().Msg("stopping now")
+	e.dynamicStateChange.Lock()
+	defer e.dynamicStateChange.Unlock()
+	if !e.running || e.shutdown {
+		e.log.Warn().Msg("already stopped")
+		return
+	}
+	close(e.interrupter)
+	e.log.Trace().Msg("stopping inner executor")
+	e.executor.Stop()
+	e.log.Debug().Msgf("waiting for %d dynamic workers to stop", e.currentNumberOfWorkers.Load())
+	e.dynamicWorkers.Wait()
+	e.log.Trace().Msg("stopped")
 }
 
 func (e *executor) Close() error {
@@ -371,4 +470,14 @@ func (f *future) AwaitCompletion(ctx context.Context) error {
 		return Canceled
 	}
 	return nil
+}
+
+func (f *future) String() string {
+	return fmt.Sprintf("future: cancelRequested(%t), interruptRequested(%t), completed(%t), errored(%t), err(%v)",
+		f.cancelRequested.Load(),
+		f.interruptRequested.Load(),
+		f.completed.Load(),
+		f.errored.Load(),
+		f.err.Load(),
+	)
 }

@@ -24,6 +24,7 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transactions"
 	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 	"sync"
 	"time"
 
@@ -155,10 +156,6 @@ func (m *Reader) sendMessageOverTheWire(ctx context.Context, transaction transac
 		expectedAlpha := messageToSend.(readWriteModel.CBusMessageToServer).GetRequest().(interface{ GetAlpha() readWriteModel.Alpha }).GetAlpha().GetCharacter()
 		return actualAlpha == expectedAlpha
 	}, func(receivedMessage spi.Message) error {
-		defer func(transaction transactions.RequestTransaction) {
-			// This is just to make sure we don't forget to close the transaction here
-			_ = transaction.EndRequest()
-		}(transaction)
 		// Convert the response into an
 		m.log.Trace().Msg("convert response to ")
 		messageToClient := receivedMessage.(readWriteModel.CBusMessageToClient)
@@ -200,7 +197,9 @@ func (m *Reader) sendMessageOverTheWire(ctx context.Context, transaction transac
 		// TODO: check if we can use a plcValueSerializer
 		encodedReply := embeddedReply.GetReply().(readWriteModel.ReplyEncodedReply).GetEncodedReply()
 		if err := MapEncodedReply(m.log, transaction, encodedReply, tagName, addResponseCode, addPlcValue); err != nil {
-			return errors.Wrap(err, "error encoding reply")
+			log.Error().Err(err).Msg("error encoding reply")
+			addResponseCode(tagName, apiModel.PlcResponseCode_INTERNAL_ERROR)
+			return transaction.EndRequest()
 		}
 		return transaction.EndRequest()
 	}, func(err error) error {
