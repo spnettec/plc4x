@@ -160,7 +160,6 @@ public class S7HMuxImpl extends MessageToMessageCodec<ByteBuf, ByteBuf> implemen
      */
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
-        super.userEventTriggered(ctx, evt);
         logger.info("{}  userEventTriggered: {} Event: {}", LocalTime.now(), ctx.name(), evt);
         if (evt instanceof ConnectEvent) {
             try {
@@ -182,8 +181,9 @@ public class S7HMuxImpl extends MessageToMessageCodec<ByteBuf, ByteBuf> implemen
 
         if (evt instanceof DisconnectEvent) {
             logger.info("DisconnectEvent");
+            embeded_channel.attr(IS_CONNECTED).set(false);
         }
-
+        super.userEventTriggered(ctx, evt);
     }
 
     @Override

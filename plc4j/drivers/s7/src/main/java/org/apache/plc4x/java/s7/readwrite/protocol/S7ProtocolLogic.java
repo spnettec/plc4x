@@ -312,6 +312,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
                     PlcReadResponse plcItems = (PlcReadResponse) decodeReadResponse(response.get(), readRequest);
                     clientFuture.complete(plcItems);
                 } catch (Exception e) {
+                    clientFuture.completeExceptionally(e);
                     logger.info("uh", e);
                 }
             });
