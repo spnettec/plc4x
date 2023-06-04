@@ -72,7 +72,6 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
         this.protocolBase = protocol;
         this.authentication = authentication;
         this.timeoutManager = timeoutManager;
-        //this.protocolBase.setContext(new DefaultConversationContext<>(this::registerHandler, pipeline.context(""), authentication, passive));
         this.protocolBase.setContext(new ConversationContext<>() {
 
             @Override
