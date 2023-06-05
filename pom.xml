@@ -86,7 +86,7 @@
 
   <properties>
     <java.version>11</java.version>
-    <maven.version>3.9.1</maven.version>
+
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputencoding>UTF-8</project.reporting.outputencoding>
 
@@ -106,7 +106,7 @@
     <!-- The currently available version is 2.0.5 and anything above 1.4.3 is no longer compatible with our code -->
     <bit-io.version>1.4.3</bit-io.version>
     <bouncycastle.version>1.72</bouncycastle.version>
-    <byte-buddy.version>1.14.4</byte-buddy.version>
+    <byte-buddy.version>1.14.5</byte-buddy.version>
     <!-- Be sure to keep this version set to the version of the cmake-maven-plugin -->
     <cmake-version>3.22.1</cmake-version>
     <commons-beanutils.version>1.9.4</commons-beanutils.version>
@@ -156,7 +156,7 @@
 
     <!-- Site properties -->
     <asciidoctor.maven.plugin.version>2.2.4</asciidoctor.maven.plugin.version>
-    <asciidoctorj.version>2.5.9</asciidoctorj.version>
+    <asciidoctorj.version>2.5.10</asciidoctorj.version>
     <asciidoctorj.diagram.version>2.2.8</asciidoctorj.diagram.version>
 
     <skip-code-generation-tests>true</skip-code-generation-tests>

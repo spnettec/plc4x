@@ -95,13 +95,15 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 			request := readWriteModel.NewCipRRData(0, 0, typeIds, *m.sessionHandle, uint32(readWriteModel.CIPStatus_Success), []byte(DefaultSenderContext), 0)
 			transaction := m.tm.StartTransaction()
 			transaction.Submit(func(transaction transactions.RequestTransaction) {
-				if err := m.messageCodec.SendRequest(ctx, request,
+				if err := m.messageCodec.SendRequest(
+					ctx,
+					request,
 					func(message spi.Message) bool {
-						eipPacket := message.(readWriteModel.EipPacket)
+						eipPacket := message.(readWriteModel.EipPacketExactly)
 						if eipPacket == nil {
 							return false
 						}
-						cipRRData := eipPacket.(readWriteModel.CipRRData)
+						cipRRData := eipPacket.(readWriteModel.CipRRDataExactly)
 						if cipRRData == nil {
 							return false
 						}
@@ -135,7 +137,9 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 							errors.Wrap(err, "got timeout while waiting for response"),
 						)
 						return transaction.EndRequest()
-					}, time.Second*1); err != nil {
+					},
+					time.Second*1,
+				); err != nil {
 					result <- spiModel.NewDefaultPlcReadRequestResult(
 						readRequest,
 						nil,
@@ -198,7 +202,7 @@ func (m *Reader) ToPlc4xReadResponse(response readWriteModel.CipService, readReq
 	plcValues := map[string]values.PlcValue{}
 	responseCodes := map[string]apiModel.PlcResponseCode{}
 	switch response := response.(type) {
-	case readWriteModel.CipReadResponse: // only 1 tag
+	case readWriteModel.CipReadResponseExactly: // only 1 tag
 		cipReadResponse := response
 		tagName := readRequest.GetTagNames()[0]
 		tag := readRequest.GetTag(tagName).(EIPPlcTag)
@@ -215,7 +219,7 @@ func (m *Reader) ToPlc4xReadResponse(response readWriteModel.CipService, readReq
 		}
 		plcValues[tagName] = plcValue
 		responseCodes[tagName] = code
-	case readWriteModel.MultipleServiceResponse: //Multiple response
+	case readWriteModel.MultipleServiceResponseExactly: //Multiple response
 		multipleServiceResponse := response
 		nb := multipleServiceResponse.GetServiceNb()
 		arr := make([]readWriteModel.CipService, nb)

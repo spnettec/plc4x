@@ -59,6 +59,7 @@ public class PlcValueHandler implements org.apache.plc4x.java.api.value.PlcValue
     public static PlcValue of(Object value) {
         return of(new Object[]{value});
     }
+
     public static PlcValue of(List<?> value) {
         return of(value.toArray());
     }
@@ -190,11 +191,7 @@ public class PlcValueHandler implements org.apache.plc4x.java.api.value.PlcValue
             return PlcLINT.of(value);
         }
         if (value instanceof BigInteger) {
-            try {
-                return new PlcLINT((BigInteger) value);
-            }catch (PlcInvalidTagException e) {
-                return new PlcULINT((BigInteger) value);
-            }
+            return PlcLINT.of(value);
         }
         if (value instanceof BigDecimal) {
             return new PlcLINT((BigDecimal) value);
@@ -231,6 +228,7 @@ public class PlcValueHandler implements org.apache.plc4x.java.api.value.PlcValue
     public static PlcValue of(PlcTag tag, Object value) {
         return of(tag, new Object[]{value});
     }
+
 
     public static PlcValue of(PlcTag tag, Object[] values) {
         if (values.length == 1) {
