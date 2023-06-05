@@ -24,7 +24,6 @@ import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.embedded.EmbeddedChannel;
 import io.netty.handler.codec.MessageToMessageCodec;
-import io.netty.handler.timeout.ReadTimeoutHandler;
 import io.netty.util.AttributeKey;
 import org.apache.plc4x.java.spi.events.ConnectEvent;
 import org.apache.plc4x.java.spi.events.DisconnectEvent;
@@ -66,17 +65,6 @@ public class S7HMuxImpl extends MessageToMessageCodec<ByteBuf, ByteBuf> implemen
      * Default value: true
      */
     public final static AttributeKey<Boolean> IS_PRIMARY = AttributeKey.valueOf("IS_PRIMARY");
-
-    /*
-     * This is the maximum waiting time for reading on the TCP channel.
-     * As there is no traffic, it must be assumed that the connection with the
-     * interlocutor was lost and it must be restarted.
-     * When the channel is closed, the "fail over" is carried out
-     * in case of having the secondary channel, or it is expected that it
-     * will be restored automatically, which is done every 4 seconds.
-     * Default value: 8 sec.
-     */
-    public final static AttributeKey<Integer> READ_TIME_OUT = AttributeKey.valueOf("READ_TIME_OUT");
 
     /*
      * If your application requires sampling times greater than the
@@ -163,12 +151,6 @@ public class S7HMuxImpl extends MessageToMessageCodec<ByteBuf, ByteBuf> implemen
         logger.info("{}  userEventTriggered: {} Event: {}", LocalTime.now(), ctx.name(), evt);
         if (evt instanceof ConnectEvent) {
             try {
-                tcp_channel.pipeline().remove("watchdog");
-            } catch (Exception ex) {
-                logger.info(ex.toString());
-            }
-            try {
-                tcp_channel.pipeline().addFirst("watchdog", new ReadTimeoutHandler(30));
                 if (tcp_channel.isActive()) {
                     embeded_channel.attr(IS_CONNECTED).set(true);
                 } else {
@@ -205,7 +187,7 @@ public class S7HMuxImpl extends MessageToMessageCodec<ByteBuf, ByteBuf> implemen
     }
 
     @Override
-    public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
+    public synchronized void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
         super.channelUnregistered(ctx);
         logger.debug("{} channelUnregistered: {}", LocalTime.now(), ctx.name());
         String strCanal = (tcp_channel == primary_channel) ? "PRIMARY" : "SECONDARY";
@@ -222,13 +204,12 @@ public class S7HMuxImpl extends MessageToMessageCodec<ByteBuf, ByteBuf> implemen
             (primary_channel == ctx.channel()))
             if ((!primary_channel.isActive()) &&
                 (secondary_channel != null)) {
-                if (secondary_channel.isActive())
-                    synchronized (tcp_channel) {
-                        logger.info("Using secondary TCP channel.");
-                        tcp_channel = secondary_channel;
-                        embeded_channel.attr(IS_PRIMARY).set(false);
-                        embeded_channel.pipeline().fireUserEventTriggered(new ConnectEvent());
-                    }
+                if (secondary_channel.isActive()) {
+                    logger.info("Using secondary TCP channel.");
+                    tcp_channel = secondary_channel;
+                    embeded_channel.attr(IS_PRIMARY).set(false);
+                    embeded_channel.pipeline().fireUserEventTriggered(new ConnectEvent());
+                }
             }
 
 
@@ -236,12 +217,10 @@ public class S7HMuxImpl extends MessageToMessageCodec<ByteBuf, ByteBuf> implemen
             (secondary_channel == ctx.channel()))
             if ((!secondary_channel.isActive() &&
                 (primary_channel.isActive()))) {
-                synchronized (tcp_channel) {
-                    logger.info("Using primary TCP channel.");
-                    tcp_channel = primary_channel;
-                    embeded_channel.attr(IS_PRIMARY).set(true);
-                    embeded_channel.pipeline().fireUserEventTriggered(new ConnectEvent());
-                }
+                logger.info("Using primary TCP channel.");
+                tcp_channel = primary_channel;
+                embeded_channel.attr(IS_PRIMARY).set(true);
+                embeded_channel.pipeline().fireUserEventTriggered(new ConnectEvent());
             }
     }
 
@@ -251,14 +230,13 @@ public class S7HMuxImpl extends MessageToMessageCodec<ByteBuf, ByteBuf> implemen
         this.embeded_channel = embeded_channel;
         this.embeded_channel.attr(IS_CONNECTED).set(false);
         this.embeded_channel.attr(IS_PRIMARY).set(true);
-        this.embeded_channel.attr(READ_TIME_OUT).set(8);
         this.embeded_channel.attr(IS_PING_ACTIVE).set(false);
         this.embeded_channel.attr(PING_TIME).set(-1);
         this.embeded_channel.attr(RETRY_TIME).set(8);
     }
 
-    public void setPrimaryChannel(Channel primary_channel) {
-        if ((this.primary_channel == null) && (tcp_channel == null)) {
+    public synchronized void setPrimaryChannel(Channel primary_channel) {
+        if (this.primary_channel == null) {
             if (primary_channel != null) {
                 this.primary_channel = primary_channel;
                 tcp_channel = primary_channel;
@@ -267,20 +245,18 @@ public class S7HMuxImpl extends MessageToMessageCodec<ByteBuf, ByteBuf> implemen
         } else if ((!this.primary_channel.isActive()) && (tcp_channel == secondary_channel)) {
             this.primary_channel = primary_channel;
         } else if ((!this.primary_channel.isActive()) && (tcp_channel == this.primary_channel)) {
-            synchronized (tcp_channel) {
-                tcp_channel.close();
-                this.primary_channel = primary_channel;
-                tcp_channel = primary_channel;
-                embeded_channel.attr(IS_PRIMARY).set(true);
-                if (tcp_channel.isActive()) {
-                    embed_ctx.fireUserEventTriggered(new ConnectEvent());
-                }
+            tcp_channel.close();
+            this.primary_channel = primary_channel;
+            tcp_channel = primary_channel;
+            embeded_channel.attr(IS_PRIMARY).set(true);
+            if (tcp_channel.isActive()) {
+                embed_ctx.fireUserEventTriggered(new ConnectEvent());
             }
         }
     }
 
     @Override
-    public void setSecondaryChannel(Channel secondary_channel) {
+    public synchronized void setSecondaryChannel(Channel secondary_channel) {
         if ((this.primary_channel == null) && (tcp_channel == null)) {
             if (secondary_channel != null) {
                 this.secondary_channel = secondary_channel;
@@ -292,12 +268,10 @@ public class S7HMuxImpl extends MessageToMessageCodec<ByteBuf, ByteBuf> implemen
         } else if ((!this.secondary_channel.isActive()) && (tcp_channel == primary_channel)) {
             this.secondary_channel = secondary_channel;
         } else if ((!this.secondary_channel.isActive()) && (tcp_channel == this.secondary_channel)) {
-            synchronized (tcp_channel) {
-                tcp_channel.close();
-                this.secondary_channel = secondary_channel;
-                tcp_channel = secondary_channel;
-                embeded_channel.attr(IS_PRIMARY).set(false);
-            }
+            tcp_channel.close();
+            this.secondary_channel = secondary_channel;
+            tcp_channel = secondary_channel;
+            embeded_channel.attr(IS_PRIMARY).set(false);
             if (tcp_channel.isActive()) {
                 embed_ctx.fireUserEventTriggered(new ConnectEvent());
             }
