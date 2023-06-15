@@ -60,6 +60,7 @@ func (m Browser) BrowseQuery(ctx context.Context, interceptor func(result apiMod
 	var queryResults []apiModel.PlcBrowseItem
 	switch query := query.(type) {
 	case *unitInfoQuery:
+		m.log.Trace().Msg("extract units")
 		units, allUnits, err := m.extractUnits(ctx, query, m.getInstalledUnitAddressBytes)
 		if err != nil {
 			m.log.Error().Err(err).Msg("Error extracting units")
@@ -72,6 +73,7 @@ func (m Browser) BrowseQuery(ctx context.Context, interceptor func(result apiMod
 		}
 	unitLoop:
 		for _, unit := range units {
+			m.log.Trace().Msgf("checking unit:\n%s", unit)
 			if err := ctx.Err(); err != nil {
 				m.log.Info().Err(err).Msgf("Aborting scan at unit %s", unit)
 				return apiModel.PlcResponseCode_INVALID_ADDRESS, nil
@@ -95,17 +97,21 @@ func (m Browser) BrowseQuery(ctx context.Context, interceptor func(result apiMod
 				} else {
 					event.Msgf("unit %d: Query %s", unitAddress, attribute)
 				}
+				m.log.Trace().Msg("Building request")
 				readTagName := fmt.Sprintf("%s/%d/%s", queryName, unitAddress, attribute)
 				readRequest, _ := m.connection.ReadRequestBuilder().
 					AddTag(readTagName, NewCALIdentifyTag(unit, nil /*TODO: add bridge support*/, attribute, 1)).
 					Build()
 				timeoutCtx, timeoutCancel := context.WithTimeout(ctx, time.Second*2)
+				m.log.Trace().Msgf("Executing readRequest\n%s\nwith timeout %s", readRequest, timeoutCtx)
 				requestResult := <-readRequest.ExecuteWithContext(timeoutCtx)
+				m.log.Trace().Msg("got a response")
 				timeoutCancel()
 				if err := requestResult.GetErr(); err != nil {
-					if !allUnits && !allAttributes {
-						event.Err(err).Msgf("unit %d: Can't read attribute %s", unitAddress, attribute)
+					if allUnits || allAttributes {
+						event = m.log.Trace()
 					}
+					event.Err(err).Msgf("unit %d: Can't read attribute %s", unitAddress, attribute)
 					continue unitLoop
 				}
 				response := requestResult.GetResponse()
@@ -126,14 +132,17 @@ func (m Browser) BrowseQuery(ctx context.Context, interceptor func(result apiMod
 					},
 				)
 				if interceptor != nil {
+					m.log.Trace().Msg("forwarding query result to interceptor")
 					interceptor(queryResult)
 				}
 				queryResults = append(queryResults, queryResult)
 			}
 		}
 	default:
+		m.log.Warn().Msgf("unsupported query type supplied %T", query)
 		return apiModel.PlcResponseCode_INVALID_ADDRESS, nil
 	}
+	m.log.Trace().Msgf("Browse done with \n%s", queryResults)
 	return apiModel.PlcResponseCode_OK, queryResults
 }
 
@@ -171,6 +180,10 @@ func (m Browser) extractAttributes(query *unitInfoQuery) ([]readWriteModel.Attri
 }
 
 func (m Browser) getInstalledUnitAddressBytes(ctx context.Context) (map[byte]any, error) {
+	start := time.Now()
+	defer func() {
+		m.log.Debug().Msgf("Ending unit address acquiring after %s", time.Since(start))
+	}()
 	// We need to pre-subscribe to catch the 2 followup responses
 	subscriptionRequest, err := m.connection.SubscriptionRequestBuilder().
 		AddEventTagAddress("installationMMIMonitor", "mmimonitor/*/NETWORK_CONTROL").
@@ -179,15 +192,16 @@ func (m Browser) getInstalledUnitAddressBytes(ctx context.Context) (map[byte]any
 		return nil, errors.Wrap(err, "Error subscribing to the installation MMI")
 	}
 	subCtx, subCtxCancel := context.WithTimeout(ctx, time.Second*2)
+	defer subCtxCancel()
 	subscriptionResult := <-subscriptionRequest.ExecuteWithContext(subCtx)
-	subCtxCancel()
 	if err := subscriptionResult.GetErr(); err != nil {
 		return nil, errors.Wrap(err, "Error subscribing to the mmi")
 	}
-	if responseCode := subscriptionResult.GetResponse().GetResponseCode("installationMMIMonitor"); responseCode != apiModel.PlcResponseCode_OK {
+	response := subscriptionResult.GetResponse()
+	if responseCode := response.GetResponseCode("installationMMIMonitor"); responseCode != apiModel.PlcResponseCode_OK {
 		return nil, errors.Errorf("Got %s", responseCode)
 	}
-	subscriptionHandle, err := subscriptionResult.GetResponse().GetSubscriptionHandle("installationMMIMonitor")
+	subscriptionHandle, err := response.GetSubscriptionHandle("installationMMIMonitor")
 	if err != nil {
 		return nil, errors.Wrap(err, "Error getting the subscription handle")
 	}
@@ -200,6 +214,7 @@ func (m Browser) getInstalledUnitAddressBytes(ctx context.Context) (map[byte]any
 	blockOffset176ReceivedChan := make(chan any, 100) // We only expect one, but we make it a bit bigger to no clog up
 	result := make(map[byte]any)
 	plcConsumerRegistration := subscriptionHandle.Register(func(event apiModel.PlcSubscriptionEvent) {
+		m.log.Trace().Msgf("handling event:\n%s", event)
 		if responseCode := event.GetResponseCode("installationMMIMonitor"); responseCode != apiModel.PlcResponseCode_OK {
 			m.log.Warn().Msgf("Ignoring %v", event)
 			return
@@ -245,20 +260,26 @@ func (m Browser) getInstalledUnitAddressBytes(ctx context.Context) (map[byte]any
 		}
 		// We notify here so we don't exit to early
 		switch blockStart {
+		case 0:
+			select {
+			case blockOffset0ReceivedChan <- true:
+				m.log.Trace().Msg("0 notified")
+			default:
+				m.log.Warn().Msg("0 blocked")
+			}
 		case 88:
 			select {
 			case blockOffset88ReceivedChan <- true:
+				m.log.Trace().Msg("88 notified")
 			default:
+				m.log.Warn().Msg("88 blocked")
 			}
 		case 176:
 			select {
 			case blockOffset176ReceivedChan <- true:
+				m.log.Trace().Msg("176 notified")
 			default:
-			}
-		case 0:
-			select {
-			case blockOffset0ReceivedChan <- true:
-			default:
+				m.log.Warn().Msg("176 blocked")
 			}
 		}
 	})
@@ -271,6 +292,7 @@ func (m Browser) getInstalledUnitAddressBytes(ctx context.Context) (map[byte]any
 		return nil, errors.Wrap(err, "Error getting the installation MMI")
 	}
 	readCtx, readCtxCancel := context.WithTimeout(ctx, time.Second*2)
+	defer readCtxCancel()
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {
@@ -283,8 +305,9 @@ func (m Browser) getInstalledUnitAddressBytes(ctx context.Context) (map[byte]any
 			m.log.Warn().Err(err).Msg("Error reading the mmi")
 			return
 		}
-		if responseCode := readRequestResult.GetResponse().GetResponseCode("installationMMI"); responseCode == apiModel.PlcResponseCode_OK {
-			rootValue := readRequestResult.GetResponse().GetValue("installationMMI")
+		response := readRequestResult.GetResponse()
+		if responseCode := response.GetResponseCode("installationMMI"); responseCode == apiModel.PlcResponseCode_OK {
+			rootValue := response.GetValue("installationMMI")
 			if !rootValue.IsStruct() {
 				m.log.Warn().Err(err).Msgf("%v should be a struct", rootValue)
 				return
@@ -301,6 +324,7 @@ func (m Browser) getInstalledUnitAddressBytes(ctx context.Context) (map[byte]any
 			} else {
 				blockStart = int(blockStartValue.GetByte())
 			}
+			m.log.Debug().Msgf("Read MMI with block start %d", blockStart)
 
 			if plcListValue := rootStruct["values"]; plcListValue == nil || !plcListValue.IsList() {
 				m.log.Warn().Err(err).Msgf("%v should contain a values tag of type list", rootStruct)
@@ -326,10 +350,13 @@ func (m Browser) getInstalledUnitAddressBytes(ctx context.Context) (map[byte]any
 			switch blockStart {
 			case 0:
 				blockOffset0Received = true
+				m.log.Trace().Msg("block 0 read by read")
 			case 88:
 				blockOffset88Received = true
+				m.log.Trace().Msg("block 88 read by read")
 			case 176:
 				blockOffset176Received = true
+				m.log.Trace().Msg("block 176 read by read")
 			}
 
 		} else {
@@ -337,7 +364,7 @@ func (m Browser) getInstalledUnitAddressBytes(ctx context.Context) (map[byte]any
 		}
 	}()
 
-	syncCtx, syncCtxCancel := context.WithTimeout(ctx, time.Second*2)
+	syncCtx, syncCtxCancel := context.WithTimeout(ctx, time.Second*6)
 	defer syncCtxCancel()
 	for !blockOffset0Received || !blockOffset88Received || !blockOffset176Received {
 		select {
@@ -351,9 +378,10 @@ func (m Browser) getInstalledUnitAddressBytes(ctx context.Context) (map[byte]any
 			m.log.Trace().Msg("Offset 176 received")
 			blockOffset176Received = true
 		case <-syncCtx.Done():
+			err = syncCtx.Err()
+			m.log.Trace().Err(err).Msg("Ending prematurely")
 			return nil, errors.Wrap(err, "error waiting for other offsets")
 		}
 	}
-	readCtxCancel()
 	return result, nil
 }

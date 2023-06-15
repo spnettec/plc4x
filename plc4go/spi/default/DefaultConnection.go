@@ -22,8 +22,10 @@ package _default
 import (
 	"context"
 	"github.com/apache/plc4x/plc4go/spi/tracer"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/rs/zerolog"
 	"runtime/debug"
+	"sync/atomic"
 	"time"
 
 	"github.com/apache/plc4x/plc4go/pkg/api"
@@ -47,6 +49,7 @@ type DefaultConnectionRequirements interface {
 
 // DefaultConnection should be used as an embedded struct. All defined methods here have default implementations
 type DefaultConnection interface {
+	utils.Serializable
 	plc4go.PlcConnection
 	spi.TransportInstanceExposer
 	spi.HandlerExposer
@@ -145,16 +148,17 @@ type withPlcValueHandler struct {
 	plcValueHandler spi.PlcValueHandler
 }
 
+//go:generate go run ../../tools/plc4xgenerator/gen.go -type=defaultConnection
 type defaultConnection struct {
-	DefaultConnectionRequirements
+	DefaultConnectionRequirements `ignore:"true"`
 	// defaultTtl the time to live after a close
-	defaultTtl time.Duration
+	defaultTtl time.Duration `stringer:"true"`
 	// connected indicates if a connection is connected
-	connected    bool
+	connected    atomic.Bool
 	tagHandler   spi.PlcTagHandler
 	valueHandler spi.PlcValueHandler
 
-	log zerolog.Logger
+	log zerolog.Logger `ignore:"true"`
 }
 
 func buildDefaultConnection(requirements DefaultConnectionRequirements, _options ...options.WithOption) DefaultConnection {
@@ -176,7 +180,6 @@ func buildDefaultConnection(requirements DefaultConnectionRequirements, _options
 	return &defaultConnection{
 		DefaultConnectionRequirements: requirements,
 		defaultTtl:                    defaultTtl,
-		connected:                     false,
 		tagHandler:                    tagHandler,
 		valueHandler:                  valueHandler,
 
@@ -230,7 +233,8 @@ func (d *plcConnectionPingResult) GetErr() error {
 ///////////////////////////////////////
 
 func (d *defaultConnection) SetConnected(connected bool) {
-	d.connected = connected
+	d.log.Trace().Msgf("set connected %t", connected)
+	d.connected.Store(connected)
 }
 
 func (d *defaultConnection) Connect() <-chan plc4go.PlcConnectionConnectResult {
@@ -290,7 +294,7 @@ func (d *defaultConnection) Close() <-chan plc4go.PlcConnectionCloseResult {
 
 func (d *defaultConnection) IsConnected() bool {
 	// TODO: should we check here if the transport is connected?
-	return d.connected
+	return d.connected.Load()
 }
 
 func (d *defaultConnection) Ping() <-chan plc4go.PlcConnectionPingResult {

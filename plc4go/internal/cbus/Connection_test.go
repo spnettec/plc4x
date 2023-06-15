@@ -21,6 +21,13 @@ package cbus
 
 import (
 	"context"
+	"github.com/stretchr/testify/require"
+	"net/url"
+	"sync"
+	"sync/atomic"
+	"testing"
+	"time"
+
 	plc4go "github.com/apache/plc4x/plc4go/pkg/api"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
@@ -32,13 +39,8 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/transactions"
 	"github.com/apache/plc4x/plc4go/spi/transports/test"
 	"github.com/apache/plc4x/plc4go/spi/utils"
-	"github.com/rs/zerolog"
+
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
-	"net/url"
-	"sync/atomic"
-	"testing"
-	"time"
 )
 
 func TestAlphaGenerator_getAndIncrement(t *testing.T) {
@@ -94,8 +96,7 @@ func TestConnection_BrowseRequestBuilder(t *testing.T) {
 		configuration     Configuration
 		driverContext     DriverContext
 		connectionId      string
-		tracer            *tracer.Tracer
-		log               zerolog.Logger
+		tracer            tracer.Tracer
 	}
 	tests := []struct {
 		name       string
@@ -123,7 +124,7 @@ func TestConnection_BrowseRequestBuilder(t *testing.T) {
 				driverContext:     tt.fields.driverContext,
 				connectionId:      tt.fields.connectionId,
 				tracer:            tt.fields.tracer,
-				log:               tt.fields.log,
+				log:               testutils.ProduceTestingLogger(t),
 			}
 			assert.True(t, tt.wantAssert(t, c.BrowseRequestBuilder()), "BrowseRequestBuilder()")
 		})
@@ -139,8 +140,7 @@ func TestConnection_ConnectWithContext(t *testing.T) {
 		configuration     Configuration
 		driverContext     DriverContext
 		connectionId      string
-		tracer            *tracer.Tracer
-		log               zerolog.Logger
+		tracer            tracer.Tracer
 	}
 	type args struct {
 		ctx context.Context
@@ -178,21 +178,16 @@ func TestConnection_ConnectWithContext(t *testing.T) {
 			},
 			args: args{ctx: context.Background()},
 			setup: func(t *testing.T, fields *fields) {
-				// Setup logger
-				logger := testutils.ProduceTestingLogger(t)
-				fields.log = logger
-
-				// Custom option for that
-				loggerOption := options.WithCustomLogger(logger)
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
 				// Build the default connection
-				fields.DefaultConnection = _default.NewDefaultConnection(nil, loggerOption)
-				transport := test.NewTransport(loggerOption)
-				ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, nil, loggerOption)
+				fields.DefaultConnection = _default.NewDefaultConnection(nil, _options...)
+				transport := test.NewTransport(_options...)
+				ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, nil, _options...)
 				require.NoError(t, err)
-				codec := NewMessageCodec(ti, loggerOption)
+				codec := NewMessageCodec(ti, _options...)
 				t.Cleanup(func() {
-					assert.NoError(t, codec.Disconnect())
+					assert.Error(t, codec.Disconnect())
 				})
 				fields.messageCodec = codec
 			},
@@ -220,9 +215,10 @@ func TestConnection_ConnectWithContext(t *testing.T) {
 				driverContext:     tt.fields.driverContext,
 				connectionId:      tt.fields.connectionId,
 				tracer:            tt.fields.tracer,
-				log:               tt.fields.log,
+				log:               testutils.ProduceTestingLogger(t),
 			}
 			assert.True(t, tt.wantAsserter(t, c.ConnectWithContext(tt.args.ctx)), "ConnectWithContext(%v)", tt.args.ctx)
+			time.Sleep(200 * time.Millisecond) // TODO: find out what is still running here
 		})
 	}
 }
@@ -236,13 +232,13 @@ func TestConnection_GetConnection(t *testing.T) {
 		configuration     Configuration
 		driverContext     DriverContext
 		connectionId      string
-		tracer            *tracer.Tracer
-		log               zerolog.Logger
+		tracer            tracer.Tracer
 	}
 	tests := []struct {
 		name         string
 		fields       fields
-		wantAsserter func(*testing.T, plc4go.PlcConnection) bool
+		setup        func(t *testing.T, fields *fields)
+		wantAsserter func(t *testing.T, connection plc4go.PlcConnection) bool
 	}{
 		{
 			name: "not nil",
@@ -253,6 +249,9 @@ func TestConnection_GetConnection(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			if tt.setup != nil {
+				tt.setup(t, &tt.fields)
+			}
 			c := &Connection{
 				DefaultConnection: tt.fields.DefaultConnection,
 				messageCodec:      tt.fields.messageCodec,
@@ -262,7 +261,7 @@ func TestConnection_GetConnection(t *testing.T) {
 				driverContext:     tt.fields.driverContext,
 				connectionId:      tt.fields.connectionId,
 				tracer:            tt.fields.tracer,
-				log:               tt.fields.log,
+				log:               testutils.ProduceTestingLogger(t),
 			}
 			assert.Truef(t, tt.wantAsserter(t, c.GetConnection()), "GetConnection()")
 		})
@@ -278,8 +277,7 @@ func TestConnection_GetConnectionId(t *testing.T) {
 		configuration     Configuration
 		driverContext     DriverContext
 		connectionId      string
-		tracer            *tracer.Tracer
-		log               zerolog.Logger
+		tracer            tracer.Tracer
 	}
 	tests := []struct {
 		name   string
@@ -301,7 +299,7 @@ func TestConnection_GetConnectionId(t *testing.T) {
 				driverContext:     tt.fields.driverContext,
 				connectionId:      tt.fields.connectionId,
 				tracer:            tt.fields.tracer,
-				log:               tt.fields.log,
+				log:               testutils.ProduceTestingLogger(t),
 			}
 			assert.Equalf(t, tt.want, c.GetConnectionId(), "GetConnectionId()")
 		})
@@ -317,8 +315,7 @@ func TestConnection_GetMessageCodec(t *testing.T) {
 		configuration     Configuration
 		driverContext     DriverContext
 		connectionId      string
-		tracer            *tracer.Tracer
-		log               zerolog.Logger
+		tracer            tracer.Tracer
 	}
 	tests := []struct {
 		name   string
@@ -344,7 +341,7 @@ func TestConnection_GetMessageCodec(t *testing.T) {
 				driverContext:     tt.fields.driverContext,
 				connectionId:      tt.fields.connectionId,
 				tracer:            tt.fields.tracer,
-				log:               tt.fields.log,
+				log:               testutils.ProduceTestingLogger(t),
 			}
 			assert.Equalf(t, tt.want, c.GetMessageCodec(), "GetMessageCodec()")
 		})
@@ -360,8 +357,7 @@ func TestConnection_GetMetadata(t *testing.T) {
 		configuration     Configuration
 		driverContext     DriverContext
 		connectionId      string
-		tracer            *tracer.Tracer
-		log               zerolog.Logger
+		tracer            tracer.Tracer
 	}
 	tests := []struct {
 		name   string
@@ -390,7 +386,7 @@ func TestConnection_GetMetadata(t *testing.T) {
 				driverContext:     tt.fields.driverContext,
 				connectionId:      tt.fields.connectionId,
 				tracer:            tt.fields.tracer,
-				log:               tt.fields.log,
+				log:               testutils.ProduceTestingLogger(t),
 			}
 			assert.Equalf(t, tt.want, c.GetMetadata(), "GetMetadata()")
 		})
@@ -406,13 +402,12 @@ func TestConnection_GetTracer(t *testing.T) {
 		configuration     Configuration
 		driverContext     DriverContext
 		connectionId      string
-		tracer            *tracer.Tracer
-		log               zerolog.Logger
+		tracer            tracer.Tracer
 	}
 	tests := []struct {
 		name   string
 		fields fields
-		want   *tracer.Tracer
+		want   tracer.Tracer
 	}{
 		{
 			name: "just nil",
@@ -429,7 +424,7 @@ func TestConnection_GetTracer(t *testing.T) {
 				driverContext:     tt.fields.driverContext,
 				connectionId:      tt.fields.connectionId,
 				tracer:            tt.fields.tracer,
-				log:               tt.fields.log,
+				log:               testutils.ProduceTestingLogger(t),
 			}
 			assert.Equalf(t, tt.want, c.GetTracer(), "GetTracer()")
 		})
@@ -445,8 +440,7 @@ func TestConnection_IsTraceEnabled(t *testing.T) {
 		configuration     Configuration
 		driverContext     DriverContext
 		connectionId      string
-		tracer            *tracer.Tracer
-		log               zerolog.Logger
+		tracer            tracer.Tracer
 	}
 	tests := []struct {
 		name   string
@@ -468,7 +462,7 @@ func TestConnection_IsTraceEnabled(t *testing.T) {
 				driverContext:     tt.fields.driverContext,
 				connectionId:      tt.fields.connectionId,
 				tracer:            tt.fields.tracer,
-				log:               tt.fields.log,
+				log:               testutils.ProduceTestingLogger(t),
 			}
 			assert.Equalf(t, tt.want, c.IsTraceEnabled(), "IsTraceEnabled()")
 		})
@@ -484,8 +478,7 @@ func TestConnection_ReadRequestBuilder(t *testing.T) {
 		configuration     Configuration
 		driverContext     DriverContext
 		connectionId      string
-		tracer            *tracer.Tracer
-		log               zerolog.Logger
+		tracer            tracer.Tracer
 	}
 	tests := []struct {
 		name       string
@@ -513,7 +506,7 @@ func TestConnection_ReadRequestBuilder(t *testing.T) {
 				driverContext:     tt.fields.driverContext,
 				connectionId:      tt.fields.connectionId,
 				tracer:            tt.fields.tracer,
-				log:               tt.fields.log,
+				log:               testutils.ProduceTestingLogger(t),
 			}
 			assert.Truef(t, tt.wantAssert(t, c.ReadRequestBuilder()), "ReadRequestBuilder()")
 		})
@@ -529,8 +522,7 @@ func TestConnection_String(t *testing.T) {
 		configuration     Configuration
 		driverContext     DriverContext
 		connectionId      string
-		tracer            *tracer.Tracer
-		log               zerolog.Logger
+		tracer            tracer.Tracer
 	}
 	tests := []struct {
 		name   string
@@ -539,13 +531,41 @@ func TestConnection_String(t *testing.T) {
 	}{
 		{
 			name: "a string",
-			want: "cbus.Connection",
+			fields: fields{
+				DefaultConnection: _default.NewDefaultConnection(nil),
+			},
+			want: `
+╔═Connection══════════════════════════════════════════════════════════════════════════════════════════════╗
+║╔═defaultConnection═══════╗╔═alphaGenerator════════════════════╗╔═messageCodec╗                          ║
+║║╔═defaultTtl╗╔═connected╗║║╔═AlphaGenerator/currentAlpha═════╗║║    <nil>    ║                          ║
+║║║    10s    ║║ b0 false ║║║║            0x67 'g'             ║║╚═════════════╝                          ║
+║║╚═══════════╝╚══════════╝║║╚═════════════════════════════════╝║                                         ║
+║╚═════════════════════════╝╚═══════════════════════════════════╝                                         ║
+║╔═configuration═════════════════════════════════════════════════════════════════════════════════════════╗║
+║║╔═Configuration═══════════════════════════════════════════════════════════════════════════════════════╗║║
+║║║╔═srchk══╗╔═exstat═╗╔═pun════╗╔═localSal╗╔═pcn════╗╔═idmon══╗╔═monitor╗╔═smart══╗╔═xonXoff╗╔═connect╗║║║
+║║║║b0 false║║b0 false║║b0 false║║b0 false ║║b0 false║║b0 false║║b0 false║║b0 false║║b0 false║║b0 false║║║║
+║║║╚════════╝╚════════╝╚════════╝╚═════════╝╚════════╝╚════════╝╚════════╝╚════════╝╚════════╝╚════════╝║║║
+║║║╔═monitoredApplication1╗╔═monitoredApplication2╗                                                     ║║║
+║║║║       0x00 '.'       ║║       0x00 '.'       ║                                                     ║║║
+║║║╚══════════════════════╝╚══════════════════════╝                                                     ║║║
+║║╚═════════════════════════════════════════════════════════════════════════════════════════════════════╝║║
+║╚═══════════════════════════════════════════════════════════════════════════════════════════════════════╝║
+║╔═driverContext═══════════════════════════════════╗                                                      ║
+║║╔═DriverContext═════════════════════════════════╗║                                                      ║
+║║║╔═awaitSetupComplete╗╔═awaitDisconnectComplete╗║║                                                      ║
+║║║║     b0 false      ║║        b0 false        ║║║                                                      ║
+║║║╚═══════════════════╝╚════════════════════════╝║║                                                      ║
+║║╚═══════════════════════════════════════════════╝║                                                      ║
+║╚═════════════════════════════════════════════════╝                                                      ║
+╚═════════════════════════════════════════════════════════════════════════════════════════════════════════╝`[1:], // TODO: configuration is not redered right now
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			c := &Connection{
 				DefaultConnection: tt.fields.DefaultConnection,
+				alphaGenerator:    AlphaGenerator{currentAlpha: 'g'},
 				messageCodec:      tt.fields.messageCodec,
 				subscribers:       tt.fields.subscribers,
 				tm:                tt.fields.tm,
@@ -553,7 +573,7 @@ func TestConnection_String(t *testing.T) {
 				driverContext:     tt.fields.driverContext,
 				connectionId:      tt.fields.connectionId,
 				tracer:            tt.fields.tracer,
-				log:               tt.fields.log,
+				log:               testutils.ProduceTestingLogger(t),
 			}
 			assert.Equalf(t, tt.want, c.String(), "String()")
 		})
@@ -569,8 +589,7 @@ func TestConnection_SubscriptionRequestBuilder(t *testing.T) {
 		configuration     Configuration
 		driverContext     DriverContext
 		connectionId      string
-		tracer            *tracer.Tracer
-		log               zerolog.Logger
+		tracer            tracer.Tracer
 	}
 	tests := []struct {
 		name       string
@@ -598,7 +617,7 @@ func TestConnection_SubscriptionRequestBuilder(t *testing.T) {
 				driverContext:     tt.fields.driverContext,
 				connectionId:      tt.fields.connectionId,
 				tracer:            tt.fields.tracer,
-				log:               tt.fields.log,
+				log:               testutils.ProduceTestingLogger(t),
 			}
 			assert.Truef(t, tt.wantAssert(t, c.SubscriptionRequestBuilder()), "SubscriptionRequestBuilder()")
 		})
@@ -614,8 +633,7 @@ func TestConnection_UnsubscriptionRequestBuilder(t *testing.T) {
 		configuration     Configuration
 		driverContext     DriverContext
 		connectionId      string
-		tracer            *tracer.Tracer
-		log               zerolog.Logger
+		tracer            tracer.Tracer
 	}
 	tests := []struct {
 		name   string
@@ -637,7 +655,7 @@ func TestConnection_UnsubscriptionRequestBuilder(t *testing.T) {
 				driverContext:     tt.fields.driverContext,
 				connectionId:      tt.fields.connectionId,
 				tracer:            tt.fields.tracer,
-				log:               tt.fields.log,
+				log:               testutils.ProduceTestingLogger(t),
 			}
 			assert.Equalf(t, tt.want, c.UnsubscriptionRequestBuilder(), "UnsubscriptionRequestBuilder()")
 		})
@@ -653,8 +671,7 @@ func TestConnection_WriteRequestBuilder(t *testing.T) {
 		configuration     Configuration
 		driverContext     DriverContext
 		connectionId      string
-		tracer            *tracer.Tracer
-		log               zerolog.Logger
+		tracer            tracer.Tracer
 	}
 	tests := []struct {
 		name       string
@@ -682,7 +699,7 @@ func TestConnection_WriteRequestBuilder(t *testing.T) {
 				driverContext:     tt.fields.driverContext,
 				connectionId:      tt.fields.connectionId,
 				tracer:            tt.fields.tracer,
-				log:               tt.fields.log,
+				log:               testutils.ProduceTestingLogger(t),
 			}
 			assert.Truef(t, tt.wantAssert(t, c.WriteRequestBuilder()), "WriteRequestBuilder()")
 		})
@@ -698,8 +715,7 @@ func TestConnection_addSubscriber(t *testing.T) {
 		configuration     Configuration
 		driverContext     DriverContext
 		connectionId      string
-		tracer            *tracer.Tracer
-		log               zerolog.Logger
+		tracer            tracer.Tracer
 	}
 	type args struct {
 		subscriber *Subscriber
@@ -738,7 +754,7 @@ func TestConnection_addSubscriber(t *testing.T) {
 				driverContext:     tt.fields.driverContext,
 				connectionId:      tt.fields.connectionId,
 				tracer:            tt.fields.tracer,
-				log:               tt.fields.log,
+				log:               testutils.ProduceTestingLogger(t),
 			}
 			c.addSubscriber(tt.args.subscriber)
 			assert.Truef(t, tt.subElevator(t, c.subscribers), "addSubscriber(%v)", tt.args.subscriber)
@@ -755,8 +771,7 @@ func TestConnection_fireConnected(t *testing.T) {
 		configuration     Configuration
 		driverContext     DriverContext
 		connectionId      string
-		tracer            *tracer.Tracer
-		log               zerolog.Logger
+		tracer            tracer.Tracer
 	}
 	type args struct {
 		ch chan<- plc4go.PlcConnectionConnectResult
@@ -802,7 +817,7 @@ func TestConnection_fireConnected(t *testing.T) {
 				driverContext:     tt.fields.driverContext,
 				connectionId:      tt.fields.connectionId,
 				tracer:            tt.fields.tracer,
-				log:               tt.fields.log,
+				log:               testutils.ProduceTestingLogger(t),
 			}
 			c.fireConnected(tt.args.ch)
 			assert.True(t, tt.chanValidator(t, tt.args.ch))
@@ -819,8 +834,7 @@ func TestConnection_fireConnectionError(t *testing.T) {
 		configuration     Configuration
 		driverContext     DriverContext
 		connectionId      string
-		tracer            *tracer.Tracer
-		log               zerolog.Logger
+		tracer            tracer.Tracer
 	}
 	type args struct {
 		err error
@@ -836,21 +850,15 @@ func TestConnection_fireConnectionError(t *testing.T) {
 		{
 			name: "instant connect",
 			setup: func(t *testing.T, fields *fields, args *args) {
-				// Setup logger
-				logger := testutils.ProduceTestingLogger(t)
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
-				loggerOption := options.WithCustomLogger(logger)
-
-				// Set the model logger to the logger above
-				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
-
-				fields.DefaultConnection = _default.NewDefaultConnection(nil, loggerOption)
-				transport := test.NewTransport(loggerOption)
-				ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, nil, loggerOption)
+				fields.DefaultConnection = _default.NewDefaultConnection(nil, _options...)
+				transport := test.NewTransport(_options...)
+				ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, nil, _options...)
 				require.NoError(t, err)
-				codec := NewMessageCodec(ti, loggerOption)
+				codec := NewMessageCodec(ti, _options...)
 				t.Cleanup(func() {
-					assert.NoError(t, codec.Disconnect())
+					assert.Error(t, codec.Disconnect())
 				})
 				fields.messageCodec = codec
 			},
@@ -866,21 +874,15 @@ func TestConnection_fireConnectionError(t *testing.T) {
 				},
 			},
 			setup: func(t *testing.T, fields *fields, args *args) {
-				// Setup logger
-				logger := testutils.ProduceTestingLogger(t)
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
-				loggerOption := options.WithCustomLogger(logger)
-
-				// Set the model logger to the logger above
-				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
-
-				fields.DefaultConnection = _default.NewDefaultConnection(nil, loggerOption)
-				transport := test.NewTransport(loggerOption)
-				ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, nil, loggerOption)
+				fields.DefaultConnection = _default.NewDefaultConnection(nil, _options...)
+				transport := test.NewTransport(_options...)
+				ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, nil, _options...)
 				require.NoError(t, err)
-				codec := NewMessageCodec(ti, loggerOption)
+				codec := NewMessageCodec(ti, _options...)
 				t.Cleanup(func() {
-					assert.NoError(t, codec.Disconnect())
+					assert.Error(t, codec.Disconnect())
 				})
 				fields.messageCodec = codec
 			},
@@ -905,7 +907,7 @@ func TestConnection_fireConnectionError(t *testing.T) {
 				driverContext:     tt.fields.driverContext,
 				connectionId:      tt.fields.connectionId,
 				tracer:            tt.fields.tracer,
-				log:               tt.fields.log,
+				log:               testutils.ProduceTestingLogger(t),
 			}
 			c.fireConnectionError(tt.args.err, tt.args.ch)
 			assert.True(t, tt.chanValidator(t, tt.args.ch))
@@ -922,8 +924,7 @@ func TestConnection_sendCalDataWrite(t *testing.T) {
 		configuration     Configuration
 		driverContext     DriverContext
 		connectionId      string
-		tracer            *tracer.Tracer
-		log               zerolog.Logger
+		tracer            tracer.Tracer
 	}
 	type args struct {
 		ctx            context.Context
@@ -957,22 +958,15 @@ func TestConnection_sendCalDataWrite(t *testing.T) {
 				}(),
 			},
 			setup: func(t *testing.T, fields *fields) {
-				// Setup logger
-				logger := testutils.ProduceTestingLogger(t)
-				fields.log = logger
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
-				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
-
-				// Custom option for that
-				loggerOption := options.WithCustomLogger(logger)
-
-				fields.DefaultConnection = _default.NewDefaultConnection(nil, loggerOption)
-				transport := test.NewTransport(loggerOption)
-				ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, nil, loggerOption)
+				fields.DefaultConnection = _default.NewDefaultConnection(nil, _options...)
+				transport := test.NewTransport(_options...)
+				ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, nil, _options...)
 				require.NoError(t, err)
-				codec := NewMessageCodec(ti, loggerOption)
+				codec := NewMessageCodec(ti, _options...)
 				t.Cleanup(func() {
-					assert.NoError(t, codec.Disconnect())
+					assert.Error(t, codec.Disconnect())
 				})
 				fields.messageCodec = codec
 			},
@@ -993,7 +987,7 @@ func TestConnection_sendCalDataWrite(t *testing.T) {
 				driverContext:     tt.fields.driverContext,
 				connectionId:      tt.fields.connectionId,
 				tracer:            tt.fields.tracer,
-				log:               tt.fields.log,
+				log:               testutils.ProduceTestingLogger(t),
 			}
 			assert.Equalf(t, tt.want, c.sendCalDataWrite(tt.args.ctx, tt.args.ch, tt.args.paramNo, tt.args.parameterValue, tt.args.requestContext, tt.args.cbusOptions), "sendCalDataWrite(%v, %v, %v, %v, %v, %v)", tt.args.ctx, tt.args.ch, tt.args.paramNo, tt.args.parameterValue, tt.args.requestContext, tt.args.cbusOptions)
 		})
@@ -1009,8 +1003,7 @@ func TestConnection_sendReset(t *testing.T) {
 		configuration     Configuration
 		driverContext     DriverContext
 		connectionId      string
-		tracer            *tracer.Tracer
-		log               zerolog.Logger
+		tracer            tracer.Tracer
 	}
 	type args struct {
 		ctx                      context.Context
@@ -1029,7 +1022,7 @@ func TestConnection_sendReset(t *testing.T) {
 		{
 			name: "send reset",
 			args: args{
-				ctx: context.Background(),
+				ctx: testutils.TestContext(t),
 				ch:  make(chan plc4go.PlcConnectionConnectResult, 1),
 				cbusOptions: func() *readWriteModel.CBusOptions {
 					var cBusOptions readWriteModel.CBusOptions = readWriteModel.NewCBusOptions(false, false, false, false, false, false, false, false, false)
@@ -1042,21 +1035,15 @@ func TestConnection_sendReset(t *testing.T) {
 				sendOutErrorNotification: false,
 			},
 			setup: func(t *testing.T, fields *fields, args *args) {
-				// Setup logger
-				logger := testutils.ProduceTestingLogger(t)
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
-				loggerOption := options.WithCustomLogger(logger)
-
-				// Set the model logger to the logger above
-				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
-
-				fields.DefaultConnection = _default.NewDefaultConnection(nil, loggerOption)
-				transport := test.NewTransport(loggerOption)
-				ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, nil, loggerOption)
+				fields.DefaultConnection = _default.NewDefaultConnection(nil, _options...)
+				transport := test.NewTransport(_options...)
+				ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, nil, _options...)
 				require.NoError(t, err)
-				codec := NewMessageCodec(ti, loggerOption)
+				codec := NewMessageCodec(ti, _options...)
 				t.Cleanup(func() {
-					assert.NoError(t, codec.Disconnect())
+					assert.Error(t, codec.Disconnect())
 				})
 				fields.messageCodec = codec
 			},
@@ -1077,7 +1064,7 @@ func TestConnection_sendReset(t *testing.T) {
 				driverContext:     tt.fields.driverContext,
 				connectionId:      tt.fields.connectionId,
 				tracer:            tt.fields.tracer,
-				log:               tt.fields.log,
+				log:               testutils.ProduceTestingLogger(t),
 			}
 			assert.Equalf(t, tt.wantOk, c.sendReset(tt.args.ctx, tt.args.ch, tt.args.cbusOptions, tt.args.requestContext, tt.args.sendOutErrorNotification), "sendReset(%v, %v, %v, %v, %v)", tt.args.ctx, tt.args.ch, tt.args.cbusOptions, tt.args.requestContext, tt.args.sendOutErrorNotification)
 		})
@@ -1093,8 +1080,7 @@ func TestConnection_setApplicationFilter(t *testing.T) {
 		configuration     Configuration
 		driverContext     DriverContext
 		connectionId      string
-		tracer            *tracer.Tracer
-		log               zerolog.Logger
+		tracer            tracer.Tracer
 	}
 	type args struct {
 		ctx            context.Context
@@ -1112,7 +1098,7 @@ func TestConnection_setApplicationFilter(t *testing.T) {
 		{
 			name: "set application filter (failing)",
 			args: args{
-				ctx: context.Background(),
+				ctx: testutils.TestContext(t),
 				ch:  make(chan plc4go.PlcConnectionConnectResult, 1),
 				cbusOptions: func() *readWriteModel.CBusOptions {
 					var cBusOptions readWriteModel.CBusOptions = readWriteModel.NewCBusOptions(false, false, false, false, false, false, false, false, false)
@@ -1124,23 +1110,16 @@ func TestConnection_setApplicationFilter(t *testing.T) {
 				}(),
 			},
 			setup: func(t *testing.T, fields *fields) {
-				// Setup logger
-				logger := testutils.ProduceTestingLogger(t)
-				fields.log = logger
-
-				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
-
-				// Custom option for that
-				loggerOption := options.WithCustomLogger(logger)
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
 				// Setup connection
-				fields.DefaultConnection = _default.NewDefaultConnection(nil, loggerOption)
-				transport := test.NewTransport(loggerOption)
-				ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, nil, loggerOption)
+				fields.DefaultConnection = _default.NewDefaultConnection(nil, _options...)
+				transport := test.NewTransport(_options...)
+				ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, nil, _options...)
 				require.NoError(t, err)
-				codec := NewMessageCodec(ti, loggerOption)
+				codec := NewMessageCodec(ti, _options...)
 				t.Cleanup(func() {
-					assert.NoError(t, codec.Disconnect())
+					assert.Error(t, codec.Disconnect())
 				})
 				fields.messageCodec = codec
 			},
@@ -1161,7 +1140,7 @@ func TestConnection_setApplicationFilter(t *testing.T) {
 				driverContext:     tt.fields.driverContext,
 				connectionId:      tt.fields.connectionId,
 				tracer:            tt.fields.tracer,
-				log:               tt.fields.log,
+				log:               testutils.ProduceTestingLogger(t),
 			}
 			assert.Equalf(t, tt.wantOk, c.setApplicationFilter(tt.args.ctx, tt.args.ch, tt.args.requestContext, tt.args.cbusOptions), "setApplicationFilter(%v, %v, %v, %v)", tt.args.ctx, tt.args.ch, tt.args.requestContext, tt.args.cbusOptions)
 		})
@@ -1177,8 +1156,7 @@ func TestConnection_setInterface1PowerUpSettings(t *testing.T) {
 		configuration     Configuration
 		driverContext     DriverContext
 		connectionId      string
-		tracer            *tracer.Tracer
-		log               zerolog.Logger
+		tracer            tracer.Tracer
 	}
 	type args struct {
 		ctx            context.Context
@@ -1196,7 +1174,7 @@ func TestConnection_setInterface1PowerUpSettings(t *testing.T) {
 		{
 			name: "set interface 1 PUN options (failing)",
 			args: args{
-				ctx: context.Background(),
+				ctx: testutils.TestContext(t),
 				ch:  make(chan plc4go.PlcConnectionConnectResult, 1),
 				cbusOptions: func() *readWriteModel.CBusOptions {
 					var cBusOptions readWriteModel.CBusOptions = readWriteModel.NewCBusOptions(false, false, false, false, false, false, false, false, false)
@@ -1208,23 +1186,16 @@ func TestConnection_setInterface1PowerUpSettings(t *testing.T) {
 				}(),
 			},
 			setup: func(t *testing.T, fields *fields, args *args) {
-				// Setup logger
-				logger := testutils.ProduceTestingLogger(t)
-				fields.log = logger
-
-				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
-
-				// Custom option for that
-				loggerOption := options.WithCustomLogger(logger)
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
 				// Setup connection
-				fields.DefaultConnection = _default.NewDefaultConnection(nil, loggerOption)
-				transport := test.NewTransport(loggerOption)
-				ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, nil, loggerOption)
+				fields.DefaultConnection = _default.NewDefaultConnection(nil, _options...)
+				transport := test.NewTransport(_options...)
+				ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, nil, _options...)
 				require.NoError(t, err)
-				codec := NewMessageCodec(ti, loggerOption)
+				codec := NewMessageCodec(ti, _options...)
 				t.Cleanup(func() {
-					assert.NoError(t, codec.Disconnect())
+					assert.Error(t, codec.Disconnect())
 				})
 				fields.messageCodec = codec
 			},
@@ -1245,7 +1216,7 @@ func TestConnection_setInterface1PowerUpSettings(t *testing.T) {
 				driverContext:     tt.fields.driverContext,
 				connectionId:      tt.fields.connectionId,
 				tracer:            tt.fields.tracer,
-				log:               tt.fields.log,
+				log:               testutils.ProduceTestingLogger(t),
 			}
 			assert.Equalf(t, tt.wantOk, c.setInterface1PowerUpSettings(tt.args.ctx, tt.args.ch, tt.args.requestContext, tt.args.cbusOptions), "setInterface1PowerUpSettings(%v, %v, %v, %v)", tt.args.ctx, tt.args.ch, tt.args.requestContext, tt.args.cbusOptions)
 		})
@@ -1261,8 +1232,7 @@ func TestConnection_setInterfaceOptions1(t *testing.T) {
 		configuration     Configuration
 		driverContext     DriverContext
 		connectionId      string
-		tracer            *tracer.Tracer
-		log               zerolog.Logger
+		tracer            tracer.Tracer
 	}
 	type args struct {
 		ctx            context.Context
@@ -1280,7 +1250,7 @@ func TestConnection_setInterfaceOptions1(t *testing.T) {
 		{
 			name: "set interface 1 options (failing)",
 			args: args{
-				ctx: context.Background(),
+				ctx: testutils.TestContext(t),
 				ch:  make(chan plc4go.PlcConnectionConnectResult, 1),
 				cbusOptions: func() *readWriteModel.CBusOptions {
 					var cBusOptions readWriteModel.CBusOptions = readWriteModel.NewCBusOptions(false, false, false, false, false, false, false, false, false)
@@ -1292,23 +1262,16 @@ func TestConnection_setInterfaceOptions1(t *testing.T) {
 				}(),
 			},
 			setup: func(t *testing.T, fields *fields) {
-				// Setup logger
-				logger := testutils.ProduceTestingLogger(t)
-				fields.log = logger
-
-				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
-
-				// Custom option for that
-				loggerOption := options.WithCustomLogger(logger)
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
 				// Setup connection
-				fields.DefaultConnection = _default.NewDefaultConnection(nil, loggerOption)
-				transport := test.NewTransport(loggerOption)
-				ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, nil, loggerOption)
+				fields.DefaultConnection = _default.NewDefaultConnection(nil, _options...)
+				transport := test.NewTransport(_options...)
+				ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, nil, _options...)
 				require.NoError(t, err)
-				codec := NewMessageCodec(ti, loggerOption)
+				codec := NewMessageCodec(ti, _options...)
 				t.Cleanup(func() {
-					assert.NoError(t, codec.Disconnect())
+					assert.Error(t, codec.Disconnect())
 				})
 				fields.messageCodec = codec
 			},
@@ -1329,7 +1292,7 @@ func TestConnection_setInterfaceOptions1(t *testing.T) {
 				driverContext:     tt.fields.driverContext,
 				connectionId:      tt.fields.connectionId,
 				tracer:            tt.fields.tracer,
-				log:               tt.fields.log,
+				log:               testutils.ProduceTestingLogger(t),
 			}
 			assert.Equalf(t, tt.want, c.setInterfaceOptions1(tt.args.ctx, tt.args.ch, tt.args.requestContext, tt.args.cbusOptions), "setInterfaceOptions1(%v, %v, %v, %v)", tt.args.ctx, tt.args.ch, tt.args.requestContext, tt.args.cbusOptions)
 		})
@@ -1345,8 +1308,7 @@ func TestConnection_setInterfaceOptions3(t *testing.T) {
 		configuration     Configuration
 		driverContext     DriverContext
 		connectionId      string
-		tracer            *tracer.Tracer
-		log               zerolog.Logger
+		tracer            tracer.Tracer
 	}
 	type args struct {
 		ctx            context.Context
@@ -1364,7 +1326,7 @@ func TestConnection_setInterfaceOptions3(t *testing.T) {
 		{
 			name: "set interface 3 options (failing)",
 			args: args{
-				ctx: context.Background(),
+				ctx: testutils.TestContext(t),
 				ch:  make(chan plc4go.PlcConnectionConnectResult, 1),
 				cbusOptions: func() *readWriteModel.CBusOptions {
 					var cBusOptions readWriteModel.CBusOptions = readWriteModel.NewCBusOptions(false, false, false, false, false, false, false, false, false)
@@ -1376,23 +1338,16 @@ func TestConnection_setInterfaceOptions3(t *testing.T) {
 				}(),
 			},
 			setup: func(t *testing.T, fields *fields) {
-				// Setup logger
-				logger := testutils.ProduceTestingLogger(t)
-				fields.log = logger
-
-				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
-
-				// Custom option for that
-				loggerOption := options.WithCustomLogger(logger)
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
 				// Setup connection
-				fields.DefaultConnection = _default.NewDefaultConnection(nil, loggerOption)
-				transport := test.NewTransport(loggerOption)
-				ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, nil, loggerOption)
+				fields.DefaultConnection = _default.NewDefaultConnection(nil, _options...)
+				transport := test.NewTransport(_options...)
+				ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, nil, _options...)
 				require.NoError(t, err)
-				codec := NewMessageCodec(ti, loggerOption)
+				codec := NewMessageCodec(ti, _options...)
 				t.Cleanup(func() {
-					assert.NoError(t, codec.Disconnect())
+					assert.Error(t, codec.Disconnect())
 				})
 				fields.messageCodec = codec
 			},
@@ -1413,7 +1368,7 @@ func TestConnection_setInterfaceOptions3(t *testing.T) {
 				driverContext:     tt.fields.driverContext,
 				connectionId:      tt.fields.connectionId,
 				tracer:            tt.fields.tracer,
-				log:               tt.fields.log,
+				log:               testutils.ProduceTestingLogger(t),
 			}
 			assert.Equalf(t, tt.wantOk, c.setInterfaceOptions3(tt.args.ctx, tt.args.ch, tt.args.requestContext, tt.args.cbusOptions), "setInterfaceOptions3(%v, %v, %v, %v)", tt.args.ctx, tt.args.ch, tt.args.requestContext, tt.args.cbusOptions)
 		})
@@ -1429,8 +1384,7 @@ func TestConnection_setupConnection(t *testing.T) {
 		configuration     Configuration
 		driverContext     DriverContext
 		connectionId      string
-		tracer            *tracer.Tracer
-		log               zerolog.Logger
+		tracer            tracer.Tracer
 	}
 	type args struct {
 		ctx context.Context
@@ -1445,27 +1399,20 @@ func TestConnection_setupConnection(t *testing.T) {
 		{
 			name: "setup connection (failing)",
 			args: args{
-				ctx: context.Background(),
+				ctx: testutils.TestContext(t),
 				ch:  make(chan plc4go.PlcConnectionConnectResult, 1),
 			},
 			setup: func(t *testing.T, fields *fields) {
-				// Setup logger
-				logger := testutils.ProduceTestingLogger(t)
-				fields.log = logger
-
-				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
-
-				// Custom option for that
-				loggerOption := options.WithCustomLogger(logger)
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
 				// Setup connection
-				fields.DefaultConnection = _default.NewDefaultConnection(nil, loggerOption)
-				transport := test.NewTransport(loggerOption)
-				ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, nil, loggerOption)
+				fields.DefaultConnection = _default.NewDefaultConnection(nil, _options...)
+				transport := test.NewTransport(_options...)
+				ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, nil, _options...)
 				require.NoError(t, err)
-				codec := NewMessageCodec(ti, loggerOption)
+				codec := NewMessageCodec(ti, _options...)
 				t.Cleanup(func() {
-					assert.NoError(t, codec.Disconnect())
+					assert.Error(t, codec.Disconnect())
 				})
 				fields.messageCodec = codec
 			},
@@ -1473,26 +1420,19 @@ func TestConnection_setupConnection(t *testing.T) {
 		{
 			name: "setup connection (failing after reset)",
 			args: args{
-				ctx: context.Background(),
+				ctx: testutils.TestContext(t),
 				ch:  make(chan plc4go.PlcConnectionConnectResult, 1),
 			},
 			setup: func(t *testing.T, fields *fields) {
-				// Setup logger
-				logger := testutils.ProduceTestingLogger(t)
-				fields.log = logger
-
-				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
-
-				// Custom option for that
-				loggerOption := options.WithCustomLogger(logger)
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
 				// Build the default connection
-				fields.DefaultConnection = _default.NewDefaultConnection(nil, loggerOption)
+				fields.DefaultConnection = _default.NewDefaultConnection(nil, _options...)
 
 				// Build the message codec
-				transport := test.NewTransport(loggerOption)
+				transport := test.NewTransport(_options...)
 				transportUrl := url.URL{Scheme: "test"}
-				ti, err := transport.CreateTransportInstance(transportUrl, nil, loggerOption)
+				ti, err := transport.CreateTransportInstance(transportUrl, nil, _options...)
 				require.NoError(t, err)
 				type MockState uint8
 				const (
@@ -1501,7 +1441,10 @@ func TestConnection_setupConnection(t *testing.T) {
 				)
 				currentState := atomic.Value{}
 				currentState.Store(RESET)
+				stateChangeMutex := sync.Mutex{}
 				ti.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
+					stateChangeMutex.Lock()
+					defer stateChangeMutex.Unlock()
 					switch currentState.Load().(MockState) {
 					case RESET:
 						t.Log("Dispatching reset echo")
@@ -1511,11 +1454,10 @@ func TestConnection_setupConnection(t *testing.T) {
 						t.Log("Done")
 					}
 				})
-				codec := NewMessageCodec(ti, loggerOption)
-				err = codec.Connect()
-				require.NoError(t, err)
+				codec := NewMessageCodec(ti, _options...)
+				require.NoError(t, codec.Connect())
 				t.Cleanup(func() {
-					assert.NoError(t, codec.Disconnect())
+					assert.Error(t, codec.Disconnect())
 				})
 
 				fields.messageCodec = codec
@@ -1524,26 +1466,19 @@ func TestConnection_setupConnection(t *testing.T) {
 		{
 			name: "setup connection (failing after app filters)",
 			args: args{
-				ctx: context.Background(),
+				ctx: testutils.TestContext(t),
 				ch:  make(chan plc4go.PlcConnectionConnectResult, 1),
 			},
 			setup: func(t *testing.T, fields *fields) {
-				// Setup logger
-				logger := testutils.ProduceTestingLogger(t)
-				fields.log = logger
-
-				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
-
-				// Custom option for that
-				loggerOption := options.WithCustomLogger(logger)
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
 				// Build the default connection
-				fields.DefaultConnection = _default.NewDefaultConnection(nil, loggerOption)
+				fields.DefaultConnection = _default.NewDefaultConnection(nil, _options...)
 
 				// Build the message codec
-				transport := test.NewTransport(loggerOption)
+				transport := test.NewTransport(_options...)
 				transportUrl := url.URL{Scheme: "test"}
-				ti, err := transport.CreateTransportInstance(transportUrl, nil, loggerOption)
+				ti, err := transport.CreateTransportInstance(transportUrl, nil, _options...)
 				require.NoError(t, err)
 				type MockState uint8
 				const (
@@ -1554,7 +1489,10 @@ func TestConnection_setupConnection(t *testing.T) {
 				)
 				currentState := atomic.Value{}
 				currentState.Store(RESET)
+				stateChangeMutex := sync.Mutex{}
 				ti.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
+					stateChangeMutex.Lock()
+					defer stateChangeMutex.Unlock()
 					switch currentState.Load().(MockState) {
 					case RESET:
 						t.Log("Dispatching reset echo")
@@ -1574,11 +1512,10 @@ func TestConnection_setupConnection(t *testing.T) {
 						t.Log("Done")
 					}
 				})
-				codec := NewMessageCodec(ti, loggerOption)
-				err = codec.Connect()
-				require.NoError(t, err)
+				codec := NewMessageCodec(ti, _options...)
+				require.NoError(t, codec.Connect())
 				t.Cleanup(func() {
-					assert.NoError(t, codec.Disconnect())
+					assert.Error(t, codec.Disconnect())
 				})
 
 				fields.messageCodec = codec
@@ -1587,26 +1524,19 @@ func TestConnection_setupConnection(t *testing.T) {
 		{
 			name: "setup connection (failing after interface options 3",
 			args: args{
-				ctx: context.Background(),
+				ctx: testutils.TestContext(t),
 				ch:  make(chan plc4go.PlcConnectionConnectResult, 1),
 			},
 			setup: func(t *testing.T, fields *fields) {
-				// Setup logger
-				logger := testutils.ProduceTestingLogger(t)
-				fields.log = logger
-
-				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
-
-				// Custom option for that
-				loggerOption := options.WithCustomLogger(logger)
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
 				// Build the default connection
-				fields.DefaultConnection = _default.NewDefaultConnection(nil, loggerOption)
+				fields.DefaultConnection = _default.NewDefaultConnection(nil, _options...)
 
 				// Build the message codec
-				transport := test.NewTransport(loggerOption)
+				transport := test.NewTransport(_options...)
 				transportUrl := url.URL{Scheme: "test"}
-				ti, err := transport.CreateTransportInstance(transportUrl, nil, loggerOption)
+				ti, err := transport.CreateTransportInstance(transportUrl, nil, _options...)
 				require.NoError(t, err)
 				type MockState uint8
 				const (
@@ -1618,7 +1548,10 @@ func TestConnection_setupConnection(t *testing.T) {
 				)
 				currentState := atomic.Value{}
 				currentState.Store(RESET)
+				stateChangeMutex := sync.Mutex{}
 				ti.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
+					stateChangeMutex.Lock()
+					defer stateChangeMutex.Unlock()
 					switch currentState.Load().(MockState) {
 					case RESET:
 						t.Log("Dispatching reset echo")
@@ -1643,11 +1576,10 @@ func TestConnection_setupConnection(t *testing.T) {
 						t.Log("Done")
 					}
 				})
-				codec := NewMessageCodec(ti, loggerOption)
-				err = codec.Connect()
-				require.NoError(t, err)
+				codec := NewMessageCodec(ti, _options...)
+				require.NoError(t, codec.Connect())
 				t.Cleanup(func() {
-					assert.NoError(t, codec.Disconnect())
+					assert.Error(t, codec.Disconnect())
 				})
 
 				fields.messageCodec = codec
@@ -1656,26 +1588,19 @@ func TestConnection_setupConnection(t *testing.T) {
 		{
 			name: "setup connection (failing after interface options 1 pun)",
 			args: args{
-				ctx: context.Background(),
+				ctx: testutils.TestContext(t),
 				ch:  make(chan plc4go.PlcConnectionConnectResult, 1),
 			},
 			setup: func(t *testing.T, fields *fields) {
-				// Setup logger
-				logger := testutils.ProduceTestingLogger(t)
-				fields.log = logger
-
-				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
-
-				// Custom option for that
-				loggerOption := options.WithCustomLogger(logger)
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
 				// Build the default connection
-				fields.DefaultConnection = _default.NewDefaultConnection(nil, loggerOption)
+				fields.DefaultConnection = _default.NewDefaultConnection(nil, _options...)
 
 				// Build the message codec
-				transport := test.NewTransport(loggerOption)
+				transport := test.NewTransport(_options...)
 				transportUrl := url.URL{Scheme: "test"}
-				ti, err := transport.CreateTransportInstance(transportUrl, nil, loggerOption)
+				ti, err := transport.CreateTransportInstance(transportUrl, nil, _options...)
 				require.NoError(t, err)
 				type MockState uint8
 				const (
@@ -1688,7 +1613,10 @@ func TestConnection_setupConnection(t *testing.T) {
 				)
 				currentState := atomic.Value{}
 				currentState.Store(RESET)
+				stateChangeMutex := sync.Mutex{}
 				ti.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
+					stateChangeMutex.Lock()
+					defer stateChangeMutex.Unlock()
 					switch currentState.Load().(MockState) {
 					case RESET:
 						t.Log("Dispatching reset echo")
@@ -1718,11 +1646,10 @@ func TestConnection_setupConnection(t *testing.T) {
 						t.Log("Done")
 					}
 				})
-				codec := NewMessageCodec(ti, loggerOption)
-				err = codec.Connect()
-				require.NoError(t, err)
+				codec := NewMessageCodec(ti, _options...)
+				require.NoError(t, codec.Connect())
 				t.Cleanup(func() {
-					assert.NoError(t, codec.Disconnect())
+					assert.Error(t, codec.Disconnect())
 				})
 
 				fields.messageCodec = codec
@@ -1732,105 +1659,74 @@ func TestConnection_setupConnection(t *testing.T) {
 			name: "setup connection",
 			fields: fields{
 				DefaultConnection: _default.NewDefaultConnection(nil),
-				messageCodec: func() *MessageCodec {
-					// Setup logger
-					logger := testutils.ProduceTestingLogger(t)
-
-					testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
-
-					// Custom option for that
-					loggerOption := options.WithCustomLogger(logger)
-
-					transport := test.NewTransport()
-					transportUrl := url.URL{Scheme: "test"}
-					ti, err := transport.CreateTransportInstance(transportUrl, nil, loggerOption)
-					if err != nil {
-						t.Error(err)
-						t.FailNow()
-						return nil
-					}
-					type MockState uint8
-					const (
-						RESET MockState = iota
-						APPLICATION_FILTER_1
-						APPLICATION_FILTER_2
-						INTERFACE_OPTIONS_3
-						INTERFACE_OPTIONS_1_PUN
-						INTERFACE_OPTIONS_1
-						DONE
-					)
-					currentState := atomic.Value{}
-					currentState.Store(RESET)
-					ti.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
-						switch currentState.Load().(MockState) {
-						case RESET:
-							t.Log("Dispatching reset echo")
-							transportInstance.FillReadBuffer([]byte("~~~\r"))
-							currentState.Store(APPLICATION_FILTER_1)
-						case APPLICATION_FILTER_1:
-							t.Log("Dispatching app1 echo and confirm")
-							transportInstance.FillReadBuffer([]byte("@A32100FF\r"))
-							transportInstance.FillReadBuffer([]byte("322100AD\r\n"))
-							currentState.Store(APPLICATION_FILTER_2)
-						case APPLICATION_FILTER_2:
-							t.Log("Dispatching app2 echo and confirm")
-							transportInstance.FillReadBuffer([]byte("@A32200FF\r"))
-							transportInstance.FillReadBuffer([]byte("322200AC\r\n"))
-							currentState.Store(INTERFACE_OPTIONS_3)
-						case INTERFACE_OPTIONS_3:
-							t.Log("Dispatching interface 3 echo and confirm")
-							transportInstance.FillReadBuffer([]byte("@A342000A\r"))
-							transportInstance.FillReadBuffer([]byte("3242008C\r\n"))
-							currentState.Store(INTERFACE_OPTIONS_1_PUN)
-						case INTERFACE_OPTIONS_1_PUN:
-							t.Log("Dispatching interface 1 PUN echo and confirm???")
-							transportInstance.FillReadBuffer([]byte("@A3410079\r"))
-							transportInstance.FillReadBuffer([]byte("3241008D\r\n"))
-							currentState.Store(INTERFACE_OPTIONS_1)
-						case INTERFACE_OPTIONS_1:
-							t.Log("Dispatching interface 1 echo and confirm???")
-							transportInstance.FillReadBuffer([]byte("@A3300079\r"))
-							transportInstance.FillReadBuffer([]byte("3230009E\r\n"))
-							currentState.Store(DONE)
-						case DONE:
-							t.Log("Done")
-						}
-					})
-					codec := NewMessageCodec(ti, loggerOption)
-					if err = codec.Connect(); err != nil {
-						t.Error(err)
-						t.FailNow()
-						return nil
-					}
-					t.Cleanup(func() {
-						assert.NoError(t, codec.Disconnect())
-					})
-
-					return codec
-				}(),
 			},
 			args: args{
-				ctx: context.Background(),
+				ctx: testutils.TestContext(t),
 				ch:  make(chan plc4go.PlcConnectionConnectResult, 1),
 			},
 			setup: func(t *testing.T, fields *fields) {
-				// Setup logger
-				logger := testutils.ProduceTestingLogger(t)
-				fields.log = logger
-
-				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
-
-				// Custom option for that
-				loggerOption := options.WithCustomLogger(logger)
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
 				// Build the default connection
-				fields.DefaultConnection = _default.NewDefaultConnection(nil, loggerOption)
+				fields.DefaultConnection = _default.NewDefaultConnection(nil, _options...)
 
 				// Build the message codec
-				transport := test.NewTransport(loggerOption)
-				ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, nil, loggerOption)
+				transport := test.NewTransport(_options...)
+				ti, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, nil, _options...)
+
+				type MockState uint8
+				const (
+					RESET MockState = iota
+					APPLICATION_FILTER_1
+					APPLICATION_FILTER_2
+					INTERFACE_OPTIONS_3
+					INTERFACE_OPTIONS_1_PUN
+					INTERFACE_OPTIONS_1
+					DONE
+				)
+				currentState := atomic.Value{}
+				currentState.Store(RESET)
+				stateChangeMutex := sync.Mutex{}
+				ti.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
+					stateChangeMutex.Lock()
+					defer stateChangeMutex.Unlock()
+					switch currentState.Load().(MockState) {
+					case RESET:
+						t.Log("Dispatching reset echo")
+						transportInstance.FillReadBuffer([]byte("~~~\r"))
+						currentState.Store(APPLICATION_FILTER_1)
+					case APPLICATION_FILTER_1:
+						t.Log("Dispatching app1 echo and confirm")
+						transportInstance.FillReadBuffer([]byte("@A32100FF\r"))
+						transportInstance.FillReadBuffer([]byte("322100AD\r\n"))
+						currentState.Store(APPLICATION_FILTER_2)
+					case APPLICATION_FILTER_2:
+						t.Log("Dispatching app2 echo and confirm")
+						transportInstance.FillReadBuffer([]byte("@A32200FF\r"))
+						transportInstance.FillReadBuffer([]byte("322200AC\r\n"))
+						currentState.Store(INTERFACE_OPTIONS_3)
+					case INTERFACE_OPTIONS_3:
+						t.Log("Dispatching interface 3 echo and confirm")
+						transportInstance.FillReadBuffer([]byte("@A342000A\r"))
+						transportInstance.FillReadBuffer([]byte("3242008C\r\n"))
+						currentState.Store(INTERFACE_OPTIONS_1_PUN)
+					case INTERFACE_OPTIONS_1_PUN:
+						t.Log("Dispatching interface 1 PUN echo and confirm???")
+						transportInstance.FillReadBuffer([]byte("@A3410079\r"))
+						transportInstance.FillReadBuffer([]byte("3241008D\r\n"))
+						currentState.Store(INTERFACE_OPTIONS_1)
+					case INTERFACE_OPTIONS_1:
+						t.Log("Dispatching interface 1 echo and confirm???")
+						transportInstance.FillReadBuffer([]byte("@A3300079\r"))
+						transportInstance.FillReadBuffer([]byte("3230009E\r\n"))
+						currentState.Store(DONE)
+					case DONE:
+						t.Log("Done")
+					}
+				})
 				require.NoError(t, err)
-				codec := NewMessageCodec(ti, loggerOption)
+				codec := NewMessageCodec(ti, _options...)
+				require.NoError(t, codec.Connect())
 				t.Cleanup(func() {
 					assert.NoError(t, codec.Disconnect())
 				})
@@ -1852,7 +1748,7 @@ func TestConnection_setupConnection(t *testing.T) {
 				driverContext:     tt.fields.driverContext,
 				connectionId:      tt.fields.connectionId,
 				tracer:            tt.fields.tracer,
-				log:               tt.fields.log,
+				log:               testutils.ProduceTestingLogger(t),
 			}
 			c.setupConnection(tt.args.ctx, tt.args.ch)
 		})
@@ -1868,71 +1764,29 @@ func TestConnection_startSubscriptionHandler(t *testing.T) {
 		configuration     Configuration
 		driverContext     DriverContext
 		connectionId      string
-		tracer            *tracer.Tracer
-		log               zerolog.Logger
+		tracer            tracer.Tracer
 	}
 	tests := []struct {
-		name   string
-		fields fields
-		setup  func(t *testing.T, fields *fields)
+		name        string
+		fields      fields
+		setup       func(t *testing.T, fields *fields)
+		manipulator func(t *testing.T, connection *Connection)
 	}{
 		{
 			name: "just start",
-			setup: func(t *testing.T, fields *fields) {
-				// Setup logger
-				logger := testutils.ProduceTestingLogger(t)
-				fields.log = logger
-				loggerOption := options.WithCustomLogger(logger)
-
-				// Set the model logger to the logger above
-				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
-
-				fields.DefaultConnection = _default.NewDefaultConnection(nil, loggerOption)
+			manipulator: func(t *testing.T, connection *Connection) {
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
+				connection.DefaultConnection = _default.NewDefaultConnection(connection, _options...)
 			},
 		},
 		{
 			name: "just start and feed (no subs)",
 			setup: func(t *testing.T, fields *fields) {
-				// Setup logger
-				logger := testutils.ProduceTestingLogger(t)
-				fields.log = logger
-				loggerOption := options.WithCustomLogger(logger)
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
-				// Set the model logger to the logger above
-				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
-
-				defaultConnection := _default.NewDefaultConnection(nil, loggerOption)
-				defaultConnection.SetConnected(true)
-				fields.DefaultConnection = defaultConnection
-
-				codec := NewMessageCodec(nil, loggerOption)
-				go func() {
-					codec.monitoredMMIs <- nil
-					codec.monitoredSALs <- nil
-				}()
-				t.Cleanup(func() {
-					assert.NoError(t, codec.Disconnect())
-				})
-				fields.messageCodec = codec
-			},
-		},
-		{
-			name: "just start and feed",
-			setup: func(t *testing.T, fields *fields) {
-				// Setup logger
-				logger := testutils.ProduceTestingLogger(t)
-				fields.log = logger
-				loggerOption := options.WithCustomLogger(logger)
-
-				// Set the model logger to the logger above
-				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
-
-				defaultConnection := _default.NewDefaultConnection(nil, loggerOption)
-				defaultConnection.SetConnected(true)
-				fields.DefaultConnection = defaultConnection
-
-				fields.subscribers = []*Subscriber{NewSubscriber(nil, options.WithCustomLogger(testutils.ProduceTestingLogger(t)))}
-				codec := NewMessageCodec(nil, loggerOption)
+				codec := NewMessageCodec(nil, _options...)
+				codec.monitoredMMIs = make(chan readWriteModel.CALReply, 1)
+				codec.monitoredSALs = make(chan readWriteModel.MonitoredSAL, 1)
 				go func() {
 					codec.monitoredMMIs <- readWriteModel.NewCALReplyShort(0, nil, nil, nil)
 					codec.monitoredSALs <- readWriteModel.NewMonitoredSAL(0, nil)
@@ -1941,6 +1795,40 @@ func TestConnection_startSubscriptionHandler(t *testing.T) {
 					assert.NoError(t, codec.Disconnect())
 				})
 				fields.messageCodec = codec
+			},
+			manipulator: func(t *testing.T, connection *Connection) {
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
+				defaultConnection := _default.NewDefaultConnection(connection, _options...)
+				defaultConnection.SetConnected(true)
+				connection.DefaultConnection = defaultConnection
+			},
+		},
+		{
+			name: "just start and feed",
+			setup: func(t *testing.T, fields *fields) {
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
+
+				fields.subscribers = []*Subscriber{NewSubscriber(nil, options.WithCustomLogger(testutils.ProduceTestingLogger(t)))}
+				codec := NewMessageCodec(nil, _options...)
+				written := make(chan struct{})
+				go func() {
+					codec.monitoredMMIs <- readWriteModel.NewCALReplyShort(0, nil, nil, nil)
+					codec.monitoredSALs <- readWriteModel.NewMonitoredSAL(0, nil)
+					close(written)
+				}()
+				t.Cleanup(func() {
+					<-written
+				})
+				t.Cleanup(func() {
+					assert.NoError(t, codec.Disconnect())
+				})
+				fields.messageCodec = codec
+			},
+			manipulator: func(t *testing.T, connection *Connection) {
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
+				defaultConnection := _default.NewDefaultConnection(connection, _options...)
+				defaultConnection.SetConnected(true)
+				connection.DefaultConnection = defaultConnection
 			},
 		},
 	}
@@ -1955,10 +1843,12 @@ func TestConnection_startSubscriptionHandler(t *testing.T) {
 				driverContext:     tt.fields.driverContext,
 				connectionId:      tt.fields.connectionId,
 				tracer:            tt.fields.tracer,
-				log:               tt.fields.log,
+				log:               testutils.ProduceTestingLogger(t),
+			}
+			if tt.manipulator != nil {
+				tt.manipulator(t, c)
 			}
 			c.startSubscriptionHandler()
-			time.Sleep(50 * time.Millisecond)
 		})
 	}
 }
@@ -1981,16 +1871,12 @@ func TestNewConnection(t *testing.T) {
 		{
 			name: "just create the connection",
 			setup: func(t *testing.T, args *args) {
-				// Setup logger
-				logger := testutils.ProduceTestingLogger(t)
-				loggerOption := options.WithCustomLogger(logger)
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
-				// Set the model logger to the logger above
-				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
-
-				codec := NewMessageCodec(nil, loggerOption)
+				transport := test.NewTransport(_options...)
+				codec := NewMessageCodec(test.NewTransportInstance(transport, _options...), _options...)
 				t.Cleanup(func() {
-					assert.NoError(t, codec.Disconnect())
+					assert.Error(t, codec.Disconnect())
 				})
 				args.messageCodec = codec
 			},

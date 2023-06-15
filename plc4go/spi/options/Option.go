@@ -19,7 +19,10 @@
 
 package options
 
-import "github.com/rs/zerolog"
+import (
+	"context"
+	"github.com/rs/zerolog"
+)
 
 // WithOption is a marker interface for options supplied by the builders like WithDefaultTtl
 type WithOption interface {
@@ -51,6 +54,39 @@ func ExtractCustomLogger(options ...WithOption) (customLogger zerolog.Logger) {
 	return
 }
 
+// WithPassLoggerToModel enables passing of log to the model
+func WithPassLoggerToModel(passLogger bool) WithOption {
+	return withPassLoggerToModel{passLogger: passLogger}
+}
+
+// ExtractPassLoggerToModel to extract the flag indicating that model should be passed to Model
+func ExtractPassLoggerToModel(options ...WithOption) bool {
+	for _, option := range options {
+		switch option := option.(type) {
+		case withPassLoggerToModel:
+			return option.passLogger
+		}
+	}
+	return false
+}
+
+// GetLoggerContextForModel returns a log context if the WithPassLoggerToModel WithOption is set
+func GetLoggerContextForModel(ctx context.Context, log zerolog.Logger, options ...WithOption) context.Context {
+	passToModel := false
+optionsSearch:
+	for _, option := range options {
+		switch option := option.(type) {
+		case withPassLoggerToModel:
+			passToModel = option.passLogger
+			break optionsSearch
+		}
+	}
+	if passToModel {
+		return log.WithContext(ctx)
+	}
+	return ctx
+}
+
 ///////////////////////////////////////
 ///////////////////////////////////////
 //
@@ -60,6 +96,11 @@ func ExtractCustomLogger(options ...WithOption) (customLogger zerolog.Logger) {
 type withCustomLogger struct {
 	Option
 	logger zerolog.Logger
+}
+
+type withPassLoggerToModel struct {
+	Option
+	passLogger bool
 }
 
 //

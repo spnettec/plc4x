@@ -21,6 +21,8 @@ package tracer
 
 import (
 	"fmt"
+	"sync"
+	"sync/atomic"
 	"time"
 
 	"github.com/apache/plc4x/plc4go/spi/options"
@@ -42,52 +44,73 @@ type Provider interface {
 	GetTracer() *Tracer
 }
 
-type Tracer struct {
-	connectionId string
+type Tracer interface {
+	GetConnectionId() string
+	SetConnectionId(connectionId string)
+	ResetTraces()
+	GetTraces() []TraceEntry
+	AddTrace(operation string, message string)
+	AddTransactionalStartTrace(operation string, message string) string
+	AddTransactionalTrace(transactionId string, operation string, message string)
+	FilterTraces(traces []TraceEntry, connectionIdFilter string, transactionIdFilter string, operationFilter string, messageFilter string) []TraceEntry
+}
+
+func NewTracer(connectionId string, _options ...options.WithOption) Tracer {
+	t := tracer{
+		traceEntries: []TraceEntry{},
+		log:          options.ExtractCustomLogger(_options...),
+	}
+	t.connectionId.Store(connectionId)
+	return &t
+}
+
+type tracer struct {
+	connectionId atomic.Value
 	traceEntries []TraceEntry
+	m            sync.Mutex
 
 	log zerolog.Logger
 }
 
-func NewTracer(connectionId string, _options ...options.WithOption) *Tracer {
-	return &Tracer{
-		connectionId: connectionId,
-		traceEntries: []TraceEntry{},
-		log:          options.ExtractCustomLogger(_options...),
-	}
+func (t *tracer) GetConnectionId() string {
+	return t.connectionId.Load().(string)
 }
 
-func (t *Tracer) GetConnectionId() string {
-	return t.connectionId
+func (t *tracer) SetConnectionId(connectionId string) {
+	t.connectionId.Store(connectionId)
 }
 
-func (t *Tracer) SetConnectionId(connectionId string) {
-	t.connectionId = connectionId
-}
-
-func (t *Tracer) ResetTraces() {
+func (t *tracer) ResetTraces() {
+	t.m.Lock()
+	defer t.m.Unlock()
 	t.traceEntries = []TraceEntry{}
 }
 
-func (t *Tracer) GetTraces() []TraceEntry {
+func (t *tracer) GetTraces() []TraceEntry {
+	t.m.Lock()
+	defer t.m.Unlock()
 	return t.traceEntries
 }
 
-func (t *Tracer) AddTrace(operation string, message string) {
+func (t *tracer) AddTrace(operation string, message string) {
+	t.m.Lock()
+	defer t.m.Unlock()
 	t.traceEntries = append(t.traceEntries, TraceEntry{
 		Timestamp:     time.Now(),
-		ConnectionId:  t.connectionId,
+		ConnectionId:  t.connectionId.Load().(string),
 		TransactionId: "",
 		Operation:     operation,
 		Message:       message,
 	})
 }
 
-func (t *Tracer) AddTransactionalStartTrace(operation string, message string) string {
+func (t *tracer) AddTransactionalStartTrace(operation string, message string) string {
+	t.m.Lock()
+	defer t.m.Unlock()
 	transactionId := utils.GenerateId(t.log, 4)
 	t.traceEntries = append(t.traceEntries, TraceEntry{
 		Timestamp:     time.Now(),
-		ConnectionId:  t.connectionId,
+		ConnectionId:  t.connectionId.Load().(string),
 		TransactionId: transactionId,
 		Operation:     operation,
 		Message:       message,
@@ -95,17 +118,19 @@ func (t *Tracer) AddTransactionalStartTrace(operation string, message string) st
 	return transactionId
 }
 
-func (t *Tracer) AddTransactionalTrace(transactionId string, operation string, message string) {
+func (t *tracer) AddTransactionalTrace(transactionId string, operation string, message string) {
+	t.m.Lock()
+	defer t.m.Unlock()
 	t.traceEntries = append(t.traceEntries, TraceEntry{
 		Timestamp:     time.Now(),
-		ConnectionId:  t.connectionId,
+		ConnectionId:  t.connectionId.Load().(string),
 		TransactionId: transactionId,
 		Operation:     operation,
 		Message:       message,
 	})
 }
 
-func (t *Tracer) FilterTraces(traces []TraceEntry, connectionIdFilter string, transactionIdFilter string, operationFilter string, messageFilter string) []TraceEntry {
+func (*tracer) FilterTraces(traces []TraceEntry, connectionIdFilter string, transactionIdFilter string, operationFilter string, messageFilter string) []TraceEntry {
 	var result []TraceEntry
 traceFiltering:
 	for _, trace := range traces {
@@ -126,6 +151,6 @@ traceFiltering:
 	return result
 }
 
-func (t *Tracer) String() string {
-	return fmt.Sprintf("Tracer for %s", t.connectionId)
+func (t *tracer) String() string {
+	return fmt.Sprintf("Tracer for %s", t.connectionId.Load())
 }

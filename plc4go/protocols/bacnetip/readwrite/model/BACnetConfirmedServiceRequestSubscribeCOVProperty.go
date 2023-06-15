@@ -25,6 +25,7 @@ import (
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 	"io"
 )
 
@@ -189,13 +190,15 @@ func (m *_BACnetConfirmedServiceRequestSubscribeCOVProperty) GetLengthInBytes(ct
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConfirmedServiceRequestSubscribeCOVPropertyParse(theBytes []byte, serviceRequestLength uint32) (BACnetConfirmedServiceRequestSubscribeCOVProperty, error) {
-	return BACnetConfirmedServiceRequestSubscribeCOVPropertyParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
+func BACnetConfirmedServiceRequestSubscribeCOVPropertyParse(ctx context.Context, theBytes []byte, serviceRequestLength uint32) (BACnetConfirmedServiceRequestSubscribeCOVProperty, error) {
+	return BACnetConfirmedServiceRequestSubscribeCOVPropertyParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
 }
 
 func BACnetConfirmedServiceRequestSubscribeCOVPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceRequestLength uint32) (BACnetConfirmedServiceRequestSubscribeCOVProperty, error) {
 	positionAware := readBuffer
 	_ = positionAware
+	log := zerolog.Ctx(ctx)
+	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestSubscribeCOVProperty"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConfirmedServiceRequestSubscribeCOVProperty")
 	}
@@ -238,7 +241,7 @@ _monitoredObjectIdentifier, _monitoredObjectIdentifierErr := BACnetContextTagPar
 _val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer , uint8(2) , BACnetDataType_BOOLEAN )
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'issueConfirmedNotifications' field of BACnetConfirmedServiceRequestSubscribeCOVProperty")
@@ -260,7 +263,7 @@ _val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer , uint8(2) , BACne
 _val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer , uint8(3) , BACnetDataType_UNSIGNED_INTEGER )
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'lifetime' field of BACnetConfirmedServiceRequestSubscribeCOVProperty")
@@ -295,7 +298,7 @@ _monitoredPropertyIdentifier, _monitoredPropertyIdentifierErr := BACnetPropertyR
 _val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer , uint8(5) , BACnetDataType_REAL )
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'covIncrement' field of BACnetConfirmedServiceRequestSubscribeCOVProperty")
@@ -338,6 +341,8 @@ func (m *_BACnetConfirmedServiceRequestSubscribeCOVProperty) Serialize() ([]byte
 func (m *_BACnetConfirmedServiceRequestSubscribeCOVProperty) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
+	log := zerolog.Ctx(ctx)
+	_ = log
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConfirmedServiceRequestSubscribeCOVProperty"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for BACnetConfirmedServiceRequestSubscribeCOVProperty")

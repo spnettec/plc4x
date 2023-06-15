@@ -21,11 +21,6 @@ package cbus
 
 import (
 	"context"
-	"fmt"
-	"github.com/apache/plc4x/plc4go/spi/options"
-	"github.com/apache/plc4x/plc4go/spi/tracer"
-	"github.com/apache/plc4x/plc4go/spi/transactions"
-	"github.com/rs/zerolog"
 	"runtime/debug"
 	"sync"
 	"time"
@@ -36,10 +31,16 @@ import (
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/default"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/tracer"
+	"github.com/apache/plc4x/plc4go/spi/transactions"
+
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 )
 
+//go:generate go run ../../tools/plc4xgenerator/gen.go -type=AlphaGenerator
 type AlphaGenerator struct {
 	currentAlpha byte
 	lock         sync.Mutex
@@ -57,20 +58,23 @@ func (t *AlphaGenerator) getAndIncrement() byte {
 	return result
 }
 
+//go:generate go run ../../tools/plc4xgenerator/gen.go -type=Connection
 type Connection struct {
 	_default.DefaultConnection
-	alphaGenerator AlphaGenerator
+	alphaGenerator AlphaGenerator `stringer:"true"`
 	messageCodec   *MessageCodec
 	subscribers    []*Subscriber
 	tm             transactions.RequestTransactionManager
 
-	configuration Configuration
-	driverContext DriverContext
+	configuration Configuration `stringer:"true"`
+	driverContext DriverContext `stringer:"true"`
+
+	handlerWaitGroup sync.WaitGroup
 
 	connectionId string
-	tracer       *tracer.Tracer
+	tracer       tracer.Tracer
 
-	log zerolog.Logger
+	log zerolog.Logger `ignore:"true"`
 }
 
 func NewConnection(messageCodec *MessageCodec, configuration Configuration, driverContext DriverContext, tagHandler spi.PlcTagHandler, tm transactions.RequestTransactionManager, connectionOptions map[string][]string, _options ...options.WithOption) *Connection {
@@ -106,7 +110,7 @@ func (c *Connection) IsTraceEnabled() bool {
 	return c.tracer != nil
 }
 
-func (c *Connection) GetTracer() *tracer.Tracer {
+func (c *Connection) GetTracer() tracer.Tracer {
 	return c.tracer
 }
 
@@ -127,7 +131,7 @@ func (c *Connection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcCo
 				c.fireConnectionError(errors.Errorf("panic-ed %v. Stack:\n%s", err, debug.Stack()), ch)
 			}
 		}()
-		if err := c.messageCodec.Connect(); err != nil {
+		if err := c.messageCodec.ConnectWithContext(ctx); err != nil {
 			c.fireConnectionError(errors.Wrap(err, "Error connecting codec"), ch)
 			return
 		}
@@ -148,6 +152,18 @@ func (c *Connection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcCo
 	return ch
 }
 
+func (c *Connection) Close() <-chan plc4go.PlcConnectionCloseResult {
+	results := make(chan plc4go.PlcConnectionCloseResult, 1)
+	go func() {
+		result := <-c.DefaultConnection.Close()
+		c.log.Trace().Msg("Waiting for handlers to stop")
+		c.handlerWaitGroup.Wait()
+		c.log.Trace().Msg("handlers stopped, dispatching result")
+		results <- result
+	}()
+	return results
+}
+
 func (c *Connection) GetMetadata() apiModel.PlcConnectionMetadata {
 	return _default.DefaultConnectionMetadata{
 		ProvidesReading:     true,
@@ -166,7 +182,11 @@ func (c *Connection) WriteRequestBuilder() apiModel.PlcWriteRequestBuilder {
 }
 
 func (c *Connection) SubscriptionRequestBuilder() apiModel.PlcSubscriptionRequestBuilder {
-	return spiModel.NewDefaultPlcSubscriptionRequestBuilder(c.GetPlcTagHandler(), c.GetPlcValueHandler(), NewSubscriber(c, options.WithCustomLogger(c.log)))
+	return spiModel.NewDefaultPlcSubscriptionRequestBuilder(
+		c.GetPlcTagHandler(),
+		c.GetPlcValueHandler(),
+		NewSubscriber(c.addSubscriber, options.WithCustomLogger(c.log)),
+	)
 }
 
 func (c *Connection) UnsubscriptionRequestBuilder() apiModel.PlcUnsubscriptionRequestBuilder {
@@ -186,10 +206,6 @@ func (c *Connection) addSubscriber(subscriber *Subscriber) {
 		}
 	}
 	c.subscribers = append(c.subscribers, subscriber)
-}
-
-func (c *Connection) String() string {
-	return fmt.Sprintf("cbus.Connection")
 }
 
 func (c *Connection) setupConnection(ctx context.Context, ch chan plc4go.PlcConnectionConnectResult) {
@@ -220,50 +236,67 @@ func (c *Connection) setupConnection(ctx context.Context, ch chan plc4go.PlcConn
 		c.log.Trace().Msg("Set interface options 1 failed")
 		return
 	}
+	c.log.Trace().Msg("Connection setup done")
 	c.fireConnected(ch)
+	c.log.Trace().Msg("Connect fired")
 	c.startSubscriptionHandler()
+	c.log.Trace().Msg("subscription handler started")
 }
 
 func (c *Connection) startSubscriptionHandler() {
 	c.log.Debug().Msg("Starting SAL handler")
+	c.handlerWaitGroup.Add(1)
 	go func() {
+		salLogger := c.log.With().Str("handlerType", "SAL").Logger()
+		defer c.handlerWaitGroup.Done()
 		defer func() {
 			if err := recover(); err != nil {
-				c.log.Error().Msgf("panic-ed %v. Stack:\n%s", err, debug.Stack())
+				salLogger.Error().Msgf("panic-ed %v. Stack:\n%s", err, debug.Stack())
 			}
 		}()
-		c.log.Debug().Msg("SAL handler stated")
+		salLogger.Debug().Msg("SAL handler started")
 		for c.IsConnected() {
 			for monitoredSal := range c.messageCodec.monitoredSALs {
+				handled := false
 				for _, subscriber := range c.subscribers {
 					if ok := subscriber.handleMonitoredSAL(monitoredSal); ok {
-						c.log.Debug().Msgf("%v handled\n%s", subscriber, monitoredSal)
-						continue
+						salLogger.Debug().Msgf("\n%v handled\n%s", subscriber, monitoredSal)
+						handled = true
 					}
+				}
+				if !handled {
+					salLogger.Debug().Msgf("SAL was not handled:\n%s", monitoredSal)
 				}
 			}
 		}
-		c.log.Info().Msg("Ending SAL handler")
+		salLogger.Info().Msg("Ending SAL handler")
 	}()
 	c.log.Debug().Msg("Starting MMI handler")
+	c.handlerWaitGroup.Add(1)
 	go func() {
+		mmiLogger := c.log.With().Str("handlerType", "MMI").Logger()
+		defer c.handlerWaitGroup.Done()
 		defer func() {
 			if err := recover(); err != nil {
-				c.log.Error().Msgf("panic-ed %v. Stack:\n%s", err, debug.Stack())
+				mmiLogger.Error().Msgf("panic-ed %v. Stack:\n%s", err, debug.Stack())
 			}
 		}()
-		c.log.Debug().Msg("default MMI started")
+		mmiLogger.Debug().Msg("default MMI started")
 		for c.IsConnected() {
 			for calReply := range c.messageCodec.monitoredMMIs {
+				handled := false
 				for _, subscriber := range c.subscribers {
 					if ok := subscriber.handleMonitoredMMI(calReply); ok {
-						c.log.Debug().Msgf("%v handled\n%s", subscriber, calReply)
-						continue
+						mmiLogger.Debug().Msgf("\n%v handled\n%s", subscriber, calReply)
+						handled = true
 					}
+				}
+				if !handled {
+					mmiLogger.Debug().Msgf("MMI was not handled:\n%s", calReply)
 				}
 			}
 		}
-		c.log.Info().Msg("Ending MMI handler")
+		mmiLogger.Info().Msg("Ending MMI handler")
 	}()
 }
 
@@ -278,27 +311,47 @@ func (c *Connection) sendReset(ctx context.Context, ch chan plc4go.PlcConnection
 	if err := c.messageCodec.SendRequest(ctx, cBusMessage, func(message spi.Message) bool {
 		switch message := message.(type) {
 		case readWriteModel.CBusMessageToClientExactly:
-			if reply, ok := message.GetReply().(readWriteModel.ReplyOrConfirmationReplyExactly); ok {
-				_, ok := reply.GetReply().(readWriteModel.PowerUpReplyExactly)
-				return ok
+			switch reply := message.GetReply().(type) {
+			case readWriteModel.ReplyOrConfirmationReplyExactly:
+				switch reply.GetReply().(type) {
+				case readWriteModel.PowerUpReplyExactly:
+					c.log.Debug().Msg("Received a PUN reply")
+					return true
+				default:
+					c.log.Trace().Msgf("%T not relevant", reply)
+					return false
+				}
+			default:
+				c.log.Trace().Msgf("%T not relevant", reply)
+				return false
 			}
 		case readWriteModel.CBusMessageToServerExactly:
-			_, ok = message.GetRequest().(readWriteModel.RequestResetExactly)
-			return ok
+			switch request := message.GetRequest().(type) {
+			case readWriteModel.RequestResetExactly:
+				c.log.Debug().Msg("Received a Reset reply")
+				return true
+			default:
+				c.log.Trace().Msgf("%T not relevant", request)
+				return false
+			}
+		default:
+			c.log.Trace().Msgf("%T not relevant", message)
+			return false
 		}
-		return false
 	}, func(message spi.Message) error {
 		switch message.(type) {
 		case readWriteModel.CBusMessageToClientExactly:
 			// This is the powerup notification
 			select {
 			case receivedResetEchoChan <- false:
+				c.log.Trace().Msg("notified reset chan from message to client")
 			default:
 			}
 		case readWriteModel.CBusMessageToServerExactly:
 			// This is the echo
 			select {
 			case receivedResetEchoChan <- true:
+				c.log.Trace().Msg("notified reset chan from message to server")
 			default:
 			}
 		default:
@@ -308,6 +361,7 @@ func (c *Connection) sendReset(ctx context.Context, ch chan plc4go.PlcConnection
 	}, func(err error) error {
 		select {
 		case receivedResetEchoErrorChan <- errors.Wrap(err, "got error processing request"):
+			c.log.Trace().Msg("notified error chan")
 		default:
 		}
 		return nil

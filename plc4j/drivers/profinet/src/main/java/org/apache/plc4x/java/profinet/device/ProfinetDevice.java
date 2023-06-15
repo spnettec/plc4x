@@ -172,7 +172,7 @@ public class ProfinetDevice implements PlcSubscriber {
     }
 
     public boolean onConnect() throws ExecutionException, InterruptedException, TimeoutException {
-        // If an explicit address is provided, the driver tries to explicitily configure the device to that address.
+        // If an explicit address is provided, the driver tries to explicitly configure the device to that address.
         if (this.setIpAddress) {
             deviceContext.setState(ProfinetDeviceState.SET_IP);
         }
@@ -203,9 +203,9 @@ public class ProfinetDevice implements PlcSubscriber {
                             // string and also tell the device about the data we'll be publishing.
                             case IDLE:
                                 CreateConnection createConnection = new CreateConnection();
-                                // Send the packet ...
+                                // Send the packet and process the response ...
                                 recordIdAndSend(createConnection);
-                                // Wait for the response ...
+                                // Wait for it to be finished processing ...
                                 createConnection.getResponseHandled().get(timeout, TimeUnit.NANOSECONDS);
                                 break;
                             // TODO: It seems this state is never used?
@@ -258,6 +258,8 @@ public class ProfinetDevice implements PlcSubscriber {
         options.put("device_id", new PlcSTRING(deviceIdentity.getDeviceID()));
         options.put("vendor_id", new PlcSTRING(deviceIdentity.getVendorId()));
         options.put("vendor_name", new PlcSTRING(deviceIdentity.getVendorName().getValue()));
+
+        // Look up the human readable text value for the given device identity
         if (deviceIdentity.getInfoText() != null && deviceIdentity.getInfoText().getTextId() != null) {
             String key = deviceIdentity.getInfoText().getTextId();
             ProfinetExternalTextList externaltextList = this.deviceContext.getGsdFile().getProfileBody().getApplicationProcess().getExternalTextList();
@@ -518,13 +520,6 @@ public class ProfinetDevice implements PlcSubscriber {
                     deviceContext.getInputIoCsApiBlocks())
             );
 
-            List<PnIoCm_IoCrBlockReqApi> outputApis = Collections.singletonList(
-                new PnIoCm_IoCrBlockReqApi(
-                    deviceContext.getOutputIoPsApiBlocks(),
-                    deviceContext.getOutputIoCsApiBlocks()
-                )
-            );
-
             deviceContext.setInputReq(new PnIoCm_Block_IoCrReq(
                 (short) 1,
                 (short) 0,
@@ -542,7 +537,7 @@ public class ProfinetDevice implements PlcSubscriber {
                 deviceContext.getConfiguration().getReductionRatio(),
                 1,
                 0,
-                0xffffffff,
+                0xffffffffL,
                 deviceContext.getConfiguration().getWatchdogFactor(),
                 deviceContext.getConfiguration().getDataHoldFactor(),
                 0xC000,
@@ -552,6 +547,13 @@ public class ProfinetDevice implements PlcSubscriber {
             ));
 
             blocks.add(deviceContext.getInputReq());
+
+            List<PnIoCm_IoCrBlockReqApi> outputApis = Collections.singletonList(
+                new PnIoCm_IoCrBlockReqApi(
+                    deviceContext.getOutputIoPsApiBlocks(),
+                    deviceContext.getOutputIoCsApiBlocks()
+                )
+            );
 
             deviceContext.setOutputReq(new PnIoCm_Block_IoCrReq(
                 (short) 1,
@@ -570,7 +572,7 @@ public class ProfinetDevice implements PlcSubscriber {
                 deviceContext.getConfiguration().getReductionRatio(),
                 1,
                 0,
-                0xffffffff,
+                0xffffffffL,
                 deviceContext.getConfiguration().getWatchdogFactor(),
                 deviceContext.getConfiguration().getDataHoldFactor(),
                 0xC000,
@@ -596,6 +598,7 @@ public class ProfinetDevice implements PlcSubscriber {
                 0,
                 id,
                 DceRpc_Operation.CONNECT,
+                (short) 0,
                 new PnIoCm_Packet_Req(ProfinetDeviceContext.DEFAULT_ARGS_MAXIMUM, ProfinetDeviceContext.DEFAULT_MAX_ARRAY_COUNT, 0, blocks)
             );
         }
@@ -738,6 +741,7 @@ public class ProfinetDevice implements PlcSubscriber {
                 0,
                 id,
                 DceRpc_Operation.WRITE,
+                (short) 0,
                 new PnIoCm_Packet_Req(16696, 16696, 0,
                     requests)
             );
@@ -798,6 +802,7 @@ public class ProfinetDevice implements PlcSubscriber {
                 0,
                 id,
                 DceRpc_Operation.CONTROL,
+                (short) 0,
                 new PnIoCm_Packet_Req(16696, 16696, 0,
                     Collections.singletonList(
                         new PnIoCm_Control_Request(
@@ -873,6 +878,7 @@ public class ProfinetDevice implements PlcSubscriber {
                 0,
                 id,
                 DceRpc_Operation.CONTROL,
+                (short) 0,
                 new PnIoCm_Packet_Res(
                     (short) 0,
                     (short) 0,
@@ -881,7 +887,7 @@ public class ProfinetDevice implements PlcSubscriber {
                     ProfinetDeviceContext.DEFAULT_MAX_ARRAY_COUNT,
                     0,
                     Collections.singletonList(
-                        new PnIoCM_Block_Response(
+                        new PnIoCM_Block_ResponseConnect(
                             (short) 1,
                             (short) 0,
                             ProfinetDeviceContext.ARUUID,
@@ -932,6 +938,7 @@ public class ProfinetDevice implements PlcSubscriber {
                 0,
                 id,
                 DceRpc_Operation.CONTROL,
+                (short) 0,
                 new PnIoCm_Packet_NoCall()
             );
         }

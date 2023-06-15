@@ -30,7 +30,6 @@ import (
 	"time"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
-	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/pool"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
@@ -199,17 +198,12 @@ func TestDiscoverer_createDeviceScanDispatcher(t *testing.T) {
 					}
 				})
 
-				// Setup logger
-				logger := testutils.ProduceTestingLogger(t)
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
-				// Set the model logger to the logger above
-				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
-
-				loggerOption := options.WithCustomLogger(logger)
-				transport := tcp.NewTransport(loggerOption)
+				transport := tcp.NewTransport(_options...)
 				parse, err := url.Parse("tcp://" + listen.Addr().String())
 				require.NoError(t, err)
-				instance, err := transport.CreateTransportInstance(*parse, nil, loggerOption)
+				instance, err := transport.CreateTransportInstance(*parse, nil, _options...)
 				require.NoError(t, err)
 				args.tcpTransportInstance = instance.(*tcp.TransportInstance)
 			},
@@ -257,7 +251,7 @@ func TestDiscoverer_createTransportInstanceDispatcher(t *testing.T) {
 		{
 			name: "create a dispatcher",
 			args: args{
-				ctx: context.Background(),
+				ctx: testutils.TestContext(t),
 				wg: func() *sync.WaitGroup {
 					var wg sync.WaitGroup
 					return &wg

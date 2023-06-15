@@ -21,18 +21,20 @@ package testutils
 
 import (
 	"context"
-	"github.com/rs/zerolog/log"
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/pool"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"os"
 	"runtime/debug"
 	"strings"
 	"testing"
-
-	"github.com/apache/plc4x/plc4go/spi/utils"
+	"time"
 
 	"github.com/ajankovic/xdiff"
 	"github.com/ajankovic/xdiff/parser"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -109,12 +111,22 @@ func CompareResults(t *testing.T, actualString []byte, referenceString []byte) e
 func TestContext(t *testing.T) context.Context {
 	ctx, cancel := context.WithCancel(context.Background())
 	t.Cleanup(cancel)
+	ctx = ProduceTestingLogger(t).WithContext(ctx)
 	return ctx
+}
+
+var highLogPrecision bool
+
+func init() {
+	highLogPrecision = os.Getenv("PLC4X_TEST_HIGH_TEST_LOG_PRECISION") == "true"
+	if highLogPrecision {
+		zerolog.TimeFieldFormat = time.RFC3339Nano
+	}
 }
 
 // ProduceTestingLogger produces a logger which redirects to testing.T
 func ProduceTestingLogger(t *testing.T) zerolog.Logger {
-	return zerolog.New(
+	logger := zerolog.New(
 		zerolog.NewConsoleWriter(
 			zerolog.ConsoleTestWriter(t),
 			func(w *zerolog.ConsoleWriter) {
@@ -125,19 +137,31 @@ func ProduceTestingLogger(t *testing.T) zerolog.Logger {
 				if onJenkins || onGithubAction || onCI {
 					w.NoColor = true
 				}
+
+			},
+			func(w *zerolog.ConsoleWriter) {
+				w.TimeFormat = time.StampNano
 			},
 		),
 	)
+	if highLogPrecision {
+		logger = logger.With().Timestamp().Logger()
+	}
+	return logger
 }
 
-// SetToTestingLogger sets logger to  ProduceTestingLogger and resets it on cleanup
-func SetToTestingLogger(t *testing.T, logger *zerolog.Logger) {
-	oldLogger := *logger
-	t.Cleanup(func() {
-		*logger = oldLogger
-	})
-	newLogger := ProduceTestingLogger(t)
-	*logger = newLogger
+// EnrichOptionsWithOptionsForTesting appends options useful for testing to config.WithOption s
+func EnrichOptionsWithOptionsForTesting(t *testing.T, _options ...options.WithOption) []options.WithOption {
+	traceWorkers := true
+	if extractedTraceWorkers, found := pool.ExtractTracerWorkers(_options...); found {
+		traceWorkers = extractedTraceWorkers
+	}
+	// TODO: apply to other options like above
+	return append(_options,
+		options.WithCustomLogger(ProduceTestingLogger(t)),
+		options.WithPassLoggerToModel(true),
+		pool.WithExecutorOptionTracerWorkers(traceWorkers),
+	)
 }
 
 type _explodingGlobalLogger struct {

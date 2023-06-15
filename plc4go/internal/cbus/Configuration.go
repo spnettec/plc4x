@@ -27,6 +27,7 @@ import (
 	"github.com/pkg/errors"
 )
 
+//go:generate go run ../../tools/plc4xgenerator/gen.go -type=Configuration
 type Configuration struct {
 	Srchk    bool
 	Exstat   bool

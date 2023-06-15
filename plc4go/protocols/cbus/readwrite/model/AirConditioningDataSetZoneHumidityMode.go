@@ -25,6 +25,7 @@ import (
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 	"io"
 )
 
@@ -198,13 +199,15 @@ func (m *_AirConditioningDataSetZoneHumidityMode) GetLengthInBytes(ctx context.C
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func AirConditioningDataSetZoneHumidityModeParse(theBytes []byte) (AirConditioningDataSetZoneHumidityMode, error) {
-	return AirConditioningDataSetZoneHumidityModeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
+func AirConditioningDataSetZoneHumidityModeParse(ctx context.Context, theBytes []byte) (AirConditioningDataSetZoneHumidityMode, error) {
+	return AirConditioningDataSetZoneHumidityModeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
 func AirConditioningDataSetZoneHumidityModeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AirConditioningDataSetZoneHumidityMode, error) {
 	positionAware := readBuffer
 	_ = positionAware
+	log := zerolog.Ctx(ctx)
+	_ = log
 	if pullErr := readBuffer.PullContext("AirConditioningDataSetZoneHumidityMode"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for AirConditioningDataSetZoneHumidityMode")
 	}
@@ -267,7 +270,7 @@ _humidityType, _humidityTypeErr := HVACHumidityTypeParseWithBuffer(ctx, readBuff
 _val, _err := HVACHumidityParseWithBuffer(ctx, readBuffer)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'level' field of AirConditioningDataSetZoneHumidityMode")
@@ -289,7 +292,7 @@ _val, _err := HVACHumidityParseWithBuffer(ctx, readBuffer)
 _val, _err := HVACRawLevelsParseWithBuffer(ctx, readBuffer)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'rawLevel' field of AirConditioningDataSetZoneHumidityMode")
@@ -311,7 +314,7 @@ _val, _err := HVACRawLevelsParseWithBuffer(ctx, readBuffer)
 _val, _err := HVACAuxiliaryLevelParseWithBuffer(ctx, readBuffer)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'auxLevel' field of AirConditioningDataSetZoneHumidityMode")
@@ -354,6 +357,8 @@ func (m *_AirConditioningDataSetZoneHumidityMode) Serialize() ([]byte, error) {
 func (m *_AirConditioningDataSetZoneHumidityMode) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
+	log := zerolog.Ctx(ctx)
+	_ = log
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("AirConditioningDataSetZoneHumidityMode"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for AirConditioningDataSetZoneHumidityMode")

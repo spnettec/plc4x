@@ -36,6 +36,7 @@ import (
 	"github.com/stretchr/testify/require"
 	"net/url"
 	"strings"
+	"sync"
 	"sync/atomic"
 	"testing"
 	"time"
@@ -90,7 +91,7 @@ func TestReader_Read(t *testing.T) {
 		{
 			name: "read and bail",
 			args: args{
-				ctx: context.Background(),
+				ctx: testutils.TestContext(t),
 				readRequest: spiModel.NewDefaultPlcReadRequest(nil, func() []string {
 					return strings.Split(strings.Repeat("asd,", 40), ",")
 				}(), nil, nil),
@@ -141,7 +142,7 @@ func TestReader_readSync(t *testing.T) {
 		{
 			name: "too many tags",
 			args: args{
-				ctx: context.Background(),
+				ctx: testutils.TestContext(t),
 				readRequest: spiModel.NewDefaultPlcReadRequest(nil, func() []string {
 					return strings.Split(strings.Repeat("asd,", 40), ",")
 				}(), nil, nil),
@@ -162,7 +163,7 @@ func TestReader_readSync(t *testing.T) {
 		{
 			name: "unmapped tag",
 			args: args{
-				ctx: context.Background(),
+				ctx: testutils.TestContext(t),
 				readRequest: spiModel.NewDefaultPlcReadRequest(
 					map[string]apiModel.PlcTag{
 						"asd": nil,
@@ -176,26 +177,19 @@ func TestReader_readSync(t *testing.T) {
 				result: make(chan apiModel.PlcReadRequestResult, 1),
 			},
 			setup: func(t *testing.T, fields *fields) {
-				// Setup logger
-				logger := testutils.ProduceTestingLogger(t)
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
-				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
-
-				// Custom option for that
-				loggerOption := options.WithCustomLogger(logger)
-
-				transport := test.NewTransport()
+				transport := test.NewTransport(_options...)
 				transportUrl := url.URL{Scheme: "test"}
-				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil)
+				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, _options...)
 				require.NoError(t, err)
-				codec := NewMessageCodec(transportInstance, loggerOption)
-				err = codec.Connect()
-				require.NoError(t, err)
+				codec := NewMessageCodec(transportInstance, _options...)
+				require.NoError(t, codec.Connect())
 				t.Cleanup(func() {
 					assert.NoError(t, codec.Disconnect())
 				})
 				fields.messageCodec = codec
-				fields.tm = transactions.NewRequestTransactionManager(10, options.WithCustomLogger(testutils.ProduceTestingLogger(t)))
+				fields.tm = transactions.NewRequestTransactionManager(10, _options...)
 			},
 			resultEvaluator: func(t *testing.T, results chan apiModel.PlcReadRequestResult) bool {
 				timer := time.NewTimer(2 * time.Second)
@@ -212,7 +206,7 @@ func TestReader_readSync(t *testing.T) {
 		{
 			name: "read something without any tag",
 			args: args{
-				ctx: context.Background(),
+				ctx: testutils.TestContext(t),
 				readRequest: spiModel.NewDefaultPlcReadRequest(
 					map[string]apiModel.PlcTag{},
 					[]string{},
@@ -258,18 +252,12 @@ func TestReader_readSync(t *testing.T) {
 				result: make(chan apiModel.PlcReadRequestResult, 1),
 			},
 			setup: func(t *testing.T, fields *fields) {
-				// Setup logger
-				logger := testutils.ProduceTestingLogger(t)
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
-				loggerOption := options.WithCustomLogger(logger)
-
-				// Set the model logger to the logger above
-				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
-
-				fields.tm = transactions.NewRequestTransactionManager(10, loggerOption)
+				fields.tm = transactions.NewRequestTransactionManager(10, _options...)
 				transport := test.NewTransport()
 				transportUrl := url.URL{Scheme: "test"}
-				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, loggerOption)
+				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, _options...)
 				require.NoError(t, err)
 				type MockState uint8
 				const (
@@ -278,7 +266,10 @@ func TestReader_readSync(t *testing.T) {
 				)
 				currentState := atomic.Value{}
 				currentState.Store(INITIAL)
+				stateChangeMutex := sync.Mutex{}
 				transportInstance.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
+					stateChangeMutex.Lock()
+					defer stateChangeMutex.Unlock()
 					switch currentState.Load().(MockState) {
 					case INITIAL:
 						t.Log("Dispatching read response")
@@ -288,9 +279,8 @@ func TestReader_readSync(t *testing.T) {
 						t.Log("Done")
 					}
 				})
-				codec := NewMessageCodec(transportInstance, loggerOption)
-				err = codec.Connect()
-				require.NoError(t, err)
+				codec := NewMessageCodec(transportInstance, _options...)
+				require.NoError(t, codec.Connect())
 				t.Cleanup(func() {
 					assert.NoError(t, codec.Disconnect())
 				})
@@ -337,23 +327,16 @@ func TestReader_readSync(t *testing.T) {
 				result: make(chan apiModel.PlcReadRequestResult, 1),
 			},
 			setup: func(t *testing.T, fields *fields) {
-				fields.tm = transactions.NewRequestTransactionManager(10, options.WithCustomLogger(testutils.ProduceTestingLogger(t)))
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
-				// Setup logger
-				logger := testutils.ProduceTestingLogger(t)
-
-				loggerOption := options.WithCustomLogger(logger)
-
-				// Set the model logger to the logger above
-				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
+				fields.tm = transactions.NewRequestTransactionManager(10, _options...)
 
 				transport := test.NewTransport()
 				transportUrl := url.URL{Scheme: "test"}
-				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, loggerOption)
+				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, _options...)
 				require.NoError(t, err)
-				codec := NewMessageCodec(transportInstance, loggerOption)
-				err = codec.Connect()
-				require.NoError(t, err)
+				codec := NewMessageCodec(transportInstance, _options...)
+				require.NoError(t, codec.Connect())
 				t.Cleanup(func() {
 					assert.NoError(t, codec.Disconnect())
 				})
@@ -435,17 +418,14 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 				},
 			},
 			setup: func(t *testing.T, fields *fields, args *args, ch chan struct{}) {
-				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
-				loggerOption := options.WithCustomLogger(testutils.ProduceTestingLogger(t))
-
-				transport := test.NewTransport(loggerOption)
+				transport := test.NewTransport(_options...)
 				transportUrl := url.URL{Scheme: "test"}
-				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, loggerOption)
+				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, _options...)
 				require.NoError(t, err)
-				codec := NewMessageCodec(transportInstance, loggerOption)
-				err = codec.Connect()
-				require.NoError(t, err)
+				codec := NewMessageCodec(transportInstance, _options...)
+				require.NoError(t, codec.Connect())
 				t.Cleanup(func() {
 					assert.NoError(t, codec.Disconnect())
 				})
@@ -501,14 +481,7 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 				},
 			},
 			setup: func(t *testing.T, fields *fields, args *args, ch chan struct{}) {
-				// Setup logger
-				logger := testutils.ProduceTestingLogger(t)
-
-				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
-
-				// Custom option for that
-				loggerOption := options.WithCustomLogger(logger)
-
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 				transaction := NewMockRequestTransaction(t)
 				expect := transaction.EXPECT()
 				expect.FailRequest(mock.Anything).Return(errors.New("Nope")).Run(func(_ error) {
@@ -516,9 +489,9 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 				})
 				args.transaction = transaction
 
-				transport := test.NewTransport(loggerOption)
+				transport := test.NewTransport(_options...)
 				transportUrl := url.URL{Scheme: "test"}
-				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, loggerOption)
+				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, _options...)
 				require.NoError(t, err)
 				type MockState uint8
 				const (
@@ -527,7 +500,10 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 				)
 				currentState := atomic.Value{}
 				currentState.Store(INITIAL)
+				stateChangeMutex := sync.Mutex{}
 				transportInstance.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
+					stateChangeMutex.Lock()
+					defer stateChangeMutex.Unlock()
 					switch currentState.Load().(MockState) {
 					case INITIAL:
 						t.Log("Dispatching read response")
@@ -537,9 +513,8 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 						t.Log("Done")
 					}
 				})
-				codec := NewMessageCodec(transportInstance, loggerOption)
-				err = codec.Connect()
-				require.NoError(t, err)
+				codec := NewMessageCodec(transportInstance, _options...)
+				require.NoError(t, codec.Connect())
 				t.Cleanup(func() {
 					assert.NoError(t, codec.Disconnect())
 				})
@@ -550,44 +525,6 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 			name: "Send message which responds with server error",
 			fields: fields{
 				alphaGenerator: &AlphaGenerator{currentAlpha: 'g'},
-				messageCodec: func() *MessageCodec {
-					// Setup logger
-					logger := testutils.ProduceTestingLogger(t)
-
-					testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
-
-					// Custom option for that
-					loggerOption := options.WithCustomLogger(logger)
-
-					transport := test.NewTransport(loggerOption)
-					transportUrl := url.URL{Scheme: "test"}
-					transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, loggerOption)
-					require.NoError(t, err)
-					type MockState uint8
-					const (
-						INITIAL MockState = iota
-						DONE
-					)
-					currentState := atomic.Value{}
-					currentState.Store(INITIAL)
-					transportInstance.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
-						switch currentState.Load().(MockState) {
-						case INITIAL:
-							t.Log("Dispatching read response")
-							transportInstance.FillReadBuffer([]byte("!"))
-							currentState.Store(DONE)
-						case DONE:
-							t.Log("Done")
-						}
-					})
-					codec := NewMessageCodec(transportInstance, loggerOption)
-					err = codec.Connect()
-					require.NoError(t, err)
-					t.Cleanup(func() {
-						assert.NoError(t, codec.Disconnect())
-					})
-					return codec
-				}(),
 			},
 			args: args{
 				ctx: func() context.Context {
@@ -626,7 +563,38 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 				},
 			},
 			setup: func(t *testing.T, fields *fields, args *args, ch chan struct{}) {
-				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
+
+				transport := test.NewTransport(_options...)
+				transportUrl := url.URL{Scheme: "test"}
+				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, _options...)
+				require.NoError(t, err)
+				type MockState uint8
+				const (
+					INITIAL MockState = iota
+					DONE
+				)
+				currentState := atomic.Value{}
+				currentState.Store(INITIAL)
+				stateChangeMutex := sync.Mutex{}
+				transportInstance.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
+					stateChangeMutex.Lock()
+					defer stateChangeMutex.Unlock()
+					switch currentState.Load().(MockState) {
+					case INITIAL:
+						t.Log("Dispatching read response")
+						transportInstance.FillReadBuffer([]byte("!"))
+						currentState.Store(DONE)
+					case DONE:
+						t.Log("Done")
+					}
+				})
+				codec := NewMessageCodec(transportInstance, _options...)
+				require.NoError(t, codec.Connect())
+				t.Cleanup(func() {
+					assert.NoError(t, codec.Disconnect())
+				})
+				fields.messageCodec = codec
 
 				transaction := NewMockRequestTransaction(t)
 				expect := transaction.EXPECT()
@@ -687,18 +655,11 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 					close(ch)
 				})
 				args.transaction = transaction
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
-				// Setup logger
-				logger := testutils.ProduceTestingLogger(t)
-
-				loggerOption := options.WithCustomLogger(logger)
-
-				// Set the model logger to the logger above
-				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
-
-				transport := test.NewTransport(loggerOption)
+				transport := test.NewTransport(_options...)
 				transportUrl := url.URL{Scheme: "test"}
-				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, loggerOption)
+				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, _options...)
 				require.NoError(t, err)
 				type MockState uint8
 				const (
@@ -707,7 +668,10 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 				)
 				currentState := atomic.Value{}
 				currentState.Store(INITIAL)
+				stateChangeMutex := sync.Mutex{}
 				transportInstance.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
+					stateChangeMutex.Lock()
+					defer stateChangeMutex.Unlock()
 					switch currentState.Load().(MockState) {
 					case INITIAL:
 						t.Log("Dispatching read response")
@@ -717,9 +681,8 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 						t.Log("Done")
 					}
 				})
-				codec := NewMessageCodec(transportInstance, loggerOption)
-				err = codec.Connect()
-				require.NoError(t, err)
+				codec := NewMessageCodec(transportInstance, _options...)
+				require.NoError(t, codec.Connect())
 				t.Cleanup(func() {
 					assert.NoError(t, codec.Disconnect())
 				})
@@ -777,18 +740,11 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 					close(ch)
 				})
 				args.transaction = transaction
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
-				// Setup logger
-				logger := testutils.ProduceTestingLogger(t)
-
-				loggerOption := options.WithCustomLogger(logger)
-
-				// Set the model logger to the logger above
-				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
-
-				transport := test.NewTransport(loggerOption)
+				transport := test.NewTransport(_options...)
 				transportUrl := url.URL{Scheme: "test"}
-				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, loggerOption)
+				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, _options...)
 				require.NoError(t, err)
 				type MockState uint8
 				const (
@@ -797,7 +753,10 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 				)
 				currentState := atomic.Value{}
 				currentState.Store(INITIAL)
+				stateChangeMutex := sync.Mutex{}
 				transportInstance.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
+					stateChangeMutex.Lock()
+					defer stateChangeMutex.Unlock()
 					switch currentState.Load().(MockState) {
 					case INITIAL:
 						t.Log("Dispatching read response")
@@ -807,9 +766,8 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 						t.Log("Done")
 					}
 				})
-				codec := NewMessageCodec(transportInstance, loggerOption)
-				err = codec.Connect()
-				require.NoError(t, err)
+				codec := NewMessageCodec(transportInstance, _options...)
+				require.NoError(t, codec.Connect())
 				t.Cleanup(func() {
 					assert.NoError(t, codec.Disconnect())
 				})
@@ -867,18 +825,11 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 					close(ch)
 				})
 				args.transaction = transaction
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
-				// Setup logger
-				logger := testutils.ProduceTestingLogger(t)
-
-				loggerOption := options.WithCustomLogger(logger)
-
-				// Set the model logger to the logger above
-				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
-
-				transport := test.NewTransport(loggerOption)
+				transport := test.NewTransport(_options...)
 				transportUrl := url.URL{Scheme: "test"}
-				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, loggerOption)
+				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, _options...)
 				require.NoError(t, err)
 				type MockState uint8
 				const (
@@ -887,7 +838,10 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 				)
 				currentState := atomic.Value{}
 				currentState.Store(INITIAL)
+				stateChangeMutex := sync.Mutex{}
 				transportInstance.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
+					stateChangeMutex.Lock()
+					defer stateChangeMutex.Unlock()
 					switch currentState.Load().(MockState) {
 					case INITIAL:
 						t.Log("Dispatching read response")
@@ -897,9 +851,8 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 						t.Log("Done")
 					}
 				})
-				codec := NewMessageCodec(transportInstance, loggerOption)
-				err = codec.Connect()
-				require.NoError(t, err)
+				codec := NewMessageCodec(transportInstance, _options...)
+				require.NoError(t, codec.Connect())
 				t.Cleanup(func() {
 					assert.NoError(t, codec.Disconnect())
 				})
@@ -957,18 +910,11 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 					close(ch)
 				})
 				args.transaction = transaction
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
-				// Setup logger
-				logger := testutils.ProduceTestingLogger(t)
-
-				loggerOption := options.WithCustomLogger(logger)
-
-				// Set the model logger to the logger above
-				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
-
-				transport := test.NewTransport(loggerOption)
+				transport := test.NewTransport(_options...)
 				transportUrl := url.URL{Scheme: "test"}
-				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, loggerOption)
+				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, _options...)
 				require.NoError(t, err)
 				type MockState uint8
 				const (
@@ -977,7 +923,10 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 				)
 				currentState := atomic.Value{}
 				currentState.Store(INITIAL)
+				stateChangeMutex := sync.Mutex{}
 				transportInstance.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
+					stateChangeMutex.Lock()
+					defer stateChangeMutex.Unlock()
 					switch currentState.Load().(MockState) {
 					case INITIAL:
 						t.Log("Dispatching read response")
@@ -987,9 +936,8 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 						t.Log("Done")
 					}
 				})
-				codec := NewMessageCodec(transportInstance, loggerOption)
-				err = codec.Connect()
-				require.NoError(t, err)
+				codec := NewMessageCodec(transportInstance, _options...)
+				require.NoError(t, codec.Connect())
 				t.Cleanup(func() {
 					assert.NoError(t, codec.Disconnect())
 				})
@@ -1047,18 +995,11 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 					close(ch)
 				})
 				args.transaction = transaction
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
-				// Setup logger
-				logger := testutils.ProduceTestingLogger(t)
-
-				loggerOption := options.WithCustomLogger(logger)
-
-				// Set the model logger to the logger above
-				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
-
-				transport := test.NewTransport(loggerOption)
+				transport := test.NewTransport(_options...)
 				transportUrl := url.URL{Scheme: "test"}
-				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, loggerOption)
+				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, _options...)
 				require.NoError(t, err)
 				type MockState uint8
 				const (
@@ -1067,7 +1008,10 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 				)
 				currentState := atomic.Value{}
 				currentState.Store(INITIAL)
+				stateChangeMutex := sync.Mutex{}
 				transportInstance.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
+					stateChangeMutex.Lock()
+					defer stateChangeMutex.Unlock()
 					switch currentState.Load().(MockState) {
 					case INITIAL:
 						t.Log("Dispatching read response")
@@ -1077,9 +1021,8 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 						t.Log("Done")
 					}
 				})
-				codec := NewMessageCodec(transportInstance, loggerOption)
-				err = codec.Connect()
-				require.NoError(t, err)
+				codec := NewMessageCodec(transportInstance, _options...)
+				require.NoError(t, codec.Connect())
 				t.Cleanup(func() {
 					assert.NoError(t, codec.Disconnect())
 				})
@@ -1137,18 +1080,11 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 					close(ch)
 				})
 				args.transaction = transaction
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
-				// Setup logger
-				logger := testutils.ProduceTestingLogger(t)
-
-				loggerOption := options.WithCustomLogger(logger)
-
-				// Set the model logger to the logger above
-				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
-
-				transport := test.NewTransport(loggerOption)
+				transport := test.NewTransport(_options...)
 				transportUrl := url.URL{Scheme: "test"}
-				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, loggerOption)
+				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, _options...)
 				require.NoError(t, err)
 				type MockState uint8
 				const (
@@ -1157,7 +1093,10 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 				)
 				currentState := atomic.Value{}
 				currentState.Store(INITIAL)
+				stateChangeMutex := sync.Mutex{}
 				transportInstance.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
+					stateChangeMutex.Lock()
+					defer stateChangeMutex.Unlock()
 					switch currentState.Load().(MockState) {
 					case INITIAL:
 						t.Log("Dispatching read response")
@@ -1167,9 +1106,8 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 						t.Log("Done")
 					}
 				})
-				codec := NewMessageCodec(transportInstance, loggerOption)
-				err = codec.Connect()
-				require.NoError(t, err)
+				codec := NewMessageCodec(transportInstance, _options...)
+				require.NoError(t, codec.Connect())
 				t.Cleanup(func() {
 					assert.NoError(t, codec.Disconnect())
 				})

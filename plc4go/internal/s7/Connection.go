@@ -67,7 +67,7 @@ type Connection struct {
 	tm            transactions.RequestTransactionManager
 
 	connectionId string
-	tracer       *tracer.Tracer
+	tracer       tracer.Tracer
 
 	log zerolog.Logger
 }
@@ -101,7 +101,7 @@ func (m *Connection) IsTraceEnabled() bool {
 	return m.tracer != nil
 }
 
-func (m *Connection) GetTracer() *tracer.Tracer {
+func (m *Connection) GetTracer() tracer.Tracer {
 	return m.tracer
 }
 
@@ -122,7 +122,7 @@ func (m *Connection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcCo
 				ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
 			}
 		}()
-		err := m.messageCodec.Connect()
+		err := m.messageCodec.ConnectWithContext(ctx)
 		if err != nil {
 			ch <- _default.NewDefaultPlcConnectionConnectResult(m, err)
 		}

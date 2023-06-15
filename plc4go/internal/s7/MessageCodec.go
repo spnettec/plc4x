@@ -20,11 +20,14 @@
 package s7
 
 import (
+	"context"
+
 	"github.com/apache/plc4x/plc4go/protocols/s7/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/default"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transports"
+
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 )
@@ -32,12 +35,14 @@ import (
 type MessageCodec struct {
 	_default.DefaultCodec
 
-	log zerolog.Logger
+	passLogToModel bool
+	log            zerolog.Logger
 }
 
 func NewMessageCodec(transportInstance transports.TransportInstance, _options ...options.WithOption) *MessageCodec {
 	codec := &MessageCodec{
-		log: options.ExtractCustomLogger(_options...),
+		passLogToModel: options.ExtractPassLoggerToModel(_options...),
+		log:            options.ExtractCustomLogger(_options...),
 	}
 	codec.DefaultCodec = _default.NewDefaultCodec(codec, transportInstance, _options...)
 	return codec
@@ -87,7 +92,8 @@ func (m *MessageCodec) Receive() (spi.Message, error) {
 			// TODO: Possibly clean up ...
 			return nil, nil
 		}
-		tpktPacket, err := model.TPKTPacketParse(data)
+		ctxForModel := options.GetLoggerContextForModel(context.TODO(), m.log, options.WithPassLoggerToModel(m.passLogToModel))
+		tpktPacket, err := model.TPKTPacketParse(ctxForModel, data)
 		if err != nil {
 			m.log.Warn().Err(err).Msg("error parsing")
 			// TODO: Possibly clean up ...

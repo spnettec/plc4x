@@ -222,8 +222,9 @@ func (g *Generator) generate(typeName string) {
 	g.Printf("\t\treturn err\n")
 	g.Printf("\t}\n")
 	for _, field := range fields {
+		fieldType := field.fieldType
 		if field.isDelegate {
-			g.Printf("\t\t\tif err := d.%s.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {\n", field.fieldType.(*ast.Ident).Name)
+			g.Printf("\t\t\tif err := d.%s.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {\n", fieldType.(*ast.Ident).Name)
 			g.Printf("\t\t\t\treturn err\n")
 			g.Printf("\t\t\t}\n")
 			continue
@@ -234,11 +235,57 @@ func (g *Generator) generate(typeName string) {
 			g.Printf(stringFieldSerialize, "d."+field.name+".String()", fieldNameUntitled)
 			continue
 		}
-		switch fieldType := field.fieldType.(type) {
+		needsDereference := false
+		if starFieldType, ok := fieldType.(*ast.StarExpr); ok {
+			fieldType = starFieldType.X
+			needsDereference = true
+			_ = needsDereference // TODO: implement
+		}
+		switch fieldType := fieldType.(type) {
 		case *ast.SelectorExpr:
+			{
+				// TODO: bit hacky but not sure how else we catch those ones
+				x := fieldType.X
+				sel := fieldType.Sel
+				xIdent, xIsIdent := x.(*ast.Ident)
+				if xIsIdent {
+					if xIdent.Name == "atomic" {
+						if sel.Name == "Uint32" {
+							g.Printf(uint32FieldSerialize, "d."+field.name+".Load()", fieldNameUntitled)
+							continue
+						}
+						if sel.Name == "Uint64" {
+							g.Printf(uint64FieldSerialize, "d."+field.name+".Load()", fieldNameUntitled)
+							continue
+						}
+						if sel.Name == "Int32" {
+							g.Printf(int32FieldSerialize, "d."+field.name+".Load()", fieldNameUntitled)
+							continue
+						}
+						if sel.Name == "Bool" {
+							g.Printf(boolFieldSerialize, "d."+field.name+".Load()", fieldNameUntitled)
+							continue
+						}
+						if sel.Name == "Value" {
+							g.Printf(serializableFieldTemplate, "d."+field.name+".Load()", fieldNameUntitled)
+							continue
+						}
+					}
+					if xIdent.Name == "sync" {
+						fmt.Printf("\t skipping field %s because it is %v.%v\n", fieldName, x, sel)
+						continue
+					}
+				}
+			}
 			g.Printf(serializableFieldTemplate, "d."+field.name, fieldNameUntitled)
 		case *ast.Ident:
 			switch fieldType.Name {
+			case "byte":
+				g.Printf(byteFieldSerialize, "d."+field.name, fieldNameUntitled)
+			case "int":
+				g.Printf(int64FieldSerialize, "int64(d."+field.name+")", fieldNameUntitled)
+			case "int32":
+				g.Printf(int32FieldSerialize, "int32(d."+field.name+")", fieldNameUntitled)
 			case "uint32":
 				g.Printf(uint32FieldSerialize, "d."+field.name, fieldNameUntitled)
 			case "bool":
@@ -248,19 +295,23 @@ func (g *Generator) generate(typeName string) {
 			case "error":
 				g.Printf(errorFieldSerialize, "d."+field.name, fieldNameUntitled)
 			default:
-				fmt.Printf("\t no support implemented %v\n", fieldType)
+				fmt.Printf("\t no support implemented for Ident with type %v\n", fieldType)
+				g.Printf("{\n")
 				g.Printf("_value := fmt.Sprintf(\"%%v\", d.%s)\n", fieldName)
 				g.Printf(stringFieldSerialize, "_value", fieldNameUntitled)
+				g.Printf("}\n")
 			}
 		case *ast.ArrayType:
 			g.Printf("if err := writeBuffer.PushContext(%s, utils.WithRenderAsList(true)); err != nil {\n\t\treturn err\n\t}\n", fieldNameUntitled)
 			g.Printf("for _, elem := range d.%s {", field.name)
 			switch eltType := fieldType.Elt.(type) {
-			case *ast.SelectorExpr:
+			case *ast.SelectorExpr, *ast.StarExpr:
 				g.Printf("\n\t\tvar elem any = elem\n")
 				g.Printf(serializableFieldTemplate, "elem", "\"value\"")
 			case *ast.Ident:
 				switch eltType.Name {
+				case "int":
+					g.Printf(int64FieldSerialize, "int64(d."+field.name+")", fieldNameUntitled)
 				case "uint32":
 					g.Printf(uint32FieldSerialize, "d."+field.name, fieldNameUntitled)
 				case "bool":
@@ -270,7 +321,7 @@ func (g *Generator) generate(typeName string) {
 				case "error":
 					g.Printf(errorFieldSerialize, "elem", "\"\"")
 				default:
-					fmt.Printf("\t no support implemented %v\n", fieldType)
+					fmt.Printf("\t no support implemented for Ident within ArrayType for %v\n", fieldType)
 					g.Printf("_value := fmt.Sprintf(\"%%v\", elem)\n")
 					g.Printf(stringFieldSerialize, "_value", fieldNameUntitled)
 				}
@@ -312,17 +363,21 @@ func (g *Generator) generate(typeName string) {
 				case "error":
 					g.Printf(errorFieldSerialize, "elem", "name")
 				default:
-					fmt.Printf("\t no support implemented %v\n", fieldType)
+					fmt.Printf("\t no support implemented for Ident within MapType for %v\n", fieldType)
 					g.Printf("\t\t_value := fmt.Sprintf(\"%%v\", elem)\n")
 					g.Printf(stringFieldSerialize, "_value", "name")
 				}
 			default:
-				fmt.Printf("\t no support implemented %v\n", fieldType)
+				fmt.Printf("\t no support implemented within MapType %v\n", fieldType.Value)
 				g.Printf("\t\t_value := fmt.Sprintf(\"%%v\", elem)\n")
 				g.Printf(stringFieldSerialize, "_value", "name")
 			}
 			g.Printf("\t}\n")
 			g.Printf("if err := writeBuffer.PopContext(%s, utils.WithRenderAsList(true)); err != nil {\n\t\treturn err\n\t}\n", fieldNameUntitled)
+		case *ast.ChanType:
+			g.Printf(chanFieldSerialize, "d."+field.name, fieldNameUntitled, field.name)
+		case *ast.FuncType:
+			g.Printf(funcFieldSerialize, "d."+field.name, fieldNameUntitled)
 		default:
 			fmt.Printf("no support implemented %#v\n", fieldType)
 		}
@@ -415,6 +470,13 @@ func (f *File) genDecl(node ast.Node) bool {
 					default:
 						panic(fmt.Sprintf("Only pointer to struct delegates supported now. Type %T", field.Type))
 					}
+				case *ast.SelectorExpr:
+					f.fields = append(f.fields, Field{
+						fieldType:  ft.Sel,
+						isDelegate: true,
+						isStringer: isStringer,
+					})
+					continue
 				default:
 					panic(fmt.Sprintf("Only struct delegates supported now. Type %T", field.Type))
 				}
@@ -482,8 +544,32 @@ var serializableFieldTemplate = `
 	}
 `
 
+var byteFieldSerialize = `
+	if err := writeBuffer.WriteByte(%[2]s, %[1]s); err != nil {
+		return err
+	}
+`
+
+var int32FieldSerialize = `
+	if err := writeBuffer.WriteInt32(%[2]s, 32, %[1]s); err != nil {
+		return err
+	}
+`
+
+var int64FieldSerialize = `
+	if err := writeBuffer.WriteInt64(%[2]s, 64, %[1]s); err != nil {
+		return err
+	}
+`
+
 var uint32FieldSerialize = `
 	if err := writeBuffer.WriteUint32(%[2]s, 32, %[1]s); err != nil {
+		return err
+	}
+`
+
+var uint64FieldSerialize = `
+	if err := writeBuffer.WriteUint64(%[2]s, 64, %[1]s); err != nil {
 		return err
 	}
 `
@@ -502,9 +588,23 @@ var stringFieldSerialize = `
 
 var errorFieldSerialize = `
 	if %[1]s != nil {
-		if err := writeBuffer.WriteString(%[2]s, uint32(len(%[1]s.Error())*8), "UTF-8", %[1]s.Error()); err != nil {
+		_errString := %[1]s.Error()
+		if err := writeBuffer.WriteString(%[2]s, uint32(len(_errString)*8), "UTF-8", _errString); err != nil {
 			return err
 		}
+	}
+`
+
+var chanFieldSerialize = `
+	_%[3]s_plx4gen_description := fmt.Sprintf("%%d element(s)", len(%[1]s))
+    if err := writeBuffer.WriteString(%[2]s, uint32(len(_%[3]s_plx4gen_description)*8), "UTF-8", _%[3]s_plx4gen_description); err != nil {
+		return err
+	}
+`
+
+var funcFieldSerialize = `
+	if err := writeBuffer.WriteBit(%[2]s, %[1]s != nil); err != nil {
+		return err
 	}
 `
 

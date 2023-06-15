@@ -25,6 +25,7 @@ import (
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 	"io"
 )
 
@@ -154,13 +155,15 @@ func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControl) GetLengthInBy
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConfirmedServiceRequestDeviceCommunicationControlParse(theBytes []byte, serviceRequestLength uint32) (BACnetConfirmedServiceRequestDeviceCommunicationControl, error) {
-	return BACnetConfirmedServiceRequestDeviceCommunicationControlParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
+func BACnetConfirmedServiceRequestDeviceCommunicationControlParse(ctx context.Context, theBytes []byte, serviceRequestLength uint32) (BACnetConfirmedServiceRequestDeviceCommunicationControl, error) {
+	return BACnetConfirmedServiceRequestDeviceCommunicationControlParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
 }
 
 func BACnetConfirmedServiceRequestDeviceCommunicationControlParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceRequestLength uint32) (BACnetConfirmedServiceRequestDeviceCommunicationControl, error) {
 	positionAware := readBuffer
 	_ = positionAware
+	log := zerolog.Ctx(ctx)
+	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestDeviceCommunicationControl"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConfirmedServiceRequestDeviceCommunicationControl")
 	}
@@ -177,7 +180,7 @@ func BACnetConfirmedServiceRequestDeviceCommunicationControlParseWithBuffer(ctx 
 _val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer , uint8(0) , BACnetDataType_UNSIGNED_INTEGER )
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'timeDuration' field of BACnetConfirmedServiceRequestDeviceCommunicationControl")
@@ -212,7 +215,7 @@ _enableDisable, _enableDisableErr := BACnetConfirmedServiceRequestDeviceCommunic
 _val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer , uint8(2) , BACnetDataType_CHARACTER_STRING )
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'password' field of BACnetConfirmedServiceRequestDeviceCommunicationControl")
@@ -252,6 +255,8 @@ func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControl) Serialize() (
 func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControl) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
+	log := zerolog.Ctx(ctx)
+	_ = log
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConfirmedServiceRequestDeviceCommunicationControl"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for BACnetConfirmedServiceRequestDeviceCommunicationControl")

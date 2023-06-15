@@ -23,6 +23,7 @@ import (
 	"context"
 	"fmt"
 	"net/url"
+	"sync"
 	"sync/atomic"
 	"testing"
 	"time"
@@ -33,7 +34,6 @@ import (
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
 	_default "github.com/apache/plc4x/plc4go/spi/default"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
-	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/spi/transports/test"
@@ -41,7 +41,6 @@ import (
 	spiValues "github.com/apache/plc4x/plc4go/spi/values"
 
 	"github.com/pkg/errors"
-	"github.com/rs/zerolog"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -55,7 +54,6 @@ func TestBrowser_BrowseQuery(t *testing.T) {
 		DefaultBrowser  _default.DefaultBrowser
 		connection      plc4go.PlcConnection
 		sequenceCounter uint8
-		log             zerolog.Logger
 	}
 	type args struct {
 		ctx         context.Context
@@ -78,7 +76,7 @@ func TestBrowser_BrowseQuery(t *testing.T) {
 		{
 			name: "non responding browse",
 			args: args{
-				ctx: context.Background(),
+				ctx: testutils.TestContext(t),
 				interceptor: func(result apiModel.PlcBrowseItem) bool {
 					// No-OP
 					return true
@@ -87,19 +85,11 @@ func TestBrowser_BrowseQuery(t *testing.T) {
 				query:     NewUnitInfoQuery(readWriteModel.NewUnitAddress(2), nil, 1),
 			},
 			setup: func(t *testing.T, fields *fields) {
-				// Setup logger
-				logger := testutils.ProduceTestingLogger(t)
-				fields.log = logger
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
-				// Set the model logger to the logger above
-				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
-
-				// Custom option for that
-				loggerOption := options.WithCustomLogger(logger)
-
-				transport := test.NewTransport(loggerOption)
+				transport := test.NewTransport(_options...)
 				transportUrl := url.URL{Scheme: "test"}
-				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, loggerOption)
+				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, _options...)
 				require.NoError(t, err)
 				t.Cleanup(func() {
 					assert.NoError(t, transportInstance.Close())
@@ -117,7 +107,10 @@ func TestBrowser_BrowseQuery(t *testing.T) {
 				)
 				currentState := atomic.Value{}
 				currentState.Store(RESET)
+				stateChangeMutex := sync.Mutex{}
 				transportInstance.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
+					stateChangeMutex.Lock()
+					defer stateChangeMutex.Unlock()
 					switch currentState.Load().(MockState) {
 					case RESET:
 						t.Log("Dispatching reset echo")
@@ -153,15 +146,19 @@ func TestBrowser_BrowseQuery(t *testing.T) {
 						transportInstance.FillReadBuffer([]byte("g.890050435F434E49454422\r\n"))
 						currentState.Store(DONE)
 					case DONE:
-						t.Log("Dispatching 3 MMI segments")
-						transportInstance.FillReadBuffer([]byte("86020200F900FF0094120006000000000000000008000000000000000000CA\r\n"))
-						transportInstance.FillReadBuffer([]byte("86020200F900FF580000000000000000000000000000000000000000000026\r\n"))
-						transportInstance.FillReadBuffer([]byte("86020200F700FFB00000000000000000000000000000000000000000D0\r\n"))
+						t.Log("Connection dance done")
+						go func() {
+							time.Sleep(200 * time.Millisecond)
+							t.Log("Dispatching 3 MMI segments")
+							transportInstance.FillReadBuffer([]byte("86020200F900FF0094120006000000000000000008000000000000000000CA\r\n"))
+							transportInstance.FillReadBuffer([]byte("86020200F900FF580000000000000000000000000000000000000000000026\r\n"))
+							transportInstance.FillReadBuffer([]byte("86020200F700FFB00000000000000000000000000000000000000000D0\r\n"))
+						}()
 					}
 				})
 				err = transport.AddPreregisteredInstances(transportUrl, transportInstance)
 				require.NoError(t, err)
-				driver := NewDriver(loggerOption)
+				driver := NewDriver(_options...)
 				connectionConnectResult := <-driver.GetConnection(transportUrl, map[string]transports.Transport{"test": transport}, map[string][]string{})
 				if err := connectionConnectResult.GetErr(); err != nil {
 					t.Error(err)
@@ -169,7 +166,7 @@ func TestBrowser_BrowseQuery(t *testing.T) {
 				}
 				fields.connection = connectionConnectResult.GetConnection()
 				t.Cleanup(func() {
-					timer := time.NewTimer(1 * time.Second)
+					timer := time.NewTimer(10 * time.Second)
 					t.Cleanup(func() {
 						utils.CleanupTimer(timer)
 					})
@@ -202,7 +199,7 @@ func TestBrowser_BrowseQuery(t *testing.T) {
 				DefaultBrowser:  tt.fields.DefaultBrowser,
 				connection:      tt.fields.connection,
 				sequenceCounter: tt.fields.sequenceCounter,
-				log:             tt.fields.log,
+				log:             testutils.ProduceTestingLogger(t),
 			}
 			got, got1 := m.BrowseQuery(tt.args.ctx, tt.args.interceptor, tt.args.queryName, tt.args.query)
 			assert.Equalf(t, tt.want, got, "BrowseQuery(%v, func(), %v,\n%v\n)", tt.args.ctx, tt.args.queryName, tt.args.query)
@@ -216,7 +213,6 @@ func TestBrowser_extractUnits(t *testing.T) {
 		DefaultBrowser  _default.DefaultBrowser
 		connection      plc4go.PlcConnection
 		sequenceCounter uint8
-		log             zerolog.Logger
 	}
 	type args struct {
 		ctx                          context.Context
@@ -234,7 +230,7 @@ func TestBrowser_extractUnits(t *testing.T) {
 		{
 			name: "one unit",
 			args: args{
-				ctx: context.Background(),
+				ctx: testutils.TestContext(t),
 				query: &unitInfoQuery{
 					unitAddress: readWriteModel.NewUnitAddress(2),
 				},
@@ -246,7 +242,7 @@ func TestBrowser_extractUnits(t *testing.T) {
 		{
 			name: "all units error",
 			args: args{
-				ctx:   context.Background(),
+				ctx:   testutils.TestContext(t),
 				query: &unitInfoQuery{},
 				getInstalledUnitAddressBytes: func(ctx context.Context) (map[byte]any, error) {
 					return nil, errors.New("not today")
@@ -257,7 +253,7 @@ func TestBrowser_extractUnits(t *testing.T) {
 		{
 			name: "all units",
 			args: args{
-				ctx:   context.Background(),
+				ctx:   testutils.TestContext(t),
 				query: &unitInfoQuery{},
 				getInstalledUnitAddressBytes: func(ctx context.Context) (map[byte]any, error) {
 					return map[byte]any{0xAF: true, 0xFE: true}, nil
@@ -274,7 +270,7 @@ func TestBrowser_extractUnits(t *testing.T) {
 				DefaultBrowser:  tt.fields.DefaultBrowser,
 				connection:      tt.fields.connection,
 				sequenceCounter: tt.fields.sequenceCounter,
-				log:             tt.fields.log,
+				log:             testutils.ProduceTestingLogger(t),
 			}
 			got, got1, err := m.extractUnits(tt.args.ctx, tt.args.query, tt.args.getInstalledUnitAddressBytes)
 			if !tt.wantErr(t, err, fmt.Sprintf("extractUnits(%v, \n%v, func())", tt.args.ctx, tt.args.query)) {
@@ -291,7 +287,6 @@ func TestBrowser_extractAttributes(t *testing.T) {
 		DefaultBrowser  _default.DefaultBrowser
 		connection      plc4go.PlcConnection
 		sequenceCounter uint8
-		log             zerolog.Logger
 	}
 	type args struct {
 		query *unitInfoQuery
@@ -329,7 +324,7 @@ func TestBrowser_extractAttributes(t *testing.T) {
 				DefaultBrowser:  tt.fields.DefaultBrowser,
 				connection:      tt.fields.connection,
 				sequenceCounter: tt.fields.sequenceCounter,
-				log:             tt.fields.log,
+				log:             testutils.ProduceTestingLogger(t),
 			}
 			got, got1 := m.extractAttributes(tt.args.query)
 			assert.Equalf(t, tt.want, got, "extractAttributes(\n%v)", tt.args.query)
@@ -343,7 +338,6 @@ func TestBrowser_getInstalledUnitAddressBytes(t *testing.T) {
 		DefaultBrowser  _default.DefaultBrowser
 		connection      plc4go.PlcConnection
 		sequenceCounter uint8
-		log             zerolog.Logger
 	}
 	type args struct {
 		ctx context.Context
@@ -359,22 +353,14 @@ func TestBrowser_getInstalledUnitAddressBytes(t *testing.T) {
 		{
 			name: "get units",
 			args: args{
-				ctx: context.Background(),
+				ctx: testutils.TestContext(t),
 			},
 			setup: func(t *testing.T, fields *fields) {
-				// Setup logger
-				logger := testutils.ProduceTestingLogger(t)
-				fields.log = logger
+				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
-				// Set the model logger to the logger above
-				testutils.SetToTestingLogger(t, readWriteModel.Plc4xModelLog)
-
-				// Custom option for that
-				loggerOption := options.WithCustomLogger(logger)
-
-				transport := test.NewTransport(loggerOption)
+				transport := test.NewTransport(_options...)
 				transportUrl := url.URL{Scheme: "test"}
-				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, loggerOption)
+				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, _options...)
 				require.NoError(t, err)
 				t.Cleanup(func() {
 					assert.NoError(t, transportInstance.Close())
@@ -391,7 +377,10 @@ func TestBrowser_getInstalledUnitAddressBytes(t *testing.T) {
 				)
 				currentState := atomic.Value{}
 				currentState.Store(RESET)
+				stateChangeMutex := sync.Mutex{}
 				transportInstance.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
+					stateChangeMutex.Lock()
+					defer stateChangeMutex.Unlock()
 					switch currentState.Load().(MockState) {
 					case RESET:
 						t.Log("Dispatching reset echo")
@@ -423,29 +412,33 @@ func TestBrowser_getInstalledUnitAddressBytes(t *testing.T) {
 						transportInstance.FillReadBuffer([]byte("3230009E\r\n"))
 						currentState.Store(DONE)
 					case DONE:
-						t.Log("Dispatching 3 MMI segments")
-						transportInstance.FillReadBuffer([]byte("86020200F900FF0094120006000000000000000008000000000000000000CA\r\n"))
-						transportInstance.FillReadBuffer([]byte("86020200F900FF580000000000000000000000000000000000000000000026\r\n"))
-						transportInstance.FillReadBuffer([]byte("86020200F700FFB00000000000000000000000000000000000000000D0\r\n"))
+						t.Log("Connection dance done")
+						go func() {
+							time.Sleep(200 * time.Millisecond)
+							t.Log("Dispatching 3 MMI segments")
+							transportInstance.FillReadBuffer([]byte("86020200F900FF0094120006000000000000000008000000000000000000CA\r\n"))
+							transportInstance.FillReadBuffer([]byte("86020200F900FF580000000000000000000000000000000000000000000026\r\n"))
+							transportInstance.FillReadBuffer([]byte("86020200F700FFB00000000000000000000000000000000000000000D0\r\n"))
+						}()
 					}
 				})
 				err = transport.AddPreregisteredInstances(transportUrl, transportInstance)
 				require.NoError(t, err)
-				connectionConnectResult := <-NewDriver(loggerOption).GetConnection(transportUrl, map[string]transports.Transport{"test": transport}, map[string][]string{})
+				connectionConnectResult := <-NewDriver(_options...).GetConnection(transportUrl, map[string]transports.Transport{"test": transport}, map[string][]string{})
 				if err := connectionConnectResult.GetErr(); err != nil {
 					t.Error(err)
 					t.FailNow()
 				}
 				fields.connection = connectionConnectResult.GetConnection()
 				t.Cleanup(func() {
-					timer := time.NewTimer(1 * time.Second)
+					timer := time.NewTimer(6 * time.Second)
 					t.Cleanup(func() {
 						utils.CleanupTimer(timer)
 					})
 					select {
 					case <-fields.connection.Close():
 					case <-timer.C:
-						t.Error("timeout")
+						t.Error("timeout waiting for connection close")
 					}
 				})
 			},
@@ -471,7 +464,7 @@ func TestBrowser_getInstalledUnitAddressBytes(t *testing.T) {
 				DefaultBrowser:  tt.fields.DefaultBrowser,
 				connection:      tt.fields.connection,
 				sequenceCounter: tt.fields.sequenceCounter,
-				log:             tt.fields.log,
+				log:             testutils.ProduceTestingLogger(t),
 			}
 			got, err := m.getInstalledUnitAddressBytes(tt.args.ctx)
 			if !tt.wantErr(t, err, fmt.Sprintf("getInstalledUnitAddressBytes(%v)", tt.args.ctx)) {

@@ -23,6 +23,8 @@ import (
 	"context"
 	"fmt"
 	"runtime/debug"
+	"sync"
+	"sync/atomic"
 	"time"
 
 	"github.com/apache/plc4x/plc4go/pkg/api/config"
@@ -44,6 +46,7 @@ type DefaultCodecRequirements interface {
 
 // DefaultCodec is a default codec implementation which has so sensitive defaults for message handling and a built-in worker
 type DefaultCodec interface {
+	utils.Serializable
 	spi.MessageCodec
 	spi.TransportInstanceExposer
 }
@@ -78,15 +81,22 @@ type withCustomMessageHandler struct {
 	customMessageHandler func(codec DefaultCodecRequirements, message spi.Message) bool
 }
 
+//go:generate go run ../../tools/plc4xgenerator/gen.go -type=defaultCodec
 type defaultCodec struct {
-	DefaultCodecRequirements
-	transportInstance             transports.TransportInstance
-	defaultIncomingMessageChannel chan spi.Message
+	DefaultCodecRequirements `ignore:"true"`
+
+	transportInstance transports.TransportInstance
+
 	expectations                  []spi.Expectation
-	running                       bool
+	defaultIncomingMessageChannel chan spi.Message
 	customMessageHandling         func(codec DefaultCodecRequirements, message spi.Message) bool
 
-	log zerolog.Logger
+	expectationsChangeMutex sync.RWMutex
+	running                 atomic.Bool
+	stateChange             sync.Mutex
+	activeWorker            sync.WaitGroup
+
+	log zerolog.Logger `ignore:"true"`
 }
 
 func buildDefaultCodec(defaultCodecRequirements DefaultCodecRequirements, transportInstance transports.TransportInstance, _options ...options.WithOption) DefaultCodec {
@@ -105,7 +115,6 @@ func buildDefaultCodec(defaultCodecRequirements DefaultCodecRequirements, transp
 		transportInstance:             transportInstance,
 		defaultIncomingMessageChannel: make(chan spi.Message),
 		expectations:                  []spi.Expectation{},
-		running:                       false,
 		customMessageHandling:         customMessageHandler,
 		log:                           logger,
 	}
@@ -117,28 +126,28 @@ func buildDefaultCodec(defaultCodecRequirements DefaultCodecRequirements, transp
 ///////////////////////////////////////
 ///////////////////////////////////////
 
-func (m *DefaultExpectation) GetContext() context.Context {
-	return m.Context
+func (d *DefaultExpectation) GetContext() context.Context {
+	return d.Context
 }
 
-func (m *DefaultExpectation) GetExpiration() time.Time {
-	return m.Expiration
+func (d *DefaultExpectation) GetExpiration() time.Time {
+	return d.Expiration
 }
 
-func (m *DefaultExpectation) GetAcceptsMessage() spi.AcceptsMessage {
-	return m.AcceptsMessage
+func (d *DefaultExpectation) GetAcceptsMessage() spi.AcceptsMessage {
+	return d.AcceptsMessage
 }
 
-func (m *DefaultExpectation) GetHandleMessage() spi.HandleMessage {
-	return m.HandleMessage
+func (d *DefaultExpectation) GetHandleMessage() spi.HandleMessage {
+	return d.HandleMessage
 }
 
-func (m *DefaultExpectation) GetHandleError() spi.HandleError {
-	return m.HandleError
+func (d *DefaultExpectation) GetHandleError() spi.HandleError {
+	return d.HandleError
 }
 
-func (m *DefaultExpectation) String() string {
-	return fmt.Sprintf("Expectation(expires at %v)", m.Expiration)
+func (d *DefaultExpectation) String() string {
+	return fmt.Sprintf("Expectation(expires at %v)", d.Expiration)
 }
 
 func (m *defaultCodec) GetTransportInstance() transports.TransportInstance {
@@ -154,6 +163,11 @@ func (m *defaultCodec) Connect() error {
 }
 
 func (m *defaultCodec) ConnectWithContext(ctx context.Context) error {
+	m.stateChange.Lock()
+	defer m.stateChange.Unlock()
+	if m.running.Load() {
+		return errors.New("already running")
+	}
 	m.log.Trace().Msg("Connecting")
 	if !m.transportInstance.IsConnected() {
 		if err := m.transportInstance.ConnectWithContext(ctx); err != nil {
@@ -163,29 +177,39 @@ func (m *defaultCodec) ConnectWithContext(ctx context.Context) error {
 		m.log.Info().Msg("Transport instance already connected")
 	}
 
-	if !m.running {
-		m.log.Debug().Msg("Message codec currently not running, starting worker now")
-		go m.Work(m.DefaultCodecRequirements)
-	}
-	m.running = true
+	m.log.Debug().Msg("Message codec currently not running, starting worker now")
+	m.activeWorker.Add(1)
+	go m.Work(m.DefaultCodecRequirements)
+	m.running.Store(true)
 	return nil
 }
 
 func (m *defaultCodec) Disconnect() error {
-	m.log.Trace().Msg("Disconnecting")
-	m.running = false
-	if m.transportInstance == nil {
-		// TODO: check if we move that case to the constructor
-		return nil
+	m.stateChange.Lock()
+	defer m.stateChange.Unlock()
+	if !m.running.Load() {
+		return errors.New("already disconnected")
 	}
-	return m.transportInstance.Close()
+	m.log.Trace().Msg("Disconnecting")
+	m.running.Store(false)
+	if m.transportInstance != nil {
+		if err := m.transportInstance.Close(); err != nil {
+			return errors.Wrap(err, "error closing transport instance")
+		}
+	}
+	m.log.Trace().Msg("Waiting for worker to shutdown")
+	m.activeWorker.Wait()
+	m.log.Trace().Msg("Done disconnecting")
+	return nil
 }
 
 func (m *defaultCodec) IsRunning() bool {
-	return m.running
+	return m.running.Load()
 }
 
 func (m *defaultCodec) Expect(ctx context.Context, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError, ttl time.Duration) error {
+	m.expectationsChangeMutex.Lock()
+	defer m.expectationsChangeMutex.Unlock()
 	expectation := &DefaultExpectation{
 		Context:        ctx,
 		Expiration:     time.Now().Add(ttl),
@@ -211,6 +235,8 @@ func (m *defaultCodec) SendRequest(ctx context.Context, message spi.Message, acc
 }
 
 func (m *defaultCodec) TimeoutExpectations(now time.Time) {
+	m.expectationsChangeMutex.Lock() // TODO: Note: would be nice if this is a read mutex which can be upgraded
+	defer m.expectationsChangeMutex.Unlock()
 	for i := 0; i < len(m.expectations); i++ {
 		expectation := m.expectations[i]
 		// Check if this expectation has expired.
@@ -241,20 +267,22 @@ func (m *defaultCodec) TimeoutExpectations(now time.Time) {
 }
 
 func (m *defaultCodec) HandleMessages(message spi.Message) bool {
+	m.expectationsChangeMutex.Lock() // TODO: Note: would be nice if this is a read mutex which can be upgraded
+	defer m.expectationsChangeMutex.Unlock()
 	messageHandled := false
 	m.log.Trace().Msgf("Current number of expectations: %d", len(m.expectations))
 	for index, expectation := range m.expectations {
+		m.log.Trace().Msgf("Checking expectation %s", expectation)
 		// Check if the current message matches the expectations
 		// If it does, let it handle the message.
 		if accepts := expectation.GetAcceptsMessage()(message); accepts {
 			m.log.Debug().Stringer("expectation", expectation).Msg("accepts message")
 			// TODO: decouple from worker thread
-			err := expectation.GetHandleMessage()(message)
-			if err != nil {
+			if err := expectation.GetHandleMessage()(message); err != nil {
+				m.log.Debug().Stringer("expectation", expectation).Err(err).Msg("errored handling the message")
 				// Pass the error to the error handler.
 				// TODO: decouple from worker thread
-				err := expectation.GetHandleError()(err)
-				if err != nil {
+				if err := expectation.GetHandleError()(err); err != nil {
 					m.log.Error().Err(err).Msg("Got an error handling error on expectation")
 				}
 				continue
@@ -266,25 +294,32 @@ func (m *defaultCodec) HandleMessages(message spi.Message) bool {
 			} else if (index + 1) < len(m.expectations) {
 				m.expectations = append(m.expectations[:index], m.expectations[index+1:]...)
 			}
+		} else {
+			m.log.Trace().Stringer("expectation", expectation).Msg("doesn't accept message")
 		}
 	}
+	m.log.Trace().Msgf("handled message = %t", messageHandled)
 	return messageHandled
 }
 
 func (m *defaultCodec) Work(codec DefaultCodecRequirements) {
+	defer m.activeWorker.Done()
 	workerLog := m.log.With().Logger()
 	if !config.TraceDefaultMessageCodecWorker {
 		workerLog = zerolog.Nop()
 	}
+	workerLog.Trace().Msg("Starting work")
+	defer workerLog.Trace().Msg("work ended")
 
 	defer func(workerLog zerolog.Logger) {
 		if err := recover(); err != nil {
 			// TODO: If this is an error, cast it to an error and log it with "Err(err)"
 			m.log.Error().Msgf("panic-ed %v. Stack: %s", err, debug.Stack())
 		}
-		if m.running {
+		if m.running.Load() {
 			workerLog.Warn().Msg("Keep running")
-			m.Work(codec)
+			m.activeWorker.Add(1)
+			go m.Work(codec)
 		} else {
 			workerLog.Info().Msg("Worker terminated")
 		}
@@ -292,14 +327,17 @@ func (m *defaultCodec) Work(codec DefaultCodecRequirements) {
 
 	// Start an endless loop
 mainLoop:
-	for m.running {
+	for m.running.Load() {
 		workerLog.Trace().Msg("Working")
 		// Check for any expired expectations.
 		// (Doing this outside the loop lets us expire expectations even if no input is coming in)
 		now := time.Now()
 
 		// Guard against empty expectations
-		if len(m.expectations) <= 0 && m.customMessageHandling == nil {
+		m.expectationsChangeMutex.RLock()
+		numberOfExpectations := len(m.expectations)
+		m.expectationsChangeMutex.RUnlock()
+		if numberOfExpectations <= 0 && m.customMessageHandling == nil {
 			workerLog.Trace().Msg("no available expectations")
 			// Sleep for 10ms
 			time.Sleep(time.Millisecond * 10)

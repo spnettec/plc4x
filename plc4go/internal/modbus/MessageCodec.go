@@ -20,11 +20,14 @@
 package modbus
 
 import (
+	"context"
+
 	"github.com/apache/plc4x/plc4go/protocols/modbus/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/default"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transports"
+
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 )
@@ -33,12 +36,14 @@ type MessageCodec struct {
 	_default.DefaultCodec
 	expectationCounter int32
 
-	log zerolog.Logger
+	passLogToModel bool
+	log            zerolog.Logger
 }
 
 func NewMessageCodec(transportInstance transports.TransportInstance, _options ...options.WithOption) *MessageCodec {
 	codec := &MessageCodec{
 		expectationCounter: 1,
+		passLogToModel:     options.ExtractPassLoggerToModel(_options...),
 		log:                options.ExtractCustomLogger(_options...),
 	}
 	codec.DefaultCodec = _default.NewDefaultCodec(codec, transportInstance)
@@ -88,7 +93,8 @@ func (m *MessageCodec) Receive() (spi.Message, error) {
 			// TODO: Possibly clean up ...
 			return nil, nil
 		}
-		tcpAdu, err := model.ModbusTcpADUParse(data, model.DriverType_MODBUS_TCP, true)
+		ctxForModel := options.GetLoggerContextForModel(context.TODO(), m.log, options.WithPassLoggerToModel(m.passLogToModel))
+		tcpAdu, err := model.ModbusTcpADUParse(ctxForModel, data, model.DriverType_MODBUS_TCP, true)
 		if err != nil {
 			m.log.Warn().Err(err).Msg("error parsing")
 			// TODO: Possibly clean up ...

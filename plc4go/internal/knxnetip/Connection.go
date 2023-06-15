@@ -136,9 +136,10 @@ type Connection struct {
 	handleTunnelingRequests bool
 
 	connectionId string
-	tracer       *tracer.Tracer
+	tracer       tracer.Tracer
 
-	log zerolog.Logger
+	passLogToModel bool
+	log            zerolog.Logger
 }
 
 func (m *Connection) String() string {
@@ -189,6 +190,7 @@ func NewConnection(transportInstance transports.TransportInstance, connectionOpt
 		defaultTtl:              time.Second * 10,
 		DeviceConnections:       map[driverModel.KnxAddress]*KnxDeviceConnection{},
 		handleTunnelingRequests: true,
+		passLogToModel:          options.ExtractPassLoggerToModel(_options...),
 		log:                     options.ExtractCustomLogger(_options...),
 	}
 	connection.connectionTtl = connection.defaultTtl * 2
@@ -217,7 +219,7 @@ func (m *Connection) IsTraceEnabled() bool {
 	return m.tracer != nil
 }
 
-func (m *Connection) GetTracer() *tracer.Tracer {
+func (m *Connection) GetTracer() tracer.Tracer {
 	return m.tracer
 }
 
@@ -238,7 +240,7 @@ func (m *Connection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcCo
 			}
 		}()
 		// Open the UDP Connection
-		err := m.messageCodec.Connect()
+		err := m.messageCodec.ConnectWithContext(ctx)
 		if err != nil {
 			m.doSomethingAndClose(func() { sendResult(nil, errors.Wrap(err, "error opening connection")) })
 			return

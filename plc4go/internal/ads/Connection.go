@@ -52,11 +52,12 @@ type Connection struct {
 	requestInterceptor interceptors.RequestInterceptor
 	configuration      model.Configuration
 	driverContext      *DriverContext
-	tracer             *tracer.Tracer
+	tracer             tracer.Tracer
 
 	subscriptions map[uint32]apiModel.PlcSubscriptionHandle
 
-	log zerolog.Logger
+	passLogToModel bool
+	log            zerolog.Logger
 }
 
 func NewConnection(messageCodec spi.MessageCodec, configuration model.Configuration, connectionOptions map[string][]string, _options ...options.WithOption) (*Connection, error) {
@@ -65,11 +66,12 @@ func NewConnection(messageCodec spi.MessageCodec, configuration model.Configurat
 		return nil, err
 	}
 	connection := &Connection{
-		messageCodec:  messageCodec,
-		configuration: configuration,
-		driverContext: driverContext,
-		subscriptions: map[uint32]apiModel.PlcSubscriptionHandle{},
-		log:           options.ExtractCustomLogger(_options...),
+		messageCodec:   messageCodec,
+		configuration:  configuration,
+		driverContext:  driverContext,
+		subscriptions:  map[uint32]apiModel.PlcSubscriptionHandle{},
+		passLogToModel: options.ExtractPassLoggerToModel(_options...),
+		log:            options.ExtractCustomLogger(_options...),
 	}
 	if traceEnabledOption, ok := connectionOptions["traceEnabled"]; ok {
 		if len(traceEnabledOption) == 1 {
@@ -96,7 +98,7 @@ func (m *Connection) IsTraceEnabled() bool {
 	return m.tracer != nil
 }
 
-func (m *Connection) GetTracer() *tracer.Tracer {
+func (m *Connection) GetTracer() tracer.Tracer {
 	return m.tracer
 }
 
@@ -117,7 +119,7 @@ func (m *Connection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcCo
 				ch <- _default.NewDefaultPlcConnectionCloseResult(nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
 			}
 		}()
-		err := m.messageCodec.Connect()
+		err := m.messageCodec.ConnectWithContext(ctx)
 		if err != nil {
 			ch <- _default.NewDefaultPlcConnectionConnectResult(m, err)
 		}
@@ -261,7 +263,8 @@ func (m *Connection) readDataTypeTableAndSymbolTableSizes(ctx context.Context) (
 	}
 
 	// Parse and process the response
-	tableSizes, err := readWriteModel.AdsTableSizesParse(response.GetData())
+	ctxForModel := options.GetLoggerContextForModel(ctx, m.log, options.WithPassLoggerToModel(m.passLogToModel))
+	tableSizes, err := readWriteModel.AdsTableSizesParse(ctxForModel, response.GetData())
 	if err != nil {
 		return nil, fmt.Errorf("error parsing table: %v", err)
 	}

@@ -22,7 +22,6 @@ package transactions
 import (
 	"container/list"
 	"context"
-	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/pool"
 	"io"
@@ -46,21 +45,6 @@ func init() {
 
 type RequestTransactionRunnable func(RequestTransaction)
 
-// RequestTransaction represents a transaction
-type RequestTransaction interface {
-	fmt.Stringer
-	// FailRequest signals that this transaction has failed
-	FailRequest(err error) error
-	// EndRequest signals that this transaction is done
-	EndRequest() error
-	// Submit submits a RequestTransactionRunnable to the RequestTransactionManager
-	Submit(operation RequestTransactionRunnable)
-	// AwaitCompletion wait for this RequestTransaction to finish. Returns an error if it finished unsuccessful
-	AwaitCompletion(ctx context.Context) error
-	// IsCompleted indicates that the that this RequestTransaction is completed
-	IsCompleted() bool
-}
-
 // RequestTransactionManager handles transactions
 type RequestTransactionManager interface {
 	io.Closer
@@ -76,7 +60,7 @@ type RequestTransactionManager interface {
 func NewRequestTransactionManager(numberOfConcurrentRequests int, _options ...options.WithOption) RequestTransactionManager {
 	_requestTransactionManager := &requestTransactionManager{
 		numberOfConcurrentRequests: numberOfConcurrentRequests,
-		transactionId:              0,
+		currentTransactionId:       0,
 		workLog:                    *list.New(),
 		executor:                   sharedExecutorInstance,
 
@@ -109,39 +93,26 @@ type withCustomExecutor struct {
 	executor pool.Executor
 }
 
-type requestTransaction struct {
-	parent        *requestTransactionManager
-	transactionId int32
-
-	/** The initial operation to perform to kick off the request */
-	operation        pool.Runnable
-	completionFuture pool.CompletionFuture
-
-	stateChangeMutex sync.Mutex
-	completed        bool
-
-	transactionLog zerolog.Logger
-}
-
+//go:generate go run ../../tools/plc4xgenerator/gen.go -type=requestTransactionManager
 type requestTransactionManager struct {
-	runningRequests []*requestTransaction
-	// How many transactions are allowed to run at the same time?
-	numberOfConcurrentRequests int
-	// Assigns each request a Unique Transaction Id, especially important for failure handling
-	transactionId    int32
-	transactionMutex sync.RWMutex
-	// Important, this is a FIFO Queue for Fairness!
-	workLog      list.List
+	runningRequests     []*requestTransaction
+	runningRequestMutex sync.RWMutex
+
+	numberOfConcurrentRequests int // How many transactions are allowed to run at the same time?
+
+	currentTransactionId int32 // Assigns each request a Unique Transaction Id, especially important for failure handling
+	transactionMutex     sync.RWMutex
+
+	workLog      list.List `ignore:"true"` // Important, this is a FIFO Queue for Fairness! // TODO: no support for list yet
 	workLogMutex sync.RWMutex
-	executor     pool.Executor
 
-	// Indicates it this rtm is in shutdown
-	shutdown bool
+	executor pool.Executor
 
-	// flag set to true if it should trace transactions
-	traceTransactionManagerTransactions bool
+	shutdown bool // Indicates it this rtm is in shutdown
 
-	log zerolog.Logger
+	traceTransactionManagerTransactions bool // flag set to true if it should trace transactions
+
+	log zerolog.Logger `ignore:"true"`
 }
 
 //
@@ -154,11 +125,14 @@ func (r *requestTransactionManager) SetNumberOfConcurrentRequests(numberOfConcur
 	r.log.Info().Msgf("Setting new number of concurrent requests %d", numberOfConcurrentRequests)
 	// If we reduced the number of concurrent requests and more requests are in-flight
 	// than should be, at least log a warning.
-	if numberOfConcurrentRequests < len(r.runningRequests) {
+	r.runningRequestMutex.Lock()
+	runningRequestLength := len(r.runningRequests)
+	if numberOfConcurrentRequests < runningRequestLength {
 		r.log.Warn().Msg("The number of concurrent requests was reduced and currently more requests are in flight.")
 	}
 
 	r.numberOfConcurrentRequests = numberOfConcurrentRequests
+	r.runningRequestMutex.Unlock()
 
 	// As we might have increased the number, try to send some more requests.
 	r.processWorklog()
@@ -177,11 +151,13 @@ func (r *requestTransactionManager) submitTransaction(transaction *requestTransa
 func (r *requestTransactionManager) processWorklog() {
 	r.workLogMutex.RLock()
 	defer r.workLogMutex.RUnlock()
+	r.runningRequestMutex.Lock()
+	defer r.runningRequestMutex.Unlock()
 	r.log.Debug().Msgf("Processing work log with size of %d (%d concurrent requests allowed)", r.workLog.Len(), r.numberOfConcurrentRequests)
 	for len(r.runningRequests) < r.numberOfConcurrentRequests && r.workLog.Len() > 0 {
 		front := r.workLog.Front()
 		next := front.Value.(*requestTransaction)
-		r.log.Debug().Msgf("Handling next %v. (Adding to running requests (length: %d))", next, len(r.runningRequests))
+		r.log.Debug().Msgf("Handling next\n%v\n. (Adding to running requests (length: %d))", next, len(r.runningRequests))
 		r.runningRequests = append(r.runningRequests, next)
 		completionFuture := r.executor.Submit(context.Background(), next.transactionId, next.operation)
 		next.completionFuture = completionFuture
@@ -189,24 +165,12 @@ func (r *requestTransactionManager) processWorklog() {
 	}
 }
 
-type completedFuture struct {
-	err error
-}
-
-func (c completedFuture) AwaitCompletion(_ context.Context) error {
-	return c.err
-}
-
-func (completedFuture) Cancel(_ bool, _ error) {
-	// No op
-}
-
 func (r *requestTransactionManager) StartTransaction() RequestTransaction {
 	r.transactionMutex.Lock()
 	defer r.transactionMutex.Unlock()
-	currentTransactionId := r.transactionId
-	r.transactionId += 1
-	transactionLogger := r.log.With().Int32("transactionId", currentTransactionId).Logger()
+	currentTransactionId := r.currentTransactionId
+	r.currentTransactionId += 1
+	transactionLogger := r.log.With().Int32("currentTransactionId", currentTransactionId).Logger()
 	if !r.traceTransactionManagerTransactions {
 		transactionLogger = zerolog.Nop()
 	}
@@ -217,12 +181,14 @@ func (r *requestTransactionManager) StartTransaction() RequestTransaction {
 	}
 	if r.shutdown {
 		transaction.completed = true
-		transaction.completionFuture = completedFuture{errors.New("request transaction manager in shutdown")}
+		transaction.completionFuture = &completedFuture{errors.New("request transaction manager in shutdown")}
 	}
 	return transaction
 }
 
 func (r *requestTransactionManager) getNumberOfActiveRequests() int {
+	r.runningRequestMutex.RLock()
+	defer r.runningRequestMutex.RUnlock()
 	return len(r.runningRequests)
 }
 
@@ -234,6 +200,7 @@ func (r *requestTransactionManager) failRequest(transaction *requestTransaction,
 }
 
 func (r *requestTransactionManager) endRequest(transaction *requestTransaction) error {
+	r.runningRequestMutex.Lock()
 	transaction.transactionLog.Debug().Msg("Trying to find a existing transaction")
 	found := false
 	index := -1
@@ -250,6 +217,7 @@ func (r *requestTransactionManager) endRequest(transaction *requestTransaction) 
 	}
 	transaction.transactionLog.Debug().Msg("Removing the existing transaction transaction")
 	r.runningRequests = append(r.runningRequests[:index], r.runningRequests[index+1:]...)
+	r.runningRequestMutex.Unlock()
 	// Process the workLog, a slot should be free now
 	transaction.transactionLog.Debug().Msg("Processing the workLog")
 	r.processWorklog()
@@ -265,97 +233,29 @@ func (r *requestTransactionManager) CloseGraceful(timeout time.Duration) error {
 	if timeout > 0 {
 		timer := time.NewTimer(timeout)
 		defer utils.CleanupTimer(timer)
-		signal := make(chan struct{})
-		go func() {
-			for {
-				if len(r.runningRequests) == 0 {
-					break
-				}
+	gracefulLoop:
+		for {
+			r.runningRequestMutex.RLock()
+			numberRunningRequest := len(r.runningRequests)
+			r.runningRequestMutex.RUnlock()
+			if numberRunningRequest == 0 {
+				break gracefulLoop
+			}
+			select {
+			case <-timer.C:
+				r.log.Warn().Msgf("timeout after %d", timeout)
+				break gracefulLoop
+			default:
 				time.Sleep(10 * time.Millisecond)
 			}
-			close(signal)
-		}()
-		select {
-		case <-timer.C:
-			r.log.Warn().Msgf("timout after %d", timeout)
-		case <-signal:
 		}
 	}
 	r.transactionMutex.Lock()
 	defer r.transactionMutex.Unlock()
-	r.workLogMutex.RLock()
-	defer r.workLogMutex.RUnlock()
+	r.workLogMutex.Lock()
+	defer r.workLogMutex.Unlock()
+	r.runningRequestMutex.Lock()
+	defer r.runningRequestMutex.Unlock()
 	r.runningRequests = nil
 	return r.executor.Close()
-}
-
-func (t *requestTransaction) FailRequest(err error) error {
-	t.stateChangeMutex.Lock()
-	defer t.stateChangeMutex.Unlock()
-	if t.completed {
-		return errors.Wrap(err, "calling fail on a already completed transaction")
-	}
-	t.transactionLog.Trace().Msg("Fail the request")
-	t.completed = true
-	return t.parent.failRequest(t, err)
-}
-
-func (t *requestTransaction) EndRequest() error {
-	t.stateChangeMutex.Lock()
-	defer t.stateChangeMutex.Unlock()
-	if t.completed {
-		return errors.New("calling end on a already completed transaction")
-	}
-	t.transactionLog.Trace().Msg("Ending the request")
-	t.completed = true
-	// Remove it from Running Requests
-	return t.parent.endRequest(t)
-}
-
-func (t *requestTransaction) Submit(operation RequestTransactionRunnable) {
-	t.stateChangeMutex.Lock()
-	defer t.stateChangeMutex.Unlock()
-	if t.completed {
-		t.transactionLog.Warn().Msg("calling submit on a already completed transaction")
-		return
-	}
-	if t.operation != nil {
-		t.transactionLog.Warn().Msg("Operation already set")
-	}
-	t.transactionLog.Trace().Msgf("Submission of transaction %d", t.transactionId)
-	t.operation = func() {
-		t.transactionLog.Trace().Msgf("Start execution of transaction %d", t.transactionId)
-		operation(t)
-		t.transactionLog.Trace().Msgf("Completed execution of transaction %d", t.transactionId)
-	}
-	t.parent.submitTransaction(t)
-}
-
-func (t *requestTransaction) AwaitCompletion(ctx context.Context) error {
-	for t.completionFuture == nil {
-		time.Sleep(time.Millisecond * 10)
-		// TODO: this should timeout and not loop infinite...
-	}
-	if err := t.completionFuture.AwaitCompletion(ctx); err != nil {
-		return err
-	}
-	stillActive := true
-	for stillActive {
-		stillActive = false
-		for _, runningRequest := range t.parent.runningRequests {
-			if runningRequest.transactionId == t.transactionId {
-				stillActive = true
-				break
-			}
-		}
-	}
-	return nil
-}
-
-func (t *requestTransaction) IsCompleted() bool {
-	return t.completed
-}
-
-func (t *requestTransaction) String() string {
-	return fmt.Sprintf("Transaction{tid:%d}", t.transactionId)
 }
