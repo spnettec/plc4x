@@ -61,6 +61,9 @@ func TestPlcConnectionCache_GetConnection(t *testing.T) {
 			setup: func(t *testing.T, fields *fields, args *args) {
 				logger := testutils.ProduceTestingLogger(t)
 				driverManager := plc4go.NewPlcDriverManager(config.WithCustomLogger(logger))
+				t.Cleanup(func() {
+					assert.NoError(t, driverManager.Close())
+				})
 				driverManager.RegisterDriver(simulated.NewDriver(options.WithCustomLogger(logger)))
 				fields.driverManager = driverManager
 			},
@@ -75,6 +78,9 @@ func TestPlcConnectionCache_GetConnection(t *testing.T) {
 			setup: func(t *testing.T, fields *fields, args *args) {
 				logger := testutils.ProduceTestingLogger(t)
 				driverManager := plc4go.NewPlcDriverManager(config.WithCustomLogger(logger))
+				t.Cleanup(func() {
+					assert.NoError(t, driverManager.Close())
+				})
 				driverManager.RegisterDriver(simulated.NewDriver(options.WithCustomLogger(logger)))
 				fields.driverManager = driverManager
 			},
@@ -133,6 +139,9 @@ func TestPlcConnectionCache_Close(t *testing.T) {
 				logger := testutils.ProduceTestingLogger(t)
 
 				driverManager := plc4go.NewPlcDriverManager(config.WithCustomLogger(logger))
+				t.Cleanup(func() {
+					assert.NoError(t, driverManager.Close())
+				})
 				driverManager.RegisterDriver(simulated.NewDriver(options.WithCustomLogger(logger)))
 				fields.driverManager = driverManager
 			},
@@ -145,6 +154,9 @@ func TestPlcConnectionCache_Close(t *testing.T) {
 				logger := testutils.ProduceTestingLogger(t)
 
 				driverManager := plc4go.NewPlcDriverManager(config.WithCustomLogger(logger))
+				t.Cleanup(func() {
+					assert.NoError(t, driverManager.Close())
+				})
 				driverManager.RegisterDriver(simulated.NewDriver(options.WithCustomLogger(logger)))
 				fields.driverManager = driverManager
 			},
@@ -270,11 +282,14 @@ func executeAndTestReadFromPlc(t *testing.T, cache plcConnectionCache, connectio
 func TestPlcConnectionCache_ReusingAnExistingConnection(t *testing.T) {
 	logger := testutils.ProduceTestingLogger(t)
 	driverManager := plc4go.NewPlcDriverManager(config.WithCustomLogger(logger))
+	t.Cleanup(func() {
+		assert.NoError(t, driverManager.Close())
+	})
 	driverManager.RegisterDriver(simulated.NewDriver(options.WithCustomLogger(logger)))
 	cache := plcConnectionCache{
 		driverManager: driverManager,
-		maxLeaseTime:  time.Second * 5,
-		maxWaitTime:   time.Second * 25,
+		maxLeaseTime:  5 * time.Second,
+		maxWaitTime:   25 * time.Second,
 		cacheLock:     lock.NewCASMutex(),
 		connections:   make(map[string]*connectionContainer),
 		tracer:        nil,
@@ -332,11 +347,14 @@ func TestPlcConnectionCache_ReusingAnExistingConnection(t *testing.T) {
 func TestPlcConnectionCache_MultipleConcurrentConnectionRequests(t *testing.T) {
 	logger := testutils.ProduceTestingLogger(t)
 	driverManager := plc4go.NewPlcDriverManager(config.WithCustomLogger(logger))
+	t.Cleanup(func() {
+		assert.NoError(t, driverManager.Close())
+	})
 	driverManager.RegisterDriver(simulated.NewDriver(options.WithCustomLogger(logger)))
 	cache := plcConnectionCache{
 		driverManager: driverManager,
-		maxLeaseTime:  time.Second * 5,
-		maxWaitTime:   time.Second * 25,
+		maxLeaseTime:  5 * time.Second,
+		maxWaitTime:   25 * time.Second,
 		cacheLock:     lock.NewCASMutex(),
 		connections:   make(map[string]*connectionContainer),
 		tracer:        nil,
@@ -359,7 +377,7 @@ func TestPlcConnectionCache_MultipleConcurrentConnectionRequests(t *testing.T) {
 			"ping-success",
 		}, 1)
 
-	time.Sleep(time.Millisecond * 1)
+	time.Sleep(1 * time.Millisecond)
 
 	// Almost instantly request the same connection for a second time.
 	// As the connection takes 100ms, the second connection request will come
@@ -403,11 +421,14 @@ func TestPlcConnectionCache_MultipleConcurrentConnectionRequests(t *testing.T) {
 func TestPlcConnectionCache_ConnectWithError(t *testing.T) {
 	logger := testutils.ProduceTestingLogger(t)
 	driverManager := plc4go.NewPlcDriverManager(config.WithCustomLogger(logger))
+	t.Cleanup(func() {
+		assert.NoError(t, driverManager.Close())
+	})
 	driverManager.RegisterDriver(simulated.NewDriver(options.WithCustomLogger(logger)))
 	cache := plcConnectionCache{
 		driverManager: driverManager,
-		maxLeaseTime:  time.Second * 5,
-		maxWaitTime:   time.Second * 25,
+		maxLeaseTime:  5 * time.Second,
+		maxWaitTime:   25 * time.Second,
 		cacheLock:     lock.NewCASMutex(),
 		connections:   make(map[string]*connectionContainer),
 		tracer:        nil,
@@ -440,11 +461,14 @@ func TestPlcConnectionCache_ConnectWithError(t *testing.T) {
 func TestPlcConnectionCache_ReturningConnectionWithPingError(t *testing.T) {
 	logger := testutils.ProduceTestingLogger(t)
 	driverManager := plc4go.NewPlcDriverManager(config.WithCustomLogger(logger))
+	t.Cleanup(func() {
+		assert.NoError(t, driverManager.Close())
+	})
 	driverManager.RegisterDriver(simulated.NewDriver(options.WithCustomLogger(logger)))
 	cache := plcConnectionCache{
 		driverManager: driverManager,
-		maxLeaseTime:  time.Second * 5,
-		maxWaitTime:   time.Second * 25,
+		maxLeaseTime:  5 * time.Second,
+		maxWaitTime:   25 * time.Second,
 		cacheLock:     lock.NewCASMutex(),
 		connections:   make(map[string]*connectionContainer),
 		tracer:        nil,
@@ -498,11 +522,14 @@ func TestPlcConnectionCache_ReturningConnectionWithPingError(t *testing.T) {
 func TestPlcConnectionCache_PingTimeout(t *testing.T) {
 	logger := testutils.ProduceTestingLogger(t)
 	driverManager := plc4go.NewPlcDriverManager(config.WithCustomLogger(logger))
+	t.Cleanup(func() {
+		assert.NoError(t, driverManager.Close())
+	})
 	driverManager.RegisterDriver(simulated.NewDriver(options.WithCustomLogger(logger)))
 	cache := plcConnectionCache{
 		driverManager: driverManager,
-		maxLeaseTime:  time.Second * 5,
-		maxWaitTime:   time.Second * 25,
+		maxLeaseTime:  5 * time.Second,
+		maxWaitTime:   25 * time.Second,
 		cacheLock:     lock.NewCASMutex(),
 		connections:   make(map[string]*connectionContainer),
 		tracer:        nil,
@@ -540,11 +567,14 @@ func TestPlcConnectionCache_PingTimeout(t *testing.T) {
 func TestPlcConnectionCache_SecondCallGetNewConnectionAfterPingTimeout(t *testing.T) {
 	logger := testutils.ProduceTestingLogger(t)
 	driverManager := plc4go.NewPlcDriverManager(config.WithCustomLogger(logger))
+	t.Cleanup(func() {
+		assert.NoError(t, driverManager.Close())
+	})
 	driverManager.RegisterDriver(simulated.NewDriver(options.WithCustomLogger(logger)))
 	cache := plcConnectionCache{
 		driverManager: driverManager,
-		maxLeaseTime:  time.Second * 5,
-		maxWaitTime:   time.Second * 25,
+		maxLeaseTime:  5 * time.Second,
+		maxWaitTime:   25 * time.Second,
 		cacheLock:     lock.NewCASMutex(),
 		connections:   make(map[string]*connectionContainer),
 		tracer:        nil,
@@ -615,11 +645,14 @@ func TestPlcConnectionCache_SecondCallGetNewConnectionAfterPingTimeout(t *testin
 func TestPlcConnectionCache_FistReadGivesUpBeforeItGetsTheConnectionSoSecondOneTakesOver(t *testing.T) {
 	logger := testutils.ProduceTestingLogger(t)
 	driverManager := plc4go.NewPlcDriverManager(config.WithCustomLogger(logger))
+	t.Cleanup(func() {
+		assert.NoError(t, driverManager.Close())
+	})
 	driverManager.RegisterDriver(simulated.NewDriver(options.WithCustomLogger(logger)))
 	cache := plcConnectionCache{
 		driverManager: driverManager,
-		maxLeaseTime:  time.Second * 5,
-		maxWaitTime:   time.Second * 25,
+		maxLeaseTime:  5 * time.Second,
+		maxWaitTime:   25 * time.Second,
 		cacheLock:     lock.NewCASMutex(),
 		connections:   make(map[string]*connectionContainer),
 		tracer:        nil,
@@ -634,7 +667,7 @@ func TestPlcConnectionCache_FistReadGivesUpBeforeItGetsTheConnectionSoSecondOneT
 	// Intentionally just ignore the response.
 	cache.GetConnection("simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
 
-	time.Sleep(time.Millisecond * 1)
+	time.Sleep(1 * time.Millisecond)
 
 	// Read once from the cache.
 	// NOTE: It doesn't contain the connect-part, as the previous connection handled that.
@@ -657,11 +690,14 @@ func TestPlcConnectionCache_FistReadGivesUpBeforeItGetsTheConnectionSoSecondOneT
 func TestPlcConnectionCache_SecondConnectionGivenUpWaiting(t *testing.T) {
 	logger := testutils.ProduceTestingLogger(t)
 	driverManager := plc4go.NewPlcDriverManager(config.WithCustomLogger(logger))
+	t.Cleanup(func() {
+		assert.NoError(t, driverManager.Close())
+	})
 	driverManager.RegisterDriver(simulated.NewDriver(options.WithCustomLogger(logger)))
 	cache := plcConnectionCache{
 		driverManager: driverManager,
-		maxLeaseTime:  time.Second * 5,
-		maxWaitTime:   time.Second * 25,
+		maxLeaseTime:  5 * time.Second,
+		maxWaitTime:   25 * time.Second,
 		cacheLock:     lock.NewCASMutex(),
 		connections:   make(map[string]*connectionContainer),
 		tracer:        nil,
@@ -684,7 +720,7 @@ func TestPlcConnectionCache_SecondConnectionGivenUpWaiting(t *testing.T) {
 			"ping-success",
 		}, 1)
 
-	time.Sleep(time.Millisecond * 1)
+	time.Sleep(1 * time.Millisecond)
 
 	// Almost instantly we try to get a new connection but don't listen for the result
 	cache.GetConnection("simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true")
@@ -697,7 +733,7 @@ func TestPlcConnectionCache_SecondConnectionGivenUpWaiting(t *testing.T) {
 	}
 
 	// Wait for 1s to have the connection cache timeout (10ms) the lease as nobody's listening.
-	time.Sleep(time.Millisecond * 1000)
+	time.Sleep(1 * time.Second)
 
 	// This should be quite equal to the serial case as the connections are requested serially.
 	assert.NotNil(t, cache.GetTracer(), "Tracer should be available")
@@ -727,12 +763,15 @@ func TestPlcConnectionCache_SecondConnectionGivenUpWaiting(t *testing.T) {
 func TestPlcConnectionCache_MaximumWaitTimeReached(t *testing.T) {
 	logger := testutils.ProduceTestingLogger(t)
 	driverManager := plc4go.NewPlcDriverManager(config.WithCustomLogger(logger))
+	t.Cleanup(func() {
+		assert.NoError(t, driverManager.Close())
+	})
 	driverManager.RegisterDriver(simulated.NewDriver(options.WithCustomLogger(logger)))
 	// Reduce the max lease time as this way we also reduce the max wait time.
 	cache := plcConnectionCache{
 		driverManager: driverManager,
-		maxLeaseTime:  time.Second * 1,
-		maxWaitTime:   time.Second * 5,
+		maxLeaseTime:  1 * time.Second,
+		maxWaitTime:   5 * time.Second,
 		cacheLock:     lock.NewCASMutex(),
 		connections:   make(map[string]*connectionContainer),
 		tracer:        nil,
@@ -747,11 +786,11 @@ func TestPlcConnectionCache_MaximumWaitTimeReached(t *testing.T) {
 	// The first and second connection should work fine
 	firstConnectionResults := cache.GetConnection("simulated://1.2.3.4:42?connectionDelay=100&pingDelay=4000&traceEnabled=true")
 
-	time.Sleep(time.Millisecond * 1)
+	time.Sleep(1 * time.Millisecond)
 
 	secondConnectionResults := cache.GetConnection("simulated://1.2.3.4:42?connectionDelay=100&pingDelay=4000&traceEnabled=true")
 
-	time.Sleep(time.Millisecond * 1)
+	time.Sleep(1 * time.Millisecond)
 
 	// The third connection should be given up by the cache
 	thirdConnectionResults := cache.GetConnection("simulated://1.2.3.4:42?connectionDelay=100&pingDelay=4000&traceEnabled=true")

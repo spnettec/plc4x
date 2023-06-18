@@ -22,7 +22,6 @@ package testutils
 import (
 	"context"
 	"github.com/apache/plc4x/plc4go/spi/options"
-	"github.com/apache/plc4x/plc4go/spi/pool"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"os"
 	"runtime/debug"
@@ -140,7 +139,9 @@ func ProduceTestingLogger(t *testing.T) zerolog.Logger {
 
 			},
 			func(w *zerolog.ConsoleWriter) {
-				w.TimeFormat = time.StampNano
+				if highLogPrecision {
+					w.TimeFormat = time.StampNano
+				}
 			},
 		),
 	)
@@ -153,14 +154,14 @@ func ProduceTestingLogger(t *testing.T) zerolog.Logger {
 // EnrichOptionsWithOptionsForTesting appends options useful for testing to config.WithOption s
 func EnrichOptionsWithOptionsForTesting(t *testing.T, _options ...options.WithOption) []options.WithOption {
 	traceWorkers := true
-	if extractedTraceWorkers, found := pool.ExtractTracerWorkers(_options...); found {
+	if extractedTraceWorkers, found := options.ExtractTracerWorkers(_options...); found {
 		traceWorkers = extractedTraceWorkers
 	}
 	// TODO: apply to other options like above
 	return append(_options,
 		options.WithCustomLogger(ProduceTestingLogger(t)),
 		options.WithPassLoggerToModel(true),
-		pool.WithExecutorOptionTracerWorkers(traceWorkers),
+		options.WithExecutorOptionTracerWorkers(traceWorkers),
 	)
 }
 

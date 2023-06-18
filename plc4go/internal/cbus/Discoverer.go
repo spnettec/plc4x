@@ -216,9 +216,11 @@ func (d *Discoverer) createDeviceScanDispatcher(tcpTransportInstance *tcp.Transp
 		}
 		defer func() {
 			// Disconnect codec when done
+			d.log.Debug().Msg("Shutting down codec")
 			if err := codec.Disconnect(); err != nil {
 				d.log.Warn().Err(err).Msg("Error disconnecting codec")
 			}
+			d.log.Trace().Msg("done")
 		}()
 
 		// Prepare the discovery packet data
@@ -235,16 +237,14 @@ func (d *Discoverer) createDeviceScanDispatcher(tcpTransportInstance *tcp.Transp
 		}
 		// Keep on reading responses till the timeout is done.
 		// TODO: Make this configurable
-		timeout := time.NewTimer(time.Second * 1)
+		timeout := time.NewTimer(1 * time.Second)
 		defer utils.CleanupTimer(timeout)
-		timeout.Stop()
-		for start := time.Now(); time.Since(start) < time.Second*5; {
-			timeout.Reset(time.Second * 1)
+		for start := time.Now(); time.Since(start) < 5*time.Second; {
+			timeout.Reset(1 * time.Second)
 			select {
 			case receivedMessage := <-codec.GetDefaultIncomingMessageChannel():
-				if !timeout.Stop() {
-					<-timeout.C
-				}
+				// Cleanup, going to be resetted again
+				utils.CleanupTimer(timeout)
 				cbusMessage, ok := receivedMessage.(readWriteModel.CBusMessage)
 				if !ok {
 					continue

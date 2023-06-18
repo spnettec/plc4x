@@ -21,13 +21,12 @@ package _default
 
 import (
 	"context"
-	"fmt"
+	"github.com/apache/plc4x/plc4go/pkg/api/config"
 	"runtime/debug"
 	"sync"
 	"sync/atomic"
 	"time"
 
-	"github.com/apache/plc4x/plc4go/pkg/api/config"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transports"
@@ -54,14 +53,6 @@ type DefaultCodec interface {
 // NewDefaultCodec is the factory for a DefaultCodec
 func NewDefaultCodec(requirements DefaultCodecRequirements, transportInstance transports.TransportInstance, options ...options.WithOption) DefaultCodec {
 	return buildDefaultCodec(requirements, transportInstance, options...)
-}
-
-type DefaultExpectation struct {
-	Context        context.Context
-	Expiration     time.Time
-	AcceptsMessage spi.AcceptsMessage
-	HandleMessage  spi.HandleMessage
-	HandleError    spi.HandleError
 }
 
 type CustomMessageHandler func(codec DefaultCodecRequirements, message spi.Message) bool
@@ -96,12 +87,14 @@ type defaultCodec struct {
 	stateChange             sync.Mutex
 	activeWorker            sync.WaitGroup
 
+	receiveTimeout                 time.Duration `stringer:"true"`
+	traceDefaultMessageCodecWorker bool
+
 	log zerolog.Logger `ignore:"true"`
 }
 
 func buildDefaultCodec(defaultCodecRequirements DefaultCodecRequirements, transportInstance transports.TransportInstance, _options ...options.WithOption) DefaultCodec {
 	var customMessageHandler func(codec DefaultCodecRequirements, message spi.Message) bool
-	var logger = options.ExtractCustomLogger(_options...)
 
 	for _, option := range _options {
 		switch option := option.(type) {
@@ -111,12 +104,14 @@ func buildDefaultCodec(defaultCodecRequirements DefaultCodecRequirements, transp
 	}
 
 	return &defaultCodec{
-		DefaultCodecRequirements:      defaultCodecRequirements,
-		transportInstance:             transportInstance,
-		defaultIncomingMessageChannel: make(chan spi.Message),
-		expectations:                  []spi.Expectation{},
-		customMessageHandling:         customMessageHandler,
-		log:                           logger,
+		DefaultCodecRequirements:       defaultCodecRequirements,
+		transportInstance:              transportInstance,
+		defaultIncomingMessageChannel:  make(chan spi.Message, 100),
+		expectations:                   []spi.Expectation{},
+		customMessageHandling:          customMessageHandler,
+		receiveTimeout:                 options.ExtractReceiveTimeout(_options...),
+		traceDefaultMessageCodecWorker: options.ExtractTraceDefaultMessageCodecWorker(_options...) || config.TraceDefaultMessageCodecWorker,
+		log:                            options.ExtractCustomLogger(_options...),
 	}
 }
 
@@ -125,30 +120,6 @@ func buildDefaultCodec(defaultCodecRequirements DefaultCodecRequirements, transp
 //
 ///////////////////////////////////////
 ///////////////////////////////////////
-
-func (d *DefaultExpectation) GetContext() context.Context {
-	return d.Context
-}
-
-func (d *DefaultExpectation) GetExpiration() time.Time {
-	return d.Expiration
-}
-
-func (d *DefaultExpectation) GetAcceptsMessage() spi.AcceptsMessage {
-	return d.AcceptsMessage
-}
-
-func (d *DefaultExpectation) GetHandleMessage() spi.HandleMessage {
-	return d.HandleMessage
-}
-
-func (d *DefaultExpectation) GetHandleError() spi.HandleError {
-	return d.HandleError
-}
-
-func (d *DefaultExpectation) String() string {
-	return fmt.Sprintf("Expectation(expires at %v)", d.Expiration)
-}
 
 func (m *defaultCodec) GetTransportInstance() transports.TransportInstance {
 	return m.transportInstance
@@ -168,7 +139,7 @@ func (m *defaultCodec) ConnectWithContext(ctx context.Context) error {
 	if m.running.Load() {
 		return errors.New("already running")
 	}
-	m.log.Trace().Msg("Connecting")
+	m.log.Trace().Msg("connecting")
 	if !m.transportInstance.IsConnected() {
 		if err := m.transportInstance.ConnectWithContext(ctx); err != nil {
 			return err
@@ -181,6 +152,7 @@ func (m *defaultCodec) ConnectWithContext(ctx context.Context) error {
 	m.activeWorker.Add(1)
 	go m.Work(m.DefaultCodecRequirements)
 	m.running.Store(true)
+	m.log.Trace().Msg("connected")
 	return nil
 }
 
@@ -192,14 +164,15 @@ func (m *defaultCodec) Disconnect() error {
 	}
 	m.log.Trace().Msg("Disconnecting")
 	m.running.Store(false)
+	m.log.Trace().Msg("Waiting for worker to shutdown")
+	m.activeWorker.Wait()
+	m.log.Trace().Msg("worker shut down")
 	if m.transportInstance != nil {
 		if err := m.transportInstance.Close(); err != nil {
 			return errors.Wrap(err, "error closing transport instance")
 		}
 	}
-	m.log.Trace().Msg("Waiting for worker to shutdown")
-	m.activeWorker.Wait()
-	m.log.Trace().Msg("Done disconnecting")
+	m.log.Trace().Msg("disconnected")
 	return nil
 }
 
@@ -210,8 +183,9 @@ func (m *defaultCodec) IsRunning() bool {
 func (m *defaultCodec) Expect(ctx context.Context, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError, ttl time.Duration) error {
 	m.expectationsChangeMutex.Lock()
 	defer m.expectationsChangeMutex.Unlock()
-	expectation := &DefaultExpectation{
+	expectation := &defaultExpectation{
 		Context:        ctx,
+		CreationTime:   time.Now(),
 		Expiration:     time.Now().Add(ttl),
 		AcceptsMessage: acceptsMessage,
 		HandleMessage:  handleMessage,
@@ -246,7 +220,7 @@ func (m *defaultCodec) TimeoutExpectations(now time.Time) {
 			i--
 			// Call the error handler.
 			go func(expectation spi.Expectation) {
-				if err := expectation.GetHandleError()(utils.NewTimeoutError(now.Sub(expectation.GetExpiration()))); err != nil {
+				if err := expectation.GetHandleError()(utils.NewTimeoutError(expectation.GetExpiration().Sub(expectation.GetCreationTime()))); err != nil {
 					m.log.Error().Err(err).Msg("Got an error handling error on expectation")
 				}
 			}(expectation)
@@ -305,7 +279,7 @@ func (m *defaultCodec) HandleMessages(message spi.Message) bool {
 func (m *defaultCodec) Work(codec DefaultCodecRequirements) {
 	defer m.activeWorker.Done()
 	workerLog := m.log.With().Logger()
-	if !config.TraceDefaultMessageCodecWorker {
+	if !m.traceDefaultMessageCodecWorker {
 		workerLog = zerolog.Nop()
 	}
 	workerLog.Trace().Msg("Starting work")
@@ -340,30 +314,52 @@ mainLoop:
 		if numberOfExpectations <= 0 && m.customMessageHandling == nil {
 			workerLog.Trace().Msg("no available expectations")
 			// Sleep for 10ms
-			time.Sleep(time.Millisecond * 10)
+			time.Sleep(10 * time.Millisecond)
 			continue mainLoop
 		}
 		m.TimeoutExpectations(now)
 
 		workerLog.Trace().Msg("Receiving message")
 		// Check for incoming messages.
-		message, err := m.Receive()
+		var message spi.Message
+		var err error
+		{
+			syncer := make(chan struct{})
+			go func() {
+				message, err = m.Receive()
+				close(syncer)
+			}()
+			timeoutTimer := time.NewTimer(m.receiveTimeout)
+			select {
+			case <-syncer:
+				utils.CleanupTimer(timeoutTimer)
+			case <-timeoutTimer.C:
+				utils.CleanupTimer(timeoutTimer)
+				workerLog.Error().Msgf("receive timeout after %s", m.receiveTimeout)
+				continue mainLoop
+			}
+
+		}
 		if err != nil {
 			workerLog.Error().Err(err).Msg("got an error reading from transport")
-			time.Sleep(time.Millisecond * 10)
+			time.Sleep(10 * time.Millisecond)
 			continue mainLoop
 		}
 		if message == nil {
 			workerLog.Trace().Msg("Not enough data yet")
 			// Sleep for 10ms before checking again, in order to not
 			// consume 100% CPU Power.
-			time.Sleep(time.Millisecond * 10)
+			time.Sleep(10 * time.Millisecond)
 			continue mainLoop
 		}
+		workerLog.Trace().Msgf("got message:\n%s", message)
 
 		if m.customMessageHandling != nil {
 			workerLog.Trace().Msg("Executing custom handling")
-			if m.customMessageHandling(codec, message) {
+			start := time.Now()
+			handled := m.customMessageHandling(codec, message)
+			workerLog.Trace().Msgf("custom handling took %s", time.Since(start))
+			if handled {
 				workerLog.Trace().Msg("Custom handling handled the message")
 				continue mainLoop
 			}
@@ -383,12 +379,9 @@ mainLoop:
 }
 
 func (m *defaultCodec) passToDefaultIncomingMessageChannel(workerLog zerolog.Logger, message spi.Message) {
-	timeout := time.NewTimer(time.Millisecond * 40)
-	defer utils.CleanupTimer(timeout)
 	select {
 	case m.defaultIncomingMessageChannel <- message:
-	case <-timeout.C:
-		timeout.Stop()
+	default:
 		workerLog.Warn().Msgf("Message discarded\n%s", message)
 	}
 }

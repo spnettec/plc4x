@@ -59,7 +59,7 @@ func TestDefaultExpectation_GetAcceptsMessage(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			m := &DefaultExpectation{
+			m := &defaultExpectation{
 				Context:        tt.fields.Context,
 				Expiration:     tt.fields.Expiration,
 				AcceptsMessage: tt.fields.AcceptsMessage,
@@ -90,7 +90,7 @@ func TestDefaultExpectation_GetContext(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			m := &DefaultExpectation{
+			m := &defaultExpectation{
 				Context:        tt.fields.Context,
 				Expiration:     tt.fields.Expiration,
 				AcceptsMessage: tt.fields.AcceptsMessage,
@@ -121,7 +121,7 @@ func TestDefaultExpectation_GetExpiration(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			m := &DefaultExpectation{
+			m := &defaultExpectation{
 				Context:        tt.fields.Context,
 				Expiration:     tt.fields.Expiration,
 				AcceptsMessage: tt.fields.AcceptsMessage,
@@ -156,7 +156,7 @@ func TestDefaultExpectation_GetHandleError(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			m := &DefaultExpectation{
+			m := &defaultExpectation{
 				Context:        tt.fields.Context,
 				Expiration:     tt.fields.Expiration,
 				AcceptsMessage: tt.fields.AcceptsMessage,
@@ -191,7 +191,7 @@ func TestDefaultExpectation_GetHandleMessage(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			m := &DefaultExpectation{
+			m := &defaultExpectation{
 				Context:        tt.fields.Context,
 				Expiration:     tt.fields.Expiration,
 				AcceptsMessage: tt.fields.AcceptsMessage,
@@ -223,7 +223,7 @@ func TestDefaultExpectation_String(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			m := &DefaultExpectation{
+			m := &defaultExpectation{
 				Context:        tt.fields.Context,
 				Expiration:     tt.fields.Expiration,
 				AcceptsMessage: tt.fields.AcceptsMessage,
@@ -249,7 +249,8 @@ func TestNewDefaultCodec(t *testing.T) {
 		{
 			name: "create it",
 			want: &defaultCodec{
-				expectations: []spi.Expectation{},
+				expectations:   []spi.Expectation{},
+				receiveTimeout: 10 * time.Second,
 			},
 		},
 	}
@@ -298,7 +299,8 @@ func Test_buildDefaultCodec(t *testing.T) {
 		{
 			name: "build it",
 			want: &defaultCodec{
-				expectations: []spi.Expectation{},
+				expectations:   []spi.Expectation{},
+				receiveTimeout: 10 * time.Second,
 			},
 		},
 		{
@@ -309,7 +311,8 @@ func Test_buildDefaultCodec(t *testing.T) {
 				},
 			},
 			want: &defaultCodec{
-				expectations: []spi.Expectation{},
+				expectations:   []spi.Expectation{},
+				receiveTimeout: 10 * time.Second,
 			},
 		},
 	}
@@ -617,12 +620,12 @@ func Test_defaultCodec_HandleMessages(t *testing.T) {
 			name: "handle some",
 			fields: fields{
 				expectations: []spi.Expectation{
-					&DefaultExpectation{ // doesn't accept
+					&defaultExpectation{ // doesn't accept
 						AcceptsMessage: func(_ spi.Message) bool {
 							return false
 						},
 					},
-					&DefaultExpectation{ // accepts but fails
+					&defaultExpectation{ // accepts but fails
 						AcceptsMessage: func(_ spi.Message) bool {
 							return true
 						},
@@ -633,7 +636,7 @@ func Test_defaultCodec_HandleMessages(t *testing.T) {
 							return nil
 						},
 					},
-					&DefaultExpectation{ // accepts but fails and fails to handle the error
+					&defaultExpectation{ // accepts but fails and fails to handle the error
 						AcceptsMessage: func(_ spi.Message) bool {
 							return true
 						},
@@ -644,7 +647,7 @@ func Test_defaultCodec_HandleMessages(t *testing.T) {
 							return errors.New("I failed completely")
 						},
 					},
-					&DefaultExpectation{ // accepts
+					&defaultExpectation{ // accepts
 						AcceptsMessage: func(_ spi.Message) bool {
 							return true
 						},
@@ -652,7 +655,7 @@ func Test_defaultCodec_HandleMessages(t *testing.T) {
 							return nil
 						},
 					},
-					&DefaultExpectation{ // accepts
+					&defaultExpectation{ // accepts
 						AcceptsMessage: func(_ spi.Message) bool {
 							return true
 						},
@@ -660,7 +663,7 @@ func Test_defaultCodec_HandleMessages(t *testing.T) {
 							return nil
 						},
 					},
-					&DefaultExpectation{ // accepts
+					&defaultExpectation{ // accepts
 						AcceptsMessage: func(_ spi.Message) bool {
 							return true
 						},
@@ -823,26 +826,26 @@ func Test_defaultCodec_TimeoutExpectations(t *testing.T) {
 			name: "timeout some",
 			fields: fields{
 				expectations: []spi.Expectation{
-					&DefaultExpectation{ // Expired
+					&defaultExpectation{ // Expired
 						Context: context.Background(),
 						HandleError: func(err error) error {
 							return nil
 						},
 					},
-					&DefaultExpectation{ // Expired errors
+					&defaultExpectation{ // Expired errors
 						Context: context.Background(),
 						HandleError: func(err error) error {
 							return errors.New("yep")
 						},
 					},
-					&DefaultExpectation{ // Fine
+					&defaultExpectation{ // Fine
 						Context: context.Background(),
 						HandleError: func(err error) error {
 							return errors.New("yep")
 						},
 						Expiration: time.Time{}.Add(3 * time.Hour),
 					},
-					&DefaultExpectation{ // Context error
+					&defaultExpectation{ // Context error
 						Context: func() context.Context {
 							ctx, cancelFunc := context.WithCancel(context.Background())
 							cancelFunc() // Cancel it instantly
@@ -897,31 +900,35 @@ func Test_defaultCodec_Work(t *testing.T) {
 				codec.running.Store(true)
 				codec.activeWorker.Add(1)
 			},
+			mockSetup: func(t *testing.T, fields *fields, args *args) {
+				requirements := NewMockDefaultCodecRequirements(t)
+				fields.DefaultCodecRequirements = requirements
+			},
 		},
 		{
 			name: "work hard (panics everywhere)",
 			fields: fields{
 				expectations: []spi.Expectation{
-					&DefaultExpectation{ // Expired
+					&defaultExpectation{ // Expired
 						Context: context.Background(),
 						HandleError: func(err error) error {
 							return nil
 						},
 					},
-					&DefaultExpectation{ // Expired errors
+					&defaultExpectation{ // Expired errors
 						Context: context.Background(),
 						HandleError: func(err error) error {
 							return errors.New("yep")
 						},
 					},
-					&DefaultExpectation{ // Fine
+					&defaultExpectation{ // Fine
 						Context: context.Background(),
 						HandleError: func(err error) error {
 							return errors.New("yep")
 						},
 						Expiration: time.Time{}.Add(3 * time.Hour),
 					},
-					&DefaultExpectation{ // Context error
+					&defaultExpectation{ // Context error
 						Context: func() context.Context {
 							ctx, cancelFunc := context.WithCancel(context.Background())
 							cancelFunc() // Cancel it instantly
@@ -934,6 +941,11 @@ func Test_defaultCodec_Work(t *testing.T) {
 					},
 				},
 			},
+			mockSetup: func(t *testing.T, fields *fields, args *args) {
+				requirements := NewMockDefaultCodecRequirements(t)
+				requirements.EXPECT().Receive().Return(nil, errors.New("nope"))
+				fields.DefaultCodecRequirements = requirements
+			},
 			manipulator: func(t *testing.T, codec *defaultCodec) {
 				codec.running.Store(true)
 				codec.activeWorker.Add(1)
@@ -943,26 +955,26 @@ func Test_defaultCodec_Work(t *testing.T) {
 			name: "work harder (nil message)",
 			fields: fields{
 				expectations: []spi.Expectation{
-					&DefaultExpectation{ // Expired
+					&defaultExpectation{ // Expired
 						Context: context.Background(),
 						HandleError: func(err error) error {
 							return nil
 						},
 					},
-					&DefaultExpectation{ // Expired errors
+					&defaultExpectation{ // Expired errors
 						Context: context.Background(),
 						HandleError: func(err error) error {
 							return errors.New("yep")
 						},
 					},
-					&DefaultExpectation{ // Fine
+					&defaultExpectation{ // Fine
 						Context: context.Background(),
 						HandleError: func(err error) error {
 							return errors.New("yep")
 						},
 						Expiration: time.Time{}.Add(3 * time.Hour),
 					},
-					&DefaultExpectation{ // Context error
+					&defaultExpectation{ // Context error
 						Context: func() context.Context {
 							ctx, cancelFunc := context.WithCancel(context.Background())
 							cancelFunc() // Cancel it instantly
@@ -989,26 +1001,26 @@ func Test_defaultCodec_Work(t *testing.T) {
 			name: "work harder (message)",
 			fields: fields{
 				expectations: []spi.Expectation{
-					&DefaultExpectation{ // Expired
+					&defaultExpectation{ // Expired
 						Context: context.Background(),
 						HandleError: func(err error) error {
 							return nil
 						},
 					},
-					&DefaultExpectation{ // Expired errors
+					&defaultExpectation{ // Expired errors
 						Context: context.Background(),
 						HandleError: func(err error) error {
 							return errors.New("yep")
 						},
 					},
-					&DefaultExpectation{ // Fine
+					&defaultExpectation{ // Fine
 						Context: context.Background(),
 						HandleError: func(err error) error {
 							return errors.New("yep")
 						},
 						Expiration: time.Time{}.Add(3 * time.Hour),
 					},
-					&DefaultExpectation{ // Context error
+					&defaultExpectation{ // Context error
 						Context: func() context.Context {
 							ctx, cancelFunc := context.WithCancel(context.Background())
 							cancelFunc() // Cancel it instantly
@@ -1036,7 +1048,7 @@ func Test_defaultCodec_Work(t *testing.T) {
 			fields: fields{
 				defaultIncomingMessageChannel: make(chan spi.Message, 1),
 				expectations: []spi.Expectation{
-					&DefaultExpectation{ // Fine
+					&defaultExpectation{ // Fine
 						Context: context.Background(),
 						HandleError: func(err error) error {
 							return errors.New("yep")
@@ -1059,26 +1071,26 @@ func Test_defaultCodec_Work(t *testing.T) {
 			name: "work harder (message receive error)",
 			fields: fields{
 				expectations: []spi.Expectation{
-					&DefaultExpectation{ // Expired
+					&defaultExpectation{ // Expired
 						Context: context.Background(),
 						HandleError: func(err error) error {
 							return nil
 						},
 					},
-					&DefaultExpectation{ // Expired errors
+					&defaultExpectation{ // Expired errors
 						Context: context.Background(),
 						HandleError: func(err error) error {
 							return errors.New("yep")
 						},
 					},
-					&DefaultExpectation{ // Fine
+					&defaultExpectation{ // Fine
 						Context: context.Background(),
 						HandleError: func(err error) error {
 							return errors.New("yep")
 						},
 						Expiration: time.Time{}.Add(3 * time.Hour),
 					},
-					&DefaultExpectation{ // Context error
+					&defaultExpectation{ // Context error
 						Context: func() context.Context {
 							ctx, cancelFunc := context.WithCancel(context.Background())
 							cancelFunc() // Cancel it instantly
@@ -1108,26 +1120,26 @@ func Test_defaultCodec_Work(t *testing.T) {
 					return false
 				},
 				expectations: []spi.Expectation{
-					&DefaultExpectation{ // Expired
+					&defaultExpectation{ // Expired
 						Context: context.Background(),
 						HandleError: func(err error) error {
 							return nil
 						},
 					},
-					&DefaultExpectation{ // Expired errors
+					&defaultExpectation{ // Expired errors
 						Context: context.Background(),
 						HandleError: func(err error) error {
 							return errors.New("yep")
 						},
 					},
-					&DefaultExpectation{ // Fine
+					&defaultExpectation{ // Fine
 						Context: context.Background(),
 						HandleError: func(err error) error {
 							return errors.New("yep")
 						},
 						Expiration: time.Time{}.Add(3 * time.Hour),
 					},
-					&DefaultExpectation{ // Context error
+					&defaultExpectation{ // Context error
 						Context: func() context.Context {
 							ctx, cancelFunc := context.WithCancel(context.Background())
 							cancelFunc() // Cancel it instantly
@@ -1157,26 +1169,26 @@ func Test_defaultCodec_Work(t *testing.T) {
 					return true
 				},
 				expectations: []spi.Expectation{
-					&DefaultExpectation{ // Expired
+					&defaultExpectation{ // Expired
 						Context: context.Background(),
 						HandleError: func(err error) error {
 							return nil
 						},
 					},
-					&DefaultExpectation{ // Expired errors
+					&defaultExpectation{ // Expired errors
 						Context: context.Background(),
 						HandleError: func(err error) error {
 							return errors.New("yep")
 						},
 					},
-					&DefaultExpectation{ // Fine
+					&defaultExpectation{ // Fine
 						Context: context.Background(),
 						HandleError: func(err error) error {
 							return errors.New("yep")
 						},
 						Expiration: time.Time{}.Add(3 * time.Hour),
 					},
-					&DefaultExpectation{ // Context error
+					&defaultExpectation{ // Context error
 						Context: func() context.Context {
 							ctx, cancelFunc := context.WithCancel(context.Background())
 							cancelFunc() // Cancel it instantly
@@ -1269,6 +1281,9 @@ func Test_defaultCodec_String(t *testing.T) {
 ║╚══════════════════╝║║yoink1║║yoink2║║╚══════════════════════════════╝╚══════════════════════╝╚════════╝║
 ║                    ║╚══════╝╚══════╝║                                                                  ║
 ║                    ╚════════════════╝                                                                  ║
+║╔═receiveTimeout╗╔═traceDefaultMessageCodecWorker╗                                                      ║
+║║      0s       ║║           b0 false            ║                                                      ║
+║╚═══════════════╝╚═══════════════════════════════╝                                                      ║
 ╚════════════════════════════════════════════════════════════════════════════════════════════════════════╝`[1:],
 		},
 	}

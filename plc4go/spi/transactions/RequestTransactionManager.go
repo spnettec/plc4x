@@ -27,6 +27,7 @@ import (
 	"io"
 	"runtime"
 	"sync"
+	"sync/atomic"
 	"time"
 
 	"github.com/apache/plc4x/plc4go/pkg/api/config"
@@ -39,8 +40,16 @@ import (
 var sharedExecutorInstance pool.Executor // shared instance
 
 func init() {
-	sharedExecutorInstance = pool.NewFixedSizeExecutor(runtime.NumCPU(), 100, pool.WithExecutorOptionTracerWorkers(config.TraceTransactionManagerWorkers))
+	sharedExecutorInstance = pool.NewFixedSizeExecutor(
+		runtime.NumCPU(),
+		100,
+		options.WithExecutorOptionTracerWorkers(config.TraceTransactionManagerWorkers),
+		config.WithCustomLogger(zerolog.Nop()),
+	)
 	sharedExecutorInstance.Start()
+	runtime.SetFinalizer(sharedExecutorInstance, func(sharedExecutorInstance pool.Executor) {
+		sharedExecutorInstance.Stop()
+	})
 }
 
 type RequestTransactionRunnable func(RequestTransaction)
@@ -64,7 +73,7 @@ func NewRequestTransactionManager(numberOfConcurrentRequests int, _options ...op
 		workLog:                    *list.New(),
 		executor:                   sharedExecutorInstance,
 
-		traceTransactionManagerTransactions: config.TraceTransactionManagerTransactions,
+		traceTransactionManagerTransactions: options.ExtractTraceTransactionManagerTransactions(_options...) || config.TraceTransactionManagerTransactions,
 
 		log: options.ExtractCustomLogger(_options...),
 	}
@@ -108,7 +117,7 @@ type requestTransactionManager struct {
 
 	executor pool.Executor
 
-	shutdown bool // Indicates it this rtm is in shutdown
+	shutdown atomic.Bool // Indicates it this rtm is in shutdown
 
 	traceTransactionManagerTransactions bool // flag set to true if it should trace transactions
 
@@ -179,7 +188,7 @@ func (r *requestTransactionManager) StartTransaction() RequestTransaction {
 		transactionId:  currentTransactionId,
 		transactionLog: transactionLogger,
 	}
-	if r.shutdown {
+	if r.shutdown.Load() {
 		transaction.completed = true
 		transaction.completionFuture = &completedFuture{errors.New("request transaction manager in shutdown")}
 	}
@@ -229,7 +238,8 @@ func (r *requestTransactionManager) Close() error {
 }
 
 func (r *requestTransactionManager) CloseGraceful(timeout time.Duration) error {
-	r.shutdown = true
+	r.log.Debug().Msgf("closing with a timeout of %s", timeout)
+	r.shutdown.Store(true)
 	if timeout > 0 {
 		timer := time.NewTimer(timeout)
 		defer utils.CleanupTimer(timer)
@@ -257,5 +267,12 @@ func (r *requestTransactionManager) CloseGraceful(timeout time.Duration) error {
 	r.runningRequestMutex.Lock()
 	defer r.runningRequestMutex.Unlock()
 	r.runningRequests = nil
-	return r.executor.Close()
+	if r.executor != sharedExecutorInstance {
+		if err := r.executor.Close(); err != nil {
+			return errors.Wrap(err, "error closing executor")
+		}
+	} else {
+		r.log.Warn().Msg("not closing shared instance")
+	}
+	return nil
 }

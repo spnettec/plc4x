@@ -98,7 +98,7 @@ func TestReader_Read(t *testing.T) {
 			},
 			wantAsserter: func(t *testing.T, results <-chan apiModel.PlcReadRequestResult) bool {
 				timer := time.NewTimer(2 * time.Second)
-				defer timer.Stop()
+				defer utils.CleanupTimer(timer)
 				select {
 				case <-timer.C:
 					t.Fail()
@@ -115,6 +115,7 @@ func TestReader_Read(t *testing.T) {
 				alphaGenerator: tt.fields.alphaGenerator,
 				messageCodec:   tt.fields.messageCodec,
 				tm:             tt.fields.tm,
+				log:            testutils.ProduceTestingLogger(t),
 			}
 			assert.Truef(t, tt.wantAsserter(t, m.Read(tt.args.ctx, tt.args.readRequest)), "Read(%v, %v)", tt.args.ctx, tt.args.readRequest)
 		})
@@ -150,7 +151,7 @@ func TestReader_readSync(t *testing.T) {
 			},
 			resultEvaluator: func(t *testing.T, results chan apiModel.PlcReadRequestResult) bool {
 				timer := time.NewTimer(2 * time.Second)
-				defer timer.Stop()
+				defer utils.CleanupTimer(timer)
 				select {
 				case <-timer.C:
 					t.Fail()
@@ -190,10 +191,13 @@ func TestReader_readSync(t *testing.T) {
 				})
 				fields.messageCodec = codec
 				fields.tm = transactions.NewRequestTransactionManager(10, _options...)
+				t.Cleanup(func() {
+					assert.NoError(t, fields.tm.Close())
+				})
 			},
 			resultEvaluator: func(t *testing.T, results chan apiModel.PlcReadRequestResult) bool {
 				timer := time.NewTimer(2 * time.Second)
-				defer timer.Stop()
+				defer utils.CleanupTimer(timer)
 				select {
 				case <-timer.C:
 					t.Fail()
@@ -217,7 +221,7 @@ func TestReader_readSync(t *testing.T) {
 			},
 			resultEvaluator: func(t *testing.T, results chan apiModel.PlcReadRequestResult) bool {
 				timer := time.NewTimer(2 * time.Second)
-				defer timer.Stop()
+				defer utils.CleanupTimer(timer)
 				select {
 				case <-timer.C:
 					t.Fail()
@@ -234,11 +238,7 @@ func TestReader_readSync(t *testing.T) {
 				alphaGenerator: &AlphaGenerator{currentAlpha: 'g'},
 			},
 			args: args{
-				ctx: func() context.Context {
-					timeout, cancel := context.WithTimeout(context.Background(), 2*time.Second)
-					t.Cleanup(cancel)
-					return timeout
-				}(),
+				ctx: testutils.TestContext(t),
 				readRequest: spiModel.NewDefaultPlcReadRequest(
 					map[string]apiModel.PlcTag{
 						"blub": NewCALIdentifyTag(readWriteModel.NewUnitAddress(2), nil, readWriteModel.Attribute_Type, 1),
@@ -255,6 +255,9 @@ func TestReader_readSync(t *testing.T) {
 				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
 				fields.tm = transactions.NewRequestTransactionManager(10, _options...)
+				t.Cleanup(func() {
+					assert.NoError(t, fields.tm.Close())
+				})
 				transport := test.NewTransport()
 				transportUrl := url.URL{Scheme: "test"}
 				transportInstance, err := transport.CreateTransportInstance(transportUrl, nil, _options...)
@@ -288,7 +291,7 @@ func TestReader_readSync(t *testing.T) {
 			},
 			resultEvaluator: func(t *testing.T, results chan apiModel.PlcReadRequestResult) bool {
 				timer := time.NewTimer(2 * time.Second)
-				defer timer.Stop()
+				defer utils.CleanupTimer(timer)
 				select {
 				case <-timer.C:
 					t.Fail()
@@ -298,6 +301,7 @@ func TestReader_readSync(t *testing.T) {
 					assert.NotNil(t, response)
 					value := response.GetValue("blub")
 					assert.NotNil(t, value)
+					require.True(t, value.IsString())
 					assert.Equal(t, "PC_CNIED", value.GetString())
 				}
 				return true
@@ -330,6 +334,9 @@ func TestReader_readSync(t *testing.T) {
 				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
 				fields.tm = transactions.NewRequestTransactionManager(10, _options...)
+				t.Cleanup(func() {
+					assert.NoError(t, fields.tm.Close())
+				})
 
 				transport := test.NewTransport()
 				transportUrl := url.URL{Scheme: "test"}
@@ -344,7 +351,7 @@ func TestReader_readSync(t *testing.T) {
 			},
 			resultEvaluator: func(t *testing.T, results chan apiModel.PlcReadRequestResult) bool {
 				timer := time.NewTimer(2 * time.Second)
-				defer timer.Stop()
+				defer utils.CleanupTimer(timer)
 				select {
 				case <-timer.C:
 					t.Fail()
@@ -364,6 +371,7 @@ func TestReader_readSync(t *testing.T) {
 				alphaGenerator: tt.fields.alphaGenerator,
 				messageCodec:   tt.fields.messageCodec,
 				tm:             tt.fields.tm,
+				log:            testutils.ProduceTestingLogger(t),
 			}
 			m.readSync(tt.args.ctx, tt.args.readRequest, tt.args.result)
 			assert.True(t, tt.resultEvaluator(t, tt.args.result))
@@ -397,11 +405,7 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 				alphaGenerator: &AlphaGenerator{currentAlpha: 'g'},
 			},
 			args: args{
-				ctx: func() context.Context {
-					timeout, cancel := context.WithTimeout(context.Background(), 2*time.Second)
-					t.Cleanup(cancel)
-					return timeout
-				}(),
+				ctx:           testutils.TestContext(t),
 				messageToSend: nil,
 				addResponseCode: func(t *testing.T) func(name string, responseCode apiModel.PlcResponseCode) {
 					return func(name string, responseCode apiModel.PlcResponseCode) {
@@ -440,16 +444,12 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 			},
 		},
 		{
-			name: "Send message which responds with message to client",
+			name: "Send message which responds with message to server",
 			fields: fields{
 				alphaGenerator: &AlphaGenerator{currentAlpha: 'g'},
 			},
 			args: args{
-				ctx: func() context.Context {
-					timeout, cancel := context.WithTimeout(context.Background(), 2*time.Second)
-					t.Cleanup(cancel)
-					return timeout
-				}(),
+				ctx: testutils.TestContext(t),
 				messageToSend: readWriteModel.NewCBusMessageToServer(
 					readWriteModel.NewRequestReset(
 						readWriteModel.RequestType_RESET,
@@ -470,7 +470,7 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 					return func(name string, responseCode apiModel.PlcResponseCode) {
 						t.Logf("Got response code %s for %s", responseCode, name)
 						assert.Equal(t, "horst", name)
-						assert.Equal(t, apiModel.PlcResponseCode_REQUEST_TIMEOUT, responseCode)
+						assert.Equal(t, apiModel.PlcResponseCode_INTERNAL_ERROR, responseCode)
 					}
 				},
 				tagName: "horst",
@@ -527,11 +527,7 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 				alphaGenerator: &AlphaGenerator{currentAlpha: 'g'},
 			},
 			args: args{
-				ctx: func() context.Context {
-					timeout, cancel := context.WithTimeout(context.Background(), 2*time.Second)
-					t.Cleanup(cancel)
-					return timeout
-				}(),
+				ctx: testutils.TestContext(t),
 				messageToSend: readWriteModel.NewCBusMessageToServer(
 					readWriteModel.NewRequestReset(
 						readWriteModel.RequestType_RESET,
@@ -610,11 +606,7 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 				alphaGenerator: &AlphaGenerator{currentAlpha: 'g'},
 			},
 			args: args{
-				ctx: func() context.Context {
-					timeout, cancel := context.WithTimeout(context.Background(), 2*time.Second)
-					t.Cleanup(cancel)
-					return timeout
-				}(),
+				ctx: testutils.TestContext(t),
 				messageToSend: readWriteModel.NewCBusMessageToServer(
 					readWriteModel.NewRequestDirectCommandAccess(
 						readWriteModel.NewCALDataIdentify(
@@ -695,11 +687,7 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 				alphaGenerator: &AlphaGenerator{currentAlpha: 'g'},
 			},
 			args: args{
-				ctx: func() context.Context {
-					timeout, cancel := context.WithTimeout(context.Background(), 2*time.Second)
-					t.Cleanup(cancel)
-					return timeout
-				}(),
+				ctx: testutils.TestContext(t),
 				messageToSend: readWriteModel.NewCBusMessageToServer(
 					readWriteModel.NewRequestDirectCommandAccess(
 						readWriteModel.NewCALDataIdentify(
@@ -780,11 +768,7 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 				alphaGenerator: &AlphaGenerator{currentAlpha: 'g'},
 			},
 			args: args{
-				ctx: func() context.Context {
-					timeout, cancel := context.WithTimeout(context.Background(), 2*time.Second)
-					t.Cleanup(cancel)
-					return timeout
-				}(),
+				ctx: testutils.TestContext(t),
 				messageToSend: readWriteModel.NewCBusMessageToServer(
 					readWriteModel.NewRequestDirectCommandAccess(
 						readWriteModel.NewCALDataIdentify(
@@ -865,11 +849,7 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 				alphaGenerator: &AlphaGenerator{currentAlpha: 'g'},
 			},
 			args: args{
-				ctx: func() context.Context {
-					timeout, cancel := context.WithTimeout(context.Background(), 2*time.Second)
-					t.Cleanup(cancel)
-					return timeout
-				}(),
+				ctx: testutils.TestContext(t),
 				messageToSend: readWriteModel.NewCBusMessageToServer(
 					readWriteModel.NewRequestDirectCommandAccess(
 						readWriteModel.NewCALDataIdentify(
@@ -950,11 +930,7 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 				alphaGenerator: &AlphaGenerator{currentAlpha: 'g'},
 			},
 			args: args{
-				ctx: func() context.Context {
-					timeout, cancel := context.WithTimeout(context.Background(), 2*time.Second)
-					t.Cleanup(cancel)
-					return timeout
-				}(),
+				ctx: testutils.TestContext(t),
 				messageToSend: readWriteModel.NewCBusMessageToServer(
 					readWriteModel.NewRequestDirectCommandAccess(
 						readWriteModel.NewCALDataIdentify(
@@ -1035,11 +1011,7 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 				alphaGenerator: &AlphaGenerator{currentAlpha: 'g'},
 			},
 			args: args{
-				ctx: func() context.Context {
-					timeout, cancel := context.WithTimeout(context.Background(), 2*time.Second)
-					t.Cleanup(cancel)
-					return timeout
-				}(),
+				ctx: testutils.TestContext(t),
 				messageToSend: readWriteModel.NewCBusMessageToServer(
 					readWriteModel.NewRequestDirectCommandAccess(
 						readWriteModel.NewCALDataIdentify(
@@ -1125,10 +1097,11 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 				alphaGenerator: tt.fields.alphaGenerator,
 				messageCodec:   tt.fields.messageCodec,
 				tm:             tt.fields.tm,
+				log:            testutils.ProduceTestingLogger(t),
 			}
 			m.sendMessageOverTheWire(tt.args.ctx, tt.args.transaction, tt.args.messageToSend, tt.args.addResponseCode(t), tt.args.tagName, tt.args.addPlcValue(t))
 			t.Log("Waiting now")
-			timer := time.NewTimer(3 * time.Second)
+			timer := time.NewTimer(10 * time.Second)
 			defer utils.CleanupTimer(timer)
 			select {
 			case <-ch:

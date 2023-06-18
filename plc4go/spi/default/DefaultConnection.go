@@ -162,7 +162,7 @@ type defaultConnection struct {
 }
 
 func buildDefaultConnection(requirements DefaultConnectionRequirements, _options ...options.WithOption) DefaultConnection {
-	defaultTtl := time.Second * 10
+	defaultTtl := 10 * time.Second
 	var tagHandler spi.PlcTagHandler
 	var valueHandler spi.PlcValueHandler
 
@@ -278,13 +278,21 @@ func (d *defaultConnection) BlockingClose() {
 func (d *defaultConnection) Close() <-chan plc4go.PlcConnectionCloseResult {
 	d.log.Trace().Msg("close connection")
 	if messageCodec := d.GetMessageCodec(); messageCodec != nil {
+		d.log.Trace().Msgf("disconnecting message codec")
 		if err := messageCodec.Disconnect(); err != nil {
 			d.log.Warn().Err(err).Msg("Error disconnecting message code")
+		} else {
+			d.log.Trace().Msg("message codec disconnected")
 		}
 	}
 	var err error
 	if transportInstance := d.GetTransportInstance(); transportInstance != nil {
-		err = transportInstance.Close()
+		d.log.Trace().Msg("closing transport instance")
+		if err = transportInstance.Close(); err != nil {
+			d.log.Warn().Err(err).Msg("Error disconnecting transport instance")
+		} else {
+			d.log.Trace().Msg("transport instance closed")
+		}
 	}
 	d.SetConnected(false)
 	ch := make(chan plc4go.PlcConnectionCloseResult, 1)

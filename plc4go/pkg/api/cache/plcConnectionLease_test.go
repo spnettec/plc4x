@@ -34,12 +34,15 @@ import (
 func TestLeasedPlcConnection_IsTraceEnabled(t *testing.T) {
 	logger := testutils.ProduceTestingLogger(t)
 	driverManager := plc4go.NewPlcDriverManager(config.WithCustomLogger(logger))
+	t.Cleanup(func() {
+		assert.NoError(t, driverManager.Close())
+	})
 	driverManager.RegisterDriver(simulated.NewDriver(options.WithCustomLogger(logger)))
 	// Reduce the max lease time as this way we also reduce the max wait time.
 	cache := plcConnectionCache{
 		driverManager: driverManager,
-		maxLeaseTime:  time.Second * 1,
-		maxWaitTime:   time.Second * 5,
+		maxLeaseTime:  1 * time.Second,
+		maxWaitTime:   5 * time.Second,
 		cacheLock:     lock.NewCASMutex(),
 		connections:   make(map[string]*connectionContainer),
 		tracer:        nil,
@@ -102,12 +105,15 @@ func TestLeasedPlcConnection_IsTraceEnabled(t *testing.T) {
 func TestLeasedPlcConnection_GetTracer(t *testing.T) {
 	logger := testutils.ProduceTestingLogger(t)
 	driverManager := plc4go.NewPlcDriverManager(config.WithCustomLogger(logger))
+	t.Cleanup(func() {
+		assert.NoError(t, driverManager.Close())
+	})
 	driverManager.RegisterDriver(simulated.NewDriver(options.WithCustomLogger(logger)))
 	// Reduce the max lease time as this way we also reduce the max wait time.
 	cache := plcConnectionCache{
 		driverManager: driverManager,
-		maxLeaseTime:  time.Second * 1,
-		maxWaitTime:   time.Second * 5,
+		maxLeaseTime:  1 * time.Second,
+		maxWaitTime:   5 * time.Second,
 		cacheLock:     lock.NewCASMutex(),
 		connections:   make(map[string]*connectionContainer),
 		tracer:        nil,
@@ -144,12 +150,15 @@ func TestLeasedPlcConnection_GetTracer(t *testing.T) {
 func TestLeasedPlcConnection_GetConnectionId(t *testing.T) {
 	logger := testutils.ProduceTestingLogger(t)
 	driverManager := plc4go.NewPlcDriverManager(config.WithCustomLogger(logger))
+	t.Cleanup(func() {
+		assert.NoError(t, driverManager.Close())
+	})
 	driverManager.RegisterDriver(simulated.NewDriver(options.WithCustomLogger(logger)))
 	// Reduce the max lease time as this way we also reduce the max wait time.
 	cache := plcConnectionCache{
 		driverManager: driverManager,
-		maxLeaseTime:  time.Second * 1,
-		maxWaitTime:   time.Second * 5,
+		maxLeaseTime:  1 * time.Second,
+		maxWaitTime:   5 * time.Second,
 		cacheLock:     lock.NewCASMutex(),
 		connections:   make(map[string]*connectionContainer),
 		tracer:        nil,
@@ -186,12 +195,15 @@ func TestLeasedPlcConnection_GetConnectionId(t *testing.T) {
 func TestLeasedPlcConnection_Connect(t *testing.T) {
 	logger := testutils.ProduceTestingLogger(t)
 	driverManager := plc4go.NewPlcDriverManager(config.WithCustomLogger(logger))
+	t.Cleanup(func() {
+		assert.NoError(t, driverManager.Close())
+	})
 	driverManager.RegisterDriver(simulated.NewDriver(options.WithCustomLogger(logger)))
 	// Reduce the max lease time as this way we also reduce the max wait time.
 	cache := plcConnectionCache{
 		driverManager: driverManager,
-		maxLeaseTime:  time.Second * 1,
-		maxWaitTime:   time.Second * 5,
+		maxLeaseTime:  1 * time.Second,
+		maxWaitTime:   5 * time.Second,
 		cacheLock:     lock.NewCASMutex(),
 		connections:   make(map[string]*connectionContainer),
 		tracer:        nil,
@@ -226,12 +238,15 @@ func TestLeasedPlcConnection_Connect(t *testing.T) {
 func TestLeasedPlcConnection_BlockingClose(t *testing.T) {
 	logger := testutils.ProduceTestingLogger(t)
 	driverManager := plc4go.NewPlcDriverManager(config.WithCustomLogger(logger))
+	t.Cleanup(func() {
+		assert.NoError(t, driverManager.Close())
+	})
 	driverManager.RegisterDriver(simulated.NewDriver(options.WithCustomLogger(logger)))
 	// Reduce the max lease time as this way we also reduce the max wait time.
 	cache := plcConnectionCache{
 		driverManager: driverManager,
-		maxLeaseTime:  time.Second * 1,
-		maxWaitTime:   time.Second * 5,
+		maxLeaseTime:  1 * time.Second,
+		maxWaitTime:   5 * time.Second,
 		cacheLock:     lock.NewCASMutex(),
 		connections:   make(map[string]*connectionContainer),
 		tracer:        nil,
@@ -267,12 +282,15 @@ func TestLeasedPlcConnection_BlockingClose(t *testing.T) {
 func TestLeasedPlcConnection_Close(t *testing.T) {
 	logger := testutils.ProduceTestingLogger(t)
 	driverManager := plc4go.NewPlcDriverManager(config.WithCustomLogger(logger))
+	t.Cleanup(func() {
+		assert.NoError(t, driverManager.Close())
+	})
 	driverManager.RegisterDriver(simulated.NewDriver(options.WithCustomLogger(logger)))
 	// Reduce the max lease time as this way we also reduce the max wait time.
 	cache := plcConnectionCache{
 		driverManager: driverManager,
-		maxLeaseTime:  time.Second * 1,
-		maxWaitTime:   time.Second * 5,
+		maxLeaseTime:  1 * time.Second,
+		maxWaitTime:   5 * time.Second,
 		cacheLock:     lock.NewCASMutex(),
 		connections:   make(map[string]*connectionContainer),
 		tracer:        nil,
@@ -308,12 +326,15 @@ func TestLeasedPlcConnection_Close(t *testing.T) {
 func TestLeasedPlcConnection_IsConnected(t *testing.T) {
 	logger := testutils.ProduceTestingLogger(t)
 	driverManager := plc4go.NewPlcDriverManager(config.WithCustomLogger(logger))
+	t.Cleanup(func() {
+		assert.NoError(t, driverManager.Close())
+	})
 	driverManager.RegisterDriver(simulated.NewDriver(options.WithCustomLogger(logger)))
 	// Reduce the max lease time as this way we also reduce the max wait time.
 	cache := plcConnectionCache{
 		driverManager: driverManager,
-		maxLeaseTime:  time.Second * 1,
-		maxWaitTime:   time.Second * 5,
+		maxLeaseTime:  1 * time.Second,
+		maxWaitTime:   5 * time.Second,
 		cacheLock:     lock.NewCASMutex(),
 		connections:   make(map[string]*connectionContainer),
 		tracer:        nil,
@@ -341,12 +362,15 @@ func TestLeasedPlcConnection_IsConnected(t *testing.T) {
 func TestLeasedPlcConnection_Ping(t *testing.T) {
 	logger := testutils.ProduceTestingLogger(t)
 	driverManager := plc4go.NewPlcDriverManager(config.WithCustomLogger(logger))
+	t.Cleanup(func() {
+		assert.NoError(t, driverManager.Close())
+	})
 	driverManager.RegisterDriver(simulated.NewDriver(options.WithCustomLogger(logger)))
 	// Reduce the max lease time as this way we also reduce the max wait time.
 	cache := plcConnectionCache{
 		driverManager: driverManager,
-		maxLeaseTime:  time.Second * 1,
-		maxWaitTime:   time.Second * 5,
+		maxLeaseTime:  1 * time.Second,
+		maxWaitTime:   5 * time.Second,
 		cacheLock:     lock.NewCASMutex(),
 		connections:   make(map[string]*connectionContainer),
 		tracer:        nil,
@@ -383,12 +407,15 @@ func TestLeasedPlcConnection_Ping(t *testing.T) {
 func TestLeasedPlcConnection_GetMetadata(t *testing.T) {
 	logger := testutils.ProduceTestingLogger(t)
 	driverManager := plc4go.NewPlcDriverManager(config.WithCustomLogger(logger))
+	t.Cleanup(func() {
+		assert.NoError(t, driverManager.Close())
+	})
 	driverManager.RegisterDriver(simulated.NewDriver(options.WithCustomLogger(logger)))
 	// Reduce the max lease time as this way we also reduce the max wait time.
 	cache := plcConnectionCache{
 		driverManager: driverManager,
-		maxLeaseTime:  time.Second * 1,
-		maxWaitTime:   time.Second * 5,
+		maxLeaseTime:  1 * time.Second,
+		maxWaitTime:   5 * time.Second,
 		cacheLock:     lock.NewCASMutex(),
 		connections:   make(map[string]*connectionContainer),
 		tracer:        nil,
@@ -429,12 +456,15 @@ func TestLeasedPlcConnection_GetMetadata(t *testing.T) {
 func TestLeasedPlcConnection_ReadRequestBuilder(t *testing.T) {
 	logger := testutils.ProduceTestingLogger(t)
 	driverManager := plc4go.NewPlcDriverManager(config.WithCustomLogger(logger))
+	t.Cleanup(func() {
+		assert.NoError(t, driverManager.Close())
+	})
 	driverManager.RegisterDriver(simulated.NewDriver(options.WithCustomLogger(logger)))
 	// Reduce the max lease time as this way we also reduce the max wait time.
 	cache := plcConnectionCache{
 		driverManager: driverManager,
-		maxLeaseTime:  time.Second * 1,
-		maxWaitTime:   time.Second * 5,
+		maxLeaseTime:  1 * time.Second,
+		maxWaitTime:   5 * time.Second,
 		cacheLock:     lock.NewCASMutex(),
 		connections:   make(map[string]*connectionContainer),
 		tracer:        nil,
@@ -472,12 +502,15 @@ func TestLeasedPlcConnection_ReadRequestBuilder(t *testing.T) {
 func TestLeasedPlcConnection_WriteRequestBuilder(t *testing.T) {
 	logger := testutils.ProduceTestingLogger(t)
 	driverManager := plc4go.NewPlcDriverManager(config.WithCustomLogger(logger))
+	t.Cleanup(func() {
+		assert.NoError(t, driverManager.Close())
+	})
 	driverManager.RegisterDriver(simulated.NewDriver(options.WithCustomLogger(logger)))
 	// Reduce the max lease time as this way we also reduce the max wait time.
 	cache := plcConnectionCache{
 		driverManager: driverManager,
-		maxLeaseTime:  time.Second * 1,
-		maxWaitTime:   time.Second * 5,
+		maxLeaseTime:  1 * time.Second,
+		maxWaitTime:   5 * time.Second,
 		cacheLock:     lock.NewCASMutex(),
 		connections:   make(map[string]*connectionContainer),
 		tracer:        nil,
@@ -515,12 +548,15 @@ func TestLeasedPlcConnection_WriteRequestBuilder(t *testing.T) {
 func TestLeasedPlcConnection_SubscriptionRequestBuilder(t *testing.T) {
 	logger := testutils.ProduceTestingLogger(t)
 	driverManager := plc4go.NewPlcDriverManager(config.WithCustomLogger(logger))
+	t.Cleanup(func() {
+		assert.NoError(t, driverManager.Close())
+	})
 	driverManager.RegisterDriver(simulated.NewDriver(options.WithCustomLogger(logger)))
 	// Reduce the max lease time as this way we also reduce the max wait time.
 	cache := plcConnectionCache{
 		driverManager: driverManager,
-		maxLeaseTime:  time.Second * 1,
-		maxWaitTime:   time.Second * 5,
+		maxLeaseTime:  1 * time.Second,
+		maxWaitTime:   5 * time.Second,
 		cacheLock:     lock.NewCASMutex(),
 		connections:   make(map[string]*connectionContainer),
 		tracer:        nil,
@@ -558,12 +594,15 @@ func TestLeasedPlcConnection_SubscriptionRequestBuilder(t *testing.T) {
 func TestLeasedPlcConnection_UnsubscriptionRequestBuilder(t *testing.T) {
 	logger := testutils.ProduceTestingLogger(t)
 	driverManager := plc4go.NewPlcDriverManager(config.WithCustomLogger(logger))
+	t.Cleanup(func() {
+		assert.NoError(t, driverManager.Close())
+	})
 	driverManager.RegisterDriver(simulated.NewDriver(options.WithCustomLogger(logger)))
 	// Reduce the max lease time as this way we also reduce the max wait time.
 	cache := plcConnectionCache{
 		driverManager: driverManager,
-		maxLeaseTime:  time.Second * 1,
-		maxWaitTime:   time.Second * 5,
+		maxLeaseTime:  1 * time.Second,
+		maxWaitTime:   5 * time.Second,
 		cacheLock:     lock.NewCASMutex(),
 		connections:   make(map[string]*connectionContainer),
 		tracer:        nil,
@@ -609,12 +648,15 @@ func TestLeasedPlcConnection_UnsubscriptionRequestBuilder(t *testing.T) {
 func TestLeasedPlcConnection_BrowseRequestBuilder(t *testing.T) {
 	logger := testutils.ProduceTestingLogger(t)
 	driverManager := plc4go.NewPlcDriverManager(config.WithCustomLogger(logger))
+	t.Cleanup(func() {
+		assert.NoError(t, driverManager.Close())
+	})
 	driverManager.RegisterDriver(simulated.NewDriver(options.WithCustomLogger(logger)))
 	// Reduce the max lease time as this way we also reduce the max wait time.
 	cache := plcConnectionCache{
 		driverManager: driverManager,
-		maxLeaseTime:  time.Second * 1,
-		maxWaitTime:   time.Second * 5,
+		maxLeaseTime:  1 * time.Second,
+		maxWaitTime:   5 * time.Second,
 		cacheLock:     lock.NewCASMutex(),
 		connections:   make(map[string]*connectionContainer),
 		tracer:        nil,

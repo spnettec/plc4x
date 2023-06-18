@@ -151,14 +151,14 @@ func Test_requestTransactionManager_StartTransaction(t *testing.T) {
 		currentTransactionId                int32
 		workLog                             list.List
 		executor                            pool.Executor
-		shutdown                            bool
 		traceTransactionManagerTransactions bool
 	}
 	tests := []struct {
-		name       string
-		fields     fields
-		setup      func(t *testing.T, fields *fields)
-		wantAssert func(t *testing.T, requestTransaction RequestTransaction) bool
+		name        string
+		fields      fields
+		setup       func(t *testing.T, fields *fields)
+		manipulator func(t *testing.T, manager *requestTransactionManager)
+		wantAssert  func(t *testing.T, requestTransaction RequestTransaction) bool
 	}{
 		{
 			name: "start one",
@@ -169,8 +169,8 @@ func Test_requestTransactionManager_StartTransaction(t *testing.T) {
 		},
 		{
 			name: "start one in shutdown",
-			fields: fields{
-				shutdown: true,
+			manipulator: func(t *testing.T, manager *requestTransactionManager) {
+				manager.shutdown.Store(true)
 			},
 			wantAssert: func(t *testing.T, requestTransaction RequestTransaction) bool {
 				assert.True(t, requestTransaction.IsCompleted())
@@ -190,9 +190,11 @@ func Test_requestTransactionManager_StartTransaction(t *testing.T) {
 				currentTransactionId:                tt.fields.currentTransactionId,
 				workLog:                             tt.fields.workLog,
 				executor:                            tt.fields.executor,
-				shutdown:                            tt.fields.shutdown,
 				traceTransactionManagerTransactions: tt.fields.traceTransactionManagerTransactions,
 				log:                                 testutils.ProduceTestingLogger(t),
+			}
+			if tt.manipulator != nil {
+				tt.manipulator(t, r)
 			}
 			if got := r.StartTransaction(); !assert.True(t, tt.wantAssert(t, got)) {
 				t.Errorf("StartTransaction() = %v", got)
@@ -260,7 +262,6 @@ func Test_requestTransactionManager_failRequest(t *testing.T) {
 		currentTransactionId       int32
 		workLog                    list.List
 		executor                   pool.Executor
-		log                        zerolog.Logger
 	}
 	type args struct {
 		transaction *requestTransaction
@@ -279,8 +280,6 @@ func Test_requestTransactionManager_failRequest(t *testing.T) {
 				transaction: &requestTransaction{},
 			},
 			mockSetup: func(t *testing.T, fields *fields, args *args) {
-				fields.log = testutils.ProduceTestingLogger(t)
-
 				completionFuture := NewMockCompletionFuture(t)
 				expect := completionFuture.EXPECT()
 				expect.Cancel(true, nil).Return()
@@ -300,7 +299,7 @@ func Test_requestTransactionManager_failRequest(t *testing.T) {
 				currentTransactionId:       tt.fields.currentTransactionId,
 				workLog:                    tt.fields.workLog,
 				executor:                   tt.fields.executor,
-				log:                        tt.fields.log,
+				log:                        testutils.ProduceTestingLogger(t),
 			}
 			if err := r.failRequest(tt.args.transaction, tt.args.err); (err != nil) != tt.wantErr {
 				t.Errorf("failRequest() error = %v, wantErr %v", err, tt.wantErr)
@@ -451,7 +450,6 @@ func Test_requestTransactionManager_Close(t *testing.T) {
 		currentTransactionId                int32
 		workLog                             list.List
 		executor                            pool.Executor
-		shutdown                            bool
 		traceTransactionManagerTransactions bool
 	}
 	tests := []struct {
@@ -481,7 +479,6 @@ func Test_requestTransactionManager_Close(t *testing.T) {
 				currentTransactionId:                tt.fields.currentTransactionId,
 				workLog:                             tt.fields.workLog,
 				executor:                            tt.fields.executor,
-				shutdown:                            tt.fields.shutdown,
 				traceTransactionManagerTransactions: tt.fields.traceTransactionManagerTransactions,
 				log:                                 testutils.ProduceTestingLogger(t),
 			}
@@ -497,7 +494,6 @@ func Test_requestTransactionManager_CloseGraceful(t *testing.T) {
 		currentTransactionId                int32
 		workLog                             list.List
 		executor                            pool.Executor
-		shutdown                            bool
 		traceTransactionManagerTransactions bool
 		log                                 zerolog.Logger
 	}
@@ -561,7 +557,6 @@ func Test_requestTransactionManager_CloseGraceful(t *testing.T) {
 				currentTransactionId:                tt.fields.currentTransactionId,
 				workLog:                             tt.fields.workLog,
 				executor:                            tt.fields.executor,
-				shutdown:                            tt.fields.shutdown,
 				traceTransactionManagerTransactions: tt.fields.traceTransactionManagerTransactions,
 				log:                                 tt.fields.log,
 			}
@@ -577,7 +572,6 @@ func Test_requestTransactionManager_String(t *testing.T) {
 		currentTransactionId                int32
 		workLog                             list.List
 		executor                            pool.Executor
-		shutdown                            bool
 		traceTransactionManagerTransactions bool
 	}
 	tests := []struct {
@@ -601,7 +595,6 @@ func Test_requestTransactionManager_String(t *testing.T) {
 					return v
 				}(),
 				executor:                            pool.NewFixedSizeExecutor(1, 1),
-				shutdown:                            true,
 				traceTransactionManagerTransactions: true,
 			},
 			want: `
@@ -612,7 +605,7 @@ func Test_requestTransactionManager_String(t *testing.T) {
 ║║      ╚══════════════╝╚══════════╝       ║                                                                           ║
 ║╚═════════════════════════════════════════╝                                                                           ║
 ║╔═executor/executor═══════════════════════════════════════════════════════════════════════════════════════╗╔═shutdown╗║
-║║╔═running╗╔═shutdown╗                                                                                    ║║ b1 true ║║
+║║╔═running╗╔═shutdown╗                                                                                    ║║b0 false ║║
 ║║║b0 false║║b0 false ║                                                                                    ║╚═════════╝║
 ║║╚════════╝╚═════════╝                                                                                    ║           ║
 ║║╔═worker/value/worker═══════════════════════════════════════════════════════════════════════════════════╗║           ║
@@ -638,7 +631,6 @@ func Test_requestTransactionManager_String(t *testing.T) {
 				currentTransactionId:                tt.fields.currentTransactionId,
 				workLog:                             tt.fields.workLog,
 				executor:                            tt.fields.executor,
-				shutdown:                            tt.fields.shutdown,
 				traceTransactionManagerTransactions: tt.fields.traceTransactionManagerTransactions,
 				log:                                 testutils.ProduceTestingLogger(t),
 			}

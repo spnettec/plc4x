@@ -112,3 +112,10 @@ func (m *Driver) SupportsDiscovery() bool {
 func (m *Driver) DiscoverWithContext(ctx context.Context, callback func(event apiModel.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption) error {
 	return NewDiscoverer(options.WithCustomLogger(m.log)).Discover(ctx, callback, discoveryOptions...)
 }
+
+func (m *Driver) Close() error {
+	if err := m.tm.Close(); err != nil {
+		return errors.Wrap(err, "error closing transaction manager")
+	}
+	return nil
+}

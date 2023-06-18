@@ -1475,7 +1475,6 @@ func TestMapEncodedReply(t *testing.T) {
 					transactions.WithCustomExecutor(pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t)))),
 				)
 				t.Cleanup(func() {
-					t.Log("Closing transaction manager now")
 					assert.NoError(t, transactionManager.Close())
 				})
 				transaction := transactionManager.StartTransaction()
@@ -1545,11 +1544,10 @@ func TestMapEncodedReply(t *testing.T) {
 					options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
 					options.WithPassLoggerToModel(true),
 					transactions.WithCustomExecutor(
-						pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t)), pool.WithExecutorOptionTracerWorkers(true)),
+						pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t))),
 					),
 				)
 				t.Cleanup(func() {
-					t.Log("Closing transaction manager now")
 					assert.NoError(t, transactionManager.Close())
 				})
 				transaction := transactionManager.StartTransaction()
@@ -1621,11 +1619,10 @@ func TestMapEncodedReply(t *testing.T) {
 					options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
 					options.WithPassLoggerToModel(true),
 					transactions.WithCustomExecutor(
-						pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t)), pool.WithExecutorOptionTracerWorkers(true)),
+						pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t))),
 					),
 				)
 				t.Cleanup(func() {
-					t.Log("Closing transaction manager now")
 					assert.NoError(t, transactionManager.Close())
 				})
 				transaction := transactionManager.StartTransaction()
@@ -1686,11 +1683,10 @@ func TestMapEncodedReply(t *testing.T) {
 					options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
 					options.WithPassLoggerToModel(true),
 					transactions.WithCustomExecutor(
-						pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t)), pool.WithExecutorOptionTracerWorkers(true)),
+						pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t))),
 					),
 				)
 				t.Cleanup(func() {
-					t.Log("Closing transaction manager now")
 					assert.NoError(t, transactionManager.Close())
 				})
 				transaction := transactionManager.StartTransaction()
@@ -1741,11 +1737,10 @@ func TestMapEncodedReply(t *testing.T) {
 					options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
 					options.WithPassLoggerToModel(true),
 					transactions.WithCustomExecutor(
-						pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t)), pool.WithExecutorOptionTracerWorkers(true)),
+						pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t))),
 					),
 				)
 				t.Cleanup(func() {
-					t.Log("Closing transaction manager now")
 					assert.NoError(t, transactionManager.Close())
 				})
 				transaction := transactionManager.StartTransaction()
@@ -1799,11 +1794,10 @@ func TestMapEncodedReply(t *testing.T) {
 					options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
 					options.WithPassLoggerToModel(true),
 					transactions.WithCustomExecutor(
-						pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t)), pool.WithExecutorOptionTracerWorkers(true)),
+						pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t))),
 					),
 				)
 				t.Cleanup(func() {
-					t.Log("Closing transaction manager now")
 					assert.NoError(t, transactionManager.Close())
 				})
 				transaction := transactionManager.StartTransaction()
@@ -1877,11 +1871,10 @@ func TestMapEncodedReply(t *testing.T) {
 					options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
 					options.WithPassLoggerToModel(true),
 					transactions.WithCustomExecutor(
-						pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t)), pool.WithExecutorOptionTracerWorkers(true)),
+						pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t))),
 					),
 				)
 				t.Cleanup(func() {
-					t.Log("Closing transaction manager now")
 					assert.NoError(t, transactionManager.Close())
 				})
 				transaction := transactionManager.StartTransaction()
@@ -1973,11 +1966,10 @@ func TestMapEncodedReply(t *testing.T) {
 					options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
 					options.WithPassLoggerToModel(true),
 					transactions.WithCustomExecutor(
-						pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t)), pool.WithExecutorOptionTracerWorkers(true)),
+						pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t))),
 					),
 				)
 				t.Cleanup(func() {
-					t.Log("Closing transaction manager now")
 					assert.NoError(t, transactionManager.Close())
 				})
 				transaction := transactionManager.StartTransaction()
@@ -2032,11 +2024,10 @@ func TestMapEncodedReply(t *testing.T) {
 					options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
 					options.WithPassLoggerToModel(true),
 					transactions.WithCustomExecutor(
-						pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t)), pool.WithExecutorOptionTracerWorkers(true)),
+						pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t))),
 					),
 				)
 				t.Cleanup(func() {
-					t.Log("Closing transaction manager now")
 					assert.NoError(t, transactionManager.Close())
 				})
 				transaction := transactionManager.StartTransaction()
@@ -2087,11 +2078,10 @@ func TestMapEncodedReply(t *testing.T) {
 					options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
 					options.WithPassLoggerToModel(true),
 					transactions.WithCustomExecutor(
-						pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t)), pool.WithExecutorOptionTracerWorkers(true)),
+						pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t))),
 					),
 				)
 				t.Cleanup(func() {
-					t.Log("Closing transaction manager now")
 					assert.NoError(t, transactionManager.Close())
 				})
 				transaction := transactionManager.StartTransaction()
@@ -2142,11 +2132,10 @@ func TestMapEncodedReply(t *testing.T) {
 					options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
 					options.WithPassLoggerToModel(true),
 					transactions.WithCustomExecutor(
-						pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t)), pool.WithExecutorOptionTracerWorkers(true)),
+						pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t))),
 					),
 				)
 				t.Cleanup(func() {
-					t.Log("Closing transaction manager now")
 					assert.NoError(t, transactionManager.Close())
 				})
 				transaction := transactionManager.StartTransaction()
@@ -2197,11 +2186,10 @@ func TestMapEncodedReply(t *testing.T) {
 					options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
 					options.WithPassLoggerToModel(true),
 					transactions.WithCustomExecutor(
-						pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t)), pool.WithExecutorOptionTracerWorkers(true)),
+						pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t))),
 					),
 				)
 				t.Cleanup(func() {
-					t.Log("Closing transaction manager now")
 					assert.NoError(t, transactionManager.Close())
 				})
 				transaction := transactionManager.StartTransaction()
@@ -2252,11 +2240,10 @@ func TestMapEncodedReply(t *testing.T) {
 					options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
 					options.WithPassLoggerToModel(true),
 					transactions.WithCustomExecutor(
-						pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t)), pool.WithExecutorOptionTracerWorkers(true)),
+						pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t))),
 					),
 				)
 				t.Cleanup(func() {
-					t.Log("Closing transaction manager now")
 					assert.NoError(t, transactionManager.Close())
 				})
 				transaction := transactionManager.StartTransaction()
@@ -2327,11 +2314,10 @@ func TestMapEncodedReply(t *testing.T) {
 					options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
 					options.WithPassLoggerToModel(true),
 					transactions.WithCustomExecutor(
-						pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t)), pool.WithExecutorOptionTracerWorkers(true)),
+						pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t))),
 					),
 				)
 				t.Cleanup(func() {
-					t.Log("Closing transaction manager now")
 					assert.NoError(t, transactionManager.Close())
 				})
 				transaction := transactionManager.StartTransaction()
@@ -2382,11 +2368,10 @@ func TestMapEncodedReply(t *testing.T) {
 					options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
 					options.WithPassLoggerToModel(true),
 					transactions.WithCustomExecutor(
-						pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t)), pool.WithExecutorOptionTracerWorkers(true)),
+						pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t))),
 					),
 				)
 				t.Cleanup(func() {
-					t.Log("Closing transaction manager now")
 					assert.NoError(t, transactionManager.Close())
 				})
 				transaction := transactionManager.StartTransaction()
@@ -2437,11 +2422,10 @@ func TestMapEncodedReply(t *testing.T) {
 					options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
 					options.WithPassLoggerToModel(true),
 					transactions.WithCustomExecutor(
-						pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t)), pool.WithExecutorOptionTracerWorkers(true)),
+						pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t))),
 					),
 				)
 				t.Cleanup(func() {
-					t.Log("Closing transaction manager now")
 					assert.NoError(t, transactionManager.Close())
 				})
 				transaction := transactionManager.StartTransaction()
@@ -2492,11 +2476,10 @@ func TestMapEncodedReply(t *testing.T) {
 					options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
 					options.WithPassLoggerToModel(true),
 					transactions.WithCustomExecutor(
-						pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t)), pool.WithExecutorOptionTracerWorkers(true)),
+						pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t))),
 					),
 				)
 				t.Cleanup(func() {
-					t.Log("Closing transaction manager now")
 					assert.NoError(t, transactionManager.Close())
 				})
 				transaction := transactionManager.StartTransaction()
@@ -2547,11 +2530,10 @@ func TestMapEncodedReply(t *testing.T) {
 					options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
 					options.WithPassLoggerToModel(true),
 					transactions.WithCustomExecutor(
-						pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t)), pool.WithExecutorOptionTracerWorkers(true)),
+						pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t))),
 					),
 				)
 				t.Cleanup(func() {
-					t.Log("Closing transaction manager now")
 					assert.NoError(t, transactionManager.Close())
 				})
 				transaction := transactionManager.StartTransaction()
@@ -2602,11 +2584,10 @@ func TestMapEncodedReply(t *testing.T) {
 					options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
 					options.WithPassLoggerToModel(true),
 					transactions.WithCustomExecutor(
-						pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t)), pool.WithExecutorOptionTracerWorkers(true)),
+						pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t))),
 					),
 				)
 				t.Cleanup(func() {
-					t.Log("Closing transaction manager now")
 					assert.NoError(t, transactionManager.Close())
 				})
 				transaction := transactionManager.StartTransaction()
@@ -2673,11 +2654,10 @@ func TestMapEncodedReply(t *testing.T) {
 					options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
 					options.WithPassLoggerToModel(true),
 					transactions.WithCustomExecutor(
-						pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t)), pool.WithExecutorOptionTracerWorkers(true)),
+						pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t))),
 					),
 				)
 				t.Cleanup(func() {
-					t.Log("Closing transaction manager now")
 					assert.NoError(t, transactionManager.Close())
 				})
 				transaction := transactionManager.StartTransaction()
@@ -2728,11 +2708,10 @@ func TestMapEncodedReply(t *testing.T) {
 					options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
 					options.WithPassLoggerToModel(true),
 					transactions.WithCustomExecutor(
-						pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t)), pool.WithExecutorOptionTracerWorkers(true)),
+						pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t))),
 					),
 				)
 				t.Cleanup(func() {
-					t.Log("Closing transaction manager now")
 					assert.NoError(t, transactionManager.Close())
 				})
 				transaction := transactionManager.StartTransaction()
@@ -2783,11 +2762,10 @@ func TestMapEncodedReply(t *testing.T) {
 					options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
 					options.WithPassLoggerToModel(true),
 					transactions.WithCustomExecutor(
-						pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t)), pool.WithExecutorOptionTracerWorkers(true)),
+						pool.NewFixedSizeExecutor(10, 50, options.WithCustomLogger(testutils.ProduceTestingLogger(t))),
 					),
 				)
 				t.Cleanup(func() {
-					t.Log("Closing transaction manager now")
 					assert.NoError(t, transactionManager.Close())
 				})
 				transaction := transactionManager.StartTransaction()

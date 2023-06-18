@@ -23,6 +23,7 @@ import (
 	"context"
 	"fmt"
 	"runtime/debug"
+	"sync"
 	"time"
 
 	plc4go "github.com/apache/plc4x/plc4go/pkg/api"
@@ -46,128 +47,132 @@ type Browser struct {
 }
 
 func NewBrowser(connection plc4go.PlcConnection, _options ...options.WithOption) *Browser {
-	browser := Browser{
+	browser := &Browser{
 		connection:      connection,
 		sequenceCounter: 0,
 
 		log: options.ExtractCustomLogger(_options...),
 	}
 	browser.DefaultBrowser = _default.NewDefaultBrowser(browser, _options...)
-	return &browser
+	return browser
 }
 
-func (m Browser) BrowseQuery(ctx context.Context, interceptor func(result apiModel.PlcBrowseItem) bool, queryName string, query apiModel.PlcQuery) (apiModel.PlcResponseCode, []apiModel.PlcBrowseItem) {
-	var queryResults []apiModel.PlcBrowseItem
+func (m *Browser) BrowseQuery(ctx context.Context, interceptor func(result apiModel.PlcBrowseItem) bool, queryName string, query apiModel.PlcQuery) (responseCode apiModel.PlcResponseCode, queryResults []apiModel.PlcBrowseItem) {
 	switch query := query.(type) {
 	case *unitInfoQuery:
-		m.log.Trace().Msg("extract units")
-		units, allUnits, err := m.extractUnits(ctx, query, m.getInstalledUnitAddressBytes)
-		if err != nil {
-			m.log.Error().Err(err).Msg("Error extracting units")
-			return apiModel.PlcResponseCode_INTERNAL_ERROR, nil
-		}
-		attributes, allAttributes := m.extractAttributes(query)
-
-		if allUnits {
-			m.log.Info().Msg("Querying all (available) units")
-		}
-	unitLoop:
-		for _, unit := range units {
-			m.log.Trace().Msgf("checking unit:\n%s", unit)
-			if err := ctx.Err(); err != nil {
-				m.log.Info().Err(err).Msgf("Aborting scan at unit %s", unit)
-				return apiModel.PlcResponseCode_INVALID_ADDRESS, nil
-			}
-			unitAddress := unit.GetAddress()
-			if !allUnits && allAttributes {
-				m.log.Info().Msgf("Querying all attributes of unit %d", unitAddress)
-			}
-			event := m.log.Info()
-			if allUnits {
-				event = m.log.Debug()
-			}
-			event.Msgf("Query unit  %d", unitAddress)
-			for _, attribute := range attributes {
-				if err := ctx.Err(); err != nil {
-					m.log.Info().Err(err).Msgf("Aborting scan at unit %s", unit)
-					return apiModel.PlcResponseCode_INVALID_ADDRESS, nil
-				}
-				if !allUnits && !allAttributes {
-					m.log.Info().Msgf("Querying attribute %s of unit %d", attribute, unitAddress)
-				} else {
-					event.Msgf("unit %d: Query %s", unitAddress, attribute)
-				}
-				m.log.Trace().Msg("Building request")
-				readTagName := fmt.Sprintf("%s/%d/%s", queryName, unitAddress, attribute)
-				readRequest, _ := m.connection.ReadRequestBuilder().
-					AddTag(readTagName, NewCALIdentifyTag(unit, nil /*TODO: add bridge support*/, attribute, 1)).
-					Build()
-				timeoutCtx, timeoutCancel := context.WithTimeout(ctx, time.Second*2)
-				m.log.Trace().Msgf("Executing readRequest\n%s\nwith timeout %s", readRequest, timeoutCtx)
-				requestResult := <-readRequest.ExecuteWithContext(timeoutCtx)
-				m.log.Trace().Msg("got a response")
-				timeoutCancel()
-				if err := requestResult.GetErr(); err != nil {
-					if allUnits || allAttributes {
-						event = m.log.Trace()
-					}
-					event.Err(err).Msgf("unit %d: Can't read attribute %s", unitAddress, attribute)
-					continue unitLoop
-				}
-				response := requestResult.GetResponse()
-				if code := response.GetResponseCode(readTagName); code != apiModel.PlcResponseCode_OK {
-					event.Msgf("unit %d: error reading tag %s. Code %s", unitAddress, attribute, code)
-					continue unitLoop
-				}
-				queryResult := spiModel.NewDefaultPlcBrowseItem(
-					NewCALIdentifyTag(unit, nil /*TODO: add bridge support*/, attribute, 1),
-					queryName,
-					"",
-					true,
-					false,
-					false,
-					nil,
-					map[string]values.PlcValue{
-						"CurrentValue": response.GetValue(readTagName),
-					},
-				)
-				if interceptor != nil {
-					m.log.Trace().Msg("forwarding query result to interceptor")
-					interceptor(queryResult)
-				}
-				queryResults = append(queryResults, queryResult)
-			}
-		}
+		return m.browseUnitInfo(ctx, interceptor, queryName, query)
 	default:
 		m.log.Warn().Msgf("unsupported query type supplied %T", query)
 		return apiModel.PlcResponseCode_INVALID_ADDRESS, nil
 	}
-	m.log.Trace().Msgf("Browse done with \n%s", queryResults)
+}
+
+func (m *Browser) browseUnitInfo(ctx context.Context, interceptor func(result apiModel.PlcBrowseItem) bool, queryName string, query *unitInfoQuery) (responseCode apiModel.PlcResponseCode, queryResults []apiModel.PlcBrowseItem) {
+	m.log.Trace().Msg("extract units")
+	units, allUnits, err := m.extractUnits(ctx, query, m.getInstalledUnitAddressBytes)
+	if err != nil {
+		m.log.Error().Err(err).Msg("Error extracting units")
+		return apiModel.PlcResponseCode_INTERNAL_ERROR, nil
+	}
+	attributes, allAttributes := m.extractAttributes(query)
+
+	if allUnits {
+		m.log.Info().Msg("Querying all (available) units")
+	} else {
+		m.log.Debug().Msgf("Querying units\n%s", units)
+	}
+unitLoop:
+	for _, unit := range units {
+		m.log.Trace().Msgf("checking unit:\n%s", unit)
+		if err := ctx.Err(); err != nil {
+			m.log.Info().Err(err).Msgf("Aborting scan at unit %s", unit)
+			return apiModel.PlcResponseCode_INVALID_ADDRESS, nil
+		}
+		unitAddress := unit.GetAddress()
+		if !allUnits && allAttributes {
+			m.log.Info().Msgf("Querying all attributes of unit %d", unitAddress)
+		}
+		event := m.log.Info()
+		if allUnits {
+			event = m.log.Debug()
+		}
+		event.Msgf("Query unit  %d", unitAddress)
+		for _, attribute := range attributes {
+			if err := ctx.Err(); err != nil {
+				m.log.Info().Err(err).Msgf("Aborting scan at unit %s", unit)
+				return apiModel.PlcResponseCode_INVALID_ADDRESS, nil
+			}
+			if !allUnits && !allAttributes {
+				m.log.Info().Msgf("Querying attribute %s of unit %d", attribute, unitAddress)
+			} else {
+				event.Msgf("unit %d: Query %s", unitAddress, attribute)
+			}
+			m.log.Trace().Msg("Building request")
+			readTagName := fmt.Sprintf("%s/%d/%s", queryName, unitAddress, attribute)
+			readRequest, _ := m.connection.ReadRequestBuilder().
+				AddTag(readTagName, NewCALIdentifyTag(unit, nil /*TODO: add bridge support*/, attribute, 1)).
+				Build()
+			timeoutCtx, timeoutCancel := context.WithTimeout(ctx, 5*time.Second)
+			m.log.Trace().Msgf("Executing readRequest\n%s\nwith timeout %s", readRequest, timeoutCtx)
+			requestResult := <-readRequest.ExecuteWithContext(timeoutCtx)
+			m.log.Trace().Msgf("got a response\n%s", requestResult)
+			timeoutCancel()
+			if err := requestResult.GetErr(); err != nil {
+				if allUnits || allAttributes {
+					event = m.log.Trace()
+				}
+				event.Err(err).Msgf("unit %d: Can't read attribute %s", unitAddress, attribute)
+				continue unitLoop
+			}
+			response := requestResult.GetResponse()
+			if code := response.GetResponseCode(readTagName); code != apiModel.PlcResponseCode_OK {
+				event.Msgf("unit %d: error reading tag %s. Code %s", unitAddress, attribute, code)
+				continue unitLoop
+			}
+			queryResult := spiModel.NewDefaultPlcBrowseItem(
+				NewCALIdentifyTag(unit, nil /*TODO: add bridge support*/, attribute, 1),
+				queryName,
+				"",
+				true,
+				false,
+				false,
+				nil,
+				map[string]values.PlcValue{
+					"CurrentValue": response.GetValue(readTagName),
+				},
+			)
+			if interceptor != nil {
+				m.log.Trace().Msg("forwarding query result to interceptor")
+				interceptor(queryResult)
+			}
+			queryResults = append(queryResults, queryResult)
+		}
+	}
 	return apiModel.PlcResponseCode_OK, queryResults
 }
 
-func (m Browser) extractUnits(ctx context.Context, query *unitInfoQuery, getInstalledUnitAddressBytes func(ctx context.Context) (map[byte]any, error)) ([]readWriteModel.UnitAddress, bool, error) {
+func (m *Browser) extractUnits(ctx context.Context, query *unitInfoQuery, getInstalledUnitAddressBytes func(ctx context.Context) (map[byte]any, error)) ([]readWriteModel.UnitAddress, bool, error) {
 	if unitAddress := query.unitAddress; unitAddress != nil {
 		return []readWriteModel.UnitAddress{unitAddress}, false, nil
-	} else {
-		// TODO: check if we still want the option to brute force all addresses
-		installedUnitAddressBytes, err := getInstalledUnitAddressBytes(ctx)
-		if err != nil {
-			return nil, false, errors.New("Unable to get installed uints")
-		}
-
-		var units []readWriteModel.UnitAddress
-		for i := 0; i <= 0xFF; i++ {
-			unitAddressByte := byte(i)
-			if _, ok := installedUnitAddressBytes[unitAddressByte]; ok {
-				units = append(units, readWriteModel.NewUnitAddress(unitAddressByte))
-			}
-		}
-		return units, true, nil
 	}
+
+	// TODO: check if we still want the option to brute force all addresses
+	installedUnitAddressBytes, err := getInstalledUnitAddressBytes(ctx)
+	if err != nil {
+		return nil, false, errors.New("Unable to get installed uints")
+	}
+
+	var units []readWriteModel.UnitAddress
+	for i := 0; i <= 0xFF; i++ {
+		unitAddressByte := byte(i)
+		if _, ok := installedUnitAddressBytes[unitAddressByte]; ok {
+			units = append(units, readWriteModel.NewUnitAddress(unitAddressByte))
+		}
+	}
+	return units, true, nil
 }
 
-func (m Browser) extractAttributes(query *unitInfoQuery) ([]readWriteModel.Attribute, bool) {
+func (m *Browser) extractAttributes(query *unitInfoQuery) ([]readWriteModel.Attribute, bool) {
 	if attribute := query.attribute; attribute != nil {
 		return []readWriteModel.Attribute{*attribute}, false
 	} else {
@@ -179,7 +184,7 @@ func (m Browser) extractAttributes(query *unitInfoQuery) ([]readWriteModel.Attri
 	}
 }
 
-func (m Browser) getInstalledUnitAddressBytes(ctx context.Context) (map[byte]any, error) {
+func (m *Browser) getInstalledUnitAddressBytes(ctx context.Context) (map[byte]any, error) {
 	start := time.Now()
 	defer func() {
 		m.log.Debug().Msgf("Ending unit address acquiring after %s", time.Since(start))
@@ -191,7 +196,7 @@ func (m Browser) getInstalledUnitAddressBytes(ctx context.Context) (map[byte]any
 	if err != nil {
 		return nil, errors.Wrap(err, "Error subscribing to the installation MMI")
 	}
-	subCtx, subCtxCancel := context.WithTimeout(ctx, time.Second*2)
+	subCtx, subCtxCancel := context.WithTimeout(ctx, 2*time.Second)
 	defer subCtxCancel()
 	subscriptionResult := <-subscriptionRequest.ExecuteWithContext(subCtx)
 	if err := subscriptionResult.GetErr(); err != nil {
@@ -289,17 +294,21 @@ func (m Browser) getInstalledUnitAddressBytes(ctx context.Context) (map[byte]any
 		AddTagAddress("installationMMI", "status/binary/0xFF").
 		Build()
 	if err != nil {
-		return nil, errors.Wrap(err, "Error getting the installation MMI")
+		return nil, errors.Wrap(err, "Error building the installation MMI")
 	}
-	readCtx, readCtxCancel := context.WithTimeout(ctx, time.Second*2)
+	readCtx, readCtxCancel := context.WithTimeout(ctx, 2*time.Second)
 	defer readCtxCancel()
+	readWg := sync.WaitGroup{}
+	readWg.Add(1)
 	go func() {
+		defer readWg.Done()
 		defer func() {
 			if err := recover(); err != nil {
 				m.log.Error().Msgf("panic-ed %v. Stack:\n%s", err, debug.Stack())
 			}
 		}()
 		defer readCtxCancel()
+		m.log.Debug().Msgf("sending read request\n%s", readRequest)
 		readRequestResult := <-readRequest.ExecuteWithContext(readCtx)
 		if err := readRequestResult.GetErr(); err != nil {
 			m.log.Warn().Err(err).Msg("Error reading the mmi")
@@ -364,7 +373,7 @@ func (m Browser) getInstalledUnitAddressBytes(ctx context.Context) (map[byte]any
 		}
 	}()
 
-	syncCtx, syncCtxCancel := context.WithTimeout(ctx, time.Second*6)
+	syncCtx, syncCtxCancel := context.WithTimeout(ctx, 6*time.Second)
 	defer syncCtxCancel()
 	for !blockOffset0Received || !blockOffset88Received || !blockOffset176Received {
 		select {
@@ -383,5 +392,6 @@ func (m Browser) getInstalledUnitAddressBytes(ctx context.Context) (map[byte]any
 			return nil, errors.Wrap(err, "error waiting for other offsets")
 		}
 	}
+	readWg.Wait()
 	return result, nil
 }
