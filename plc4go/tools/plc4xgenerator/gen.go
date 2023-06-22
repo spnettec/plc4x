@@ -278,6 +278,18 @@ func (g *Generator) generate(typeName string) {
 				}
 			}
 			g.Printf(serializableFieldTemplate, "d."+field.name, fieldNameUntitled)
+		case *ast.IndexExpr:
+			x := fieldType.X
+			if fieldType, isxFieldSelector := x.(*ast.SelectorExpr); isxFieldSelector { // TODO: we need to refactor this so we can reuse...
+				xIdent, xIsIdent := fieldType.X.(*ast.Ident)
+				sel := fieldType.Sel
+				if xIsIdent && xIdent.Name == "atomic" && sel.Name == "Pointer" {
+					g.Printf(atomicPointerFieldTemplate, "d."+field.name, field.name, fieldNameUntitled)
+					continue
+				}
+			}
+			fmt.Printf("no support yet for %#q\n", fieldType)
+			continue
 		case *ast.Ident:
 			switch fieldType.Name {
 			case "byte":
@@ -538,6 +550,28 @@ var serializableFieldTemplate = `
 		} else {
 			stringValue := fmt.Sprintf("%%v", %[1]s)
 			if err := writeBuffer.WriteString(%[2]s, uint32(len(stringValue)*8), "UTF-8", stringValue); err != nil {
+				return err
+			}
+		}
+	}
+`
+
+var atomicPointerFieldTemplate = `
+	if %[2]sLoaded :=%[1]s.Load(); %[2]sLoaded != nil && *%[2]sLoaded != nil {
+		%[2]s := *%[2]sLoaded
+		if serializableField, ok := %[2]s.(utils.Serializable); ok {
+			if err := writeBuffer.PushContext(%[3]s); err != nil {
+				return err
+			}
+			if err := serializableField.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
+				return err
+			}
+			if err := writeBuffer.PopContext(%[3]s); err != nil {
+				return err
+			}
+		} else {
+			stringValue := fmt.Sprintf("%%v", %[2]s)
+			if err := writeBuffer.WriteString(%[3]s, uint32(len(stringValue)*8), "UTF-8", stringValue); err != nil {
 				return err
 			}
 		}

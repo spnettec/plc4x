@@ -24,8 +24,11 @@ import (
 	"context"
 	"fmt"
 	"net"
+	"sync"
+	"sync/atomic"
 
 	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/transports"
 	transportUtils "github.com/apache/plc4x/plc4go/spi/transports/utils"
 
 	"github.com/pkg/errors"
@@ -34,23 +37,30 @@ import (
 
 type TransportInstance struct {
 	transportUtils.DefaultBufferedTransportInstance
+
 	RemoteAddress  *net.TCPAddr
 	LocalAddress   *net.TCPAddr
 	ConnectTimeout uint32
-	transport      *Transport
-	tcpConn        net.Conn
-	reader         *bufio.Reader
+
+	transport *Transport
+
+	tcpConn net.Conn
+	reader  *bufio.Reader
+
+	connected        atomic.Bool
+	stateChangeMutex sync.RWMutex
 
 	log zerolog.Logger
 }
 
 func NewTcpTransportInstance(remoteAddress *net.TCPAddr, connectTimeout uint32, transport *Transport, _options ...options.WithOption) *TransportInstance {
+	customLogger, _ := options.ExtractCustomLogger(_options...)
 	transportInstance := &TransportInstance{
 		RemoteAddress:  remoteAddress,
 		ConnectTimeout: connectTimeout,
 		transport:      transport,
 
-		log: options.ExtractCustomLogger(_options...),
+		log: customLogger,
 	}
 	transportInstance.DefaultBufferedTransportInstance = transportUtils.NewDefaultBufferedTransportInstance(transportInstance, _options...)
 	return transportInstance
@@ -61,6 +71,11 @@ func (m *TransportInstance) Connect() error {
 }
 
 func (m *TransportInstance) ConnectWithContext(ctx context.Context) error {
+	if m.connected.Load() {
+		return errors.New("already connected")
+	}
+	m.stateChangeMutex.Lock()
+	defer m.stateChangeMutex.Unlock()
 	if m.RemoteAddress == nil {
 		return errors.New("Required remote address missing")
 	}
@@ -75,28 +90,30 @@ func (m *TransportInstance) ConnectWithContext(ctx context.Context) error {
 
 	m.reader = bufio.NewReaderSize(m.tcpConn, 100000)
 
+	m.connected.Store(true)
 	return nil
 }
 
 func (m *TransportInstance) Close() error {
-	if m.tcpConn == nil {
+	m.stateChangeMutex.Lock()
+	defer m.stateChangeMutex.Unlock()
+	if !m.connected.Load() {
 		return nil
 	}
-	err := m.tcpConn.Close()
-	if err != nil {
+	if err := m.tcpConn.Close(); err != nil {
 		return errors.Wrap(err, "error closing connection")
 	}
-	m.tcpConn = nil
+	m.connected.Store(false)
 	return nil
 }
 
 func (m *TransportInstance) IsConnected() bool {
-	return m.tcpConn != nil
+	return m.connected.Load()
 }
 
 func (m *TransportInstance) Write(data []byte) error {
-	if m.tcpConn == nil {
-		return errors.New("error writing to transport. No writer available")
+	if !m.connected.Load() {
+		return errors.New("error writing to transport. Not connected")
 	}
 	num, err := m.tcpConn.Write(data)
 	if err != nil {
@@ -108,7 +125,7 @@ func (m *TransportInstance) Write(data []byte) error {
 	return nil
 }
 
-func (m *TransportInstance) GetReader() *bufio.Reader {
+func (m *TransportInstance) GetReader() transports.ExtendedReader {
 	return m.reader
 }
 

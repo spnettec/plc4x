@@ -22,40 +22,57 @@ package serial
 import (
 	"bufio"
 	"fmt"
+	"io"
+	"sync"
+	"sync/atomic"
+
 	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/transports"
 	transportUtils "github.com/apache/plc4x/plc4go/spi/transports/utils"
+
 	"github.com/jacobsa/go-serial/serial"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
-	"io"
 )
 
 type TransportInstance struct {
 	transportUtils.DefaultBufferedTransportInstance
+
 	SerialPortName string
 	BaudRate       uint
 	ConnectTimeout uint32
-	transport      *Transport
-	serialPort     io.ReadWriteCloser
-	reader         *bufio.Reader
+
+	connected        atomic.Bool
+	stateChangeMutex sync.Mutex
+
+	transport  *Transport
+	serialPort io.ReadWriteCloser
+	reader     *bufio.Reader
 
 	log zerolog.Logger
 }
 
 func NewTransportInstance(serialPortName string, baudRate uint, connectTimeout uint32, transport *Transport, _options ...options.WithOption) *TransportInstance {
+	customLogger, _ := options.ExtractCustomLogger(_options...)
 	transportInstance := &TransportInstance{
 		SerialPortName: serialPortName,
 		BaudRate:       baudRate,
 		ConnectTimeout: connectTimeout,
 		transport:      transport,
 
-		log: options.ExtractCustomLogger(_options...),
+		log: customLogger,
 	}
 	transportInstance.DefaultBufferedTransportInstance = transportUtils.NewDefaultBufferedTransportInstance(transportInstance, _options...)
 	return transportInstance
 }
 
 func (m *TransportInstance) Connect() error {
+	m.stateChangeMutex.Lock()
+	defer m.stateChangeMutex.Unlock()
+	if m.connected.Load() {
+		return errors.New("Already connected")
+	}
+
 	var err error
 	config := serial.OpenOptions{PortName: m.SerialPortName, BaudRate: m.BaudRate, DataBits: 8, StopBits: 1, MinimumReadSize: 0, InterCharacterTimeout: 100 /*, RTSCTSFlowControl: true*/}
 	m.serialPort, err = serial.Open(config)
@@ -77,6 +94,9 @@ func (m *TransportInstance) Connect() error {
 }
 
 func (m *TransportInstance) Close() error {
+	m.stateChangeMutex.Lock()
+	defer m.stateChangeMutex.Unlock()
+
 	if m.serialPort == nil {
 		return nil
 	}
@@ -85,6 +105,8 @@ func (m *TransportInstance) Close() error {
 		return errors.Wrap(err, "error closing serial port")
 	}
 	m.serialPort = nil
+
+	m.connected.Store(false)
 	return nil
 }
 
@@ -93,6 +115,9 @@ func (m *TransportInstance) IsConnected() bool {
 }
 
 func (m *TransportInstance) Write(data []byte) error {
+	if !m.connected.Load() {
+		return errors.New("error writing to transport. Not connected")
+	}
 	if m.serialPort == nil {
 		return errors.New("error writing to transport. No writer available")
 	}
@@ -106,7 +131,7 @@ func (m *TransportInstance) Write(data []byte) error {
 	return nil
 }
 
-func (m *TransportInstance) GetReader() *bufio.Reader {
+func (m *TransportInstance) GetReader() transports.ExtendedReader {
 	return m.reader
 }
 

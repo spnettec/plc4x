@@ -26,6 +26,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/apache/plc4x/plc4go/spi/transports"
+
 	"github.com/stretchr/testify/assert"
 )
 
@@ -60,11 +62,11 @@ func Test_defaultBufferedTransportInstance_ConnectWithContext(t *testing.T) {
 		ctx context.Context
 	}
 	tests := []struct {
-		name      string
-		fields    fields
-		args      args
-		mockSetup func(t *testing.T, fields *fields, args *args)
-		wantErr   bool
+		name    string
+		fields  fields
+		args    args
+		setup   func(t *testing.T, fields *fields, args *args)
+		wantErr bool
 	}{
 		{
 			name: "connect",
@@ -75,7 +77,7 @@ func Test_defaultBufferedTransportInstance_ConnectWithContext(t *testing.T) {
 					return ctx
 				}(),
 			},
-			mockSetup: func(t *testing.T, fields *fields, args *args) {
+			setup: func(t *testing.T, fields *fields, args *args) {
 				requirements := NewMockDefaultBufferedTransportInstanceRequirements(t)
 				requirements.EXPECT().Connect().Return(nil)
 				fields.DefaultBufferedTransportInstanceRequirements = requirements
@@ -90,7 +92,7 @@ func Test_defaultBufferedTransportInstance_ConnectWithContext(t *testing.T) {
 					return ctx
 				}(),
 			},
-			mockSetup: func(t *testing.T, fields *fields, args *args) {
+			setup: func(t *testing.T, fields *fields, args *args) {
 				requirements := NewMockDefaultBufferedTransportInstanceRequirements(t)
 				requirements.EXPECT().Connect().Return(nil).Maybe()
 				fields.DefaultBufferedTransportInstanceRequirements = requirements
@@ -100,8 +102,8 @@ func Test_defaultBufferedTransportInstance_ConnectWithContext(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if tt.mockSetup != nil {
-				tt.mockSetup(t, &tt.fields, &tt.args)
+			if tt.setup != nil {
+				tt.setup(t, &tt.fields, &tt.args)
 			}
 			m := &defaultBufferedTransportInstance{
 				DefaultBufferedTransportInstanceRequirements: tt.fields.DefaultBufferedTransportInstanceRequirements,
@@ -118,43 +120,48 @@ func Test_defaultBufferedTransportInstance_FillBuffer(t *testing.T) {
 		DefaultBufferedTransportInstanceRequirements DefaultBufferedTransportInstanceRequirements
 	}
 	type args struct {
-		until func(pos uint, currentByte byte, reader *bufio.Reader) bool
+		until func(pos uint, currentByte byte, reader transports.ExtendedReader) bool
 	}
 	tests := []struct {
-		name      string
-		fields    fields
-		args      args
-		mockSetup func(t *testing.T, fields *fields, args *args)
-		wantErr   bool
+		name    string
+		fields  fields
+		args    args
+		setup   func(t *testing.T, fields *fields, args *args)
+		wantErr bool
 	}{
 		{
 			name: "fill it",
-			mockSetup: func(t *testing.T, fields *fields, args *args) {
+			setup: func(t *testing.T, fields *fields, args *args) {
 				requirements := NewMockDefaultBufferedTransportInstanceRequirements(t)
 				expect := requirements.EXPECT()
 				expect.GetReader().Return(nil)
+				expect.IsConnected().Return(true)
 				fields.DefaultBufferedTransportInstanceRequirements = requirements
 			},
 		},
 		{
 			name: "fill it with reader",
-			args: args{func(pos uint, currentByte byte, reader *bufio.Reader) bool {
+			args: args{func(pos uint, currentByte byte, reader transports.ExtendedReader) bool {
 				return pos < 1
 			}},
-			mockSetup: func(t *testing.T, fields *fields, args *args) {
+			setup: func(t *testing.T, fields *fields, args *args) {
 				requirements := NewMockDefaultBufferedTransportInstanceRequirements(t)
-				requirements.EXPECT().GetReader().Return(bufio.NewReader(bytes.NewReader([]byte{0x0, 0x0})))
+				expect := requirements.EXPECT()
+				expect.GetReader().Return(bufio.NewReader(bytes.NewReader([]byte{0x0, 0x0})))
+				expect.IsConnected().Return(true)
 				fields.DefaultBufferedTransportInstanceRequirements = requirements
 			},
 		},
 		{
 			name: "fill it with reader errors",
-			args: args{func(pos uint, currentByte byte, reader *bufio.Reader) bool {
+			args: args{func(pos uint, currentByte byte, reader transports.ExtendedReader) bool {
 				return pos < 2
 			}},
-			mockSetup: func(t *testing.T, fields *fields, args *args) {
+			setup: func(t *testing.T, fields *fields, args *args) {
 				requirements := NewMockDefaultBufferedTransportInstanceRequirements(t)
-				requirements.EXPECT().GetReader().Return(bufio.NewReader(bytes.NewReader([]byte{0x0, 0x0})))
+				expect := requirements.EXPECT()
+				expect.GetReader().Return(bufio.NewReader(bytes.NewReader([]byte{0x0, 0x0})))
+				expect.IsConnected().Return(true)
 				fields.DefaultBufferedTransportInstanceRequirements = requirements
 			},
 			wantErr: true,
@@ -162,8 +169,8 @@ func Test_defaultBufferedTransportInstance_FillBuffer(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if tt.mockSetup != nil {
-				tt.mockSetup(t, &tt.fields, &tt.args)
+			if tt.setup != nil {
+				tt.setup(t, &tt.fields, &tt.args)
 			}
 			m := &defaultBufferedTransportInstance{
 				DefaultBufferedTransportInstanceRequirements: tt.fields.DefaultBufferedTransportInstanceRequirements,
@@ -180,25 +187,29 @@ func Test_defaultBufferedTransportInstance_GetNumBytesAvailableInBuffer(t *testi
 		DefaultBufferedTransportInstanceRequirements DefaultBufferedTransportInstanceRequirements
 	}
 	tests := []struct {
-		name      string
-		fields    fields
-		want      uint32
-		mockSetup func(t *testing.T, fields *fields)
-		wantErr   bool
+		name    string
+		fields  fields
+		want    uint32
+		setup   func(t *testing.T, fields *fields)
+		wantErr bool
 	}{
 		{
 			name: "get it without reader",
-			mockSetup: func(t *testing.T, fields *fields) {
+			setup: func(t *testing.T, fields *fields) {
 				requirements := NewMockDefaultBufferedTransportInstanceRequirements(t)
-				requirements.EXPECT().GetReader().Return(nil)
+				expect := requirements.EXPECT()
+				expect.GetReader().Return(nil)
+				expect.IsConnected().Return(true)
 				fields.DefaultBufferedTransportInstanceRequirements = requirements
 			},
 		},
 		{
 			name: "get it with reader",
-			mockSetup: func(t *testing.T, fields *fields) {
+			setup: func(t *testing.T, fields *fields) {
 				requirements := NewMockDefaultBufferedTransportInstanceRequirements(t)
-				requirements.EXPECT().GetReader().Return(bufio.NewReader(bytes.NewReader([]byte{0x0, 0x0})))
+				expect := requirements.EXPECT()
+				expect.GetReader().Return(bufio.NewReader(bytes.NewReader([]byte{0x0, 0x0})))
+				expect.IsConnected().Return(true)
 				fields.DefaultBufferedTransportInstanceRequirements = requirements
 			},
 			want: 2,
@@ -206,8 +217,8 @@ func Test_defaultBufferedTransportInstance_GetNumBytesAvailableInBuffer(t *testi
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if tt.mockSetup != nil {
-				tt.mockSetup(t, &tt.fields)
+			if tt.setup != nil {
+				tt.setup(t, &tt.fields)
 			}
 			m := &defaultBufferedTransportInstance{
 				DefaultBufferedTransportInstanceRequirements: tt.fields.DefaultBufferedTransportInstanceRequirements,
@@ -232,18 +243,20 @@ func Test_defaultBufferedTransportInstance_PeekReadableBytes(t *testing.T) {
 		numBytes uint32
 	}
 	tests := []struct {
-		name      string
-		fields    fields
-		args      args
-		mockSetup func(t *testing.T, fields *fields, args *args)
-		want      []byte
-		wantErr   bool
+		name    string
+		fields  fields
+		args    args
+		setup   func(t *testing.T, fields *fields, args *args)
+		want    []byte
+		wantErr bool
 	}{
 		{
 			name: "peek it without reader",
-			mockSetup: func(t *testing.T, fields *fields, args *args) {
+			setup: func(t *testing.T, fields *fields, args *args) {
 				requirements := NewMockDefaultBufferedTransportInstanceRequirements(t)
-				requirements.EXPECT().GetReader().Return(nil)
+				expect := requirements.EXPECT()
+				expect.IsConnected().Return(true)
+				expect.GetReader().Return(nil)
 				fields.DefaultBufferedTransportInstanceRequirements = requirements
 			},
 			wantErr: true,
@@ -251,9 +264,11 @@ func Test_defaultBufferedTransportInstance_PeekReadableBytes(t *testing.T) {
 		{
 			name: "peek it with reader",
 			args: args{numBytes: 2},
-			mockSetup: func(t *testing.T, fields *fields, args *args) {
+			setup: func(t *testing.T, fields *fields, args *args) {
 				requirements := NewMockDefaultBufferedTransportInstanceRequirements(t)
-				requirements.EXPECT().GetReader().Return(bufio.NewReader(bytes.NewReader([]byte{0x0, 0x0})))
+				expect := requirements.EXPECT()
+				expect.GetReader().Return(bufio.NewReader(bytes.NewReader([]byte{0x0, 0x0})))
+				expect.IsConnected().Return(true)
 				fields.DefaultBufferedTransportInstanceRequirements = requirements
 			},
 			want: []byte{0x0, 0x0},
@@ -261,8 +276,8 @@ func Test_defaultBufferedTransportInstance_PeekReadableBytes(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if tt.mockSetup != nil {
-				tt.mockSetup(t, &tt.fields, &tt.args)
+			if tt.setup != nil {
+				tt.setup(t, &tt.fields, &tt.args)
 			}
 			m := &defaultBufferedTransportInstance{
 				DefaultBufferedTransportInstanceRequirements: tt.fields.DefaultBufferedTransportInstanceRequirements,
@@ -287,18 +302,20 @@ func Test_defaultBufferedTransportInstance_Read(t *testing.T) {
 		numBytes uint32
 	}
 	tests := []struct {
-		name      string
-		fields    fields
-		args      args
-		mockSetup func(t *testing.T, fields *fields, args *args)
-		want      []byte
-		wantErr   bool
+		name    string
+		fields  fields
+		args    args
+		setup   func(t *testing.T, fields *fields, args *args)
+		want    []byte
+		wantErr bool
 	}{
 		{
 			name: "read it without reader",
-			mockSetup: func(t *testing.T, fields *fields, args *args) {
+			setup: func(t *testing.T, fields *fields, args *args) {
 				requirements := NewMockDefaultBufferedTransportInstanceRequirements(t)
-				requirements.EXPECT().GetReader().Return(nil)
+				expect := requirements.EXPECT()
+				expect.GetReader().Return(nil)
+				expect.IsConnected().Return(true)
 				fields.DefaultBufferedTransportInstanceRequirements = requirements
 			},
 			wantErr: true,
@@ -306,9 +323,11 @@ func Test_defaultBufferedTransportInstance_Read(t *testing.T) {
 		{
 			name: "read it with reader",
 			args: args{numBytes: 2},
-			mockSetup: func(t *testing.T, fields *fields, args *args) {
+			setup: func(t *testing.T, fields *fields, args *args) {
 				requirements := NewMockDefaultBufferedTransportInstanceRequirements(t)
-				requirements.EXPECT().GetReader().Return(bufio.NewReader(bytes.NewReader([]byte{0x0, 0x0})))
+				expect := requirements.EXPECT()
+				expect.GetReader().Return(bufio.NewReader(bytes.NewReader([]byte{0x0, 0x0})))
+				expect.IsConnected().Return(true)
 				fields.DefaultBufferedTransportInstanceRequirements = requirements
 			},
 			want: []byte{0x0, 0x0},
@@ -316,9 +335,11 @@ func Test_defaultBufferedTransportInstance_Read(t *testing.T) {
 		{
 			name: "read it with reader errors",
 			args: args{numBytes: 2},
-			mockSetup: func(t *testing.T, fields *fields, args *args) {
+			setup: func(t *testing.T, fields *fields, args *args) {
 				requirements := NewMockDefaultBufferedTransportInstanceRequirements(t)
-				requirements.EXPECT().GetReader().Return(bufio.NewReader(bytes.NewReader([]byte{0x0})))
+				expect := requirements.EXPECT()
+				expect.GetReader().Return(bufio.NewReader(bytes.NewReader([]byte{0x0})))
+				expect.IsConnected().Return(true)
 				fields.DefaultBufferedTransportInstanceRequirements = requirements
 			},
 			wantErr: true,
@@ -326,8 +347,8 @@ func Test_defaultBufferedTransportInstance_Read(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if tt.mockSetup != nil {
-				tt.mockSetup(t, &tt.fields, &tt.args)
+			if tt.setup != nil {
+				tt.setup(t, &tt.fields, &tt.args)
 			}
 			m := &defaultBufferedTransportInstance{
 				DefaultBufferedTransportInstanceRequirements: tt.fields.DefaultBufferedTransportInstanceRequirements,

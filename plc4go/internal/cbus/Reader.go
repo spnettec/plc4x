@@ -46,12 +46,13 @@ type Reader struct {
 }
 
 func NewReader(tpduGenerator *AlphaGenerator, messageCodec *MessageCodec, tm transactions.RequestTransactionManager, _options ...options.WithOption) *Reader {
+	customLogger, _ := options.ExtractCustomLogger(_options...)
 	return &Reader{
 		alphaGenerator: tpduGenerator,
 		messageCodec:   messageCodec,
 		tm:             tm,
 
-		log: options.ExtractCustomLogger(_options...),
+		log: customLogger,
 	}
 }
 
@@ -144,6 +145,7 @@ func (m *Reader) sendMessageOverTheWire(ctx context.Context, transaction transac
 		ttl = -time.Since(deadline)
 		m.log.Debug().Msgf("setting ttl to %s", ttl)
 	}
+	m.log.Trace().Msgf("sending with ctx %s", ctx)
 	if err := m.messageCodec.SendRequest(
 		ctx,
 		messageToSend,

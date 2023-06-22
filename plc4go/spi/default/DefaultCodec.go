@@ -103,15 +103,21 @@ func buildDefaultCodec(defaultCodecRequirements DefaultCodecRequirements, transp
 		}
 	}
 
+	receiveTimeout, timeoutDefined := options.ExtractReceiveTimeout(_options...)
+	if !timeoutDefined {
+		receiveTimeout = 10 * time.Second
+	}
+	traceDefaultMessageCodecWorker, _ := options.ExtractTraceDefaultMessageCodecWorker(_options...)
+	customLogger, _ := options.ExtractCustomLogger(_options...)
 	return &defaultCodec{
 		DefaultCodecRequirements:       defaultCodecRequirements,
 		transportInstance:              transportInstance,
 		defaultIncomingMessageChannel:  make(chan spi.Message, 100),
 		expectations:                   []spi.Expectation{},
 		customMessageHandling:          customMessageHandler,
-		receiveTimeout:                 options.ExtractReceiveTimeout(_options...),
-		traceDefaultMessageCodecWorker: options.ExtractTraceDefaultMessageCodecWorker(_options...) || config.TraceDefaultMessageCodecWorker,
-		log:                            options.ExtractCustomLogger(_options...),
+		receiveTimeout:                 receiveTimeout,
+		traceDefaultMessageCodecWorker: traceDefaultMessageCodecWorker || config.TraceDefaultMessageCodecWorker,
+		log:                            customLogger,
 	}
 }
 
@@ -149,8 +155,7 @@ func (m *defaultCodec) ConnectWithContext(ctx context.Context) error {
 	}
 
 	m.log.Debug().Msg("Message codec currently not running, starting worker now")
-	m.activeWorker.Add(1)
-	go m.Work(m.DefaultCodecRequirements)
+	m.startWorker()
 	m.running.Store(true)
 	m.log.Trace().Msg("connected")
 	return nil
@@ -168,6 +173,7 @@ func (m *defaultCodec) Disconnect() error {
 	m.activeWorker.Wait()
 	m.log.Trace().Msg("worker shut down")
 	if m.transportInstance != nil {
+		m.log.Trace().Msg("closing transport instance")
 		if err := m.transportInstance.Close(); err != nil {
 			return errors.Wrap(err, "error closing transport instance")
 		}
@@ -276,7 +282,13 @@ func (m *defaultCodec) HandleMessages(message spi.Message) bool {
 	return messageHandled
 }
 
-func (m *defaultCodec) Work(codec DefaultCodecRequirements) {
+func (m *defaultCodec) startWorker() {
+	m.log.Trace().Msg("starting worker")
+	m.activeWorker.Add(1)
+	go m.Work()
+}
+
+func (m *defaultCodec) Work() {
 	defer m.activeWorker.Done()
 	workerLog := m.log.With().Logger()
 	if !m.traceDefaultMessageCodecWorker {
@@ -285,19 +297,18 @@ func (m *defaultCodec) Work(codec DefaultCodecRequirements) {
 	workerLog.Trace().Msg("Starting work")
 	defer workerLog.Trace().Msg("work ended")
 
-	defer func(workerLog zerolog.Logger) {
+	defer func() {
 		if err := recover(); err != nil {
 			// TODO: If this is an error, cast it to an error and log it with "Err(err)"
 			m.log.Error().Msgf("panic-ed %v. Stack: %s", err, debug.Stack())
 		}
 		if m.running.Load() {
 			workerLog.Warn().Msg("Keep running")
-			m.activeWorker.Add(1)
-			go m.Work(codec)
+			m.startWorker()
 		} else {
 			workerLog.Info().Msg("Worker terminated")
 		}
-	}(workerLog)
+	}()
 
 	// Start an endless loop
 mainLoop:
@@ -326,8 +337,12 @@ mainLoop:
 		{
 			syncer := make(chan struct{})
 			go func() {
+				defer close(syncer)
+				if !m.running.Load() {
+					err = errors.New("not running")
+					return
+				}
 				message, err = m.Receive()
-				close(syncer)
 			}()
 			timeoutTimer := time.NewTimer(m.receiveTimeout)
 			select {
@@ -338,7 +353,6 @@ mainLoop:
 				workerLog.Error().Msgf("receive timeout after %s", m.receiveTimeout)
 				continue mainLoop
 			}
-
 		}
 		if err != nil {
 			workerLog.Error().Err(err).Msg("got an error reading from transport")
@@ -357,7 +371,7 @@ mainLoop:
 		if m.customMessageHandling != nil {
 			workerLog.Trace().Msg("Executing custom handling")
 			start := time.Now()
-			handled := m.customMessageHandling(codec, message)
+			handled := m.customMessageHandling(m.DefaultCodecRequirements, message)
 			workerLog.Trace().Msgf("custom handling took %s", time.Since(start))
 			if handled {
 				workerLog.Trace().Msg("Custom handling handled the message")

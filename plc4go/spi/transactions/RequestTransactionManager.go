@@ -67,15 +67,17 @@ type RequestTransactionManager interface {
 
 // NewRequestTransactionManager creates a new RequestTransactionManager
 func NewRequestTransactionManager(numberOfConcurrentRequests int, _options ...options.WithOption) RequestTransactionManager {
+	extractTraceTransactionManagerTransactions, _ := options.ExtractTraceTransactionManagerTransactions(_options...)
+	customLogger, _ := options.ExtractCustomLogger(_options...)
 	_requestTransactionManager := &requestTransactionManager{
 		numberOfConcurrentRequests: numberOfConcurrentRequests,
 		currentTransactionId:       0,
 		workLog:                    *list.New(),
 		executor:                   sharedExecutorInstance,
 
-		traceTransactionManagerTransactions: options.ExtractTraceTransactionManagerTransactions(_options...) || config.TraceTransactionManagerTransactions,
+		traceTransactionManagerTransactions: extractTraceTransactionManagerTransactions || config.TraceTransactionManagerTransactions,
 
-		log: options.ExtractCustomLogger(_options...),
+		log: customLogger,
 	}
 	for _, option := range _options {
 		switch option := option.(type) {
@@ -169,7 +171,7 @@ func (r *requestTransactionManager) processWorklog() {
 		r.log.Debug().Msgf("Handling next\n%v\n. (Adding to running requests (length: %d))", next, len(r.runningRequests))
 		r.runningRequests = append(r.runningRequests, next)
 		completionFuture := r.executor.Submit(context.Background(), next.transactionId, next.operation)
-		next.completionFuture = completionFuture
+		next.setCompletionFuture(completionFuture)
 		r.workLog.Remove(front)
 	}
 }
@@ -190,7 +192,7 @@ func (r *requestTransactionManager) StartTransaction() RequestTransaction {
 	}
 	if r.shutdown.Load() {
 		transaction.completed = true
-		transaction.completionFuture = &completedFuture{errors.New("request transaction manager in shutdown")}
+		transaction.setCompletionFuture(&completedFuture{errors.New("request transaction manager in shutdown")})
 	}
 	return transaction
 }
@@ -203,7 +205,7 @@ func (r *requestTransactionManager) getNumberOfActiveRequests() int {
 
 func (r *requestTransactionManager) failRequest(transaction *requestTransaction, err error) error {
 	// Try to fail it!
-	transaction.completionFuture.Cancel(true, err)
+	transaction.getCompletionFuture().Cancel(true, err)
 	// End it
 	return r.endRequest(transaction)
 }
@@ -274,5 +276,6 @@ func (r *requestTransactionManager) CloseGraceful(timeout time.Duration) error {
 	} else {
 		r.log.Warn().Msg("not closing shared instance")
 	}
+	r.log.Debug().Msg("closed")
 	return nil
 }

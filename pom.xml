@@ -146,9 +146,9 @@
     <maven.clean.plugin.version>3.2.0</maven.clean.plugin.version>
     <!-- version 0.6.7 is newer, however the ExampleServer doesn't seem to run with that -->
     <!-- version 0.6.8 is being released, however the milo-examples artifact is not available yet -->
-    <milo.version>0.6.9</milo.version>
-    <mockito.version>5.3.1</mockito.version>
-    <netty.version>4.1.93.Final</netty.version>
+    <milo.version>0.6.10</milo.version>
+    <mockito.version>5.4.0</mockito.version>
+    <netty.version>4.1.94.Final</netty.version>
     <pcap4j.version>1.8.2</pcap4j.version>
     <slf4j.version>2.0.7</slf4j.version>
     <vavr.version>0.10.4</vavr.version>
@@ -571,7 +571,7 @@
       <dependency>
         <groupId>org.json</groupId>
         <artifactId>json</artifactId>
-        <version>20230227</version>
+        <version>20230618</version>
       </dependency>
 
       <dependency>

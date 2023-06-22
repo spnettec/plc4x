@@ -336,14 +336,14 @@ func Test_defaultCodec_Connect(t *testing.T) {
 		customMessageHandling         func(codec DefaultCodecRequirements, message spi.Message) bool
 	}
 	tests := []struct {
-		name      string
-		fields    fields
-		mockSetup func(t *testing.T, fields *fields)
-		wantErr   assert.ErrorAssertionFunc
+		name    string
+		fields  fields
+		setup   func(t *testing.T, fields *fields)
+		wantErr assert.ErrorAssertionFunc
 	}{
 		{
 			name: "connect it",
-			mockSetup: func(t *testing.T, fields *fields) {
+			setup: func(t *testing.T, fields *fields) {
 				instance := NewMockTransportInstance(t)
 				instance.EXPECT().IsConnected().Return(true)
 				fields.transportInstance = instance
@@ -353,8 +353,8 @@ func Test_defaultCodec_Connect(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if tt.mockSetup != nil {
-				tt.mockSetup(t, &tt.fields)
+			if tt.setup != nil {
+				tt.setup(t, &tt.fields)
 			}
 			m := &defaultCodec{
 				DefaultCodecRequirements:      tt.fields.DefaultCodecRequirements,
@@ -381,15 +381,15 @@ func Test_defaultCodec_ConnectWithContext(t *testing.T) {
 		ctx context.Context
 	}
 	tests := []struct {
-		name      string
-		fields    fields
-		args      args
-		mockSetup func(t *testing.T, fields *fields, args *args)
-		wantErr   assert.ErrorAssertionFunc
+		name    string
+		fields  fields
+		args    args
+		setup   func(t *testing.T, fields *fields, args *args)
+		wantErr assert.ErrorAssertionFunc
 	}{
 		{
 			name: "connect it",
-			mockSetup: func(t *testing.T, fields *fields, args *args) {
+			setup: func(t *testing.T, fields *fields, args *args) {
 				instance := NewMockTransportInstance(t)
 				instance.EXPECT().IsConnected().Return(true)
 				fields.transportInstance = instance
@@ -398,7 +398,7 @@ func Test_defaultCodec_ConnectWithContext(t *testing.T) {
 		},
 		{
 			name: "connect it (fails)",
-			mockSetup: func(t *testing.T, fields *fields, args *args) {
+			setup: func(t *testing.T, fields *fields, args *args) {
 				instance := NewMockTransportInstance(t)
 				expect := instance.EXPECT()
 				expect.IsConnected().Return(false)
@@ -409,7 +409,7 @@ func Test_defaultCodec_ConnectWithContext(t *testing.T) {
 		},
 		{
 			name: "connect it already connected",
-			mockSetup: func(t *testing.T, fields *fields, args *args) {
+			setup: func(t *testing.T, fields *fields, args *args) {
 				instance := NewMockTransportInstance(t)
 				instance.EXPECT().IsConnected().Return(true)
 				fields.transportInstance = instance
@@ -419,8 +419,8 @@ func Test_defaultCodec_ConnectWithContext(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if tt.mockSetup != nil {
-				tt.mockSetup(t, &tt.fields, &tt.args)
+			if tt.setup != nil {
+				tt.setup(t, &tt.fields, &tt.args)
 			}
 			m := &defaultCodec{
 				DefaultCodecRequirements:      tt.fields.DefaultCodecRequirements,
@@ -446,7 +446,7 @@ func Test_defaultCodec_Disconnect(t *testing.T) {
 	tests := []struct {
 		name        string
 		fields      fields
-		mockSetup   func(t *testing.T, fields *fields)
+		setup       func(t *testing.T, fields *fields)
 		manipulator func(t *testing.T, codec *defaultCodec)
 		wantErr     assert.ErrorAssertionFunc
 	}{
@@ -456,7 +456,7 @@ func Test_defaultCodec_Disconnect(t *testing.T) {
 		},
 		{
 			name: "disconnect it",
-			mockSetup: func(t *testing.T, fields *fields) {
+			setup: func(t *testing.T, fields *fields) {
 				instance := NewMockTransportInstance(t)
 				instance.EXPECT().Close().Return(nil)
 				fields.transportInstance = instance
@@ -469,8 +469,8 @@ func Test_defaultCodec_Disconnect(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if tt.mockSetup != nil {
-				tt.mockSetup(t, &tt.fields)
+			if tt.setup != nil {
+				tt.setup(t, &tt.fields)
 			}
 			c := &defaultCodec{
 				DefaultCodecRequirements:      tt.fields.DefaultCodecRequirements,
@@ -507,18 +507,22 @@ func Test_defaultCodec_Expect(t *testing.T) {
 		name    string
 		fields  fields
 		args    args
+		setup   func(t *testing.T, fields *fields, args *args)
 		wantErr assert.ErrorAssertionFunc
 	}{
 		{
 			name: "expect it",
-			args: args{
-				ctx: testutils.TestContext(t),
+			setup: func(t *testing.T, fields *fields, args *args) {
+				args.ctx = testutils.TestContext(t)
 			},
 			wantErr: assert.NoError,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			if tt.setup != nil {
+				tt.setup(t, &tt.fields, &tt.args)
+			}
 			m := &defaultCodec{
 				DefaultCodecRequirements:      tt.fields.DefaultCodecRequirements,
 				transportInstance:             tt.fields.transportInstance,
@@ -740,55 +744,50 @@ func Test_defaultCodec_SendRequest(t *testing.T) {
 		ttl            time.Duration
 	}
 	tests := []struct {
-		name      string
-		fields    fields
-		args      args
-		mockSetup func(t *testing.T, fields *fields, args *args)
-		wantErr   assert.ErrorAssertionFunc
+		name    string
+		fields  fields
+		args    args
+		setup   func(t *testing.T, fields *fields, args *args)
+		wantErr assert.ErrorAssertionFunc
 	}{
 		{
 			name: "send it",
-			args: args{
-				ctx: testutils.TestContext(t),
-			},
-			mockSetup: func(t *testing.T, fields *fields, args *args) {
+			setup: func(t *testing.T, fields *fields, args *args) {
 				requirements := NewMockDefaultCodecRequirements(t)
 				requirements.EXPECT().Send(mock.Anything).Return(nil)
 				fields.DefaultCodecRequirements = requirements
+
+				args.ctx = testutils.TestContext(t)
 			},
 			wantErr: assert.NoError,
 		},
 		{
 			name: "send it canceled",
-			args: args{
-				ctx: func() context.Context {
-					ctx, cancelFunc := context.WithCancel(context.Background())
-					cancelFunc()
-					return ctx
-				}(),
-			},
-			mockSetup: func(t *testing.T, fields *fields, args *args) {
+			setup: func(t *testing.T, fields *fields, args *args) {
 				fields.DefaultCodecRequirements = NewMockDefaultCodecRequirements(t)
+
+				ctx, cancelFunc := context.WithCancel(testutils.TestContext(t))
+				cancelFunc()
+				args.ctx = ctx
 			},
 			wantErr: assert.Error,
 		},
 		{
 			name: "send it errors",
-			args: args{
-				ctx: testutils.TestContext(t),
-			},
-			mockSetup: func(t *testing.T, fields *fields, args *args) {
+			setup: func(t *testing.T, fields *fields, args *args) {
 				requirements := NewMockDefaultCodecRequirements(t)
 				requirements.EXPECT().Send(mock.Anything).Return(errors.New("nope"))
 				fields.DefaultCodecRequirements = requirements
+
+				args.ctx = testutils.TestContext(t)
 			},
 			wantErr: assert.Error,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if tt.mockSetup != nil {
-				tt.mockSetup(t, &tt.fields, &tt.args)
+			if tt.setup != nil {
+				tt.setup(t, &tt.fields, &tt.args)
 			}
 			m := &defaultCodec{
 				DefaultCodecRequirements:      tt.fields.DefaultCodecRequirements,
@@ -884,14 +883,10 @@ func Test_defaultCodec_Work(t *testing.T) {
 		running                       bool
 		customMessageHandling         func(codec DefaultCodecRequirements, message spi.Message) bool
 	}
-	type args struct {
-		codec DefaultCodecRequirements
-	}
 	tests := []struct {
 		name        string
 		fields      fields
-		args        args
-		mockSetup   func(t *testing.T, fields *fields, args *args)
+		setup       func(t *testing.T, fields *fields)
 		manipulator func(t *testing.T, codec *defaultCodec)
 	}{
 		{
@@ -900,7 +895,7 @@ func Test_defaultCodec_Work(t *testing.T) {
 				codec.running.Store(true)
 				codec.activeWorker.Add(1)
 			},
-			mockSetup: func(t *testing.T, fields *fields, args *args) {
+			setup: func(t *testing.T, fields *fields) {
 				requirements := NewMockDefaultCodecRequirements(t)
 				fields.DefaultCodecRequirements = requirements
 			},
@@ -941,7 +936,7 @@ func Test_defaultCodec_Work(t *testing.T) {
 					},
 				},
 			},
-			mockSetup: func(t *testing.T, fields *fields, args *args) {
+			setup: func(t *testing.T, fields *fields) {
 				requirements := NewMockDefaultCodecRequirements(t)
 				requirements.EXPECT().Receive().Return(nil, errors.New("nope"))
 				fields.DefaultCodecRequirements = requirements
@@ -987,7 +982,7 @@ func Test_defaultCodec_Work(t *testing.T) {
 					},
 				},
 			},
-			mockSetup: func(t *testing.T, fields *fields, args *args) {
+			setup: func(t *testing.T, fields *fields) {
 				requirements := NewMockDefaultCodecRequirements(t)
 				requirements.EXPECT().Receive().Return(nil, nil)
 				fields.DefaultCodecRequirements = requirements
@@ -1033,7 +1028,7 @@ func Test_defaultCodec_Work(t *testing.T) {
 					},
 				},
 			},
-			mockSetup: func(t *testing.T, fields *fields, args *args) {
+			setup: func(t *testing.T, fields *fields) {
 				requirements := NewMockDefaultCodecRequirements(t)
 				requirements.EXPECT().Receive().Return(NewMockMessage(t), nil)
 				fields.DefaultCodecRequirements = requirements
@@ -1057,7 +1052,7 @@ func Test_defaultCodec_Work(t *testing.T) {
 					},
 				},
 			},
-			mockSetup: func(t *testing.T, fields *fields, args *args) {
+			setup: func(t *testing.T, fields *fields) {
 				requirements := NewMockDefaultCodecRequirements(t)
 				requirements.EXPECT().Receive().Return(NewMockMessage(t), nil)
 				fields.DefaultCodecRequirements = requirements
@@ -1103,7 +1098,7 @@ func Test_defaultCodec_Work(t *testing.T) {
 					},
 				},
 			},
-			mockSetup: func(t *testing.T, fields *fields, args *args) {
+			setup: func(t *testing.T, fields *fields) {
 				requirements := NewMockDefaultCodecRequirements(t)
 				requirements.EXPECT().Receive().Return(nil, errors.New("nope"))
 				fields.DefaultCodecRequirements = requirements
@@ -1152,7 +1147,7 @@ func Test_defaultCodec_Work(t *testing.T) {
 					},
 				},
 			},
-			mockSetup: func(t *testing.T, fields *fields, args *args) {
+			setup: func(t *testing.T, fields *fields) {
 				requirements := NewMockDefaultCodecRequirements(t)
 				requirements.EXPECT().Receive().Return(NewMockMessage(t), nil)
 				fields.DefaultCodecRequirements = requirements
@@ -1201,7 +1196,7 @@ func Test_defaultCodec_Work(t *testing.T) {
 					},
 				},
 			},
-			mockSetup: func(t *testing.T, fields *fields, args *args) {
+			setup: func(t *testing.T, fields *fields) {
 				requirements := NewMockDefaultCodecRequirements(t)
 				requirements.EXPECT().Receive().Return(NewMockMessage(t), nil)
 				fields.DefaultCodecRequirements = requirements
@@ -1214,8 +1209,8 @@ func Test_defaultCodec_Work(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if tt.mockSetup != nil {
-				tt.mockSetup(t, &tt.fields, &tt.args)
+			if tt.setup != nil {
+				tt.setup(t, &tt.fields)
 			}
 			m := &defaultCodec{
 				DefaultCodecRequirements:      tt.fields.DefaultCodecRequirements,
@@ -1232,7 +1227,7 @@ func Test_defaultCodec_Work(t *testing.T) {
 				time.Sleep(200 * time.Millisecond)
 				m.running.Store(false)
 			}()
-			m.Work(tt.args.codec)
+			m.Work()
 		})
 	}
 }
@@ -1297,6 +1292,41 @@ func Test_defaultCodec_String(t *testing.T) {
 				customMessageHandling:         tt.fields.customMessageHandling,
 			}
 			assert.Equalf(t, tt.want, m.String(), "String()")
+		})
+	}
+}
+
+func Test_defaultCodec_startWorker(t *testing.T) {
+	type fields struct {
+		DefaultCodecRequirements       DefaultCodecRequirements
+		transportInstance              transports.TransportInstance
+		expectations                   []spi.Expectation
+		defaultIncomingMessageChannel  chan spi.Message
+		customMessageHandling          func(codec DefaultCodecRequirements, message spi.Message) bool
+		receiveTimeout                 time.Duration
+		traceDefaultMessageCodecWorker bool
+	}
+	tests := []struct {
+		name   string
+		fields fields
+	}{
+		{
+			name: "start it not running",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			m := &defaultCodec{
+				DefaultCodecRequirements:       tt.fields.DefaultCodecRequirements,
+				transportInstance:              tt.fields.transportInstance,
+				expectations:                   tt.fields.expectations,
+				defaultIncomingMessageChannel:  tt.fields.defaultIncomingMessageChannel,
+				customMessageHandling:          tt.fields.customMessageHandling,
+				receiveTimeout:                 tt.fields.receiveTimeout,
+				traceDefaultMessageCodecWorker: tt.fields.traceDefaultMessageCodecWorker,
+				log:                            testutils.ProduceTestingLogger(t),
+			}
+			m.startWorker()
 		})
 	}
 }

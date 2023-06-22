@@ -94,8 +94,11 @@ func TestDiscoverer_Discover(t *testing.T) {
 				})
 				args.ctx = ctx
 
-				fields.transportInstanceCreationQueue = pool.NewFixedSizeExecutor(50, 100, options.WithCustomLogger(testutils.ProduceTestingLogger(t)))
-				fields.deviceScanningQueue = pool.NewFixedSizeExecutor(50, 100, options.WithCustomLogger(testutils.ProduceTestingLogger(t)))
+				executor := pool.NewFixedSizeExecutor(50, 100, options.WithCustomLogger(testutils.ProduceTestingLogger(t)))
+				executor.Start()
+				t.Cleanup(executor.Stop)
+				fields.transportInstanceCreationQueue = executor
+				fields.deviceScanningQueue = executor
 				return nil
 			},
 			wantErr: assert.NoError,
@@ -118,8 +121,11 @@ func TestDiscoverer_Discover(t *testing.T) {
 					time.Sleep(1 * time.Second)
 				})
 				args.ctx = ctx
-				fields.transportInstanceCreationQueue = pool.NewFixedSizeExecutor(50, 100, options.WithCustomLogger(testutils.ProduceTestingLogger(t)))
-				fields.deviceScanningQueue = pool.NewFixedSizeExecutor(50, 100, options.WithCustomLogger(testutils.ProduceTestingLogger(t)))
+				executor := pool.NewFixedSizeExecutor(50, 100, options.WithCustomLogger(testutils.ProduceTestingLogger(t)))
+				executor.Start()
+				t.Cleanup(executor.Stop)
+				fields.transportInstanceCreationQueue = executor
+				fields.deviceScanningQueue = executor
 				oldaddressProviderRetriever := addressProviderRetriever
 				addressProviderRetriever = func(log zerolog.Logger, _ []string) ([]addressProvider, error) {
 					loopbackInterface, err := nettest.LoopbackInterface()
@@ -262,7 +268,6 @@ func TestDiscoverer_createTransportInstanceDispatcher(t *testing.T) {
 		{
 			name: "create a dispatcher",
 			args: args{
-				ctx: testutils.TestContext(t),
 				wg: func() *sync.WaitGroup {
 					var wg sync.WaitGroup
 					return &wg
@@ -309,6 +314,7 @@ func TestDiscoverer_createTransportInstanceDispatcher(t *testing.T) {
 			},
 			setup: func(t *testing.T, fields *fields, args *args) {
 				args.tcpTransport = tcp.NewTransport(options.WithCustomLogger(testutils.ProduceTestingLogger(t)))
+				args.ctx = testutils.TestContext(t)
 			},
 		},
 	}

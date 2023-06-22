@@ -22,6 +22,10 @@ package cbus
 import (
 	"context"
 	"fmt"
+	"net/url"
+	"testing"
+	"time"
+
 	plc4go "github.com/apache/plc4x/plc4go/pkg/api"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	_default "github.com/apache/plc4x/plc4go/spi/default"
@@ -31,11 +35,9 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/spi/transports/test"
 	"github.com/apache/plc4x/plc4go/spi/utils"
+
 	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
-	"net/url"
-	"testing"
-	"time"
 )
 
 func TestDriver_DiscoverWithContext(t *testing.T) {
@@ -111,6 +113,7 @@ func TestDriver_GetConnectionWithContext(t *testing.T) {
 		name         string
 		fields       fields
 		args         args
+		setup        func(t *testing.T, fields *fields, args *args)
 		wantVerifier func(t *testing.T, results <-chan plc4go.PlcConnectionConnectResult) bool
 	}{
 		{
@@ -121,12 +124,14 @@ func TestDriver_GetConnectionWithContext(t *testing.T) {
 				awaitDisconnectComplete: false,
 			},
 			args: args{
-				ctx: testutils.TestContext(t),
 				transportUrl: url.URL{
 					Scheme: "test",
 				},
 				transports: map[string]transports.Transport{},
 				options:    map[string][]string{},
+			},
+			setup: func(t *testing.T, fields *fields, args *args) {
+				args.ctx = testutils.TestContext(t)
 			},
 			wantVerifier: func(t *testing.T, results <-chan plc4go.PlcConnectionConnectResult) bool {
 				timeout := time.NewTimer(20 * time.Millisecond)
@@ -149,16 +154,17 @@ func TestDriver_GetConnectionWithContext(t *testing.T) {
 				awaitDisconnectComplete: false,
 			},
 			args: args{
-				ctx: testutils.TestContext(t),
 				transportUrl: url.URL{
 					Scheme: "test",
 				},
-				transports: map[string]transports.Transport{
-					"test": test.NewTransport(),
-				},
+				transports: map[string]transports.Transport{},
 				options: map[string][]string{
 					"failTestTransport": {"yesSir"},
 				},
+			},
+			setup: func(t *testing.T, fields *fields, args *args) {
+				args.transports["test"] = test.NewTransport(testutils.EnrichOptionsWithOptionsForTesting(t)...)
+				args.ctx = testutils.TestContext(t)
 			},
 			wantVerifier: func(t *testing.T, results <-chan plc4go.PlcConnectionConnectResult) bool {
 				timeout := time.NewTimer(20 * time.Millisecond)
@@ -182,16 +188,17 @@ func TestDriver_GetConnectionWithContext(t *testing.T) {
 				awaitDisconnectComplete: false,
 			},
 			args: args{
-				ctx: testutils.TestContext(t),
 				transportUrl: url.URL{
 					Scheme: "test",
 				},
-				transports: map[string]transports.Transport{
-					"test": test.NewTransport(),
-				},
+				transports: map[string]transports.Transport{},
 				options: map[string][]string{
 					"MonitoredApplication1": {"pineapple"},
 				},
+			},
+			setup: func(t *testing.T, fields *fields, args *args) {
+				args.transports["test"] = test.NewTransport(testutils.EnrichOptionsWithOptionsForTesting(t)...)
+				args.ctx = testutils.TestContext(t)
 			},
 			wantVerifier: func(t *testing.T, results <-chan plc4go.PlcConnectionConnectResult) bool {
 				timeout := time.NewTimer(20 * time.Millisecond)
@@ -214,14 +221,15 @@ func TestDriver_GetConnectionWithContext(t *testing.T) {
 				awaitDisconnectComplete: false,
 			},
 			args: args{
-				ctx: testutils.TestContext(t),
 				transportUrl: url.URL{
 					Scheme: "test",
 				},
-				transports: map[string]transports.Transport{
-					"test": test.NewTransport(),
-				},
-				options: map[string][]string{},
+				transports: map[string]transports.Transport{},
+				options:    map[string][]string{},
+			},
+			setup: func(t *testing.T, fields *fields, args *args) {
+				args.transports["test"] = test.NewTransport(testutils.EnrichOptionsWithOptionsForTesting(t)...)
+				args.ctx = testutils.TestContext(t)
 			},
 			wantVerifier: func(t *testing.T, results <-chan plc4go.PlcConnectionConnectResult) bool {
 				timeout := time.NewTimer(20 * time.Millisecond)
@@ -240,6 +248,9 @@ func TestDriver_GetConnectionWithContext(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			if tt.setup != nil {
+				tt.setup(t, &tt.fields, &tt.args)
+			}
 			m := &Driver{
 				DefaultDriver:           tt.fields.DefaultDriver,
 				awaitSetupComplete:      tt.fields.awaitSetupComplete,

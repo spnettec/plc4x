@@ -20,16 +20,16 @@
 package cbus
 
 import (
-	"bufio"
 	"context"
+	"sync"
+	"sync/atomic"
+	"time"
+
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/default"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transports"
-	"sync"
-	"sync/atomic"
-	"time"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
@@ -57,11 +57,13 @@ type MessageCodec struct {
 }
 
 func NewMessageCodec(transportInstance transports.TransportInstance, _options ...options.WithOption) *MessageCodec {
+	passLoggerToModel, _ := options.ExtractPassLoggerToModel(_options...)
+	customLogger, _ := options.ExtractCustomLogger(_options...)
 	codec := &MessageCodec{
 		requestContext: readWriteModel.NewRequestContext(false),
 		cbusOptions:    readWriteModel.NewCBusOptions(false, false, false, false, false, false, false, false, false),
-		passLogToModel: options.ExtractPassLoggerToModel(_options...),
-		log:            options.ExtractCustomLogger(_options...),
+		passLogToModel: passLoggerToModel,
+		log:            customLogger,
 	}
 	codec.DefaultCodec = _default.NewDefaultCodec(codec, transportInstance, append(_options, _default.WithCustomMessageHandler(extractMMIAndSAL(codec.log)))...)
 	return codec
@@ -129,10 +131,13 @@ func (m *MessageCodec) Send(message spi.Message) error {
 func (m *MessageCodec) Receive() (spi.Message, error) {
 	m.log.Trace().Msg("Receive")
 	ti := m.GetTransportInstance()
+	if !ti.IsConnected() {
+		return nil, errors.New("Transport instance not connected")
+	}
 	confirmation := false
 	// Fill the buffer
 	{
-		if err := ti.FillBuffer(func(pos uint, currentByte byte, reader *bufio.Reader) bool {
+		if err := ti.FillBuffer(func(pos uint, currentByte byte, reader transports.ExtendedReader) bool {
 			m.log.Trace().Uint8("byte", currentByte).Msg("current byte")
 			switch currentByte {
 			case

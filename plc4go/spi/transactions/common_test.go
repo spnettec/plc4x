@@ -17,28 +17,24 @@
  * under the License.
  */
 
-package transports
+package transactions
 
 import (
-	"context"
-	"fmt"
-	"io"
+	"github.com/rs/zerolog"
+	"os"
+	"testing"
 )
 
-type TransportInstance interface {
-	fmt.Stringer
-	io.Closer
-	Connect() error
-	ConnectWithContext(ctx context.Context) error
-
-	IsConnected() bool
-
-	// FillBuffer fills the buffer `until` false (Useful in conjunction if you want GetNumBytesAvailableInBuffer)
-	FillBuffer(until func(pos uint, currentByte byte, reader ExtendedReader) bool) error
-	// GetNumBytesAvailableInBuffer returns the bytes currently available in buffer (!!!Careful: if you looking for a termination you have to use FillBuffer)
-	GetNumBytesAvailableInBuffer() (uint32, error)
-	PeekReadableBytes(numBytes uint32) ([]byte, error)
-	Read(numBytes uint32) ([]byte, error)
-
-	Write(data []byte) error
+// note: we can't use testutils here due to import cycle
+func produceTestingLogger(t *testing.T) zerolog.Logger {
+	return zerolog.New(zerolog.NewConsoleWriter(zerolog.ConsoleTestWriter(t),
+		func(w *zerolog.ConsoleWriter) {
+			// TODO: this is really an issue with go-junit-report not sanitizing output before dumping into xml...
+			onJenkins := os.Getenv("JENKINS_URL") != ""
+			onGithubAction := os.Getenv("GITHUB_ACTIONS") != ""
+			onCI := os.Getenv("CI") != ""
+			if onJenkins || onGithubAction || onCI {
+				w.NoColor = true
+			}
+		}))
 }

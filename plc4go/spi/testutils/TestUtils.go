@@ -21,13 +21,18 @@ package testutils
 
 import (
 	"context"
-	"github.com/apache/plc4x/plc4go/spi/options"
-	"github.com/apache/plc4x/plc4go/spi/utils"
 	"os"
+	"runtime"
 	"runtime/debug"
+	"strconv"
 	"strings"
 	"testing"
 	"time"
+
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/pool"
+	"github.com/apache/plc4x/plc4go/spi/transactions"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 
 	"github.com/ajankovic/xdiff"
 	"github.com/ajankovic/xdiff/parser"
@@ -114,12 +119,43 @@ func TestContext(t *testing.T) context.Context {
 	return ctx
 }
 
-var highLogPrecision bool
+var (
+	highLogPrecision                    bool
+	passLoggerToModel                   bool
+	receiveTimeout                      time.Duration
+	traceTransactionManagerWorkers      bool
+	traceTransactionManagerTransactions bool
+	traceDefaultMessageCodecWorker      bool
+	traceExecutorWorkers                bool
+)
 
 func init() {
-	highLogPrecision = os.Getenv("PLC4X_TEST_HIGH_TEST_LOG_PRECISION") == "true"
+	getOrLeaveBool("PLC4X_TEST_HIGH_TEST_LOG_PRECISION", &highLogPrecision)
 	if highLogPrecision {
 		zerolog.TimeFieldFormat = time.RFC3339Nano
+	}
+	getOrLeaveBool("PLC4X_TEST_PASS_LOGGER_TO_MODEL", &passLoggerToModel)
+	receiveTimeout = 3 * time.Second
+	getOrLeaveDuration("PLC4X_TEST_RECEIVE_TIMEOUT_MS", &receiveTimeout)
+	getOrLeaveBool("PLC4X_TEST_TRACE_TRANSACTION_MANAGER_WORKERS", &traceTransactionManagerWorkers)
+	getOrLeaveBool("PLC4X_TEST_TRACE_TRANSACTION_MANAGER_TRANSACTIONS", &traceTransactionManagerTransactions)
+	getOrLeaveBool("PLC4X_TEST_TRACE_DEFAULT_MESSAGE_CODEC_WORKER", &traceDefaultMessageCodecWorker)
+	getOrLeaveBool("PLC4X_TEST_TRACE_EXECUTOR_WORKERS", &traceExecutorWorkers)
+}
+
+func getOrLeaveBool(key string, setting *bool) {
+	if env, ok := os.LookupEnv(key); ok {
+		*setting = strings.EqualFold(env, "true")
+	}
+}
+
+func getOrLeaveDuration(key string, setting *time.Duration) {
+	if env, ok := os.LookupEnv(key); ok && env != "" {
+		parsedDuration, err := strconv.ParseInt(env, 10, 64)
+		if err != nil {
+			panic(err)
+		}
+		*setting = time.Duration(parsedDuration) * time.Millisecond
 	}
 }
 
@@ -153,16 +189,30 @@ func ProduceTestingLogger(t *testing.T) zerolog.Logger {
 
 // EnrichOptionsWithOptionsForTesting appends options useful for testing to config.WithOption s
 func EnrichOptionsWithOptionsForTesting(t *testing.T, _options ...options.WithOption) []options.WithOption {
-	traceWorkers := true
 	if extractedTraceWorkers, found := options.ExtractTracerWorkers(_options...); found {
-		traceWorkers = extractedTraceWorkers
+		traceExecutorWorkers = extractedTraceWorkers
 	}
-	// TODO: apply to other options like above
-	return append(_options,
+	_options = append(_options,
 		options.WithCustomLogger(ProduceTestingLogger(t)),
-		options.WithPassLoggerToModel(true),
-		options.WithExecutorOptionTracerWorkers(traceWorkers),
+		options.WithPassLoggerToModel(passLoggerToModel),
+		options.WithReceiveTimeout(receiveTimeout),
+		options.WithTraceTransactionManagerWorkers(traceTransactionManagerWorkers),
+		options.WithTraceTransactionManagerTransactions(traceTransactionManagerTransactions),
+		options.WithTraceDefaultMessageCodecWorker(traceDefaultMessageCodecWorker),
+		options.WithExecutorOptionTracerWorkers(traceExecutorWorkers),
 	)
+	// We always create a custom executor to ensure shared executor for transaction manager is not used for tests
+	testSharedExecutorInstance := pool.NewFixedSizeExecutor(
+		runtime.NumCPU(),
+		100,
+		_options...,
+	)
+	testSharedExecutorInstance.Start()
+	t.Cleanup(testSharedExecutorInstance.Stop)
+	_options = append(_options,
+		transactions.WithCustomExecutor(testSharedExecutorInstance),
+	)
+	return _options
 }
 
 type _explodingGlobalLogger struct {

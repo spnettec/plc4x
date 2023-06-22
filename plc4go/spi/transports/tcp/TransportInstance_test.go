@@ -72,17 +72,21 @@ func TestTransportInstance_Close(t *testing.T) {
 		reader                           *bufio.Reader
 	}
 	tests := []struct {
-		name    string
-		fields  fields
-		wantErr bool
+		name        string
+		fields      fields
+		manipulator func(t *testing.T, instance *TransportInstance)
+		wantErr     bool
 	}{
 		{
-			name: "close it (no conn)",
+			name: "close it (not connected)",
 		},
 		{
 			name: "close it (broken connection)",
 			fields: fields{
 				tcpConn: &net.TCPConn{},
+			},
+			manipulator: func(t *testing.T, instance *TransportInstance) {
+				instance.connected.Store(true)
 			},
 			wantErr: true,
 		},
@@ -107,6 +111,9 @@ func TestTransportInstance_Close(t *testing.T) {
 					return tcp
 				}(),
 			},
+			manipulator: func(t *testing.T, instance *TransportInstance) {
+				instance.connected.Store(true)
+			},
 		},
 	}
 	for _, tt := range tests {
@@ -119,6 +126,9 @@ func TestTransportInstance_Close(t *testing.T) {
 				transport:                        tt.fields.transport,
 				tcpConn:                          tt.fields.tcpConn,
 				reader:                           tt.fields.reader,
+			}
+			if tt.manipulator != nil {
+				tt.manipulator(t, m)
 			}
 			if err := m.Close(); (err != nil) != tt.wantErr {
 				t.Errorf("Close() error = %v, wantErr %v", err, tt.wantErr)
@@ -362,10 +372,12 @@ func TestTransportInstance_Write(t *testing.T) {
 		data []byte
 	}
 	tests := []struct {
-		name    string
-		fields  fields
-		args    args
-		wantErr bool
+		name        string
+		fields      fields
+		args        args
+		setup       func(t *testing.T, fields *fields, args *args)
+		manipulator func(t *testing.T, instance *TransportInstance)
+		wantErr     bool
 	}{
 		{
 			name:    "write it (failing)",
@@ -380,28 +392,32 @@ func TestTransportInstance_Write(t *testing.T) {
 		},
 		{
 			name: "write it",
-			fields: fields{
-				tcpConn: func() *net.TCPConn {
-					listener, err := nettest.NewLocalListener("tcp")
-					require.NoError(t, err)
-					t.Cleanup(func() {
-						assert.NoError(t, listener.Close())
-					})
-					go func() {
-						_, _ = listener.Accept()
-					}()
-					tcp, err := net.DialTCP("tcp", nil, listener.Addr().(*net.TCPAddr))
-					require.NoError(t, err)
-					t.Cleanup(func() {
-						assert.NoError(t, tcp.Close())
-					})
-					return tcp
-				}(),
+			setup: func(t *testing.T, fields *fields, args *args) {
+				listener, err := nettest.NewLocalListener("tcp")
+				require.NoError(t, err)
+				t.Cleanup(func() {
+					assert.NoError(t, listener.Close())
+				})
+				go func() {
+					_, _ = listener.Accept()
+				}()
+				tcp, err := net.DialTCP("tcp", nil, listener.Addr().(*net.TCPAddr))
+				require.NoError(t, err)
+				t.Cleanup(func() {
+					assert.NoError(t, tcp.Close())
+				})
+				fields.tcpConn = tcp
+			},
+			manipulator: func(t *testing.T, instance *TransportInstance) {
+				instance.connected.Store(true)
 			},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			if tt.setup != nil {
+				tt.setup(t, &tt.fields, &tt.args)
+			}
 			m := &TransportInstance{
 				DefaultBufferedTransportInstance: tt.fields.DefaultBufferedTransportInstance,
 				RemoteAddress:                    tt.fields.RemoteAddress,
@@ -410,6 +426,9 @@ func TestTransportInstance_Write(t *testing.T) {
 				transport:                        tt.fields.transport,
 				tcpConn:                          tt.fields.tcpConn,
 				reader:                           tt.fields.reader,
+			}
+			if tt.manipulator != nil {
+				tt.manipulator(t, m)
 			}
 			if err := m.Write(tt.args.data); (err != nil) != tt.wantErr {
 				t.Errorf("Write() error = %v, wantErr %v", err, tt.wantErr)

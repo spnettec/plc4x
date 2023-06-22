@@ -51,12 +51,13 @@ type Discoverer struct {
 }
 
 func NewDiscoverer(_options ...options.WithOption) *Discoverer {
+	customLogger, _ := options.ExtractCustomLogger(_options...)
 	return &Discoverer{
 		// TODO: maybe a dynamic executor would be better to not waste cycles when not in use
 		transportInstanceCreationQueue: pool.NewFixedSizeExecutor(50, 100, _options...),
 		deviceScanningQueue:            pool.NewFixedSizeExecutor(50, 100, _options...),
 
-		log: options.ExtractCustomLogger(_options...),
+		log: customLogger,
 	}
 }
 
@@ -161,9 +162,22 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 				d.log.Error().Msgf("panic-ed %v. Stack: %s; ", err, debug.Stack())
 			}
 		}()
+		deviceScanWg := sync.WaitGroup{}
 		for transportInstance := range transportInstances {
 			d.log.Debug().Stringer("transportInstance", transportInstance).Msg("submitting device scan")
-			d.deviceScanningQueue.Submit(ctx, d.deviceScanningWorkItemId.Add(1), d.createDeviceScanDispatcher(transportInstance.(*tcp.TransportInstance), callback))
+			completionFuture := d.deviceScanningQueue.Submit(ctx, d.deviceScanningWorkItemId.Add(1), d.createDeviceScanDispatcher(transportInstance.(*tcp.TransportInstance), callback))
+			deviceScanWg.Add(1)
+			go func() {
+				defer deviceScanWg.Done()
+				if err := completionFuture.AwaitCompletion(context.TODO()); err != nil {
+					d.log.Debug().Err(err).Msg("error waiting for completion")
+				}
+			}()
+			deviceScanWg.Wait()
+			d.log.Info().Msg("Discovery done")
+			d.transportInstanceCreationQueue.Stop()
+			d.deviceScanningQueue.Stop()
+			// TODO: do we maybe want a callback for that? As option for example
 		}
 	}()
 	return nil
@@ -318,6 +332,12 @@ func (d *Discoverer) extractDeviceNames(discoveryOptions ...options.WithDiscover
 		deviceNames[i] = option.GetDeviceName()
 	}
 	return deviceNames
+}
+
+func (d *Discoverer) Close() error {
+	d.transportInstanceCreationQueue.Stop()
+	d.deviceScanningQueue.Stop()
+	return nil
 }
 
 // addressProvider is used to make discover testable

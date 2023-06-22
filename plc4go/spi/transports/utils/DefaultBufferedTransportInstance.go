@@ -20,33 +20,35 @@
 package utils
 
 import (
-	"bufio"
 	"context"
 	"runtime/debug"
 
 	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/transports"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 )
 
 type DefaultBufferedTransportInstanceRequirements interface {
-	GetReader() *bufio.Reader
+	GetReader() transports.ExtendedReader
 	Connect() error
+	IsConnected() bool
 }
 
 type DefaultBufferedTransportInstance interface {
 	ConnectWithContext(ctx context.Context) error
 	GetNumBytesAvailableInBuffer() (uint32, error)
-	FillBuffer(until func(pos uint, currentByte byte, reader *bufio.Reader) bool) error
+	FillBuffer(until func(pos uint, currentByte byte, reader transports.ExtendedReader) bool) error
 	PeekReadableBytes(numBytes uint32) ([]byte, error)
 	Read(numBytes uint32) ([]byte, error)
 }
 
 func NewDefaultBufferedTransportInstance(defaultBufferedTransportInstanceRequirements DefaultBufferedTransportInstanceRequirements, _options ...options.WithOption) DefaultBufferedTransportInstance {
+	customLogger, _ := options.ExtractCustomLogger(_options...)
 	return &defaultBufferedTransportInstance{
 		DefaultBufferedTransportInstanceRequirements: defaultBufferedTransportInstanceRequirements,
-		log: options.ExtractCustomLogger(_options...),
+		log: customLogger,
 	}
 }
 
@@ -77,6 +79,9 @@ func (m *defaultBufferedTransportInstance) ConnectWithContext(ctx context.Contex
 }
 
 func (m *defaultBufferedTransportInstance) GetNumBytesAvailableInBuffer() (uint32, error) {
+	if !m.IsConnected() {
+		return 0, errors.New("working on a unconnected connection")
+	}
 	if m.GetReader() == nil {
 		return 0, nil
 	}
@@ -84,7 +89,10 @@ func (m *defaultBufferedTransportInstance) GetNumBytesAvailableInBuffer() (uint3
 	return uint32(m.GetReader().Buffered()), nil
 }
 
-func (m *defaultBufferedTransportInstance) FillBuffer(until func(pos uint, currentByte byte, reader *bufio.Reader) bool) error {
+func (m *defaultBufferedTransportInstance) FillBuffer(until func(pos uint, currentByte byte, reader transports.ExtendedReader) bool) error {
+	if !m.IsConnected() {
+		return errors.New("working on a unconnected connection")
+	}
 	if m.GetReader() == nil {
 		return nil
 	}
@@ -102,6 +110,9 @@ func (m *defaultBufferedTransportInstance) FillBuffer(until func(pos uint, curre
 }
 
 func (m *defaultBufferedTransportInstance) PeekReadableBytes(numBytes uint32) ([]byte, error) {
+	if !m.IsConnected() {
+		return nil, errors.New("working on a unconnected connection")
+	}
 	if m.GetReader() == nil {
 		return nil, errors.New("error peeking from transport. No reader available")
 	}
@@ -109,6 +120,9 @@ func (m *defaultBufferedTransportInstance) PeekReadableBytes(numBytes uint32) ([
 }
 
 func (m *defaultBufferedTransportInstance) Read(numBytes uint32) ([]byte, error) {
+	if !m.IsConnected() {
+		return nil, errors.New("working on a unconnected connection")
+	}
 	if m.GetReader() == nil {
 		return nil, errors.New("error reading from transport. No reader available")
 	}
