@@ -33,16 +33,18 @@ type Subscriber struct {
 	connection *Connection
 	consumers  map[*spiModel.DefaultPlcConsumerRegistration]apiModel.PlcSubscriptionEventConsumer
 
-	log zerolog.Logger
+	log      zerolog.Logger
+	_options []options.WithOption // Used to pass them downstream
 }
 
 func NewSubscriber(connection *Connection, _options ...options.WithOption) *Subscriber {
-	logger, _ := options.ExtractCustomLogger(_options...)
+	logger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	return &Subscriber{
 		connection: connection,
 		consumers:  make(map[*spiModel.DefaultPlcConsumerRegistration]apiModel.PlcSubscriptionEventConsumer),
 
-		log: logger,
+		log:      logger,
+		_options: _options,
 	}
 }
 
@@ -72,7 +74,7 @@ func (m *Subscriber) Subscribe(ctx context.Context, subscriptionRequest apiModel
 				subscriptionRequest,
 				responseCodes,
 				subscriptionValues,
-				options.WithCustomLogger(m.log),
+				append(m._options, options.WithCustomLogger(m.log))...,
 			),
 			nil,
 		)

@@ -58,6 +58,7 @@ type Connection struct {
 
 	passLogToModel bool
 	log            zerolog.Logger
+	_options       []options.WithOption // Used to pass them downstream
 }
 
 func NewConnection(messageCodec spi.MessageCodec, configuration model.Configuration, connectionOptions map[string][]string, _options ...options.WithOption) (*Connection, error) {
@@ -66,7 +67,7 @@ func NewConnection(messageCodec spi.MessageCodec, configuration model.Configurat
 		return nil, err
 	}
 	passLoggerToModel, _ := options.ExtractPassLoggerToModel(_options...)
-	customLogger, _ := options.ExtractCustomLogger(_options...)
+	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	connection := &Connection{
 		messageCodec:   messageCodec,
 		configuration:  configuration,
@@ -74,6 +75,7 @@ func NewConnection(messageCodec spi.MessageCodec, configuration model.Configurat
 		subscriptions:  map[uint32]apiModel.PlcSubscriptionHandle{},
 		passLogToModel: passLoggerToModel,
 		log:            customLogger,
+		_options:       _options,
 	}
 	if traceEnabledOption, ok := connectionOptions["traceEnabled"]; ok {
 		if len(traceEnabledOption) == 1 {
