@@ -20,11 +20,12 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
-func ParseAmsString(io utils.ReadBuffer, stringLength int32, encoding string, stringEncoding string) (string, error) {
+func ParseAmsString(ctx context.Context, io utils.ReadBuffer, stringLength int32, encoding string, stringEncoding string) (string, error) {
 	var multiplier int32
 	switch encoding {
 	case "UTF-8":
@@ -35,7 +36,7 @@ func ParseAmsString(io utils.ReadBuffer, stringLength int32, encoding string, st
 	return io.ReadString("", uint32(stringLength*multiplier), encoding)
 }
 
-func SerializeAmsString(io utils.WriteBuffer, value values.PlcValue, stringLength int32, encoding string, stringEncoding string) error {
+func SerializeAmsString(ctx context.Context, io utils.WriteBuffer, value values.PlcValue, stringLength int32, encoding string, stringEncoding string) error {
 	var multiplier int32
 	switch encoding {
 	case "UTF-8":

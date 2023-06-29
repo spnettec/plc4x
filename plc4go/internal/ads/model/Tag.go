@@ -55,19 +55,25 @@ func NeedsResolving(plcTag apiModel.PlcTag) bool {
 type DirectPlcTag struct {
 	PlcTag
 
-	IndexGroup   uint32
-	IndexOffset  uint32
-	ValueType    apiValues.PlcValueType
-	StringLength int32
-	DataType     readWriteModel.AdsDataTypeTableEntry
+	IndexGroup     uint32
+	IndexOffset    uint32
+	ValueType      apiValues.PlcValueType
+	StringLength   int32
+	StringEncoding string
+	DataType       readWriteModel.AdsDataTypeTableEntry
 }
 
-func NewDirectAdsPlcTag(indexGroup uint32, indexOffset uint32, valueType apiValues.PlcValueType, stringLength int32, arrayInfo []apiModel.ArrayInfo) (apiModel.PlcTag, error) {
+func (m DirectPlcTag) GetStringEncoding() string {
+	return m.StringEncoding
+}
+
+func NewDirectAdsPlcTag(indexGroup uint32, indexOffset uint32, valueType apiValues.PlcValueType, stringLength int32, stringEncoding string, arrayInfo []apiModel.ArrayInfo) (apiModel.PlcTag, error) {
 	return DirectPlcTag{
-		IndexGroup:   indexGroup,
-		IndexOffset:  indexOffset,
-		ValueType:    valueType,
-		StringLength: stringLength,
+		IndexGroup:     indexGroup,
+		IndexOffset:    indexOffset,
+		ValueType:      valueType,
+		StringLength:   stringLength,
+		StringEncoding: stringEncoding,
 		PlcTag: PlcTag{
 			ArrayInfo: arrayInfo,
 		},

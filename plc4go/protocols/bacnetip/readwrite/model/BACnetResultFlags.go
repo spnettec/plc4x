@@ -40,9 +40,9 @@ type IBACnetResultFlags interface {
 	utils.Serializable
 }
 
-const(
+const (
 	BACnetResultFlags_FIRST_ITEM BACnetResultFlags = 0
-	BACnetResultFlags_LAST_ITEM BACnetResultFlags = 1
+	BACnetResultFlags_LAST_ITEM  BACnetResultFlags = 1
 	BACnetResultFlags_MORE_ITEMS BACnetResultFlags = 2
 )
 
@@ -50,7 +50,7 @@ var BACnetResultFlagsValues []BACnetResultFlags
 
 func init() {
 	_ = errors.New
-	BACnetResultFlagsValues = []BACnetResultFlags {
+	BACnetResultFlagsValues = []BACnetResultFlags{
 		BACnetResultFlags_FIRST_ITEM,
 		BACnetResultFlags_LAST_ITEM,
 		BACnetResultFlags_MORE_ITEMS,
@@ -59,12 +59,12 @@ func init() {
 
 func BACnetResultFlagsByValue(value uint8) (enum BACnetResultFlags, ok bool) {
 	switch value {
-		case 0:
-			return BACnetResultFlags_FIRST_ITEM, true
-		case 1:
-			return BACnetResultFlags_LAST_ITEM, true
-		case 2:
-			return BACnetResultFlags_MORE_ITEMS, true
+	case 0:
+		return BACnetResultFlags_FIRST_ITEM, true
+	case 1:
+		return BACnetResultFlags_LAST_ITEM, true
+	case 2:
+		return BACnetResultFlags_MORE_ITEMS, true
 	}
 	return 0, false
 }
@@ -81,13 +81,13 @@ func BACnetResultFlagsByName(value string) (enum BACnetResultFlags, ok bool) {
 	return 0, false
 }
 
-func BACnetResultFlagsKnows(value uint8)  bool {
+func BACnetResultFlagsKnows(value uint8) bool {
 	for _, typeValue := range BACnetResultFlagsValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastBACnetResultFlags(structType any) BACnetResultFlags {
@@ -157,4 +157,3 @@ func (e BACnetResultFlags) PLC4XEnumName() string {
 func (e BACnetResultFlags) String() string {
 	return e.PLC4XEnumName()
 }
-

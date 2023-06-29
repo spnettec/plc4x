@@ -121,7 +121,7 @@ func (m *Connection) singleRead(ctx context.Context, readRequest apiModel.PlcRea
 		for _, tagName := range readRequest.GetTagNames() {
 			m.log.Debug().Msgf("get a tag from request with name %s", tagName)
 			// Try to parse the value
-			plcValue, err := m.parsePlcValue(directAdsTag.DataType, directAdsTag.DataType.GetArrayInfo(), rb)
+			plcValue, err := m.parsePlcValue(directAdsTag.DataType, directAdsTag.DataType.GetArrayInfo(), rb, directAdsTag.GetStringEncoding())
 			if err != nil {
 				m.log.Error().Err(err).Msg("Error parsing plc value")
 				responseCodes[tagName] = apiModel.PlcResponseCode_INTERNAL_ERROR
@@ -237,7 +237,7 @@ func (m *Connection) multiRead(ctx context.Context, readRequest apiModel.PlcRead
 		directAdsTag := directAdsTags[tagName]
 		m.log.Debug().Msgf("get a tag from request with name %s", tagName)
 		// Try to parse the value
-		plcValue, err := m.parsePlcValue(directAdsTag.DataType, directAdsTag.DataType.GetArrayInfo(), rb)
+		plcValue, err := m.parsePlcValue(directAdsTag.DataType, directAdsTag.DataType.GetArrayInfo(), rb, directAdsTag.GetStringEncoding())
 		if err != nil {
 			m.log.Error().Err(err).Msg("Error parsing plc value")
 			responseCodes[tagName] = apiModel.PlcResponseCode_INTERNAL_ERROR
@@ -255,7 +255,8 @@ func (m *Connection) multiRead(ctx context.Context, readRequest apiModel.PlcRead
 	)
 }
 
-func (m *Connection) parsePlcValue(dataType driverModel.AdsDataTypeTableEntry, arrayInfo []driverModel.AdsDataTypeArrayInfo, rb utils.ReadBufferByteBased) (apiValues.PlcValue, error) {
+func (m *Connection) parsePlcValue(dataType driverModel.AdsDataTypeTableEntry, arrayInfo []driverModel.AdsDataTypeArrayInfo,
+	rb utils.ReadBufferByteBased, stringEncoding string) (apiValues.PlcValue, error) {
 	// Decode the data according to the information from the request
 	// Based on the AdsDataTypeTableEntry in tag.DataType() parse the data
 	if len(arrayInfo) > 0 {
@@ -269,7 +270,7 @@ func (m *Connection) parsePlcValue(dataType driverModel.AdsDataTypeTableEntry, a
 		var plcValues []apiValues.PlcValue
 		for i := uint32(0); i < curArrayInfo.GetNumElements(); i++ {
 			restArrayInfo := arrayInfo[1:]
-			plcValue, err := m.parsePlcValue(arrayItemType, restArrayInfo, rb)
+			plcValue, err := m.parsePlcValue(arrayItemType, restArrayInfo, rb, stringEncoding)
 			if err != nil {
 				return nil, errors.Wrap(err, "error decoding list item")
 			}
@@ -293,7 +294,7 @@ func (m *Connection) parsePlcValue(dataType driverModel.AdsDataTypeTableEntry, a
 					_, _ = rb.ReadByte("")
 				}
 			}
-			childValue, err := m.parsePlcValue(childDataType, childDataType.GetArrayInfo(), rb)
+			childValue, err := m.parsePlcValue(childDataType, childDataType.GetArrayInfo(), rb, stringEncoding)
 			if err != nil {
 				return nil, errors.Wrap(err, fmt.Sprintf("error parsing propery %s of type %s", childName, dataType.GetDataTypeName()))
 			}
@@ -311,6 +312,6 @@ func (m *Connection) parsePlcValue(dataType driverModel.AdsDataTypeTableEntry, a
 		if !ok {
 			return nil, errors.New(fmt.Sprintf("error converting plc4x plc-value type %s into ads plc-value type", valueType.String()))
 		}
-		return driverModel.DataItemParseWithBuffer(context.Background(), rb, adsValueType, stringLength)
+		return driverModel.DataItemParseWithBuffer(context.Background(), rb, adsValueType, stringLength, stringEncoding)
 	}
 }

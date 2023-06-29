@@ -40,18 +40,18 @@ type IQueryType interface {
 	utils.Serializable
 }
 
-const(
+const (
 	QueryType_BYALARMTYPE QueryType = 0x01
-	QueryType_ALARM_8 QueryType = 0x02
-	QueryType_ALARM_S QueryType = 0x04
-	QueryType_ALARM_8P QueryType = 0x09
+	QueryType_ALARM_8     QueryType = 0x02
+	QueryType_ALARM_S     QueryType = 0x04
+	QueryType_ALARM_8P    QueryType = 0x09
 )
 
 var QueryTypeValues []QueryType
 
 func init() {
 	_ = errors.New
-	QueryTypeValues = []QueryType {
+	QueryTypeValues = []QueryType{
 		QueryType_BYALARMTYPE,
 		QueryType_ALARM_8,
 		QueryType_ALARM_S,
@@ -61,14 +61,14 @@ func init() {
 
 func QueryTypeByValue(value uint8) (enum QueryType, ok bool) {
 	switch value {
-		case 0x01:
-			return QueryType_BYALARMTYPE, true
-		case 0x02:
-			return QueryType_ALARM_8, true
-		case 0x04:
-			return QueryType_ALARM_S, true
-		case 0x09:
-			return QueryType_ALARM_8P, true
+	case 0x01:
+		return QueryType_BYALARMTYPE, true
+	case 0x02:
+		return QueryType_ALARM_8, true
+	case 0x04:
+		return QueryType_ALARM_S, true
+	case 0x09:
+		return QueryType_ALARM_8P, true
 	}
 	return 0, false
 }
@@ -87,13 +87,13 @@ func QueryTypeByName(value string) (enum QueryType, ok bool) {
 	return 0, false
 }
 
-func QueryTypeKnows(value uint8)  bool {
+func QueryTypeKnows(value uint8) bool {
 	for _, typeValue := range QueryTypeValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastQueryType(structType any) QueryType {
@@ -165,4 +165,3 @@ func (e QueryType) PLC4XEnumName() string {
 func (e QueryType) String() string {
 	return e.PLC4XEnumName()
 }
-

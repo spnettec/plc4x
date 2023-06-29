@@ -40,7 +40,7 @@ type ILightingLabelFlavour interface {
 	utils.Serializable
 }
 
-const(
+const (
 	LightingLabelFlavour_FLAVOUR_0 LightingLabelFlavour = 0
 	LightingLabelFlavour_FLAVOUR_1 LightingLabelFlavour = 1
 	LightingLabelFlavour_FLAVOUR_2 LightingLabelFlavour = 2
@@ -51,7 +51,7 @@ var LightingLabelFlavourValues []LightingLabelFlavour
 
 func init() {
 	_ = errors.New
-	LightingLabelFlavourValues = []LightingLabelFlavour {
+	LightingLabelFlavourValues = []LightingLabelFlavour{
 		LightingLabelFlavour_FLAVOUR_0,
 		LightingLabelFlavour_FLAVOUR_1,
 		LightingLabelFlavour_FLAVOUR_2,
@@ -61,14 +61,14 @@ func init() {
 
 func LightingLabelFlavourByValue(value uint8) (enum LightingLabelFlavour, ok bool) {
 	switch value {
-		case 0:
-			return LightingLabelFlavour_FLAVOUR_0, true
-		case 1:
-			return LightingLabelFlavour_FLAVOUR_1, true
-		case 2:
-			return LightingLabelFlavour_FLAVOUR_2, true
-		case 3:
-			return LightingLabelFlavour_FLAVOUR_3, true
+	case 0:
+		return LightingLabelFlavour_FLAVOUR_0, true
+	case 1:
+		return LightingLabelFlavour_FLAVOUR_1, true
+	case 2:
+		return LightingLabelFlavour_FLAVOUR_2, true
+	case 3:
+		return LightingLabelFlavour_FLAVOUR_3, true
 	}
 	return 0, false
 }
@@ -87,13 +87,13 @@ func LightingLabelFlavourByName(value string) (enum LightingLabelFlavour, ok boo
 	return 0, false
 }
 
-func LightingLabelFlavourKnows(value uint8)  bool {
+func LightingLabelFlavourKnows(value uint8) bool {
 	for _, typeValue := range LightingLabelFlavourValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastLightingLabelFlavour(structType any) LightingLabelFlavour {
@@ -165,4 +165,3 @@ func (e LightingLabelFlavour) PLC4XEnumName() string {
 func (e LightingLabelFlavour) String() string {
 	return e.PLC4XEnumName()
 }
-

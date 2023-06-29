@@ -40,19 +40,19 @@ type IBACnetAccumulatorRecordAccumulatorStatus interface {
 	utils.Serializable
 }
 
-const(
-	BACnetAccumulatorRecordAccumulatorStatus_NORMAL BACnetAccumulatorRecordAccumulatorStatus = 0
-	BACnetAccumulatorRecordAccumulatorStatus_STARTING BACnetAccumulatorRecordAccumulatorStatus = 1
+const (
+	BACnetAccumulatorRecordAccumulatorStatus_NORMAL    BACnetAccumulatorRecordAccumulatorStatus = 0
+	BACnetAccumulatorRecordAccumulatorStatus_STARTING  BACnetAccumulatorRecordAccumulatorStatus = 1
 	BACnetAccumulatorRecordAccumulatorStatus_RECOVERED BACnetAccumulatorRecordAccumulatorStatus = 2
-	BACnetAccumulatorRecordAccumulatorStatus_ABNORMAL BACnetAccumulatorRecordAccumulatorStatus = 3
-	BACnetAccumulatorRecordAccumulatorStatus_FAILED BACnetAccumulatorRecordAccumulatorStatus = 4
+	BACnetAccumulatorRecordAccumulatorStatus_ABNORMAL  BACnetAccumulatorRecordAccumulatorStatus = 3
+	BACnetAccumulatorRecordAccumulatorStatus_FAILED    BACnetAccumulatorRecordAccumulatorStatus = 4
 )
 
 var BACnetAccumulatorRecordAccumulatorStatusValues []BACnetAccumulatorRecordAccumulatorStatus
 
 func init() {
 	_ = errors.New
-	BACnetAccumulatorRecordAccumulatorStatusValues = []BACnetAccumulatorRecordAccumulatorStatus {
+	BACnetAccumulatorRecordAccumulatorStatusValues = []BACnetAccumulatorRecordAccumulatorStatus{
 		BACnetAccumulatorRecordAccumulatorStatus_NORMAL,
 		BACnetAccumulatorRecordAccumulatorStatus_STARTING,
 		BACnetAccumulatorRecordAccumulatorStatus_RECOVERED,
@@ -63,16 +63,16 @@ func init() {
 
 func BACnetAccumulatorRecordAccumulatorStatusByValue(value uint8) (enum BACnetAccumulatorRecordAccumulatorStatus, ok bool) {
 	switch value {
-		case 0:
-			return BACnetAccumulatorRecordAccumulatorStatus_NORMAL, true
-		case 1:
-			return BACnetAccumulatorRecordAccumulatorStatus_STARTING, true
-		case 2:
-			return BACnetAccumulatorRecordAccumulatorStatus_RECOVERED, true
-		case 3:
-			return BACnetAccumulatorRecordAccumulatorStatus_ABNORMAL, true
-		case 4:
-			return BACnetAccumulatorRecordAccumulatorStatus_FAILED, true
+	case 0:
+		return BACnetAccumulatorRecordAccumulatorStatus_NORMAL, true
+	case 1:
+		return BACnetAccumulatorRecordAccumulatorStatus_STARTING, true
+	case 2:
+		return BACnetAccumulatorRecordAccumulatorStatus_RECOVERED, true
+	case 3:
+		return BACnetAccumulatorRecordAccumulatorStatus_ABNORMAL, true
+	case 4:
+		return BACnetAccumulatorRecordAccumulatorStatus_FAILED, true
 	}
 	return 0, false
 }
@@ -93,13 +93,13 @@ func BACnetAccumulatorRecordAccumulatorStatusByName(value string) (enum BACnetAc
 	return 0, false
 }
 
-func BACnetAccumulatorRecordAccumulatorStatusKnows(value uint8)  bool {
+func BACnetAccumulatorRecordAccumulatorStatusKnows(value uint8) bool {
 	for _, typeValue := range BACnetAccumulatorRecordAccumulatorStatusValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastBACnetAccumulatorRecordAccumulatorStatus(structType any) BACnetAccumulatorRecordAccumulatorStatus {
@@ -173,4 +173,3 @@ func (e BACnetAccumulatorRecordAccumulatorStatus) PLC4XEnumName() string {
 func (e BACnetAccumulatorRecordAccumulatorStatus) String() string {
 	return e.PLC4XEnumName()
 }
-
