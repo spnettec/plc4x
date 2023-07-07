@@ -343,9 +343,16 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
      */
     private CompletableFuture<S7Message> readInternal(S7Message request) {
         CompletableFuture<S7Message> future = new CompletableFuture<>();
-        int tpduId = tpduGenerator.getAndIncrement();
+        int thisTpduId = 0;
+        if (this.s7DriverContext.getControllerType() != S7ControllerType.S7_200)
+        {
+            thisTpduId = tpduGenerator.getAndIncrement();
+        }
+        final int tpduId = thisTpduId;
         // If we've reached the max value for a 16 bit transaction identifier, reset back to 1
-        tpduGenerator.compareAndExchange(0xFFFF, 1);
+        if(tpduGenerator.get() == 0xFFFF) {
+            tpduGenerator.set(0);
+        }
 
         S7Message message = (request instanceof S7MessageUserData) ?
             new S7MessageUserData(tpduId, request.getParameter(), request.getPayload()) :
