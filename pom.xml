@@ -124,7 +124,7 @@
     <commons-text.version>1.10.0</commons-text.version>
     <commons-csv.version>1.10.0</commons-csv.version>
     <dom4j.version>2.1.4</dom4j.version>
-    <equalsverifier.version>3.14.3</equalsverifier.version>
+    <equalsverifier.version>3.15</equalsverifier.version>
     <freemarker.version>2.3.32</freemarker.version>
     <groovy.version>4.0.12</groovy.version>
     <gson.version>2.10.1</gson.version>
@@ -139,7 +139,7 @@
     <jetty-util.version>11.0.15</jetty-util.version>
     <jna.version>5.13.0</jna.version>
     <joda-time.version>2.12.5</joda-time.version>
-    <jserialcom.version>2.10.1</jserialcom.version>
+    <jserialcom.version>2.10.2</jserialcom.version>
     <junit.jupiter.version>5.9.3</junit.jupiter.version>
     <junit.platform.version>1.8.2</junit.platform.version>
     <logback.version>1.4.8</logback.version>
