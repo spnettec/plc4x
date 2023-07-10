@@ -138,6 +138,8 @@ public class PlcDATE extends PlcSimpleValue<LocalDate> {
         switch (property){
         case "daysSinceSiemensEpoch":
             return this.getDaysSinceSiemensEpoch();
+        case "secondsSinceEpoch":
+            return this.getSecondsSinceEpoch();
         default:
             throw new PlcRuntimeException("Invalid property name");
         }

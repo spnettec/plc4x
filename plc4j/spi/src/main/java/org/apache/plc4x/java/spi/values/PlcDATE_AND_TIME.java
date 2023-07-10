@@ -218,6 +218,8 @@ public class PlcDATE_AND_TIME extends PlcSimpleValue<LocalDateTime> {
             return (short)this.getSeconds();
         case "nanoseconds":
             return (long)this.getNanoseconds();
+        case "secondsSinceEpoch":
+            return this.getSecondsSinceEpoch();
         default:
             throw new PlcRuntimeException("Invalid property name");
         }
