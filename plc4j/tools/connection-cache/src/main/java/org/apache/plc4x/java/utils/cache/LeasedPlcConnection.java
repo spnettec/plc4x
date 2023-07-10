@@ -125,7 +125,7 @@ public class LeasedPlcConnection implements PlcConnection {
                                     invalidateConnection = true;
                                     responseFuture.completeExceptionally(throwable);
                                 }
-                                return null;
+                                return plcReadResponse;
                             });
                         } else {
                             responseFuture.complete(null);
@@ -191,7 +191,7 @@ public class LeasedPlcConnection implements PlcConnection {
                                     invalidateConnection = true;
                                     responseFuture.completeExceptionally(throwable);
                                 }
-                                return null;
+                                return plcWriteResponse;
                             });
                         } else {
                             responseFuture.complete(null);
@@ -267,7 +267,7 @@ public class LeasedPlcConnection implements PlcConnection {
                                     invalidateConnection = true;
                                     responseFuture.completeExceptionally(throwable);
                                 }
-                                return null;
+                                return plcSubscriptionResponse;
                             });
                         } else {
                             responseFuture.complete(null);
@@ -363,7 +363,7 @@ public class LeasedPlcConnection implements PlcConnection {
                                     invalidateConnection = true;
                                     responseFuture.completeExceptionally(throwable);
                                 }
-                                return null;
+                                return plcUnsubscriptionResponse;
                             });
                         } else {
                             responseFuture.complete(null);
@@ -419,7 +419,7 @@ public class LeasedPlcConnection implements PlcConnection {
                                     invalidateConnection = true;
                                     responseFuture.completeExceptionally(throwable);
                                 }
-                                return null;
+                                return plcBrowseResponse;
                             });
                         } else {
                             responseFuture.complete(null);
@@ -440,7 +440,7 @@ public class LeasedPlcConnection implements PlcConnection {
                                     invalidateConnection = true;
                                     responseFuture.completeExceptionally(throwable);
                                 }
-                                return null;
+                                return plcBrowseResponse;
                             });
                         } else {
                             responseFuture.complete(null);
