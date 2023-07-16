@@ -136,6 +136,15 @@ public class DefaultPlcSubscriptionRequest implements PlcSubscriptionRequest, Se
         }
 
         @Override
+        public PlcSubscriptionRequest.Builder addChangeOfStateTagAddress(String name, String tagAddress, Duration pollingInterval) {
+            if (tags.containsKey(name)) {
+                throw new PlcRuntimeException("Duplicate tag definition '" + name + "'");
+            }
+            tags.put(name, new BuilderItem(() -> tagHandler.parseTag(tagAddress), PlcSubscriptionType.CHANGE_OF_STATE, pollingInterval));
+            return this;
+        }
+
+        @Override
         public PlcSubscriptionRequest.Builder addChangeOfStateTagAddress(String name, String tagAddress) {
             if (tags.containsKey(name)) {
                 throw new PlcRuntimeException("Duplicate tag definition '" + name + "'");

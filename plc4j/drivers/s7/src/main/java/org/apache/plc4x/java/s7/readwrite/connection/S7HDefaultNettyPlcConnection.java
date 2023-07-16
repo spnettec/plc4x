@@ -26,6 +26,7 @@ import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
+import org.apache.plc4x.java.api.exceptions.PlcIoException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.value.PlcValueHandler;
@@ -38,6 +39,7 @@ import org.apache.plc4x.java.spi.connection.PlcTagHandler;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.events.CloseConnectionEvent;
 import org.apache.plc4x.java.spi.events.DisconnectEvent;
+import org.apache.plc4x.java.spi.events.DiscoverEvent;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -127,14 +129,18 @@ public class S7HDefaultNettyPlcConnection extends DefaultNettyPlcConnection impl
             channel.pipeline().addFirst(s7hmux);
             ((S7HMux) s7hmux).setEmbeddedChannel(channel);
             //channel.pipeline().addFirst((new LoggingHandler(LogLevel.INFO))); 
-            /*
+
             channel.closeFuture().addListener(future -> {
                 if (!sessionSetupCompleteFuture.isDone()) {
+                    channel.pipeline().fireUserEventTriggered(new CloseConnectionEvent());
                     sessionSetupCompleteFuture.completeExceptionally(
                         new PlcIoException("Connection terminated by remote"));
                 }
             });
-            */
+            channel.pipeline().fireUserEventTriggered(new DiscoverEvent());
+            if (awaitSessionDiscoverComplete) {
+                sessionDiscoveredCompleteFuture.get();
+            }
             doPrimaryTcpConnections();
 
             if (secondaryChannelFactory != null) {
@@ -151,7 +157,7 @@ public class S7HDefaultNettyPlcConnection extends DefaultNettyPlcConnection impl
 
             scf = channel.eventLoop().scheduleWithFixedDelay(this, 1, 1, TimeUnit.SECONDS);
             
-            /*            
+            /*
             primary_channel.closeFuture().addListener(future -> {
                 if (!sessionDiscoveredCompleteFuture.isDone()) {
                     //Do Nothing
@@ -162,7 +168,7 @@ public class S7HDefaultNettyPlcConnection extends DefaultNettyPlcConnection impl
                     }
 
                 }
-            });            
+            });
             */
 
 
@@ -299,7 +305,7 @@ public class S7HDefaultNettyPlcConnection extends DefaultNettyPlcConnection impl
 
     @Override
     public CompletableFuture<Void> ping() {
-        if (channel.attr(S7HMuxImpl.IS_CONNECTED).get()) {
+        if (channel.attr(IS_CONNECTED).get()) {
             channel.eventLoop().execute(() -> {
                 PlcReadRequest.Builder builder = readRequestBuilder();
 

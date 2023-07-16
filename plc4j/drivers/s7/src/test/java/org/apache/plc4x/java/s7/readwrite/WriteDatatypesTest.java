@@ -64,7 +64,7 @@ public class WriteDatatypesTest {
             builder.addTagAddress("date-and-time-value", "%DB1:854:DATE_AND_TIME",new PlcDATE_AND_TIME(LocalDateTime.parse("1996-05-06T15:36:30"))); // DTL#1978-03-28-12:34:56
             builder.addTagAddress("date-and-time-array", "%DB1:862:DATE_AND_TIME[2]",new PlcDATE_AND_TIME(LocalDateTime.parse("1996-05-06T15:36:30")),new PlcDATE_AND_TIME(LocalDateTime.parse("1996-06-06T15:36:30"))); // DTL#1978-03-28-12:34:56, DTL#1978-03-28-12:34:56
             builder.addTagAddress("char-value", "%DB1:878:CHAR",new PlcCHAR("H")); // "H"
-            builder.addTagAddress("char-array", "%DB1:880:CHAR[2]",new PlcCHAR("H"),new PlcCHAR("v")); // "H", "u", "r", "z"
+            builder.addTagAddress("char-array", "%DB1:880:CHAR[2]",new PlcCHAR("K"),new PlcCHAR("v")); // "H", "u", "r", "z"
             final PlcWriteRequest writeRequest = builder.build();
 
             final PlcWriteResponse writeResponse = writeRequest.execute().get();

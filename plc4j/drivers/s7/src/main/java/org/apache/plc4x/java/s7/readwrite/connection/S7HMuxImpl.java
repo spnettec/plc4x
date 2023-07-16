@@ -33,6 +33,8 @@ import org.slf4j.LoggerFactory;
 import java.time.LocalTime;
 import java.util.List;
 
+import static org.apache.plc4x.java.spi.connection.AbstractPlcConnection.IS_CONNECTED;
+
 /**
  * Implementation of a multiplexing channel, from an embedded channel to two
  * possible TCP connections, primary and secondary.
@@ -54,7 +56,7 @@ public class S7HMuxImpl extends MessageToMessageCodec<ByteBuf, ByteBuf> implemen
      * both TCP channels are disconnected.
      * Default value: false
      */
-    public final static AttributeKey<Boolean> IS_CONNECTED = AttributeKey.valueOf("IS_CONNECTED");
+    //public final static AttributeKey<Boolean> IS_CONNECTED = AttributeKey.valueOf("IS_CONNECTED");
 
     /*
      * This attribute indicates to the other handlers which channel is being used,

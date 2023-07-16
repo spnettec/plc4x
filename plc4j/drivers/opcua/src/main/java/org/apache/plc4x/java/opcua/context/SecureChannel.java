@@ -724,7 +724,7 @@ public class SecureChannel {
     }
 
 
-    public void onDiscoverOpenSecureChannel(ConversationContext<OpcuaAPU> context, OpcuaAcknowledgeResponse opcuaAcknowledgeResponse) {
+    public synchronized void onDiscoverOpenSecureChannel(ConversationContext<OpcuaAPU> context, OpcuaAcknowledgeResponse opcuaAcknowledgeResponse) {
         int transactionId = channelTransactionManager.getTransactionIdentifier();
 
         RequestHeader requestHeader = new RequestHeader(new NodeId(authenticationToken),
@@ -766,7 +766,7 @@ public class SecureChannel {
                 NULL_BYTE_STRING,
                 transactionId,
                 transactionId,
-                buffer.getData());
+                buffer.getBytes());
 
             Consumer<Integer> requestConsumer = t -> context.sendRequest(new OpcuaAPU(openRequest))
                 .expectResponse(OpcuaAPU.class, REQUEST_TIMEOUT)
@@ -807,7 +807,7 @@ public class SecureChannel {
         int nextSequenceNumber = opcuaOpenResponse.getSequenceNumber() + 1;
         int nextRequestId = opcuaOpenResponse.getRequestId() + 1;
 
-        if (!(transactionId == nextSequenceNumber)) {
+        if (transactionId != nextSequenceNumber) {
             LOGGER.error("Sequence number isn't as expected, we might have missed a packet. - " + transactionId + " != " + nextSequenceNumber);
             throw new PlcConnectionException("Sequence number isn't as expected, we might have missed a packet. - " + transactionId + " != " + nextSequenceNumber);
         }
@@ -848,7 +848,7 @@ public class SecureChannel {
                 tokenId.get(),
                 nextSequenceNumber,
                 nextRequestId,
-                buffer.getData());
+                buffer.getBytes());
 
             Consumer<Integer> requestConsumer = t -> context.sendRequest(new OpcuaAPU(messageRequest))
                 .expectResponse(OpcuaAPU.class, REQUEST_TIMEOUT)

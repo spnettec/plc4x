@@ -78,8 +78,10 @@ public class CachedPlcConnectionManager implements PlcConnectionManager {
         Future<PlcConnection> leaseFuture = connectionContainer.lease();
         try {
             return leaseFuture.get(this.maxWaitTime.toMillis(), TimeUnit.MILLISECONDS);
-        } catch (ExecutionException | InterruptedException | TimeoutException e) {
-            throw new PlcConnectionException("Error acquiring lease for connection", e);
+        } catch (ExecutionException e) {
+            throw new PlcConnectionException(e);
+        } catch (InterruptedException | TimeoutException e) {
+            throw new PlcConnectionException("Error acquiring lease for connection," + e.getMessage(), e);
         }
     }
 

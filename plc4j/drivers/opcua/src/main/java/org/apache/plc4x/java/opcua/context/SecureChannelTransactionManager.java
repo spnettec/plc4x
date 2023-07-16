@@ -36,7 +36,7 @@ public class SecureChannelTransactionManager {
     private final AtomicInteger activeTransactionId = new AtomicInteger(0);
     private final Map<Integer, Transaction> queue = new HashMap<>();
 
-    public synchronized void submit(Consumer<Integer> onSend, Integer transactionId) {
+    public void submit(Consumer<Integer> onSend, int transactionId) {
         LOGGER.debug("Active transaction Number {}", activeTransactionId.get());
         if (activeTransactionId.get() == transactionId) {
             onSend.accept(transactionId);
@@ -64,9 +64,7 @@ public class SecureChannelTransactionManager {
      */
     public int getTransactionIdentifier() {
         int transactionId = transactionIdentifierGenerator.getAndIncrement();
-        if(transactionIdentifierGenerator.get() == DEFAULT_MAX_REQUEST_ID) {
-            transactionIdentifierGenerator.set(1);
-        }
+        transactionIdentifierGenerator.compareAndSet(DEFAULT_MAX_REQUEST_ID,1);
         return transactionId;
     }
 

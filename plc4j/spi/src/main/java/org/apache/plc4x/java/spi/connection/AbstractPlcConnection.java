@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.spi.connection;
 
+import io.netty.util.AttributeKey;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
@@ -43,6 +44,7 @@ import java.util.function.Consumer;
  */
 public abstract class AbstractPlcConnection implements PlcConnection, PlcConnectionMetadata, PlcReader, PlcWriter, PlcSubscriber, PlcBrowser {
 
+    public final static AttributeKey<Boolean> IS_CONNECTED = AttributeKey.valueOf("IS_CONNECTED");
     private boolean canRead = false;
     private boolean canWrite = false;
     private boolean canSubscribe = false;

@@ -64,6 +64,14 @@ public class PlcValueHandler implements org.apache.plc4x.java.api.value.PlcValue
         return of(value.toArray());
     }
     public static PlcValue of(PlcValueType valueType, Object value) {
+        if(value instanceof  PlcValue){
+            PlcValue originValue = (PlcValue)value;
+            if(originValue.getPlcValueType()==valueType)
+            {
+                return originValue;
+            }
+            value = originValue.getObject();
+        }
         switch (valueType) {
         case BOOL:
             return PlcBOOL.of(value);

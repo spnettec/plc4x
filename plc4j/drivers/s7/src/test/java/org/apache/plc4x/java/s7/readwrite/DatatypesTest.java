@@ -18,15 +18,10 @@
  */
 package org.apache.plc4x.java.s7.readwrite;
 
-import org.apache.plc4x.java.DefaultPlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.utils.cache.CachedPlcConnectionManager;
-
-import java.util.concurrent.TimeUnit;
-
-import static java.lang.Thread.sleep;
 
 public class DatatypesTest {
 

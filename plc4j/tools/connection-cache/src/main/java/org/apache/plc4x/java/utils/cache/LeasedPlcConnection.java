@@ -318,6 +318,11 @@ public class LeasedPlcConnection implements PlcConnection {
             }
 
             @Override
+            public PlcSubscriptionRequest.Builder addChangeOfStateTagAddress(String name, String tagAddress, Duration pollingInterval) {
+                return innerBuilder.addChangeOfStateTagAddress(name, tagAddress, pollingInterval);
+            }
+
+            @Override
             public PlcSubscriptionRequest.Builder addChangeOfStateTag(String name, PlcTag tag) {
                 return innerBuilder.addChangeOfStateTag(name, tag);
             }

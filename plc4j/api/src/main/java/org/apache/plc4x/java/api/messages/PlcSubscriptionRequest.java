@@ -69,6 +69,17 @@ public interface PlcSubscriptionRequest extends PlcSubscriptionTagRequest {
          * Adds a new tag to the to be constructed request which should be updated as soon as
          * a value changes in the PLC.
          *
+         * @param name       alias of the tag.
+         * @param tagAddress tag address string for accessing the tag.
+         * @param pollingInterval interval, in which the tag should be polled.
+         * @return builder.
+         */
+        PlcSubscriptionRequest.Builder addChangeOfStateTagAddress(String name, String tagAddress, Duration pollingInterval);
+
+        /**
+         * Adds a new tag to the to be constructed request which should be updated as soon as
+         * a value changes in the PLC.
+         *
          * @param name alias of the tag.
          * @param tag  tag instance for accessing the tag.
          * @return builder.

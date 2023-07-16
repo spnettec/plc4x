@@ -67,6 +67,8 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.stream.IntStream;
 
+import static org.apache.plc4x.java.spi.connection.AbstractPlcConnection.IS_CONNECTED;
+
 /**
  * The S7 Protocol states that there can not be more then {min(maxAmqCaller, maxAmqCallee} "ongoing" requests.
  * So we need to limit those.
@@ -1774,7 +1776,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
     }
 
     private boolean isConnected() {
-        return context.getChannel().attr(S7HMuxImpl.IS_CONNECTED).get();
+        return context.getChannel().attr(IS_CONNECTED).get();
         //return true;
     }
 
