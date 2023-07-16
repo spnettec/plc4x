@@ -149,7 +149,7 @@ public class CachedPlcConnectionManagerTest {
             Assertions.fail("Was expecting an exception here");
         } catch (Exception e) {
             Assertions.assertInstanceOf(PlcConnectionException.class, e);
-            Assertions.assertEquals("Error acquiring lease for connection", e.getMessage());
+            Assertions.assertEquals("Error acquiring lease for connection cause TimeoutException", e.getMessage());
         }
 
         // Check getConnection was called on the mockConnectionManager instance exactly once.

@@ -27,6 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
+import java.util.Optional;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ExecutionException;
@@ -62,11 +63,11 @@ public class ManualPLC4XOpcua {
             sbuilder.addChangeOfStateTagAddress("Random1","ns=5;s=Random1",Duration.ofMillis(100));
             PlcSubscriptionRequest subscriptionRequest = sbuilder.build();
             final PlcSubscriptionResponse subscriptionResponse = subscriptionRequest.execute().get();
-            for (String subscriptionName : subscriptionResponse.getTagNames()) {
-                final PlcSubscriptionHandle subscriptionHandle = subscriptionResponse.getSubscriptionHandle(subscriptionName);
+            Optional<String> optional =  subscriptionResponse.getTagNames().stream().findFirst();
+            if(optional.isPresent()){
+                final PlcSubscriptionHandle subscriptionHandle = subscriptionResponse.getSubscriptionHandle(optional.get());
                 subscriptionHandle.register(new ValueChangeHandler());
             }
-
             new Timer("time1").schedule(new TimerTask() {
 
                 @Override

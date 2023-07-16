@@ -80,8 +80,11 @@ public class CachedPlcConnectionManager implements PlcConnectionManager {
             return leaseFuture.get(this.maxWaitTime.toMillis(), TimeUnit.MILLISECONDS);
         } catch (ExecutionException e) {
             throw new PlcConnectionException(e);
-        } catch (InterruptedException | TimeoutException e) {
-            throw new PlcConnectionException("Error acquiring lease for connection," + e.getMessage(), e);
+        } catch ( TimeoutException e) {
+            throw new PlcConnectionException("Error acquiring lease for connection cause TimeoutException", e);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new PlcConnectionException("Error acquiring lease for connection cause InterruptedException", e);
         }
     }
 

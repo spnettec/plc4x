@@ -35,6 +35,7 @@ import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionHandle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.nio.ByteBuffer;
 import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -176,13 +177,15 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
                     LOGGER.error("Unable to parse the returned Subscription response", e);
                     plcSubscriber.onDisconnect(context);
                 }
-                MonitoredItemCreateResult[] array = responseMessage.getResults().toArray(new MonitoredItemCreateResult[0]);
-                for (int index = 0, arrayLength = array.length; index < arrayLength; index++) {
-                    MonitoredItemCreateResult result = array[index];
-                    if (OpcuaStatusCode.enumForValue(result.getStatusCode().getStatusCode()) != OpcuaStatusCode.Good) {
-                        LOGGER.error("Invalid Tag {}, subscription created without this tag", tagNames.get(index));
-                    } else {
-                        LOGGER.debug("Tag {} was added to the subscription", tagNames.get(index));
+                if(responseMessage!=null) {
+                    ExtensionObjectDefinition[] array = responseMessage.getResults().toArray(new ExtensionObjectDefinition[0]);
+                    for (int index = 0, arrayLength = array.length; index < arrayLength; index++) {
+                        MonitoredItemCreateResult result = (MonitoredItemCreateResult) array[index];
+                        if (OpcuaStatusCode.enumForValue(result.getStatusCode().getStatusCode()) != OpcuaStatusCode.Good) {
+                            LOGGER.error("Invalid Tag {}, subscription created without this tag", tagNames.get(index));
+                        } else {
+                            LOGGER.debug("Tag {} was added to the subscription", tagNames.get(index));
+                        }
                     }
                 }
                 future.complete(responseMessage);
@@ -285,7 +288,7 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
                                     LOGGER.error("Unable to parse the returned Subscription response", e);
                                     plcSubscriber.onDisconnect(context);
                                 }
-                                if (serviceFault == null) {
+                                if (serviceFault == null && responseMessage != null) {
                                     outstandingRequests.remove(((ResponseHeader) responseMessage.getResponseHeader()).getRequestHandle());
 
                                     for (long availableSequenceNumber : responseMessage.getAvailableSequenceNumbers()) {
@@ -458,8 +461,8 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
         } else if (tag.getIdentifierType() == OpcuaIdentifierType.GUID_IDENTIFIER) {
             UUID guid = UUID.fromString(tag.getIdentifier());
             byte[] guidBytes = new byte[16];
-            System.arraycopy(guid.getMostSignificantBits(), 0, guidBytes, 0, 8);
-            System.arraycopy(guid.getLeastSignificantBits(), 0, guidBytes, 8, 8);
+            System.arraycopy(ByteBuffer.allocate(16).putLong(guid.getMostSignificantBits()).array(), 0, guidBytes, 0, 8);
+            System.arraycopy(ByteBuffer.allocate(16).putLong(guid.getLeastSignificantBits()).array(), 0, guidBytes, 8, 8);
             nodeId = new NodeId(new NodeIdGuid((short) tag.getNamespace(), guidBytes));
         } else if (tag.getIdentifierType() == OpcuaIdentifierType.STRING_IDENTIFIER) {
             nodeId = new NodeId(new NodeIdString((short) tag.getNamespace(), new PascalString(tag.getIdentifier())));
