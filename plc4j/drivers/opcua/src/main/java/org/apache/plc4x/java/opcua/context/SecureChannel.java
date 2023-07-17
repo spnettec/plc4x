@@ -168,7 +168,7 @@ public class SecureChannel {
         }
     }
 
-    public synchronized void submit(ConversationContext<OpcuaAPU> context, Consumer<TimeoutException> onTimeout, BiConsumer<OpcuaAPU, Throwable> error, Consumer<byte[]> consumer, WriteBufferByteBased buffer) {
+    public void submit(ConversationContext<OpcuaAPU> context, Consumer<TimeoutException> onTimeout, BiConsumer<OpcuaAPU, Throwable> error, Consumer<byte[]> consumer, WriteBufferByteBased buffer) {
         int transactionId = channelTransactionManager.getTransactionIdentifier();
 
         //TODO: We need to split large messages up into chunks if it is larger than the sendBufferSize
@@ -207,8 +207,10 @@ public class SecureChannel {
                         if (p.getRequestId() == transactionId) {
                             try {
                                 messageBuffer.write(p.getMessage());
-                                if (senderSequenceNumber.incrementAndGet() != p.getSequenceNumber()) {
-                                    LOGGER.error("Sequence number isn't as expected, we might have missed a packet. - {} != {}", senderSequenceNumber.incrementAndGet(), p.getSequenceNumber());
+                                long senderSeq = senderSequenceNumber.incrementAndGet();
+                                long responseSeq = p.getSequenceNumber();
+                                if (senderSeq != responseSeq) {
+                                    LOGGER.error("Sequence number isn't as expected, we might have missed a packet. - {} != {}", senderSeq, responseSeq);
                                     context.fireDisconnected();
                                 }
                             } catch (IOException e) {
@@ -722,7 +724,7 @@ public class SecureChannel {
     }
 
 
-    public synchronized void onDiscoverOpenSecureChannel(ConversationContext<OpcuaAPU> context, OpcuaAcknowledgeResponse opcuaAcknowledgeResponse) {
+    public void onDiscoverOpenSecureChannel(ConversationContext<OpcuaAPU> context, OpcuaAcknowledgeResponse opcuaAcknowledgeResponse) {
         int transactionId = channelTransactionManager.getTransactionIdentifier();
 
         RequestHeader requestHeader = new RequestHeader(new NodeId(authenticationToken),

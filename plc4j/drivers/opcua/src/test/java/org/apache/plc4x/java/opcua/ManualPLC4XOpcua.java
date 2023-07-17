@@ -72,14 +72,18 @@ public class ManualPLC4XOpcua {
 
                 @Override
                 public void run() {
-                    PlcUnsubscriptionRequest.Builder unBuilder =   plcConnection.unsubscriptionRequestBuilder();
-                    for (String subscriptionName : subscriptionResponse.getTagNames()) {
-                        final PlcSubscriptionHandle subscriptionHandle = subscriptionResponse.getSubscriptionHandle(subscriptionName);
-                        unBuilder.addHandles(subscriptionHandle);
-                    }
-                    try {
-                        unBuilder.build().execute().get();
-                    } catch (InterruptedException | ExecutionException e) {
+                    try (PlcConnection plcConnection = plcConnectionManager.getConnection(connectionString)) {
+                        PlcUnsubscriptionRequest.Builder unBuilder = plcConnection.unsubscriptionRequestBuilder();
+                        for (String subscriptionName : subscriptionResponse.getTagNames()) {
+                            final PlcSubscriptionHandle subscriptionHandle = subscriptionResponse.getSubscriptionHandle(subscriptionName);
+                            unBuilder.addHandles(subscriptionHandle);
+                        }
+                        try {
+                            unBuilder.build().execute().get();
+                        } catch (InterruptedException | ExecutionException e) {
+                            e.printStackTrace();
+                        }
+                    } catch (Exception e){
                         e.printStackTrace();
                     }
                 }

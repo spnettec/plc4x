@@ -36,7 +36,7 @@ public class SecureChannelTransactionManager {
     private final AtomicInteger activeTransactionId = new AtomicInteger(0);
     private final Map<Integer, Transaction> queue = new HashMap<>();
 
-    public void submit(Consumer<Integer> onSend, int transactionId) {
+    public synchronized void submit(Consumer<Integer> onSend, int transactionId) {
         LOGGER.debug("Active transaction Number {}", activeTransactionId.get());
         if (activeTransactionId.get() == transactionId) {
             onSend.accept(transactionId);
