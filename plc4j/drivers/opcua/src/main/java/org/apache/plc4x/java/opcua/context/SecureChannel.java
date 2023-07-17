@@ -126,7 +126,7 @@ public class SecureChannel {
     private int maxMessageSize;
     private final List<String> endpoints = new ArrayList<>();
 
-    private final AtomicLong senderSequenceNumber = new AtomicLong();
+    //private final AtomicLong senderSequenceNumber = new AtomicLong();
 
     public SecureChannel(DriverContext driverContext, OpcuaConfiguration configuration) {
         this.configuration = configuration;
@@ -192,7 +192,7 @@ public class SecureChannel {
             throw new PlcRuntimeException("Unable to encrypt message before sending");
         }
 
-        Consumer<Integer> requestConsumer = t -> {
+        Consumer<Integer> requestConsumer = transId -> {
             try {
                 ByteArrayOutputStream messageBuffer = new ByteArrayOutputStream();
                 context.sendRequest(apu)
@@ -204,15 +204,20 @@ public class SecureChannel {
                     .check(OpcuaMessageResponse.class::isInstance)
                     .unwrap(OpcuaMessageResponse.class::cast)
                     .check(p -> {
-                        if (p.getRequestId() == transactionId) {
+                        if (p.getRequestId() == transId) {
                             try {
                                 messageBuffer.write(p.getMessage());
+                                /*
                                 long senderSeq = senderSequenceNumber.incrementAndGet();
                                 long responseSeq = p.getSequenceNumber();
-                                if (senderSeq != responseSeq) {
+                                if (senderSeq < responseSeq) {
+                                    LOGGER.warn("Sequence number lost, Maybe error or timeout occur");
+                                    senderSequenceNumber.set(responseSeq);
+                                } else if (senderSeq > responseSeq) {
                                     LOGGER.error("Sequence number isn't as expected, we might have missed a packet. - {} != {}", senderSeq, responseSeq);
                                     context.fireDisconnected();
                                 }
+                                 */
                             } catch (IOException e) {
                                 LOGGER.debug("Failed to store incoming message in buffer");
                                 throw new PlcRuntimeException("Error while sending message");
@@ -317,23 +322,23 @@ public class SecureChannel {
             final OpcuaAPU apu;
 
             if (this.isEncrypted) {
-                apu = OpcuaAPU.staticParse(encryptionHandler.encodeMessage(openRequest, buffer.getData()), false);
+                apu = OpcuaAPU.staticParse(encryptionHandler.encodeMessage(openRequest, buffer.getBytes()), false);
             } else {
                 apu = new OpcuaAPU(openRequest);
             }
 
-            Consumer<Integer> requestConsumer = t -> context.sendRequest(apu)
+            Consumer<Integer> requestConsumer = transId -> context.sendRequest(apu)
                 .expectResponse(OpcuaAPU.class, Duration.ofMillis(configuration.getTimeoutRequest()))
                 .unwrap(apuMessage -> encryptionHandler.decodeMessage(apuMessage))
                 .check(p -> p.getMessage() instanceof OpcuaOpenResponse)
                 .unwrap(p -> (OpcuaOpenResponse) p.getMessage())
-                .check(p -> p.getRequestId() == transactionId)
+                .check(p -> p.getRequestId() == transId)
                 .handle(opcuaOpenResponse -> {
                     try {
                         ReadBuffer readBuffer = new ReadBufferByteBased(opcuaOpenResponse.getMessage(), org.apache.plc4x.java.spi.generation.ByteOrder.LITTLE_ENDIAN);
                         ExtensionObject message = ExtensionObject.staticParse(readBuffer, false);
                         //Store the initial sequence number from the server. there's no requirement for the server and client to use the same starting number.
-                        senderSequenceNumber.set(opcuaOpenResponse.getSequenceNumber());
+                        //senderSequenceNumber.set(opcuaOpenResponse.getSequenceNumber());
 
                         if (message.getBody() instanceof ServiceFault) {
                             ServiceFault fault = (ServiceFault) message.getBody();
@@ -453,11 +458,11 @@ public class SecureChannel {
             };
 
             Consumer<TimeoutException> timeout = e -> {
-                LOGGER.error("Timeout while waiting for subscription response");
+                LOGGER.error("Timeout while waiting for Create Session response");
                 e.printStackTrace();
             };
 
-            BiConsumer<OpcuaAPU, Throwable> error = (message, e) -> LOGGER.error("Error while waiting for subscription response", e);
+            BiConsumer<OpcuaAPU, Throwable> error = (message, e) -> LOGGER.error("Error while waiting for Create Session response", e);
 
             submit(context, timeout, error, consumer, buffer);
         } catch (SerializationException e) {
@@ -683,12 +688,12 @@ public class SecureChannel {
                 null,
                 closeSecureChannelRequest));
 
-        Consumer<Integer> requestConsumer = t -> {
+        Consumer<Integer> requestConsumer = transId -> {
             context.sendRequest(new OpcuaAPU(closeRequest))
                 .expectResponse(OpcuaAPU.class, Duration.ofMillis(configuration.getTimeoutRequest()))
                 .check(p -> p.getMessage() instanceof OpcuaMessageResponse)
                 .unwrap(p -> (OpcuaMessageResponse) p.getMessage())
-                .check(p -> p.getRequestId() == transactionId)
+                .check(p -> p.getRequestId() == transId)
                 .handle(opcuaMessageResponse -> LOGGER.trace("Got Close Secure Channel Response" + opcuaMessageResponse.toString()));
 
             context.fireDisconnected();
@@ -710,7 +715,7 @@ public class SecureChannel {
             DEFAULT_MAX_CHUNK_COUNT,
             this.endpoint);
 
-        Consumer<Integer> requestConsumer = t -> context.sendRequest(new OpcuaAPU(hello))
+        Consumer<Integer> requestConsumer = transId -> context.sendRequest(new OpcuaAPU(hello))
             .expectResponse(OpcuaAPU.class, Duration.ofMillis(configuration.getTimeoutRequest()))
             .check(p -> p.getMessage() instanceof OpcuaAcknowledgeResponse)
             .unwrap(p -> (OpcuaAcknowledgeResponse) p.getMessage())
@@ -768,11 +773,11 @@ public class SecureChannel {
                 transactionId,
                 buffer.getBytes());
 
-            Consumer<Integer> requestConsumer = t -> context.sendRequest(new OpcuaAPU(openRequest))
+            Consumer<Integer> requestConsumer = transId -> context.sendRequest(new OpcuaAPU(openRequest))
                 .expectResponse(OpcuaAPU.class, Duration.ofMillis(configuration.getTimeoutRequest()))
                 .check(p -> p.getMessage() instanceof OpcuaOpenResponse)
                 .unwrap(p -> (OpcuaOpenResponse) p.getMessage())
-                .check(p -> p.getRequestId() == transactionId)
+                .check(p -> p.getRequestId() == transId)
                 .handle(opcuaOpenResponse -> {
                     try {
                         ExtensionObject message = ExtensionObject.staticParse(new ReadBufferByteBased(opcuaOpenResponse.getMessage(), org.apache.plc4x.java.spi.generation.ByteOrder.LITTLE_ENDIAN), false);
@@ -850,11 +855,11 @@ public class SecureChannel {
                 nextRequestId,
                 buffer.getBytes());
 
-            Consumer<Integer> requestConsumer = t -> context.sendRequest(new OpcuaAPU(messageRequest))
+            Consumer<Integer> requestConsumer = transId -> context.sendRequest(new OpcuaAPU(messageRequest))
                 .expectResponse(OpcuaAPU.class, Duration.ofMillis(configuration.getTimeoutRequest()))
                 .check(p -> p.getMessage() instanceof OpcuaMessageResponse)
                 .unwrap(p -> (OpcuaMessageResponse) p.getMessage())
-                .check(p -> p.getRequestId() == transactionId)
+                .check(p -> p.getRequestId() == transId)
                 .handle(opcuaMessageResponse -> {
                     try {
                         ExtensionObject message = ExtensionObject.staticParse(new ReadBufferByteBased(opcuaMessageResponse.getMessage(), org.apache.plc4x.java.spi.generation.ByteOrder.LITTLE_ENDIAN), false);
@@ -924,11 +929,11 @@ public class SecureChannel {
                 null,
                 closeSecureChannelRequest));
 
-        Consumer<Integer> requestConsumer = t -> context.sendRequest(new OpcuaAPU(closeRequest))
+        Consumer<Integer> requestConsumer = transId -> context.sendRequest(new OpcuaAPU(closeRequest))
             .expectResponse(OpcuaAPU.class, Duration.ofMillis(configuration.getTimeoutRequest()))
             .check(p -> p.getMessage() instanceof OpcuaMessageResponse)
             .unwrap(p -> (OpcuaMessageResponse) p.getMessage())
-            .check(p -> p.getRequestId() == transactionId)
+            .check(p -> p.getRequestId() == transId)
             .handle(opcuaMessageResponse -> {
                 LOGGER.trace("Got Close Secure Channel Response" + opcuaMessageResponse.toString());
                 // Send an event that connection setup is complete.
@@ -1009,12 +1014,12 @@ public class SecureChannel {
                             apu = new OpcuaAPU(openRequest);
                         }
 
-                        Consumer<Integer> requestConsumer = t -> context.sendRequest(apu)
+                        Consumer<Integer> requestConsumer = transId -> context.sendRequest(apu)
                             .expectResponse(OpcuaAPU.class, Duration.ofMillis(configuration.getTimeoutRequest()))
                             .unwrap(apuMessage -> encryptionHandler.decodeMessage(apuMessage))
                             .check(p -> p.getMessage() instanceof OpcuaOpenResponse)
                             .unwrap(p -> (OpcuaOpenResponse) p.getMessage())
-                            .check(p -> p.getRequestId() == transactionId)
+                            .check(p -> p.getRequestId() == transId)
                             .handle(opcuaOpenResponse -> {
                                 try {
                                     ReadBufferByteBased readBuffer = new ReadBufferByteBased(opcuaOpenResponse.getMessage(), org.apache.plc4x.java.spi.generation.ByteOrder.LITTLE_ENDIAN);

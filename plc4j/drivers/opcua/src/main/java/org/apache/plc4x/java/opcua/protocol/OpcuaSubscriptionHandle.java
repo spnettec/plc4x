@@ -309,19 +309,19 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
                                     }
                                 }
                             };
-
+                            /*
                             Consumer<TimeoutException> timeout = e -> {
                                 LOGGER.error("Timeout while waiting for subscription response", e);
                                 plcSubscriber.onDisconnect(context);
                             };
-
+                            */
                             BiConsumer<OpcuaAPU, Throwable> error = (message, e) -> {
                                 LOGGER.error("Error while waiting for subscription response", e);
                                 plcSubscriber.onDisconnect(context);
                             };
 
                             outstandingRequests.add(requestHandle);
-                            channel.submit(context, timeout, error, consumer, buffer);
+                            channel.submit(context, null, error, consumer, buffer);
 
                         } catch (SerializationException e) {
                             LOGGER.warn("Unable to serialize subscription request", e);

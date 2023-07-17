@@ -47,15 +47,17 @@ public class NettyHashTimerTimeoutManager implements TimeoutManager {
 
     @Override
     public CompletionCallback<?> register(TimedOperation operation) {
-        Timeout newTimeout = timer.newTimeout(timeout -> {
-            if (timeout.isCancelled()) {
-                return;
-            }
-            TimeoutException exception = new TimeoutException();
-            operation.getOnTimeoutConsumer().accept(exception);
-        }, operation.getTimeout().toMillis(), TimeUnit.MILLISECONDS);
-
-        return new TimeoutCompletionCallback<>(newTimeout);
+        if (operation.getOnTimeoutConsumer() != null) {
+            Timeout newTimeout = timer.newTimeout(timeout -> {
+                if (timeout.isCancelled()) {
+                    return;
+                }
+                TimeoutException exception = new TimeoutException();
+                operation.getOnTimeoutConsumer().accept(exception);
+            }, operation.getTimeout().toMillis(), TimeUnit.MILLISECONDS);
+            return new TimeoutCompletionCallback<>(newTimeout);
+        }
+        return new TimeoutCompletionCallback<>(null);
     }
 
     @Override
