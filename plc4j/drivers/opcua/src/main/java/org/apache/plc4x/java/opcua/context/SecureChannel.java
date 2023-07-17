@@ -168,7 +168,7 @@ public class SecureChannel {
         }
     }
 
-    public void submit(ConversationContext<OpcuaAPU> context, Consumer<TimeoutException> onTimeout, BiConsumer<OpcuaAPU, Throwable> error, Consumer<byte[]> consumer, WriteBufferByteBased buffer) {
+    public synchronized void submit(ConversationContext<OpcuaAPU> context, Consumer<TimeoutException> onTimeout, BiConsumer<OpcuaAPU, Throwable> error, Consumer<byte[]> consumer, WriteBufferByteBased buffer) {
         int transactionId = channelTransactionManager.getTransactionIdentifier();
 
         //TODO: We need to split large messages up into chunks if it is larger than the sendBufferSize
@@ -207,7 +207,7 @@ public class SecureChannel {
                         if (p.getRequestId() == transactionId) {
                             try {
                                 messageBuffer.write(p.getMessage());
-                                if (!(senderSequenceNumber.incrementAndGet() == (p.getSequenceNumber()))) {
+                                if (senderSequenceNumber.incrementAndGet() != p.getSequenceNumber()) {
                                     LOGGER.error("Sequence number isn't as expected, we might have missed a packet. - {} != {}", senderSequenceNumber.incrementAndGet(), p.getSequenceNumber());
                                     context.fireDisconnected();
                                 }
@@ -806,8 +806,8 @@ public class SecureChannel {
         int nextRequestId = opcuaOpenResponse.getRequestId() + 1;
 
         if (transactionId != nextSequenceNumber) {
-            LOGGER.error("Sequence number isn't as expected, we might have missed a packet. - " + transactionId + " != " + nextSequenceNumber);
-            throw new PlcConnectionException("Sequence number isn't as expected, we might have missed a packet. - " + transactionId + " != " + nextSequenceNumber);
+            LOGGER.error("Sequence and transactionId number isn't as expected, we might have missed a packet. - " + transactionId + " != " + nextSequenceNumber);
+            throw new PlcConnectionException("Sequence and transactionId number isn't as expected, we might have missed a packet. - " + transactionId + " != " + nextSequenceNumber);
         }
 
         RequestHeader requestHeader = new RequestHeader(new NodeId(authenticationToken),
