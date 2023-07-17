@@ -63,8 +63,6 @@ public class SecureChannel {
     private static final int DEFAULT_MAX_MESSAGE_SIZE = 2097152;
     private static final int DEFAULT_RECEIVE_BUFFER_SIZE = 65535;
     private static final int DEFAULT_SEND_BUFFER_SIZE = 65535;
-    public static final Duration REQUEST_TIMEOUT = Duration.ofMillis(10000);
-    public static final long REQUEST_TIMEOUT_LONG = 10000L;
     private static final String PASSWORD_ENCRYPTION_ALGORITHM = "http://www.w3.org/2001/04/xmlenc#rsa-oaep";
     private static final PascalString SECURITY_POLICY_NONE = new PascalString("http://opcfoundation.org/UA/SecurityPolicy#None");
     protected static final PascalString NULL_STRING = new PascalString("");
@@ -181,12 +179,12 @@ public class SecureChannel {
             tokenId.get(),
             transactionId,
             transactionId,
-            buffer.getData());
+            buffer.getBytes());
 
         final OpcuaAPU apu;
         try {
             if (this.isEncrypted) {
-                apu = OpcuaAPU.staticParse(encryptionHandler.encodeMessage(messageRequest, buffer.getData()), false);
+                apu = OpcuaAPU.staticParse(encryptionHandler.encodeMessage(messageRequest, buffer.getBytes()), false);
             } else {
                 apu = new OpcuaAPU(messageRequest);
             }
@@ -198,7 +196,7 @@ public class SecureChannel {
             try {
                 ByteArrayOutputStream messageBuffer = new ByteArrayOutputStream();
                 context.sendRequest(apu)
-                    .expectResponse(OpcuaAPU.class, REQUEST_TIMEOUT)
+                    .expectResponse(OpcuaAPU.class, Duration.ofMillis(configuration.getTimeoutRequest()))
                     .onTimeout(onTimeout)
                     .onError(error)
                     .unwrap(encryptionHandler::decodeMessage)
@@ -252,7 +250,7 @@ public class SecureChannel {
             this.endpoint);
 
         Consumer<Integer> requestConsumer = t -> context.sendRequest(new OpcuaAPU(hello))
-            .expectResponse(OpcuaAPU.class, REQUEST_TIMEOUT)
+            .expectResponse(OpcuaAPU.class, Duration.ofMillis(configuration.getTimeoutRequest()))
             .check(p -> p.getMessage() instanceof OpcuaAcknowledgeResponse)
             .unwrap(p -> (OpcuaAcknowledgeResponse) p.getMessage())
             .handle(opcuaAcknowledgeResponse -> onConnectOpenSecureChannel(context, opcuaAcknowledgeResponse));
@@ -268,7 +266,7 @@ public class SecureChannel {
             0L,                                         //RequestHandle
             0L,
             NULL_STRING,
-            REQUEST_TIMEOUT_LONG,
+            configuration.getTimeoutRequest(),
             NULL_EXTENSION_OBJECT);
 
         OpenSecureChannelRequest openSecureChannelRequest;
@@ -312,7 +310,7 @@ public class SecureChannel {
                 this.thumbprint,
                 transactionId,
                 transactionId,
-                buffer.getData());
+                buffer.getBytes());
 
             final OpcuaAPU apu;
 
@@ -323,7 +321,7 @@ public class SecureChannel {
             }
 
             Consumer<Integer> requestConsumer = t -> context.sendRequest(apu)
-                .expectResponse(OpcuaAPU.class, REQUEST_TIMEOUT)
+                .expectResponse(OpcuaAPU.class, Duration.ofMillis(configuration.getTimeoutRequest()))
                 .unwrap(apuMessage -> encryptionHandler.decodeMessage(apuMessage))
                 .check(p -> p.getMessage() instanceof OpcuaOpenResponse)
                 .unwrap(p -> (OpcuaOpenResponse) p.getMessage())
@@ -367,7 +365,7 @@ public class SecureChannel {
             0L,
             0L,
             NULL_STRING,
-            REQUEST_TIMEOUT_LONG,
+            configuration.getTimeoutRequest(),
             NULL_EXTENSION_OBJECT);
 
         LocalizedText applicationName = new LocalizedText(
@@ -495,7 +493,7 @@ public class SecureChannel {
             requestHandle,
             0L,
             NULL_STRING,
-            REQUEST_TIMEOUT_LONG,
+            configuration.getTimeoutRequest(),
             NULL_EXTENSION_OBJECT);
 
         SignatureData clientSignature = new SignatureData(NULL_STRING, NULL_BYTE_STRING);
@@ -662,7 +660,7 @@ public class SecureChannel {
             0L,                                         //RequestHandle
             0L,
             NULL_STRING,
-            REQUEST_TIMEOUT_LONG,
+            configuration.getTimeoutRequest(),
             NULL_EXTENSION_OBJECT);
 
         CloseSecureChannelRequest closeSecureChannelRequest = new CloseSecureChannelRequest(requestHeader);
@@ -685,7 +683,7 @@ public class SecureChannel {
 
         Consumer<Integer> requestConsumer = t -> {
             context.sendRequest(new OpcuaAPU(closeRequest))
-                .expectResponse(OpcuaAPU.class, REQUEST_TIMEOUT)
+                .expectResponse(OpcuaAPU.class, Duration.ofMillis(configuration.getTimeoutRequest()))
                 .check(p -> p.getMessage() instanceof OpcuaMessageResponse)
                 .unwrap(p -> (OpcuaMessageResponse) p.getMessage())
                 .check(p -> p.getRequestId() == transactionId)
@@ -711,7 +709,7 @@ public class SecureChannel {
             this.endpoint);
 
         Consumer<Integer> requestConsumer = t -> context.sendRequest(new OpcuaAPU(hello))
-            .expectResponse(OpcuaAPU.class, REQUEST_TIMEOUT)
+            .expectResponse(OpcuaAPU.class, Duration.ofMillis(configuration.getTimeoutRequest()))
             .check(p -> p.getMessage() instanceof OpcuaAcknowledgeResponse)
             .unwrap(p -> (OpcuaAcknowledgeResponse) p.getMessage())
             .handle(opcuaAcknowledgeResponse -> {
@@ -732,7 +730,7 @@ public class SecureChannel {
             0L,                                         //RequestHandle
             0L,
             NULL_STRING,
-            REQUEST_TIMEOUT_LONG,
+            configuration.getTimeoutRequest(),
             NULL_EXTENSION_OBJECT);
 
         OpenSecureChannelRequest openSecureChannelRequest = new OpenSecureChannelRequest(
@@ -769,7 +767,7 @@ public class SecureChannel {
                 buffer.getBytes());
 
             Consumer<Integer> requestConsumer = t -> context.sendRequest(new OpcuaAPU(openRequest))
-                .expectResponse(OpcuaAPU.class, REQUEST_TIMEOUT)
+                .expectResponse(OpcuaAPU.class, Duration.ofMillis(configuration.getTimeoutRequest()))
                 .check(p -> p.getMessage() instanceof OpcuaOpenResponse)
                 .unwrap(p -> (OpcuaOpenResponse) p.getMessage())
                 .check(p -> p.getRequestId() == transactionId)
@@ -817,7 +815,7 @@ public class SecureChannel {
             0L,
             0L,
             NULL_STRING,
-            REQUEST_TIMEOUT_LONG,
+            configuration.getTimeoutRequest(),
             NULL_EXTENSION_OBJECT);
 
         GetEndpointsRequest endpointsRequest = new GetEndpointsRequest(
@@ -851,7 +849,7 @@ public class SecureChannel {
                 buffer.getBytes());
 
             Consumer<Integer> requestConsumer = t -> context.sendRequest(new OpcuaAPU(messageRequest))
-                .expectResponse(OpcuaAPU.class, REQUEST_TIMEOUT)
+                .expectResponse(OpcuaAPU.class, Duration.ofMillis(configuration.getTimeoutRequest()))
                 .check(p -> p.getMessage() instanceof OpcuaMessageResponse)
                 .unwrap(p -> (OpcuaMessageResponse) p.getMessage())
                 .check(p -> p.getRequestId() == transactionId)
@@ -903,7 +901,7 @@ public class SecureChannel {
             0L,                                         //RequestHandle
             0L,
             NULL_STRING,
-            REQUEST_TIMEOUT_LONG,
+            configuration.getTimeoutRequest(),
             NULL_EXTENSION_OBJECT);
 
         CloseSecureChannelRequest closeSecureChannelRequest = new CloseSecureChannelRequest(requestHeader);
@@ -925,7 +923,7 @@ public class SecureChannel {
                 closeSecureChannelRequest));
 
         Consumer<Integer> requestConsumer = t -> context.sendRequest(new OpcuaAPU(closeRequest))
-            .expectResponse(OpcuaAPU.class, REQUEST_TIMEOUT)
+            .expectResponse(OpcuaAPU.class, Duration.ofMillis(configuration.getTimeoutRequest()))
             .check(p -> p.getMessage() instanceof OpcuaMessageResponse)
             .unwrap(p -> (OpcuaMessageResponse) p.getMessage())
             .check(p -> p.getRequestId() == transactionId)
@@ -955,7 +953,7 @@ public class SecureChannel {
                         0L,                                         //RequestHandle
                         0L,
                         NULL_STRING,
-                        REQUEST_TIMEOUT_LONG,
+                        configuration.getTimeoutRequest(),
                         NULL_EXTENSION_OBJECT);
 
                     OpenSecureChannelRequest openSecureChannelRequest;
@@ -999,18 +997,18 @@ public class SecureChannel {
                             this.thumbprint,
                             transactionId,
                             transactionId,
-                            buffer.getData());
+                            buffer.getBytes());
 
                         final OpcuaAPU apu;
 
                         if (this.isEncrypted) {
-                            apu = OpcuaAPU.staticParse(encryptionHandler.encodeMessage(openRequest, buffer.getData()), false);
+                            apu = OpcuaAPU.staticParse(encryptionHandler.encodeMessage(openRequest, buffer.getBytes()), false);
                         } else {
                             apu = new OpcuaAPU(openRequest);
                         }
 
                         Consumer<Integer> requestConsumer = t -> context.sendRequest(apu)
-                            .expectResponse(OpcuaAPU.class, REQUEST_TIMEOUT)
+                            .expectResponse(OpcuaAPU.class, Duration.ofMillis(configuration.getTimeoutRequest()))
                             .unwrap(apuMessage -> encryptionHandler.decodeMessage(apuMessage))
                             .check(p -> p.getMessage() instanceof OpcuaOpenResponse)
                             .unwrap(p -> (OpcuaOpenResponse) p.getMessage())

@@ -22,6 +22,7 @@ import org.apache.plc4x.java.api.messages.PlcSubscriptionEvent;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 import org.apache.plc4x.java.api.value.PlcValue;
+import org.apache.plc4x.java.opcua.config.OpcuaConfiguration;
 import org.apache.plc4x.java.opcua.context.SecureChannel;
 import org.apache.plc4x.java.opcua.tag.OpcuaTag;
 import org.apache.plc4x.java.opcua.readwrite.*;
@@ -63,8 +64,8 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
     private final AtomicLong clientHandles = new AtomicLong(1L);
 
     private final ConversationContext<OpcuaAPU> context;
-
-    public OpcuaSubscriptionHandle(ConversationContext<OpcuaAPU> context, OpcuaProtocolLogic plcSubscriber, SecureChannel channel, PlcSubscriptionRequest subscriptionRequest, Long subscriptionId, long cycleTime) {
+    private final OpcuaConfiguration configuration;
+    public OpcuaSubscriptionHandle(ConversationContext<OpcuaAPU> context, OpcuaProtocolLogic plcSubscriber, SecureChannel channel, PlcSubscriptionRequest subscriptionRequest, Long subscriptionId, long cycleTime, OpcuaConfiguration configuration) {
         super(plcSubscriber);
         this.consumers = new HashSet<>();
         this.subscriptionRequest = subscriptionRequest;
@@ -75,6 +76,7 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
         this.cycleTime = cycleTime;
         this.revisedCycleTime = cycleTime;
         this.context = context;
+        this.configuration = configuration;
         try {
             onSubscribeCreateMonitoredItemsRequest().get();
         } catch (Exception e) {
@@ -135,7 +137,7 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
             channel.getRequestHandle(),
             0L,
             OpcuaProtocolLogic.NULL_STRING,
-            SecureChannel.REQUEST_TIMEOUT_LONG,
+            configuration.getTimeoutRequest(),
             OpcuaProtocolLogic.NULL_EXTENSION_OBJECT);
 
         CreateMonitoredItemsRequest createMonitoredItemsRequest = new CreateMonitoredItemsRequest(

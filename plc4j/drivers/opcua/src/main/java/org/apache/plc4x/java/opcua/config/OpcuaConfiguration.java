@@ -21,7 +21,6 @@ package org.apache.plc4x.java.opcua.config;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.opcua.context.CertificateGenerator;
 import org.apache.plc4x.java.opcua.context.CertificateKeyPair;
-import org.apache.plc4x.java.opcua.protocol.OpcuaProtocolLogic;
 import org.apache.plc4x.java.opcua.readwrite.PascalByteString;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
@@ -36,11 +35,11 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.nio.file.FileSystems;
-import java.nio.file.Path;
-import java.security.*;
-import java.security.cert.CertificateException;
+import java.security.KeyPair;
+import java.security.KeyStore;
+import java.security.PrivateKey;
+import java.security.Security;
 import java.security.cert.X509Certificate;
 
 public class OpcuaConfiguration implements Configuration, TcpTransportConfiguration {
@@ -85,6 +84,9 @@ public class OpcuaConfiguration implements Configuration, TcpTransportConfigurat
     @ConfigurationParameter("keyStorePassword")
     private String keyStorePassword;
 
+    @ConfigurationParameter("timeout-request")
+    @IntDefaultValue(10000)
+    private int timeoutRequest;
     private CertificateKeyPair ckp;
 
     public boolean isDiscovery() {
@@ -196,7 +198,13 @@ public class OpcuaConfiguration implements Configuration, TcpTransportConfigurat
     }
 
     public void setTransportEndpoint(String transportEndpoint) { this.transportEndpoint = transportEndpoint; }
+    public int getTimeoutRequest() {
+        return timeoutRequest;
+    }
 
+    public void setTimeoutRequest(int timeoutRequest) {
+        this.timeoutRequest = timeoutRequest;
+    }
     public void openKeyStore() throws Exception {
         this.isEncrypted = true;
         File securityTempDir = new File(certDirectory, "security");

@@ -44,6 +44,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.math.BigInteger;
+import java.nio.ByteBuffer;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -134,7 +135,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
             channel.getRequestHandle(),
             0L,
             NULL_STRING,
-            SecureChannel.REQUEST_TIMEOUT_LONG,
+            configuration.getTimeoutRequest(),
             NULL_EXTENSION_OBJECT);
 
         List<ExtensionObjectDefinition> readValueArray = new ArrayList<>(request.getTagNames().size());
@@ -229,8 +230,8 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
         } else if (tag.getIdentifierType() == OpcuaIdentifierType.GUID_IDENTIFIER) {
             UUID guid = UUID.fromString(tag.getIdentifier());
             byte[] guidBytes = new byte[16];
-            System.arraycopy(guid.getMostSignificantBits(), 0, guidBytes, 0, 8);
-            System.arraycopy(guid.getLeastSignificantBits(), 0, guidBytes, 8, 8);
+            System.arraycopy(ByteBuffer.allocate(16).putLong(guid.getMostSignificantBits()).array(), 0, guidBytes, 0, 8);
+            System.arraycopy(ByteBuffer.allocate(16).putLong(guid.getLeastSignificantBits()).array(), 0, guidBytes, 8, 8);
             nodeId = new NodeId(new NodeIdGuid((short) tag.getNamespace(), guidBytes));
         } else if (tag.getIdentifierType() == OpcuaIdentifierType.STRING_IDENTIFIER) {
             nodeId = new NodeId(new NodeIdString((short) tag.getNamespace(), new PascalString(tag.getIdentifier())));
@@ -681,7 +682,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
             channel.getRequestHandle(),
             0L,
             NULL_STRING,
-            SecureChannel.REQUEST_TIMEOUT_LONG,
+            configuration.getTimeoutRequest(),
             NULL_EXTENSION_OBJECT);
 
         List<ExtensionObjectDefinition> writeValueList = new ArrayList<>(request.getTagNames().size());
@@ -793,9 +794,9 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
 
             try {
                 CompletableFuture<CreateSubscriptionResponse> subscription = onSubscribeCreateSubscription(cycleTime);
-                CreateSubscriptionResponse response = subscription.get(SecureChannel.REQUEST_TIMEOUT_LONG, TimeUnit.MILLISECONDS);
+                CreateSubscriptionResponse response = subscription.get(configuration.getTimeoutRequest(), TimeUnit.MILLISECONDS);
                 subscriptionId = response.getSubscriptionId();
-                subscriptions.put(subscriptionId, new OpcuaSubscriptionHandle(context, this, channel, subscriptionRequest, subscriptionId, cycleTime));
+                subscriptions.put(subscriptionId, new OpcuaSubscriptionHandle(context, this, channel, subscriptionRequest, subscriptionId, cycleTime, configuration));
             } catch (Exception e) {
                 throw new PlcRuntimeException("Unable to subscribe because of: " + e.getMessage());
             }
@@ -821,7 +822,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
             channel.getRequestHandle(),
             0L,
             NULL_STRING,
-            SecureChannel.REQUEST_TIMEOUT_LONG,
+            configuration.getTimeoutRequest(),
             NULL_EXTENSION_OBJECT);
 
         CreateSubscriptionRequest createSubscriptionRequest = new CreateSubscriptionRequest(

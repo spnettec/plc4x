@@ -184,9 +184,7 @@ public class SimulatedConnection extends AbstractPlcConnection {
     public PlcConsumerRegistration register(Consumer<PlcSubscriptionEvent> consumer, Collection<PlcSubscriptionHandle> handles) {
         LOGGER.info("Registering consumer {} with handles {}", consumer, handles);
         PlcConsumerRegistration plcConsumerRegistration = new DefaultPlcConsumerRegistration(this, consumer, handles.toArray(new PlcSubscriptionHandle[0]));
-        handles.stream()
-            .map(PlcSubscriptionHandle.class::cast)
-            .forEach(handle -> registrations.put(handle, plcConsumerRegistration));
+        handles.forEach(handle -> registrations.put(handle, plcConsumerRegistration));
         consumerIdMap.put(plcConsumerRegistration.getConsumerId(), consumer);
         return plcConsumerRegistration;
     }
