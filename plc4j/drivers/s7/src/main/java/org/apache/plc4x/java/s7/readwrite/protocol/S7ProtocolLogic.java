@@ -1048,7 +1048,6 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
 //
         List<CycServiceItemType> items = new ArrayList<>();
 //        
-        int i = 0;
         for (S7Tag userfield : s7tag.getS7Tags()) {
             items.add(new CycServiceItemAnyType(
                 (short) 0x0a,
@@ -1057,9 +1056,8 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
                 userfield.getNumberOfElements(),
                 userfield.getBlockNumber(),
                 userfield.getMemoryArea(),
-                ((((long) userfield.getByteOffset() << 3) | (userfield.getBitOffset() & 0x0007)))
+                (((userfield.getByteOffset() << 3) | (userfield.getBitOffset() & 0x0007)))
             ));
-            i++;
         }
 //        
 //        //Length in bytes
@@ -1789,7 +1787,6 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
     }
 
     private void setChannelFeatures() {
-        context.getChannel().attr(S7HMuxImpl.READ_TIME_OUT).set(s7DriverContext.getReadTimeout());
         context.getChannel().attr(S7HMuxImpl.IS_PING_ACTIVE).set(s7DriverContext.getPing());
         context.getChannel().attr(S7HMuxImpl.PING_TIME).set(s7DriverContext.getPingTime());
         context.getChannel().attr(S7HMuxImpl.RETRY_TIME).set(s7DriverContext.getRetryTime());
