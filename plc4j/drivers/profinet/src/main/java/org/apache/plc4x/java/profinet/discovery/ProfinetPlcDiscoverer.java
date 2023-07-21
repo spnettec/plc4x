@@ -35,7 +35,6 @@ import org.apache.plc4x.java.spi.messages.PlcDiscoverer;
 import org.apache.plc4x.java.transport.rawsocket.RawSocketTransport;
 import org.pcap4j.core.*;
 import org.pcap4j.packet.*;
-import org.pcap4j.packet.namednumber.EtherType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,8 +42,6 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.function.Function;
 
 public class ProfinetPlcDiscoverer implements PlcDiscoverer {
