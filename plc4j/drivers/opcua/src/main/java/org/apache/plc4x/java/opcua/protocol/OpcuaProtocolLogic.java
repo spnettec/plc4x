@@ -176,7 +176,6 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
 
             /* Functional Consumer example using inner class */
             Consumer<byte[]> consumer = opcuaResponse -> {
-                PlcReadResponse response = null;
                 try {
                     ExtensionObjectDefinition reply = ExtensionObject.staticParse(new ReadBufferByteBased(opcuaResponse, ByteOrder.LITTLE_ENDIAN), false).getBody();
                     if (reply instanceof ReadResponse) {
@@ -194,7 +193,6 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
                             status.put(key, new ResponseItem<>(PlcResponseCode.INTERNAL_ERROR, null));
                         }
                         future.complete(new DefaultPlcReadResponse(request, status));
-                        return;
                     }
                 } catch (ParseException|PlcRuntimeException e) {
                     future.completeExceptionally(new PlcRuntimeException(e));
@@ -245,6 +243,10 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
         int count = 0;
         for (String tagName : tagNames) {
             PlcValue value = null;
+            if(results.size() <= count) {
+                LOGGER.error("response error");
+                return null;
+            }
             if (results.get(count).getValueSpecified()) {
                 Variant variant = results.get(count).getValue();
                 LOGGER.trace("Response of type {}", variant.getClass().toString());

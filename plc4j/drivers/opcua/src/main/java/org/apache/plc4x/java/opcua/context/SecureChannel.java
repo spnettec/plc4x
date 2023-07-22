@@ -126,7 +126,7 @@ public class SecureChannel {
     private int maxMessageSize;
     private final List<String> endpoints = new ArrayList<>();
 
-    //private final AtomicLong senderSequenceNumber = new AtomicLong();
+    private final AtomicLong senderSequenceNumber = new AtomicLong();
 
     public SecureChannel(DriverContext driverContext, OpcuaConfiguration configuration) {
         this.configuration = configuration;
@@ -207,7 +207,7 @@ public class SecureChannel {
                         if (p.getRequestId() == transId) {
                             try {
                                 messageBuffer.write(p.getMessage());
-                                /*
+
                                 long senderSeq = senderSequenceNumber.incrementAndGet();
                                 long responseSeq = p.getSequenceNumber();
                                 if (senderSeq < responseSeq) {
@@ -217,7 +217,7 @@ public class SecureChannel {
                                     LOGGER.error("Sequence number isn't as expected, we might have missed a packet. - {} != {}", senderSeq, responseSeq);
                                     context.fireDisconnected();
                                 }
-                                 */
+
                             } catch (IOException e) {
                                 LOGGER.debug("Failed to store incoming message in buffer");
                                 throw new PlcRuntimeException("Error while sending message");
@@ -338,7 +338,7 @@ public class SecureChannel {
                         ReadBuffer readBuffer = new ReadBufferByteBased(opcuaOpenResponse.getMessage(), org.apache.plc4x.java.spi.generation.ByteOrder.LITTLE_ENDIAN);
                         ExtensionObject message = ExtensionObject.staticParse(readBuffer, false);
                         //Store the initial sequence number from the server. there's no requirement for the server and client to use the same starting number.
-                        //senderSequenceNumber.set(opcuaOpenResponse.getSequenceNumber());
+                        senderSequenceNumber.set(opcuaOpenResponse.getSequenceNumber());
 
                         if (message.getBody() instanceof ServiceFault) {
                             ServiceFault fault = (ServiceFault) message.getBody();

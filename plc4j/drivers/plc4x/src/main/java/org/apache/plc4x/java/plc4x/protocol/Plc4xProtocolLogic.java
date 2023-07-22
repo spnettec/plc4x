@@ -20,11 +20,10 @@ package org.apache.plc4x.java.plc4x.protocol;
 
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
-import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.plc4x.config.Plc4xConfiguration;
-import org.apache.plc4x.java.plc4x.tag.Plc4xTag;
 import org.apache.plc4x.java.plc4x.readwrite.*;
+import org.apache.plc4x.java.plc4x.tag.Plc4xTag;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
