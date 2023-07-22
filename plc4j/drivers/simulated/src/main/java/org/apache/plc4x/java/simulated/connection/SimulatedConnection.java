@@ -150,7 +150,7 @@ public class SimulatedConnection extends AbstractPlcConnection {
 
     private Consumer<PlcValue> dispatchSubscriptionEvent(String name, PlcSubscriptionHandle handle) {
         return plcValue -> {
-            LOGGER.info("handling plc value {}", plcValue);
+            LOGGER.debug("handling plc value {}", plcValue);
             PlcConsumerRegistration plcConsumerRegistration = registrations.get(handle);
             if (plcConsumerRegistration == null) {
                 LOGGER.warn("no registration for handle {}", handle);
