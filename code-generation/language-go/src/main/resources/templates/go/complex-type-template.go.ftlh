@@ -109,6 +109,11 @@ type ${type.name} interface {
 	// Get${field.name?cap_first} returns ${field.name?cap_first} (virtual field)
 	Get${field.name?cap_first}() <#if helper.needsPointerAccess(field)>*</#if>${helper.getLanguageTypeNameForTypeReference(typeRef)}
 </#list>
+<#list type.abstractFields as field>
+	<#assign namedField=field.asNamedField().orElseThrow()>
+	// Get${namedField.name?cap_first} returns ${namedField.name?cap_first} (abstract field)
+	Get${namedField.name?cap_first}() ${helper.getLanguageTypeNameForField(field)}
+</#list>
 }
 
 // ${type.name}Exactly can be used when we want exactly this type and not a type which fulfills ${type.name}.
@@ -163,6 +168,11 @@ type _${type.name}ChildRequirements interface {
             <#assign typeRef=helper.getDiscriminatorTypes()[discriminatorName]>
 	Get${discriminatorName?cap_first}() <#if typeRef.isNonSimpleTypeReference() && !typeRef.isEnumTypeReference()>I</#if>${helper.getLanguageTypeNameForTypeReference(typeRef)}
         </#if>
+    </#list>
+    <#list type.abstractFields as field>
+        <#assign namedField=field.asNamedField().orElseThrow()>
+		// Get${namedField.name?cap_first} returns ${namedField.name?cap_first} (abstract field)
+		Get${namedField.name?cap_first}() ${helper.getLanguageTypeNameForField(field)}
     </#list>
 }
 </#if>
@@ -297,11 +307,33 @@ func (m *_${type.name}) Get${field.name?cap_first}() <#if helper.needsPointerAcc
 	${field.name} := m.${field.name?cap_first}
 	_ = ${field.name}
   	  </#list>
+	  <#if typeRef.isStringTypeReference() || typeRef.isVstringTypeReference()>
+    return fmt.Sprintf("%v", ${helper.toSerializationExpression(field, field.type, field.valueExpression, parserArguments)})<@emitImport import="fmt" />
+	  <#else>
 	return <#if typeRef.isNonSimpleTypeReference()>Cast</#if>${helper.getLanguageTypeNameForTypeReference(typeRef)}(${helper.toSerializationExpression(field, field.type, field.valueExpression, parserArguments)})
+	  </#if>
 }
 
 	</#list>
 ///////////////////////-3
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+</#if>
+<#if type.abstractFields?has_content>
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for abstract fields.
+///////////////////////
+
+	<#list type.abstractFields as field>
+        <#assign typeRef=field.asTypedField().orElseThrow().type>
+		func (m *_${type.name}) Get${field.name?cap_first}() ${helper.getLanguageTypeNameForTypeReference(typeRef)} {
+			return m._${type.name}ChildRequirements.Get${field.name?cap_first}()
+		}
+
+	</#list>
+///////////////////////
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -1358,8 +1390,7 @@ func ${type.name}ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 									<#assign parsedDiscriminatorExpression=tracer.removeTraces(parsedDiscriminatorExpression)>
 									<#if helper.getDiscriminatorTypes()[parsedDiscriminatorExpression]??><#assign discriminatorType=helper.getDiscriminatorTypes()[parsedDiscriminatorExpression]></#if>
 									${helper.toParseExpression(null, null, discriminatorExpression, parserArguments)} ==
-									<#if helper.discriminatorValueNeedsStringEqualityCheck(discriminatorExpression)>"${helper.toParseExpression(null, discriminatorType,discriminatorValueTerm, parserArguments)}"
-									<#elseif discriminatorType?has_content && discriminatorType.isNonSimpleTypeReference()>
+									<#if discriminatorType?has_content && discriminatorType.isNonSimpleTypeReference()>
 										<#if discriminatorType.isEnumTypeReference()>
 											<#assign enumType=helper.getLanguageTypeNameForTypeReference(discriminatorType)>
 											<#assign enumTypeWithoutTraces=tracer.removeTraces(enumType)>
@@ -1409,7 +1440,9 @@ func ${type.name}ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 
 	// Virtual field
 	_${virtualField.name} := ${helper.toParseExpression(virtualField, virtualField.type, virtualField.valueExpression, parserArguments, true)}
-			<#if virtualField.type.isSimpleTypeReference() || virtualField.type.isEnumTypeReference()>
+			<#if virtualField.type.isStringTypeReference() || typeRef.isVstringTypeReference()>
+	${virtualField.name} := fmt.Sprintf("%v", _${virtualField.name})<@emitImport import="fmt" />
+			<#elseif virtualField.type.isSimpleTypeReference() || virtualField.type.isEnumTypeReference()>
 	${virtualField.name} := ${helper.getLanguageTypeNameForTypeReference(virtualField.type)}(_${virtualField.name})
 			<#else>
 	${virtualField.name} := _${virtualField.name}

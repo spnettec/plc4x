@@ -157,6 +157,15 @@
                 </artifactItem>
                 <artifactItem>
                   <groupId>org.apache.plc4x</groupId>
+                  <artifactId>plc4x-protocols-opcua</artifactId>
+                  <classifier>tests</classifier>
+                  <type>test-jar</type>
+                  <outputDirectory>${project.basedir}/assets/testing</outputDirectory>
+                  <includes>**/*.xml</includes>
+                  <excludes>META-INF/**,org/**</excludes>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.apache.plc4x</groupId>
                   <artifactId>plc4x-protocols-s7</artifactId>
                   <classifier>tests</classifier>
                   <type>test-jar</type>
@@ -311,6 +320,19 @@
             </goals>
             <configuration>
               <protocolName>modbus</protocolName>
+              <languageName>go</languageName>
+              <outputFlavor>read-write</outputFlavor>
+              <outputDir>${project.basedir}/protocols</outputDir>
+            </configuration>
+          </execution>
+          <execution>
+            <id>generate-driver-opcua</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>generate-driver</goal>
+            </goals>
+            <configuration>
+              <protocolName>opcua</protocolName>
               <languageName>go</languageName>
               <outputFlavor>read-write</outputFlavor>
               <outputDir>${project.basedir}/protocols</outputDir>
@@ -661,6 +683,13 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-modbus</artifactId>
+      <version>0.11.0-SNAPSHOT</version>
+      <!-- Scope is 'provided' as this way it's not shipped with the driver -->
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4x-protocols-opcua</artifactId>
       <version>0.11.0-SNAPSHOT</version>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
