@@ -40,17 +40,17 @@ type IAxisScaleEnumeration interface {
 	utils.Serializable
 }
 
-const (
+const(
 	AxisScaleEnumeration_axisScaleEnumerationLinear AxisScaleEnumeration = 0
-	AxisScaleEnumeration_axisScaleEnumerationLog    AxisScaleEnumeration = 1
-	AxisScaleEnumeration_axisScaleEnumerationLn     AxisScaleEnumeration = 2
+	AxisScaleEnumeration_axisScaleEnumerationLog AxisScaleEnumeration = 1
+	AxisScaleEnumeration_axisScaleEnumerationLn AxisScaleEnumeration = 2
 )
 
 var AxisScaleEnumerationValues []AxisScaleEnumeration
 
 func init() {
 	_ = errors.New
-	AxisScaleEnumerationValues = []AxisScaleEnumeration{
+	AxisScaleEnumerationValues = []AxisScaleEnumeration {
 		AxisScaleEnumeration_axisScaleEnumerationLinear,
 		AxisScaleEnumeration_axisScaleEnumerationLog,
 		AxisScaleEnumeration_axisScaleEnumerationLn,
@@ -59,12 +59,12 @@ func init() {
 
 func AxisScaleEnumerationByValue(value uint32) (enum AxisScaleEnumeration, ok bool) {
 	switch value {
-	case 0:
-		return AxisScaleEnumeration_axisScaleEnumerationLinear, true
-	case 1:
-		return AxisScaleEnumeration_axisScaleEnumerationLog, true
-	case 2:
-		return AxisScaleEnumeration_axisScaleEnumerationLn, true
+		case 0:
+			return AxisScaleEnumeration_axisScaleEnumerationLinear, true
+		case 1:
+			return AxisScaleEnumeration_axisScaleEnumerationLog, true
+		case 2:
+			return AxisScaleEnumeration_axisScaleEnumerationLn, true
 	}
 	return 0, false
 }
@@ -81,13 +81,13 @@ func AxisScaleEnumerationByName(value string) (enum AxisScaleEnumeration, ok boo
 	return 0, false
 }
 
-func AxisScaleEnumerationKnows(value uint32) bool {
+func AxisScaleEnumerationKnows(value uint32)  bool {
 	for _, typeValue := range AxisScaleEnumerationValues {
 		if uint32(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastAxisScaleEnumeration(structType any) AxisScaleEnumeration {
@@ -157,3 +157,4 @@ func (e AxisScaleEnumeration) PLC4XEnumName() string {
 func (e AxisScaleEnumeration) String() string {
 	return e.PLC4XEnumName()
 }
+

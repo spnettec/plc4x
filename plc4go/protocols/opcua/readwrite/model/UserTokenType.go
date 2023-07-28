@@ -40,9 +40,9 @@ type IUserTokenType interface {
 	utils.Serializable
 }
 
-const (
-	UserTokenType_userTokenTypeAnonymous   UserTokenType = 0
-	UserTokenType_userTokenTypeUserName    UserTokenType = 1
+const(
+	UserTokenType_userTokenTypeAnonymous UserTokenType = 0
+	UserTokenType_userTokenTypeUserName UserTokenType = 1
 	UserTokenType_userTokenTypeCertificate UserTokenType = 2
 	UserTokenType_userTokenTypeIssuedToken UserTokenType = 3
 )
@@ -51,7 +51,7 @@ var UserTokenTypeValues []UserTokenType
 
 func init() {
 	_ = errors.New
-	UserTokenTypeValues = []UserTokenType{
+	UserTokenTypeValues = []UserTokenType {
 		UserTokenType_userTokenTypeAnonymous,
 		UserTokenType_userTokenTypeUserName,
 		UserTokenType_userTokenTypeCertificate,
@@ -61,14 +61,14 @@ func init() {
 
 func UserTokenTypeByValue(value uint32) (enum UserTokenType, ok bool) {
 	switch value {
-	case 0:
-		return UserTokenType_userTokenTypeAnonymous, true
-	case 1:
-		return UserTokenType_userTokenTypeUserName, true
-	case 2:
-		return UserTokenType_userTokenTypeCertificate, true
-	case 3:
-		return UserTokenType_userTokenTypeIssuedToken, true
+		case 0:
+			return UserTokenType_userTokenTypeAnonymous, true
+		case 1:
+			return UserTokenType_userTokenTypeUserName, true
+		case 2:
+			return UserTokenType_userTokenTypeCertificate, true
+		case 3:
+			return UserTokenType_userTokenTypeIssuedToken, true
 	}
 	return 0, false
 }
@@ -87,13 +87,13 @@ func UserTokenTypeByName(value string) (enum UserTokenType, ok bool) {
 	return 0, false
 }
 
-func UserTokenTypeKnows(value uint32) bool {
+func UserTokenTypeKnows(value uint32)  bool {
 	for _, typeValue := range UserTokenTypeValues {
 		if uint32(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastUserTokenType(structType any) UserTokenType {
@@ -165,3 +165,4 @@ func (e UserTokenType) PLC4XEnumName() string {
 func (e UserTokenType) String() string {
 	return e.PLC4XEnumName()
 }
+

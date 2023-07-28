@@ -40,16 +40,16 @@ type IBACnetAccessRuleLocationSpecifier interface {
 	utils.Serializable
 }
 
-const (
+const(
 	BACnetAccessRuleLocationSpecifier_SPECIFIED BACnetAccessRuleLocationSpecifier = 0
-	BACnetAccessRuleLocationSpecifier_ALL       BACnetAccessRuleLocationSpecifier = 1
+	BACnetAccessRuleLocationSpecifier_ALL BACnetAccessRuleLocationSpecifier = 1
 )
 
 var BACnetAccessRuleLocationSpecifierValues []BACnetAccessRuleLocationSpecifier
 
 func init() {
 	_ = errors.New
-	BACnetAccessRuleLocationSpecifierValues = []BACnetAccessRuleLocationSpecifier{
+	BACnetAccessRuleLocationSpecifierValues = []BACnetAccessRuleLocationSpecifier {
 		BACnetAccessRuleLocationSpecifier_SPECIFIED,
 		BACnetAccessRuleLocationSpecifier_ALL,
 	}
@@ -57,10 +57,10 @@ func init() {
 
 func BACnetAccessRuleLocationSpecifierByValue(value uint8) (enum BACnetAccessRuleLocationSpecifier, ok bool) {
 	switch value {
-	case 0:
-		return BACnetAccessRuleLocationSpecifier_SPECIFIED, true
-	case 1:
-		return BACnetAccessRuleLocationSpecifier_ALL, true
+		case 0:
+			return BACnetAccessRuleLocationSpecifier_SPECIFIED, true
+		case 1:
+			return BACnetAccessRuleLocationSpecifier_ALL, true
 	}
 	return 0, false
 }
@@ -75,13 +75,13 @@ func BACnetAccessRuleLocationSpecifierByName(value string) (enum BACnetAccessRul
 	return 0, false
 }
 
-func BACnetAccessRuleLocationSpecifierKnows(value uint8) bool {
+func BACnetAccessRuleLocationSpecifierKnows(value uint8)  bool {
 	for _, typeValue := range BACnetAccessRuleLocationSpecifierValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastBACnetAccessRuleLocationSpecifier(structType any) BACnetAccessRuleLocationSpecifier {
@@ -149,3 +149,4 @@ func (e BACnetAccessRuleLocationSpecifier) PLC4XEnumName() string {
 func (e BACnetAccessRuleLocationSpecifier) String() string {
 	return e.PLC4XEnumName()
 }
+

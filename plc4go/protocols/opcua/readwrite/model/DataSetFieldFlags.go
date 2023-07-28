@@ -40,8 +40,8 @@ type IDataSetFieldFlags interface {
 	utils.Serializable
 }
 
-const (
-	DataSetFieldFlags_dataSetFieldFlagsNone          DataSetFieldFlags = 0
+const(
+	DataSetFieldFlags_dataSetFieldFlagsNone DataSetFieldFlags = 0
 	DataSetFieldFlags_dataSetFieldFlagsPromotedField DataSetFieldFlags = 1
 )
 
@@ -49,7 +49,7 @@ var DataSetFieldFlagsValues []DataSetFieldFlags
 
 func init() {
 	_ = errors.New
-	DataSetFieldFlagsValues = []DataSetFieldFlags{
+	DataSetFieldFlagsValues = []DataSetFieldFlags {
 		DataSetFieldFlags_dataSetFieldFlagsNone,
 		DataSetFieldFlags_dataSetFieldFlagsPromotedField,
 	}
@@ -57,10 +57,10 @@ func init() {
 
 func DataSetFieldFlagsByValue(value uint16) (enum DataSetFieldFlags, ok bool) {
 	switch value {
-	case 0:
-		return DataSetFieldFlags_dataSetFieldFlagsNone, true
-	case 1:
-		return DataSetFieldFlags_dataSetFieldFlagsPromotedField, true
+		case 0:
+			return DataSetFieldFlags_dataSetFieldFlagsNone, true
+		case 1:
+			return DataSetFieldFlags_dataSetFieldFlagsPromotedField, true
 	}
 	return 0, false
 }
@@ -75,13 +75,13 @@ func DataSetFieldFlagsByName(value string) (enum DataSetFieldFlags, ok bool) {
 	return 0, false
 }
 
-func DataSetFieldFlagsKnows(value uint16) bool {
+func DataSetFieldFlagsKnows(value uint16)  bool {
 	for _, typeValue := range DataSetFieldFlagsValues {
 		if uint16(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastDataSetFieldFlags(structType any) DataSetFieldFlags {
@@ -149,3 +149,4 @@ func (e DataSetFieldFlags) PLC4XEnumName() string {
 func (e DataSetFieldFlags) String() string {
 	return e.PLC4XEnumName()
 }
+

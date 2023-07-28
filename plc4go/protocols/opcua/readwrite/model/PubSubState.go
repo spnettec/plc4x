@@ -40,11 +40,11 @@ type IPubSubState interface {
 	utils.Serializable
 }
 
-const (
-	PubSubState_pubSubStateDisabled       PubSubState = 0
-	PubSubState_pubSubStatePaused         PubSubState = 1
-	PubSubState_pubSubStateOperational    PubSubState = 2
-	PubSubState_pubSubStateError          PubSubState = 3
+const(
+	PubSubState_pubSubStateDisabled PubSubState = 0
+	PubSubState_pubSubStatePaused PubSubState = 1
+	PubSubState_pubSubStateOperational PubSubState = 2
+	PubSubState_pubSubStateError PubSubState = 3
 	PubSubState_pubSubStatePreOperational PubSubState = 4
 )
 
@@ -52,7 +52,7 @@ var PubSubStateValues []PubSubState
 
 func init() {
 	_ = errors.New
-	PubSubStateValues = []PubSubState{
+	PubSubStateValues = []PubSubState {
 		PubSubState_pubSubStateDisabled,
 		PubSubState_pubSubStatePaused,
 		PubSubState_pubSubStateOperational,
@@ -63,16 +63,16 @@ func init() {
 
 func PubSubStateByValue(value uint32) (enum PubSubState, ok bool) {
 	switch value {
-	case 0:
-		return PubSubState_pubSubStateDisabled, true
-	case 1:
-		return PubSubState_pubSubStatePaused, true
-	case 2:
-		return PubSubState_pubSubStateOperational, true
-	case 3:
-		return PubSubState_pubSubStateError, true
-	case 4:
-		return PubSubState_pubSubStatePreOperational, true
+		case 0:
+			return PubSubState_pubSubStateDisabled, true
+		case 1:
+			return PubSubState_pubSubStatePaused, true
+		case 2:
+			return PubSubState_pubSubStateOperational, true
+		case 3:
+			return PubSubState_pubSubStateError, true
+		case 4:
+			return PubSubState_pubSubStatePreOperational, true
 	}
 	return 0, false
 }
@@ -93,13 +93,13 @@ func PubSubStateByName(value string) (enum PubSubState, ok bool) {
 	return 0, false
 }
 
-func PubSubStateKnows(value uint32) bool {
+func PubSubStateKnows(value uint32)  bool {
 	for _, typeValue := range PubSubStateValues {
 		if uint32(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastPubSubState(structType any) PubSubState {
@@ -173,3 +173,4 @@ func (e PubSubState) PLC4XEnumName() string {
 func (e PubSubState) String() string {
 	return e.PLC4XEnumName()
 }
+

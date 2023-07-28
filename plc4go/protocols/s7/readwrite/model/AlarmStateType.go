@@ -40,12 +40,12 @@ type IAlarmStateType interface {
 	utils.Serializable
 }
 
-const (
-	AlarmStateType_SCAN_ABORT       AlarmStateType = 0x00
-	AlarmStateType_SCAN_INITIATE    AlarmStateType = 0x01
-	AlarmStateType_ALARM_ABORT      AlarmStateType = 0x04
-	AlarmStateType_ALARM_INITIATE   AlarmStateType = 0x05
-	AlarmStateType_ALARM_S_ABORT    AlarmStateType = 0x08
+const(
+	AlarmStateType_SCAN_ABORT AlarmStateType = 0x00
+	AlarmStateType_SCAN_INITIATE AlarmStateType = 0x01
+	AlarmStateType_ALARM_ABORT AlarmStateType = 0x04
+	AlarmStateType_ALARM_INITIATE AlarmStateType = 0x05
+	AlarmStateType_ALARM_S_ABORT AlarmStateType = 0x08
 	AlarmStateType_ALARM_S_INITIATE AlarmStateType = 0x09
 )
 
@@ -53,7 +53,7 @@ var AlarmStateTypeValues []AlarmStateType
 
 func init() {
 	_ = errors.New
-	AlarmStateTypeValues = []AlarmStateType{
+	AlarmStateTypeValues = []AlarmStateType {
 		AlarmStateType_SCAN_ABORT,
 		AlarmStateType_SCAN_INITIATE,
 		AlarmStateType_ALARM_ABORT,
@@ -65,18 +65,18 @@ func init() {
 
 func AlarmStateTypeByValue(value uint8) (enum AlarmStateType, ok bool) {
 	switch value {
-	case 0x00:
-		return AlarmStateType_SCAN_ABORT, true
-	case 0x01:
-		return AlarmStateType_SCAN_INITIATE, true
-	case 0x04:
-		return AlarmStateType_ALARM_ABORT, true
-	case 0x05:
-		return AlarmStateType_ALARM_INITIATE, true
-	case 0x08:
-		return AlarmStateType_ALARM_S_ABORT, true
-	case 0x09:
-		return AlarmStateType_ALARM_S_INITIATE, true
+		case 0x00:
+			return AlarmStateType_SCAN_ABORT, true
+		case 0x01:
+			return AlarmStateType_SCAN_INITIATE, true
+		case 0x04:
+			return AlarmStateType_ALARM_ABORT, true
+		case 0x05:
+			return AlarmStateType_ALARM_INITIATE, true
+		case 0x08:
+			return AlarmStateType_ALARM_S_ABORT, true
+		case 0x09:
+			return AlarmStateType_ALARM_S_INITIATE, true
 	}
 	return 0, false
 }
@@ -99,13 +99,13 @@ func AlarmStateTypeByName(value string) (enum AlarmStateType, ok bool) {
 	return 0, false
 }
 
-func AlarmStateTypeKnows(value uint8) bool {
+func AlarmStateTypeKnows(value uint8)  bool {
 	for _, typeValue := range AlarmStateTypeValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastAlarmStateType(structType any) AlarmStateType {
@@ -181,3 +181,4 @@ func (e AlarmStateType) PLC4XEnumName() string {
 func (e AlarmStateType) String() string {
 	return e.PLC4XEnumName()
 }
+

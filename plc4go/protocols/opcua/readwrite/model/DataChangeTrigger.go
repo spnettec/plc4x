@@ -40,9 +40,9 @@ type IDataChangeTrigger interface {
 	utils.Serializable
 }
 
-const (
-	DataChangeTrigger_dataChangeTriggerStatus               DataChangeTrigger = 0
-	DataChangeTrigger_dataChangeTriggerStatusValue          DataChangeTrigger = 1
+const(
+	DataChangeTrigger_dataChangeTriggerStatus DataChangeTrigger = 0
+	DataChangeTrigger_dataChangeTriggerStatusValue DataChangeTrigger = 1
 	DataChangeTrigger_dataChangeTriggerStatusValueTimestamp DataChangeTrigger = 2
 )
 
@@ -50,7 +50,7 @@ var DataChangeTriggerValues []DataChangeTrigger
 
 func init() {
 	_ = errors.New
-	DataChangeTriggerValues = []DataChangeTrigger{
+	DataChangeTriggerValues = []DataChangeTrigger {
 		DataChangeTrigger_dataChangeTriggerStatus,
 		DataChangeTrigger_dataChangeTriggerStatusValue,
 		DataChangeTrigger_dataChangeTriggerStatusValueTimestamp,
@@ -59,12 +59,12 @@ func init() {
 
 func DataChangeTriggerByValue(value uint32) (enum DataChangeTrigger, ok bool) {
 	switch value {
-	case 0:
-		return DataChangeTrigger_dataChangeTriggerStatus, true
-	case 1:
-		return DataChangeTrigger_dataChangeTriggerStatusValue, true
-	case 2:
-		return DataChangeTrigger_dataChangeTriggerStatusValueTimestamp, true
+		case 0:
+			return DataChangeTrigger_dataChangeTriggerStatus, true
+		case 1:
+			return DataChangeTrigger_dataChangeTriggerStatusValue, true
+		case 2:
+			return DataChangeTrigger_dataChangeTriggerStatusValueTimestamp, true
 	}
 	return 0, false
 }
@@ -81,13 +81,13 @@ func DataChangeTriggerByName(value string) (enum DataChangeTrigger, ok bool) {
 	return 0, false
 }
 
-func DataChangeTriggerKnows(value uint32) bool {
+func DataChangeTriggerKnows(value uint32)  bool {
 	for _, typeValue := range DataChangeTriggerValues {
 		if uint32(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastDataChangeTrigger(structType any) DataChangeTrigger {
@@ -157,3 +157,4 @@ func (e DataChangeTrigger) PLC4XEnumName() string {
 func (e DataChangeTrigger) String() string {
 	return e.PLC4XEnumName()
 }
+

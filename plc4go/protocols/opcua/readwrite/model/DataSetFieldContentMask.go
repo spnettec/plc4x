@@ -40,21 +40,21 @@ type IDataSetFieldContentMask interface {
 	utils.Serializable
 }
 
-const (
-	DataSetFieldContentMask_dataSetFieldContentMaskNone              DataSetFieldContentMask = 0
-	DataSetFieldContentMask_dataSetFieldContentMaskStatusCode        DataSetFieldContentMask = 1
-	DataSetFieldContentMask_dataSetFieldContentMaskSourceTimestamp   DataSetFieldContentMask = 2
-	DataSetFieldContentMask_dataSetFieldContentMaskServerTimestamp   DataSetFieldContentMask = 4
+const(
+	DataSetFieldContentMask_dataSetFieldContentMaskNone DataSetFieldContentMask = 0
+	DataSetFieldContentMask_dataSetFieldContentMaskStatusCode DataSetFieldContentMask = 1
+	DataSetFieldContentMask_dataSetFieldContentMaskSourceTimestamp DataSetFieldContentMask = 2
+	DataSetFieldContentMask_dataSetFieldContentMaskServerTimestamp DataSetFieldContentMask = 4
 	DataSetFieldContentMask_dataSetFieldContentMaskSourcePicoSeconds DataSetFieldContentMask = 8
 	DataSetFieldContentMask_dataSetFieldContentMaskServerPicoSeconds DataSetFieldContentMask = 16
-	DataSetFieldContentMask_dataSetFieldContentMaskRawData           DataSetFieldContentMask = 32
+	DataSetFieldContentMask_dataSetFieldContentMaskRawData DataSetFieldContentMask = 32
 )
 
 var DataSetFieldContentMaskValues []DataSetFieldContentMask
 
 func init() {
 	_ = errors.New
-	DataSetFieldContentMaskValues = []DataSetFieldContentMask{
+	DataSetFieldContentMaskValues = []DataSetFieldContentMask {
 		DataSetFieldContentMask_dataSetFieldContentMaskNone,
 		DataSetFieldContentMask_dataSetFieldContentMaskStatusCode,
 		DataSetFieldContentMask_dataSetFieldContentMaskSourceTimestamp,
@@ -67,20 +67,20 @@ func init() {
 
 func DataSetFieldContentMaskByValue(value uint32) (enum DataSetFieldContentMask, ok bool) {
 	switch value {
-	case 0:
-		return DataSetFieldContentMask_dataSetFieldContentMaskNone, true
-	case 1:
-		return DataSetFieldContentMask_dataSetFieldContentMaskStatusCode, true
-	case 16:
-		return DataSetFieldContentMask_dataSetFieldContentMaskServerPicoSeconds, true
-	case 2:
-		return DataSetFieldContentMask_dataSetFieldContentMaskSourceTimestamp, true
-	case 32:
-		return DataSetFieldContentMask_dataSetFieldContentMaskRawData, true
-	case 4:
-		return DataSetFieldContentMask_dataSetFieldContentMaskServerTimestamp, true
-	case 8:
-		return DataSetFieldContentMask_dataSetFieldContentMaskSourcePicoSeconds, true
+		case 0:
+			return DataSetFieldContentMask_dataSetFieldContentMaskNone, true
+		case 1:
+			return DataSetFieldContentMask_dataSetFieldContentMaskStatusCode, true
+		case 16:
+			return DataSetFieldContentMask_dataSetFieldContentMaskServerPicoSeconds, true
+		case 2:
+			return DataSetFieldContentMask_dataSetFieldContentMaskSourceTimestamp, true
+		case 32:
+			return DataSetFieldContentMask_dataSetFieldContentMaskRawData, true
+		case 4:
+			return DataSetFieldContentMask_dataSetFieldContentMaskServerTimestamp, true
+		case 8:
+			return DataSetFieldContentMask_dataSetFieldContentMaskSourcePicoSeconds, true
 	}
 	return 0, false
 }
@@ -105,13 +105,13 @@ func DataSetFieldContentMaskByName(value string) (enum DataSetFieldContentMask, 
 	return 0, false
 }
 
-func DataSetFieldContentMaskKnows(value uint32) bool {
+func DataSetFieldContentMaskKnows(value uint32)  bool {
 	for _, typeValue := range DataSetFieldContentMaskValues {
 		if uint32(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastDataSetFieldContentMask(structType any) DataSetFieldContentMask {
@@ -189,3 +189,4 @@ func (e DataSetFieldContentMask) PLC4XEnumName() string {
 func (e DataSetFieldContentMask) String() string {
 	return e.PLC4XEnumName()
 }
+

@@ -40,16 +40,16 @@ type IPubSubDiagnosticsCounterClassification interface {
 	utils.Serializable
 }
 
-const (
+const(
 	PubSubDiagnosticsCounterClassification_pubSubDiagnosticsCounterClassificationInformation PubSubDiagnosticsCounterClassification = 0
-	PubSubDiagnosticsCounterClassification_pubSubDiagnosticsCounterClassificationError       PubSubDiagnosticsCounterClassification = 1
+	PubSubDiagnosticsCounterClassification_pubSubDiagnosticsCounterClassificationError PubSubDiagnosticsCounterClassification = 1
 )
 
 var PubSubDiagnosticsCounterClassificationValues []PubSubDiagnosticsCounterClassification
 
 func init() {
 	_ = errors.New
-	PubSubDiagnosticsCounterClassificationValues = []PubSubDiagnosticsCounterClassification{
+	PubSubDiagnosticsCounterClassificationValues = []PubSubDiagnosticsCounterClassification {
 		PubSubDiagnosticsCounterClassification_pubSubDiagnosticsCounterClassificationInformation,
 		PubSubDiagnosticsCounterClassification_pubSubDiagnosticsCounterClassificationError,
 	}
@@ -57,10 +57,10 @@ func init() {
 
 func PubSubDiagnosticsCounterClassificationByValue(value uint32) (enum PubSubDiagnosticsCounterClassification, ok bool) {
 	switch value {
-	case 0:
-		return PubSubDiagnosticsCounterClassification_pubSubDiagnosticsCounterClassificationInformation, true
-	case 1:
-		return PubSubDiagnosticsCounterClassification_pubSubDiagnosticsCounterClassificationError, true
+		case 0:
+			return PubSubDiagnosticsCounterClassification_pubSubDiagnosticsCounterClassificationInformation, true
+		case 1:
+			return PubSubDiagnosticsCounterClassification_pubSubDiagnosticsCounterClassificationError, true
 	}
 	return 0, false
 }
@@ -75,13 +75,13 @@ func PubSubDiagnosticsCounterClassificationByName(value string) (enum PubSubDiag
 	return 0, false
 }
 
-func PubSubDiagnosticsCounterClassificationKnows(value uint32) bool {
+func PubSubDiagnosticsCounterClassificationKnows(value uint32)  bool {
 	for _, typeValue := range PubSubDiagnosticsCounterClassificationValues {
 		if uint32(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastPubSubDiagnosticsCounterClassification(structType any) PubSubDiagnosticsCounterClassification {
@@ -149,3 +149,4 @@ func (e PubSubDiagnosticsCounterClassification) PLC4XEnumName() string {
 func (e PubSubDiagnosticsCounterClassification) String() string {
 	return e.PLC4XEnumName()
 }
+

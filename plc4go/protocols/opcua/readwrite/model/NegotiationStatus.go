@@ -40,11 +40,11 @@ type INegotiationStatus interface {
 	utils.Serializable
 }
 
-const (
-	NegotiationStatus_negotiationStatusInProgress    NegotiationStatus = 0
-	NegotiationStatus_negotiationStatusComplete      NegotiationStatus = 1
-	NegotiationStatus_negotiationStatusFailed        NegotiationStatus = 2
-	NegotiationStatus_negotiationStatusUnknown       NegotiationStatus = 3
+const(
+	NegotiationStatus_negotiationStatusInProgress NegotiationStatus = 0
+	NegotiationStatus_negotiationStatusComplete NegotiationStatus = 1
+	NegotiationStatus_negotiationStatusFailed NegotiationStatus = 2
+	NegotiationStatus_negotiationStatusUnknown NegotiationStatus = 3
 	NegotiationStatus_negotiationStatusNoNegotiation NegotiationStatus = 4
 )
 
@@ -52,7 +52,7 @@ var NegotiationStatusValues []NegotiationStatus
 
 func init() {
 	_ = errors.New
-	NegotiationStatusValues = []NegotiationStatus{
+	NegotiationStatusValues = []NegotiationStatus {
 		NegotiationStatus_negotiationStatusInProgress,
 		NegotiationStatus_negotiationStatusComplete,
 		NegotiationStatus_negotiationStatusFailed,
@@ -63,16 +63,16 @@ func init() {
 
 func NegotiationStatusByValue(value uint32) (enum NegotiationStatus, ok bool) {
 	switch value {
-	case 0:
-		return NegotiationStatus_negotiationStatusInProgress, true
-	case 1:
-		return NegotiationStatus_negotiationStatusComplete, true
-	case 2:
-		return NegotiationStatus_negotiationStatusFailed, true
-	case 3:
-		return NegotiationStatus_negotiationStatusUnknown, true
-	case 4:
-		return NegotiationStatus_negotiationStatusNoNegotiation, true
+		case 0:
+			return NegotiationStatus_negotiationStatusInProgress, true
+		case 1:
+			return NegotiationStatus_negotiationStatusComplete, true
+		case 2:
+			return NegotiationStatus_negotiationStatusFailed, true
+		case 3:
+			return NegotiationStatus_negotiationStatusUnknown, true
+		case 4:
+			return NegotiationStatus_negotiationStatusNoNegotiation, true
 	}
 	return 0, false
 }
@@ -93,13 +93,13 @@ func NegotiationStatusByName(value string) (enum NegotiationStatus, ok bool) {
 	return 0, false
 }
 
-func NegotiationStatusKnows(value uint32) bool {
+func NegotiationStatusKnows(value uint32)  bool {
 	for _, typeValue := range NegotiationStatusValues {
 		if uint32(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastNegotiationStatus(structType any) NegotiationStatus {
@@ -173,3 +173,4 @@ func (e NegotiationStatus) PLC4XEnumName() string {
 func (e NegotiationStatus) String() string {
 	return e.PLC4XEnumName()
 }
+
