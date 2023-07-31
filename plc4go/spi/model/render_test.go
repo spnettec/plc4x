@@ -110,7 +110,7 @@ func TestRenderTestCustom(t *testing.T) {
 	}{
 		{
 			sut: NewDefaultPlcBrowseItem(
-				NewMockPlcTag(t),
+				mockTag(t),
 				"some name",
 				"some datatype",
 				true,
@@ -228,7 +228,7 @@ func TestRenderTestCustom(t *testing.T) {
 				map[string]apiModel.PlcTag{
 					"tagid": nil,
 				},
-				map[string]SubscriptionType{
+				map[string]apiModel.PlcSubscriptionType{
 					"tagid": 0,
 				},
 				map[string]time.Duration{
@@ -266,10 +266,10 @@ func TestRenderTestCustom(t *testing.T) {
 			sut: NewDefaultPlcSubscriptionRequest(
 				nil,
 				[]string{"tagid"},
-				map[string]apiModel.PlcTag{
+				map[string]apiModel.PlcSubscriptionTag{
 					"tagid": nil,
 				},
-				map[string]SubscriptionType{
+				map[string]apiModel.PlcSubscriptionType{
 					"tagid": 0,
 				},
 				map[string]time.Duration{
@@ -313,8 +313,8 @@ func TestRenderTestCustom(t *testing.T) {
 		},
 		{
 			sut: NewDefaultPlcUnsubscriptionRequestResult(
-				NewDefaultPlcUnsubscriptionRequest(),
-				NewDefaultPlcUnsubscriptionResponse(),
+				NewDefaultPlcUnsubscriptionRequest(nil),
+				NewDefaultPlcUnsubscriptionResponse(nil),
 				nil,
 			).(interface { // TODO: workaround
 				fmt.Stringer
@@ -388,4 +388,10 @@ func TestRenderTestCustom(t *testing.T) {
 			}
 		})
 	}
+}
+
+func mockTag(t *testing.T) *MockPlcTag {
+	tag := NewMockPlcTag(t)
+	tag.EXPECT().String().Return("mocktag").Maybe()
+	return tag
 }

@@ -26,6 +26,16 @@ import (
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 )
 
+//go:generate stringer -type PlcSubscriptionType
+//go:generate go run ../../../tools/plc4xlicenser/gen.go -type=PlcSubscriptionType
+type PlcSubscriptionType uint8
+
+const (
+	SubscriptionCyclic        PlcSubscriptionType = 0x01
+	SubscriptionChangeOfState PlcSubscriptionType = 0x02
+	SubscriptionEvent         PlcSubscriptionType = 0x03
+)
+
 type PlcSubscriptionEvent interface {
 	PlcResponse
 	// GetTagNames returns all tag names which can be found in this event
@@ -47,11 +57,11 @@ type PlcSubscriptionEventConsumer func(event PlcSubscriptionEvent)
 
 type PlcSubscriptionRequestBuilder interface {
 	AddCyclicTagAddress(tagName string, tagAddress string, interval time.Duration) PlcSubscriptionRequestBuilder
-	AddCyclicTag(tagName string, tag PlcTag, interval time.Duration) PlcSubscriptionRequestBuilder
+	AddCyclicTag(tagName string, tag PlcSubscriptionTag, interval time.Duration) PlcSubscriptionRequestBuilder
 	AddChangeOfStateTagAddress(tagName string, tagAddress string) PlcSubscriptionRequestBuilder
-	AddChangeOfStateTag(tagName string, tag PlcTag) PlcSubscriptionRequestBuilder
+	AddChangeOfStateTag(tagName string, tag PlcSubscriptionTag) PlcSubscriptionRequestBuilder
 	AddEventTagAddress(tagName string, tagAddress string) PlcSubscriptionRequestBuilder
-	AddEventTag(tagName string, tag PlcTag) PlcSubscriptionRequestBuilder
+	AddEventTag(tagName string, tag PlcSubscriptionTag) PlcSubscriptionRequestBuilder
 	AddPreRegisteredConsumer(tagName string, consumer PlcSubscriptionEventConsumer) PlcSubscriptionRequestBuilder
 	Build() (PlcSubscriptionRequest, error)
 }
@@ -68,7 +78,7 @@ type PlcSubscriptionRequest interface {
 	ExecuteWithContext(ctx context.Context) <-chan PlcSubscriptionRequestResult
 
 	GetTagNames() []string
-	GetTag(tagName string) PlcTag
+	GetTag(tagName string) PlcSubscriptionTag
 }
 
 type PlcSubscriptionResponse interface {

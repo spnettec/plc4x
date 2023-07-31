@@ -91,13 +91,13 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
         for (String tagName : this.tagNames) {
             final DefaultPlcSubscriptionTag tagDefaultPlcSubscription = (DefaultPlcSubscriptionTag) subscriptionRequest.getTag(tagName);
 
-            NodeId idNode = generateNodeId((OpcuaTag) tagDefaultPlcSubscription.getTag());
+            NodeId idNode = OpcuaProtocolLogic.generateNodeId((OpcuaTag) tagDefaultPlcSubscription.getTag());
 
             ReadValueId readValueId = new ReadValueId(
-                    idNode,
-                    0xD,
-                    OpcuaProtocolLogic.NULL_STRING,
-                    new QualifiedName(0, OpcuaProtocolLogic.NULL_STRING));
+                idNode,
+                0xD,
+                OpcuaProtocolLogic.NULL_STRING,
+                new QualifiedName(0, OpcuaProtocolLogic.NULL_STRING));
 
             MonitoringMode monitoringMode;
             switch (tagDefaultPlcSubscription.getPlcSubscriptionType()) {
@@ -117,15 +117,15 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
             long clientHandle = clientHandles.getAndIncrement();
 
             MonitoringParameters parameters = new MonitoringParameters(
-                    clientHandle,
-                    (double) cycleTime,     // sampling interval
-                    OpcuaProtocolLogic.NULL_EXTENSION_OBJECT,       // filter, null means use default
-                    1L,   // queue size
-                    true        // discard oldest
+                clientHandle,
+                (double) cycleTime,     // sampling interval
+                OpcuaProtocolLogic.NULL_EXTENSION_OBJECT,       // filter, null means use default
+                1L,   // queue size
+                true        // discard oldest
             );
 
             MonitoredItemCreateRequest request = new MonitoredItemCreateRequest(
-                    readValueId, monitoringMode, parameters);
+                readValueId, monitoringMode, parameters);
 
             requestList.add(request);
         }
@@ -179,15 +179,13 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
                     LOGGER.error("Unable to parse the returned Subscription response", e);
                     plcSubscriber.onDisconnect(context);
                 }
-                if(responseMessage!=null) {
-                    ExtensionObjectDefinition[] array = responseMessage.getResults().toArray(new ExtensionObjectDefinition[0]);
-                    for (int index = 0, arrayLength = array.length; index < arrayLength; index++) {
-                        MonitoredItemCreateResult result = (MonitoredItemCreateResult) array[index];
-                        if (OpcuaStatusCode.enumForValue(result.getStatusCode().getStatusCode()) != OpcuaStatusCode.Good) {
-                            LOGGER.error("Invalid Tag {}, subscription created without this tag", tagNames.get(index));
-                        } else {
-                            LOGGER.debug("Tag {} was added to the subscription", tagNames.get(index));
-                        }
+                MonitoredItemCreateResult[] array = responseMessage.getResults().toArray(new MonitoredItemCreateResult[0]);
+                for (int index = 0, arrayLength = array.length; index < arrayLength; index++) {
+                    MonitoredItemCreateResult result = array[index];
+                    if (OpcuaStatusCode.enumForValue(result.getStatusCode().getStatusCode()) != OpcuaStatusCode.Good) {
+                        LOGGER.error("Invalid Tag {}, subscription created without this tag", tagNames.get(index));
+                    } else {
+                        LOGGER.debug("Tag {} was added to the subscription", tagNames.get(index));
                     }
                 }
                 future.complete(responseMessage);
