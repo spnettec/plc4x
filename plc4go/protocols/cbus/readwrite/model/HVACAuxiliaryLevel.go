@@ -285,13 +285,13 @@ func (m *_HVACAuxiliaryLevel) SerializeWithWriteBuffer(ctx context.Context, writ
 	}
 	// Virtual field
 	isFanModeAutomatic := m.GetIsFanModeAutomatic()
-	_ = isFanModeAutomatic
+	_ =	isFanModeAutomatic
 	if _isFanModeAutomaticErr := writeBuffer.WriteVirtual(ctx, "isFanModeAutomatic", m.GetIsFanModeAutomatic()); _isFanModeAutomaticErr != nil {
 		return errors.Wrap(_isFanModeAutomaticErr, "Error serializing 'isFanModeAutomatic' field")
 	}
 	// Virtual field
 	isFanModeContinuous := m.GetIsFanModeContinuous()
-	_ = isFanModeContinuous
+	_ =	isFanModeContinuous
 	if _isFanModeContinuousErr := writeBuffer.WriteVirtual(ctx, "isFanModeContinuous", m.GetIsFanModeContinuous()); _isFanModeContinuousErr != nil {
 		return errors.Wrap(_isFanModeContinuousErr, "Error serializing 'isFanModeContinuous' field")
 	}
@@ -304,13 +304,13 @@ func (m *_HVACAuxiliaryLevel) SerializeWithWriteBuffer(ctx context.Context, writ
 	}
 	// Virtual field
 	isFanSpeedAtDefaultSpeed := m.GetIsFanSpeedAtDefaultSpeed()
-	_ = isFanSpeedAtDefaultSpeed
+	_ =	isFanSpeedAtDefaultSpeed
 	if _isFanSpeedAtDefaultSpeedErr := writeBuffer.WriteVirtual(ctx, "isFanSpeedAtDefaultSpeed", m.GetIsFanSpeedAtDefaultSpeed()); _isFanSpeedAtDefaultSpeedErr != nil {
 		return errors.Wrap(_isFanSpeedAtDefaultSpeedErr, "Error serializing 'isFanSpeedAtDefaultSpeed' field")
 	}
 	// Virtual field
 	speedSettings := m.GetSpeedSettings()
-	_ = speedSettings
+	_ =	speedSettings
 	if _speedSettingsErr := writeBuffer.WriteVirtual(ctx, "speedSettings", m.GetSpeedSettings()); _speedSettingsErr != nil {
 		return errors.Wrap(_speedSettingsErr, "Error serializing 'speedSettings' field")
 	}

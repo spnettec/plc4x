@@ -284,7 +284,7 @@ func (m *_Confirmation) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 	}
 	// Virtual field
 	isSuccess := m.GetIsSuccess()
-	_ = isSuccess
+	_ =	isSuccess
 	if _isSuccessErr := writeBuffer.WriteVirtual(ctx, "isSuccess", m.GetIsSuccess()); _isSuccessErr != nil {
 		return errors.Wrap(_isSuccessErr, "Error serializing 'isSuccess' field")
 	}

@@ -233,7 +233,7 @@ func (m *_NodeId) SerializeWithWriteBuffer(ctx context.Context, writeBuffer util
 	}
 	// Virtual field
 	id := m.GetId()
-	_ = id
+	_ =	id
 	if _idErr := writeBuffer.WriteVirtual(ctx, "id", m.GetId()); _idErr != nil {
 		return errors.Wrap(_idErr, "Error serializing 'id' field")
 	}

@@ -212,7 +212,7 @@ func (pm *_BACnetTimeStamp) SerializeParent(ctx context.Context, writeBuffer uti
 	}
 	// Virtual field
 	peekedTagNumber := m.GetPeekedTagNumber()
-	_ = peekedTagNumber
+	_ =	peekedTagNumber
 	if _peekedTagNumberErr := writeBuffer.WriteVirtual(ctx, "peekedTagNumber", m.GetPeekedTagNumber()); _peekedTagNumberErr != nil {
 		return errors.Wrap(_peekedTagNumberErr, "Error serializing 'peekedTagNumber' field")
 	}

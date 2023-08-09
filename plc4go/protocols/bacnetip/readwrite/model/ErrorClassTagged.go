@@ -258,7 +258,7 @@ func (m *_ErrorClassTagged) SerializeWithWriteBuffer(ctx context.Context, writeB
 	}
 	// Virtual field
 	isProprietary := m.GetIsProprietary()
-	_ = isProprietary
+	_ =	isProprietary
 	if _isProprietaryErr := writeBuffer.WriteVirtual(ctx, "isProprietary", m.GetIsProprietary()); _isProprietaryErr != nil {
 		return errors.Wrap(_isProprietaryErr, "Error serializing 'isProprietary' field")
 	}

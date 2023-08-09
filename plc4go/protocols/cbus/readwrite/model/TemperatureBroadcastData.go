@@ -250,7 +250,7 @@ func (m *_TemperatureBroadcastData) SerializeWithWriteBuffer(ctx context.Context
 	}
 	// Virtual field
 	commandType := m.GetCommandType()
-	_ = commandType
+	_ =	commandType
 	if _commandTypeErr := writeBuffer.WriteVirtual(ctx, "commandType", m.GetCommandType()); _commandTypeErr != nil {
 		return errors.Wrap(_commandTypeErr, "Error serializing 'commandType' field")
 	}
@@ -270,7 +270,7 @@ func (m *_TemperatureBroadcastData) SerializeWithWriteBuffer(ctx context.Context
 	}
 	// Virtual field
 	temperatureInCelsius := m.GetTemperatureInCelsius()
-	_ = temperatureInCelsius
+	_ =	temperatureInCelsius
 	if _temperatureInCelsiusErr := writeBuffer.WriteVirtual(ctx, "temperatureInCelsius", m.GetTemperatureInCelsius()); _temperatureInCelsiusErr != nil {
 		return errors.Wrap(_temperatureInCelsiusErr, "Error serializing 'temperatureInCelsius' field")
 	}

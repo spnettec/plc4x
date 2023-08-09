@@ -273,7 +273,7 @@ func (pm *_TriggerControlData) SerializeParent(ctx context.Context, writeBuffer 
 	}
 	// Virtual field
 	commandType := m.GetCommandType()
-	_ = commandType
+	_ =	commandType
 	if _commandTypeErr := writeBuffer.WriteVirtual(ctx, "commandType", m.GetCommandType()); _commandTypeErr != nil {
 		return errors.Wrap(_commandTypeErr, "Error serializing 'commandType' field")
 	}
@@ -286,7 +286,7 @@ func (pm *_TriggerControlData) SerializeParent(ctx context.Context, writeBuffer 
 	}
 	// Virtual field
 	isUnused := m.GetIsUnused()
-	_ = isUnused
+	_ =	isUnused
 	if _isUnusedErr := writeBuffer.WriteVirtual(ctx, "isUnused", m.GetIsUnused()); _isUnusedErr != nil {
 		return errors.Wrap(_isUnusedErr, "Error serializing 'isUnused' field")
 	}

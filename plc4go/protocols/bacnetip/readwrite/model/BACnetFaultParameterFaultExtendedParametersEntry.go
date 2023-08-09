@@ -255,13 +255,13 @@ func (pm *_BACnetFaultParameterFaultExtendedParametersEntry) SerializeParent(ctx
 	}
 	// Virtual field
 	peekedTagNumber := m.GetPeekedTagNumber()
-	_ = peekedTagNumber
+	_ =	peekedTagNumber
 	if _peekedTagNumberErr := writeBuffer.WriteVirtual(ctx, "peekedTagNumber", m.GetPeekedTagNumber()); _peekedTagNumberErr != nil {
 		return errors.Wrap(_peekedTagNumberErr, "Error serializing 'peekedTagNumber' field")
 	}
 	// Virtual field
 	peekedIsContextTag := m.GetPeekedIsContextTag()
-	_ = peekedIsContextTag
+	_ =	peekedIsContextTag
 	if _peekedIsContextTagErr := writeBuffer.WriteVirtual(ctx, "peekedIsContextTag", m.GetPeekedIsContextTag()); _peekedIsContextTagErr != nil {
 		return errors.Wrap(_peekedIsContextTagErr, "Error serializing 'peekedIsContextTag' field")
 	}

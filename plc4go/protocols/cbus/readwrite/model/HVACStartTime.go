@@ -243,31 +243,31 @@ func (m *_HVACStartTime) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 	}
 	// Virtual field
 	hoursSinceSunday12AM := m.GetHoursSinceSunday12AM()
-	_ = hoursSinceSunday12AM
+	_ =	hoursSinceSunday12AM
 	if _hoursSinceSunday12AMErr := writeBuffer.WriteVirtual(ctx, "hoursSinceSunday12AM", m.GetHoursSinceSunday12AM()); _hoursSinceSunday12AMErr != nil {
 		return errors.Wrap(_hoursSinceSunday12AMErr, "Error serializing 'hoursSinceSunday12AM' field")
 	}
 	// Virtual field
 	daysSinceSunday12AM := m.GetDaysSinceSunday12AM()
-	_ = daysSinceSunday12AM
+	_ =	daysSinceSunday12AM
 	if _daysSinceSunday12AMErr := writeBuffer.WriteVirtual(ctx, "daysSinceSunday12AM", m.GetDaysSinceSunday12AM()); _daysSinceSunday12AMErr != nil {
 		return errors.Wrap(_daysSinceSunday12AMErr, "Error serializing 'daysSinceSunday12AM' field")
 	}
 	// Virtual field
 	dayOfWeek := m.GetDayOfWeek()
-	_ = dayOfWeek
+	_ =	dayOfWeek
 	if _dayOfWeekErr := writeBuffer.WriteVirtual(ctx, "dayOfWeek", m.GetDayOfWeek()); _dayOfWeekErr != nil {
 		return errors.Wrap(_dayOfWeekErr, "Error serializing 'dayOfWeek' field")
 	}
 	// Virtual field
 	hour := m.GetHour()
-	_ = hour
+	_ =	hour
 	if _hourErr := writeBuffer.WriteVirtual(ctx, "hour", m.GetHour()); _hourErr != nil {
 		return errors.Wrap(_hourErr, "Error serializing 'hour' field")
 	}
 	// Virtual field
 	minute := m.GetMinute()
-	_ = minute
+	_ =	minute
 	if _minuteErr := writeBuffer.WriteVirtual(ctx, "minute", m.GetMinute()); _minuteErr != nil {
 		return errors.Wrap(_minuteErr, "Error serializing 'minute' field")
 	}

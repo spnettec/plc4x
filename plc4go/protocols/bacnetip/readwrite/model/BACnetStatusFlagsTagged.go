@@ -291,25 +291,25 @@ func (m *_BACnetStatusFlagsTagged) SerializeWithWriteBuffer(ctx context.Context,
 	}
 	// Virtual field
 	inAlarm := m.GetInAlarm()
-	_ = inAlarm
+	_ =	inAlarm
 	if _inAlarmErr := writeBuffer.WriteVirtual(ctx, "inAlarm", m.GetInAlarm()); _inAlarmErr != nil {
 		return errors.Wrap(_inAlarmErr, "Error serializing 'inAlarm' field")
 	}
 	// Virtual field
 	fault := m.GetFault()
-	_ = fault
+	_ =	fault
 	if _faultErr := writeBuffer.WriteVirtual(ctx, "fault", m.GetFault()); _faultErr != nil {
 		return errors.Wrap(_faultErr, "Error serializing 'fault' field")
 	}
 	// Virtual field
 	overridden := m.GetOverridden()
-	_ = overridden
+	_ =	overridden
 	if _overriddenErr := writeBuffer.WriteVirtual(ctx, "overridden", m.GetOverridden()); _overriddenErr != nil {
 		return errors.Wrap(_overriddenErr, "Error serializing 'overridden' field")
 	}
 	// Virtual field
 	outOfService := m.GetOutOfService()
-	_ = outOfService
+	_ =	outOfService
 	if _outOfServiceErr := writeBuffer.WriteVirtual(ctx, "outOfService", m.GetOutOfService()); _outOfServiceErr != nil {
 		return errors.Wrap(_outOfServiceErr, "Error serializing 'outOfService' field")
 	}

@@ -209,7 +209,7 @@ func (m *_AdsDataTypeArrayInfo) SerializeWithWriteBuffer(ctx context.Context, wr
 	}
 	// Virtual field
 	upperBound := m.GetUpperBound()
-	_ = upperBound
+	_ =	upperBound
 	if _upperBoundErr := writeBuffer.WriteVirtual(ctx, "upperBound", m.GetUpperBound()); _upperBoundErr != nil {
 		return errors.Wrap(_upperBoundErr, "Error serializing 'upperBound' field")
 	}

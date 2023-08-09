@@ -276,19 +276,19 @@ func (m *_BACnetEventTransitionBitsTagged) SerializeWithWriteBuffer(ctx context.
 	}
 	// Virtual field
 	toOffnormal := m.GetToOffnormal()
-	_ = toOffnormal
+	_ =	toOffnormal
 	if _toOffnormalErr := writeBuffer.WriteVirtual(ctx, "toOffnormal", m.GetToOffnormal()); _toOffnormalErr != nil {
 		return errors.Wrap(_toOffnormalErr, "Error serializing 'toOffnormal' field")
 	}
 	// Virtual field
 	toFault := m.GetToFault()
-	_ = toFault
+	_ =	toFault
 	if _toFaultErr := writeBuffer.WriteVirtual(ctx, "toFault", m.GetToFault()); _toFaultErr != nil {
 		return errors.Wrap(_toFaultErr, "Error serializing 'toFault' field")
 	}
 	// Virtual field
 	toNormal := m.GetToNormal()
-	_ = toNormal
+	_ =	toNormal
 	if _toNormalErr := writeBuffer.WriteVirtual(ctx, "toNormal", m.GetToNormal()); _toNormalErr != nil {
 		return errors.Wrap(_toNormalErr, "Error serializing 'toNormal' field")
 	}

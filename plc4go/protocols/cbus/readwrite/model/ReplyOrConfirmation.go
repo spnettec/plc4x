@@ -218,7 +218,7 @@ func (pm *_ReplyOrConfirmation) SerializeParent(ctx context.Context, writeBuffer
 	}
 	// Virtual field
 	isAlpha := m.GetIsAlpha()
-	_ = isAlpha
+	_ =	isAlpha
 	if _isAlphaErr := writeBuffer.WriteVirtual(ctx, "isAlpha", m.GetIsAlpha()); _isAlphaErr != nil {
 		return errors.Wrap(_isAlphaErr, "Error serializing 'isAlpha' field")
 	}

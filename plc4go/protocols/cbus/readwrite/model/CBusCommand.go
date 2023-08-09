@@ -253,13 +253,13 @@ func (pm *_CBusCommand) SerializeParent(ctx context.Context, writeBuffer utils.W
 	}
 	// Virtual field
 	isDeviceManagement := m.GetIsDeviceManagement()
-	_ = isDeviceManagement
+	_ =	isDeviceManagement
 	if _isDeviceManagementErr := writeBuffer.WriteVirtual(ctx, "isDeviceManagement", m.GetIsDeviceManagement()); _isDeviceManagementErr != nil {
 		return errors.Wrap(_isDeviceManagementErr, "Error serializing 'isDeviceManagement' field")
 	}
 	// Virtual field
 	destinationAddressType := m.GetDestinationAddressType()
-	_ = destinationAddressType
+	_ =	destinationAddressType
 	if _destinationAddressTypeErr := writeBuffer.WriteVirtual(ctx, "destinationAddressType", m.GetDestinationAddressType()); _destinationAddressTypeErr != nil {
 		return errors.Wrap(_destinationAddressTypeErr, "Error serializing 'destinationAddressType' field")
 	}

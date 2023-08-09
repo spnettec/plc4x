@@ -405,13 +405,13 @@ func (m *_HVACHumidityModeAndFlags) SerializeWithWriteBuffer(ctx context.Context
 	}
 	// Virtual field
 	isAuxLevelUnused := m.GetIsAuxLevelUnused()
-	_ = isAuxLevelUnused
+	_ =	isAuxLevelUnused
 	if _isAuxLevelUnusedErr := writeBuffer.WriteVirtual(ctx, "isAuxLevelUnused", m.GetIsAuxLevelUnused()); _isAuxLevelUnusedErr != nil {
 		return errors.Wrap(_isAuxLevelUnusedErr, "Error serializing 'isAuxLevelUnused' field")
 	}
 	// Virtual field
 	isAuxLevelUsed := m.GetIsAuxLevelUsed()
-	_ = isAuxLevelUsed
+	_ =	isAuxLevelUsed
 	if _isAuxLevelUsedErr := writeBuffer.WriteVirtual(ctx, "isAuxLevelUsed", m.GetIsAuxLevelUsed()); _isAuxLevelUsedErr != nil {
 		return errors.Wrap(_isAuxLevelUsedErr, "Error serializing 'isAuxLevelUsed' field")
 	}
@@ -424,13 +424,13 @@ func (m *_HVACHumidityModeAndFlags) SerializeWithWriteBuffer(ctx context.Context
 	}
 	// Virtual field
 	isGuardDisabled := m.GetIsGuardDisabled()
-	_ = isGuardDisabled
+	_ =	isGuardDisabled
 	if _isGuardDisabledErr := writeBuffer.WriteVirtual(ctx, "isGuardDisabled", m.GetIsGuardDisabled()); _isGuardDisabledErr != nil {
 		return errors.Wrap(_isGuardDisabledErr, "Error serializing 'isGuardDisabled' field")
 	}
 	// Virtual field
 	isGuardEnabled := m.GetIsGuardEnabled()
-	_ = isGuardEnabled
+	_ =	isGuardEnabled
 	if _isGuardEnabledErr := writeBuffer.WriteVirtual(ctx, "isGuardEnabled", m.GetIsGuardEnabled()); _isGuardEnabledErr != nil {
 		return errors.Wrap(_isGuardEnabledErr, "Error serializing 'isGuardEnabled' field")
 	}
@@ -443,13 +443,13 @@ func (m *_HVACHumidityModeAndFlags) SerializeWithWriteBuffer(ctx context.Context
 	}
 	// Virtual field
 	isSetbackDisabled := m.GetIsSetbackDisabled()
-	_ = isSetbackDisabled
+	_ =	isSetbackDisabled
 	if _isSetbackDisabledErr := writeBuffer.WriteVirtual(ctx, "isSetbackDisabled", m.GetIsSetbackDisabled()); _isSetbackDisabledErr != nil {
 		return errors.Wrap(_isSetbackDisabledErr, "Error serializing 'isSetbackDisabled' field")
 	}
 	// Virtual field
 	isSetbackEnabled := m.GetIsSetbackEnabled()
-	_ = isSetbackEnabled
+	_ =	isSetbackEnabled
 	if _isSetbackEnabledErr := writeBuffer.WriteVirtual(ctx, "isSetbackEnabled", m.GetIsSetbackEnabled()); _isSetbackEnabledErr != nil {
 		return errors.Wrap(_isSetbackEnabledErr, "Error serializing 'isSetbackEnabled' field")
 	}
@@ -462,13 +462,13 @@ func (m *_HVACHumidityModeAndFlags) SerializeWithWriteBuffer(ctx context.Context
 	}
 	// Virtual field
 	isLevelHumidity := m.GetIsLevelHumidity()
-	_ = isLevelHumidity
+	_ =	isLevelHumidity
 	if _isLevelHumidityErr := writeBuffer.WriteVirtual(ctx, "isLevelHumidity", m.GetIsLevelHumidity()); _isLevelHumidityErr != nil {
 		return errors.Wrap(_isLevelHumidityErr, "Error serializing 'isLevelHumidity' field")
 	}
 	// Virtual field
 	isLevelRaw := m.GetIsLevelRaw()
-	_ = isLevelRaw
+	_ =	isLevelRaw
 	if _isLevelRawErr := writeBuffer.WriteVirtual(ctx, "isLevelRaw", m.GetIsLevelRaw()); _isLevelRawErr != nil {
 		return errors.Wrap(_isLevelRawErr, "Error serializing 'isLevelRaw' field")
 	}

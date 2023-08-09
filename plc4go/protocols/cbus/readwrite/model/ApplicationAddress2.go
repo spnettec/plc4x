@@ -183,7 +183,7 @@ func (m *_ApplicationAddress2) SerializeWithWriteBuffer(ctx context.Context, wri
 	}
 	// Virtual field
 	isWildcard := m.GetIsWildcard()
-	_ = isWildcard
+	_ =	isWildcard
 	if _isWildcardErr := writeBuffer.WriteVirtual(ctx, "isWildcard", m.GetIsWildcard()); _isWildcardErr != nil {
 		return errors.Wrap(_isWildcardErr, "Error serializing 'isWildcard' field")
 	}

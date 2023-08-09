@@ -367,25 +367,25 @@ func (m *_BACnetConstructedDataElement) SerializeWithWriteBuffer(ctx context.Con
 	}
 	// Virtual field
 	peekedTagNumber := m.GetPeekedTagNumber()
-	_ = peekedTagNumber
+	_ =	peekedTagNumber
 	if _peekedTagNumberErr := writeBuffer.WriteVirtual(ctx, "peekedTagNumber", m.GetPeekedTagNumber()); _peekedTagNumberErr != nil {
 		return errors.Wrap(_peekedTagNumberErr, "Error serializing 'peekedTagNumber' field")
 	}
 	// Virtual field
 	isApplicationTag := m.GetIsApplicationTag()
-	_ = isApplicationTag
+	_ =	isApplicationTag
 	if _isApplicationTagErr := writeBuffer.WriteVirtual(ctx, "isApplicationTag", m.GetIsApplicationTag()); _isApplicationTagErr != nil {
 		return errors.Wrap(_isApplicationTagErr, "Error serializing 'isApplicationTag' field")
 	}
 	// Virtual field
 	isConstructedData := m.GetIsConstructedData()
-	_ = isConstructedData
+	_ =	isConstructedData
 	if _isConstructedDataErr := writeBuffer.WriteVirtual(ctx, "isConstructedData", m.GetIsConstructedData()); _isConstructedDataErr != nil {
 		return errors.Wrap(_isConstructedDataErr, "Error serializing 'isConstructedData' field")
 	}
 	// Virtual field
 	isContextTag := m.GetIsContextTag()
-	_ = isContextTag
+	_ =	isContextTag
 	if _isContextTagErr := writeBuffer.WriteVirtual(ctx, "isContextTag", m.GetIsContextTag()); _isContextTagErr != nil {
 		return errors.Wrap(_isContextTagErr, "Error serializing 'isContextTag' field")
 	}

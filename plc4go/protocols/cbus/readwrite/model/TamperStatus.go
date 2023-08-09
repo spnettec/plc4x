@@ -213,19 +213,19 @@ func (m *_TamperStatus) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 	}
 	// Virtual field
 	isNoTamper := m.GetIsNoTamper()
-	_ = isNoTamper
+	_ =	isNoTamper
 	if _isNoTamperErr := writeBuffer.WriteVirtual(ctx, "isNoTamper", m.GetIsNoTamper()); _isNoTamperErr != nil {
 		return errors.Wrap(_isNoTamperErr, "Error serializing 'isNoTamper' field")
 	}
 	// Virtual field
 	isReserved := m.GetIsReserved()
-	_ = isReserved
+	_ =	isReserved
 	if _isReservedErr := writeBuffer.WriteVirtual(ctx, "isReserved", m.GetIsReserved()); _isReservedErr != nil {
 		return errors.Wrap(_isReservedErr, "Error serializing 'isReserved' field")
 	}
 	// Virtual field
 	isTamperActive := m.GetIsTamperActive()
-	_ = isTamperActive
+	_ =	isTamperActive
 	if _isTamperActiveErr := writeBuffer.WriteVirtual(ctx, "isTamperActive", m.GetIsTamperActive()); _isTamperActiveErr != nil {
 		return errors.Wrap(_isTamperActiveErr, "Error serializing 'isTamperActive' field")
 	}

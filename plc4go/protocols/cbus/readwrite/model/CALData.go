@@ -309,13 +309,13 @@ func (pm *_CALData) SerializeParent(ctx context.Context, writeBuffer utils.Write
 	}
 	// Virtual field
 	commandType := m.GetCommandType()
-	_ = commandType
+	_ =	commandType
 	if _commandTypeErr := writeBuffer.WriteVirtual(ctx, "commandType", m.GetCommandType()); _commandTypeErr != nil {
 		return errors.Wrap(_commandTypeErr, "Error serializing 'commandType' field")
 	}
 	// Virtual field
 	sendIdentifyRequestBefore := m.GetSendIdentifyRequestBefore()
-	_ = sendIdentifyRequestBefore
+	_ =	sendIdentifyRequestBefore
 	if _sendIdentifyRequestBeforeErr := writeBuffer.WriteVirtual(ctx, "sendIdentifyRequestBefore", m.GetSendIdentifyRequestBefore()); _sendIdentifyRequestBeforeErr != nil {
 		return errors.Wrap(_sendIdentifyRequestBeforeErr, "Error serializing 'sendIdentifyRequestBefore' field")
 	}

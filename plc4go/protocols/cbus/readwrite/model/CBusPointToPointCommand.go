@@ -237,7 +237,7 @@ func (pm *_CBusPointToPointCommand) SerializeParent(ctx context.Context, writeBu
 	}
 	// Virtual field
 	isDirect := m.GetIsDirect()
-	_ = isDirect
+	_ =	isDirect
 	if _isDirectErr := writeBuffer.WriteVirtual(ctx, "isDirect", m.GetIsDirect()); _isDirectErr != nil {
 		return errors.Wrap(_isDirectErr, "Error serializing 'isDirect' field")
 	}

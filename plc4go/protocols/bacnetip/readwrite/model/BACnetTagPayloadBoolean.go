@@ -183,19 +183,19 @@ func (m *_BACnetTagPayloadBoolean) SerializeWithWriteBuffer(ctx context.Context,
 	}
 	// Virtual field
 	value := m.GetValue()
-	_ = value
+	_ =	value
 	if _valueErr := writeBuffer.WriteVirtual(ctx, "value", m.GetValue()); _valueErr != nil {
 		return errors.Wrap(_valueErr, "Error serializing 'value' field")
 	}
 	// Virtual field
 	isTrue := m.GetIsTrue()
-	_ = isTrue
+	_ =	isTrue
 	if _isTrueErr := writeBuffer.WriteVirtual(ctx, "isTrue", m.GetIsTrue()); _isTrueErr != nil {
 		return errors.Wrap(_isTrueErr, "Error serializing 'isTrue' field")
 	}
 	// Virtual field
 	isFalse := m.GetIsFalse()
-	_ = isFalse
+	_ =	isFalse
 	if _isFalseErr := writeBuffer.WriteVirtual(ctx, "isFalse", m.GetIsFalse()); _isFalseErr != nil {
 		return errors.Wrap(_isFalseErr, "Error serializing 'isFalse' field")
 	}

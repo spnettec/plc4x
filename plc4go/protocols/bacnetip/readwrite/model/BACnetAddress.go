@@ -248,13 +248,13 @@ func (m *_BACnetAddress) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 	}
 	// Virtual field
 	zero := m.GetZero()
-	_ = zero
+	_ =	zero
 	if _zeroErr := writeBuffer.WriteVirtual(ctx, "zero", m.GetZero()); _zeroErr != nil {
 		return errors.Wrap(_zeroErr, "Error serializing 'zero' field")
 	}
 	// Virtual field
 	isLocalNetwork := m.GetIsLocalNetwork()
-	_ = isLocalNetwork
+	_ =	isLocalNetwork
 	if _isLocalNetworkErr := writeBuffer.WriteVirtual(ctx, "isLocalNetwork", m.GetIsLocalNetwork()); _isLocalNetworkErr != nil {
 		return errors.Wrap(_isLocalNetworkErr, "Error serializing 'isLocalNetwork' field")
 	}
@@ -272,7 +272,7 @@ func (m *_BACnetAddress) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 	}
 	// Virtual field
 	isBroadcast := m.GetIsBroadcast()
-	_ = isBroadcast
+	_ =	isBroadcast
 	if _isBroadcastErr := writeBuffer.WriteVirtual(ctx, "isBroadcast", m.GetIsBroadcast()); _isBroadcastErr != nil {
 		return errors.Wrap(_isBroadcastErr, "Error serializing 'isBroadcast' field")
 	}

@@ -307,7 +307,7 @@ func (m *_ExpandedNodeId) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 	}
 	// Virtual field
 	identifier := m.GetIdentifier()
-	_ = identifier
+	_ =	identifier
 	if _identifierErr := writeBuffer.WriteVirtual(ctx, "identifier", m.GetIdentifier()); _identifierErr != nil {
 		return errors.Wrap(_identifierErr, "Error serializing 'identifier' field")
 	}
