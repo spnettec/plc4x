@@ -25,6 +25,7 @@ import org.apache.plc4x.java.opcua.readwrite.PascalByteString;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.BooleanDefaultValue;
+import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultValue;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.StringDefaultValue;
 import org.apache.plc4x.java.transport.tcp.TcpTransportConfiguration;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -83,6 +84,9 @@ public class OpcuaConfiguration implements Configuration, TcpTransportConfigurat
     @ConfigurationParameter("keyStorePassword")
     private String keyStorePassword;
 
+    @ConfigurationParameter("timeout-request")
+    @IntDefaultValue(10000)
+    private int timeoutRequest;
     private CertificateKeyPair ckp;
 
     public boolean isDiscovery() {
@@ -199,6 +203,14 @@ public class OpcuaConfiguration implements Configuration, TcpTransportConfigurat
 
     public void setTransportEndpoint(String transportEndpoint) {
         this.transportEndpoint = transportEndpoint;
+    }
+
+    public int getTimeoutRequest() {
+        return timeoutRequest;
+    }
+
+    public void setTimeoutRequest(int timeoutRequest) {
+        this.timeoutRequest = timeoutRequest;
     }
 
     public void openKeyStore() throws Exception {

@@ -22,6 +22,7 @@ import org.apache.plc4x.java.api.messages.PlcSubscriptionEvent;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 import org.apache.plc4x.java.api.value.PlcValue;
+import org.apache.plc4x.java.opcua.config.OpcuaConfiguration;
 import org.apache.plc4x.java.opcua.context.SecureChannel;
 import org.apache.plc4x.java.opcua.tag.OpcuaTag;
 import org.apache.plc4x.java.opcua.readwrite.*;
@@ -35,6 +36,7 @@ import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionHandle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.nio.ByteBuffer;
 import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -62,8 +64,8 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
     private final AtomicLong clientHandles = new AtomicLong(1L);
 
     private final ConversationContext<OpcuaAPU> context;
-
-    public OpcuaSubscriptionHandle(ConversationContext<OpcuaAPU> context, OpcuaProtocolLogic plcSubscriber, SecureChannel channel, PlcSubscriptionRequest subscriptionRequest, Long subscriptionId, long cycleTime) {
+    private final OpcuaConfiguration configuration;
+    public OpcuaSubscriptionHandle(ConversationContext<OpcuaAPU> context, OpcuaProtocolLogic plcSubscriber, SecureChannel channel, PlcSubscriptionRequest subscriptionRequest, Long subscriptionId, long cycleTime, OpcuaConfiguration configuration) {
         super(plcSubscriber);
         this.consumers = new HashSet<>();
         this.subscriptionRequest = subscriptionRequest;
@@ -74,6 +76,7 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
         this.cycleTime = cycleTime;
         this.revisedCycleTime = cycleTime;
         this.context = context;
+        this.configuration = configuration;
         try {
             onSubscribeCreateMonitoredItemsRequest().get();
         } catch (Exception e) {
@@ -134,7 +137,7 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
             channel.getRequestHandle(),
             0L,
             OpcuaProtocolLogic.NULL_STRING,
-            SecureChannel.REQUEST_TIMEOUT_LONG,
+            configuration.getTimeoutRequest(),
             OpcuaProtocolLogic.NULL_EXTENSION_OBJECT);
 
         CreateMonitoredItemsRequest createMonitoredItemsRequest = new CreateMonitoredItemsRequest(
@@ -176,13 +179,15 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
                     LOGGER.error("Unable to parse the returned Subscription response", e);
                     plcSubscriber.onDisconnect(context);
                 }
-                MonitoredItemCreateResult[] array = responseMessage.getResults().toArray(new MonitoredItemCreateResult[0]);
-                for (int index = 0, arrayLength = array.length; index < arrayLength; index++) {
-                    MonitoredItemCreateResult result = array[index];
-                    if (OpcuaStatusCode.enumForValue(result.getStatusCode().getStatusCode()) != OpcuaStatusCode.Good) {
-                        LOGGER.error("Invalid Tag {}, subscription created without this tag", tagNames.get(index));
-                    } else {
-                        LOGGER.debug("Tag {} was added to the subscription", tagNames.get(index));
+                if(responseMessage!=null) {
+                    ExtensionObjectDefinition[] array = responseMessage.getResults().toArray(new ExtensionObjectDefinition[0]);
+                    for (int index = 0, arrayLength = array.length; index < arrayLength; index++) {
+                        MonitoredItemCreateResult result = (MonitoredItemCreateResult) array[index];
+                        if (OpcuaStatusCode.enumForValue(result.getStatusCode().getStatusCode()) != OpcuaStatusCode.Good) {
+                            LOGGER.error("Invalid Tag {}, subscription created without this tag", tagNames.get(index));
+                        } else {
+                            LOGGER.debug("Tag {} was added to the subscription", tagNames.get(index));
+                        }
                     }
                 }
                 future.complete(responseMessage);
