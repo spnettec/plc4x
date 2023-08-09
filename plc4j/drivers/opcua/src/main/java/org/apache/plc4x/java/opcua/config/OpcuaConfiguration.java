@@ -40,10 +40,6 @@ import java.security.KeyPair;
 import java.security.KeyStore;
 import java.security.PrivateKey;
 import java.security.Security;
-import java.security.KeyPair;
-import java.security.KeyStore;
-import java.security.PrivateKey;
-import java.security.Security;
 import java.security.cert.X509Certificate;
 
 public class OpcuaConfiguration implements Configuration, TcpTransportConfiguration {

@@ -217,7 +217,6 @@ public class SecureChannel {
                                     LOGGER.error("Sequence number isn't as expected, we might have missed a packet. - {} != {}", senderSeq, responseSeq);
                                     context.fireDisconnected();
                                 }
-
                             } catch (IOException e) {
                                 LOGGER.debug("Failed to store incoming message in buffer");
                                 throw new PlcRuntimeException("Error while sending message");
@@ -795,14 +794,16 @@ public class SecureChannel {
             WriteBufferByteBased buffer = new WriteBufferByteBased(extObject.getLengthInBytes(), org.apache.plc4x.java.spi.generation.ByteOrder.LITTLE_ENDIAN);
             extObject.serialize(buffer);
 
-            OpcuaOpenRequest openRequest = new OpcuaOpenRequest(FINAL_CHUNK,
+            OpcuaOpenRequest openRequest = new OpcuaOpenRequest(
+                FINAL_CHUNK,
                 0,
                 SECURITY_POLICY_NONE,
                 NULL_BYTE_STRING,
                 NULL_BYTE_STRING,
                 transactionId,
                 transactionId,
-                buffer.getBytes());
+                buffer.getBytes()
+            );
 
             Consumer<Integer> requestConsumer = transId -> context.sendRequest(new OpcuaAPU(openRequest))
                 .expectResponse(OpcuaAPU.class, Duration.ofMillis(configuration.getTimeoutRequest()))
@@ -891,7 +892,8 @@ public class SecureChannel {
                 tokenId.get(),
                 nextSequenceNumber,
                 nextRequestId,
-                buffer.getBytes());
+                buffer.getBytes()
+            );
 
             Consumer<Integer> requestConsumer = transId -> context.sendRequest(new OpcuaAPU(messageRequest))
                 .expectResponse(OpcuaAPU.class, Duration.ofMillis(configuration.getTimeoutRequest()))
@@ -1041,14 +1043,16 @@ public class SecureChannel {
                         WriteBufferByteBased buffer = new WriteBufferByteBased(extObject.getLengthInBytes(), org.apache.plc4x.java.spi.generation.ByteOrder.LITTLE_ENDIAN);
                         extObject.serialize(buffer);
 
-                        OpcuaOpenRequest openRequest = new OpcuaOpenRequest(FINAL_CHUNK,
+                        OpcuaOpenRequest openRequest = new OpcuaOpenRequest(
+                            FINAL_CHUNK,
                             0,
                             new PascalString(this.securityPolicy),
                             this.publicCertificate,
                             this.thumbprint,
                             transactionId,
                             transactionId,
-                            buffer.getBytes());
+                            buffer.getBytes()
+                        );
 
                         final OpcuaAPU apu;
 

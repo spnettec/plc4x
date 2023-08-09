@@ -112,7 +112,7 @@ public class EncryptionHandler {
     }
 
     public OpcuaAPU decodeMessage(OpcuaAPU pdu) {
-        LOGGER.debug("Decoding Message with Security policy {}", securitypolicy);
+        LOGGER.info("Decoding Message with Security policy {}", securitypolicy);
         switch (securitypolicy) {
             case "None":
                 return pdu;
