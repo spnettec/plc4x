@@ -123,7 +123,7 @@ func (h *EncryptionHandler) encodeMessage(ctx context.Context, pdu readWriteMode
 }
 
 func (h *EncryptionHandler) decodeMessage(ctx context.Context, pdu readWriteModel.OpcuaAPU) (readWriteModel.OpcuaAPU, error) {
-	h.log.Info().Msgf("Decoding Message with Security policy %s", h.securityPolicy)
+	h.log.Info().Str("securityPolicy", h.securityPolicy).Msg("Decoding Message with Security policy")
 	switch h.securityPolicy {
 	case "None":
 		return pdu, nil
@@ -135,6 +135,7 @@ func (h *EncryptionHandler) decodeMessage(ctx context.Context, pdu readWriteMode
 		case readWriteModel.OpcuaMessageResponseExactly:
 			message = pduMessage.GetMessage()
 		default:
+			h.log.Trace().Type("pdu", pdu).Msg("unhandled type")
 			return pdu, nil
 		}
 		encryptedLength := int(pdu.GetLengthInBytes(ctx))
@@ -168,8 +169,10 @@ func (h *EncryptionHandler) decodeMessage(ctx context.Context, pdu readWriteMode
 
 		readBuffer := utils.NewReadBufferByteBased(buf.GetBytes(), utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 		return readWriteModel.OpcuaAPUParseWithBuffer(ctx, readBuffer, true)
+	default:
+		h.log.Trace().Msg("unmapped security policy")
+		return pdu, nil
 	}
-	return pdu, nil
 }
 
 func (h *EncryptionHandler) decryptBlock(buf utils.WriteBufferByteBased, data []byte) error {
@@ -208,4 +211,8 @@ func (h *EncryptionHandler) encryptBlock(buf utils.WriteBufferByteBased, data []
 
 func (h *EncryptionHandler) sign(data []byte) ([]byte, error) {
 	return h.clientPrivateKey.Sign(rand.Reader, data, crypto.SHA256)
+}
+
+func (h *EncryptionHandler) String() string {
+	return "EncryptionHandler{" + h.securityPolicy + "}"
 }

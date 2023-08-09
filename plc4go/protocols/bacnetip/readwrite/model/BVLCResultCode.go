@@ -144,7 +144,7 @@ func BVLCResultCodeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 		return 0, errors.Wrap(err, "error reading BVLCResultCode")
 	}
 	if enum, ok := BVLCResultCodeByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for BVLCResultCode")
 		return BVLCResultCode(val), nil
 	} else {
 		return enum, nil
@@ -183,7 +183,7 @@ func (e BVLCResultCode) PLC4XEnumName() string {
 	case BVLCResultCode_DISTRIBUTE_BROADCAST_TO_NETWORK_NAK:
 		return "DISTRIBUTE_BROADCAST_TO_NETWORK_NAK"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint16(e))
 }
 
 func (e BVLCResultCode) String() string {

@@ -126,7 +126,7 @@ func HVACHumidityTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 		return 0, errors.Wrap(err, "error reading HVACHumidityType")
 	}
 	if enum, ok := HVACHumidityTypeByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for HVACHumidityType")
 		return HVACHumidityType(val), nil
 	} else {
 		return enum, nil
@@ -159,7 +159,7 @@ func (e HVACHumidityType) PLC4XEnumName() string {
 	case HVACHumidityType_EVAPORATOR_REFRIGERATIVE:
 		return "EVAPORATOR_REFRIGERATIVE"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e HVACHumidityType) String() string {

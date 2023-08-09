@@ -287,13 +287,13 @@ _noOfClientUserIdHistory, _noOfClientUserIdHistoryErr := readBuffer.ReadInt32("n
 		return nil, errors.Wrap(pullErr, "Error pulling for clientUserIdHistory")
 	}
 	// Count array
-	clientUserIdHistory := make([]PascalString, noOfClientUserIdHistory)
+	clientUserIdHistory := make([]PascalString, utils.Max(noOfClientUserIdHistory, 0))
 	// This happens when the size is set conditional to 0
 	if len(clientUserIdHistory) == 0 {
 		clientUserIdHistory = nil
 	}
 	{
-		_numItems := uint16(noOfClientUserIdHistory)
+		_numItems := uint16(utils.Max(noOfClientUserIdHistory, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

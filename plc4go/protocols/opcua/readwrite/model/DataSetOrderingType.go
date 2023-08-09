@@ -120,7 +120,7 @@ func DataSetOrderingTypeParseWithBuffer(ctx context.Context, readBuffer utils.Re
 		return 0, errors.Wrap(err, "error reading DataSetOrderingType")
 	}
 	if enum, ok := DataSetOrderingTypeByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for DataSetOrderingType")
 		return DataSetOrderingType(val), nil
 	} else {
 		return enum, nil
@@ -151,7 +151,7 @@ func (e DataSetOrderingType) PLC4XEnumName() string {
 	case DataSetOrderingType_dataSetOrderingTypeAscendingWriterIdSingle:
 		return "dataSetOrderingTypeAscendingWriterIdSingle"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint32(e))
 }
 
 func (e DataSetOrderingType) String() string {

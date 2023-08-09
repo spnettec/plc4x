@@ -144,7 +144,7 @@ func BACnetAccessAuthenticationFactorDisableParseWithBuffer(ctx context.Context,
 		return 0, errors.Wrap(err, "error reading BACnetAccessAuthenticationFactorDisable")
 	}
 	if enum, ok := BACnetAccessAuthenticationFactorDisableByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for BACnetAccessAuthenticationFactorDisable")
 		return BACnetAccessAuthenticationFactorDisable(val), nil
 	} else {
 		return enum, nil
@@ -183,7 +183,7 @@ func (e BACnetAccessAuthenticationFactorDisable) PLC4XEnumName() string {
 	case BACnetAccessAuthenticationFactorDisable_DISABLED_DESTROYED:
 		return "DISABLED_DESTROYED"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint16(e))
 }
 
 func (e BACnetAccessAuthenticationFactorDisable) String() string {

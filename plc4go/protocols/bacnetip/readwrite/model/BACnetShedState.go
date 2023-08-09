@@ -126,7 +126,7 @@ func BACnetShedStateParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 		return 0, errors.Wrap(err, "error reading BACnetShedState")
 	}
 	if enum, ok := BACnetShedStateByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for BACnetShedState")
 		return BACnetShedState(val), nil
 	} else {
 		return enum, nil
@@ -159,7 +159,7 @@ func (e BACnetShedState) PLC4XEnumName() string {
 	case BACnetShedState_SHED_NON_COMPLIANT:
 		return "SHED_NON_COMPLIANT"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e BACnetShedState) String() string {

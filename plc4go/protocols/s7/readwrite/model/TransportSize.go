@@ -1314,7 +1314,7 @@ func TransportSizeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 		return 0, errors.Wrap(err, "error reading TransportSize")
 	}
 	if enum, ok := TransportSizeByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for TransportSize")
 		return TransportSize(val), nil
 	} else {
 		return enum, nil
@@ -1391,7 +1391,7 @@ func (e TransportSize) PLC4XEnumName() string {
 	case TransportSize_DT:
 		return "DT"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e TransportSize) String() string {

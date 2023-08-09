@@ -114,7 +114,7 @@ func BACnetAccessRuleLocationSpecifierParseWithBuffer(ctx context.Context, readB
 		return 0, errors.Wrap(err, "error reading BACnetAccessRuleLocationSpecifier")
 	}
 	if enum, ok := BACnetAccessRuleLocationSpecifierByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for BACnetAccessRuleLocationSpecifier")
 		return BACnetAccessRuleLocationSpecifier(val), nil
 	} else {
 		return enum, nil
@@ -143,7 +143,7 @@ func (e BACnetAccessRuleLocationSpecifier) PLC4XEnumName() string {
 	case BACnetAccessRuleLocationSpecifier_ALL:
 		return "ALL"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e BACnetAccessRuleLocationSpecifier) String() string {

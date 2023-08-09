@@ -197,13 +197,13 @@ _noOfNodesToDelete, _noOfNodesToDeleteErr := readBuffer.ReadInt32("noOfNodesToDe
 		return nil, errors.Wrap(pullErr, "Error pulling for nodesToDelete")
 	}
 	// Count array
-	nodesToDelete := make([]ExtensionObjectDefinition, noOfNodesToDelete)
+	nodesToDelete := make([]ExtensionObjectDefinition, utils.Max(noOfNodesToDelete, 0))
 	// This happens when the size is set conditional to 0
 	if len(nodesToDelete) == 0 {
 		nodesToDelete = nil
 	}
 	{
-		_numItems := uint16(noOfNodesToDelete)
+		_numItems := uint16(utils.Max(noOfNodesToDelete, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

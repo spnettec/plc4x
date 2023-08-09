@@ -132,7 +132,7 @@ func StructureTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 		return 0, errors.Wrap(err, "error reading StructureType")
 	}
 	if enum, ok := StructureTypeByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for StructureType")
 		return StructureType(val), nil
 	} else {
 		return enum, nil
@@ -167,7 +167,7 @@ func (e StructureType) PLC4XEnumName() string {
 	case StructureType_structureTypeUnionWithSubtypedValues:
 		return "structureTypeUnionWithSubtypedValues"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint32(e))
 }
 
 func (e StructureType) String() string {

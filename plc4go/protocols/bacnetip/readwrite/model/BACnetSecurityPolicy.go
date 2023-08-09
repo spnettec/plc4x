@@ -126,7 +126,7 @@ func BACnetSecurityPolicyParseWithBuffer(ctx context.Context, readBuffer utils.R
 		return 0, errors.Wrap(err, "error reading BACnetSecurityPolicy")
 	}
 	if enum, ok := BACnetSecurityPolicyByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for BACnetSecurityPolicy")
 		return BACnetSecurityPolicy(val), nil
 	} else {
 		return enum, nil
@@ -159,7 +159,7 @@ func (e BACnetSecurityPolicy) PLC4XEnumName() string {
 	case BACnetSecurityPolicy_ENCRYPTED_TRUSTED:
 		return "ENCRYPTED_TRUSTED"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e BACnetSecurityPolicy) String() string {

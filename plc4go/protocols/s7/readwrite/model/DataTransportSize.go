@@ -183,7 +183,7 @@ func DataTransportSizeParseWithBuffer(ctx context.Context, readBuffer utils.Read
 		return 0, errors.Wrap(err, "error reading DataTransportSize")
 	}
 	if enum, ok := DataTransportSizeByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for DataTransportSize")
 		return DataTransportSize(val), nil
 	} else {
 		return enum, nil
@@ -222,7 +222,7 @@ func (e DataTransportSize) PLC4XEnumName() string {
 	case DataTransportSize_OCTET_STRING:
 		return "OCTET_STRING"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e DataTransportSize) String() string {

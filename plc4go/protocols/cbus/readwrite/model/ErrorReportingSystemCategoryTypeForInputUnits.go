@@ -198,7 +198,7 @@ func ErrorReportingSystemCategoryTypeForInputUnitsParseWithBuffer(ctx context.Co
 		return 0, errors.Wrap(err, "error reading ErrorReportingSystemCategoryTypeForInputUnits")
 	}
 	if enum, ok := ErrorReportingSystemCategoryTypeForInputUnitsByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for ErrorReportingSystemCategoryTypeForInputUnits")
 		return ErrorReportingSystemCategoryTypeForInputUnits(val), nil
 	} else {
 		return enum, nil
@@ -255,7 +255,7 @@ func (e ErrorReportingSystemCategoryTypeForInputUnits) PLC4XEnumName() string {
 	case ErrorReportingSystemCategoryTypeForInputUnits_RESERVED_15:
 		return "RESERVED_15"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e ErrorReportingSystemCategoryTypeForInputUnits) String() string {

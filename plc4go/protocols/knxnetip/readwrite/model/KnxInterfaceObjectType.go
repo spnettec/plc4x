@@ -438,7 +438,7 @@ func KnxInterfaceObjectTypeParseWithBuffer(ctx context.Context, readBuffer utils
 		return 0, errors.Wrap(err, "error reading KnxInterfaceObjectType")
 	}
 	if enum, ok := KnxInterfaceObjectTypeByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for KnxInterfaceObjectType")
 		return KnxInterfaceObjectType(val), nil
 	} else {
 		return enum, nil
@@ -513,7 +513,7 @@ func (e KnxInterfaceObjectType) PLC4XEnumName() string {
 	case KnxInterfaceObjectType_OT_LTE_ADDRESS_ROUTING_TABLE:
 		return "OT_LTE_ADDRESS_ROUTING_TABLE"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint16(e))
 }
 
 func (e KnxInterfaceObjectType) String() string {

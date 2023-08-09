@@ -213,13 +213,13 @@ _noOfNamespaceUris, _noOfNamespaceUrisErr := readBuffer.ReadInt32("noOfNamespace
 		return nil, errors.Wrap(pullErr, "Error pulling for namespaceUris")
 	}
 	// Count array
-	namespaceUris := make([]PascalString, noOfNamespaceUris)
+	namespaceUris := make([]PascalString, utils.Max(noOfNamespaceUris, 0))
 	// This happens when the size is set conditional to 0
 	if len(namespaceUris) == 0 {
 		namespaceUris = nil
 	}
 	{
-		_numItems := uint16(noOfNamespaceUris)
+		_numItems := uint16(utils.Max(noOfNamespaceUris, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
@@ -247,13 +247,13 @@ _noOfServerUris, _noOfServerUrisErr := readBuffer.ReadInt32("noOfServerUris", 32
 		return nil, errors.Wrap(pullErr, "Error pulling for serverUris")
 	}
 	// Count array
-	serverUris := make([]PascalString, noOfServerUris)
+	serverUris := make([]PascalString, utils.Max(noOfServerUris, 0))
 	// This happens when the size is set conditional to 0
 	if len(serverUris) == 0 {
 		serverUris = nil
 	}
 	{
-		_numItems := uint16(noOfServerUris)
+		_numItems := uint16(utils.Max(noOfServerUris, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

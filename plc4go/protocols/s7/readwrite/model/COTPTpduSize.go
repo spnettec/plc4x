@@ -183,7 +183,7 @@ func COTPTpduSizeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		return 0, errors.Wrap(err, "error reading COTPTpduSize")
 	}
 	if enum, ok := COTPTpduSizeByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for COTPTpduSize")
 		return COTPTpduSize(val), nil
 	} else {
 		return enum, nil
@@ -222,7 +222,7 @@ func (e COTPTpduSize) PLC4XEnumName() string {
 	case COTPTpduSize_SIZE_8192:
 		return "SIZE_8192"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e COTPTpduSize) String() string {

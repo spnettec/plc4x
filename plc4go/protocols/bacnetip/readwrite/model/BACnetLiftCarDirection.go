@@ -144,7 +144,7 @@ func BACnetLiftCarDirectionParseWithBuffer(ctx context.Context, readBuffer utils
 		return 0, errors.Wrap(err, "error reading BACnetLiftCarDirection")
 	}
 	if enum, ok := BACnetLiftCarDirectionByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for BACnetLiftCarDirection")
 		return BACnetLiftCarDirection(val), nil
 	} else {
 		return enum, nil
@@ -183,7 +183,7 @@ func (e BACnetLiftCarDirection) PLC4XEnumName() string {
 	case BACnetLiftCarDirection_UP_AND_DOWN:
 		return "UP_AND_DOWN"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint16(e))
 }
 
 func (e BACnetLiftCarDirection) String() string {

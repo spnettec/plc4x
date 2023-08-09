@@ -1071,7 +1071,7 @@ func KnxDatapointMainTypeParseWithBuffer(ctx context.Context, readBuffer utils.R
 		return 0, errors.Wrap(err, "error reading KnxDatapointMainType")
 	}
 	if enum, ok := KnxDatapointMainTypeByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for KnxDatapointMainType")
 		return KnxDatapointMainType(val), nil
 	} else {
 		return enum, nil
@@ -1218,7 +1218,7 @@ func (e KnxDatapointMainType) PLC4XEnumName() string {
 	case KnxDatapointMainType_DPT_CHARACTER:
 		return "DPT_CHARACTER"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint16(e))
 }
 
 func (e KnxDatapointMainType) String() string {

@@ -126,7 +126,7 @@ func SzlModuleTypeClassParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 		return 0, errors.Wrap(err, "error reading SzlModuleTypeClass")
 	}
 	if enum, ok := SzlModuleTypeClassByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for SzlModuleTypeClass")
 		return SzlModuleTypeClass(val), nil
 	} else {
 		return enum, nil
@@ -159,7 +159,7 @@ func (e SzlModuleTypeClass) PLC4XEnumName() string {
 	case SzlModuleTypeClass_CP:
 		return "CP"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e SzlModuleTypeClass) String() string {

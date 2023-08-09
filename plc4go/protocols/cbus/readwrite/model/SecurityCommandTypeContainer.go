@@ -1578,7 +1578,7 @@ func SecurityCommandTypeContainerParseWithBuffer(ctx context.Context, readBuffer
 		return 0, errors.Wrap(err, "error reading SecurityCommandTypeContainer")
 	}
 	if enum, ok := SecurityCommandTypeContainerByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for SecurityCommandTypeContainer")
 		return SecurityCommandTypeContainer(val), nil
 	} else {
 		return enum, nil
@@ -1843,7 +1843,7 @@ func (e SecurityCommandTypeContainer) PLC4XEnumName() string {
 	case SecurityCommandTypeContainer_SecurityCommandLongOn_31Bytes:
 		return "SecurityCommandLongOn_31Bytes"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e SecurityCommandTypeContainer) String() string {

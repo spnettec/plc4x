@@ -150,7 +150,7 @@ func MeasurementCommandTypeContainerParseWithBuffer(ctx context.Context, readBuf
 		return 0, errors.Wrap(err, "error reading MeasurementCommandTypeContainer")
 	}
 	if enum, ok := MeasurementCommandTypeContainerByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for MeasurementCommandTypeContainer")
 		return MeasurementCommandTypeContainer(val), nil
 	} else {
 		return enum, nil
@@ -177,7 +177,7 @@ func (e MeasurementCommandTypeContainer) PLC4XEnumName() string {
 	case MeasurementCommandTypeContainer_MeasurementCommandChannelMeasurementData:
 		return "MeasurementCommandChannelMeasurementData"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e MeasurementCommandTypeContainer) String() string {

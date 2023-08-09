@@ -6354,7 +6354,7 @@ func ParameterParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 		return 0, errors.Wrap(err, "error reading Parameter")
 	}
 	if enum, ok := ParameterByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for Parameter")
 		return Parameter(val), nil
 	} else {
 		return enum, nil
@@ -6891,7 +6891,7 @@ func (e Parameter) PLC4XEnumName() string {
 	case Parameter_UNKOWN_255:
 		return "UNKOWN_255"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e Parameter) String() string {

@@ -132,7 +132,7 @@ func TimestampsToReturnParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 		return 0, errors.Wrap(err, "error reading TimestampsToReturn")
 	}
 	if enum, ok := TimestampsToReturnByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for TimestampsToReturn")
 		return TimestampsToReturn(val), nil
 	} else {
 		return enum, nil
@@ -167,7 +167,7 @@ func (e TimestampsToReturn) PLC4XEnumName() string {
 	case TimestampsToReturn_timestampsToReturnInvalid:
 		return "timestampsToReturnInvalid"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint32(e))
 }
 
 func (e TimestampsToReturn) String() string {

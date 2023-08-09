@@ -197,13 +197,13 @@ _noOfReferencedNodes, _noOfReferencedNodesErr := readBuffer.ReadInt32("noOfRefer
 		return nil, errors.Wrap(pullErr, "Error pulling for referencedNodes")
 	}
 	// Count array
-	referencedNodes := make([]ExpandedNodeId, noOfReferencedNodes)
+	referencedNodes := make([]ExpandedNodeId, utils.Max(noOfReferencedNodes, 0))
 	// This happens when the size is set conditional to 0
 	if len(referencedNodes) == 0 {
 		referencedNodes = nil
 	}
 	{
-		_numItems := uint16(noOfReferencedNodes)
+		_numItems := uint16(utils.Max(noOfReferencedNodes, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

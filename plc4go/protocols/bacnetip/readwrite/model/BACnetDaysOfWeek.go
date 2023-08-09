@@ -144,7 +144,7 @@ func BACnetDaysOfWeekParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 		return 0, errors.Wrap(err, "error reading BACnetDaysOfWeek")
 	}
 	if enum, ok := BACnetDaysOfWeekByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for BACnetDaysOfWeek")
 		return BACnetDaysOfWeek(val), nil
 	} else {
 		return enum, nil
@@ -183,7 +183,7 @@ func (e BACnetDaysOfWeek) PLC4XEnumName() string {
 	case BACnetDaysOfWeek_SUNDAY:
 		return "SUNDAY"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e BACnetDaysOfWeek) String() string {

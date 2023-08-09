@@ -1206,7 +1206,7 @@ func AccessControlCommandTypeContainerParseWithBuffer(ctx context.Context, readB
 		return 0, errors.Wrap(err, "error reading AccessControlCommandTypeContainer")
 	}
 	if enum, ok := AccessControlCommandTypeContainerByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for AccessControlCommandTypeContainer")
 		return AccessControlCommandTypeContainer(val), nil
 	} else {
 		return enum, nil
@@ -1371,7 +1371,7 @@ func (e AccessControlCommandTypeContainer) PLC4XEnumName() string {
 	case AccessControlCommandTypeContainer_AccessControlCommandInvalidAccessRequest_31Bytes:
 		return "AccessControlCommandInvalidAccessRequest_31Bytes"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e AccessControlCommandTypeContainer) String() string {

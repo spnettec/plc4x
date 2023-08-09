@@ -162,7 +162,7 @@ func CommandIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 		return 0, errors.Wrap(err, "error reading CommandId")
 	}
 	if enum, ok := CommandIdByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for CommandId")
 		return CommandId(val), nil
 	} else {
 		return enum, nil
@@ -207,7 +207,7 @@ func (e CommandId) PLC4XEnumName() string {
 	case CommandId_ADS_READ_WRITE:
 		return "ADS_READ_WRITE"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint16(e))
 }
 
 func (e CommandId) String() string {

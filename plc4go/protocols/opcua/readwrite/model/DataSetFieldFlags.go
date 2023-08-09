@@ -114,7 +114,7 @@ func DataSetFieldFlagsParseWithBuffer(ctx context.Context, readBuffer utils.Read
 		return 0, errors.Wrap(err, "error reading DataSetFieldFlags")
 	}
 	if enum, ok := DataSetFieldFlagsByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for DataSetFieldFlags")
 		return DataSetFieldFlags(val), nil
 	} else {
 		return enum, nil
@@ -143,7 +143,7 @@ func (e DataSetFieldFlags) PLC4XEnumName() string {
 	case DataSetFieldFlags_dataSetFieldFlagsPromotedField:
 		return "dataSetFieldFlagsPromotedField"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint16(e))
 }
 
 func (e DataSetFieldFlags) String() string {

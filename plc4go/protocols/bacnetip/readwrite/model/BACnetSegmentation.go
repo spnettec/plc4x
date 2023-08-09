@@ -126,7 +126,7 @@ func BACnetSegmentationParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 		return 0, errors.Wrap(err, "error reading BACnetSegmentation")
 	}
 	if enum, ok := BACnetSegmentationByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for BACnetSegmentation")
 		return BACnetSegmentation(val), nil
 	} else {
 		return enum, nil
@@ -159,7 +159,7 @@ func (e BACnetSegmentation) PLC4XEnumName() string {
 	case BACnetSegmentation_NO_SEGMENTATION:
 		return "NO_SEGMENTATION"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e BACnetSegmentation) String() string {

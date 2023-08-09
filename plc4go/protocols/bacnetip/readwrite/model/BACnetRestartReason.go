@@ -162,7 +162,7 @@ func BACnetRestartReasonParseWithBuffer(ctx context.Context, readBuffer utils.Re
 		return 0, errors.Wrap(err, "error reading BACnetRestartReason")
 	}
 	if enum, ok := BACnetRestartReasonByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for BACnetRestartReason")
 		return BACnetRestartReason(val), nil
 	} else {
 		return enum, nil
@@ -207,7 +207,7 @@ func (e BACnetRestartReason) PLC4XEnumName() string {
 	case BACnetRestartReason_ACTIVATE_CHANGES:
 		return "ACTIVATE_CHANGES"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e BACnetRestartReason) String() string {

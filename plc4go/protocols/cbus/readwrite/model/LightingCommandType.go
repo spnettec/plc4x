@@ -165,7 +165,7 @@ func LightingCommandTypeParseWithBuffer(ctx context.Context, readBuffer utils.Re
 		return 0, errors.Wrap(err, "error reading LightingCommandType")
 	}
 	if enum, ok := LightingCommandTypeByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for LightingCommandType")
 		return LightingCommandType(val), nil
 	} else {
 		return enum, nil
@@ -200,7 +200,7 @@ func (e LightingCommandType) PLC4XEnumName() string {
 	case LightingCommandType_LABEL:
 		return "LABEL"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e LightingCommandType) String() string {

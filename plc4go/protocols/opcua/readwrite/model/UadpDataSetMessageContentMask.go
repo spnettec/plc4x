@@ -144,7 +144,7 @@ func UadpDataSetMessageContentMaskParseWithBuffer(ctx context.Context, readBuffe
 		return 0, errors.Wrap(err, "error reading UadpDataSetMessageContentMask")
 	}
 	if enum, ok := UadpDataSetMessageContentMaskByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for UadpDataSetMessageContentMask")
 		return UadpDataSetMessageContentMask(val), nil
 	} else {
 		return enum, nil
@@ -183,7 +183,7 @@ func (e UadpDataSetMessageContentMask) PLC4XEnumName() string {
 	case UadpDataSetMessageContentMask_uadpDataSetMessageContentMaskMajorVersion:
 		return "uadpDataSetMessageContentMaskMajorVersion"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint32(e))
 }
 
 func (e UadpDataSetMessageContentMask) String() string {

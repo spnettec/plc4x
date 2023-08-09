@@ -162,7 +162,7 @@ func BACnetDoorAlarmStateParseWithBuffer(ctx context.Context, readBuffer utils.R
 		return 0, errors.Wrap(err, "error reading BACnetDoorAlarmState")
 	}
 	if enum, ok := BACnetDoorAlarmStateByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for BACnetDoorAlarmState")
 		return BACnetDoorAlarmState(val), nil
 	} else {
 		return enum, nil
@@ -207,7 +207,7 @@ func (e BACnetDoorAlarmState) PLC4XEnumName() string {
 	case BACnetDoorAlarmState_EGRESS_OPEN:
 		return "EGRESS_OPEN"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e BACnetDoorAlarmState) String() string {

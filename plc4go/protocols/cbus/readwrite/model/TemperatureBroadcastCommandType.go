@@ -129,7 +129,7 @@ func TemperatureBroadcastCommandTypeParseWithBuffer(ctx context.Context, readBuf
 		return 0, errors.Wrap(err, "error reading TemperatureBroadcastCommandType")
 	}
 	if enum, ok := TemperatureBroadcastCommandTypeByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for TemperatureBroadcastCommandType")
 		return TemperatureBroadcastCommandType(val), nil
 	} else {
 		return enum, nil
@@ -156,7 +156,7 @@ func (e TemperatureBroadcastCommandType) PLC4XEnumName() string {
 	case TemperatureBroadcastCommandType_BROADCAST_EVENT:
 		return "BROADCAST_EVENT"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e TemperatureBroadcastCommandType) String() string {

@@ -317,13 +317,13 @@ _noOfDiscoveryUrls, _noOfDiscoveryUrlsErr := readBuffer.ReadInt32("noOfDiscovery
 		return nil, errors.Wrap(pullErr, "Error pulling for discoveryUrls")
 	}
 	// Count array
-	discoveryUrls := make([]PascalString, noOfDiscoveryUrls)
+	discoveryUrls := make([]PascalString, utils.Max(noOfDiscoveryUrls, 0))
 	// This happens when the size is set conditional to 0
 	if len(discoveryUrls) == 0 {
 		discoveryUrls = nil
 	}
 	{
-		_numItems := uint16(noOfDiscoveryUrls)
+		_numItems := uint16(utils.Max(noOfDiscoveryUrls, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

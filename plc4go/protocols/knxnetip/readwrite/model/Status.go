@@ -174,7 +174,7 @@ func StatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (St
 		return 0, errors.Wrap(err, "error reading Status")
 	}
 	if enum, ok := StatusByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for Status")
 		return Status(val), nil
 	} else {
 		return enum, nil
@@ -223,7 +223,7 @@ func (e Status) PLC4XEnumName() string {
 	case Status_TUNNELLING_LAYER_NOT_SUPPORTED:
 		return "TUNNELLING_LAYER_NOT_SUPPORTED"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e Status) String() string {

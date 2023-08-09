@@ -138,7 +138,7 @@ func BACnetSecurityLevelParseWithBuffer(ctx context.Context, readBuffer utils.Re
 		return 0, errors.Wrap(err, "error reading BACnetSecurityLevel")
 	}
 	if enum, ok := BACnetSecurityLevelByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for BACnetSecurityLevel")
 		return BACnetSecurityLevel(val), nil
 	} else {
 		return enum, nil
@@ -175,7 +175,7 @@ func (e BACnetSecurityLevel) PLC4XEnumName() string {
 	case BACnetSecurityLevel_ENCRYPTED_END_TO_END:
 		return "ENCRYPTED_END_TO_END"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e BACnetSecurityLevel) String() string {

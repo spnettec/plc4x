@@ -126,7 +126,7 @@ func LightingCompatibleParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 		return 0, errors.Wrap(err, "error reading LightingCompatible")
 	}
 	if enum, ok := LightingCompatibleByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for LightingCompatible")
 		return LightingCompatible(val), nil
 	} else {
 		return enum, nil
@@ -159,7 +159,7 @@ func (e LightingCompatible) PLC4XEnumName() string {
 	case LightingCompatible_NA:
 		return "NA"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e LightingCompatible) String() string {

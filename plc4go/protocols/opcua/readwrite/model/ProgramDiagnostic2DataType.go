@@ -414,13 +414,13 @@ _noOfLastMethodInputArguments, _noOfLastMethodInputArgumentsErr := readBuffer.Re
 		return nil, errors.Wrap(pullErr, "Error pulling for lastMethodInputArguments")
 	}
 	// Count array
-	lastMethodInputArguments := make([]ExtensionObjectDefinition, noOfLastMethodInputArguments)
+	lastMethodInputArguments := make([]ExtensionObjectDefinition, utils.Max(noOfLastMethodInputArguments, 0))
 	// This happens when the size is set conditional to 0
 	if len(lastMethodInputArguments) == 0 {
 		lastMethodInputArguments = nil
 	}
 	{
-		_numItems := uint16(noOfLastMethodInputArguments)
+		_numItems := uint16(utils.Max(noOfLastMethodInputArguments, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
@@ -448,13 +448,13 @@ _noOfLastMethodOutputArguments, _noOfLastMethodOutputArgumentsErr := readBuffer.
 		return nil, errors.Wrap(pullErr, "Error pulling for lastMethodOutputArguments")
 	}
 	// Count array
-	lastMethodOutputArguments := make([]ExtensionObjectDefinition, noOfLastMethodOutputArguments)
+	lastMethodOutputArguments := make([]ExtensionObjectDefinition, utils.Max(noOfLastMethodOutputArguments, 0))
 	// This happens when the size is set conditional to 0
 	if len(lastMethodOutputArguments) == 0 {
 		lastMethodOutputArguments = nil
 	}
 	{
-		_numItems := uint16(noOfLastMethodOutputArguments)
+		_numItems := uint16(utils.Max(noOfLastMethodOutputArguments, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
@@ -482,13 +482,13 @@ _noOfLastMethodInputValues, _noOfLastMethodInputValuesErr := readBuffer.ReadInt3
 		return nil, errors.Wrap(pullErr, "Error pulling for lastMethodInputValues")
 	}
 	// Count array
-	lastMethodInputValues := make([]Variant, noOfLastMethodInputValues)
+	lastMethodInputValues := make([]Variant, utils.Max(noOfLastMethodInputValues, 0))
 	// This happens when the size is set conditional to 0
 	if len(lastMethodInputValues) == 0 {
 		lastMethodInputValues = nil
 	}
 	{
-		_numItems := uint16(noOfLastMethodInputValues)
+		_numItems := uint16(utils.Max(noOfLastMethodInputValues, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
@@ -516,13 +516,13 @@ _noOfLastMethodOutputValues, _noOfLastMethodOutputValuesErr := readBuffer.ReadIn
 		return nil, errors.Wrap(pullErr, "Error pulling for lastMethodOutputValues")
 	}
 	// Count array
-	lastMethodOutputValues := make([]Variant, noOfLastMethodOutputValues)
+	lastMethodOutputValues := make([]Variant, utils.Max(noOfLastMethodOutputValues, 0))
 	// This happens when the size is set conditional to 0
 	if len(lastMethodOutputValues) == 0 {
 		lastMethodOutputValues = nil
 	}
 	{
-		_numItems := uint16(noOfLastMethodOutputValues)
+		_numItems := uint16(utils.Max(noOfLastMethodOutputValues, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

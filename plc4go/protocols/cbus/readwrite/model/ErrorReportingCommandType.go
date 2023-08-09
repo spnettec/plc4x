@@ -156,7 +156,7 @@ func ErrorReportingCommandTypeParseWithBuffer(ctx context.Context, readBuffer ut
 		return 0, errors.Wrap(err, "error reading ErrorReportingCommandType")
 	}
 	if enum, ok := ErrorReportingCommandTypeByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for ErrorReportingCommandType")
 		return ErrorReportingCommandType(val), nil
 	} else {
 		return enum, nil
@@ -189,7 +189,7 @@ func (e ErrorReportingCommandType) PLC4XEnumName() string {
 	case ErrorReportingCommandType_CLEAR_MOST_SEVERE:
 		return "CLEAR_MOST_SEVERE"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e ErrorReportingCommandType) String() string {

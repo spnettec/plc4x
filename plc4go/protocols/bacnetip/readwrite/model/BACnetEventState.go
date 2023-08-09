@@ -144,7 +144,7 @@ func BACnetEventStateParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 		return 0, errors.Wrap(err, "error reading BACnetEventState")
 	}
 	if enum, ok := BACnetEventStateByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for BACnetEventState")
 		return BACnetEventState(val), nil
 	} else {
 		return enum, nil
@@ -183,7 +183,7 @@ func (e BACnetEventState) PLC4XEnumName() string {
 	case BACnetEventState_LIFE_SAVETY_ALARM:
 		return "LIFE_SAVETY_ALARM"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint16(e))
 }
 
 func (e BACnetEventState) String() string {

@@ -120,7 +120,7 @@ func BACnetRouterEntryStatusParseWithBuffer(ctx context.Context, readBuffer util
 		return 0, errors.Wrap(err, "error reading BACnetRouterEntryStatus")
 	}
 	if enum, ok := BACnetRouterEntryStatusByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for BACnetRouterEntryStatus")
 		return BACnetRouterEntryStatus(val), nil
 	} else {
 		return enum, nil
@@ -151,7 +151,7 @@ func (e BACnetRouterEntryStatus) PLC4XEnumName() string {
 	case BACnetRouterEntryStatus_DISCONNECTED:
 		return "DISCONNECTED"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e BACnetRouterEntryStatus) String() string {

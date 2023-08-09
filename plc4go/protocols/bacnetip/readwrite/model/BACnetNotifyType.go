@@ -120,7 +120,7 @@ func BACnetNotifyTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 		return 0, errors.Wrap(err, "error reading BACnetNotifyType")
 	}
 	if enum, ok := BACnetNotifyTypeByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for BACnetNotifyType")
 		return BACnetNotifyType(val), nil
 	} else {
 		return enum, nil
@@ -151,7 +151,7 @@ func (e BACnetNotifyType) PLC4XEnumName() string {
 	case BACnetNotifyType_ACK_NOTIFICATION:
 		return "ACK_NOTIFICATION"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e BACnetNotifyType) String() string {

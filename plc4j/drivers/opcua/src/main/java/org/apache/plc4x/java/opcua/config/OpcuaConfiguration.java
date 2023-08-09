@@ -25,7 +25,6 @@ import org.apache.plc4x.java.opcua.readwrite.PascalByteString;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.BooleanDefaultValue;
-import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultValue;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.StringDefaultValue;
 import org.apache.plc4x.java.transport.tcp.TcpTransportConfiguration;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -84,9 +83,6 @@ public class OpcuaConfiguration implements Configuration, TcpTransportConfigurat
     @ConfigurationParameter("keyStorePassword")
     private String keyStorePassword;
 
-    @ConfigurationParameter("timeout-request")
-    @IntDefaultValue(10000)
-    private int timeoutRequest;
     private CertificateKeyPair ckp;
 
     public boolean isDiscovery() {
@@ -125,7 +121,9 @@ public class OpcuaConfiguration implements Configuration, TcpTransportConfigurat
         return ckp;
     }
 
-    public boolean isEncrypted() { return isEncrypted; }
+    public boolean isEncrypted() {
+        return isEncrypted;
+    }
 
     public void setDiscovery(boolean discovery) {
         this.discovery = discovery;
@@ -155,7 +153,9 @@ public class OpcuaConfiguration implements Configuration, TcpTransportConfigurat
         this.keyStorePassword = keyStorePassword;
     }
 
-    public void setThumbprint(PascalByteString thumbprint) { this.thumbprint = thumbprint; }
+    public void setThumbprint(PascalByteString thumbprint) {
+        this.thumbprint = thumbprint;
+    }
 
     public String getTransportCode() {
         return code;
@@ -197,19 +197,15 @@ public class OpcuaConfiguration implements Configuration, TcpTransportConfigurat
         this.endpoint = endpoint;
     }
 
-    public void setTransportEndpoint(String transportEndpoint) { this.transportEndpoint = transportEndpoint; }
-    public int getTimeoutRequest() {
-        return timeoutRequest;
+    public void setTransportEndpoint(String transportEndpoint) {
+        this.transportEndpoint = transportEndpoint;
     }
 
-    public void setTimeoutRequest(int timeoutRequest) {
-        this.timeoutRequest = timeoutRequest;
-    }
     public void openKeyStore() throws Exception {
         this.isEncrypted = true;
         File securityTempDir = new File(certDirectory, "security");
         if (!securityTempDir.exists() && !securityTempDir.mkdirs()) {
-            throw new PlcConnectionException("Unable to create directory please confirm folder permissions on "  + certDirectory);
+            throw new PlcConnectionException("Unable to create directory please confirm folder permissions on " + certDirectory);
         }
         KeyStore keyStore = KeyStore.getInstance("PKCS12");
         File serverKeyStore = securityTempDir.toPath().resolve(keyStoreFile).toFile();
@@ -219,7 +215,7 @@ public class OpcuaConfiguration implements Configuration, TcpTransportConfigurat
             ckp = CertificateGenerator.generateCertificate();
             LOGGER.info("Creating new KeyStore at {}", serverKeyStore);
             keyStore.load(null, keyStorePassword.toCharArray());
-            keyStore.setKeyEntry("plc4x-certificate-alias", ckp.getKeyPair().getPrivate(), keyStorePassword.toCharArray(), new X509Certificate[] { ckp.getCertificate() });
+            keyStore.setKeyEntry("plc4x-certificate-alias", ckp.getKeyPair().getPrivate(), keyStorePassword.toCharArray(), new X509Certificate[]{ckp.getCertificate()});
             keyStore.store(new FileOutputStream(serverKeyStore), keyStorePassword.toCharArray());
         } else {
             LOGGER.info("Loading KeyStore at {}", serverKeyStore);
@@ -227,17 +223,18 @@ public class OpcuaConfiguration implements Configuration, TcpTransportConfigurat
             String alias = keyStore.aliases().nextElement();
             KeyPair kp = new KeyPair(keyStore.getCertificate(alias).getPublicKey(),
                 (PrivateKey) keyStore.getKey(alias, keyStorePassword.toCharArray()));
-            ckp = new CertificateKeyPair(kp,(X509Certificate) keyStore.getCertificate(alias));
+            ckp = new CertificateKeyPair(kp, (X509Certificate) keyStore.getCertificate(alias));
         }
     }
 
     @Override
     public String toString() {
-        return "Configuration{" +
-            '}';
+        return "Configuration{" + '}';
     }
 
-    public void setSenderCertificate(byte[] certificate) { this.senderCertificate = certificate; }
+    public void setSenderCertificate(byte[] certificate) {
+        this.senderCertificate = certificate;
+    }
 
 }
 

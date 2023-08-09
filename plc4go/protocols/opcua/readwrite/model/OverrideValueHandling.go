@@ -120,7 +120,7 @@ func OverrideValueHandlingParseWithBuffer(ctx context.Context, readBuffer utils.
 		return 0, errors.Wrap(err, "error reading OverrideValueHandling")
 	}
 	if enum, ok := OverrideValueHandlingByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for OverrideValueHandling")
 		return OverrideValueHandling(val), nil
 	} else {
 		return enum, nil
@@ -151,7 +151,7 @@ func (e OverrideValueHandling) PLC4XEnumName() string {
 	case OverrideValueHandling_overrideValueHandlingOverrideValue:
 		return "overrideValueHandlingOverrideValue"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint32(e))
 }
 
 func (e OverrideValueHandling) String() string {

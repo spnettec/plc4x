@@ -197,13 +197,13 @@ _noOfHistoryUpdateDetails, _noOfHistoryUpdateDetailsErr := readBuffer.ReadInt32(
 		return nil, errors.Wrap(pullErr, "Error pulling for historyUpdateDetails")
 	}
 	// Count array
-	historyUpdateDetails := make([]ExtensionObject, noOfHistoryUpdateDetails)
+	historyUpdateDetails := make([]ExtensionObject, utils.Max(noOfHistoryUpdateDetails, 0))
 	// This happens when the size is set conditional to 0
 	if len(historyUpdateDetails) == 0 {
 		historyUpdateDetails = nil
 	}
 	{
-		_numItems := uint16(noOfHistoryUpdateDetails)
+		_numItems := uint16(utils.Max(noOfHistoryUpdateDetails, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

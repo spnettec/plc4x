@@ -288,7 +288,7 @@ func PlcValueTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		return 0, errors.Wrap(err, "error reading PlcValueType")
 	}
 	if enum, ok := PlcValueTypeByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for PlcValueType")
 		return PlcValueType(val), nil
 	} else {
 		return enum, nil
@@ -375,7 +375,7 @@ func (e PlcValueType) PLC4XEnumName() string {
 	case PlcValueType_RAW_BYTE_ARRAY:
 		return "RAW_BYTE_ARRAY"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e PlcValueType) String() string {

@@ -126,7 +126,7 @@ func BACnetNetworkNumberQualityParseWithBuffer(ctx context.Context, readBuffer u
 		return 0, errors.Wrap(err, "error reading BACnetNetworkNumberQuality")
 	}
 	if enum, ok := BACnetNetworkNumberQualityByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for BACnetNetworkNumberQuality")
 		return BACnetNetworkNumberQuality(val), nil
 	} else {
 		return enum, nil
@@ -159,7 +159,7 @@ func (e BACnetNetworkNumberQuality) PLC4XEnumName() string {
 	case BACnetNetworkNumberQuality_CONFIGURED:
 		return "CONFIGURED"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e BACnetNetworkNumberQuality) String() string {

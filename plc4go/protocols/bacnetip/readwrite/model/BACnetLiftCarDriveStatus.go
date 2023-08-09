@@ -168,7 +168,7 @@ func BACnetLiftCarDriveStatusParseWithBuffer(ctx context.Context, readBuffer uti
 		return 0, errors.Wrap(err, "error reading BACnetLiftCarDriveStatus")
 	}
 	if enum, ok := BACnetLiftCarDriveStatusByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for BACnetLiftCarDriveStatus")
 		return BACnetLiftCarDriveStatus(val), nil
 	} else {
 		return enum, nil
@@ -215,7 +215,7 @@ func (e BACnetLiftCarDriveStatus) PLC4XEnumName() string {
 	case BACnetLiftCarDriveStatus_MULTI_FLOOR_JUMP:
 		return "MULTI_FLOOR_JUMP"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint16(e))
 }
 
 func (e BACnetLiftCarDriveStatus) String() string {

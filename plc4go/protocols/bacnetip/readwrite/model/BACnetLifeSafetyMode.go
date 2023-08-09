@@ -198,7 +198,7 @@ func BACnetLifeSafetyModeParseWithBuffer(ctx context.Context, readBuffer utils.R
 		return 0, errors.Wrap(err, "error reading BACnetLifeSafetyMode")
 	}
 	if enum, ok := BACnetLifeSafetyModeByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for BACnetLifeSafetyMode")
 		return BACnetLifeSafetyMode(val), nil
 	} else {
 		return enum, nil
@@ -255,7 +255,7 @@ func (e BACnetLifeSafetyMode) PLC4XEnumName() string {
 	case BACnetLifeSafetyMode_FAST:
 		return "FAST"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint16(e))
 }
 
 func (e BACnetLifeSafetyMode) String() string {

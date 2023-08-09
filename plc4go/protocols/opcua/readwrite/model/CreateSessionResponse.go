@@ -362,13 +362,13 @@ _noOfServerEndpoints, _noOfServerEndpointsErr := readBuffer.ReadInt32("noOfServe
 		return nil, errors.Wrap(pullErr, "Error pulling for serverEndpoints")
 	}
 	// Count array
-	serverEndpoints := make([]ExtensionObjectDefinition, noOfServerEndpoints)
+	serverEndpoints := make([]ExtensionObjectDefinition, utils.Max(noOfServerEndpoints, 0))
 	// This happens when the size is set conditional to 0
 	if len(serverEndpoints) == 0 {
 		serverEndpoints = nil
 	}
 	{
-		_numItems := uint16(noOfServerEndpoints)
+		_numItems := uint16(utils.Max(noOfServerEndpoints, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
@@ -396,13 +396,13 @@ _noOfServerSoftwareCertificates, _noOfServerSoftwareCertificatesErr := readBuffe
 		return nil, errors.Wrap(pullErr, "Error pulling for serverSoftwareCertificates")
 	}
 	// Count array
-	serverSoftwareCertificates := make([]ExtensionObjectDefinition, noOfServerSoftwareCertificates)
+	serverSoftwareCertificates := make([]ExtensionObjectDefinition, utils.Max(noOfServerSoftwareCertificates, 0))
 	// This happens when the size is set conditional to 0
 	if len(serverSoftwareCertificates) == 0 {
 		serverSoftwareCertificates = nil
 	}
 	{
-		_numItems := uint16(noOfServerSoftwareCertificates)
+		_numItems := uint16(utils.Max(noOfServerSoftwareCertificates, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

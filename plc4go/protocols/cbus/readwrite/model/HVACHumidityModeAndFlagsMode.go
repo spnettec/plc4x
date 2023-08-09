@@ -126,7 +126,7 @@ func HVACHumidityModeAndFlagsModeParseWithBuffer(ctx context.Context, readBuffer
 		return 0, errors.Wrap(err, "error reading HVACHumidityModeAndFlagsMode")
 	}
 	if enum, ok := HVACHumidityModeAndFlagsModeByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for HVACHumidityModeAndFlagsMode")
 		return HVACHumidityModeAndFlagsMode(val), nil
 	} else {
 		return enum, nil
@@ -159,7 +159,7 @@ func (e HVACHumidityModeAndFlagsMode) PLC4XEnumName() string {
 	case HVACHumidityModeAndFlagsMode_HUMIDITY_CONTROL:
 		return "HUMIDITY_CONTROL"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e HVACHumidityModeAndFlagsMode) String() string {

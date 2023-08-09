@@ -138,7 +138,7 @@ func AlarmStateTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 		return 0, errors.Wrap(err, "error reading AlarmStateType")
 	}
 	if enum, ok := AlarmStateTypeByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for AlarmStateType")
 		return AlarmStateType(val), nil
 	} else {
 		return enum, nil
@@ -175,7 +175,7 @@ func (e AlarmStateType) PLC4XEnumName() string {
 	case AlarmStateType_ALARM_S_INITIATE:
 		return "ALARM_S_INITIATE"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e AlarmStateType) String() string {

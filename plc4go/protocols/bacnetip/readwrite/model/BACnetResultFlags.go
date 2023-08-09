@@ -120,7 +120,7 @@ func BACnetResultFlagsParseWithBuffer(ctx context.Context, readBuffer utils.Read
 		return 0, errors.Wrap(err, "error reading BACnetResultFlags")
 	}
 	if enum, ok := BACnetResultFlagsByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for BACnetResultFlags")
 		return BACnetResultFlags(val), nil
 	} else {
 		return enum, nil
@@ -151,7 +151,7 @@ func (e BACnetResultFlags) PLC4XEnumName() string {
 	case BACnetResultFlags_MORE_ITEMS:
 		return "MORE_ITEMS"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e BACnetResultFlags) String() string {

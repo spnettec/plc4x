@@ -198,7 +198,7 @@ func AccessLevelParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		return 0, errors.Wrap(err, "error reading AccessLevel")
 	}
 	if enum, ok := AccessLevelByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for AccessLevel")
 		return AccessLevel(val), nil
 	} else {
 		return enum, nil
@@ -233,7 +233,7 @@ func (e AccessLevel) PLC4XEnumName() string {
 	case AccessLevel_Level15:
 		return "Level15"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e AccessLevel) String() string {

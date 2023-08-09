@@ -126,7 +126,7 @@ func ApplicationTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 		return 0, errors.Wrap(err, "error reading ApplicationType")
 	}
 	if enum, ok := ApplicationTypeByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for ApplicationType")
 		return ApplicationType(val), nil
 	} else {
 		return enum, nil
@@ -159,7 +159,7 @@ func (e ApplicationType) PLC4XEnumName() string {
 	case ApplicationType_applicationTypeDiscoveryServer:
 		return "applicationTypeDiscoveryServer"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint32(e))
 }
 
 func (e ApplicationType) String() string {

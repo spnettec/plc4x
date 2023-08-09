@@ -210,7 +210,7 @@ func PermissionTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 		return 0, errors.Wrap(err, "error reading PermissionType")
 	}
 	if enum, ok := PermissionTypeByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for PermissionType")
 		return PermissionType(val), nil
 	} else {
 		return enum, nil
@@ -271,7 +271,7 @@ func (e PermissionType) PLC4XEnumName() string {
 	case PermissionType_permissionTypeAddReference:
 		return "permissionTypeAddReference"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint32(e))
 }
 
 func (e PermissionType) String() string {

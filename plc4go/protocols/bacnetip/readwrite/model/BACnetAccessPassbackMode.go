@@ -120,7 +120,7 @@ func BACnetAccessPassbackModeParseWithBuffer(ctx context.Context, readBuffer uti
 		return 0, errors.Wrap(err, "error reading BACnetAccessPassbackMode")
 	}
 	if enum, ok := BACnetAccessPassbackModeByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for BACnetAccessPassbackMode")
 		return BACnetAccessPassbackMode(val), nil
 	} else {
 		return enum, nil
@@ -151,7 +151,7 @@ func (e BACnetAccessPassbackMode) PLC4XEnumName() string {
 	case BACnetAccessPassbackMode_SOFT_PASSBACK:
 		return "SOFT_PASSBACK"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e BACnetAccessPassbackMode) String() string {

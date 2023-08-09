@@ -138,7 +138,7 @@ func BACnetProgramStateParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 		return 0, errors.Wrap(err, "error reading BACnetProgramState")
 	}
 	if enum, ok := BACnetProgramStateByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for BACnetProgramState")
 		return BACnetProgramState(val), nil
 	} else {
 		return enum, nil
@@ -175,7 +175,7 @@ func (e BACnetProgramState) PLC4XEnumName() string {
 	case BACnetProgramState_UNLOADING:
 		return "UNLOADING"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e BACnetProgramState) String() string {

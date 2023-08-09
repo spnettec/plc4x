@@ -180,7 +180,7 @@ func SyntaxIdTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		return 0, errors.Wrap(err, "error reading SyntaxIdType")
 	}
 	if enum, ok := SyntaxIdTypeByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for SyntaxIdType")
 		return SyntaxIdType(val), nil
 	} else {
 		return enum, nil
@@ -231,7 +231,7 @@ func (e SyntaxIdType) PLC4XEnumName() string {
 	case SyntaxIdType_SYM1200:
 		return "SYM1200"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e SyntaxIdType) String() string {
