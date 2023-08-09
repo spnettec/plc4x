@@ -45,7 +45,7 @@ import java.util.function.Consumer;
 public class ManualPLC4XOpcua {
     private static final Logger LOGGER = LoggerFactory.getLogger(ManualPLC4XOpcua.class);
     public static void main(String[] args) throws Exception {
-        String connectionString = "opcua:tcp://127.0.0.1:53530/OPCUA/SimulationServer";
+        String connectionString = "opcua:tcp://heyoulin-yofcmini.local:53530/OPCUA/SimulationServer";
         CachedPlcConnectionManager plcConnectionManager = CachedPlcConnectionManager.getBuilder().build();
         try (PlcConnection plcConnection = plcConnectionManager.getConnection(connectionString)) {
 
