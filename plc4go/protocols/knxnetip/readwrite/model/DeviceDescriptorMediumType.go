@@ -138,7 +138,7 @@ func DeviceDescriptorMediumTypeParseWithBuffer(ctx context.Context, readBuffer u
 		return 0, errors.Wrap(err, "error reading DeviceDescriptorMediumType")
 	}
 	if enum, ok := DeviceDescriptorMediumTypeByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for DeviceDescriptorMediumType")
 		return DeviceDescriptorMediumType(val), nil
 	} else {
 		return enum, nil
@@ -175,7 +175,7 @@ func (e DeviceDescriptorMediumType) PLC4XEnumName() string {
 	case DeviceDescriptorMediumType_KNX_IP:
 		return "KNX_IP"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e DeviceDescriptorMediumType) String() string {

@@ -198,7 +198,7 @@ func ErrorReportingSystemCategoryClassParseWithBuffer(ctx context.Context, readB
 		return 0, errors.Wrap(err, "error reading ErrorReportingSystemCategoryClass")
 	}
 	if enum, ok := ErrorReportingSystemCategoryClassByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for ErrorReportingSystemCategoryClass")
 		return ErrorReportingSystemCategoryClass(val), nil
 	} else {
 		return enum, nil
@@ -255,7 +255,7 @@ func (e ErrorReportingSystemCategoryClass) PLC4XEnumName() string {
 	case ErrorReportingSystemCategoryClass_CLIMATE_CONTROLLERS:
 		return "CLIMATE_CONTROLLERS"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e ErrorReportingSystemCategoryClass) String() string {

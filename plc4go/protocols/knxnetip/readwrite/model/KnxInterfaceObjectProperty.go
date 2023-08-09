@@ -4062,7 +4062,7 @@ func KnxInterfaceObjectPropertyParseWithBuffer(ctx context.Context, readBuffer u
 		return 0, errors.Wrap(err, "error reading KnxInterfaceObjectProperty")
 	}
 	if enum, ok := KnxInterfaceObjectPropertyByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for KnxInterfaceObjectProperty")
 		return KnxInterfaceObjectProperty(val), nil
 	} else {
 		return enum, nil
@@ -4519,7 +4519,7 @@ func (e KnxInterfaceObjectProperty) PLC4XEnumName() string {
 	case KnxInterfaceObjectProperty_PID_KNXIP_PARAMETER_KNXNETIP_ROUTING_CAPABILITIES:
 		return "PID_KNXIP_PARAMETER_KNXNETIP_ROUTING_CAPABILITIES"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint32(e))
 }
 
 func (e KnxInterfaceObjectProperty) String() string {

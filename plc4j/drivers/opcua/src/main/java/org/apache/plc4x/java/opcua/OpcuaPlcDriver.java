@@ -48,8 +48,8 @@ public class OpcuaPlcDriver extends GeneratedDriverBase<OpcuaAPU> {
 
     public static final Pattern URI_PATTERN = Pattern.compile("^(?<protocolCode>opcua)" +
         INET_ADDRESS_PATTERN +
-        "(?<transportEndpoint>[\\w/=]*)[\\?]?" +
-        "(?<paramString>([^\\=]+\\=[^\\=&]+[&]?)*)"
+        "(?<transportEndpoint>[\\w/=]*)[?]?" +
+        "(?<paramString>([^=]+=[^=&]+&?)*)"
     );
 
     private boolean isEncrypted;
@@ -75,7 +75,7 @@ public class OpcuaPlcDriver extends GeneratedDriverBase<OpcuaAPU> {
     }
 
     @Override
-    protected boolean awaitDiscoverComplete() {
+    protected boolean fireDiscoverEvent() {
         return isEncrypted;
     }
 
@@ -157,7 +157,8 @@ public class OpcuaPlcDriver extends GeneratedDriverBase<OpcuaAPU> {
         configuration.setHost(transportHost);
         configuration.setPort(transportPort);
         configuration.setTransportEndpoint(transportEndpoint);
-        configuration.setEndpoint("opc." + transportCode + "://" + transportHost + ":" + transportPort + "" + transportEndpoint);
+        String portAddition = transportPort != null ? ":" + transportPort : "";
+        configuration.setEndpoint("opc." + transportCode + "://" + transportHost + portAddition + transportEndpoint);
 
         // Try to find a transport in order to create a communication channel.
         Transport transport = null;
@@ -185,6 +186,12 @@ public class OpcuaPlcDriver extends GeneratedDriverBase<OpcuaAPU> {
 
         // Give drivers the option to customize the channel.
         initializePipeline(channelFactory);
+
+        // Make the "fire discover event" overridable via system property.
+        boolean fireDiscoverEvent = fireDiscoverEvent();
+        if(System.getProperty(PROPERTY_PLC4X_FORCE_FIRE_DISCOVER_EVENT) != null) {
+            fireDiscoverEvent = Boolean.parseBoolean(System.getProperty(PROPERTY_PLC4X_FORCE_FIRE_DISCOVER_EVENT));
+        }
 
         // Make the "await setup complete" overridable via system property.
         boolean awaitSetupComplete = awaitSetupComplete();
@@ -220,6 +227,7 @@ public class OpcuaPlcDriver extends GeneratedDriverBase<OpcuaAPU> {
             getValueHandler(),
             configuration,
             channelFactory,
+            fireDiscoverEvent,
             awaitSetupComplete,
             awaitDisconnectComplete,
             awaitDiscoverComplete,

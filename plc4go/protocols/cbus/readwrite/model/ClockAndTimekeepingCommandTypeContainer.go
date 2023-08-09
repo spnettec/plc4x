@@ -246,7 +246,7 @@ func ClockAndTimekeepingCommandTypeContainerParseWithBuffer(ctx context.Context,
 		return 0, errors.Wrap(err, "error reading ClockAndTimekeepingCommandTypeContainer")
 	}
 	if enum, ok := ClockAndTimekeepingCommandTypeContainerByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for ClockAndTimekeepingCommandTypeContainer")
 		return ClockAndTimekeepingCommandTypeContainer(val), nil
 	} else {
 		return enum, nil
@@ -289,7 +289,7 @@ func (e ClockAndTimekeepingCommandTypeContainer) PLC4XEnumName() string {
 	case ClockAndTimekeepingCommandTypeContainer_MediaTransportControlCommandRequestRefresh:
 		return "MediaTransportControlCommandRequestRefresh"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e ClockAndTimekeepingCommandTypeContainer) String() string {

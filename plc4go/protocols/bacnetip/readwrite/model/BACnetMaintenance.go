@@ -132,7 +132,7 @@ func BACnetMaintenanceParseWithBuffer(ctx context.Context, readBuffer utils.Read
 		return 0, errors.Wrap(err, "error reading BACnetMaintenance")
 	}
 	if enum, ok := BACnetMaintenanceByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for BACnetMaintenance")
 		return BACnetMaintenance(val), nil
 	} else {
 		return enum, nil
@@ -167,7 +167,7 @@ func (e BACnetMaintenance) PLC4XEnumName() string {
 	case BACnetMaintenance_NEED_SERVICE_INOPERATIVE:
 		return "NEED_SERVICE_INOPERATIVE"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e BACnetMaintenance) String() string {

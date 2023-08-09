@@ -363,7 +363,7 @@ func SimulatedDataTypeSizesParseWithBuffer(ctx context.Context, readBuffer utils
 		return 0, errors.Wrap(err, "error reading SimulatedDataTypeSizes")
 	}
 	if enum, ok := SimulatedDataTypeSizesByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for SimulatedDataTypeSizes")
 		return SimulatedDataTypeSizes(val), nil
 	} else {
 		return enum, nil
@@ -442,7 +442,7 @@ func (e SimulatedDataTypeSizes) PLC4XEnumName() string {
 	case SimulatedDataTypeSizes_LINT:
 		return "LINT"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e SimulatedDataTypeSizes) String() string {

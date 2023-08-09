@@ -192,7 +192,7 @@ func AccessControlCommandTypeParseWithBuffer(ctx context.Context, readBuffer uti
 		return 0, errors.Wrap(err, "error reading AccessControlCommandType")
 	}
 	if enum, ok := AccessControlCommandTypeByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for AccessControlCommandType")
 		return AccessControlCommandType(val), nil
 	} else {
 		return enum, nil
@@ -233,7 +233,7 @@ func (e AccessControlCommandType) PLC4XEnumName() string {
 	case AccessControlCommandType_INVALID_ACCESS:
 		return "INVALID_ACCESS"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e AccessControlCommandType) String() string {

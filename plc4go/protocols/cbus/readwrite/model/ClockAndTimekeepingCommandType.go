@@ -138,7 +138,7 @@ func ClockAndTimekeepingCommandTypeParseWithBuffer(ctx context.Context, readBuff
 		return 0, errors.Wrap(err, "error reading ClockAndTimekeepingCommandType")
 	}
 	if enum, ok := ClockAndTimekeepingCommandTypeByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for ClockAndTimekeepingCommandType")
 		return ClockAndTimekeepingCommandType(val), nil
 	} else {
 		return enum, nil
@@ -167,7 +167,7 @@ func (e ClockAndTimekeepingCommandType) PLC4XEnumName() string {
 	case ClockAndTimekeepingCommandType_REQUEST_REFRESH:
 		return "REQUEST_REFRESH"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e ClockAndTimekeepingCommandType) String() string {

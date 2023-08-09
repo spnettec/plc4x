@@ -173,13 +173,13 @@ _noOfParameters, _noOfParametersErr := readBuffer.ReadInt32("noOfParameters", 32
 		return nil, errors.Wrap(pullErr, "Error pulling for parameters")
 	}
 	// Count array
-	parameters := make([]ExtensionObjectDefinition, noOfParameters)
+	parameters := make([]ExtensionObjectDefinition, utils.Max(noOfParameters, 0))
 	// This happens when the size is set conditional to 0
 	if len(parameters) == 0 {
 		parameters = nil
 	}
 	{
-		_numItems := uint16(noOfParameters)
+		_numItems := uint16(utils.Max(noOfParameters, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

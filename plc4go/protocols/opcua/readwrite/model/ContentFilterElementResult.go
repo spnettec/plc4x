@@ -226,13 +226,13 @@ _noOfOperandStatusCodes, _noOfOperandStatusCodesErr := readBuffer.ReadInt32("noO
 		return nil, errors.Wrap(pullErr, "Error pulling for operandStatusCodes")
 	}
 	// Count array
-	operandStatusCodes := make([]StatusCode, noOfOperandStatusCodes)
+	operandStatusCodes := make([]StatusCode, utils.Max(noOfOperandStatusCodes, 0))
 	// This happens when the size is set conditional to 0
 	if len(operandStatusCodes) == 0 {
 		operandStatusCodes = nil
 	}
 	{
-		_numItems := uint16(noOfOperandStatusCodes)
+		_numItems := uint16(utils.Max(noOfOperandStatusCodes, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
@@ -260,13 +260,13 @@ _noOfOperandDiagnosticInfos, _noOfOperandDiagnosticInfosErr := readBuffer.ReadIn
 		return nil, errors.Wrap(pullErr, "Error pulling for operandDiagnosticInfos")
 	}
 	// Count array
-	operandDiagnosticInfos := make([]DiagnosticInfo, noOfOperandDiagnosticInfos)
+	operandDiagnosticInfos := make([]DiagnosticInfo, utils.Max(noOfOperandDiagnosticInfos, 0))
 	// This happens when the size is set conditional to 0
 	if len(operandDiagnosticInfos) == 0 {
 		operandDiagnosticInfos = nil
 	}
 	{
-		_numItems := uint16(noOfOperandDiagnosticInfos)
+		_numItems := uint16(utils.Max(noOfOperandDiagnosticInfos, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

@@ -432,7 +432,7 @@ func BACnetAccessEventParseWithBuffer(ctx context.Context, readBuffer utils.Read
 		return 0, errors.Wrap(err, "error reading BACnetAccessEvent")
 	}
 	if enum, ok := BACnetAccessEventByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for BACnetAccessEvent")
 		return BACnetAccessEvent(val), nil
 	} else {
 		return enum, nil
@@ -567,7 +567,7 @@ func (e BACnetAccessEvent) PLC4XEnumName() string {
 	case BACnetAccessEvent_LOCKED_BY_HIGHER_PRIORITY:
 		return "LOCKED_BY_HIGHER_PRIORITY"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint16(e))
 }
 
 func (e BACnetAccessEvent) String() string {

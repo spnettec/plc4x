@@ -138,7 +138,7 @@ func BaudRateSelectorParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 		return 0, errors.Wrap(err, "error reading BaudRateSelector")
 	}
 	if enum, ok := BaudRateSelectorByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for BaudRateSelector")
 		return BaudRateSelector(val), nil
 	} else {
 		return enum, nil
@@ -175,7 +175,7 @@ func (e BaudRateSelector) PLC4XEnumName() string {
 	case BaudRateSelector_SELECTED_9600_BAUD:
 		return "SELECTED_9600_BAUD"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e BaudRateSelector) String() string {

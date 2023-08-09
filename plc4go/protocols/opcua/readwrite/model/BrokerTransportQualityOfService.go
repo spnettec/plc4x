@@ -132,7 +132,7 @@ func BrokerTransportQualityOfServiceParseWithBuffer(ctx context.Context, readBuf
 		return 0, errors.Wrap(err, "error reading BrokerTransportQualityOfService")
 	}
 	if enum, ok := BrokerTransportQualityOfServiceByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for BrokerTransportQualityOfService")
 		return BrokerTransportQualityOfService(val), nil
 	} else {
 		return enum, nil
@@ -167,7 +167,7 @@ func (e BrokerTransportQualityOfService) PLC4XEnumName() string {
 	case BrokerTransportQualityOfService_brokerTransportQualityOfServiceExactlyOnce:
 		return "brokerTransportQualityOfServiceExactlyOnce"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint32(e))
 }
 
 func (e BrokerTransportQualityOfService) String() string {

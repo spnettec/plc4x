@@ -942,7 +942,7 @@ func HVACHumidityErrorParseWithBuffer(ctx context.Context, readBuffer utils.Read
 		return 0, errors.Wrap(err, "error reading HVACHumidityError")
 	}
 	if enum, ok := HVACHumidityErrorByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for HVACHumidityError")
 		return HVACHumidityError(val), nil
 	} else {
 		return enum, nil
@@ -1247,7 +1247,7 @@ func (e HVACHumidityError) PLC4XEnumName() string {
 	case HVACHumidityError_CUSTOM_ERROR_127:
 		return "CUSTOM_ERROR_127"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e HVACHumidityError) String() string {

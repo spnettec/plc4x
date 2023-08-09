@@ -518,7 +518,7 @@ func CIPClassIDParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer)
 		return 0, errors.Wrap(err, "error reading CIPClassID")
 	}
 	if enum, ok := CIPClassIDByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for CIPClassID")
 		return CIPClassID(val), nil
 	} else {
 		return enum, nil
@@ -681,7 +681,7 @@ func (e CIPClassID) PLC4XEnumName() string {
 	case CIPClassID_CompoNetRepeater:
 		return "CompoNetRepeater"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint16(e))
 }
 
 func (e CIPClassID) String() string {

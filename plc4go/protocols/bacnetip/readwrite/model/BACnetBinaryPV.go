@@ -114,7 +114,7 @@ func BACnetBinaryPVParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 		return 0, errors.Wrap(err, "error reading BACnetBinaryPV")
 	}
 	if enum, ok := BACnetBinaryPVByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for BACnetBinaryPV")
 		return BACnetBinaryPV(val), nil
 	} else {
 		return enum, nil
@@ -143,7 +143,7 @@ func (e BACnetBinaryPV) PLC4XEnumName() string {
 	case BACnetBinaryPV_ACTIVE:
 		return "ACTIVE"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e BACnetBinaryPV) String() string {

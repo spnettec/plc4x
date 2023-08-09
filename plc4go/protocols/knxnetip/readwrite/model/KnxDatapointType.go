@@ -5421,7 +5421,7 @@ func KnxDatapointTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 		return 0, errors.Wrap(err, "error reading KnxDatapointType")
 	}
 	if enum, ok := KnxDatapointTypeByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for KnxDatapointType")
 		return KnxDatapointType(val), nil
 	} else {
 		return enum, nil
@@ -6148,7 +6148,7 @@ func (e KnxDatapointType) PLC4XEnumName() string {
 	case KnxDatapointType_DPT_Value_Temp:
 		return "DPT_Value_Temp"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint32(e))
 }
 
 func (e KnxDatapointType) String() string {

@@ -614,6 +614,8 @@ func (m *_BACnetTagPayloadUnsignedInteger) SerializeWithWriteBuffer(ctx context.
 		return errors.Wrap(pushErr, "Error pushing for BACnetTagPayloadUnsignedInteger")
 	}
 	// Virtual field
+	isUint8 := m.GetIsUint8()
+	_ =	isUint8
 	if _isUint8Err := writeBuffer.WriteVirtual(ctx, "isUint8", m.GetIsUint8()); _isUint8Err != nil {
 		return errors.Wrap(_isUint8Err, "Error serializing 'isUint8' field")
 	}
@@ -628,6 +630,8 @@ func (m *_BACnetTagPayloadUnsignedInteger) SerializeWithWriteBuffer(ctx context.
 		}
 	}
 	// Virtual field
+	isUint16 := m.GetIsUint16()
+	_ =	isUint16
 	if _isUint16Err := writeBuffer.WriteVirtual(ctx, "isUint16", m.GetIsUint16()); _isUint16Err != nil {
 		return errors.Wrap(_isUint16Err, "Error serializing 'isUint16' field")
 	}
@@ -642,6 +646,8 @@ func (m *_BACnetTagPayloadUnsignedInteger) SerializeWithWriteBuffer(ctx context.
 		}
 	}
 	// Virtual field
+	isUint24 := m.GetIsUint24()
+	_ =	isUint24
 	if _isUint24Err := writeBuffer.WriteVirtual(ctx, "isUint24", m.GetIsUint24()); _isUint24Err != nil {
 		return errors.Wrap(_isUint24Err, "Error serializing 'isUint24' field")
 	}
@@ -656,6 +662,8 @@ func (m *_BACnetTagPayloadUnsignedInteger) SerializeWithWriteBuffer(ctx context.
 		}
 	}
 	// Virtual field
+	isUint32 := m.GetIsUint32()
+	_ =	isUint32
 	if _isUint32Err := writeBuffer.WriteVirtual(ctx, "isUint32", m.GetIsUint32()); _isUint32Err != nil {
 		return errors.Wrap(_isUint32Err, "Error serializing 'isUint32' field")
 	}
@@ -670,6 +678,8 @@ func (m *_BACnetTagPayloadUnsignedInteger) SerializeWithWriteBuffer(ctx context.
 		}
 	}
 	// Virtual field
+	isUint40 := m.GetIsUint40()
+	_ =	isUint40
 	if _isUint40Err := writeBuffer.WriteVirtual(ctx, "isUint40", m.GetIsUint40()); _isUint40Err != nil {
 		return errors.Wrap(_isUint40Err, "Error serializing 'isUint40' field")
 	}
@@ -684,6 +694,8 @@ func (m *_BACnetTagPayloadUnsignedInteger) SerializeWithWriteBuffer(ctx context.
 		}
 	}
 	// Virtual field
+	isUint48 := m.GetIsUint48()
+	_ =	isUint48
 	if _isUint48Err := writeBuffer.WriteVirtual(ctx, "isUint48", m.GetIsUint48()); _isUint48Err != nil {
 		return errors.Wrap(_isUint48Err, "Error serializing 'isUint48' field")
 	}
@@ -698,6 +710,8 @@ func (m *_BACnetTagPayloadUnsignedInteger) SerializeWithWriteBuffer(ctx context.
 		}
 	}
 	// Virtual field
+	isUint56 := m.GetIsUint56()
+	_ =	isUint56
 	if _isUint56Err := writeBuffer.WriteVirtual(ctx, "isUint56", m.GetIsUint56()); _isUint56Err != nil {
 		return errors.Wrap(_isUint56Err, "Error serializing 'isUint56' field")
 	}
@@ -712,6 +726,8 @@ func (m *_BACnetTagPayloadUnsignedInteger) SerializeWithWriteBuffer(ctx context.
 		}
 	}
 	// Virtual field
+	isUint64 := m.GetIsUint64()
+	_ =	isUint64
 	if _isUint64Err := writeBuffer.WriteVirtual(ctx, "isUint64", m.GetIsUint64()); _isUint64Err != nil {
 		return errors.Wrap(_isUint64Err, "Error serializing 'isUint64' field")
 	}
@@ -726,6 +742,8 @@ func (m *_BACnetTagPayloadUnsignedInteger) SerializeWithWriteBuffer(ctx context.
 		}
 	}
 	// Virtual field
+	actualValue := m.GetActualValue()
+	_ =	actualValue
 	if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 		return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 	}

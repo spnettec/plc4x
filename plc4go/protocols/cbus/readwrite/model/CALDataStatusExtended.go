@@ -277,13 +277,13 @@ _blockStart, _blockStartErr := readBuffer.ReadUint8("blockStart", 8)
 		return nil, errors.Wrap(pullErr, "Error pulling for statusBytes")
 	}
 	// Count array
-	statusBytes := make([]StatusByte, numberOfStatusBytes)
+	statusBytes := make([]StatusByte, utils.Max(numberOfStatusBytes, 0))
 	// This happens when the size is set conditional to 0
 	if len(statusBytes) == 0 {
 		statusBytes = nil
 	}
 	{
-		_numItems := uint16(numberOfStatusBytes)
+		_numItems := uint16(utils.Max(numberOfStatusBytes, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
@@ -304,13 +304,13 @@ _item, _err := StatusByteParseWithBuffer(arrayCtx, readBuffer)
 		return nil, errors.Wrap(pullErr, "Error pulling for levelInformation")
 	}
 	// Count array
-	levelInformation := make([]LevelInformation, numberOfLevelInformation)
+	levelInformation := make([]LevelInformation, utils.Max(numberOfLevelInformation, 0))
 	// This happens when the size is set conditional to 0
 	if len(levelInformation) == 0 {
 		levelInformation = nil
 	}
 	{
-		_numItems := uint16(numberOfLevelInformation)
+		_numItems := uint16(utils.Max(numberOfLevelInformation, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
@@ -394,10 +394,14 @@ func (m *_CALDataStatusExtended) SerializeWithWriteBuffer(ctx context.Context, w
 		return errors.Wrap(_blockStartErr, "Error serializing 'blockStart' field")
 	}
 	// Virtual field
+	numberOfStatusBytes := m.GetNumberOfStatusBytes()
+	_ =	numberOfStatusBytes
 	if _numberOfStatusBytesErr := writeBuffer.WriteVirtual(ctx, "numberOfStatusBytes", m.GetNumberOfStatusBytes()); _numberOfStatusBytesErr != nil {
 		return errors.Wrap(_numberOfStatusBytesErr, "Error serializing 'numberOfStatusBytes' field")
 	}
 	// Virtual field
+	numberOfLevelInformation := m.GetNumberOfLevelInformation()
+	_ =	numberOfLevelInformation
 	if _numberOfLevelInformationErr := writeBuffer.WriteVirtual(ctx, "numberOfLevelInformation", m.GetNumberOfLevelInformation()); _numberOfLevelInformationErr != nil {
 		return errors.Wrap(_numberOfLevelInformationErr, "Error serializing 'numberOfLevelInformation' field")
 	}

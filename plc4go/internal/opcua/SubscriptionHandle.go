@@ -38,8 +38,7 @@ import (
 type SubscriptionHandle struct {
 	*spiModel.DefaultPlcSubscriptionHandle
 	plcSubscriber       *Subscriber
-	messageCodec        *MessageCodec
-	channel             *SecureChannel
+	connection          *Connection
 	subscriptionRequest apiModel.PlcSubscriptionRequest
 	tagNames            []string
 	consumers           []apiModel.PlcSubscriptionEventConsumer
@@ -52,24 +51,24 @@ type SubscriptionHandle struct {
 	subscriberWg sync.WaitGroup
 	complete     bool
 
-	log zerolog.Logger
+	log zerolog.Logger `ignore:"true""`
 }
 
-func NewSubscriptionHandle(log zerolog.Logger, subscriber *Subscriber, messageCodec *MessageCodec, subscriptionRequest apiModel.PlcSubscriptionRequest, subscriptionId uint32, cycleTime time.Duration) *SubscriptionHandle {
+func NewSubscriptionHandle(log zerolog.Logger, subscriber *Subscriber, connection *Connection, subscriptionRequest apiModel.PlcSubscriptionRequest, subscriptionId uint32, cycleTime time.Duration) *SubscriptionHandle {
 	s := &SubscriptionHandle{
 		plcSubscriber:       subscriber,
-		messageCodec:        messageCodec,
-		channel:             messageCodec.channel,
+		connection:          connection,
 		subscriptionRequest: subscriptionRequest,
 		tagNames:            subscriptionRequest.GetTagNames(),
 		subscriptionId:      subscriptionId,
 		cycleTime:           cycleTime,
 		log:                 log,
 	}
+	s.clientHandles.Store(1)
 	s.DefaultPlcSubscriptionHandle = spiModel.NewDefaultPlcSubscriptionHandleWithHandleToRegister(subscriber, s)
 	_, err := s.onSubscribeCreateMonitoredItemsRequest()
 	if err != nil {
-		subscriber.onDisconnect(messageCodec)
+		subscriber.onDisconnect()
 	}
 	s.startSubscriber()
 	return s
@@ -104,7 +103,7 @@ func (h *SubscriptionHandle) onSubscribeCreateMonitoredItemsRequest() (readWrite
 			monitoringMode = readWriteModel.MonitoringMode_monitoringModeReporting
 		}
 
-		clientHandle := h.clientHandles.Add(1)
+		clientHandle := h.clientHandles.Add(1) - 1
 
 		parameters := readWriteModel.NewMonitoringParameters(
 			clientHandle,
@@ -120,9 +119,9 @@ func (h *SubscriptionHandle) onSubscribeCreateMonitoredItemsRequest() (readWrite
 		requestList = append(requestList, request)
 	}
 
-	requestHeader := readWriteModel.NewRequestHeader(h.channel.getAuthenticationToken(),
-		h.channel.getCurrentDateTime(),
-		h.channel.getRequestHandle(),
+	requestHeader := readWriteModel.NewRequestHeader(h.connection.channel.getAuthenticationToken(),
+		h.connection.channel.getCurrentDateTime(),
+		h.connection.channel.getRequestHandle(),
 		0,
 		NULL_STRING,
 		REQUEST_TIMEOUT_LONG,
@@ -177,11 +176,11 @@ func (h *SubscriptionHandle) onSubscribeCreateMonitoredItemsRequest() (readWrite
 			serviceFault := unknownExtensionObject
 			header := serviceFault.GetResponseHeader().(readWriteModel.ResponseHeader)
 			errorChan <- errors.Errorf("Subscription ServiceFault returned from server with error code,  '%s'", header.GetServiceResult())
-			h.plcSubscriber.onDisconnect(h.messageCodec)
+			h.plcSubscriber.onDisconnect()
 			return
 		default:
 			errorChan <- errors.Errorf("Unexpected type %T received", unknownExtensionObject)
-			h.plcSubscriber.onDisconnect(h.messageCodec)
+			h.plcSubscriber.onDisconnect()
 			return
 		}
 
@@ -192,9 +191,9 @@ func (h *SubscriptionHandle) onSubscribeCreateMonitoredItemsRequest() (readWrite
 		for index, arrayLength := 0, len(array); index < arrayLength; index++ {
 			result := array[index]
 			if code, ok := readWriteModel.OpcuaStatusCodeByValue(result.GetStatusCode().GetStatusCode()); !ok || code != readWriteModel.OpcuaStatusCode_Good {
-				h.log.Error().Msgf("Invalid Tag %s, subscription created without this tag", h.tagNames[index])
+				h.log.Error().Str("tag", h.tagNames[index]).Msg("Invalid Tag, subscription created without this tag")
 			} else {
-				h.log.Debug().Msgf("Tag %s was added to the subscription", h.tagNames[index])
+				h.log.Debug().Str("tag", h.tagNames[index]).Msg("Tag was added to the subscription")
 			}
 		}
 		responseChan <- responseMessage
@@ -204,7 +203,7 @@ func (h *SubscriptionHandle) onSubscribeCreateMonitoredItemsRequest() (readWrite
 		errorChan <- errors.Wrap(err, "error received")
 	}
 
-	h.channel.submit(ctx, h.messageCodec, errorDispatcher, consumer, buffer)
+	h.connection.channel.submit(ctx, h.connection.messageCodec, errorDispatcher, consumer, buffer)
 
 	select {
 	case response := <-responseChan:
@@ -232,12 +231,12 @@ func (h *SubscriptionHandle) startSubscriber() {
 		var outstandingRequests []uint32
 		for !h.destroy.Load() {
 
-			requestHandle := h.channel.getRequestHandle()
+			requestHandle := h.connection.channel.getRequestHandle()
 
 			//If we are waiting on a response and haven't received one, just wait until we do. A keep alive will be sent out eventually
 			if len(outstandingRequests) <= 1 {
-				requestHeader := readWriteModel.NewRequestHeader(h.channel.getAuthenticationToken(),
-					h.channel.getCurrentDateTime(),
+				requestHeader := readWriteModel.NewRequestHeader(h.connection.channel.getAuthenticationToken(),
+					h.connection.channel.getCurrentDateTime(),
 					requestHandle,
 					0,
 					NULL_STRING,
@@ -303,7 +302,7 @@ func (h *SubscriptionHandle) startSubscriber() {
 					unknownExtensionObject, err := readWriteModel.ExtensionObjectParseWithBuffer(ctx, utils.NewReadBufferByteBased(opcuaResponse, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian)), false)
 					if err != nil {
 						h.log.Error().Err(err).Msg("Unable to parse the returned Subscription response")
-						h.plcSubscriber.onDisconnect(h.messageCodec)
+						h.plcSubscriber.onDisconnect()
 						return
 					}
 					switch unknownExtensionObject := unknownExtensionObject.(type) {
@@ -312,7 +311,9 @@ func (h *SubscriptionHandle) startSubscriber() {
 					case readWriteModel.ServiceFault:
 						serviceFault = unknownExtensionObject
 						header := serviceFault.GetResponseHeader().(readWriteModel.ResponseHeader)
-						h.log.Debug().Msgf("Subscription ServiceFault returned from server with error code,  '%s', ignoring as it is probably just a result of a Delete Subscription Request", header.GetServiceResult())
+						h.log.Debug().
+							Stringer("serviceResult", header.GetServiceResult()).
+							Msg("Subscription ServiceFault returned from server with error code, ignoring as it is probably just a result of a Delete Subscription Request")
 						//h.plcSubscriber.onDisconnect(context);
 						return
 					}
@@ -349,10 +350,10 @@ func (h *SubscriptionHandle) startSubscriber() {
 
 				errorDispatcher := func(err error) {
 					h.log.Error().Err(err).Msg("error received")
-					h.plcSubscriber.onDisconnect(h.messageCodec)
+					h.plcSubscriber.onDisconnect()
 				}
 
-				h.messageCodec.channel.submit(ctx, h.messageCodec, errorDispatcher, consumer, buffer)
+				h.connection.channel.submit(ctx, h.connection.messageCodec, errorDispatcher, consumer, buffer)
 			}
 			//Put the subscriber loop to sleep for the rest of the cycle.
 			time.Sleep(h.revisedCycleTime)
@@ -367,11 +368,11 @@ func (h *SubscriptionHandle) startSubscriber() {
 func (h *SubscriptionHandle) stopSubscriber() {
 	h.destroy.Store(true)
 
-	requestHandle := h.channel.getRequestHandle()
+	requestHandle := h.connection.channel.getRequestHandle()
 
 	requestHeader := readWriteModel.NewRequestHeader(
-		h.channel.getAuthenticationToken(),
-		h.channel.getCurrentDateTime(),
+		h.connection.channel.getAuthenticationToken(),
+		h.connection.channel.getCurrentDateTime(),
 		requestHandle,
 		0,
 		NULL_STRING,
@@ -417,7 +418,7 @@ func (h *SubscriptionHandle) stopSubscriber() {
 		unknownExtensionObject, err := readWriteModel.ExtensionObjectParseWithBuffer(ctx, utils.NewReadBufferByteBased(opcuaResponse, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian)), false)
 		if err != nil {
 			h.log.Error().Err(err).Msg("Unable to parse the returned Subscription response")
-			h.plcSubscriber.onDisconnect(h.messageCodec)
+			h.plcSubscriber.onDisconnect()
 			return
 		}
 		switch unknownExtensionObject := unknownExtensionObject.(type) {
@@ -426,18 +427,20 @@ func (h *SubscriptionHandle) stopSubscriber() {
 		case readWriteModel.ServiceFault:
 			serviceFault := unknownExtensionObject
 			header := serviceFault.GetResponseHeader().(readWriteModel.ResponseHeader)
-			h.log.Debug().Msgf("Subscription ServiceFault returned from server with error code,  '%s', ignoring as it is probably just a result of a Delete Subscription Request", header.GetServiceResult())
+			h.log.Debug().
+				Stringer("serviceResult", header.GetServiceResult()).
+				Msg("Subscription ServiceFault returned from server with error code, ignoring as it is probably just a result of a Delete Subscription Request")
 			return
 		}
-		h.log.Debug().Msgf("Received response\n%s", responseMessage)
+		h.log.Debug().Stringer("responseMessage", responseMessage).Msg("Received response")
 	}
 
 	errorDispatcher := func(err error) {
 		h.log.Error().Err(err).Msg("error received")
-		h.plcSubscriber.onDisconnect(h.messageCodec)
+		h.plcSubscriber.onDisconnect()
 	}
 
-	h.messageCodec.channel.submit(ctx, h.messageCodec, errorDispatcher, consumer, buffer)
+	h.connection.channel.submit(ctx, h.connection.messageCodec, errorDispatcher, consumer, buffer)
 }
 
 /**

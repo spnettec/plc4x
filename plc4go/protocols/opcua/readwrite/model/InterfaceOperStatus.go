@@ -144,7 +144,7 @@ func InterfaceOperStatusParseWithBuffer(ctx context.Context, readBuffer utils.Re
 		return 0, errors.Wrap(err, "error reading InterfaceOperStatus")
 	}
 	if enum, ok := InterfaceOperStatusByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for InterfaceOperStatus")
 		return InterfaceOperStatus(val), nil
 	} else {
 		return enum, nil
@@ -183,7 +183,7 @@ func (e InterfaceOperStatus) PLC4XEnumName() string {
 	case InterfaceOperStatus_interfaceOperStatusLowerLayerDown:
 		return "interfaceOperStatusLowerLayerDown"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint32(e))
 }
 
 func (e InterfaceOperStatus) String() string {

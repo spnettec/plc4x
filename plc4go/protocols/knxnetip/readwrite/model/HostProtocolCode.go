@@ -114,7 +114,7 @@ func HostProtocolCodeParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 		return 0, errors.Wrap(err, "error reading HostProtocolCode")
 	}
 	if enum, ok := HostProtocolCodeByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for HostProtocolCode")
 		return HostProtocolCode(val), nil
 	} else {
 		return enum, nil
@@ -143,7 +143,7 @@ func (e HostProtocolCode) PLC4XEnumName() string {
 	case HostProtocolCode_IPV4_TCP:
 		return "IPV4_TCP"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e HostProtocolCode) String() string {

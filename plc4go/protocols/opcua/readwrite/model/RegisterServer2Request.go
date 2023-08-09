@@ -221,13 +221,13 @@ _noOfDiscoveryConfiguration, _noOfDiscoveryConfigurationErr := readBuffer.ReadIn
 		return nil, errors.Wrap(pullErr, "Error pulling for discoveryConfiguration")
 	}
 	// Count array
-	discoveryConfiguration := make([]ExtensionObject, noOfDiscoveryConfiguration)
+	discoveryConfiguration := make([]ExtensionObject, utils.Max(noOfDiscoveryConfiguration, 0))
 	// This happens when the size is set conditional to 0
 	if len(discoveryConfiguration) == 0 {
 		discoveryConfiguration = nil
 	}
 	{
-		_numItems := uint16(noOfDiscoveryConfiguration)
+		_numItems := uint16(utils.Max(noOfDiscoveryConfiguration, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

@@ -156,7 +156,7 @@ func ErrorClassParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer)
 		return 0, errors.Wrap(err, "error reading ErrorClass")
 	}
 	if enum, ok := ErrorClassByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for ErrorClass")
 		return ErrorClass(val), nil
 	} else {
 		return enum, nil
@@ -199,7 +199,7 @@ func (e ErrorClass) PLC4XEnumName() string {
 	case ErrorClass_COMMUNICATION:
 		return "COMMUNICATION"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint16(e))
 }
 
 func (e ErrorClass) String() string {

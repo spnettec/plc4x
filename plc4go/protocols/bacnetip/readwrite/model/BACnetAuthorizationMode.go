@@ -144,7 +144,7 @@ func BACnetAuthorizationModeParseWithBuffer(ctx context.Context, readBuffer util
 		return 0, errors.Wrap(err, "error reading BACnetAuthorizationMode")
 	}
 	if enum, ok := BACnetAuthorizationModeByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for BACnetAuthorizationMode")
 		return BACnetAuthorizationMode(val), nil
 	} else {
 		return enum, nil
@@ -183,7 +183,7 @@ func (e BACnetAuthorizationMode) PLC4XEnumName() string {
 	case BACnetAuthorizationMode_NONE:
 		return "NONE"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint16(e))
 }
 
 func (e BACnetAuthorizationMode) String() string {

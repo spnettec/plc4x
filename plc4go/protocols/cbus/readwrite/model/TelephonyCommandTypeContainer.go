@@ -534,7 +534,7 @@ func TelephonyCommandTypeContainerParseWithBuffer(ctx context.Context, readBuffe
 		return 0, errors.Wrap(err, "error reading TelephonyCommandTypeContainer")
 	}
 	if enum, ok := TelephonyCommandTypeContainerByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for TelephonyCommandTypeContainer")
 		return TelephonyCommandTypeContainer(val), nil
 	} else {
 		return enum, nil
@@ -625,7 +625,7 @@ func (e TelephonyCommandTypeContainer) PLC4XEnumName() string {
 	case TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_31Bytes:
 		return "TelephonyCommandLineOffHook_31Bytes"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e TelephonyCommandTypeContainer) String() string {

@@ -120,7 +120,7 @@ func BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterParse
 		return 0, errors.Wrap(err, "error reading BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter")
 	}
 	if enum, ok := BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter")
 		return BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter(val), nil
 	} else {
 		return enum, nil
@@ -151,7 +151,7 @@ func (e BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter) 
 	case BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter_NOT_ACKED:
 		return "NOT_ACKED"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter) String() string {

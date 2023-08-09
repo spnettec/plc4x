@@ -126,7 +126,7 @@ func BACnetLightingTransitionParseWithBuffer(ctx context.Context, readBuffer uti
 		return 0, errors.Wrap(err, "error reading BACnetLightingTransition")
 	}
 	if enum, ok := BACnetLightingTransitionByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for BACnetLightingTransition")
 		return BACnetLightingTransition(val), nil
 	} else {
 		return enum, nil
@@ -159,7 +159,7 @@ func (e BACnetLightingTransition) PLC4XEnumName() string {
 	case BACnetLightingTransition_RAMP:
 		return "RAMP"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e BACnetLightingTransition) String() string {

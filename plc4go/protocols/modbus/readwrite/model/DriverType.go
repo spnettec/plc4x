@@ -120,7 +120,7 @@ func DriverTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer)
 		return 0, errors.Wrap(err, "error reading DriverType")
 	}
 	if enum, ok := DriverTypeByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for DriverType")
 		return DriverType(val), nil
 	} else {
 		return enum, nil
@@ -151,7 +151,7 @@ func (e DriverType) PLC4XEnumName() string {
 	case DriverType_MODBUS_ASCII:
 		return "MODBUS_ASCII"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint32(e))
 }
 
 func (e DriverType) String() string {

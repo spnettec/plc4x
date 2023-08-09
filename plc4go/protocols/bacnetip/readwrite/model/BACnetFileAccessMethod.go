@@ -114,7 +114,7 @@ func BACnetFileAccessMethodParseWithBuffer(ctx context.Context, readBuffer utils
 		return 0, errors.Wrap(err, "error reading BACnetFileAccessMethod")
 	}
 	if enum, ok := BACnetFileAccessMethodByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for BACnetFileAccessMethod")
 		return BACnetFileAccessMethod(val), nil
 	} else {
 		return enum, nil
@@ -143,7 +143,7 @@ func (e BACnetFileAccessMethod) PLC4XEnumName() string {
 	case BACnetFileAccessMethod_STREAM_ACCESS:
 		return "STREAM_ACCESS"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e BACnetFileAccessMethod) String() string {

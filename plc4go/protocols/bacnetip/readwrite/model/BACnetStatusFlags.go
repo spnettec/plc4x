@@ -126,7 +126,7 @@ func BACnetStatusFlagsParseWithBuffer(ctx context.Context, readBuffer utils.Read
 		return 0, errors.Wrap(err, "error reading BACnetStatusFlags")
 	}
 	if enum, ok := BACnetStatusFlagsByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for BACnetStatusFlags")
 		return BACnetStatusFlags(val), nil
 	} else {
 		return enum, nil
@@ -159,7 +159,7 @@ func (e BACnetStatusFlags) PLC4XEnumName() string {
 	case BACnetStatusFlags_OUT_OF_SERVICE:
 		return "OUT_OF_SERVICE"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e BACnetStatusFlags) String() string {

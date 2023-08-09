@@ -126,7 +126,7 @@ func ZoneStatusTempParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 		return 0, errors.Wrap(err, "error reading ZoneStatusTemp")
 	}
 	if enum, ok := ZoneStatusTempByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for ZoneStatusTemp")
 		return ZoneStatusTemp(val), nil
 	} else {
 		return enum, nil
@@ -159,7 +159,7 @@ func (e ZoneStatusTemp) PLC4XEnumName() string {
 	case ZoneStatusTemp_ZONE_SHORT:
 		return "ZONE_SHORT"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e ZoneStatusTemp) String() string {

@@ -232,6 +232,8 @@ func (m *_BACnetConstructedDataBBMDAcceptFDRegistrations) SerializeWithWriteBuff
 		return errors.Wrap(_bbmdAcceptFDRegistrationsErr, "Error serializing 'bbmdAcceptFDRegistrations' field")
 	}
 	// Virtual field
+	actualValue := m.GetActualValue()
+	_ =	actualValue
 	if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 		return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 	}

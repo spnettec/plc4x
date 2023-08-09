@@ -234,7 +234,7 @@ func MeteringCommandTypeContainerParseWithBuffer(ctx context.Context, readBuffer
 		return 0, errors.Wrap(err, "error reading MeteringCommandTypeContainer")
 	}
 	if enum, ok := MeteringCommandTypeContainerByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for MeteringCommandTypeContainer")
 		return MeteringCommandTypeContainer(val), nil
 	} else {
 		return enum, nil
@@ -275,7 +275,7 @@ func (e MeteringCommandTypeContainer) PLC4XEnumName() string {
 	case MeteringCommandTypeContainer_MeteringCommandEvent_7Bytes:
 		return "MeteringCommandEvent_7Bytes"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e MeteringCommandTypeContainer) String() string {

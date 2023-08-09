@@ -22,7 +22,7 @@ package opcua
 import (
 	"context"
 	"runtime/debug"
-	"sync"
+	"time"
 
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
@@ -45,7 +45,12 @@ type Connection struct {
 	configuration Configuration `stringer:"true"`
 	driverContext DriverContext `stringer:"true"`
 
-	handlerWaitGroup sync.WaitGroup
+	channel *SecureChannel
+
+	connectEvent      chan struct{}
+	connectTimeout    time.Duration `stringer:"true"` // TODO: do we need to have that in general, where to get that from
+	disconnectEvent   chan struct{}
+	disconnectTimeout time.Duration `stringer:"true"` // TODO: do we need to have that in general, where to get that from
 
 	connectionId string
 	tracer       tracer.Tracer
@@ -57,12 +62,16 @@ type Connection struct {
 func NewConnection(messageCodec *MessageCodec, configuration Configuration, driverContext DriverContext, tagHandler spi.PlcTagHandler, connectionOptions map[string][]string, _options ...options.WithOption) *Connection {
 	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	connection := &Connection{
-		messageCodec:  messageCodec,
-		configuration: configuration,
-		driverContext: driverContext,
-
-		log:      customLogger,
-		_options: _options,
+		messageCodec:      messageCodec,
+		configuration:     configuration,
+		driverContext:     driverContext,
+		channel:           NewSecureChannel(customLogger, driverContext, configuration),
+		connectEvent:      make(chan struct{}),
+		connectTimeout:    5 * time.Second,
+		disconnectEvent:   make(chan struct{}),
+		disconnectTimeout: 5 * time.Second,
+		log:               customLogger,
+		_options:          _options,
 	}
 	if traceEnabledOption, ok := connectionOptions["traceEnabled"]; ok {
 		if len(traceEnabledOption) == 1 {
@@ -100,7 +109,7 @@ func (c *Connection) GetMessageCodec() spi.MessageCodec {
 
 func (c *Connection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcConnectionConnectResult {
 	c.log.Trace().Msg("Connecting")
-	ch := make(chan plc4go.PlcConnectionConnectResult)
+	ch := make(chan plc4go.PlcConnectionConnectResult, 1)
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {
@@ -132,16 +141,21 @@ func (c *Connection) Close() <-chan plc4go.PlcConnectionCloseResult {
 	results := make(chan plc4go.PlcConnectionCloseResult, 1)
 	go func() {
 		result := <-c.DefaultConnection.Close()
-		c.log.Trace().Msg("Waiting for handlers to stop")
-		c.handlerWaitGroup.Wait()
-		c.log.Trace().Msg("handlers stopped, dispatching result")
-		results <- result
+		c.channel.onDisconnect(context.Background(), c)
+		disconnectTimeout := time.NewTimer(c.disconnectTimeout)
+		select {
+		case <-c.disconnectEvent:
+			c.log.Info().Msg("disconnected")
+			results <- result
+		case <-disconnectTimeout.C:
+			results <- _default.NewDefaultPlcConnectionCloseResult(c, errors.Errorf("timeout after %s", c.disconnectTimeout))
+		}
 	}()
 	return results
 }
 
 func (c *Connection) GetMetadata() apiModel.PlcConnectionMetadata {
-	return _default.DefaultConnectionMetadata{
+	return &_default.DefaultConnectionMetadata{
 		ProvidesReading:     true,
 		ProvidesWriting:     true,
 		ProvidesSubscribing: true,
@@ -153,14 +167,14 @@ func (c *Connection) ReadRequestBuilder() apiModel.PlcReadRequestBuilder {
 	return spiModel.NewDefaultPlcReadRequestBuilder(
 		c.GetPlcTagHandler(),
 		NewReader(
-			c.messageCodec,
+			c,
 			append(c._options, options.WithCustomLogger(c.log))...,
 		),
 	)
 }
 
 func (c *Connection) WriteRequestBuilder() apiModel.PlcWriteRequestBuilder {
-	return spiModel.NewDefaultPlcWriteRequestBuilder(c.GetPlcTagHandler(), c.GetPlcValueHandler(), NewWriter(c.messageCodec))
+	return spiModel.NewDefaultPlcWriteRequestBuilder(c.GetPlcTagHandler(), c.GetPlcValueHandler(), NewWriter(c))
 }
 
 func (c *Connection) SubscriptionRequestBuilder() apiModel.PlcSubscriptionRequestBuilder {
@@ -169,7 +183,7 @@ func (c *Connection) SubscriptionRequestBuilder() apiModel.PlcSubscriptionReques
 		c.GetPlcValueHandler(),
 		NewSubscriber(
 			c.addSubscriber,
-			c.messageCodec,
+			c,
 			append(c._options, options.WithCustomLogger(c.log))...,
 		),
 	)
@@ -183,7 +197,7 @@ func (c *Connection) UnsubscriptionRequestBuilder() apiModel.PlcUnsubscriptionRe
 func (c *Connection) addSubscriber(subscriber *Subscriber) {
 	for _, sub := range c.subscribers {
 		if sub == subscriber {
-			c.log.Debug().Msgf("Subscriber %v already added", subscriber)
+			c.log.Debug().Stringer("subscriber", subscriber).Msg("Subscriber already added")
 			return
 		}
 	}
@@ -191,47 +205,28 @@ func (c *Connection) addSubscriber(subscriber *Subscriber) {
 }
 
 func (c *Connection) setupConnection(ctx context.Context, ch chan plc4go.PlcConnectionConnectResult) {
-	c.log.Trace().Msg("Connection setup done")
-	c.fireConnected(ch)
-	c.log.Trace().Msg("Connect fired")
-	c.startSubscriptionHandler()
-	c.log.Trace().Msg("subscription handler started")
-}
+	c.log.Trace().Msg("setup connection")
 
-func (c *Connection) startSubscriptionHandler() {
-	c.log.Debug().Msg("Starting TODO handler")
-	c.handlerWaitGroup.Add(1)
-	go func() {
-		salLogger := c.log.With().Str("handlerType", "TODO").Logger()
-		defer c.handlerWaitGroup.Done()
-		defer func() {
-			if err := recover(); err != nil {
-				salLogger.Error().Msgf("panic-ed %v. Stack:\n%s", err, debug.Stack())
-			}
-		}()
-		salLogger.Debug().Msg("TODO handler started")
-		for c.IsConnected() {
-			// TODO: dispatch subs
-			/*
-				for monitoredSal := range c.messageCodec.monitoredSALs {
-					salLogger.Trace().Msgf("got a SAL\n%v", monitoredSal)
-					handled := false
-					for _, subscriber := range c.subscribers {
-						if ok := subscriber.handleMonitoredSAL(monitoredSal); ok {
-							salLogger.Debug().Msgf("\n%v handled\n%s", subscriber, monitoredSal)
-							handled = true
-						}
-					}
-					if !handled {
-						salLogger.Debug().Msgf("SAL was not handled:\n%s", monitoredSal)
-					}
-				}*/
-		}
-		salLogger.Info().Msg("handler ended")
-	}()
+	c.log.Debug().Msg("Opcua Driver running in ACTIVE mode.")
+	c.channel.onConnect(ctx, c, ch)
+
+	connectTimeout := time.NewTimer(c.connectTimeout)
+	select {
+	case <-c.connectEvent:
+		c.log.Info().Msg("connected")
+		c.fireConnected(ch)
+		c.log.Trace().Msg("Connect fired")
+	case <-connectTimeout.C:
+		c.fireConnectionError(errors.Errorf("timeout after %s", c.connectTimeout), ch)
+		c.log.Trace().Msg("connection error fired")
+		return
+	}
+
+	c.log.Trace().Msg("connection setup done")
 }
 
 func (c *Connection) fireConnectionError(err error, ch chan<- plc4go.PlcConnectionConnectResult) {
+	c.log.Trace().Err(err).Msg("fire connection error")
 	if c.driverContext.awaitSetupComplete {
 		ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Wrap(err, "Error during connection"))
 	} else {
@@ -240,13 +235,23 @@ func (c *Connection) fireConnectionError(err error, ch chan<- plc4go.PlcConnecti
 	if err := c.messageCodec.Disconnect(); err != nil {
 		c.log.Debug().Err(err).Msg("Error disconnecting message codec on connection error")
 	}
+	c.SetConnected(false)
+	select {
+	case c.disconnectEvent <- struct{}{}:
+	default:
+	}
 }
 
 func (c *Connection) fireConnected(ch chan<- plc4go.PlcConnectionConnectResult) {
+	c.log.Trace().Msg("fire connected")
 	if c.driverContext.awaitSetupComplete {
 		ch <- _default.NewDefaultPlcConnectionConnectResult(c, nil)
 	} else {
 		c.log.Info().Msg("Successfully connected")
 	}
 	c.SetConnected(true)
+	select {
+	case c.connectEvent <- struct{}{}:
+	default:
+	}
 }

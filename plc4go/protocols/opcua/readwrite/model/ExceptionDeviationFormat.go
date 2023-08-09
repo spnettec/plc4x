@@ -132,7 +132,7 @@ func ExceptionDeviationFormatParseWithBuffer(ctx context.Context, readBuffer uti
 		return 0, errors.Wrap(err, "error reading ExceptionDeviationFormat")
 	}
 	if enum, ok := ExceptionDeviationFormatByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for ExceptionDeviationFormat")
 		return ExceptionDeviationFormat(val), nil
 	} else {
 		return enum, nil
@@ -167,7 +167,7 @@ func (e ExceptionDeviationFormat) PLC4XEnumName() string {
 	case ExceptionDeviationFormat_exceptionDeviationFormatUnknown:
 		return "exceptionDeviationFormatUnknown"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint32(e))
 }
 
 func (e ExceptionDeviationFormat) String() string {

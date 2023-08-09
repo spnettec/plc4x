@@ -144,7 +144,7 @@ func BACnetBackupStateParseWithBuffer(ctx context.Context, readBuffer utils.Read
 		return 0, errors.Wrap(err, "error reading BACnetBackupState")
 	}
 	if enum, ok := BACnetBackupStateByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for BACnetBackupState")
 		return BACnetBackupState(val), nil
 	} else {
 		return enum, nil
@@ -183,7 +183,7 @@ func (e BACnetBackupState) PLC4XEnumName() string {
 	case BACnetBackupState_RESTORE_FAILURE:
 		return "RESTORE_FAILURE"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e BACnetBackupState) String() string {

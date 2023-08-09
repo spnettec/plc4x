@@ -192,7 +192,7 @@ func MaxSegmentsAcceptedParseWithBuffer(ctx context.Context, readBuffer utils.Re
 		return 0, errors.Wrap(err, "error reading MaxSegmentsAccepted")
 	}
 	if enum, ok := MaxSegmentsAcceptedByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for MaxSegmentsAccepted")
 		return MaxSegmentsAccepted(val), nil
 	} else {
 		return enum, nil
@@ -233,7 +233,7 @@ func (e MaxSegmentsAccepted) PLC4XEnumName() string {
 	case MaxSegmentsAccepted_MORE_THAN_64_SEGMENTS:
 		return "MORE_THAN_64_SEGMENTS"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e MaxSegmentsAccepted) String() string {

@@ -132,7 +132,7 @@ func BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterParseWithB
 		return 0, errors.Wrap(err, "error reading BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter")
 	}
 	if enum, ok := BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter")
 		return BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter(val), nil
 	} else {
 		return enum, nil
@@ -167,7 +167,7 @@ func (e BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter) PLC4X
 	case BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter_ACTIVE:
 		return "ACTIVE"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter) String() string {

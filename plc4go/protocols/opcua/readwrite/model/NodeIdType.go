@@ -138,7 +138,7 @@ func NodeIdTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer)
 		return 0, errors.Wrap(err, "error reading NodeIdType")
 	}
 	if enum, ok := NodeIdTypeByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for NodeIdType")
 		return NodeIdType(val), nil
 	} else {
 		return enum, nil
@@ -175,7 +175,7 @@ func (e NodeIdType) PLC4XEnumName() string {
 	case NodeIdType_nodeIdTypeByteString:
 		return "nodeIdTypeByteString"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e NodeIdType) String() string {

@@ -232,6 +232,8 @@ func (m *_BACnetConstructedDataTimeOfStrikeCountReset) SerializeWithWriteBuffer(
 		return errors.Wrap(_timeOfStrikeCountResetErr, "Error serializing 'timeOfStrikeCountReset' field")
 	}
 	// Virtual field
+	actualValue := m.GetActualValue()
+	_ =	actualValue
 	if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 		return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 	}

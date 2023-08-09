@@ -173,13 +173,13 @@ _noOfEventFields, _noOfEventFieldsErr := readBuffer.ReadInt32("noOfEventFields",
 		return nil, errors.Wrap(pullErr, "Error pulling for eventFields")
 	}
 	// Count array
-	eventFields := make([]Variant, noOfEventFields)
+	eventFields := make([]Variant, utils.Max(noOfEventFields, 0))
 	// This happens when the size is set conditional to 0
 	if len(eventFields) == 0 {
 		eventFields = nil
 	}
 	{
-		_numItems := uint16(noOfEventFields)
+		_numItems := uint16(utils.Max(noOfEventFields, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

@@ -183,7 +183,7 @@ func RequestTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		return 0, errors.Wrap(err, "error reading RequestType")
 	}
 	if enum, ok := RequestTypeByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for RequestType")
 		return RequestType(val), nil
 	} else {
 		return enum, nil
@@ -222,7 +222,7 @@ func (e RequestType) PLC4XEnumName() string {
 	case RequestType_RESET:
 		return "RESET"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e RequestType) String() string {

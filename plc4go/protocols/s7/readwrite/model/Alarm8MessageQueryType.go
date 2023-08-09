@@ -226,13 +226,13 @@ _byteCount, _byteCountErr := readBuffer.ReadUint16("byteCount", 16)
 		return nil, errors.Wrap(pullErr, "Error pulling for messageObjects")
 	}
 	// Count array
-	messageObjects := make([]AlarmMessageObjectQueryType, uint16(byteCount) / uint16(uint16(12)))
+	messageObjects := make([]AlarmMessageObjectQueryType, utils.Max(uint16(byteCount) / uint16(uint16(12)), 0))
 	// This happens when the size is set conditional to 0
 	if len(messageObjects) == 0 {
 		messageObjects = nil
 	}
 	{
-		_numItems := uint16(uint16(byteCount) / uint16(uint16(12)))
+		_numItems := uint16(utils.Max(uint16(byteCount) / uint16(uint16(12)), 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

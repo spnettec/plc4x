@@ -114,7 +114,7 @@ func TagClassParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (
 		return 0, errors.Wrap(err, "error reading TagClass")
 	}
 	if enum, ok := TagClassByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for TagClass")
 		return TagClass(val), nil
 	} else {
 		return enum, nil
@@ -143,7 +143,7 @@ func (e TagClass) PLC4XEnumName() string {
 	case TagClass_CONTEXT_SPECIFIC_TAGS:
 		return "CONTEXT_SPECIFIC_TAGS"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e TagClass) String() string {

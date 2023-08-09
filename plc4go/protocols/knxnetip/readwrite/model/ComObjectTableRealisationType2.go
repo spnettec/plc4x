@@ -191,13 +191,13 @@ _ramFlagsTablePointer, _ramFlagsTablePointerErr := readBuffer.ReadUint8("ramFlag
 		return nil, errors.Wrap(pullErr, "Error pulling for comObjectDescriptors")
 	}
 	// Count array
-	comObjectDescriptors := make([]GroupObjectDescriptorRealisationType2, numEntries)
+	comObjectDescriptors := make([]GroupObjectDescriptorRealisationType2, utils.Max(numEntries, 0))
 	// This happens when the size is set conditional to 0
 	if len(comObjectDescriptors) == 0 {
 		comObjectDescriptors = nil
 	}
 	{
-		_numItems := uint16(numEntries)
+		_numItems := uint16(utils.Max(numEntries, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

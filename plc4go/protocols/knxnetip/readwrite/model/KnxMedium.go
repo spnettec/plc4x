@@ -138,7 +138,7 @@ func KnxMediumParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 		return 0, errors.Wrap(err, "error reading KnxMedium")
 	}
 	if enum, ok := KnxMediumByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for KnxMedium")
 		return KnxMedium(val), nil
 	} else {
 		return enum, nil
@@ -175,7 +175,7 @@ func (e KnxMedium) PLC4XEnumName() string {
 	case KnxMedium_MEDIUM_KNX_IP:
 		return "MEDIUM_KNX_IP"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e KnxMedium) String() string {

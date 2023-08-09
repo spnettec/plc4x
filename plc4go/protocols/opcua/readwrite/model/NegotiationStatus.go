@@ -132,7 +132,7 @@ func NegotiationStatusParseWithBuffer(ctx context.Context, readBuffer utils.Read
 		return 0, errors.Wrap(err, "error reading NegotiationStatus")
 	}
 	if enum, ok := NegotiationStatusByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for NegotiationStatus")
 		return NegotiationStatus(val), nil
 	} else {
 		return enum, nil
@@ -167,7 +167,7 @@ func (e NegotiationStatus) PLC4XEnumName() string {
 	case NegotiationStatus_negotiationStatusNoNegotiation:
 		return "negotiationStatusNoNegotiation"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint32(e))
 }
 
 func (e NegotiationStatus) String() string {

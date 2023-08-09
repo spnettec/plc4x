@@ -156,13 +156,13 @@ _unusedBits, _unusedBitsErr := readBuffer.ReadUint8("unusedBits", 8)
 		return nil, errors.Wrap(pullErr, "Error pulling for data")
 	}
 	// Count array
-	data := make([]bool, uint16((uint16((uint16(actualLength) - uint16(uint16(1)))) * uint16(uint16(8)))) - uint16(unusedBits))
+	data := make([]bool, utils.Max(uint16((uint16((uint16(actualLength) - uint16(uint16(1)))) * uint16(uint16(8)))) - uint16(unusedBits), 0))
 	// This happens when the size is set conditional to 0
 	if len(data) == 0 {
 		data = nil
 	}
 	{
-		_numItems := uint16(uint16((uint16((uint16(actualLength) - uint16(uint16(1)))) * uint16(uint16(8)))) - uint16(unusedBits))
+		_numItems := uint16(utils.Max(uint16((uint16((uint16(actualLength) - uint16(uint16(1)))) * uint16(uint16(8)))) - uint16(unusedBits), 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
@@ -183,13 +183,13 @@ _item, _err := readBuffer.ReadBit("")
 		return nil, errors.Wrap(pullErr, "Error pulling for unused")
 	}
 	// Count array
-	unused := make([]bool, unusedBits)
+	unused := make([]bool, utils.Max(unusedBits, 0))
 	// This happens when the size is set conditional to 0
 	if len(unused) == 0 {
 		unused = nil
 	}
 	{
-		_numItems := uint16(unusedBits)
+		_numItems := uint16(utils.Max(unusedBits, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

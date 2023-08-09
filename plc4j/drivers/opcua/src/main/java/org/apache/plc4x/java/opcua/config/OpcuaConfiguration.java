@@ -216,6 +216,7 @@ public class OpcuaConfiguration implements Configuration, TcpTransportConfigurat
     public void setTimeoutRequest(int timeoutRequest) {
         this.timeoutRequest = timeoutRequest;
     }
+
     public void openKeyStore() throws Exception {
         this.isEncrypted = true;
         File securityTempDir = new File(certDirectory, "security");

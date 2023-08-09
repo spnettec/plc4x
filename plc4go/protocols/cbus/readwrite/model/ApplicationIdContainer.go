@@ -3210,7 +3210,7 @@ func ApplicationIdContainerParseWithBuffer(ctx context.Context, readBuffer utils
 		return 0, errors.Wrap(err, "error reading ApplicationIdContainer")
 	}
 	if enum, ok := ApplicationIdContainerByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for ApplicationIdContainer")
 		return ApplicationIdContainer(val), nil
 	} else {
 		return enum, nil
@@ -3747,7 +3747,7 @@ func (e ApplicationIdContainer) PLC4XEnumName() string {
 	case ApplicationIdContainer_NETWORK_CONTROL:
 		return "NETWORK_CONTROL"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e ApplicationIdContainer) String() string {

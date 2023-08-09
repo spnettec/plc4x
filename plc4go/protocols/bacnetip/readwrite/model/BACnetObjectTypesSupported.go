@@ -462,7 +462,7 @@ func BACnetObjectTypesSupportedParseWithBuffer(ctx context.Context, readBuffer u
 		return 0, errors.Wrap(err, "error reading BACnetObjectTypesSupported")
 	}
 	if enum, ok := BACnetObjectTypesSupportedByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for BACnetObjectTypesSupported")
 		return BACnetObjectTypesSupported(val), nil
 	} else {
 		return enum, nil
@@ -607,7 +607,7 @@ func (e BACnetObjectTypesSupported) PLC4XEnumName() string {
 	case BACnetObjectTypesSupported_EVENT_ENROLLMENT:
 		return "EVENT_ENROLLMENT"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e BACnetObjectTypesSupported) String() string {

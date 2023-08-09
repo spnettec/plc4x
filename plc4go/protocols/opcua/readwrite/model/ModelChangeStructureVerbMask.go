@@ -132,7 +132,7 @@ func ModelChangeStructureVerbMaskParseWithBuffer(ctx context.Context, readBuffer
 		return 0, errors.Wrap(err, "error reading ModelChangeStructureVerbMask")
 	}
 	if enum, ok := ModelChangeStructureVerbMaskByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for ModelChangeStructureVerbMask")
 		return ModelChangeStructureVerbMask(val), nil
 	} else {
 		return enum, nil
@@ -167,7 +167,7 @@ func (e ModelChangeStructureVerbMask) PLC4XEnumName() string {
 	case ModelChangeStructureVerbMask_modelChangeStructureVerbMaskReferenceDeleted:
 		return "modelChangeStructureVerbMaskReferenceDeleted"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint32(e))
 }
 
 func (e ModelChangeStructureVerbMask) String() string {

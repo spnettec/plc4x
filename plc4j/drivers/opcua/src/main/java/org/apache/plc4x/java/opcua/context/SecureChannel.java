@@ -217,6 +217,7 @@ public class SecureChannel {
                                     LOGGER.error("Sequence number isn't as expected, we might have missed a packet. - {} != {}", senderSeq, responseSeq);
                                     context.fireDisconnected();
                                 }
+
                             } catch (IOException e) {
                                 LOGGER.debug("Failed to store incoming message in buffer");
                                 throw new PlcRuntimeException("Error while sending message");
@@ -257,7 +258,8 @@ public class SecureChannel {
             this.endpoint
         );
 
-        Consumer<Integer> requestConsumer = t -> context.sendRequest(new OpcuaAPU(hello))
+        Consumer<Integer> requestConsumer = t -> context
+            .sendRequest(new OpcuaAPU(hello))
             .expectResponse(OpcuaAPU.class, Duration.ofMillis(configuration.getTimeoutRequest()))
             .check(p -> p.getMessage() instanceof OpcuaAcknowledgeResponse)
             .unwrap(p -> (OpcuaAcknowledgeResponse) p.getMessage())
@@ -596,7 +598,7 @@ public class SecureChannel {
     }
 
     public void onDisconnect(ConversationContext<OpcuaAPU> context) {
-        LOGGER.debug("Disconnecting");
+        LOGGER.info("Disconnecting");
         int requestHandle = getRequestHandle();
 
         if (keepAlive != null) {
@@ -1215,11 +1217,11 @@ public class SecureChannel {
     /**
      * Creates an IdentityToken to authenticate with a server.
      *
-     * @param tokenType      the token type
-     * @param securityPolicy the security policy
+     * @param tokenType the token type
+     * @param policyId  the security policy
      * @return returns an ExtensionObject with an IdentityToken.
      */
-    private ExtensionObject getIdentityToken(UserTokenType tokenType, String securityPolicy) {
+    private ExtensionObject getIdentityToken(UserTokenType tokenType, String policyId) {
         ExpandedNodeId extExpandedNodeId;
         switch (tokenType) {
             case userTokenTypeAnonymous:
@@ -1237,7 +1239,7 @@ public class SecureChannel {
                 return new ExtensionObject(
                     extExpandedNodeId,
                     new ExtensionObjectEncodingMask(false, false, true),
-                    new UserIdentityToken(new PascalString(securityPolicy), anonymousIdentityToken)
+                    new UserIdentityToken(new PascalString(policyId), anonymousIdentityToken)
                 );
             case userTokenTypeUserName:
                 //Encrypt the password using the server nonce and server public key
@@ -1267,7 +1269,7 @@ public class SecureChannel {
                 return new ExtensionObject(
                     extExpandedNodeId,
                     new ExtensionObjectEncodingMask(false, false, true),
-                    new UserIdentityToken(new PascalString(securityPolicy), userNameIdentityToken));
+                    new UserIdentityToken(new PascalString(policyId), userNameIdentityToken));
         }
         return null;
     }

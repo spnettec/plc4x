@@ -336,7 +336,7 @@ func OpcuaDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 		return "", errors.Wrap(err, "error reading OpcuaDataType")
 	}
 	if enum, ok := OpcuaDataTypeByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for OpcuaDataType")
 		return OpcuaDataType(val), nil
 	} else {
 		return enum, nil
@@ -409,7 +409,7 @@ func (e OpcuaDataType) PLC4XEnumName() string {
 	case OpcuaDataType_WCHAR:
 		return "WCHAR"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", string(e))
 }
 
 func (e OpcuaDataType) String() string {

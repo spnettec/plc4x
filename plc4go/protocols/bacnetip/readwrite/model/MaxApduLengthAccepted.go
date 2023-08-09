@@ -264,7 +264,7 @@ func MaxApduLengthAcceptedParseWithBuffer(ctx context.Context, readBuffer utils.
 		return 0, errors.Wrap(err, "error reading MaxApduLengthAccepted")
 	}
 	if enum, ok := MaxApduLengthAcceptedByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for MaxApduLengthAccepted")
 		return MaxApduLengthAccepted(val), nil
 	} else {
 		return enum, nil
@@ -321,7 +321,7 @@ func (e MaxApduLengthAccepted) PLC4XEnumName() string {
 	case MaxApduLengthAccepted_RESERVED_BY_ASHRAE_10:
 		return "RESERVED_BY_ASHRAE_10"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e MaxApduLengthAccepted) String() string {

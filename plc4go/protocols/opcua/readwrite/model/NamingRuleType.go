@@ -120,7 +120,7 @@ func NamingRuleTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 		return 0, errors.Wrap(err, "error reading NamingRuleType")
 	}
 	if enum, ok := NamingRuleTypeByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for NamingRuleType")
 		return NamingRuleType(val), nil
 	} else {
 		return enum, nil
@@ -151,7 +151,7 @@ func (e NamingRuleType) PLC4XEnumName() string {
 	case NamingRuleType_namingRuleTypeConstraint:
 		return "namingRuleTypeConstraint"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint32(e))
 }
 
 func (e NamingRuleType) String() string {

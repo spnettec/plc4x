@@ -365,13 +365,13 @@ _control, _controlErr := NPDUControlParseWithBuffer(ctx, readBuffer)
 		return nil, errors.Wrap(pullErr, "Error pulling for destinationAddress")
 	}
 	// Count array
-	destinationAddress := make([]uint8, utils.InlineIf(control.GetDestinationSpecified(), func() any {return uint16((*destinationLength))}, func() any {return uint16(uint16(0))}).(uint16))
+	destinationAddress := make([]uint8, utils.Max(utils.InlineIf(control.GetDestinationSpecified(), func() any {return uint16((*destinationLength))}, func() any {return uint16(uint16(0))}).(uint16), 0))
 	// This happens when the size is set conditional to 0
 	if len(destinationAddress) == 0 {
 		destinationAddress = nil
 	}
 	{
-		_numItems := uint16(utils.InlineIf(control.GetDestinationSpecified(), func() any {return uint16((*destinationLength))}, func() any {return uint16(uint16(0))}).(uint16))
+		_numItems := uint16(utils.Max(utils.InlineIf(control.GetDestinationSpecified(), func() any {return uint16((*destinationLength))}, func() any {return uint16(uint16(0))}).(uint16), 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
@@ -417,13 +417,13 @@ _item, _err := readBuffer.ReadUint8("", 8)
 		return nil, errors.Wrap(pullErr, "Error pulling for sourceAddress")
 	}
 	// Count array
-	sourceAddress := make([]uint8, utils.InlineIf(control.GetSourceSpecified(), func() any {return uint16((*sourceLength))}, func() any {return uint16(uint16(0))}).(uint16))
+	sourceAddress := make([]uint8, utils.Max(utils.InlineIf(control.GetSourceSpecified(), func() any {return uint16((*sourceLength))}, func() any {return uint16(uint16(0))}).(uint16), 0))
 	// This happens when the size is set conditional to 0
 	if len(sourceAddress) == 0 {
 		sourceAddress = nil
 	}
 	{
-		_numItems := uint16(utils.InlineIf(control.GetSourceSpecified(), func() any {return uint16((*sourceLength))}, func() any {return uint16(uint16(0))}).(uint16))
+		_numItems := uint16(utils.Max(utils.InlineIf(control.GetSourceSpecified(), func() any {return uint16((*sourceLength))}, func() any {return uint16(uint16(0))}).(uint16), 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
@@ -600,6 +600,8 @@ func (m *_NPDU) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 		return errors.Wrap(popErr, "Error popping for destinationAddress")
 	}
 	// Virtual field
+	destinationLengthAddon := m.GetDestinationLengthAddon()
+	_ =	destinationLengthAddon
 	if _destinationLengthAddonErr := writeBuffer.WriteVirtual(ctx, "destinationLengthAddon", m.GetDestinationLengthAddon()); _destinationLengthAddonErr != nil {
 		return errors.Wrap(_destinationLengthAddonErr, "Error serializing 'destinationLengthAddon' field")
 	}
@@ -639,6 +641,8 @@ func (m *_NPDU) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 		return errors.Wrap(popErr, "Error popping for sourceAddress")
 	}
 	// Virtual field
+	sourceLengthAddon := m.GetSourceLengthAddon()
+	_ =	sourceLengthAddon
 	if _sourceLengthAddonErr := writeBuffer.WriteVirtual(ctx, "sourceLengthAddon", m.GetSourceLengthAddon()); _sourceLengthAddonErr != nil {
 		return errors.Wrap(_sourceLengthAddonErr, "Error serializing 'sourceLengthAddon' field")
 	}
@@ -653,6 +657,8 @@ func (m *_NPDU) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 		}
 	}
 	// Virtual field
+	payloadSubtraction := m.GetPayloadSubtraction()
+	_ =	payloadSubtraction
 	if _payloadSubtractionErr := writeBuffer.WriteVirtual(ctx, "payloadSubtraction", m.GetPayloadSubtraction()); _payloadSubtractionErr != nil {
 		return errors.Wrap(_payloadSubtractionErr, "Error serializing 'payloadSubtraction' field")
 	}

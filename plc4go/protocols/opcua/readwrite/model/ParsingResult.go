@@ -226,13 +226,13 @@ _noOfDataStatusCodes, _noOfDataStatusCodesErr := readBuffer.ReadInt32("noOfDataS
 		return nil, errors.Wrap(pullErr, "Error pulling for dataStatusCodes")
 	}
 	// Count array
-	dataStatusCodes := make([]StatusCode, noOfDataStatusCodes)
+	dataStatusCodes := make([]StatusCode, utils.Max(noOfDataStatusCodes, 0))
 	// This happens when the size is set conditional to 0
 	if len(dataStatusCodes) == 0 {
 		dataStatusCodes = nil
 	}
 	{
-		_numItems := uint16(noOfDataStatusCodes)
+		_numItems := uint16(utils.Max(noOfDataStatusCodes, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
@@ -260,13 +260,13 @@ _noOfDataDiagnosticInfos, _noOfDataDiagnosticInfosErr := readBuffer.ReadInt32("n
 		return nil, errors.Wrap(pullErr, "Error pulling for dataDiagnosticInfos")
 	}
 	// Count array
-	dataDiagnosticInfos := make([]DiagnosticInfo, noOfDataDiagnosticInfos)
+	dataDiagnosticInfos := make([]DiagnosticInfo, utils.Max(noOfDataDiagnosticInfos, 0))
 	// This happens when the size is set conditional to 0
 	if len(dataDiagnosticInfos) == 0 {
 		dataDiagnosticInfos = nil
 	}
 	{
-		_numItems := uint16(noOfDataDiagnosticInfos)
+		_numItems := uint16(utils.Max(noOfDataDiagnosticInfos, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

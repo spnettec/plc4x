@@ -120,7 +120,7 @@ func BACnetEventTransitionBitsParseWithBuffer(ctx context.Context, readBuffer ut
 		return 0, errors.Wrap(err, "error reading BACnetEventTransitionBits")
 	}
 	if enum, ok := BACnetEventTransitionBitsByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for BACnetEventTransitionBits")
 		return BACnetEventTransitionBits(val), nil
 	} else {
 		return enum, nil
@@ -151,7 +151,7 @@ func (e BACnetEventTransitionBits) PLC4XEnumName() string {
 	case BACnetEventTransitionBits_TO_NORMAL:
 		return "TO_NORMAL"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e BACnetEventTransitionBits) String() string {

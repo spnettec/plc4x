@@ -144,7 +144,7 @@ func BACnetEscalatorOperationDirectionParseWithBuffer(ctx context.Context, readB
 		return 0, errors.Wrap(err, "error reading BACnetEscalatorOperationDirection")
 	}
 	if enum, ok := BACnetEscalatorOperationDirectionByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for BACnetEscalatorOperationDirection")
 		return BACnetEscalatorOperationDirection(val), nil
 	} else {
 		return enum, nil
@@ -183,7 +183,7 @@ func (e BACnetEscalatorOperationDirection) PLC4XEnumName() string {
 	case BACnetEscalatorOperationDirection_DOWN_REDUCED_SPEED:
 		return "DOWN_REDUCED_SPEED"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint16(e))
 }
 
 func (e BACnetEscalatorOperationDirection) String() string {

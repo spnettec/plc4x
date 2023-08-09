@@ -168,7 +168,7 @@ func BACnetRejectReasonParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 		return 0, errors.Wrap(err, "error reading BACnetRejectReason")
 	}
 	if enum, ok := BACnetRejectReasonByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for BACnetRejectReason")
 		return BACnetRejectReason(val), nil
 	} else {
 		return enum, nil
@@ -215,7 +215,7 @@ func (e BACnetRejectReason) PLC4XEnumName() string {
 	case BACnetRejectReason_VENDOR_PROPRIETARY_VALUE:
 		return "VENDOR_PROPRIETARY_VALUE"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e BACnetRejectReason) String() string {

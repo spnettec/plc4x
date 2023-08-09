@@ -126,7 +126,7 @@ func MessageSecurityModeParseWithBuffer(ctx context.Context, readBuffer utils.Re
 		return 0, errors.Wrap(err, "error reading MessageSecurityMode")
 	}
 	if enum, ok := MessageSecurityModeByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for MessageSecurityMode")
 		return MessageSecurityMode(val), nil
 	} else {
 		return enum, nil
@@ -159,7 +159,7 @@ func (e MessageSecurityMode) PLC4XEnumName() string {
 	case MessageSecurityMode_messageSecurityModeSignAndEncrypt:
 		return "messageSecurityModeSignAndEncrypt"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint32(e))
 }
 
 func (e MessageSecurityMode) String() string {

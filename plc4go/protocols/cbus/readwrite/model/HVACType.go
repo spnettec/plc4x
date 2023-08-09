@@ -174,7 +174,7 @@ func HVACTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (
 		return 0, errors.Wrap(err, "error reading HVACType")
 	}
 	if enum, ok := HVACTypeByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for HVACType")
 		return HVACType(val), nil
 	} else {
 		return enum, nil
@@ -223,7 +223,7 @@ func (e HVACType) PLC4XEnumName() string {
 	case HVACType_ANY:
 		return "ANY"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e HVACType) String() string {

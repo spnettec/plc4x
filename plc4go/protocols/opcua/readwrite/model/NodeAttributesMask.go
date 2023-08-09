@@ -312,7 +312,7 @@ func NodeAttributesMaskParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 		return 0, errors.Wrap(err, "error reading NodeAttributesMask")
 	}
 	if enum, ok := NodeAttributesMaskByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for NodeAttributesMask")
 		return NodeAttributesMask(val), nil
 	} else {
 		return enum, nil
@@ -407,7 +407,7 @@ func (e NodeAttributesMask) PLC4XEnumName() string {
 	case NodeAttributesMask_nodeAttributesMaskRolePermissions:
 		return "nodeAttributesMaskRolePermissions"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint32(e))
 }
 
 func (e NodeAttributesMask) String() string {

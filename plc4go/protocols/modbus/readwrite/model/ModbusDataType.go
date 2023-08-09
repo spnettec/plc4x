@@ -363,7 +363,7 @@ func ModbusDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 		return 0, errors.Wrap(err, "error reading ModbusDataType")
 	}
 	if enum, ok := ModbusDataTypeByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for ModbusDataType")
 		return ModbusDataType(val), nil
 	} else {
 		return enum, nil
@@ -442,7 +442,7 @@ func (e ModbusDataType) PLC4XEnumName() string {
 	case ModbusDataType_LINT:
 		return "LINT"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e ModbusDataType) String() string {

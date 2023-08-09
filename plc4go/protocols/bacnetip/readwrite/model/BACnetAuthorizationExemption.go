@@ -150,7 +150,7 @@ func BACnetAuthorizationExemptionParseWithBuffer(ctx context.Context, readBuffer
 		return 0, errors.Wrap(err, "error reading BACnetAuthorizationExemption")
 	}
 	if enum, ok := BACnetAuthorizationExemptionByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for BACnetAuthorizationExemption")
 		return BACnetAuthorizationExemption(val), nil
 	} else {
 		return enum, nil
@@ -191,7 +191,7 @@ func (e BACnetAuthorizationExemption) PLC4XEnumName() string {
 	case BACnetAuthorizationExemption_AUTHORIZATION_DELAY:
 		return "AUTHORIZATION_DELAY"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e BACnetAuthorizationExemption) String() string {

@@ -258,7 +258,7 @@ func TsnFailureCodeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 		return 0, errors.Wrap(err, "error reading TsnFailureCode")
 	}
 	if enum, ok := TsnFailureCodeByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for TsnFailureCode")
 		return TsnFailureCode(val), nil
 	} else {
 		return enum, nil
@@ -335,7 +335,7 @@ func (e TsnFailureCode) PLC4XEnumName() string {
 	case TsnFailureCode_tsnFailureCodeUseDifferentDestinationAddress:
 		return "tsnFailureCodeUseDifferentDestinationAddress"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint32(e))
 }
 
 func (e TsnFailureCode) String() string {

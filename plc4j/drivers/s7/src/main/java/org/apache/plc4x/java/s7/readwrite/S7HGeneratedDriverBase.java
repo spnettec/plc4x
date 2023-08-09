@@ -25,7 +25,10 @@ import org.apache.plc4x.java.api.value.PlcValueHandler;
 import org.apache.plc4x.java.s7.readwrite.connection.S7HDefaultNettyPlcConnection;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.ConfigurationFactory;
-import org.apache.plc4x.java.spi.connection.*;
+import org.apache.plc4x.java.spi.connection.ChannelFactory;
+import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
+import org.apache.plc4x.java.spi.connection.PlcTagHandler;
+import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.transport.Transport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -121,6 +124,12 @@ public class S7HGeneratedDriverBase extends GeneratedDriverBase<TPKTPacket> {
             }
         }
 
+        // Make the "fire discover event" overridable via system property.
+        boolean fireDiscoverEvent = fireDiscoverEvent();
+        if(System.getProperty(PROPERTY_PLC4X_FORCE_FIRE_DISCOVER_EVENT) != null) {
+            fireDiscoverEvent = Boolean.parseBoolean(System.getProperty(PROPERTY_PLC4X_FORCE_FIRE_DISCOVER_EVENT));
+        }
+
         // Make the "await setup complete" overridable via system property.
         boolean awaitSetupComplete = awaitSetupComplete();
         if (System.getProperty(PROPERTY_PLC4X_FORCE_AWAIT_SETUP_COMPLETE) != null) {
@@ -138,27 +147,15 @@ public class S7HGeneratedDriverBase extends GeneratedDriverBase<TPKTPacket> {
         if (System.getProperty(PROPERTY_PLC4X_FORCE_AWAIT_DISCOVER_COMPLETE) != null) {
             awaitDiscoverComplete = Boolean.parseBoolean(System.getProperty(PROPERTY_PLC4X_FORCE_AWAIT_DISCOVER_COMPLETE));
         }
-        if (hmatcher.matches()){
-            return new S7HDefaultNettyPlcConnection(
-                canRead(), canWrite(), canSubscribe(), canBrowse(),
-                getTagHandler(),
-                getValueHandler(),
-                configuration,
-                channelFactory,
-                secondaryChannelFactory,
-                awaitSetupComplete,
-                awaitDisconnectComplete,
-                awaitDiscoverComplete,
-                getStackConfigurer(transport),
-                getOptimizer(),
-                getAuthentication());
-        }
-        return new DefaultNettyPlcConnection(
+
+        return new S7HDefaultNettyPlcConnection(
             canRead(), canWrite(), canSubscribe(), canBrowse(),
             getTagHandler(),
             getValueHandler(),
             configuration,
             channelFactory,
+            secondaryChannelFactory,
+            fireDiscoverEvent,
             awaitSetupComplete,
             awaitDisconnectComplete,
             awaitDiscoverComplete,

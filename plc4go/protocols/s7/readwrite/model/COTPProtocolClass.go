@@ -132,7 +132,7 @@ func COTPProtocolClassParseWithBuffer(ctx context.Context, readBuffer utils.Read
 		return 0, errors.Wrap(err, "error reading COTPProtocolClass")
 	}
 	if enum, ok := COTPProtocolClassByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for COTPProtocolClass")
 		return COTPProtocolClass(val), nil
 	} else {
 		return enum, nil
@@ -167,7 +167,7 @@ func (e COTPProtocolClass) PLC4XEnumName() string {
 	case COTPProtocolClass_CLASS_4:
 		return "CLASS_4"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e COTPProtocolClass) String() string {

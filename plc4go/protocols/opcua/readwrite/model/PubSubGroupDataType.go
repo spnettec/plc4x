@@ -325,13 +325,13 @@ _noOfSecurityKeyServices, _noOfSecurityKeyServicesErr := readBuffer.ReadInt32("n
 		return nil, errors.Wrap(pullErr, "Error pulling for securityKeyServices")
 	}
 	// Count array
-	securityKeyServices := make([]ExtensionObjectDefinition, noOfSecurityKeyServices)
+	securityKeyServices := make([]ExtensionObjectDefinition, utils.Max(noOfSecurityKeyServices, 0))
 	// This happens when the size is set conditional to 0
 	if len(securityKeyServices) == 0 {
 		securityKeyServices = nil
 	}
 	{
-		_numItems := uint16(noOfSecurityKeyServices)
+		_numItems := uint16(utils.Max(noOfSecurityKeyServices, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
@@ -366,13 +366,13 @@ _noOfGroupProperties, _noOfGroupPropertiesErr := readBuffer.ReadInt32("noOfGroup
 		return nil, errors.Wrap(pullErr, "Error pulling for groupProperties")
 	}
 	// Count array
-	groupProperties := make([]ExtensionObjectDefinition, noOfGroupProperties)
+	groupProperties := make([]ExtensionObjectDefinition, utils.Max(noOfGroupProperties, 0))
 	// This happens when the size is set conditional to 0
 	if len(groupProperties) == 0 {
 		groupProperties = nil
 	}
 	{
-		_numItems := uint16(noOfGroupProperties)
+		_numItems := uint16(utils.Max(noOfGroupProperties, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

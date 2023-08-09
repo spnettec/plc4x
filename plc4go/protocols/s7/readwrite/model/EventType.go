@@ -132,7 +132,7 @@ func EventTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 		return 0, errors.Wrap(err, "error reading EventType")
 	}
 	if enum, ok := EventTypeByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for EventType")
 		return EventType(val), nil
 	} else {
 		return enum, nil
@@ -167,7 +167,7 @@ func (e EventType) PLC4XEnumName() string {
 	case EventType_ALM:
 		return "ALM"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e EventType) String() string {

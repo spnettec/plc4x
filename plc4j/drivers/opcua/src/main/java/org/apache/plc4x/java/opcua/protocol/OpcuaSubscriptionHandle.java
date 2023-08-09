@@ -179,13 +179,15 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
                     LOGGER.error("Unable to parse the returned Subscription response", e);
                     plcSubscriber.onDisconnect(context);
                 }
-                MonitoredItemCreateResult[] array = responseMessage.getResults().toArray(new MonitoredItemCreateResult[0]);
-                for (int index = 0, arrayLength = array.length; index < arrayLength; index++) {
-                    MonitoredItemCreateResult result = array[index];
-                    if (OpcuaStatusCode.enumForValue(result.getStatusCode().getStatusCode()) != OpcuaStatusCode.Good) {
-                        LOGGER.error("Invalid Tag {}, subscription created without this tag", tagNames.get(index));
-                    } else {
-                        LOGGER.debug("Tag {} was added to the subscription", tagNames.get(index));
+                if(responseMessage!=null) {
+                    ExtensionObjectDefinition[] array = responseMessage.getResults().toArray(new ExtensionObjectDefinition[0]);
+                    for (int index = 0, arrayLength = array.length; index < arrayLength; index++) {
+                        MonitoredItemCreateResult result = (MonitoredItemCreateResult) array[index];
+                        if (OpcuaStatusCode.enumForValue(result.getStatusCode().getStatusCode()) != OpcuaStatusCode.Good) {
+                            LOGGER.error("Invalid Tag {}, subscription created without this tag", tagNames.get(index));
+                        } else {
+                            LOGGER.debug("Tag {} was added to the subscription", tagNames.get(index));
+                        }
                     }
                 }
                 future.complete(responseMessage);
@@ -445,30 +447,5 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
         consumers.add(consumer);
         return new DefaultPlcConsumerRegistration(plcSubscriber, consumer, this);
     }
-
-    /**
-     * Given an PLC4X OpcuaTag generate the OPC UA Node Id
-     *
-     * @param tag - The PLC4X OpcuaTag, this is the tag generated from the OpcuaTag class from the parsed tag string.
-     * @return NodeId - Returns an OPC UA Node Id which can be sent over the wire.
-     */
-    private NodeId generateNodeId(OpcuaTag tag) {
-        NodeId nodeId = null;
-        if (tag.getIdentifierType() == OpcuaIdentifierType.BINARY_IDENTIFIER) {
-            nodeId = new NodeId(new NodeIdTwoByte(Short.parseShort(tag.getIdentifier())));
-        } else if (tag.getIdentifierType() == OpcuaIdentifierType.NUMBER_IDENTIFIER) {
-            nodeId = new NodeId(new NodeIdNumeric((short) tag.getNamespace(), Long.parseLong(tag.getIdentifier())));
-        } else if (tag.getIdentifierType() == OpcuaIdentifierType.GUID_IDENTIFIER) {
-            UUID guid = UUID.fromString(tag.getIdentifier());
-            byte[] guidBytes = new byte[16];
-            System.arraycopy(ByteBuffer.allocate(16).putLong(guid.getMostSignificantBits()).array(), 0, guidBytes, 0, 8);
-            System.arraycopy(ByteBuffer.allocate(16).putLong(guid.getLeastSignificantBits()).array(), 0, guidBytes, 8, 8);
-            nodeId = new NodeId(new NodeIdGuid((short) tag.getNamespace(), guidBytes));
-        } else if (tag.getIdentifierType() == OpcuaIdentifierType.STRING_IDENTIFIER) {
-            nodeId = new NodeId(new NodeIdString((short) tag.getNamespace(), new PascalString(tag.getIdentifier())));
-        }
-        return nodeId;
-    }
-
 
 }

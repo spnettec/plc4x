@@ -35,15 +35,15 @@ import (
 )
 
 type Reader struct {
-	messageCodec *MessageCodec
+	connection *Connection
 
 	log zerolog.Logger
 }
 
-func NewReader(messageCodec *MessageCodec, _options ...options.WithOption) *Reader {
+func NewReader(connection *Connection, _options ...options.WithOption) *Reader {
 	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	return &Reader{
-		messageCodec: messageCodec,
+		connection: connection,
 
 		log: customLogger,
 	}
@@ -64,9 +64,9 @@ func (m *Reader) readSync(ctx context.Context, readRequest apiModel.PlcReadReque
 	}()
 
 	requestHeader := readWriteModel.NewRequestHeader(
-		m.messageCodec.channel.getAuthenticationToken(),
-		m.messageCodec.channel.getCurrentDateTime(),
-		m.messageCodec.channel.getRequestHandle(),
+		m.connection.channel.getAuthenticationToken(),
+		m.connection.channel.getCurrentDateTime(),
+		m.connection.channel.getRequestHandle(),
 		0,
 		NULL_STRING,
 		REQUEST_TIMEOUT_LONG,
@@ -126,15 +126,16 @@ func (m *Reader) readSync(ctx context.Context, readRequest apiModel.PlcReadReque
 			result <- spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.Wrapf(err, "Unable to read the reply"))
 			return
 		}
-		if _readResponse, ok := reply.(readWriteModel.ReadResponseExactly); ok {
+		extensionObjectDefinition := reply.GetBody()
+		if _readResponse, ok := extensionObjectDefinition.(readWriteModel.ReadResponseExactly); ok {
 			result <- spiModel.NewDefaultPlcReadRequestResult(readRequest, spiModel.NewDefaultPlcReadResponse(readResponse(m.log, readRequest, readRequest.GetTagNames(), _readResponse.GetResults())), nil)
 			return
 		} else {
-			if serviceFault, ok := reply.(readWriteModel.ServiceFaultExactly); ok {
+			if serviceFault, ok := extensionObjectDefinition.(readWriteModel.ServiceFaultExactly); ok {
 				header := serviceFault.GetResponseHeader()
-				m.log.Error().Msgf("Read request ended up with ServiceFault: %s", header)
+				m.log.Error().Stringer("header", header).Msg("Read request ended up with ServiceFault")
 			} else {
-				m.log.Error().Msgf("Remote party returned an error '%s'", reply)
+				m.log.Error().Stringer("extensionObjectDefinition", extensionObjectDefinition).Msg("Remote party returned an error")
 			}
 
 			responseCodes := map[string]apiModel.PlcResponseCode{}
@@ -149,5 +150,5 @@ func (m *Reader) readSync(ctx context.Context, readRequest apiModel.PlcReadReque
 		result <- spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, err)
 	}
 
-	m.messageCodec.channel.submit(ctx, m.messageCodec, errorDispatcher, consumer, buffer)
+	m.connection.channel.submit(ctx, m.connection.messageCodec, errorDispatcher, consumer, buffer)
 }
