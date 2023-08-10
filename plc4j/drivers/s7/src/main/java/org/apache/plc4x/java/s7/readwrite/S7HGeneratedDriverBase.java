@@ -77,7 +77,7 @@ public class S7HGeneratedDriverBase extends GeneratedDriverBase<TPKTPacket> {
 
         // Create the configuration object.
         Configuration configuration = new ConfigurationFactory().createConfiguration(
-            getConfigurationType(), paramString);
+            getConfigurationType(), protocolCode, transportCode, transportConfig, paramString);
         if (configuration == null) {
             throw new PlcConnectionException("Unsupported configuration");
         }
