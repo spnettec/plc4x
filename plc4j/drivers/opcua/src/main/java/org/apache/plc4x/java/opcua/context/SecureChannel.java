@@ -385,7 +385,8 @@ public class SecureChannel {
             0L,
             NULL_STRING,
             configuration.getTimeoutRequest(),
-            NULL_EXTENSION_OBJECT);
+            NULL_EXTENSION_OBJECT
+        );
 
         LocalizedText applicationName = new LocalizedText(
             true,
@@ -515,7 +516,8 @@ public class SecureChannel {
             0L,
             NULL_STRING,
             configuration.getTimeoutRequest(),
-            NULL_EXTENSION_OBJECT);
+            NULL_EXTENSION_OBJECT
+        );
 
         SignatureData clientSignature = new SignatureData(NULL_STRING, NULL_BYTE_STRING);
 
