@@ -61,7 +61,8 @@ public class SimulatedDriver implements PlcDriver {
                 "Connection string doesn't match the format '{protocol-code}:({transport-code})?//{transport-address}(?{parameter-string)?'");
         }
         final String protocolCode = matcher.group("protocolCode");
-        final String deviceName = matcher.group("transportConfig");
+        final String transportCode = matcher.group("transportCode");
+        final String transportConfig = matcher.group("transportConfig");
         final String paramString = matcher.group("paramString");
 
         // Check if the protocol code matches this driver.
@@ -71,16 +72,17 @@ public class SimulatedDriver implements PlcDriver {
                 "This driver is not suited to handle this connection string");
         }
 
-        if (deviceName.isEmpty()) {
+        if (transportConfig.isEmpty()) {
             throw new PlcConnectionException("Invalid URL: no device name given.");
         }
         // Create the configuration object.
         SimulatedConfiguration configuration = new ConfigurationFactory().createConfiguration(
-            SimulatedConfiguration.class, paramString);
+            SimulatedConfiguration.class, protocolCode==null?"":protocolCode,
+                transportCode == null?"":transportCode, transportConfig, paramString);
         if (configuration == null) {
             throw new PlcConnectionException("Unsupported configuration");
         }
-        SimulatedDevice device = new SimulatedDevice(deviceName,configuration);
+        SimulatedDevice device = new SimulatedDevice(transportConfig,configuration);
         return new SimulatedConnection(device);
     }
 

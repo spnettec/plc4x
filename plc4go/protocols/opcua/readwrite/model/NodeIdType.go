@@ -40,12 +40,12 @@ type INodeIdType interface {
 	utils.Serializable
 }
 
-const(
-	NodeIdType_nodeIdTypeTwoByte NodeIdType = 0
-	NodeIdType_nodeIdTypeFourByte NodeIdType = 1
-	NodeIdType_nodeIdTypeNumeric NodeIdType = 2
-	NodeIdType_nodeIdTypeString NodeIdType = 3
-	NodeIdType_nodeIdTypeGuid NodeIdType = 4
+const (
+	NodeIdType_nodeIdTypeTwoByte    NodeIdType = 0
+	NodeIdType_nodeIdTypeFourByte   NodeIdType = 1
+	NodeIdType_nodeIdTypeNumeric    NodeIdType = 2
+	NodeIdType_nodeIdTypeString     NodeIdType = 3
+	NodeIdType_nodeIdTypeGuid       NodeIdType = 4
 	NodeIdType_nodeIdTypeByteString NodeIdType = 5
 )
 
@@ -53,7 +53,7 @@ var NodeIdTypeValues []NodeIdType
 
 func init() {
 	_ = errors.New
-	NodeIdTypeValues = []NodeIdType {
+	NodeIdTypeValues = []NodeIdType{
 		NodeIdType_nodeIdTypeTwoByte,
 		NodeIdType_nodeIdTypeFourByte,
 		NodeIdType_nodeIdTypeNumeric,
@@ -65,18 +65,18 @@ func init() {
 
 func NodeIdTypeByValue(value uint8) (enum NodeIdType, ok bool) {
 	switch value {
-		case 0:
-			return NodeIdType_nodeIdTypeTwoByte, true
-		case 1:
-			return NodeIdType_nodeIdTypeFourByte, true
-		case 2:
-			return NodeIdType_nodeIdTypeNumeric, true
-		case 3:
-			return NodeIdType_nodeIdTypeString, true
-		case 4:
-			return NodeIdType_nodeIdTypeGuid, true
-		case 5:
-			return NodeIdType_nodeIdTypeByteString, true
+	case 0:
+		return NodeIdType_nodeIdTypeTwoByte, true
+	case 1:
+		return NodeIdType_nodeIdTypeFourByte, true
+	case 2:
+		return NodeIdType_nodeIdTypeNumeric, true
+	case 3:
+		return NodeIdType_nodeIdTypeString, true
+	case 4:
+		return NodeIdType_nodeIdTypeGuid, true
+	case 5:
+		return NodeIdType_nodeIdTypeByteString, true
 	}
 	return 0, false
 }
@@ -99,13 +99,13 @@ func NodeIdTypeByName(value string) (enum NodeIdType, ok bool) {
 	return 0, false
 }
 
-func NodeIdTypeKnows(value uint8)  bool {
+func NodeIdTypeKnows(value uint8) bool {
 	for _, typeValue := range NodeIdTypeValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastNodeIdType(structType any) NodeIdType {
@@ -181,4 +181,3 @@ func (e NodeIdType) PLC4XEnumName() string {
 func (e NodeIdType) String() string {
 	return e.PLC4XEnumName()
 }
-

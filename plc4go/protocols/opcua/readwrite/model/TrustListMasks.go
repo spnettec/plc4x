@@ -40,20 +40,20 @@ type ITrustListMasks interface {
 	utils.Serializable
 }
 
-const(
-	TrustListMasks_trustListMasksNone TrustListMasks = 0
+const (
+	TrustListMasks_trustListMasksNone                TrustListMasks = 0
 	TrustListMasks_trustListMasksTrustedCertificates TrustListMasks = 1
-	TrustListMasks_trustListMasksTrustedCrls TrustListMasks = 2
-	TrustListMasks_trustListMasksIssuerCertificates TrustListMasks = 4
-	TrustListMasks_trustListMasksIssuerCrls TrustListMasks = 8
-	TrustListMasks_trustListMasksAll TrustListMasks = 15
+	TrustListMasks_trustListMasksTrustedCrls         TrustListMasks = 2
+	TrustListMasks_trustListMasksIssuerCertificates  TrustListMasks = 4
+	TrustListMasks_trustListMasksIssuerCrls          TrustListMasks = 8
+	TrustListMasks_trustListMasksAll                 TrustListMasks = 15
 )
 
 var TrustListMasksValues []TrustListMasks
 
 func init() {
 	_ = errors.New
-	TrustListMasksValues = []TrustListMasks {
+	TrustListMasksValues = []TrustListMasks{
 		TrustListMasks_trustListMasksNone,
 		TrustListMasks_trustListMasksTrustedCertificates,
 		TrustListMasks_trustListMasksTrustedCrls,
@@ -65,18 +65,18 @@ func init() {
 
 func TrustListMasksByValue(value uint32) (enum TrustListMasks, ok bool) {
 	switch value {
-		case 0:
-			return TrustListMasks_trustListMasksNone, true
-		case 1:
-			return TrustListMasks_trustListMasksTrustedCertificates, true
-		case 15:
-			return TrustListMasks_trustListMasksAll, true
-		case 2:
-			return TrustListMasks_trustListMasksTrustedCrls, true
-		case 4:
-			return TrustListMasks_trustListMasksIssuerCertificates, true
-		case 8:
-			return TrustListMasks_trustListMasksIssuerCrls, true
+	case 0:
+		return TrustListMasks_trustListMasksNone, true
+	case 1:
+		return TrustListMasks_trustListMasksTrustedCertificates, true
+	case 15:
+		return TrustListMasks_trustListMasksAll, true
+	case 2:
+		return TrustListMasks_trustListMasksTrustedCrls, true
+	case 4:
+		return TrustListMasks_trustListMasksIssuerCertificates, true
+	case 8:
+		return TrustListMasks_trustListMasksIssuerCrls, true
 	}
 	return 0, false
 }
@@ -99,13 +99,13 @@ func TrustListMasksByName(value string) (enum TrustListMasks, ok bool) {
 	return 0, false
 }
 
-func TrustListMasksKnows(value uint32)  bool {
+func TrustListMasksKnows(value uint32) bool {
 	for _, typeValue := range TrustListMasksValues {
 		if uint32(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastTrustListMasks(structType any) TrustListMasks {
@@ -181,4 +181,3 @@ func (e TrustListMasks) PLC4XEnumName() string {
 func (e TrustListMasks) String() string {
 	return e.PLC4XEnumName()
 }
-

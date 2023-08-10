@@ -40,9 +40,9 @@ type IInterfaceAdminStatus interface {
 	utils.Serializable
 }
 
-const(
-	InterfaceAdminStatus_interfaceAdminStatusUp InterfaceAdminStatus = 0
-	InterfaceAdminStatus_interfaceAdminStatusDown InterfaceAdminStatus = 1
+const (
+	InterfaceAdminStatus_interfaceAdminStatusUp      InterfaceAdminStatus = 0
+	InterfaceAdminStatus_interfaceAdminStatusDown    InterfaceAdminStatus = 1
 	InterfaceAdminStatus_interfaceAdminStatusTesting InterfaceAdminStatus = 2
 )
 
@@ -50,7 +50,7 @@ var InterfaceAdminStatusValues []InterfaceAdminStatus
 
 func init() {
 	_ = errors.New
-	InterfaceAdminStatusValues = []InterfaceAdminStatus {
+	InterfaceAdminStatusValues = []InterfaceAdminStatus{
 		InterfaceAdminStatus_interfaceAdminStatusUp,
 		InterfaceAdminStatus_interfaceAdminStatusDown,
 		InterfaceAdminStatus_interfaceAdminStatusTesting,
@@ -59,12 +59,12 @@ func init() {
 
 func InterfaceAdminStatusByValue(value uint32) (enum InterfaceAdminStatus, ok bool) {
 	switch value {
-		case 0:
-			return InterfaceAdminStatus_interfaceAdminStatusUp, true
-		case 1:
-			return InterfaceAdminStatus_interfaceAdminStatusDown, true
-		case 2:
-			return InterfaceAdminStatus_interfaceAdminStatusTesting, true
+	case 0:
+		return InterfaceAdminStatus_interfaceAdminStatusUp, true
+	case 1:
+		return InterfaceAdminStatus_interfaceAdminStatusDown, true
+	case 2:
+		return InterfaceAdminStatus_interfaceAdminStatusTesting, true
 	}
 	return 0, false
 }
@@ -81,13 +81,13 @@ func InterfaceAdminStatusByName(value string) (enum InterfaceAdminStatus, ok boo
 	return 0, false
 }
 
-func InterfaceAdminStatusKnows(value uint32)  bool {
+func InterfaceAdminStatusKnows(value uint32) bool {
 	for _, typeValue := range InterfaceAdminStatusValues {
 		if uint32(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastInterfaceAdminStatus(structType any) InterfaceAdminStatus {
@@ -157,4 +157,3 @@ func (e InterfaceAdminStatus) PLC4XEnumName() string {
 func (e InterfaceAdminStatus) String() string {
 	return e.PLC4XEnumName()
 }
-

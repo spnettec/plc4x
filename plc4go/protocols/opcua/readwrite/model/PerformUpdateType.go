@@ -40,18 +40,18 @@ type IPerformUpdateType interface {
 	utils.Serializable
 }
 
-const(
-	PerformUpdateType_performUpdateTypeInsert PerformUpdateType = 1
+const (
+	PerformUpdateType_performUpdateTypeInsert  PerformUpdateType = 1
 	PerformUpdateType_performUpdateTypeReplace PerformUpdateType = 2
-	PerformUpdateType_performUpdateTypeUpdate PerformUpdateType = 3
-	PerformUpdateType_performUpdateTypeRemove PerformUpdateType = 4
+	PerformUpdateType_performUpdateTypeUpdate  PerformUpdateType = 3
+	PerformUpdateType_performUpdateTypeRemove  PerformUpdateType = 4
 )
 
 var PerformUpdateTypeValues []PerformUpdateType
 
 func init() {
 	_ = errors.New
-	PerformUpdateTypeValues = []PerformUpdateType {
+	PerformUpdateTypeValues = []PerformUpdateType{
 		PerformUpdateType_performUpdateTypeInsert,
 		PerformUpdateType_performUpdateTypeReplace,
 		PerformUpdateType_performUpdateTypeUpdate,
@@ -61,14 +61,14 @@ func init() {
 
 func PerformUpdateTypeByValue(value uint32) (enum PerformUpdateType, ok bool) {
 	switch value {
-		case 1:
-			return PerformUpdateType_performUpdateTypeInsert, true
-		case 2:
-			return PerformUpdateType_performUpdateTypeReplace, true
-		case 3:
-			return PerformUpdateType_performUpdateTypeUpdate, true
-		case 4:
-			return PerformUpdateType_performUpdateTypeRemove, true
+	case 1:
+		return PerformUpdateType_performUpdateTypeInsert, true
+	case 2:
+		return PerformUpdateType_performUpdateTypeReplace, true
+	case 3:
+		return PerformUpdateType_performUpdateTypeUpdate, true
+	case 4:
+		return PerformUpdateType_performUpdateTypeRemove, true
 	}
 	return 0, false
 }
@@ -87,13 +87,13 @@ func PerformUpdateTypeByName(value string) (enum PerformUpdateType, ok bool) {
 	return 0, false
 }
 
-func PerformUpdateTypeKnows(value uint32)  bool {
+func PerformUpdateTypeKnows(value uint32) bool {
 	for _, typeValue := range PerformUpdateTypeValues {
 		if uint32(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastPerformUpdateType(structType any) PerformUpdateType {
@@ -165,4 +165,3 @@ func (e PerformUpdateType) PLC4XEnumName() string {
 func (e PerformUpdateType) String() string {
 	return e.PLC4XEnumName()
 }
-

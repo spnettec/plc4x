@@ -21,6 +21,7 @@ package org.apache.plc4x.java.opcua.config;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.BooleanDefaultValue;
+import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultValue;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.StringDefaultValue;
 import org.apache.plc4x.java.transport.tcp.TcpTransportConfiguration;
 
@@ -57,6 +58,10 @@ public class OpcuaConfiguration implements Configuration, TcpTransportConfigurat
 
     @ConfigurationParameter("keyStorePassword")
     private String keyStorePassword;
+
+    @ConfigurationParameter("timeout-request")
+    @IntDefaultValue(10000)
+    private int timeoutRequest;
 
     public String getProtocolCode() {
         return protocolCode;
@@ -98,6 +103,13 @@ public class OpcuaConfiguration implements Configuration, TcpTransportConfigurat
         return keyStorePassword;
     }
 
+    public int getTimeoutRequest() {
+        return timeoutRequest;
+    }
+
+    public void setTimeoutRequest(int timeoutRequest) {
+        this.timeoutRequest = timeoutRequest;
+    }
 
     @Override
     public String toString() {

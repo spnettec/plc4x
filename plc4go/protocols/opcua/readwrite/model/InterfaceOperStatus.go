@@ -40,13 +40,13 @@ type IInterfaceOperStatus interface {
 	utils.Serializable
 }
 
-const(
-	InterfaceOperStatus_interfaceOperStatusUp InterfaceOperStatus = 0
-	InterfaceOperStatus_interfaceOperStatusDown InterfaceOperStatus = 1
-	InterfaceOperStatus_interfaceOperStatusTesting InterfaceOperStatus = 2
-	InterfaceOperStatus_interfaceOperStatusUnknown InterfaceOperStatus = 3
-	InterfaceOperStatus_interfaceOperStatusDormant InterfaceOperStatus = 4
-	InterfaceOperStatus_interfaceOperStatusNotPresent InterfaceOperStatus = 5
+const (
+	InterfaceOperStatus_interfaceOperStatusUp             InterfaceOperStatus = 0
+	InterfaceOperStatus_interfaceOperStatusDown           InterfaceOperStatus = 1
+	InterfaceOperStatus_interfaceOperStatusTesting        InterfaceOperStatus = 2
+	InterfaceOperStatus_interfaceOperStatusUnknown        InterfaceOperStatus = 3
+	InterfaceOperStatus_interfaceOperStatusDormant        InterfaceOperStatus = 4
+	InterfaceOperStatus_interfaceOperStatusNotPresent     InterfaceOperStatus = 5
 	InterfaceOperStatus_interfaceOperStatusLowerLayerDown InterfaceOperStatus = 6
 )
 
@@ -54,7 +54,7 @@ var InterfaceOperStatusValues []InterfaceOperStatus
 
 func init() {
 	_ = errors.New
-	InterfaceOperStatusValues = []InterfaceOperStatus {
+	InterfaceOperStatusValues = []InterfaceOperStatus{
 		InterfaceOperStatus_interfaceOperStatusUp,
 		InterfaceOperStatus_interfaceOperStatusDown,
 		InterfaceOperStatus_interfaceOperStatusTesting,
@@ -67,20 +67,20 @@ func init() {
 
 func InterfaceOperStatusByValue(value uint32) (enum InterfaceOperStatus, ok bool) {
 	switch value {
-		case 0:
-			return InterfaceOperStatus_interfaceOperStatusUp, true
-		case 1:
-			return InterfaceOperStatus_interfaceOperStatusDown, true
-		case 2:
-			return InterfaceOperStatus_interfaceOperStatusTesting, true
-		case 3:
-			return InterfaceOperStatus_interfaceOperStatusUnknown, true
-		case 4:
-			return InterfaceOperStatus_interfaceOperStatusDormant, true
-		case 5:
-			return InterfaceOperStatus_interfaceOperStatusNotPresent, true
-		case 6:
-			return InterfaceOperStatus_interfaceOperStatusLowerLayerDown, true
+	case 0:
+		return InterfaceOperStatus_interfaceOperStatusUp, true
+	case 1:
+		return InterfaceOperStatus_interfaceOperStatusDown, true
+	case 2:
+		return InterfaceOperStatus_interfaceOperStatusTesting, true
+	case 3:
+		return InterfaceOperStatus_interfaceOperStatusUnknown, true
+	case 4:
+		return InterfaceOperStatus_interfaceOperStatusDormant, true
+	case 5:
+		return InterfaceOperStatus_interfaceOperStatusNotPresent, true
+	case 6:
+		return InterfaceOperStatus_interfaceOperStatusLowerLayerDown, true
 	}
 	return 0, false
 }
@@ -105,13 +105,13 @@ func InterfaceOperStatusByName(value string) (enum InterfaceOperStatus, ok bool)
 	return 0, false
 }
 
-func InterfaceOperStatusKnows(value uint32)  bool {
+func InterfaceOperStatusKnows(value uint32) bool {
 	for _, typeValue := range InterfaceOperStatusValues {
 		if uint32(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastInterfaceOperStatus(structType any) InterfaceOperStatus {
@@ -189,4 +189,3 @@ func (e InterfaceOperStatus) PLC4XEnumName() string {
 func (e InterfaceOperStatus) String() string {
 	return e.PLC4XEnumName()
 }
-
