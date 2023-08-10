@@ -44,11 +44,6 @@ import java.util.stream.Stream;
 
 public class DefaultNettyPlcConnection extends AbstractPlcConnection implements ChannelExposingConnection, EventPlcConnection {
 
-    /**
-     * a {@link HashedWheelTimer} shall be only instantiated once.
-     */
-    // TODO: maybe find a way to make this configurable per jvm
-    protected final static Timer timer = new HashedWheelTimer();
     protected final static long DEFAULT_DISCONNECT_WAIT_TIME = 10000L;
     private static final Logger logger = LoggerFactory.getLogger(DefaultNettyPlcConnection.class);
 
@@ -111,33 +106,20 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
             ConfigurationFactory.configure(configuration, channelFactory);
 
             // Have the channel factory create a new channel instance.
-            if (fireDiscoverEvent) {
-                channel = channelFactory.createChannel(getChannelHandler(sessionSetupCompleteFuture, sessionDisconnectCompleteFuture, sessionDiscoveredCompleteFuture));
-                channel.closeFuture().addListener(future -> {
-                    if (!sessionDiscoveredCompleteFuture.isDone()) {
-                        //Do Nothing
-                        try {
-                            sessionDiscoveredCompleteFuture.complete(null);
-                        } catch (Exception e) {
-                            //Do Nothing
-                        }
-
-                    }
-                });
-                channel.pipeline().fireUserEventTriggered(new DiscoverEvent());
-            }
-            if (awaitSessionDiscoverComplete) {
-                // Wait till the connection is established.
-                sessionDiscoveredCompleteFuture.get();
-            }
-
             channel = channelFactory.createChannel(getChannelHandler(sessionSetupCompleteFuture, sessionDisconnectCompleteFuture, sessionDiscoveredCompleteFuture));
             channel.closeFuture().addListener(future -> {
                 if (!sessionSetupCompleteFuture.isDone()) {
+                    channel.pipeline().fireUserEventTriggered(new CloseConnectionEvent());
                     sessionSetupCompleteFuture.completeExceptionally(
                         new PlcIoException("Connection terminated by remote"));
                 }
             });
+            if (fireDiscoverEvent) {
+                channel.pipeline().fireUserEventTriggered(new DiscoverEvent());
+            }
+            if (awaitSessionDiscoverComplete) {
+                sessionDiscoveredCompleteFuture.get();
+            }
             // Send an event to the pipeline telling the Protocol filters what's going on.
             sendChannelCreatedEvent();
 
@@ -148,6 +130,7 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
 
             // Set the connection to "connected"
             connected = true;
+            channel.attr(IS_CONNECTED).set(true);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             throw new PlcConnectionException(e);
@@ -164,6 +147,11 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
      */
     @Override
     public void close() throws PlcConnectionException {
+        if(channel == null)
+        {
+            connected = false;
+            return;
+        }
         logger.debug("Closing connection to PLC, await for disconnect = {}", awaitSessionDisconnectComplete);
         channel.pipeline().fireUserEventTriggered(new DisconnectEvent());
         try {
@@ -182,9 +170,9 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
 
         // Shutdown the Worker Group
         channelFactory.closeEventLoopForChannel(channel);
-
-        channel = null;
         connected = false;
+        channel.attr(IS_CONNECTED).set(false);
+        channel = null;
     }
 
     /**
@@ -224,18 +212,37 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
                         } else if (evt instanceof DisconnectedEvent) {
                             sessionDisconnectCompleteFuture.complete(null);
                             eventListeners.forEach(ConnectionStateListener::disconnected);
+                            super.userEventTriggered(ctx, evt);
                         } else if (evt instanceof DiscoveredEvent) {
                             sessionDiscoverCompleteFuture.complete(((DiscoveredEvent) evt).getConfiguration());
+                        } else if (evt instanceof ConnectEvent) {
+                            if (!sessionSetupCompleteFuture.isCompletedExceptionally()) {
+                                if (awaitSessionSetupComplete) {
+                                    setProtocol(stackConfigurer.configurePipeline(configuration, pipeline,  getAuthentication(),
+                                        channelFactory.isPassive()));
+                                }
+                                super.userEventTriggered(ctx, evt);
+                            }
                         } else {
                             super.userEventTriggered(ctx, evt);
                         }
                     }
                 });
+                pipeline.addLast(new ChannelInboundHandlerAdapter() {
+                                     @Override
+                                     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws PlcConnectionException {
+                                         logger.error("unknown error, close the connection", cause);
+                                         close();
+                                     }
+                                 }
+                );
                 // Initialize via Transport Layer
                 channelFactory.initializePipeline(pipeline);
                 // Initialize Protocol Layer
-                setProtocol(stackConfigurer.configurePipeline(configuration, pipeline, getAuthentication(),
-                    channelFactory.isPassive()));
+                if (!awaitSessionSetupComplete) {
+                    setProtocol(stackConfigurer.configurePipeline(configuration, pipeline, getAuthentication(),
+                        channelFactory.isPassive()));
+                }
             }
         };
     }
