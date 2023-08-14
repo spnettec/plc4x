@@ -40,9 +40,9 @@ type IDuplex interface {
 	utils.Serializable
 }
 
-const (
-	Duplex_duplexFull    Duplex = 0
-	Duplex_duplexHalf    Duplex = 1
+const(
+	Duplex_duplexFull Duplex = 0
+	Duplex_duplexHalf Duplex = 1
 	Duplex_duplexUnknown Duplex = 2
 )
 
@@ -50,7 +50,7 @@ var DuplexValues []Duplex
 
 func init() {
 	_ = errors.New
-	DuplexValues = []Duplex{
+	DuplexValues = []Duplex {
 		Duplex_duplexFull,
 		Duplex_duplexHalf,
 		Duplex_duplexUnknown,
@@ -59,12 +59,12 @@ func init() {
 
 func DuplexByValue(value uint32) (enum Duplex, ok bool) {
 	switch value {
-	case 0:
-		return Duplex_duplexFull, true
-	case 1:
-		return Duplex_duplexHalf, true
-	case 2:
-		return Duplex_duplexUnknown, true
+		case 0:
+			return Duplex_duplexFull, true
+		case 1:
+			return Duplex_duplexHalf, true
+		case 2:
+			return Duplex_duplexUnknown, true
 	}
 	return 0, false
 }
@@ -81,13 +81,13 @@ func DuplexByName(value string) (enum Duplex, ok bool) {
 	return 0, false
 }
 
-func DuplexKnows(value uint32) bool {
+func DuplexKnows(value uint32)  bool {
 	for _, typeValue := range DuplexValues {
 		if uint32(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastDuplex(structType any) Duplex {
@@ -157,3 +157,4 @@ func (e Duplex) PLC4XEnumName() string {
 func (e Duplex) String() string {
 	return e.PLC4XEnumName()
 }
+

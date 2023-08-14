@@ -40,17 +40,17 @@ type ITimeBase interface {
 	utils.Serializable
 }
 
-const (
+const(
 	TimeBase_B01SEC TimeBase = 0x00
-	TimeBase_B1SEC  TimeBase = 0x01
-	TimeBase_B10SEC TimeBase = 0x02
+	TimeBase_B1SEC TimeBase = 0x01
+	TimeBase_B10SEC TimeBase = 0X02
 )
 
 var TimeBaseValues []TimeBase
 
 func init() {
 	_ = errors.New
-	TimeBaseValues = []TimeBase{
+	TimeBaseValues = []TimeBase {
 		TimeBase_B01SEC,
 		TimeBase_B1SEC,
 		TimeBase_B10SEC,
@@ -59,12 +59,12 @@ func init() {
 
 func TimeBaseByValue(value uint8) (enum TimeBase, ok bool) {
 	switch value {
-	case 0x02:
-		return TimeBase_B10SEC, true
-	case 0x00:
-		return TimeBase_B01SEC, true
-	case 0x01:
-		return TimeBase_B1SEC, true
+		case 0X02:
+			return TimeBase_B10SEC, true
+		case 0x00:
+			return TimeBase_B01SEC, true
+		case 0x01:
+			return TimeBase_B1SEC, true
 	}
 	return 0, false
 }
@@ -81,13 +81,13 @@ func TimeBaseByName(value string) (enum TimeBase, ok bool) {
 	return 0, false
 }
 
-func TimeBaseKnows(value uint8) bool {
+func TimeBaseKnows(value uint8)  bool {
 	for _, typeValue := range TimeBaseValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastTimeBase(structType any) TimeBase {
@@ -157,3 +157,4 @@ func (e TimeBase) PLC4XEnumName() string {
 func (e TimeBase) String() string {
 	return e.PLC4XEnumName()
 }
+

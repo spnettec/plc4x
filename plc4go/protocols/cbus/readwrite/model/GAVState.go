@@ -40,18 +40,18 @@ type IGAVState interface {
 	utils.Serializable
 }
 
-const (
+const(
 	GAVState_DOES_NOT_EXIST GAVState = 0
-	GAVState_ON             GAVState = 1
-	GAVState_OFF            GAVState = 2
-	GAVState_ERROR          GAVState = 3
+	GAVState_ON GAVState = 1
+	GAVState_OFF GAVState = 2
+	GAVState_ERROR GAVState = 3
 )
 
 var GAVStateValues []GAVState
 
 func init() {
 	_ = errors.New
-	GAVStateValues = []GAVState{
+	GAVStateValues = []GAVState {
 		GAVState_DOES_NOT_EXIST,
 		GAVState_ON,
 		GAVState_OFF,
@@ -61,14 +61,14 @@ func init() {
 
 func GAVStateByValue(value uint8) (enum GAVState, ok bool) {
 	switch value {
-	case 0:
-		return GAVState_DOES_NOT_EXIST, true
-	case 1:
-		return GAVState_ON, true
-	case 2:
-		return GAVState_OFF, true
-	case 3:
-		return GAVState_ERROR, true
+		case 0:
+			return GAVState_DOES_NOT_EXIST, true
+		case 1:
+			return GAVState_ON, true
+		case 2:
+			return GAVState_OFF, true
+		case 3:
+			return GAVState_ERROR, true
 	}
 	return 0, false
 }
@@ -87,13 +87,13 @@ func GAVStateByName(value string) (enum GAVState, ok bool) {
 	return 0, false
 }
 
-func GAVStateKnows(value uint8) bool {
+func GAVStateKnows(value uint8)  bool {
 	for _, typeValue := range GAVStateValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastGAVState(structType any) GAVState {
@@ -165,3 +165,4 @@ func (e GAVState) PLC4XEnumName() string {
 func (e GAVState) String() string {
 	return e.PLC4XEnumName()
 }
+

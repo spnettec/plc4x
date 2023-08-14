@@ -40,18 +40,18 @@ type IHistoryUpdateType interface {
 	utils.Serializable
 }
 
-const (
-	HistoryUpdateType_historyUpdateTypeInsert  HistoryUpdateType = 1
+const(
+	HistoryUpdateType_historyUpdateTypeInsert HistoryUpdateType = 1
 	HistoryUpdateType_historyUpdateTypeReplace HistoryUpdateType = 2
-	HistoryUpdateType_historyUpdateTypeUpdate  HistoryUpdateType = 3
-	HistoryUpdateType_historyUpdateTypeDelete  HistoryUpdateType = 4
+	HistoryUpdateType_historyUpdateTypeUpdate HistoryUpdateType = 3
+	HistoryUpdateType_historyUpdateTypeDelete HistoryUpdateType = 4
 )
 
 var HistoryUpdateTypeValues []HistoryUpdateType
 
 func init() {
 	_ = errors.New
-	HistoryUpdateTypeValues = []HistoryUpdateType{
+	HistoryUpdateTypeValues = []HistoryUpdateType {
 		HistoryUpdateType_historyUpdateTypeInsert,
 		HistoryUpdateType_historyUpdateTypeReplace,
 		HistoryUpdateType_historyUpdateTypeUpdate,
@@ -61,14 +61,14 @@ func init() {
 
 func HistoryUpdateTypeByValue(value uint32) (enum HistoryUpdateType, ok bool) {
 	switch value {
-	case 1:
-		return HistoryUpdateType_historyUpdateTypeInsert, true
-	case 2:
-		return HistoryUpdateType_historyUpdateTypeReplace, true
-	case 3:
-		return HistoryUpdateType_historyUpdateTypeUpdate, true
-	case 4:
-		return HistoryUpdateType_historyUpdateTypeDelete, true
+		case 1:
+			return HistoryUpdateType_historyUpdateTypeInsert, true
+		case 2:
+			return HistoryUpdateType_historyUpdateTypeReplace, true
+		case 3:
+			return HistoryUpdateType_historyUpdateTypeUpdate, true
+		case 4:
+			return HistoryUpdateType_historyUpdateTypeDelete, true
 	}
 	return 0, false
 }
@@ -87,13 +87,13 @@ func HistoryUpdateTypeByName(value string) (enum HistoryUpdateType, ok bool) {
 	return 0, false
 }
 
-func HistoryUpdateTypeKnows(value uint32) bool {
+func HistoryUpdateTypeKnows(value uint32)  bool {
 	for _, typeValue := range HistoryUpdateTypeValues {
 		if uint32(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastHistoryUpdateType(structType any) HistoryUpdateType {
@@ -165,3 +165,4 @@ func (e HistoryUpdateType) PLC4XEnumName() string {
 func (e HistoryUpdateType) String() string {
 	return e.PLC4XEnumName()
 }
+

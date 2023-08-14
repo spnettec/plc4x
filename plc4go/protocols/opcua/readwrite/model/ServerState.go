@@ -40,22 +40,22 @@ type IServerState interface {
 	utils.Serializable
 }
 
-const (
-	ServerState_serverStateRunning            ServerState = 0
-	ServerState_serverStateFailed             ServerState = 1
-	ServerState_serverStateNoConfiguration    ServerState = 2
-	ServerState_serverStateSuspended          ServerState = 3
-	ServerState_serverStateShutdown           ServerState = 4
-	ServerState_serverStateTest               ServerState = 5
+const(
+	ServerState_serverStateRunning ServerState = 0
+	ServerState_serverStateFailed ServerState = 1
+	ServerState_serverStateNoConfiguration ServerState = 2
+	ServerState_serverStateSuspended ServerState = 3
+	ServerState_serverStateShutdown ServerState = 4
+	ServerState_serverStateTest ServerState = 5
 	ServerState_serverStateCommunicationFault ServerState = 6
-	ServerState_serverStateUnknown            ServerState = 7
+	ServerState_serverStateUnknown ServerState = 7
 )
 
 var ServerStateValues []ServerState
 
 func init() {
 	_ = errors.New
-	ServerStateValues = []ServerState{
+	ServerStateValues = []ServerState {
 		ServerState_serverStateRunning,
 		ServerState_serverStateFailed,
 		ServerState_serverStateNoConfiguration,
@@ -69,22 +69,22 @@ func init() {
 
 func ServerStateByValue(value uint32) (enum ServerState, ok bool) {
 	switch value {
-	case 0:
-		return ServerState_serverStateRunning, true
-	case 1:
-		return ServerState_serverStateFailed, true
-	case 2:
-		return ServerState_serverStateNoConfiguration, true
-	case 3:
-		return ServerState_serverStateSuspended, true
-	case 4:
-		return ServerState_serverStateShutdown, true
-	case 5:
-		return ServerState_serverStateTest, true
-	case 6:
-		return ServerState_serverStateCommunicationFault, true
-	case 7:
-		return ServerState_serverStateUnknown, true
+		case 0:
+			return ServerState_serverStateRunning, true
+		case 1:
+			return ServerState_serverStateFailed, true
+		case 2:
+			return ServerState_serverStateNoConfiguration, true
+		case 3:
+			return ServerState_serverStateSuspended, true
+		case 4:
+			return ServerState_serverStateShutdown, true
+		case 5:
+			return ServerState_serverStateTest, true
+		case 6:
+			return ServerState_serverStateCommunicationFault, true
+		case 7:
+			return ServerState_serverStateUnknown, true
 	}
 	return 0, false
 }
@@ -111,13 +111,13 @@ func ServerStateByName(value string) (enum ServerState, ok bool) {
 	return 0, false
 }
 
-func ServerStateKnows(value uint32) bool {
+func ServerStateKnows(value uint32)  bool {
 	for _, typeValue := range ServerStateValues {
 		if uint32(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastServerState(structType any) ServerState {
@@ -197,3 +197,4 @@ func (e ServerState) PLC4XEnumName() string {
 func (e ServerState) String() string {
 	return e.PLC4XEnumName()
 }
+
