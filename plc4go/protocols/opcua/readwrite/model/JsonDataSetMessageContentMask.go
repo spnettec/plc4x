@@ -40,21 +40,21 @@ type IJsonDataSetMessageContentMask interface {
 	utils.Serializable
 }
 
-const(
-	JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskNone JsonDataSetMessageContentMask = 0
+const (
+	JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskNone            JsonDataSetMessageContentMask = 0
 	JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskDataSetWriterId JsonDataSetMessageContentMask = 1
 	JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskMetaDataVersion JsonDataSetMessageContentMask = 2
-	JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskSequenceNumber JsonDataSetMessageContentMask = 4
-	JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskTimestamp JsonDataSetMessageContentMask = 8
-	JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskStatus JsonDataSetMessageContentMask = 16
-	JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskMessageType JsonDataSetMessageContentMask = 32
+	JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskSequenceNumber  JsonDataSetMessageContentMask = 4
+	JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskTimestamp       JsonDataSetMessageContentMask = 8
+	JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskStatus          JsonDataSetMessageContentMask = 16
+	JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskMessageType     JsonDataSetMessageContentMask = 32
 )
 
 var JsonDataSetMessageContentMaskValues []JsonDataSetMessageContentMask
 
 func init() {
 	_ = errors.New
-	JsonDataSetMessageContentMaskValues = []JsonDataSetMessageContentMask {
+	JsonDataSetMessageContentMaskValues = []JsonDataSetMessageContentMask{
 		JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskNone,
 		JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskDataSetWriterId,
 		JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskMetaDataVersion,
@@ -67,20 +67,20 @@ func init() {
 
 func JsonDataSetMessageContentMaskByValue(value uint32) (enum JsonDataSetMessageContentMask, ok bool) {
 	switch value {
-		case 0:
-			return JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskNone, true
-		case 1:
-			return JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskDataSetWriterId, true
-		case 16:
-			return JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskStatus, true
-		case 2:
-			return JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskMetaDataVersion, true
-		case 32:
-			return JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskMessageType, true
-		case 4:
-			return JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskSequenceNumber, true
-		case 8:
-			return JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskTimestamp, true
+	case 0:
+		return JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskNone, true
+	case 1:
+		return JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskDataSetWriterId, true
+	case 16:
+		return JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskStatus, true
+	case 2:
+		return JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskMetaDataVersion, true
+	case 32:
+		return JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskMessageType, true
+	case 4:
+		return JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskSequenceNumber, true
+	case 8:
+		return JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskTimestamp, true
 	}
 	return 0, false
 }
@@ -105,13 +105,13 @@ func JsonDataSetMessageContentMaskByName(value string) (enum JsonDataSetMessageC
 	return 0, false
 }
 
-func JsonDataSetMessageContentMaskKnows(value uint32)  bool {
+func JsonDataSetMessageContentMaskKnows(value uint32) bool {
 	for _, typeValue := range JsonDataSetMessageContentMaskValues {
 		if uint32(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastJsonDataSetMessageContentMask(structType any) JsonDataSetMessageContentMask {
@@ -189,4 +189,3 @@ func (e JsonDataSetMessageContentMask) PLC4XEnumName() string {
 func (e JsonDataSetMessageContentMask) String() string {
 	return e.PLC4XEnumName()
 }
-

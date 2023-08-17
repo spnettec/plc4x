@@ -40,18 +40,18 @@ type IOpenFileMode interface {
 	utils.Serializable
 }
 
-const(
-	OpenFileMode_openFileModeRead OpenFileMode = 1
-	OpenFileMode_openFileModeWrite OpenFileMode = 2
+const (
+	OpenFileMode_openFileModeRead          OpenFileMode = 1
+	OpenFileMode_openFileModeWrite         OpenFileMode = 2
 	OpenFileMode_openFileModeEraseExisting OpenFileMode = 4
-	OpenFileMode_openFileModeAppend OpenFileMode = 8
+	OpenFileMode_openFileModeAppend        OpenFileMode = 8
 )
 
 var OpenFileModeValues []OpenFileMode
 
 func init() {
 	_ = errors.New
-	OpenFileModeValues = []OpenFileMode {
+	OpenFileModeValues = []OpenFileMode{
 		OpenFileMode_openFileModeRead,
 		OpenFileMode_openFileModeWrite,
 		OpenFileMode_openFileModeEraseExisting,
@@ -61,14 +61,14 @@ func init() {
 
 func OpenFileModeByValue(value uint32) (enum OpenFileMode, ok bool) {
 	switch value {
-		case 1:
-			return OpenFileMode_openFileModeRead, true
-		case 2:
-			return OpenFileMode_openFileModeWrite, true
-		case 4:
-			return OpenFileMode_openFileModeEraseExisting, true
-		case 8:
-			return OpenFileMode_openFileModeAppend, true
+	case 1:
+		return OpenFileMode_openFileModeRead, true
+	case 2:
+		return OpenFileMode_openFileModeWrite, true
+	case 4:
+		return OpenFileMode_openFileModeEraseExisting, true
+	case 8:
+		return OpenFileMode_openFileModeAppend, true
 	}
 	return 0, false
 }
@@ -87,13 +87,13 @@ func OpenFileModeByName(value string) (enum OpenFileMode, ok bool) {
 	return 0, false
 }
 
-func OpenFileModeKnows(value uint32)  bool {
+func OpenFileModeKnows(value uint32) bool {
 	for _, typeValue := range OpenFileModeValues {
 		if uint32(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastOpenFileMode(structType any) OpenFileMode {
@@ -165,4 +165,3 @@ func (e OpenFileMode) PLC4XEnumName() string {
 func (e OpenFileMode) String() string {
 	return e.PLC4XEnumName()
 }
-

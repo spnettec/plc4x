@@ -40,10 +40,10 @@ type IBrowseDirection interface {
 	utils.Serializable
 }
 
-const(
+const (
 	BrowseDirection_browseDirectionForward BrowseDirection = 0
 	BrowseDirection_browseDirectionInverse BrowseDirection = 1
-	BrowseDirection_browseDirectionBoth BrowseDirection = 2
+	BrowseDirection_browseDirectionBoth    BrowseDirection = 2
 	BrowseDirection_browseDirectionInvalid BrowseDirection = 3
 )
 
@@ -51,7 +51,7 @@ var BrowseDirectionValues []BrowseDirection
 
 func init() {
 	_ = errors.New
-	BrowseDirectionValues = []BrowseDirection {
+	BrowseDirectionValues = []BrowseDirection{
 		BrowseDirection_browseDirectionForward,
 		BrowseDirection_browseDirectionInverse,
 		BrowseDirection_browseDirectionBoth,
@@ -61,14 +61,14 @@ func init() {
 
 func BrowseDirectionByValue(value uint32) (enum BrowseDirection, ok bool) {
 	switch value {
-		case 0:
-			return BrowseDirection_browseDirectionForward, true
-		case 1:
-			return BrowseDirection_browseDirectionInverse, true
-		case 2:
-			return BrowseDirection_browseDirectionBoth, true
-		case 3:
-			return BrowseDirection_browseDirectionInvalid, true
+	case 0:
+		return BrowseDirection_browseDirectionForward, true
+	case 1:
+		return BrowseDirection_browseDirectionInverse, true
+	case 2:
+		return BrowseDirection_browseDirectionBoth, true
+	case 3:
+		return BrowseDirection_browseDirectionInvalid, true
 	}
 	return 0, false
 }
@@ -87,13 +87,13 @@ func BrowseDirectionByName(value string) (enum BrowseDirection, ok bool) {
 	return 0, false
 }
 
-func BrowseDirectionKnows(value uint32)  bool {
+func BrowseDirectionKnows(value uint32) bool {
 	for _, typeValue := range BrowseDirectionValues {
 		if uint32(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastBrowseDirection(structType any) BrowseDirection {
@@ -165,4 +165,3 @@ func (e BrowseDirection) PLC4XEnumName() string {
 func (e BrowseDirection) String() string {
 	return e.PLC4XEnumName()
 }
-

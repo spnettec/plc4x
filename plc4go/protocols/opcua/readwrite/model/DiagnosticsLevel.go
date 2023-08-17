@@ -40,19 +40,19 @@ type IDiagnosticsLevel interface {
 	utils.Serializable
 }
 
-const(
-	DiagnosticsLevel_diagnosticsLevelBasic DiagnosticsLevel = 0
+const (
+	DiagnosticsLevel_diagnosticsLevelBasic    DiagnosticsLevel = 0
 	DiagnosticsLevel_diagnosticsLevelAdvanced DiagnosticsLevel = 1
-	DiagnosticsLevel_diagnosticsLevelInfo DiagnosticsLevel = 2
-	DiagnosticsLevel_diagnosticsLevelLog DiagnosticsLevel = 3
-	DiagnosticsLevel_diagnosticsLevelDebug DiagnosticsLevel = 4
+	DiagnosticsLevel_diagnosticsLevelInfo     DiagnosticsLevel = 2
+	DiagnosticsLevel_diagnosticsLevelLog      DiagnosticsLevel = 3
+	DiagnosticsLevel_diagnosticsLevelDebug    DiagnosticsLevel = 4
 )
 
 var DiagnosticsLevelValues []DiagnosticsLevel
 
 func init() {
 	_ = errors.New
-	DiagnosticsLevelValues = []DiagnosticsLevel {
+	DiagnosticsLevelValues = []DiagnosticsLevel{
 		DiagnosticsLevel_diagnosticsLevelBasic,
 		DiagnosticsLevel_diagnosticsLevelAdvanced,
 		DiagnosticsLevel_diagnosticsLevelInfo,
@@ -63,16 +63,16 @@ func init() {
 
 func DiagnosticsLevelByValue(value uint32) (enum DiagnosticsLevel, ok bool) {
 	switch value {
-		case 0:
-			return DiagnosticsLevel_diagnosticsLevelBasic, true
-		case 1:
-			return DiagnosticsLevel_diagnosticsLevelAdvanced, true
-		case 2:
-			return DiagnosticsLevel_diagnosticsLevelInfo, true
-		case 3:
-			return DiagnosticsLevel_diagnosticsLevelLog, true
-		case 4:
-			return DiagnosticsLevel_diagnosticsLevelDebug, true
+	case 0:
+		return DiagnosticsLevel_diagnosticsLevelBasic, true
+	case 1:
+		return DiagnosticsLevel_diagnosticsLevelAdvanced, true
+	case 2:
+		return DiagnosticsLevel_diagnosticsLevelInfo, true
+	case 3:
+		return DiagnosticsLevel_diagnosticsLevelLog, true
+	case 4:
+		return DiagnosticsLevel_diagnosticsLevelDebug, true
 	}
 	return 0, false
 }
@@ -93,13 +93,13 @@ func DiagnosticsLevelByName(value string) (enum DiagnosticsLevel, ok bool) {
 	return 0, false
 }
 
-func DiagnosticsLevelKnows(value uint32)  bool {
+func DiagnosticsLevelKnows(value uint32) bool {
 	for _, typeValue := range DiagnosticsLevelValues {
 		if uint32(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastDiagnosticsLevel(structType any) DiagnosticsLevel {
@@ -173,4 +173,3 @@ func (e DiagnosticsLevel) PLC4XEnumName() string {
 func (e DiagnosticsLevel) String() string {
 	return e.PLC4XEnumName()
 }
-

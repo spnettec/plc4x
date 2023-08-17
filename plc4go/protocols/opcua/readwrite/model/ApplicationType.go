@@ -40,9 +40,9 @@ type IApplicationType interface {
 	utils.Serializable
 }
 
-const(
-	ApplicationType_applicationTypeServer ApplicationType = 0
-	ApplicationType_applicationTypeClient ApplicationType = 1
+const (
+	ApplicationType_applicationTypeServer          ApplicationType = 0
+	ApplicationType_applicationTypeClient          ApplicationType = 1
 	ApplicationType_applicationTypeClientAndServer ApplicationType = 2
 	ApplicationType_applicationTypeDiscoveryServer ApplicationType = 3
 )
@@ -51,7 +51,7 @@ var ApplicationTypeValues []ApplicationType
 
 func init() {
 	_ = errors.New
-	ApplicationTypeValues = []ApplicationType {
+	ApplicationTypeValues = []ApplicationType{
 		ApplicationType_applicationTypeServer,
 		ApplicationType_applicationTypeClient,
 		ApplicationType_applicationTypeClientAndServer,
@@ -61,14 +61,14 @@ func init() {
 
 func ApplicationTypeByValue(value uint32) (enum ApplicationType, ok bool) {
 	switch value {
-		case 0:
-			return ApplicationType_applicationTypeServer, true
-		case 1:
-			return ApplicationType_applicationTypeClient, true
-		case 2:
-			return ApplicationType_applicationTypeClientAndServer, true
-		case 3:
-			return ApplicationType_applicationTypeDiscoveryServer, true
+	case 0:
+		return ApplicationType_applicationTypeServer, true
+	case 1:
+		return ApplicationType_applicationTypeClient, true
+	case 2:
+		return ApplicationType_applicationTypeClientAndServer, true
+	case 3:
+		return ApplicationType_applicationTypeDiscoveryServer, true
 	}
 	return 0, false
 }
@@ -87,13 +87,13 @@ func ApplicationTypeByName(value string) (enum ApplicationType, ok bool) {
 	return 0, false
 }
 
-func ApplicationTypeKnows(value uint32)  bool {
+func ApplicationTypeKnows(value uint32) bool {
 	for _, typeValue := range ApplicationTypeValues {
 		if uint32(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastApplicationType(structType any) ApplicationType {
@@ -165,4 +165,3 @@ func (e ApplicationType) PLC4XEnumName() string {
 func (e ApplicationType) String() string {
 	return e.PLC4XEnumName()
 }
-

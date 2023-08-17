@@ -40,40 +40,40 @@ type ITsnFailureCode interface {
 	utils.Serializable
 }
 
-const(
-	TsnFailureCode_tsnFailureCodeNoFailure TsnFailureCode = 0
-	TsnFailureCode_tsnFailureCodeInsufficientBandwidth TsnFailureCode = 1
-	TsnFailureCode_tsnFailureCodeInsufficientResources TsnFailureCode = 2
+const (
+	TsnFailureCode_tsnFailureCodeNoFailure                         TsnFailureCode = 0
+	TsnFailureCode_tsnFailureCodeInsufficientBandwidth             TsnFailureCode = 1
+	TsnFailureCode_tsnFailureCodeInsufficientResources             TsnFailureCode = 2
 	TsnFailureCode_tsnFailureCodeInsufficientTrafficClassBandwidth TsnFailureCode = 3
-	TsnFailureCode_tsnFailureCodeStreamIdInUse TsnFailureCode = 4
-	TsnFailureCode_tsnFailureCodeStreamDestinationAddressInUse TsnFailureCode = 5
-	TsnFailureCode_tsnFailureCodeStreamPreemptedByHigherRank TsnFailureCode = 6
-	TsnFailureCode_tsnFailureCodeLatencyHasChanged TsnFailureCode = 7
-	TsnFailureCode_tsnFailureCodeEgressPortNotAvbCapable TsnFailureCode = 8
-	TsnFailureCode_tsnFailureCodeUseDifferentDestinationAddress TsnFailureCode = 9
-	TsnFailureCode_tsnFailureCodeOutOfMsrpResources TsnFailureCode = 10
-	TsnFailureCode_tsnFailureCodeOutOfMmrpResources TsnFailureCode = 11
-	TsnFailureCode_tsnFailureCodeCannotStoreDestinationAddress TsnFailureCode = 12
-	TsnFailureCode_tsnFailureCodePriorityIsNotAnSrcClass TsnFailureCode = 13
-	TsnFailureCode_tsnFailureCodeMaxFrameSizeTooLarge TsnFailureCode = 14
-	TsnFailureCode_tsnFailureCodeMaxFanInPortsLimitReached TsnFailureCode = 15
-	TsnFailureCode_tsnFailureCodeFirstValueChangedForStreamId TsnFailureCode = 16
-	TsnFailureCode_tsnFailureCodeVlanBlockedOnEgress TsnFailureCode = 17
-	TsnFailureCode_tsnFailureCodeVlanTaggingDisabledOnEgress TsnFailureCode = 18
-	TsnFailureCode_tsnFailureCodeSrClassPriorityMismatch TsnFailureCode = 19
-	TsnFailureCode_tsnFailureCodeFeatureNotPropagated TsnFailureCode = 20
-	TsnFailureCode_tsnFailureCodeMaxLatencyExceeded TsnFailureCode = 21
-	TsnFailureCode_tsnFailureCodeBridgeDoesNotProvideNetworkId TsnFailureCode = 22
-	TsnFailureCode_tsnFailureCodeStreamTransformNotSupported TsnFailureCode = 23
-	TsnFailureCode_tsnFailureCodeStreamIdTypeNotSupported TsnFailureCode = 24
-	TsnFailureCode_tsnFailureCodeFeatureNotSupported TsnFailureCode = 25
+	TsnFailureCode_tsnFailureCodeStreamIdInUse                     TsnFailureCode = 4
+	TsnFailureCode_tsnFailureCodeStreamDestinationAddressInUse     TsnFailureCode = 5
+	TsnFailureCode_tsnFailureCodeStreamPreemptedByHigherRank       TsnFailureCode = 6
+	TsnFailureCode_tsnFailureCodeLatencyHasChanged                 TsnFailureCode = 7
+	TsnFailureCode_tsnFailureCodeEgressPortNotAvbCapable           TsnFailureCode = 8
+	TsnFailureCode_tsnFailureCodeUseDifferentDestinationAddress    TsnFailureCode = 9
+	TsnFailureCode_tsnFailureCodeOutOfMsrpResources                TsnFailureCode = 10
+	TsnFailureCode_tsnFailureCodeOutOfMmrpResources                TsnFailureCode = 11
+	TsnFailureCode_tsnFailureCodeCannotStoreDestinationAddress     TsnFailureCode = 12
+	TsnFailureCode_tsnFailureCodePriorityIsNotAnSrcClass           TsnFailureCode = 13
+	TsnFailureCode_tsnFailureCodeMaxFrameSizeTooLarge              TsnFailureCode = 14
+	TsnFailureCode_tsnFailureCodeMaxFanInPortsLimitReached         TsnFailureCode = 15
+	TsnFailureCode_tsnFailureCodeFirstValueChangedForStreamId      TsnFailureCode = 16
+	TsnFailureCode_tsnFailureCodeVlanBlockedOnEgress               TsnFailureCode = 17
+	TsnFailureCode_tsnFailureCodeVlanTaggingDisabledOnEgress       TsnFailureCode = 18
+	TsnFailureCode_tsnFailureCodeSrClassPriorityMismatch           TsnFailureCode = 19
+	TsnFailureCode_tsnFailureCodeFeatureNotPropagated              TsnFailureCode = 20
+	TsnFailureCode_tsnFailureCodeMaxLatencyExceeded                TsnFailureCode = 21
+	TsnFailureCode_tsnFailureCodeBridgeDoesNotProvideNetworkId     TsnFailureCode = 22
+	TsnFailureCode_tsnFailureCodeStreamTransformNotSupported       TsnFailureCode = 23
+	TsnFailureCode_tsnFailureCodeStreamIdTypeNotSupported          TsnFailureCode = 24
+	TsnFailureCode_tsnFailureCodeFeatureNotSupported               TsnFailureCode = 25
 )
 
 var TsnFailureCodeValues []TsnFailureCode
 
 func init() {
 	_ = errors.New
-	TsnFailureCodeValues = []TsnFailureCode {
+	TsnFailureCodeValues = []TsnFailureCode{
 		TsnFailureCode_tsnFailureCodeNoFailure,
 		TsnFailureCode_tsnFailureCodeInsufficientBandwidth,
 		TsnFailureCode_tsnFailureCodeInsufficientResources,
@@ -105,58 +105,58 @@ func init() {
 
 func TsnFailureCodeByValue(value uint32) (enum TsnFailureCode, ok bool) {
 	switch value {
-		case 0:
-			return TsnFailureCode_tsnFailureCodeNoFailure, true
-		case 1:
-			return TsnFailureCode_tsnFailureCodeInsufficientBandwidth, true
-		case 10:
-			return TsnFailureCode_tsnFailureCodeOutOfMsrpResources, true
-		case 11:
-			return TsnFailureCode_tsnFailureCodeOutOfMmrpResources, true
-		case 12:
-			return TsnFailureCode_tsnFailureCodeCannotStoreDestinationAddress, true
-		case 13:
-			return TsnFailureCode_tsnFailureCodePriorityIsNotAnSrcClass, true
-		case 14:
-			return TsnFailureCode_tsnFailureCodeMaxFrameSizeTooLarge, true
-		case 15:
-			return TsnFailureCode_tsnFailureCodeMaxFanInPortsLimitReached, true
-		case 16:
-			return TsnFailureCode_tsnFailureCodeFirstValueChangedForStreamId, true
-		case 17:
-			return TsnFailureCode_tsnFailureCodeVlanBlockedOnEgress, true
-		case 18:
-			return TsnFailureCode_tsnFailureCodeVlanTaggingDisabledOnEgress, true
-		case 19:
-			return TsnFailureCode_tsnFailureCodeSrClassPriorityMismatch, true
-		case 2:
-			return TsnFailureCode_tsnFailureCodeInsufficientResources, true
-		case 20:
-			return TsnFailureCode_tsnFailureCodeFeatureNotPropagated, true
-		case 21:
-			return TsnFailureCode_tsnFailureCodeMaxLatencyExceeded, true
-		case 22:
-			return TsnFailureCode_tsnFailureCodeBridgeDoesNotProvideNetworkId, true
-		case 23:
-			return TsnFailureCode_tsnFailureCodeStreamTransformNotSupported, true
-		case 24:
-			return TsnFailureCode_tsnFailureCodeStreamIdTypeNotSupported, true
-		case 25:
-			return TsnFailureCode_tsnFailureCodeFeatureNotSupported, true
-		case 3:
-			return TsnFailureCode_tsnFailureCodeInsufficientTrafficClassBandwidth, true
-		case 4:
-			return TsnFailureCode_tsnFailureCodeStreamIdInUse, true
-		case 5:
-			return TsnFailureCode_tsnFailureCodeStreamDestinationAddressInUse, true
-		case 6:
-			return TsnFailureCode_tsnFailureCodeStreamPreemptedByHigherRank, true
-		case 7:
-			return TsnFailureCode_tsnFailureCodeLatencyHasChanged, true
-		case 8:
-			return TsnFailureCode_tsnFailureCodeEgressPortNotAvbCapable, true
-		case 9:
-			return TsnFailureCode_tsnFailureCodeUseDifferentDestinationAddress, true
+	case 0:
+		return TsnFailureCode_tsnFailureCodeNoFailure, true
+	case 1:
+		return TsnFailureCode_tsnFailureCodeInsufficientBandwidth, true
+	case 10:
+		return TsnFailureCode_tsnFailureCodeOutOfMsrpResources, true
+	case 11:
+		return TsnFailureCode_tsnFailureCodeOutOfMmrpResources, true
+	case 12:
+		return TsnFailureCode_tsnFailureCodeCannotStoreDestinationAddress, true
+	case 13:
+		return TsnFailureCode_tsnFailureCodePriorityIsNotAnSrcClass, true
+	case 14:
+		return TsnFailureCode_tsnFailureCodeMaxFrameSizeTooLarge, true
+	case 15:
+		return TsnFailureCode_tsnFailureCodeMaxFanInPortsLimitReached, true
+	case 16:
+		return TsnFailureCode_tsnFailureCodeFirstValueChangedForStreamId, true
+	case 17:
+		return TsnFailureCode_tsnFailureCodeVlanBlockedOnEgress, true
+	case 18:
+		return TsnFailureCode_tsnFailureCodeVlanTaggingDisabledOnEgress, true
+	case 19:
+		return TsnFailureCode_tsnFailureCodeSrClassPriorityMismatch, true
+	case 2:
+		return TsnFailureCode_tsnFailureCodeInsufficientResources, true
+	case 20:
+		return TsnFailureCode_tsnFailureCodeFeatureNotPropagated, true
+	case 21:
+		return TsnFailureCode_tsnFailureCodeMaxLatencyExceeded, true
+	case 22:
+		return TsnFailureCode_tsnFailureCodeBridgeDoesNotProvideNetworkId, true
+	case 23:
+		return TsnFailureCode_tsnFailureCodeStreamTransformNotSupported, true
+	case 24:
+		return TsnFailureCode_tsnFailureCodeStreamIdTypeNotSupported, true
+	case 25:
+		return TsnFailureCode_tsnFailureCodeFeatureNotSupported, true
+	case 3:
+		return TsnFailureCode_tsnFailureCodeInsufficientTrafficClassBandwidth, true
+	case 4:
+		return TsnFailureCode_tsnFailureCodeStreamIdInUse, true
+	case 5:
+		return TsnFailureCode_tsnFailureCodeStreamDestinationAddressInUse, true
+	case 6:
+		return TsnFailureCode_tsnFailureCodeStreamPreemptedByHigherRank, true
+	case 7:
+		return TsnFailureCode_tsnFailureCodeLatencyHasChanged, true
+	case 8:
+		return TsnFailureCode_tsnFailureCodeEgressPortNotAvbCapable, true
+	case 9:
+		return TsnFailureCode_tsnFailureCodeUseDifferentDestinationAddress, true
 	}
 	return 0, false
 }
@@ -219,13 +219,13 @@ func TsnFailureCodeByName(value string) (enum TsnFailureCode, ok bool) {
 	return 0, false
 }
 
-func TsnFailureCodeKnows(value uint32)  bool {
+func TsnFailureCodeKnows(value uint32) bool {
 	for _, typeValue := range TsnFailureCodeValues {
 		if uint32(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastTsnFailureCode(structType any) TsnFailureCode {
@@ -341,4 +341,3 @@ func (e TsnFailureCode) PLC4XEnumName() string {
 func (e TsnFailureCode) String() string {
 	return e.PLC4XEnumName()
 }
-
