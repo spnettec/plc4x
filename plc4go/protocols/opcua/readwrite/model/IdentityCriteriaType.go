@@ -40,21 +40,21 @@ type IIdentityCriteriaType interface {
 	utils.Serializable
 }
 
-const (
-	IdentityCriteriaType_identityCriteriaTypeUserName          IdentityCriteriaType = 1
-	IdentityCriteriaType_identityCriteriaTypeThumbprint        IdentityCriteriaType = 2
-	IdentityCriteriaType_identityCriteriaTypeRole              IdentityCriteriaType = 3
-	IdentityCriteriaType_identityCriteriaTypeGroupId           IdentityCriteriaType = 4
-	IdentityCriteriaType_identityCriteriaTypeAnonymous         IdentityCriteriaType = 5
+const(
+	IdentityCriteriaType_identityCriteriaTypeUserName IdentityCriteriaType = 1
+	IdentityCriteriaType_identityCriteriaTypeThumbprint IdentityCriteriaType = 2
+	IdentityCriteriaType_identityCriteriaTypeRole IdentityCriteriaType = 3
+	IdentityCriteriaType_identityCriteriaTypeGroupId IdentityCriteriaType = 4
+	IdentityCriteriaType_identityCriteriaTypeAnonymous IdentityCriteriaType = 5
 	IdentityCriteriaType_identityCriteriaTypeAuthenticatedUser IdentityCriteriaType = 6
-	IdentityCriteriaType_identityCriteriaTypeApplication       IdentityCriteriaType = 7
+	IdentityCriteriaType_identityCriteriaTypeApplication IdentityCriteriaType = 7
 )
 
 var IdentityCriteriaTypeValues []IdentityCriteriaType
 
 func init() {
 	_ = errors.New
-	IdentityCriteriaTypeValues = []IdentityCriteriaType{
+	IdentityCriteriaTypeValues = []IdentityCriteriaType {
 		IdentityCriteriaType_identityCriteriaTypeUserName,
 		IdentityCriteriaType_identityCriteriaTypeThumbprint,
 		IdentityCriteriaType_identityCriteriaTypeRole,
@@ -67,20 +67,20 @@ func init() {
 
 func IdentityCriteriaTypeByValue(value uint32) (enum IdentityCriteriaType, ok bool) {
 	switch value {
-	case 1:
-		return IdentityCriteriaType_identityCriteriaTypeUserName, true
-	case 2:
-		return IdentityCriteriaType_identityCriteriaTypeThumbprint, true
-	case 3:
-		return IdentityCriteriaType_identityCriteriaTypeRole, true
-	case 4:
-		return IdentityCriteriaType_identityCriteriaTypeGroupId, true
-	case 5:
-		return IdentityCriteriaType_identityCriteriaTypeAnonymous, true
-	case 6:
-		return IdentityCriteriaType_identityCriteriaTypeAuthenticatedUser, true
-	case 7:
-		return IdentityCriteriaType_identityCriteriaTypeApplication, true
+		case 1:
+			return IdentityCriteriaType_identityCriteriaTypeUserName, true
+		case 2:
+			return IdentityCriteriaType_identityCriteriaTypeThumbprint, true
+		case 3:
+			return IdentityCriteriaType_identityCriteriaTypeRole, true
+		case 4:
+			return IdentityCriteriaType_identityCriteriaTypeGroupId, true
+		case 5:
+			return IdentityCriteriaType_identityCriteriaTypeAnonymous, true
+		case 6:
+			return IdentityCriteriaType_identityCriteriaTypeAuthenticatedUser, true
+		case 7:
+			return IdentityCriteriaType_identityCriteriaTypeApplication, true
 	}
 	return 0, false
 }
@@ -105,13 +105,13 @@ func IdentityCriteriaTypeByName(value string) (enum IdentityCriteriaType, ok boo
 	return 0, false
 }
 
-func IdentityCriteriaTypeKnows(value uint32) bool {
+func IdentityCriteriaTypeKnows(value uint32)  bool {
 	for _, typeValue := range IdentityCriteriaTypeValues {
 		if uint32(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastIdentityCriteriaType(structType any) IdentityCriteriaType {
@@ -189,3 +189,4 @@ func (e IdentityCriteriaType) PLC4XEnumName() string {
 func (e IdentityCriteriaType) String() string {
 	return e.PLC4XEnumName()
 }
+

@@ -40,9 +40,9 @@ type IBACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter int
 	utils.Serializable
 }
 
-const (
-	BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter_ALL       BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter = 0
-	BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter_ACKED     BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter = 1
+const(
+	BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter_ALL BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter = 0
+	BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter_ACKED BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter = 1
 	BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter_NOT_ACKED BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter = 2
 )
 
@@ -50,7 +50,7 @@ var BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterValues
 
 func init() {
 	_ = errors.New
-	BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterValues = []BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter{
+	BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterValues = []BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter {
 		BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter_ALL,
 		BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter_ACKED,
 		BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter_NOT_ACKED,
@@ -59,12 +59,12 @@ func init() {
 
 func BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterByValue(value uint8) (enum BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter, ok bool) {
 	switch value {
-	case 0:
-		return BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter_ALL, true
-	case 1:
-		return BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter_ACKED, true
-	case 2:
-		return BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter_NOT_ACKED, true
+		case 0:
+			return BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter_ALL, true
+		case 1:
+			return BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter_ACKED, true
+		case 2:
+			return BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter_NOT_ACKED, true
 	}
 	return 0, false
 }
@@ -81,13 +81,13 @@ func BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterByNam
 	return 0, false
 }
 
-func BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterKnows(value uint8) bool {
+func BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterKnows(value uint8)  bool {
 	for _, typeValue := range BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastBACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter(structType any) BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter {
@@ -157,3 +157,4 @@ func (e BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter) 
 func (e BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter) String() string {
 	return e.PLC4XEnumName()
 }
+

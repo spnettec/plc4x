@@ -40,17 +40,17 @@ type IOverrideValueHandling interface {
 	utils.Serializable
 }
 
-const (
-	OverrideValueHandling_overrideValueHandlingDisabled        OverrideValueHandling = 0
+const(
+	OverrideValueHandling_overrideValueHandlingDisabled OverrideValueHandling = 0
 	OverrideValueHandling_overrideValueHandlingLastUsableValue OverrideValueHandling = 1
-	OverrideValueHandling_overrideValueHandlingOverrideValue   OverrideValueHandling = 2
+	OverrideValueHandling_overrideValueHandlingOverrideValue OverrideValueHandling = 2
 )
 
 var OverrideValueHandlingValues []OverrideValueHandling
 
 func init() {
 	_ = errors.New
-	OverrideValueHandlingValues = []OverrideValueHandling{
+	OverrideValueHandlingValues = []OverrideValueHandling {
 		OverrideValueHandling_overrideValueHandlingDisabled,
 		OverrideValueHandling_overrideValueHandlingLastUsableValue,
 		OverrideValueHandling_overrideValueHandlingOverrideValue,
@@ -59,12 +59,12 @@ func init() {
 
 func OverrideValueHandlingByValue(value uint32) (enum OverrideValueHandling, ok bool) {
 	switch value {
-	case 0:
-		return OverrideValueHandling_overrideValueHandlingDisabled, true
-	case 1:
-		return OverrideValueHandling_overrideValueHandlingLastUsableValue, true
-	case 2:
-		return OverrideValueHandling_overrideValueHandlingOverrideValue, true
+		case 0:
+			return OverrideValueHandling_overrideValueHandlingDisabled, true
+		case 1:
+			return OverrideValueHandling_overrideValueHandlingLastUsableValue, true
+		case 2:
+			return OverrideValueHandling_overrideValueHandlingOverrideValue, true
 	}
 	return 0, false
 }
@@ -81,13 +81,13 @@ func OverrideValueHandlingByName(value string) (enum OverrideValueHandling, ok b
 	return 0, false
 }
 
-func OverrideValueHandlingKnows(value uint32) bool {
+func OverrideValueHandlingKnows(value uint32)  bool {
 	for _, typeValue := range OverrideValueHandlingValues {
 		if uint32(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastOverrideValueHandling(structType any) OverrideValueHandling {
@@ -157,3 +157,4 @@ func (e OverrideValueHandling) PLC4XEnumName() string {
 func (e OverrideValueHandling) String() string {
 	return e.PLC4XEnumName()
 }
+
