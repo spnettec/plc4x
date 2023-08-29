@@ -46,12 +46,10 @@
               <goal>wget</goal>
             </goals>
             <configuration>
-              <url>https://raw.githubusercontent.com/OPCFoundation/UA-Nodeset/v1.04/Schema/Opc.Ua.Types.bsd</url>
-              <unpack>false</unpack>
-              <outputDirectory>${project.build.directory}/downloads</outputDirectory>
-              <outputFileName>Opc.Ua.Types.bsd</outputFileName>
-              <skipCache>true</skipCache>
-              <overwrite>true</overwrite>
+              <url>https://github.com/OPCFoundation/UA-Nodeset/raw/latest/Schema/Opc.Ua.Types.bsd</url>
+              <outputDirectory>${project.basedir}/downloads</outputDirectory>
+              <outputFileName>Opc.Ua.Types.bsd.gzip</outputFileName>
+              <unpack>true</unpack>
             </configuration>
           </execution>
           <execution>
@@ -61,10 +59,10 @@
               <goal>wget</goal>
             </goals>
             <configuration>
-              <url>https://raw.githubusercontent.com/OPCFoundation/UA-Nodeset/v1.04/Schema/StatusCode.csv</url>
-              <unpack>false</unpack>
-              <outputDirectory>${project.build.directory}/downloads</outputDirectory>
-              <outputFileName>StatusCode.csv</outputFileName>
+              <url>https://github.com/OPCFoundation/UA-Nodeset/raw/latest/Schema/StatusCode.csv</url>
+              <outputDirectory>${project.basedir}/downloads</outputDirectory>
+              <outputFileName>StatusCode.csv.gzip</outputFileName>
+              <unpack>true</unpack>
             </configuration>
           </execution>
           <execution>
@@ -74,10 +72,10 @@
               <goal>wget</goal>
             </goals>
             <configuration>
-              <url>https://raw.githubusercontent.com/OPCFoundation/UA-Nodeset/v1.04/Schema/Opc.Ua.NodeSet2.Services.xml</url>
-              <unpack>false</unpack>
-              <outputDirectory>${project.build.directory}/downloads</outputDirectory>
-              <outputFileName>Opc.Ua.NodeSet2.Services.xml</outputFileName>
+              <url>https://github.com/OPCFoundation/UA-Nodeset/raw/latest/Schema/Opc.Ua.NodeSet2.Services.xml</url>
+              <outputDirectory>${project.basedir}/downloads</outputDirectory>
+              <outputFileName>Opc.Ua.NodeSet2.Services.xml.gzip</outputFileName>
+              <unpack>true</unpack>
             </configuration>
           </execution>
           <execution>
@@ -87,10 +85,10 @@
               <goal>wget</goal>
             </goals>
             <configuration>
-              <url>https://raw.githubusercontent.com/OPCFoundation/UA-Nodeset/v1.04/Schema/Opc.Ua.NodeIds.Services.csv</url>
-              <unpack>false</unpack>
-              <outputDirectory>${project.build.directory}/downloads</outputDirectory>
-              <outputFileName>Opc.Ua.NodeIds.Services.csv</outputFileName>
+              <url>https://github.com/OPCFoundation/UA-Nodeset/raw/latest/Schema/NodeIds.csv</url>
+              <outputDirectory>${project.basedir}/downloads</outputDirectory>
+              <outputFileName>Opc.Ua.NodeIds.Services.csv.gzip</outputFileName>
+              <unpack>true</unpack>
             </configuration>
           </execution>
         </executions>
