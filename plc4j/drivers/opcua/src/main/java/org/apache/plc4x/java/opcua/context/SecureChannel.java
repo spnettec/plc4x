@@ -1232,7 +1232,7 @@ public class SecureChannel {
                 extExpandedNodeId = new ExpandedNodeId(
                     false,           //Namespace Uri Specified
                     false,            //Server Index Specified
-                    new NodeIdFourByte((short) 0, OpcuaNodeIdServices.AnonymousIdentityToken_Encoding_DefaultBinary.getValue()),
+                    new NodeIdFourByte((short) 0, 321 /* TODO: disabled till we have greater segmentation: AnonymousIdentityToken_Encoding_DefaultBinary.getValue()*/),
                     null,
                     null
                 );
@@ -1263,7 +1263,7 @@ public class SecureChannel {
 
                 extExpandedNodeId = new ExpandedNodeId(false,           //Namespace Uri Specified
                     false,            //Server Index Specified
-                    new NodeIdFourByte((short) 0, OpcuaNodeIdServices.UserNameIdentityToken_Encoding_DefaultBinary.getValue()),
+                    new NodeIdFourByte((short) 0, 324 /*TODO: disabled till we have greater segmentation: UserNameIdentityToken_Encoding_DefaultBinary.getValue()*/),
                     null,
                     null);
 

@@ -40,26 +40,28 @@ type IAccessLevelExType interface {
 	utils.Serializable
 }
 
-const(
-	AccessLevelExType_accessLevelExTypeNone AccessLevelExType = 0
-	AccessLevelExType_accessLevelExTypeCurrentRead AccessLevelExType = 1
-	AccessLevelExType_accessLevelExTypeCurrentWrite AccessLevelExType = 2
-	AccessLevelExType_accessLevelExTypeHistoryRead AccessLevelExType = 4
-	AccessLevelExType_accessLevelExTypeHistoryWrite AccessLevelExType = 8
-	AccessLevelExType_accessLevelExTypeSemanticChange AccessLevelExType = 16
-	AccessLevelExType_accessLevelExTypeStatusWrite AccessLevelExType = 32
-	AccessLevelExType_accessLevelExTypeTimestampWrite AccessLevelExType = 64
-	AccessLevelExType_accessLevelExTypeNonatomicRead AccessLevelExType = 256
-	AccessLevelExType_accessLevelExTypeNonatomicWrite AccessLevelExType = 512
+const (
+	AccessLevelExType_accessLevelExTypeNone               AccessLevelExType = 0
+	AccessLevelExType_accessLevelExTypeCurrentRead        AccessLevelExType = 1
+	AccessLevelExType_accessLevelExTypeCurrentWrite       AccessLevelExType = 2
+	AccessLevelExType_accessLevelExTypeHistoryRead        AccessLevelExType = 4
+	AccessLevelExType_accessLevelExTypeHistoryWrite       AccessLevelExType = 8
+	AccessLevelExType_accessLevelExTypeSemanticChange     AccessLevelExType = 16
+	AccessLevelExType_accessLevelExTypeStatusWrite        AccessLevelExType = 32
+	AccessLevelExType_accessLevelExTypeTimestampWrite     AccessLevelExType = 64
+	AccessLevelExType_accessLevelExTypeNonatomicRead      AccessLevelExType = 256
+	AccessLevelExType_accessLevelExTypeNonatomicWrite     AccessLevelExType = 512
 	AccessLevelExType_accessLevelExTypeWriteFullArrayOnly AccessLevelExType = 1024
-	AccessLevelExType_accessLevelExTypeNoSubDataTypes AccessLevelExType = 2048
+	AccessLevelExType_accessLevelExTypeNoSubDataTypes     AccessLevelExType = 2048
+	AccessLevelExType_accessLevelExTypeNonVolatile        AccessLevelExType = 4096
+	AccessLevelExType_accessLevelExTypeConstant           AccessLevelExType = 8192
 )
 
 var AccessLevelExTypeValues []AccessLevelExType
 
 func init() {
 	_ = errors.New
-	AccessLevelExTypeValues = []AccessLevelExType {
+	AccessLevelExTypeValues = []AccessLevelExType{
 		AccessLevelExType_accessLevelExTypeNone,
 		AccessLevelExType_accessLevelExTypeCurrentRead,
 		AccessLevelExType_accessLevelExTypeCurrentWrite,
@@ -72,35 +74,41 @@ func init() {
 		AccessLevelExType_accessLevelExTypeNonatomicWrite,
 		AccessLevelExType_accessLevelExTypeWriteFullArrayOnly,
 		AccessLevelExType_accessLevelExTypeNoSubDataTypes,
+		AccessLevelExType_accessLevelExTypeNonVolatile,
+		AccessLevelExType_accessLevelExTypeConstant,
 	}
 }
 
 func AccessLevelExTypeByValue(value uint32) (enum AccessLevelExType, ok bool) {
 	switch value {
-		case 0:
-			return AccessLevelExType_accessLevelExTypeNone, true
-		case 1:
-			return AccessLevelExType_accessLevelExTypeCurrentRead, true
-		case 1024:
-			return AccessLevelExType_accessLevelExTypeWriteFullArrayOnly, true
-		case 16:
-			return AccessLevelExType_accessLevelExTypeSemanticChange, true
-		case 2:
-			return AccessLevelExType_accessLevelExTypeCurrentWrite, true
-		case 2048:
-			return AccessLevelExType_accessLevelExTypeNoSubDataTypes, true
-		case 256:
-			return AccessLevelExType_accessLevelExTypeNonatomicRead, true
-		case 32:
-			return AccessLevelExType_accessLevelExTypeStatusWrite, true
-		case 4:
-			return AccessLevelExType_accessLevelExTypeHistoryRead, true
-		case 512:
-			return AccessLevelExType_accessLevelExTypeNonatomicWrite, true
-		case 64:
-			return AccessLevelExType_accessLevelExTypeTimestampWrite, true
-		case 8:
-			return AccessLevelExType_accessLevelExTypeHistoryWrite, true
+	case 0:
+		return AccessLevelExType_accessLevelExTypeNone, true
+	case 1:
+		return AccessLevelExType_accessLevelExTypeCurrentRead, true
+	case 1024:
+		return AccessLevelExType_accessLevelExTypeWriteFullArrayOnly, true
+	case 16:
+		return AccessLevelExType_accessLevelExTypeSemanticChange, true
+	case 2:
+		return AccessLevelExType_accessLevelExTypeCurrentWrite, true
+	case 2048:
+		return AccessLevelExType_accessLevelExTypeNoSubDataTypes, true
+	case 256:
+		return AccessLevelExType_accessLevelExTypeNonatomicRead, true
+	case 32:
+		return AccessLevelExType_accessLevelExTypeStatusWrite, true
+	case 4:
+		return AccessLevelExType_accessLevelExTypeHistoryRead, true
+	case 4096:
+		return AccessLevelExType_accessLevelExTypeNonVolatile, true
+	case 512:
+		return AccessLevelExType_accessLevelExTypeNonatomicWrite, true
+	case 64:
+		return AccessLevelExType_accessLevelExTypeTimestampWrite, true
+	case 8:
+		return AccessLevelExType_accessLevelExTypeHistoryWrite, true
+	case 8192:
+		return AccessLevelExType_accessLevelExTypeConstant, true
 	}
 	return 0, false
 }
@@ -125,23 +133,27 @@ func AccessLevelExTypeByName(value string) (enum AccessLevelExType, ok bool) {
 		return AccessLevelExType_accessLevelExTypeStatusWrite, true
 	case "accessLevelExTypeHistoryRead":
 		return AccessLevelExType_accessLevelExTypeHistoryRead, true
+	case "accessLevelExTypeNonVolatile":
+		return AccessLevelExType_accessLevelExTypeNonVolatile, true
 	case "accessLevelExTypeNonatomicWrite":
 		return AccessLevelExType_accessLevelExTypeNonatomicWrite, true
 	case "accessLevelExTypeTimestampWrite":
 		return AccessLevelExType_accessLevelExTypeTimestampWrite, true
 	case "accessLevelExTypeHistoryWrite":
 		return AccessLevelExType_accessLevelExTypeHistoryWrite, true
+	case "accessLevelExTypeConstant":
+		return AccessLevelExType_accessLevelExTypeConstant, true
 	}
 	return 0, false
 }
 
-func AccessLevelExTypeKnows(value uint32)  bool {
+func AccessLevelExTypeKnows(value uint32) bool {
 	for _, typeValue := range AccessLevelExTypeValues {
 		if uint32(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastAccessLevelExType(structType any) AccessLevelExType {
@@ -216,12 +228,16 @@ func (e AccessLevelExType) PLC4XEnumName() string {
 		return "accessLevelExTypeStatusWrite"
 	case AccessLevelExType_accessLevelExTypeHistoryRead:
 		return "accessLevelExTypeHistoryRead"
+	case AccessLevelExType_accessLevelExTypeNonVolatile:
+		return "accessLevelExTypeNonVolatile"
 	case AccessLevelExType_accessLevelExTypeNonatomicWrite:
 		return "accessLevelExTypeNonatomicWrite"
 	case AccessLevelExType_accessLevelExTypeTimestampWrite:
 		return "accessLevelExTypeTimestampWrite"
 	case AccessLevelExType_accessLevelExTypeHistoryWrite:
 		return "accessLevelExTypeHistoryWrite"
+	case AccessLevelExType_accessLevelExTypeConstant:
+		return "accessLevelExTypeConstant"
 	}
 	return fmt.Sprintf("Unknown(%v)", uint32(e))
 }
@@ -229,4 +245,3 @@ func (e AccessLevelExType) PLC4XEnumName() string {
 func (e AccessLevelExType) String() string {
 	return e.PLC4XEnumName()
 }
-
