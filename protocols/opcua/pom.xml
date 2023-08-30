@@ -17,7 +17,8 @@
   specific language governing permissions and limitations
   under the License.
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
 
@@ -34,66 +35,31 @@
 
   <build>
     <plugins>
-      <!--
       <plugin>
-        <groupId>com.googlecode.maven-download-plugin</groupId>
-        <artifactId>download-maven-plugin</artifactId>
+        <groupId>org.codehaus.gmaven</groupId>
+        <artifactId>groovy-maven-plugin</artifactId>
+        <version>2.1.1</version>
         <executions>
           <execution>
-            <id>fetch-opc-datatypes</id>
+            <id>manipulate-services-csv</id>
             <phase>generate-resources</phase>
             <goals>
-              <goal>wget</goal>
+              <goal>execute</goal>
             </goals>
             <configuration>
-              <url>https://github.com/OPCFoundation/UA-Nodeset/raw/latest/Schema/Opc.Ua.Types.bsd</url>
-              <outputDirectory>${project.basedir}/downloads</outputDirectory>
-              <outputFileName>Opc.Ua.Types.bsd.gzip</outputFileName>
-              <unpack>true</unpack>
-            </configuration>
-          </execution>
-          <execution>
-            <id>fetch-opc-statuscodes</id>
-            <phase>generate-resources</phase>
-            <goals>
-              <goal>wget</goal>
-            </goals>
-            <configuration>
-              <url>https://github.com/OPCFoundation/UA-Nodeset/raw/latest/Schema/StatusCode.csv</url>
-              <outputDirectory>${project.basedir}/downloads</outputDirectory>
-              <outputFileName>StatusCode.csv.gzip</outputFileName>
-              <unpack>true</unpack>
-            </configuration>
-          </execution>
-          <execution>
-            <id>fetch-opc-discriminators</id>
-            <phase>generate-resources</phase>
-            <goals>
-              <goal>wget</goal>
-            </goals>
-            <configuration>
-              <url>https://github.com/OPCFoundation/UA-Nodeset/raw/latest/Schema/Opc.Ua.NodeSet2.Services.xml</url>
-              <outputDirectory>${project.basedir}/downloads</outputDirectory>
-              <outputFileName>Opc.Ua.NodeSet2.Services.xml.gzip</outputFileName>
-              <unpack>true</unpack>
-            </configuration>
-          </execution>
-          <execution>
-            <id>fetch-opc-services-enum</id>
-            <phase>generate-resources</phase>
-            <goals>
-              <goal>wget</goal>
-            </goals>
-            <configuration>
-              <url>https://github.com/OPCFoundation/UA-Nodeset/raw/latest/Schema/NodeIds.csv</url>
-              <outputDirectory>${project.basedir}/downloads</outputDirectory>
-              <outputFileName>Opc.Ua.NodeIds.Services.csv.gzip</outputFileName>
-              <unpack>true</unpack>
+              <source>${project.basedir}/src/main/script/downloadAndEditOpcuaNodeSet.groovy</source>
             </configuration>
           </execution>
         </executions>
+        <dependencies>
+          <dependency>
+            <groupId>org.apache.groovy</groupId>
+            <artifactId>groovy</artifactId>
+            <version>${groovy.version}</version>
+          </dependency>
+        </dependencies>
       </plugin>
-      -->
+
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>xml-maven-plugin</artifactId>
@@ -110,7 +76,7 @@
         <configuration>
           <transformationSets>
             <transformationSet>
-              <dir>${project.basedir}/downloads</dir>
+              <dir>${project.build.directory}/downloads</dir>
               <includes>Opc.Ua.Types.bsd</includes>
               <stylesheet>src/main/xslt/opc-services.xsl</stylesheet>
               <outputDir>${project.build.outputDirectory}/protocols/opcua</outputDir>
@@ -126,7 +92,7 @@
                 </parameter>
                 <parameter>
                   <name>servicesEnum</name>
-                  <value>${project.basedir}/downloads/Opc.Ua.NodeIds.Services.csv</value>
+                  <value>${project.build.directory}/downloads/Opc.Ua.NodeIds.Services.csv</value>
                 </parameter>
               </parameters>
               <outputProperties>
@@ -137,7 +103,7 @@
               </outputProperties>
             </transformationSet>
             <transformationSet>
-              <dir>${project.basedir}/downloads</dir>
+              <dir>${project.build.directory}/downloads</dir>
               <includes>Opc.Ua.Types.bsd</includes>
               <stylesheet>src/main/xslt/opc-status.xsl</stylesheet>
               <outputDir>${project.build.outputDirectory}/protocols/opcua</outputDir>
@@ -153,7 +119,7 @@
                 </parameter>
                 <parameter>
                   <name>statusCodes</name>
-                  <value>${project.basedir}/downloads/StatusCode.csv</value>
+                  <value>${project.build.directory}/downloads/StatusCode.csv</value>
                 </parameter>
               </parameters>
               <outputProperties>
@@ -164,7 +130,7 @@
               </outputProperties>
             </transformationSet>
             <transformationSet>
-              <dir>${project.basedir}/downloads</dir>
+              <dir>${project.build.directory}/downloads</dir>
               <includes>Opc.Ua.Types.bsd</includes>
               <stylesheet>src/main/xslt/opc-manual.xsl</stylesheet>
               <outputDir>${project.build.outputDirectory}/protocols/opcua</outputDir>
@@ -180,7 +146,7 @@
                 </parameter>
                 <parameter>
                   <name>services</name>
-                  <value>${project.basedir}/downloads/Opc.Ua.NodeSet2.Services.xml</value>
+                  <value>${project.build.directory}/downloads/Opc.Ua.NodeSet2.Services.xml</value>
                 </parameter>
               </parameters>
               <outputProperties>
@@ -191,7 +157,7 @@
               </outputProperties>
             </transformationSet>
             <transformationSet>
-              <dir>${project.basedir}/downloads</dir>
+              <dir>${project.build.directory}/downloads</dir>
               <includes>Opc.Ua.Types.bsd</includes>
               <stylesheet>src/main/xslt/opc-types.xsl</stylesheet>
               <outputDir>${project.build.outputDirectory}/protocols/opcua</outputDir>
@@ -233,6 +199,13 @@
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
       <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-core</artifactId>
+      <version>3.9.3</version>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
 
