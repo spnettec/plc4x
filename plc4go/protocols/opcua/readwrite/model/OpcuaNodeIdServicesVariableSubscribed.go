@@ -40,28 +40,28 @@ type IOpcuaNodeIdServicesVariableSubscribed interface {
 	utils.Serializable
 }
 
-const (
-	OpcuaNodeIdServicesVariableSubscribed_SubscribedDataSetFolderType_SubscribedDataSetFolderName_Placeholder_AddSubscribedDataSet_InputArguments    OpcuaNodeIdServicesVariableSubscribed = 23798
-	OpcuaNodeIdServicesVariableSubscribed_SubscribedDataSetFolderType_SubscribedDataSetFolderName_Placeholder_AddSubscribedDataSet_OutputArguments   OpcuaNodeIdServicesVariableSubscribed = 23799
+const(
+	OpcuaNodeIdServicesVariableSubscribed_SubscribedDataSetFolderType_SubscribedDataSetFolderName_Placeholder_AddSubscribedDataSet_InputArguments OpcuaNodeIdServicesVariableSubscribed = 23798
+	OpcuaNodeIdServicesVariableSubscribed_SubscribedDataSetFolderType_SubscribedDataSetFolderName_Placeholder_AddSubscribedDataSet_OutputArguments OpcuaNodeIdServicesVariableSubscribed = 23799
 	OpcuaNodeIdServicesVariableSubscribed_SubscribedDataSetFolderType_SubscribedDataSetFolderName_Placeholder_RemoveSubscribedDataSet_InputArguments OpcuaNodeIdServicesVariableSubscribed = 23801
-	OpcuaNodeIdServicesVariableSubscribed_SubscribedDataSetFolderType_SubscribedDataSetFolderName_Placeholder_AddDataSetFolder_InputArguments        OpcuaNodeIdServicesVariableSubscribed = 23803
-	OpcuaNodeIdServicesVariableSubscribed_SubscribedDataSetFolderType_SubscribedDataSetFolderName_Placeholder_AddDataSetFolder_OutputArguments       OpcuaNodeIdServicesVariableSubscribed = 23804
-	OpcuaNodeIdServicesVariableSubscribed_SubscribedDataSetFolderType_SubscribedDataSetFolderName_Placeholder_RemoveDataSetFolder_InputArguments     OpcuaNodeIdServicesVariableSubscribed = 23806
-	OpcuaNodeIdServicesVariableSubscribed_SubscribedDataSetFolderType_StandaloneSubscribedDataSetName_Placeholder_DataSetMetaData                    OpcuaNodeIdServicesVariableSubscribed = 23809
-	OpcuaNodeIdServicesVariableSubscribed_SubscribedDataSetFolderType_StandaloneSubscribedDataSetName_Placeholder_IsConnected                        OpcuaNodeIdServicesVariableSubscribed = 23810
-	OpcuaNodeIdServicesVariableSubscribed_SubscribedDataSetFolderType_AddSubscribedDataSet_InputArguments                                            OpcuaNodeIdServicesVariableSubscribed = 23812
-	OpcuaNodeIdServicesVariableSubscribed_SubscribedDataSetFolderType_AddSubscribedDataSet_OutputArguments                                           OpcuaNodeIdServicesVariableSubscribed = 23813
-	OpcuaNodeIdServicesVariableSubscribed_SubscribedDataSetFolderType_RemoveSubscribedDataSet_InputArguments                                         OpcuaNodeIdServicesVariableSubscribed = 23815
-	OpcuaNodeIdServicesVariableSubscribed_SubscribedDataSetFolderType_AddDataSetFolder_InputArguments                                                OpcuaNodeIdServicesVariableSubscribed = 23817
-	OpcuaNodeIdServicesVariableSubscribed_SubscribedDataSetFolderType_AddDataSetFolder_OutputArguments                                               OpcuaNodeIdServicesVariableSubscribed = 23818
-	OpcuaNodeIdServicesVariableSubscribed_SubscribedDataSetFolderType_RemoveDataSetFolder_InputArguments                                             OpcuaNodeIdServicesVariableSubscribed = 23820
+	OpcuaNodeIdServicesVariableSubscribed_SubscribedDataSetFolderType_SubscribedDataSetFolderName_Placeholder_AddDataSetFolder_InputArguments OpcuaNodeIdServicesVariableSubscribed = 23803
+	OpcuaNodeIdServicesVariableSubscribed_SubscribedDataSetFolderType_SubscribedDataSetFolderName_Placeholder_AddDataSetFolder_OutputArguments OpcuaNodeIdServicesVariableSubscribed = 23804
+	OpcuaNodeIdServicesVariableSubscribed_SubscribedDataSetFolderType_SubscribedDataSetFolderName_Placeholder_RemoveDataSetFolder_InputArguments OpcuaNodeIdServicesVariableSubscribed = 23806
+	OpcuaNodeIdServicesVariableSubscribed_SubscribedDataSetFolderType_StandaloneSubscribedDataSetName_Placeholder_DataSetMetaData OpcuaNodeIdServicesVariableSubscribed = 23809
+	OpcuaNodeIdServicesVariableSubscribed_SubscribedDataSetFolderType_StandaloneSubscribedDataSetName_Placeholder_IsConnected OpcuaNodeIdServicesVariableSubscribed = 23810
+	OpcuaNodeIdServicesVariableSubscribed_SubscribedDataSetFolderType_AddSubscribedDataSet_InputArguments OpcuaNodeIdServicesVariableSubscribed = 23812
+	OpcuaNodeIdServicesVariableSubscribed_SubscribedDataSetFolderType_AddSubscribedDataSet_OutputArguments OpcuaNodeIdServicesVariableSubscribed = 23813
+	OpcuaNodeIdServicesVariableSubscribed_SubscribedDataSetFolderType_RemoveSubscribedDataSet_InputArguments OpcuaNodeIdServicesVariableSubscribed = 23815
+	OpcuaNodeIdServicesVariableSubscribed_SubscribedDataSetFolderType_AddDataSetFolder_InputArguments OpcuaNodeIdServicesVariableSubscribed = 23817
+	OpcuaNodeIdServicesVariableSubscribed_SubscribedDataSetFolderType_AddDataSetFolder_OutputArguments OpcuaNodeIdServicesVariableSubscribed = 23818
+	OpcuaNodeIdServicesVariableSubscribed_SubscribedDataSetFolderType_RemoveDataSetFolder_InputArguments OpcuaNodeIdServicesVariableSubscribed = 23820
 )
 
 var OpcuaNodeIdServicesVariableSubscribedValues []OpcuaNodeIdServicesVariableSubscribed
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariableSubscribedValues = []OpcuaNodeIdServicesVariableSubscribed{
+	OpcuaNodeIdServicesVariableSubscribedValues = []OpcuaNodeIdServicesVariableSubscribed {
 		OpcuaNodeIdServicesVariableSubscribed_SubscribedDataSetFolderType_SubscribedDataSetFolderName_Placeholder_AddSubscribedDataSet_InputArguments,
 		OpcuaNodeIdServicesVariableSubscribed_SubscribedDataSetFolderType_SubscribedDataSetFolderName_Placeholder_AddSubscribedDataSet_OutputArguments,
 		OpcuaNodeIdServicesVariableSubscribed_SubscribedDataSetFolderType_SubscribedDataSetFolderName_Placeholder_RemoveSubscribedDataSet_InputArguments,
@@ -81,34 +81,34 @@ func init() {
 
 func OpcuaNodeIdServicesVariableSubscribedByValue(value int32) (enum OpcuaNodeIdServicesVariableSubscribed, ok bool) {
 	switch value {
-	case 23798:
-		return OpcuaNodeIdServicesVariableSubscribed_SubscribedDataSetFolderType_SubscribedDataSetFolderName_Placeholder_AddSubscribedDataSet_InputArguments, true
-	case 23799:
-		return OpcuaNodeIdServicesVariableSubscribed_SubscribedDataSetFolderType_SubscribedDataSetFolderName_Placeholder_AddSubscribedDataSet_OutputArguments, true
-	case 23801:
-		return OpcuaNodeIdServicesVariableSubscribed_SubscribedDataSetFolderType_SubscribedDataSetFolderName_Placeholder_RemoveSubscribedDataSet_InputArguments, true
-	case 23803:
-		return OpcuaNodeIdServicesVariableSubscribed_SubscribedDataSetFolderType_SubscribedDataSetFolderName_Placeholder_AddDataSetFolder_InputArguments, true
-	case 23804:
-		return OpcuaNodeIdServicesVariableSubscribed_SubscribedDataSetFolderType_SubscribedDataSetFolderName_Placeholder_AddDataSetFolder_OutputArguments, true
-	case 23806:
-		return OpcuaNodeIdServicesVariableSubscribed_SubscribedDataSetFolderType_SubscribedDataSetFolderName_Placeholder_RemoveDataSetFolder_InputArguments, true
-	case 23809:
-		return OpcuaNodeIdServicesVariableSubscribed_SubscribedDataSetFolderType_StandaloneSubscribedDataSetName_Placeholder_DataSetMetaData, true
-	case 23810:
-		return OpcuaNodeIdServicesVariableSubscribed_SubscribedDataSetFolderType_StandaloneSubscribedDataSetName_Placeholder_IsConnected, true
-	case 23812:
-		return OpcuaNodeIdServicesVariableSubscribed_SubscribedDataSetFolderType_AddSubscribedDataSet_InputArguments, true
-	case 23813:
-		return OpcuaNodeIdServicesVariableSubscribed_SubscribedDataSetFolderType_AddSubscribedDataSet_OutputArguments, true
-	case 23815:
-		return OpcuaNodeIdServicesVariableSubscribed_SubscribedDataSetFolderType_RemoveSubscribedDataSet_InputArguments, true
-	case 23817:
-		return OpcuaNodeIdServicesVariableSubscribed_SubscribedDataSetFolderType_AddDataSetFolder_InputArguments, true
-	case 23818:
-		return OpcuaNodeIdServicesVariableSubscribed_SubscribedDataSetFolderType_AddDataSetFolder_OutputArguments, true
-	case 23820:
-		return OpcuaNodeIdServicesVariableSubscribed_SubscribedDataSetFolderType_RemoveDataSetFolder_InputArguments, true
+		case 23798:
+			return OpcuaNodeIdServicesVariableSubscribed_SubscribedDataSetFolderType_SubscribedDataSetFolderName_Placeholder_AddSubscribedDataSet_InputArguments, true
+		case 23799:
+			return OpcuaNodeIdServicesVariableSubscribed_SubscribedDataSetFolderType_SubscribedDataSetFolderName_Placeholder_AddSubscribedDataSet_OutputArguments, true
+		case 23801:
+			return OpcuaNodeIdServicesVariableSubscribed_SubscribedDataSetFolderType_SubscribedDataSetFolderName_Placeholder_RemoveSubscribedDataSet_InputArguments, true
+		case 23803:
+			return OpcuaNodeIdServicesVariableSubscribed_SubscribedDataSetFolderType_SubscribedDataSetFolderName_Placeholder_AddDataSetFolder_InputArguments, true
+		case 23804:
+			return OpcuaNodeIdServicesVariableSubscribed_SubscribedDataSetFolderType_SubscribedDataSetFolderName_Placeholder_AddDataSetFolder_OutputArguments, true
+		case 23806:
+			return OpcuaNodeIdServicesVariableSubscribed_SubscribedDataSetFolderType_SubscribedDataSetFolderName_Placeholder_RemoveDataSetFolder_InputArguments, true
+		case 23809:
+			return OpcuaNodeIdServicesVariableSubscribed_SubscribedDataSetFolderType_StandaloneSubscribedDataSetName_Placeholder_DataSetMetaData, true
+		case 23810:
+			return OpcuaNodeIdServicesVariableSubscribed_SubscribedDataSetFolderType_StandaloneSubscribedDataSetName_Placeholder_IsConnected, true
+		case 23812:
+			return OpcuaNodeIdServicesVariableSubscribed_SubscribedDataSetFolderType_AddSubscribedDataSet_InputArguments, true
+		case 23813:
+			return OpcuaNodeIdServicesVariableSubscribed_SubscribedDataSetFolderType_AddSubscribedDataSet_OutputArguments, true
+		case 23815:
+			return OpcuaNodeIdServicesVariableSubscribed_SubscribedDataSetFolderType_RemoveSubscribedDataSet_InputArguments, true
+		case 23817:
+			return OpcuaNodeIdServicesVariableSubscribed_SubscribedDataSetFolderType_AddDataSetFolder_InputArguments, true
+		case 23818:
+			return OpcuaNodeIdServicesVariableSubscribed_SubscribedDataSetFolderType_AddDataSetFolder_OutputArguments, true
+		case 23820:
+			return OpcuaNodeIdServicesVariableSubscribed_SubscribedDataSetFolderType_RemoveDataSetFolder_InputArguments, true
 	}
 	return 0, false
 }
@@ -147,13 +147,13 @@ func OpcuaNodeIdServicesVariableSubscribedByName(value string) (enum OpcuaNodeId
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariableSubscribedKnows(value int32) bool {
+func OpcuaNodeIdServicesVariableSubscribedKnows(value int32)  bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariableSubscribedValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastOpcuaNodeIdServicesVariableSubscribed(structType any) OpcuaNodeIdServicesVariableSubscribed {
@@ -245,3 +245,4 @@ func (e OpcuaNodeIdServicesVariableSubscribed) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariableSubscribed) String() string {
 	return e.PLC4XEnumName()
 }
+

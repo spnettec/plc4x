@@ -40,9 +40,9 @@ type IOpcuaNodeIdServicesVariableSelection interface {
 	utils.Serializable
 }
 
-const (
-	OpcuaNodeIdServicesVariableSelection_SelectionListType_RestrictToList        OpcuaNodeIdServicesVariableSelection = 16312
-	OpcuaNodeIdServicesVariableSelection_SelectionListType_Selections            OpcuaNodeIdServicesVariableSelection = 17632
+const(
+	OpcuaNodeIdServicesVariableSelection_SelectionListType_RestrictToList OpcuaNodeIdServicesVariableSelection = 16312
+	OpcuaNodeIdServicesVariableSelection_SelectionListType_Selections OpcuaNodeIdServicesVariableSelection = 17632
 	OpcuaNodeIdServicesVariableSelection_SelectionListType_SelectionDescriptions OpcuaNodeIdServicesVariableSelection = 17633
 )
 
@@ -50,7 +50,7 @@ var OpcuaNodeIdServicesVariableSelectionValues []OpcuaNodeIdServicesVariableSele
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariableSelectionValues = []OpcuaNodeIdServicesVariableSelection{
+	OpcuaNodeIdServicesVariableSelectionValues = []OpcuaNodeIdServicesVariableSelection {
 		OpcuaNodeIdServicesVariableSelection_SelectionListType_RestrictToList,
 		OpcuaNodeIdServicesVariableSelection_SelectionListType_Selections,
 		OpcuaNodeIdServicesVariableSelection_SelectionListType_SelectionDescriptions,
@@ -59,12 +59,12 @@ func init() {
 
 func OpcuaNodeIdServicesVariableSelectionByValue(value int32) (enum OpcuaNodeIdServicesVariableSelection, ok bool) {
 	switch value {
-	case 16312:
-		return OpcuaNodeIdServicesVariableSelection_SelectionListType_RestrictToList, true
-	case 17632:
-		return OpcuaNodeIdServicesVariableSelection_SelectionListType_Selections, true
-	case 17633:
-		return OpcuaNodeIdServicesVariableSelection_SelectionListType_SelectionDescriptions, true
+		case 16312:
+			return OpcuaNodeIdServicesVariableSelection_SelectionListType_RestrictToList, true
+		case 17632:
+			return OpcuaNodeIdServicesVariableSelection_SelectionListType_Selections, true
+		case 17633:
+			return OpcuaNodeIdServicesVariableSelection_SelectionListType_SelectionDescriptions, true
 	}
 	return 0, false
 }
@@ -81,13 +81,13 @@ func OpcuaNodeIdServicesVariableSelectionByName(value string) (enum OpcuaNodeIdS
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariableSelectionKnows(value int32) bool {
+func OpcuaNodeIdServicesVariableSelectionKnows(value int32)  bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariableSelectionValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastOpcuaNodeIdServicesVariableSelection(structType any) OpcuaNodeIdServicesVariableSelection {
@@ -157,3 +157,4 @@ func (e OpcuaNodeIdServicesVariableSelection) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariableSelection) String() string {
 	return e.PLC4XEnumName()
 }
+

@@ -40,20 +40,20 @@ type IOpcuaNodeIdServicesVariableTransaction interface {
 	utils.Serializable
 }
 
-const (
-	OpcuaNodeIdServicesVariableTransaction_TransactionDiagnosticsType_StartTime                 OpcuaNodeIdServicesVariableTransaction = 32287
-	OpcuaNodeIdServicesVariableTransaction_TransactionDiagnosticsType_EndTime                   OpcuaNodeIdServicesVariableTransaction = 32288
-	OpcuaNodeIdServicesVariableTransaction_TransactionDiagnosticsType_Result                    OpcuaNodeIdServicesVariableTransaction = 32289
-	OpcuaNodeIdServicesVariableTransaction_TransactionDiagnosticsType_AffectedTrustLists        OpcuaNodeIdServicesVariableTransaction = 32290
+const(
+	OpcuaNodeIdServicesVariableTransaction_TransactionDiagnosticsType_StartTime OpcuaNodeIdServicesVariableTransaction = 32287
+	OpcuaNodeIdServicesVariableTransaction_TransactionDiagnosticsType_EndTime OpcuaNodeIdServicesVariableTransaction = 32288
+	OpcuaNodeIdServicesVariableTransaction_TransactionDiagnosticsType_Result OpcuaNodeIdServicesVariableTransaction = 32289
+	OpcuaNodeIdServicesVariableTransaction_TransactionDiagnosticsType_AffectedTrustLists OpcuaNodeIdServicesVariableTransaction = 32290
 	OpcuaNodeIdServicesVariableTransaction_TransactionDiagnosticsType_AffectedCertificateGroups OpcuaNodeIdServicesVariableTransaction = 32291
-	OpcuaNodeIdServicesVariableTransaction_TransactionDiagnosticsType_Errors                    OpcuaNodeIdServicesVariableTransaction = 32292
+	OpcuaNodeIdServicesVariableTransaction_TransactionDiagnosticsType_Errors OpcuaNodeIdServicesVariableTransaction = 32292
 )
 
 var OpcuaNodeIdServicesVariableTransactionValues []OpcuaNodeIdServicesVariableTransaction
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariableTransactionValues = []OpcuaNodeIdServicesVariableTransaction{
+	OpcuaNodeIdServicesVariableTransactionValues = []OpcuaNodeIdServicesVariableTransaction {
 		OpcuaNodeIdServicesVariableTransaction_TransactionDiagnosticsType_StartTime,
 		OpcuaNodeIdServicesVariableTransaction_TransactionDiagnosticsType_EndTime,
 		OpcuaNodeIdServicesVariableTransaction_TransactionDiagnosticsType_Result,
@@ -65,18 +65,18 @@ func init() {
 
 func OpcuaNodeIdServicesVariableTransactionByValue(value int32) (enum OpcuaNodeIdServicesVariableTransaction, ok bool) {
 	switch value {
-	case 32287:
-		return OpcuaNodeIdServicesVariableTransaction_TransactionDiagnosticsType_StartTime, true
-	case 32288:
-		return OpcuaNodeIdServicesVariableTransaction_TransactionDiagnosticsType_EndTime, true
-	case 32289:
-		return OpcuaNodeIdServicesVariableTransaction_TransactionDiagnosticsType_Result, true
-	case 32290:
-		return OpcuaNodeIdServicesVariableTransaction_TransactionDiagnosticsType_AffectedTrustLists, true
-	case 32291:
-		return OpcuaNodeIdServicesVariableTransaction_TransactionDiagnosticsType_AffectedCertificateGroups, true
-	case 32292:
-		return OpcuaNodeIdServicesVariableTransaction_TransactionDiagnosticsType_Errors, true
+		case 32287:
+			return OpcuaNodeIdServicesVariableTransaction_TransactionDiagnosticsType_StartTime, true
+		case 32288:
+			return OpcuaNodeIdServicesVariableTransaction_TransactionDiagnosticsType_EndTime, true
+		case 32289:
+			return OpcuaNodeIdServicesVariableTransaction_TransactionDiagnosticsType_Result, true
+		case 32290:
+			return OpcuaNodeIdServicesVariableTransaction_TransactionDiagnosticsType_AffectedTrustLists, true
+		case 32291:
+			return OpcuaNodeIdServicesVariableTransaction_TransactionDiagnosticsType_AffectedCertificateGroups, true
+		case 32292:
+			return OpcuaNodeIdServicesVariableTransaction_TransactionDiagnosticsType_Errors, true
 	}
 	return 0, false
 }
@@ -99,13 +99,13 @@ func OpcuaNodeIdServicesVariableTransactionByName(value string) (enum OpcuaNodeI
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariableTransactionKnows(value int32) bool {
+func OpcuaNodeIdServicesVariableTransactionKnows(value int32)  bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariableTransactionValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastOpcuaNodeIdServicesVariableTransaction(structType any) OpcuaNodeIdServicesVariableTransaction {
@@ -181,3 +181,4 @@ func (e OpcuaNodeIdServicesVariableTransaction) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariableTransaction) String() string {
 	return e.PLC4XEnumName()
 }
+

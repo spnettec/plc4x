@@ -40,8 +40,8 @@ type IOpcuaNodeIdServicesVariableRational interface {
 	utils.Serializable
 }
 
-const (
-	OpcuaNodeIdServicesVariableRational_RationalNumberType_Numerator   OpcuaNodeIdServicesVariableRational = 17712
+const(
+	OpcuaNodeIdServicesVariableRational_RationalNumberType_Numerator OpcuaNodeIdServicesVariableRational = 17712
 	OpcuaNodeIdServicesVariableRational_RationalNumberType_Denominator OpcuaNodeIdServicesVariableRational = 17713
 )
 
@@ -49,7 +49,7 @@ var OpcuaNodeIdServicesVariableRationalValues []OpcuaNodeIdServicesVariableRatio
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariableRationalValues = []OpcuaNodeIdServicesVariableRational{
+	OpcuaNodeIdServicesVariableRationalValues = []OpcuaNodeIdServicesVariableRational {
 		OpcuaNodeIdServicesVariableRational_RationalNumberType_Numerator,
 		OpcuaNodeIdServicesVariableRational_RationalNumberType_Denominator,
 	}
@@ -57,10 +57,10 @@ func init() {
 
 func OpcuaNodeIdServicesVariableRationalByValue(value int32) (enum OpcuaNodeIdServicesVariableRational, ok bool) {
 	switch value {
-	case 17712:
-		return OpcuaNodeIdServicesVariableRational_RationalNumberType_Numerator, true
-	case 17713:
-		return OpcuaNodeIdServicesVariableRational_RationalNumberType_Denominator, true
+		case 17712:
+			return OpcuaNodeIdServicesVariableRational_RationalNumberType_Numerator, true
+		case 17713:
+			return OpcuaNodeIdServicesVariableRational_RationalNumberType_Denominator, true
 	}
 	return 0, false
 }
@@ -75,13 +75,13 @@ func OpcuaNodeIdServicesVariableRationalByName(value string) (enum OpcuaNodeIdSe
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariableRationalKnows(value int32) bool {
+func OpcuaNodeIdServicesVariableRationalKnows(value int32)  bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariableRationalValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastOpcuaNodeIdServicesVariableRational(structType any) OpcuaNodeIdServicesVariableRational {
@@ -149,3 +149,4 @@ func (e OpcuaNodeIdServicesVariableRational) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariableRational) String() string {
 	return e.PLC4XEnumName()
 }
+

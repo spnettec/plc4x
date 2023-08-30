@@ -40,155 +40,155 @@ type IOpcuaNodeIdServicesVariableDiscrepancy interface {
 	utils.Serializable
 }
 
-const (
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_EventId                                              OpcuaNodeIdServicesVariableDiscrepancy = 17081
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_EventType                                            OpcuaNodeIdServicesVariableDiscrepancy = 17082
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_SourceNode                                           OpcuaNodeIdServicesVariableDiscrepancy = 17083
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_SourceName                                           OpcuaNodeIdServicesVariableDiscrepancy = 17084
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_Time                                                 OpcuaNodeIdServicesVariableDiscrepancy = 17085
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ReceiveTime                                          OpcuaNodeIdServicesVariableDiscrepancy = 17086
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_LocalTime                                            OpcuaNodeIdServicesVariableDiscrepancy = 17087
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_Message                                              OpcuaNodeIdServicesVariableDiscrepancy = 17088
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_Severity                                             OpcuaNodeIdServicesVariableDiscrepancy = 17089
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ConditionClassId                                     OpcuaNodeIdServicesVariableDiscrepancy = 17090
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ConditionClassName                                   OpcuaNodeIdServicesVariableDiscrepancy = 17091
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ConditionSubClassId                                  OpcuaNodeIdServicesVariableDiscrepancy = 17092
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ConditionSubClassName                                OpcuaNodeIdServicesVariableDiscrepancy = 17093
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ConditionName                                        OpcuaNodeIdServicesVariableDiscrepancy = 17094
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_BranchId                                             OpcuaNodeIdServicesVariableDiscrepancy = 17095
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_Retain                                               OpcuaNodeIdServicesVariableDiscrepancy = 17096
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_EnabledState                                         OpcuaNodeIdServicesVariableDiscrepancy = 17097
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_EnabledState_Id                                      OpcuaNodeIdServicesVariableDiscrepancy = 17098
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_EnabledState_Name                                    OpcuaNodeIdServicesVariableDiscrepancy = 17099
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_EnabledState_Number                                  OpcuaNodeIdServicesVariableDiscrepancy = 17100
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_EnabledState_EffectiveDisplayName                    OpcuaNodeIdServicesVariableDiscrepancy = 17101
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_EnabledState_TransitionTime                          OpcuaNodeIdServicesVariableDiscrepancy = 17102
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_EnabledState_EffectiveTransitionTime                 OpcuaNodeIdServicesVariableDiscrepancy = 17103
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_EnabledState_TrueState                               OpcuaNodeIdServicesVariableDiscrepancy = 17104
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_EnabledState_FalseState                              OpcuaNodeIdServicesVariableDiscrepancy = 17105
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_Quality                                              OpcuaNodeIdServicesVariableDiscrepancy = 17106
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_Quality_SourceTimestamp                              OpcuaNodeIdServicesVariableDiscrepancy = 17107
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_LastSeverity                                         OpcuaNodeIdServicesVariableDiscrepancy = 17108
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_LastSeverity_SourceTimestamp                         OpcuaNodeIdServicesVariableDiscrepancy = 17109
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_Comment                                              OpcuaNodeIdServicesVariableDiscrepancy = 17110
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_Comment_SourceTimestamp                              OpcuaNodeIdServicesVariableDiscrepancy = 17111
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ClientUserId                                         OpcuaNodeIdServicesVariableDiscrepancy = 17112
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_AddComment_InputArguments                            OpcuaNodeIdServicesVariableDiscrepancy = 17116
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ConditionRefresh_InputArguments                      OpcuaNodeIdServicesVariableDiscrepancy = 17118
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ConditionRefresh2_InputArguments                     OpcuaNodeIdServicesVariableDiscrepancy = 17120
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_AckedState                                           OpcuaNodeIdServicesVariableDiscrepancy = 17121
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_AckedState_Id                                        OpcuaNodeIdServicesVariableDiscrepancy = 17122
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_AckedState_Name                                      OpcuaNodeIdServicesVariableDiscrepancy = 17123
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_AckedState_Number                                    OpcuaNodeIdServicesVariableDiscrepancy = 17124
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_AckedState_EffectiveDisplayName                      OpcuaNodeIdServicesVariableDiscrepancy = 17125
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_AckedState_TransitionTime                            OpcuaNodeIdServicesVariableDiscrepancy = 17126
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_AckedState_EffectiveTransitionTime                   OpcuaNodeIdServicesVariableDiscrepancy = 17127
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_AckedState_TrueState                                 OpcuaNodeIdServicesVariableDiscrepancy = 17128
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_AckedState_FalseState                                OpcuaNodeIdServicesVariableDiscrepancy = 17129
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ConfirmedState                                       OpcuaNodeIdServicesVariableDiscrepancy = 17130
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ConfirmedState_Id                                    OpcuaNodeIdServicesVariableDiscrepancy = 17131
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ConfirmedState_Name                                  OpcuaNodeIdServicesVariableDiscrepancy = 17132
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ConfirmedState_Number                                OpcuaNodeIdServicesVariableDiscrepancy = 17133
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ConfirmedState_EffectiveDisplayName                  OpcuaNodeIdServicesVariableDiscrepancy = 17134
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ConfirmedState_TransitionTime                        OpcuaNodeIdServicesVariableDiscrepancy = 17135
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ConfirmedState_EffectiveTransitionTime               OpcuaNodeIdServicesVariableDiscrepancy = 17136
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ConfirmedState_TrueState                             OpcuaNodeIdServicesVariableDiscrepancy = 17137
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ConfirmedState_FalseState                            OpcuaNodeIdServicesVariableDiscrepancy = 17138
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_Acknowledge_InputArguments                           OpcuaNodeIdServicesVariableDiscrepancy = 17140
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_Confirm_InputArguments                               OpcuaNodeIdServicesVariableDiscrepancy = 17142
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ActiveState                                          OpcuaNodeIdServicesVariableDiscrepancy = 17143
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ActiveState_Id                                       OpcuaNodeIdServicesVariableDiscrepancy = 17144
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ActiveState_Name                                     OpcuaNodeIdServicesVariableDiscrepancy = 17145
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ActiveState_Number                                   OpcuaNodeIdServicesVariableDiscrepancy = 17146
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ActiveState_EffectiveDisplayName                     OpcuaNodeIdServicesVariableDiscrepancy = 17147
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ActiveState_TransitionTime                           OpcuaNodeIdServicesVariableDiscrepancy = 17148
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ActiveState_EffectiveTransitionTime                  OpcuaNodeIdServicesVariableDiscrepancy = 17149
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ActiveState_TrueState                                OpcuaNodeIdServicesVariableDiscrepancy = 17150
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ActiveState_FalseState                               OpcuaNodeIdServicesVariableDiscrepancy = 17151
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_InputNode                                            OpcuaNodeIdServicesVariableDiscrepancy = 17152
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_SuppressedState                                      OpcuaNodeIdServicesVariableDiscrepancy = 17153
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_SuppressedState_Id                                   OpcuaNodeIdServicesVariableDiscrepancy = 17154
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_SuppressedState_Name                                 OpcuaNodeIdServicesVariableDiscrepancy = 17155
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_SuppressedState_Number                               OpcuaNodeIdServicesVariableDiscrepancy = 17156
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_SuppressedState_EffectiveDisplayName                 OpcuaNodeIdServicesVariableDiscrepancy = 17157
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_SuppressedState_TransitionTime                       OpcuaNodeIdServicesVariableDiscrepancy = 17158
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_SuppressedState_EffectiveTransitionTime              OpcuaNodeIdServicesVariableDiscrepancy = 17159
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_SuppressedState_TrueState                            OpcuaNodeIdServicesVariableDiscrepancy = 17160
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_SuppressedState_FalseState                           OpcuaNodeIdServicesVariableDiscrepancy = 17161
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_OutOfServiceState                                    OpcuaNodeIdServicesVariableDiscrepancy = 17162
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_OutOfServiceState_Id                                 OpcuaNodeIdServicesVariableDiscrepancy = 17163
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_OutOfServiceState_Name                               OpcuaNodeIdServicesVariableDiscrepancy = 17164
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_OutOfServiceState_Number                             OpcuaNodeIdServicesVariableDiscrepancy = 17165
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_OutOfServiceState_EffectiveDisplayName               OpcuaNodeIdServicesVariableDiscrepancy = 17166
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_OutOfServiceState_TransitionTime                     OpcuaNodeIdServicesVariableDiscrepancy = 17167
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_OutOfServiceState_EffectiveTransitionTime            OpcuaNodeIdServicesVariableDiscrepancy = 17168
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_OutOfServiceState_TrueState                          OpcuaNodeIdServicesVariableDiscrepancy = 17169
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_OutOfServiceState_FalseState                         OpcuaNodeIdServicesVariableDiscrepancy = 17170
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_SilenceState                                         OpcuaNodeIdServicesVariableDiscrepancy = 17171
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_SilenceState_Id                                      OpcuaNodeIdServicesVariableDiscrepancy = 17172
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_SilenceState_Name                                    OpcuaNodeIdServicesVariableDiscrepancy = 17173
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_SilenceState_Number                                  OpcuaNodeIdServicesVariableDiscrepancy = 17174
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_SilenceState_EffectiveDisplayName                    OpcuaNodeIdServicesVariableDiscrepancy = 17175
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_SilenceState_TransitionTime                          OpcuaNodeIdServicesVariableDiscrepancy = 17176
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_SilenceState_EffectiveTransitionTime                 OpcuaNodeIdServicesVariableDiscrepancy = 17177
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_SilenceState_TrueState                               OpcuaNodeIdServicesVariableDiscrepancy = 17178
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_SilenceState_FalseState                              OpcuaNodeIdServicesVariableDiscrepancy = 17179
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ShelvingState_CurrentState                           OpcuaNodeIdServicesVariableDiscrepancy = 17181
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ShelvingState_CurrentState_Id                        OpcuaNodeIdServicesVariableDiscrepancy = 17182
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ShelvingState_CurrentState_Name                      OpcuaNodeIdServicesVariableDiscrepancy = 17183
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ShelvingState_CurrentState_Number                    OpcuaNodeIdServicesVariableDiscrepancy = 17184
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ShelvingState_CurrentState_EffectiveDisplayName      OpcuaNodeIdServicesVariableDiscrepancy = 17185
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ShelvingState_LastTransition                         OpcuaNodeIdServicesVariableDiscrepancy = 17186
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ShelvingState_LastTransition_Id                      OpcuaNodeIdServicesVariableDiscrepancy = 17187
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ShelvingState_LastTransition_Name                    OpcuaNodeIdServicesVariableDiscrepancy = 17188
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ShelvingState_LastTransition_Number                  OpcuaNodeIdServicesVariableDiscrepancy = 17189
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ShelvingState_LastTransition_TransitionTime          OpcuaNodeIdServicesVariableDiscrepancy = 17190
+const(
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_EventId OpcuaNodeIdServicesVariableDiscrepancy = 17081
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_EventType OpcuaNodeIdServicesVariableDiscrepancy = 17082
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_SourceNode OpcuaNodeIdServicesVariableDiscrepancy = 17083
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_SourceName OpcuaNodeIdServicesVariableDiscrepancy = 17084
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_Time OpcuaNodeIdServicesVariableDiscrepancy = 17085
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ReceiveTime OpcuaNodeIdServicesVariableDiscrepancy = 17086
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_LocalTime OpcuaNodeIdServicesVariableDiscrepancy = 17087
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_Message OpcuaNodeIdServicesVariableDiscrepancy = 17088
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_Severity OpcuaNodeIdServicesVariableDiscrepancy = 17089
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ConditionClassId OpcuaNodeIdServicesVariableDiscrepancy = 17090
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ConditionClassName OpcuaNodeIdServicesVariableDiscrepancy = 17091
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ConditionSubClassId OpcuaNodeIdServicesVariableDiscrepancy = 17092
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ConditionSubClassName OpcuaNodeIdServicesVariableDiscrepancy = 17093
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ConditionName OpcuaNodeIdServicesVariableDiscrepancy = 17094
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_BranchId OpcuaNodeIdServicesVariableDiscrepancy = 17095
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_Retain OpcuaNodeIdServicesVariableDiscrepancy = 17096
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_EnabledState OpcuaNodeIdServicesVariableDiscrepancy = 17097
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_EnabledState_Id OpcuaNodeIdServicesVariableDiscrepancy = 17098
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_EnabledState_Name OpcuaNodeIdServicesVariableDiscrepancy = 17099
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_EnabledState_Number OpcuaNodeIdServicesVariableDiscrepancy = 17100
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_EnabledState_EffectiveDisplayName OpcuaNodeIdServicesVariableDiscrepancy = 17101
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_EnabledState_TransitionTime OpcuaNodeIdServicesVariableDiscrepancy = 17102
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_EnabledState_EffectiveTransitionTime OpcuaNodeIdServicesVariableDiscrepancy = 17103
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_EnabledState_TrueState OpcuaNodeIdServicesVariableDiscrepancy = 17104
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_EnabledState_FalseState OpcuaNodeIdServicesVariableDiscrepancy = 17105
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_Quality OpcuaNodeIdServicesVariableDiscrepancy = 17106
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_Quality_SourceTimestamp OpcuaNodeIdServicesVariableDiscrepancy = 17107
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_LastSeverity OpcuaNodeIdServicesVariableDiscrepancy = 17108
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_LastSeverity_SourceTimestamp OpcuaNodeIdServicesVariableDiscrepancy = 17109
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_Comment OpcuaNodeIdServicesVariableDiscrepancy = 17110
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_Comment_SourceTimestamp OpcuaNodeIdServicesVariableDiscrepancy = 17111
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ClientUserId OpcuaNodeIdServicesVariableDiscrepancy = 17112
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_AddComment_InputArguments OpcuaNodeIdServicesVariableDiscrepancy = 17116
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ConditionRefresh_InputArguments OpcuaNodeIdServicesVariableDiscrepancy = 17118
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ConditionRefresh2_InputArguments OpcuaNodeIdServicesVariableDiscrepancy = 17120
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_AckedState OpcuaNodeIdServicesVariableDiscrepancy = 17121
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_AckedState_Id OpcuaNodeIdServicesVariableDiscrepancy = 17122
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_AckedState_Name OpcuaNodeIdServicesVariableDiscrepancy = 17123
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_AckedState_Number OpcuaNodeIdServicesVariableDiscrepancy = 17124
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_AckedState_EffectiveDisplayName OpcuaNodeIdServicesVariableDiscrepancy = 17125
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_AckedState_TransitionTime OpcuaNodeIdServicesVariableDiscrepancy = 17126
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_AckedState_EffectiveTransitionTime OpcuaNodeIdServicesVariableDiscrepancy = 17127
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_AckedState_TrueState OpcuaNodeIdServicesVariableDiscrepancy = 17128
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_AckedState_FalseState OpcuaNodeIdServicesVariableDiscrepancy = 17129
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ConfirmedState OpcuaNodeIdServicesVariableDiscrepancy = 17130
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ConfirmedState_Id OpcuaNodeIdServicesVariableDiscrepancy = 17131
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ConfirmedState_Name OpcuaNodeIdServicesVariableDiscrepancy = 17132
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ConfirmedState_Number OpcuaNodeIdServicesVariableDiscrepancy = 17133
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ConfirmedState_EffectiveDisplayName OpcuaNodeIdServicesVariableDiscrepancy = 17134
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ConfirmedState_TransitionTime OpcuaNodeIdServicesVariableDiscrepancy = 17135
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ConfirmedState_EffectiveTransitionTime OpcuaNodeIdServicesVariableDiscrepancy = 17136
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ConfirmedState_TrueState OpcuaNodeIdServicesVariableDiscrepancy = 17137
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ConfirmedState_FalseState OpcuaNodeIdServicesVariableDiscrepancy = 17138
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_Acknowledge_InputArguments OpcuaNodeIdServicesVariableDiscrepancy = 17140
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_Confirm_InputArguments OpcuaNodeIdServicesVariableDiscrepancy = 17142
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ActiveState OpcuaNodeIdServicesVariableDiscrepancy = 17143
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ActiveState_Id OpcuaNodeIdServicesVariableDiscrepancy = 17144
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ActiveState_Name OpcuaNodeIdServicesVariableDiscrepancy = 17145
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ActiveState_Number OpcuaNodeIdServicesVariableDiscrepancy = 17146
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ActiveState_EffectiveDisplayName OpcuaNodeIdServicesVariableDiscrepancy = 17147
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ActiveState_TransitionTime OpcuaNodeIdServicesVariableDiscrepancy = 17148
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ActiveState_EffectiveTransitionTime OpcuaNodeIdServicesVariableDiscrepancy = 17149
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ActiveState_TrueState OpcuaNodeIdServicesVariableDiscrepancy = 17150
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ActiveState_FalseState OpcuaNodeIdServicesVariableDiscrepancy = 17151
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_InputNode OpcuaNodeIdServicesVariableDiscrepancy = 17152
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_SuppressedState OpcuaNodeIdServicesVariableDiscrepancy = 17153
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_SuppressedState_Id OpcuaNodeIdServicesVariableDiscrepancy = 17154
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_SuppressedState_Name OpcuaNodeIdServicesVariableDiscrepancy = 17155
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_SuppressedState_Number OpcuaNodeIdServicesVariableDiscrepancy = 17156
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_SuppressedState_EffectiveDisplayName OpcuaNodeIdServicesVariableDiscrepancy = 17157
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_SuppressedState_TransitionTime OpcuaNodeIdServicesVariableDiscrepancy = 17158
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_SuppressedState_EffectiveTransitionTime OpcuaNodeIdServicesVariableDiscrepancy = 17159
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_SuppressedState_TrueState OpcuaNodeIdServicesVariableDiscrepancy = 17160
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_SuppressedState_FalseState OpcuaNodeIdServicesVariableDiscrepancy = 17161
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_OutOfServiceState OpcuaNodeIdServicesVariableDiscrepancy = 17162
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_OutOfServiceState_Id OpcuaNodeIdServicesVariableDiscrepancy = 17163
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_OutOfServiceState_Name OpcuaNodeIdServicesVariableDiscrepancy = 17164
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_OutOfServiceState_Number OpcuaNodeIdServicesVariableDiscrepancy = 17165
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_OutOfServiceState_EffectiveDisplayName OpcuaNodeIdServicesVariableDiscrepancy = 17166
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_OutOfServiceState_TransitionTime OpcuaNodeIdServicesVariableDiscrepancy = 17167
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_OutOfServiceState_EffectiveTransitionTime OpcuaNodeIdServicesVariableDiscrepancy = 17168
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_OutOfServiceState_TrueState OpcuaNodeIdServicesVariableDiscrepancy = 17169
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_OutOfServiceState_FalseState OpcuaNodeIdServicesVariableDiscrepancy = 17170
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_SilenceState OpcuaNodeIdServicesVariableDiscrepancy = 17171
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_SilenceState_Id OpcuaNodeIdServicesVariableDiscrepancy = 17172
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_SilenceState_Name OpcuaNodeIdServicesVariableDiscrepancy = 17173
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_SilenceState_Number OpcuaNodeIdServicesVariableDiscrepancy = 17174
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_SilenceState_EffectiveDisplayName OpcuaNodeIdServicesVariableDiscrepancy = 17175
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_SilenceState_TransitionTime OpcuaNodeIdServicesVariableDiscrepancy = 17176
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_SilenceState_EffectiveTransitionTime OpcuaNodeIdServicesVariableDiscrepancy = 17177
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_SilenceState_TrueState OpcuaNodeIdServicesVariableDiscrepancy = 17178
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_SilenceState_FalseState OpcuaNodeIdServicesVariableDiscrepancy = 17179
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ShelvingState_CurrentState OpcuaNodeIdServicesVariableDiscrepancy = 17181
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ShelvingState_CurrentState_Id OpcuaNodeIdServicesVariableDiscrepancy = 17182
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ShelvingState_CurrentState_Name OpcuaNodeIdServicesVariableDiscrepancy = 17183
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ShelvingState_CurrentState_Number OpcuaNodeIdServicesVariableDiscrepancy = 17184
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ShelvingState_CurrentState_EffectiveDisplayName OpcuaNodeIdServicesVariableDiscrepancy = 17185
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ShelvingState_LastTransition OpcuaNodeIdServicesVariableDiscrepancy = 17186
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ShelvingState_LastTransition_Id OpcuaNodeIdServicesVariableDiscrepancy = 17187
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ShelvingState_LastTransition_Name OpcuaNodeIdServicesVariableDiscrepancy = 17188
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ShelvingState_LastTransition_Number OpcuaNodeIdServicesVariableDiscrepancy = 17189
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ShelvingState_LastTransition_TransitionTime OpcuaNodeIdServicesVariableDiscrepancy = 17190
 	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ShelvingState_LastTransition_EffectiveTransitionTime OpcuaNodeIdServicesVariableDiscrepancy = 17191
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ShelvingState_UnshelveTime                           OpcuaNodeIdServicesVariableDiscrepancy = 17192
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ShelvingState_TimedShelve_InputArguments             OpcuaNodeIdServicesVariableDiscrepancy = 17196
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_SuppressedOrShelved                                  OpcuaNodeIdServicesVariableDiscrepancy = 17197
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_MaxTimeShelved                                       OpcuaNodeIdServicesVariableDiscrepancy = 17198
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_AudibleEnabled                                       OpcuaNodeIdServicesVariableDiscrepancy = 17199
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_AudibleSound                                         OpcuaNodeIdServicesVariableDiscrepancy = 17200
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_OnDelay                                              OpcuaNodeIdServicesVariableDiscrepancy = 17205
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_OffDelay                                             OpcuaNodeIdServicesVariableDiscrepancy = 17206
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_FirstInGroupFlag                                     OpcuaNodeIdServicesVariableDiscrepancy = 17207
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ReAlarmTime                                          OpcuaNodeIdServicesVariableDiscrepancy = 17210
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ReAlarmRepeatCount                                   OpcuaNodeIdServicesVariableDiscrepancy = 17211
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_TargetValueNode                                      OpcuaNodeIdServicesVariableDiscrepancy = 17215
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ExpectedTime                                         OpcuaNodeIdServicesVariableDiscrepancy = 17216
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_Tolerance                                            OpcuaNodeIdServicesVariableDiscrepancy = 17217
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ShelvingState_AvailableStates                        OpcuaNodeIdServicesVariableDiscrepancy = 17702
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ShelvingState_AvailableTransitions                   OpcuaNodeIdServicesVariableDiscrepancy = 17703
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_AudibleSound_ListId                                  OpcuaNodeIdServicesVariableDiscrepancy = 17977
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_AudibleSound_AgencyId                                OpcuaNodeIdServicesVariableDiscrepancy = 17978
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_AudibleSound_VersionId                               OpcuaNodeIdServicesVariableDiscrepancy = 17979
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_LatchedState                                         OpcuaNodeIdServicesVariableDiscrepancy = 18655
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_LatchedState_Id                                      OpcuaNodeIdServicesVariableDiscrepancy = 18656
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_LatchedState_Name                                    OpcuaNodeIdServicesVariableDiscrepancy = 18657
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_LatchedState_Number                                  OpcuaNodeIdServicesVariableDiscrepancy = 18658
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_LatchedState_EffectiveDisplayName                    OpcuaNodeIdServicesVariableDiscrepancy = 18659
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_LatchedState_TransitionTime                          OpcuaNodeIdServicesVariableDiscrepancy = 18660
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_LatchedState_EffectiveTransitionTime                 OpcuaNodeIdServicesVariableDiscrepancy = 18661
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_LatchedState_TrueState                               OpcuaNodeIdServicesVariableDiscrepancy = 18662
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_LatchedState_FalseState                              OpcuaNodeIdServicesVariableDiscrepancy = 18663
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_Suppress2_InputArguments                             OpcuaNodeIdServicesVariableDiscrepancy = 24499
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_Unsuppress2_InputArguments                           OpcuaNodeIdServicesVariableDiscrepancy = 24501
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_RemoveFromService2_InputArguments                    OpcuaNodeIdServicesVariableDiscrepancy = 24503
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_PlaceInService2_InputArguments                       OpcuaNodeIdServicesVariableDiscrepancy = 24505
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_Reset2_InputArguments                                OpcuaNodeIdServicesVariableDiscrepancy = 24507
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ShelvingState_TimedShelve2_InputArguments            OpcuaNodeIdServicesVariableDiscrepancy = 24963
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ShelvingState_Unshelve2_InputArguments               OpcuaNodeIdServicesVariableDiscrepancy = 24965
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ShelvingState_OneShotShelve2_InputArguments          OpcuaNodeIdServicesVariableDiscrepancy = 24967
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_GetGroupMemberships_OutputArguments                  OpcuaNodeIdServicesVariableDiscrepancy = 25175
-	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_SupportsFilteredRetain                               OpcuaNodeIdServicesVariableDiscrepancy = 32243
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ShelvingState_UnshelveTime OpcuaNodeIdServicesVariableDiscrepancy = 17192
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ShelvingState_TimedShelve_InputArguments OpcuaNodeIdServicesVariableDiscrepancy = 17196
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_SuppressedOrShelved OpcuaNodeIdServicesVariableDiscrepancy = 17197
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_MaxTimeShelved OpcuaNodeIdServicesVariableDiscrepancy = 17198
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_AudibleEnabled OpcuaNodeIdServicesVariableDiscrepancy = 17199
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_AudibleSound OpcuaNodeIdServicesVariableDiscrepancy = 17200
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_OnDelay OpcuaNodeIdServicesVariableDiscrepancy = 17205
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_OffDelay OpcuaNodeIdServicesVariableDiscrepancy = 17206
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_FirstInGroupFlag OpcuaNodeIdServicesVariableDiscrepancy = 17207
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ReAlarmTime OpcuaNodeIdServicesVariableDiscrepancy = 17210
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ReAlarmRepeatCount OpcuaNodeIdServicesVariableDiscrepancy = 17211
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_TargetValueNode OpcuaNodeIdServicesVariableDiscrepancy = 17215
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ExpectedTime OpcuaNodeIdServicesVariableDiscrepancy = 17216
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_Tolerance OpcuaNodeIdServicesVariableDiscrepancy = 17217
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ShelvingState_AvailableStates OpcuaNodeIdServicesVariableDiscrepancy = 17702
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ShelvingState_AvailableTransitions OpcuaNodeIdServicesVariableDiscrepancy = 17703
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_AudibleSound_ListId OpcuaNodeIdServicesVariableDiscrepancy = 17977
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_AudibleSound_AgencyId OpcuaNodeIdServicesVariableDiscrepancy = 17978
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_AudibleSound_VersionId OpcuaNodeIdServicesVariableDiscrepancy = 17979
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_LatchedState OpcuaNodeIdServicesVariableDiscrepancy = 18655
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_LatchedState_Id OpcuaNodeIdServicesVariableDiscrepancy = 18656
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_LatchedState_Name OpcuaNodeIdServicesVariableDiscrepancy = 18657
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_LatchedState_Number OpcuaNodeIdServicesVariableDiscrepancy = 18658
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_LatchedState_EffectiveDisplayName OpcuaNodeIdServicesVariableDiscrepancy = 18659
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_LatchedState_TransitionTime OpcuaNodeIdServicesVariableDiscrepancy = 18660
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_LatchedState_EffectiveTransitionTime OpcuaNodeIdServicesVariableDiscrepancy = 18661
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_LatchedState_TrueState OpcuaNodeIdServicesVariableDiscrepancy = 18662
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_LatchedState_FalseState OpcuaNodeIdServicesVariableDiscrepancy = 18663
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_Suppress2_InputArguments OpcuaNodeIdServicesVariableDiscrepancy = 24499
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_Unsuppress2_InputArguments OpcuaNodeIdServicesVariableDiscrepancy = 24501
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_RemoveFromService2_InputArguments OpcuaNodeIdServicesVariableDiscrepancy = 24503
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_PlaceInService2_InputArguments OpcuaNodeIdServicesVariableDiscrepancy = 24505
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_Reset2_InputArguments OpcuaNodeIdServicesVariableDiscrepancy = 24507
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ShelvingState_TimedShelve2_InputArguments OpcuaNodeIdServicesVariableDiscrepancy = 24963
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ShelvingState_Unshelve2_InputArguments OpcuaNodeIdServicesVariableDiscrepancy = 24965
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ShelvingState_OneShotShelve2_InputArguments OpcuaNodeIdServicesVariableDiscrepancy = 24967
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_GetGroupMemberships_OutputArguments OpcuaNodeIdServicesVariableDiscrepancy = 25175
+	OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_SupportsFilteredRetain OpcuaNodeIdServicesVariableDiscrepancy = 32243
 )
 
 var OpcuaNodeIdServicesVariableDiscrepancyValues []OpcuaNodeIdServicesVariableDiscrepancy
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariableDiscrepancyValues = []OpcuaNodeIdServicesVariableDiscrepancy{
+	OpcuaNodeIdServicesVariableDiscrepancyValues = []OpcuaNodeIdServicesVariableDiscrepancy {
 		OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_EventId,
 		OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_EventType,
 		OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_SourceNode,
@@ -335,288 +335,288 @@ func init() {
 
 func OpcuaNodeIdServicesVariableDiscrepancyByValue(value int32) (enum OpcuaNodeIdServicesVariableDiscrepancy, ok bool) {
 	switch value {
-	case 17081:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_EventId, true
-	case 17082:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_EventType, true
-	case 17083:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_SourceNode, true
-	case 17084:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_SourceName, true
-	case 17085:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_Time, true
-	case 17086:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ReceiveTime, true
-	case 17087:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_LocalTime, true
-	case 17088:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_Message, true
-	case 17089:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_Severity, true
-	case 17090:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ConditionClassId, true
-	case 17091:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ConditionClassName, true
-	case 17092:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ConditionSubClassId, true
-	case 17093:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ConditionSubClassName, true
-	case 17094:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ConditionName, true
-	case 17095:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_BranchId, true
-	case 17096:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_Retain, true
-	case 17097:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_EnabledState, true
-	case 17098:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_EnabledState_Id, true
-	case 17099:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_EnabledState_Name, true
-	case 17100:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_EnabledState_Number, true
-	case 17101:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_EnabledState_EffectiveDisplayName, true
-	case 17102:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_EnabledState_TransitionTime, true
-	case 17103:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_EnabledState_EffectiveTransitionTime, true
-	case 17104:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_EnabledState_TrueState, true
-	case 17105:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_EnabledState_FalseState, true
-	case 17106:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_Quality, true
-	case 17107:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_Quality_SourceTimestamp, true
-	case 17108:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_LastSeverity, true
-	case 17109:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_LastSeverity_SourceTimestamp, true
-	case 17110:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_Comment, true
-	case 17111:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_Comment_SourceTimestamp, true
-	case 17112:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ClientUserId, true
-	case 17116:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_AddComment_InputArguments, true
-	case 17118:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ConditionRefresh_InputArguments, true
-	case 17120:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ConditionRefresh2_InputArguments, true
-	case 17121:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_AckedState, true
-	case 17122:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_AckedState_Id, true
-	case 17123:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_AckedState_Name, true
-	case 17124:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_AckedState_Number, true
-	case 17125:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_AckedState_EffectiveDisplayName, true
-	case 17126:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_AckedState_TransitionTime, true
-	case 17127:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_AckedState_EffectiveTransitionTime, true
-	case 17128:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_AckedState_TrueState, true
-	case 17129:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_AckedState_FalseState, true
-	case 17130:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ConfirmedState, true
-	case 17131:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ConfirmedState_Id, true
-	case 17132:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ConfirmedState_Name, true
-	case 17133:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ConfirmedState_Number, true
-	case 17134:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ConfirmedState_EffectiveDisplayName, true
-	case 17135:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ConfirmedState_TransitionTime, true
-	case 17136:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ConfirmedState_EffectiveTransitionTime, true
-	case 17137:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ConfirmedState_TrueState, true
-	case 17138:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ConfirmedState_FalseState, true
-	case 17140:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_Acknowledge_InputArguments, true
-	case 17142:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_Confirm_InputArguments, true
-	case 17143:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ActiveState, true
-	case 17144:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ActiveState_Id, true
-	case 17145:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ActiveState_Name, true
-	case 17146:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ActiveState_Number, true
-	case 17147:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ActiveState_EffectiveDisplayName, true
-	case 17148:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ActiveState_TransitionTime, true
-	case 17149:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ActiveState_EffectiveTransitionTime, true
-	case 17150:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ActiveState_TrueState, true
-	case 17151:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ActiveState_FalseState, true
-	case 17152:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_InputNode, true
-	case 17153:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_SuppressedState, true
-	case 17154:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_SuppressedState_Id, true
-	case 17155:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_SuppressedState_Name, true
-	case 17156:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_SuppressedState_Number, true
-	case 17157:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_SuppressedState_EffectiveDisplayName, true
-	case 17158:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_SuppressedState_TransitionTime, true
-	case 17159:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_SuppressedState_EffectiveTransitionTime, true
-	case 17160:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_SuppressedState_TrueState, true
-	case 17161:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_SuppressedState_FalseState, true
-	case 17162:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_OutOfServiceState, true
-	case 17163:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_OutOfServiceState_Id, true
-	case 17164:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_OutOfServiceState_Name, true
-	case 17165:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_OutOfServiceState_Number, true
-	case 17166:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_OutOfServiceState_EffectiveDisplayName, true
-	case 17167:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_OutOfServiceState_TransitionTime, true
-	case 17168:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_OutOfServiceState_EffectiveTransitionTime, true
-	case 17169:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_OutOfServiceState_TrueState, true
-	case 17170:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_OutOfServiceState_FalseState, true
-	case 17171:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_SilenceState, true
-	case 17172:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_SilenceState_Id, true
-	case 17173:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_SilenceState_Name, true
-	case 17174:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_SilenceState_Number, true
-	case 17175:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_SilenceState_EffectiveDisplayName, true
-	case 17176:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_SilenceState_TransitionTime, true
-	case 17177:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_SilenceState_EffectiveTransitionTime, true
-	case 17178:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_SilenceState_TrueState, true
-	case 17179:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_SilenceState_FalseState, true
-	case 17181:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ShelvingState_CurrentState, true
-	case 17182:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ShelvingState_CurrentState_Id, true
-	case 17183:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ShelvingState_CurrentState_Name, true
-	case 17184:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ShelvingState_CurrentState_Number, true
-	case 17185:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ShelvingState_CurrentState_EffectiveDisplayName, true
-	case 17186:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ShelvingState_LastTransition, true
-	case 17187:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ShelvingState_LastTransition_Id, true
-	case 17188:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ShelvingState_LastTransition_Name, true
-	case 17189:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ShelvingState_LastTransition_Number, true
-	case 17190:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ShelvingState_LastTransition_TransitionTime, true
-	case 17191:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ShelvingState_LastTransition_EffectiveTransitionTime, true
-	case 17192:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ShelvingState_UnshelveTime, true
-	case 17196:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ShelvingState_TimedShelve_InputArguments, true
-	case 17197:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_SuppressedOrShelved, true
-	case 17198:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_MaxTimeShelved, true
-	case 17199:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_AudibleEnabled, true
-	case 17200:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_AudibleSound, true
-	case 17205:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_OnDelay, true
-	case 17206:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_OffDelay, true
-	case 17207:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_FirstInGroupFlag, true
-	case 17210:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ReAlarmTime, true
-	case 17211:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ReAlarmRepeatCount, true
-	case 17215:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_TargetValueNode, true
-	case 17216:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ExpectedTime, true
-	case 17217:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_Tolerance, true
-	case 17702:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ShelvingState_AvailableStates, true
-	case 17703:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ShelvingState_AvailableTransitions, true
-	case 17977:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_AudibleSound_ListId, true
-	case 17978:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_AudibleSound_AgencyId, true
-	case 17979:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_AudibleSound_VersionId, true
-	case 18655:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_LatchedState, true
-	case 18656:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_LatchedState_Id, true
-	case 18657:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_LatchedState_Name, true
-	case 18658:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_LatchedState_Number, true
-	case 18659:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_LatchedState_EffectiveDisplayName, true
-	case 18660:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_LatchedState_TransitionTime, true
-	case 18661:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_LatchedState_EffectiveTransitionTime, true
-	case 18662:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_LatchedState_TrueState, true
-	case 18663:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_LatchedState_FalseState, true
-	case 24499:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_Suppress2_InputArguments, true
-	case 24501:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_Unsuppress2_InputArguments, true
-	case 24503:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_RemoveFromService2_InputArguments, true
-	case 24505:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_PlaceInService2_InputArguments, true
-	case 24507:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_Reset2_InputArguments, true
-	case 24963:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ShelvingState_TimedShelve2_InputArguments, true
-	case 24965:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ShelvingState_Unshelve2_InputArguments, true
-	case 24967:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ShelvingState_OneShotShelve2_InputArguments, true
-	case 25175:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_GetGroupMemberships_OutputArguments, true
-	case 32243:
-		return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_SupportsFilteredRetain, true
+		case 17081:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_EventId, true
+		case 17082:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_EventType, true
+		case 17083:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_SourceNode, true
+		case 17084:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_SourceName, true
+		case 17085:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_Time, true
+		case 17086:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ReceiveTime, true
+		case 17087:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_LocalTime, true
+		case 17088:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_Message, true
+		case 17089:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_Severity, true
+		case 17090:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ConditionClassId, true
+		case 17091:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ConditionClassName, true
+		case 17092:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ConditionSubClassId, true
+		case 17093:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ConditionSubClassName, true
+		case 17094:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ConditionName, true
+		case 17095:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_BranchId, true
+		case 17096:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_Retain, true
+		case 17097:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_EnabledState, true
+		case 17098:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_EnabledState_Id, true
+		case 17099:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_EnabledState_Name, true
+		case 17100:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_EnabledState_Number, true
+		case 17101:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_EnabledState_EffectiveDisplayName, true
+		case 17102:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_EnabledState_TransitionTime, true
+		case 17103:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_EnabledState_EffectiveTransitionTime, true
+		case 17104:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_EnabledState_TrueState, true
+		case 17105:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_EnabledState_FalseState, true
+		case 17106:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_Quality, true
+		case 17107:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_Quality_SourceTimestamp, true
+		case 17108:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_LastSeverity, true
+		case 17109:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_LastSeverity_SourceTimestamp, true
+		case 17110:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_Comment, true
+		case 17111:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_Comment_SourceTimestamp, true
+		case 17112:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ClientUserId, true
+		case 17116:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_AddComment_InputArguments, true
+		case 17118:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ConditionRefresh_InputArguments, true
+		case 17120:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ConditionRefresh2_InputArguments, true
+		case 17121:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_AckedState, true
+		case 17122:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_AckedState_Id, true
+		case 17123:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_AckedState_Name, true
+		case 17124:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_AckedState_Number, true
+		case 17125:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_AckedState_EffectiveDisplayName, true
+		case 17126:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_AckedState_TransitionTime, true
+		case 17127:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_AckedState_EffectiveTransitionTime, true
+		case 17128:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_AckedState_TrueState, true
+		case 17129:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_AckedState_FalseState, true
+		case 17130:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ConfirmedState, true
+		case 17131:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ConfirmedState_Id, true
+		case 17132:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ConfirmedState_Name, true
+		case 17133:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ConfirmedState_Number, true
+		case 17134:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ConfirmedState_EffectiveDisplayName, true
+		case 17135:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ConfirmedState_TransitionTime, true
+		case 17136:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ConfirmedState_EffectiveTransitionTime, true
+		case 17137:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ConfirmedState_TrueState, true
+		case 17138:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ConfirmedState_FalseState, true
+		case 17140:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_Acknowledge_InputArguments, true
+		case 17142:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_Confirm_InputArguments, true
+		case 17143:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ActiveState, true
+		case 17144:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ActiveState_Id, true
+		case 17145:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ActiveState_Name, true
+		case 17146:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ActiveState_Number, true
+		case 17147:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ActiveState_EffectiveDisplayName, true
+		case 17148:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ActiveState_TransitionTime, true
+		case 17149:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ActiveState_EffectiveTransitionTime, true
+		case 17150:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ActiveState_TrueState, true
+		case 17151:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ActiveState_FalseState, true
+		case 17152:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_InputNode, true
+		case 17153:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_SuppressedState, true
+		case 17154:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_SuppressedState_Id, true
+		case 17155:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_SuppressedState_Name, true
+		case 17156:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_SuppressedState_Number, true
+		case 17157:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_SuppressedState_EffectiveDisplayName, true
+		case 17158:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_SuppressedState_TransitionTime, true
+		case 17159:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_SuppressedState_EffectiveTransitionTime, true
+		case 17160:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_SuppressedState_TrueState, true
+		case 17161:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_SuppressedState_FalseState, true
+		case 17162:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_OutOfServiceState, true
+		case 17163:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_OutOfServiceState_Id, true
+		case 17164:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_OutOfServiceState_Name, true
+		case 17165:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_OutOfServiceState_Number, true
+		case 17166:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_OutOfServiceState_EffectiveDisplayName, true
+		case 17167:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_OutOfServiceState_TransitionTime, true
+		case 17168:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_OutOfServiceState_EffectiveTransitionTime, true
+		case 17169:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_OutOfServiceState_TrueState, true
+		case 17170:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_OutOfServiceState_FalseState, true
+		case 17171:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_SilenceState, true
+		case 17172:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_SilenceState_Id, true
+		case 17173:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_SilenceState_Name, true
+		case 17174:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_SilenceState_Number, true
+		case 17175:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_SilenceState_EffectiveDisplayName, true
+		case 17176:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_SilenceState_TransitionTime, true
+		case 17177:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_SilenceState_EffectiveTransitionTime, true
+		case 17178:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_SilenceState_TrueState, true
+		case 17179:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_SilenceState_FalseState, true
+		case 17181:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ShelvingState_CurrentState, true
+		case 17182:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ShelvingState_CurrentState_Id, true
+		case 17183:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ShelvingState_CurrentState_Name, true
+		case 17184:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ShelvingState_CurrentState_Number, true
+		case 17185:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ShelvingState_CurrentState_EffectiveDisplayName, true
+		case 17186:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ShelvingState_LastTransition, true
+		case 17187:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ShelvingState_LastTransition_Id, true
+		case 17188:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ShelvingState_LastTransition_Name, true
+		case 17189:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ShelvingState_LastTransition_Number, true
+		case 17190:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ShelvingState_LastTransition_TransitionTime, true
+		case 17191:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ShelvingState_LastTransition_EffectiveTransitionTime, true
+		case 17192:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ShelvingState_UnshelveTime, true
+		case 17196:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ShelvingState_TimedShelve_InputArguments, true
+		case 17197:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_SuppressedOrShelved, true
+		case 17198:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_MaxTimeShelved, true
+		case 17199:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_AudibleEnabled, true
+		case 17200:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_AudibleSound, true
+		case 17205:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_OnDelay, true
+		case 17206:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_OffDelay, true
+		case 17207:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_FirstInGroupFlag, true
+		case 17210:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ReAlarmTime, true
+		case 17211:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ReAlarmRepeatCount, true
+		case 17215:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_TargetValueNode, true
+		case 17216:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ExpectedTime, true
+		case 17217:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_Tolerance, true
+		case 17702:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ShelvingState_AvailableStates, true
+		case 17703:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ShelvingState_AvailableTransitions, true
+		case 17977:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_AudibleSound_ListId, true
+		case 17978:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_AudibleSound_AgencyId, true
+		case 17979:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_AudibleSound_VersionId, true
+		case 18655:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_LatchedState, true
+		case 18656:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_LatchedState_Id, true
+		case 18657:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_LatchedState_Name, true
+		case 18658:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_LatchedState_Number, true
+		case 18659:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_LatchedState_EffectiveDisplayName, true
+		case 18660:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_LatchedState_TransitionTime, true
+		case 18661:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_LatchedState_EffectiveTransitionTime, true
+		case 18662:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_LatchedState_TrueState, true
+		case 18663:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_LatchedState_FalseState, true
+		case 24499:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_Suppress2_InputArguments, true
+		case 24501:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_Unsuppress2_InputArguments, true
+		case 24503:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_RemoveFromService2_InputArguments, true
+		case 24505:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_PlaceInService2_InputArguments, true
+		case 24507:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_Reset2_InputArguments, true
+		case 24963:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ShelvingState_TimedShelve2_InputArguments, true
+		case 24965:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ShelvingState_Unshelve2_InputArguments, true
+		case 24967:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_ShelvingState_OneShotShelve2_InputArguments, true
+		case 25175:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_GetGroupMemberships_OutputArguments, true
+		case 32243:
+			return OpcuaNodeIdServicesVariableDiscrepancy_DiscrepancyAlarmType_SupportsFilteredRetain, true
 	}
 	return 0, false
 }
@@ -909,13 +909,13 @@ func OpcuaNodeIdServicesVariableDiscrepancyByName(value string) (enum OpcuaNodeI
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariableDiscrepancyKnows(value int32) bool {
+func OpcuaNodeIdServicesVariableDiscrepancyKnows(value int32)  bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariableDiscrepancyValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastOpcuaNodeIdServicesVariableDiscrepancy(structType any) OpcuaNodeIdServicesVariableDiscrepancy {
@@ -1261,3 +1261,4 @@ func (e OpcuaNodeIdServicesVariableDiscrepancy) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariableDiscrepancy) String() string {
 	return e.PLC4XEnumName()
 }
+

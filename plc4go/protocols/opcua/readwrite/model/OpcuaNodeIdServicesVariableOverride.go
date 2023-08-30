@@ -40,7 +40,7 @@ type IOpcuaNodeIdServicesVariableOverride interface {
 	utils.Serializable
 }
 
-const (
+const(
 	OpcuaNodeIdServicesVariableOverride_OverrideValueHandling_EnumStrings OpcuaNodeIdServicesVariableOverride = 15875
 )
 
@@ -48,15 +48,15 @@ var OpcuaNodeIdServicesVariableOverrideValues []OpcuaNodeIdServicesVariableOverr
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariableOverrideValues = []OpcuaNodeIdServicesVariableOverride{
+	OpcuaNodeIdServicesVariableOverrideValues = []OpcuaNodeIdServicesVariableOverride {
 		OpcuaNodeIdServicesVariableOverride_OverrideValueHandling_EnumStrings,
 	}
 }
 
 func OpcuaNodeIdServicesVariableOverrideByValue(value int32) (enum OpcuaNodeIdServicesVariableOverride, ok bool) {
 	switch value {
-	case 15875:
-		return OpcuaNodeIdServicesVariableOverride_OverrideValueHandling_EnumStrings, true
+		case 15875:
+			return OpcuaNodeIdServicesVariableOverride_OverrideValueHandling_EnumStrings, true
 	}
 	return 0, false
 }
@@ -69,13 +69,13 @@ func OpcuaNodeIdServicesVariableOverrideByName(value string) (enum OpcuaNodeIdSe
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariableOverrideKnows(value int32) bool {
+func OpcuaNodeIdServicesVariableOverrideKnows(value int32)  bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariableOverrideValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastOpcuaNodeIdServicesVariableOverride(structType any) OpcuaNodeIdServicesVariableOverride {
@@ -141,3 +141,4 @@ func (e OpcuaNodeIdServicesVariableOverride) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariableOverride) String() string {
 	return e.PLC4XEnumName()
 }
+

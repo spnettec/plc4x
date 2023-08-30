@@ -40,19 +40,19 @@ type IOpcuaNodeIdServicesVariableSet interface {
 	utils.Serializable
 }
 
-const (
-	OpcuaNodeIdServicesVariableSet_SetPositionMethodType_InputArguments             OpcuaNodeIdServicesVariableSet = 11752
-	OpcuaNodeIdServicesVariableSet_SetSubscriptionDurableMethodType_InputArguments  OpcuaNodeIdServicesVariableSet = 12753
+const(
+	OpcuaNodeIdServicesVariableSet_SetPositionMethodType_InputArguments OpcuaNodeIdServicesVariableSet = 11752
+	OpcuaNodeIdServicesVariableSet_SetSubscriptionDurableMethodType_InputArguments OpcuaNodeIdServicesVariableSet = 12753
 	OpcuaNodeIdServicesVariableSet_SetSubscriptionDurableMethodType_OutputArguments OpcuaNodeIdServicesVariableSet = 12754
-	OpcuaNodeIdServicesVariableSet_SetSecurityKeysMethodType_InputArguments         OpcuaNodeIdServicesVariableSet = 17299
-	OpcuaNodeIdServicesVariableSet_SetRegistrarEndpointsMethodType_InputArguments   OpcuaNodeIdServicesVariableSet = 25730
+	OpcuaNodeIdServicesVariableSet_SetSecurityKeysMethodType_InputArguments OpcuaNodeIdServicesVariableSet = 17299
+	OpcuaNodeIdServicesVariableSet_SetRegistrarEndpointsMethodType_InputArguments OpcuaNodeIdServicesVariableSet = 25730
 )
 
 var OpcuaNodeIdServicesVariableSetValues []OpcuaNodeIdServicesVariableSet
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariableSetValues = []OpcuaNodeIdServicesVariableSet{
+	OpcuaNodeIdServicesVariableSetValues = []OpcuaNodeIdServicesVariableSet {
 		OpcuaNodeIdServicesVariableSet_SetPositionMethodType_InputArguments,
 		OpcuaNodeIdServicesVariableSet_SetSubscriptionDurableMethodType_InputArguments,
 		OpcuaNodeIdServicesVariableSet_SetSubscriptionDurableMethodType_OutputArguments,
@@ -63,16 +63,16 @@ func init() {
 
 func OpcuaNodeIdServicesVariableSetByValue(value int32) (enum OpcuaNodeIdServicesVariableSet, ok bool) {
 	switch value {
-	case 11752:
-		return OpcuaNodeIdServicesVariableSet_SetPositionMethodType_InputArguments, true
-	case 12753:
-		return OpcuaNodeIdServicesVariableSet_SetSubscriptionDurableMethodType_InputArguments, true
-	case 12754:
-		return OpcuaNodeIdServicesVariableSet_SetSubscriptionDurableMethodType_OutputArguments, true
-	case 17299:
-		return OpcuaNodeIdServicesVariableSet_SetSecurityKeysMethodType_InputArguments, true
-	case 25730:
-		return OpcuaNodeIdServicesVariableSet_SetRegistrarEndpointsMethodType_InputArguments, true
+		case 11752:
+			return OpcuaNodeIdServicesVariableSet_SetPositionMethodType_InputArguments, true
+		case 12753:
+			return OpcuaNodeIdServicesVariableSet_SetSubscriptionDurableMethodType_InputArguments, true
+		case 12754:
+			return OpcuaNodeIdServicesVariableSet_SetSubscriptionDurableMethodType_OutputArguments, true
+		case 17299:
+			return OpcuaNodeIdServicesVariableSet_SetSecurityKeysMethodType_InputArguments, true
+		case 25730:
+			return OpcuaNodeIdServicesVariableSet_SetRegistrarEndpointsMethodType_InputArguments, true
 	}
 	return 0, false
 }
@@ -93,13 +93,13 @@ func OpcuaNodeIdServicesVariableSetByName(value string) (enum OpcuaNodeIdService
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariableSetKnows(value int32) bool {
+func OpcuaNodeIdServicesVariableSetKnows(value int32)  bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariableSetValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastOpcuaNodeIdServicesVariableSet(structType any) OpcuaNodeIdServicesVariableSet {
@@ -173,3 +173,4 @@ func (e OpcuaNodeIdServicesVariableSet) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariableSet) String() string {
 	return e.PLC4XEnumName()
 }
+

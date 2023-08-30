@@ -40,8 +40,8 @@ type IOpcuaNodeIdServicesVariableDisconnect interface {
 	utils.Serializable
 }
 
-const (
-	OpcuaNodeIdServicesVariableDisconnect_DisconnectSecurityGroupsMethodType_InputArguments  OpcuaNodeIdServicesVariableDisconnect = 25335
+const(
+	OpcuaNodeIdServicesVariableDisconnect_DisconnectSecurityGroupsMethodType_InputArguments OpcuaNodeIdServicesVariableDisconnect = 25335
 	OpcuaNodeIdServicesVariableDisconnect_DisconnectSecurityGroupsMethodType_OutputArguments OpcuaNodeIdServicesVariableDisconnect = 25336
 )
 
@@ -49,7 +49,7 @@ var OpcuaNodeIdServicesVariableDisconnectValues []OpcuaNodeIdServicesVariableDis
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariableDisconnectValues = []OpcuaNodeIdServicesVariableDisconnect{
+	OpcuaNodeIdServicesVariableDisconnectValues = []OpcuaNodeIdServicesVariableDisconnect {
 		OpcuaNodeIdServicesVariableDisconnect_DisconnectSecurityGroupsMethodType_InputArguments,
 		OpcuaNodeIdServicesVariableDisconnect_DisconnectSecurityGroupsMethodType_OutputArguments,
 	}
@@ -57,10 +57,10 @@ func init() {
 
 func OpcuaNodeIdServicesVariableDisconnectByValue(value int32) (enum OpcuaNodeIdServicesVariableDisconnect, ok bool) {
 	switch value {
-	case 25335:
-		return OpcuaNodeIdServicesVariableDisconnect_DisconnectSecurityGroupsMethodType_InputArguments, true
-	case 25336:
-		return OpcuaNodeIdServicesVariableDisconnect_DisconnectSecurityGroupsMethodType_OutputArguments, true
+		case 25335:
+			return OpcuaNodeIdServicesVariableDisconnect_DisconnectSecurityGroupsMethodType_InputArguments, true
+		case 25336:
+			return OpcuaNodeIdServicesVariableDisconnect_DisconnectSecurityGroupsMethodType_OutputArguments, true
 	}
 	return 0, false
 }
@@ -75,13 +75,13 @@ func OpcuaNodeIdServicesVariableDisconnectByName(value string) (enum OpcuaNodeId
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariableDisconnectKnows(value int32) bool {
+func OpcuaNodeIdServicesVariableDisconnectKnows(value int32)  bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariableDisconnectValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastOpcuaNodeIdServicesVariableDisconnect(structType any) OpcuaNodeIdServicesVariableDisconnect {
@@ -149,3 +149,4 @@ func (e OpcuaNodeIdServicesVariableDisconnect) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariableDisconnect) String() string {
 	return e.PLC4XEnumName()
 }
+

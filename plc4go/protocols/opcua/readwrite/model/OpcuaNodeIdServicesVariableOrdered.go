@@ -40,16 +40,16 @@ type IOpcuaNodeIdServicesVariableOrdered interface {
 	utils.Serializable
 }
 
-const (
+const(
 	OpcuaNodeIdServicesVariableOrdered_OrderedListType_OrderedObject_Placeholder_NumberInList OpcuaNodeIdServicesVariableOrdered = 23521
-	OpcuaNodeIdServicesVariableOrdered_OrderedListType_NodeVersion                            OpcuaNodeIdServicesVariableOrdered = 23525
+	OpcuaNodeIdServicesVariableOrdered_OrderedListType_NodeVersion OpcuaNodeIdServicesVariableOrdered = 23525
 )
 
 var OpcuaNodeIdServicesVariableOrderedValues []OpcuaNodeIdServicesVariableOrdered
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariableOrderedValues = []OpcuaNodeIdServicesVariableOrdered{
+	OpcuaNodeIdServicesVariableOrderedValues = []OpcuaNodeIdServicesVariableOrdered {
 		OpcuaNodeIdServicesVariableOrdered_OrderedListType_OrderedObject_Placeholder_NumberInList,
 		OpcuaNodeIdServicesVariableOrdered_OrderedListType_NodeVersion,
 	}
@@ -57,10 +57,10 @@ func init() {
 
 func OpcuaNodeIdServicesVariableOrderedByValue(value int32) (enum OpcuaNodeIdServicesVariableOrdered, ok bool) {
 	switch value {
-	case 23521:
-		return OpcuaNodeIdServicesVariableOrdered_OrderedListType_OrderedObject_Placeholder_NumberInList, true
-	case 23525:
-		return OpcuaNodeIdServicesVariableOrdered_OrderedListType_NodeVersion, true
+		case 23521:
+			return OpcuaNodeIdServicesVariableOrdered_OrderedListType_OrderedObject_Placeholder_NumberInList, true
+		case 23525:
+			return OpcuaNodeIdServicesVariableOrdered_OrderedListType_NodeVersion, true
 	}
 	return 0, false
 }
@@ -75,13 +75,13 @@ func OpcuaNodeIdServicesVariableOrderedByName(value string) (enum OpcuaNodeIdSer
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariableOrderedKnows(value int32) bool {
+func OpcuaNodeIdServicesVariableOrderedKnows(value int32)  bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariableOrderedValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastOpcuaNodeIdServicesVariableOrdered(structType any) OpcuaNodeIdServicesVariableOrdered {
@@ -149,3 +149,4 @@ func (e OpcuaNodeIdServicesVariableOrdered) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariableOrdered) String() string {
 	return e.PLC4XEnumName()
 }
+

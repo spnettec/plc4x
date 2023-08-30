@@ -40,22 +40,22 @@ type IOpcuaNodeIdServicesVariableCreate interface {
 	utils.Serializable
 }
 
-const (
-	OpcuaNodeIdServicesVariableCreate_CreateSigningRequestMethodType_InputArguments  OpcuaNodeIdServicesVariableCreate = 12742
+const(
+	OpcuaNodeIdServicesVariableCreate_CreateSigningRequestMethodType_InputArguments OpcuaNodeIdServicesVariableCreate = 12742
 	OpcuaNodeIdServicesVariableCreate_CreateSigningRequestMethodType_OutputArguments OpcuaNodeIdServicesVariableCreate = 12743
-	OpcuaNodeIdServicesVariableCreate_CreateDirectoryMethodType_InputArguments       OpcuaNodeIdServicesVariableCreate = 13343
-	OpcuaNodeIdServicesVariableCreate_CreateDirectoryMethodType_OutputArguments      OpcuaNodeIdServicesVariableCreate = 13344
-	OpcuaNodeIdServicesVariableCreate_CreateFileMethodType_InputArguments            OpcuaNodeIdServicesVariableCreate = 13346
-	OpcuaNodeIdServicesVariableCreate_CreateFileMethodType_OutputArguments           OpcuaNodeIdServicesVariableCreate = 13347
-	OpcuaNodeIdServicesVariableCreate_CreateCredentialMethodType_InputArguments      OpcuaNodeIdServicesVariableCreate = 15253
-	OpcuaNodeIdServicesVariableCreate_CreateCredentialMethodType_OutputArguments     OpcuaNodeIdServicesVariableCreate = 17495
+	OpcuaNodeIdServicesVariableCreate_CreateDirectoryMethodType_InputArguments OpcuaNodeIdServicesVariableCreate = 13343
+	OpcuaNodeIdServicesVariableCreate_CreateDirectoryMethodType_OutputArguments OpcuaNodeIdServicesVariableCreate = 13344
+	OpcuaNodeIdServicesVariableCreate_CreateFileMethodType_InputArguments OpcuaNodeIdServicesVariableCreate = 13346
+	OpcuaNodeIdServicesVariableCreate_CreateFileMethodType_OutputArguments OpcuaNodeIdServicesVariableCreate = 13347
+	OpcuaNodeIdServicesVariableCreate_CreateCredentialMethodType_InputArguments OpcuaNodeIdServicesVariableCreate = 15253
+	OpcuaNodeIdServicesVariableCreate_CreateCredentialMethodType_OutputArguments OpcuaNodeIdServicesVariableCreate = 17495
 )
 
 var OpcuaNodeIdServicesVariableCreateValues []OpcuaNodeIdServicesVariableCreate
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariableCreateValues = []OpcuaNodeIdServicesVariableCreate{
+	OpcuaNodeIdServicesVariableCreateValues = []OpcuaNodeIdServicesVariableCreate {
 		OpcuaNodeIdServicesVariableCreate_CreateSigningRequestMethodType_InputArguments,
 		OpcuaNodeIdServicesVariableCreate_CreateSigningRequestMethodType_OutputArguments,
 		OpcuaNodeIdServicesVariableCreate_CreateDirectoryMethodType_InputArguments,
@@ -69,22 +69,22 @@ func init() {
 
 func OpcuaNodeIdServicesVariableCreateByValue(value int32) (enum OpcuaNodeIdServicesVariableCreate, ok bool) {
 	switch value {
-	case 12742:
-		return OpcuaNodeIdServicesVariableCreate_CreateSigningRequestMethodType_InputArguments, true
-	case 12743:
-		return OpcuaNodeIdServicesVariableCreate_CreateSigningRequestMethodType_OutputArguments, true
-	case 13343:
-		return OpcuaNodeIdServicesVariableCreate_CreateDirectoryMethodType_InputArguments, true
-	case 13344:
-		return OpcuaNodeIdServicesVariableCreate_CreateDirectoryMethodType_OutputArguments, true
-	case 13346:
-		return OpcuaNodeIdServicesVariableCreate_CreateFileMethodType_InputArguments, true
-	case 13347:
-		return OpcuaNodeIdServicesVariableCreate_CreateFileMethodType_OutputArguments, true
-	case 15253:
-		return OpcuaNodeIdServicesVariableCreate_CreateCredentialMethodType_InputArguments, true
-	case 17495:
-		return OpcuaNodeIdServicesVariableCreate_CreateCredentialMethodType_OutputArguments, true
+		case 12742:
+			return OpcuaNodeIdServicesVariableCreate_CreateSigningRequestMethodType_InputArguments, true
+		case 12743:
+			return OpcuaNodeIdServicesVariableCreate_CreateSigningRequestMethodType_OutputArguments, true
+		case 13343:
+			return OpcuaNodeIdServicesVariableCreate_CreateDirectoryMethodType_InputArguments, true
+		case 13344:
+			return OpcuaNodeIdServicesVariableCreate_CreateDirectoryMethodType_OutputArguments, true
+		case 13346:
+			return OpcuaNodeIdServicesVariableCreate_CreateFileMethodType_InputArguments, true
+		case 13347:
+			return OpcuaNodeIdServicesVariableCreate_CreateFileMethodType_OutputArguments, true
+		case 15253:
+			return OpcuaNodeIdServicesVariableCreate_CreateCredentialMethodType_InputArguments, true
+		case 17495:
+			return OpcuaNodeIdServicesVariableCreate_CreateCredentialMethodType_OutputArguments, true
 	}
 	return 0, false
 }
@@ -111,13 +111,13 @@ func OpcuaNodeIdServicesVariableCreateByName(value string) (enum OpcuaNodeIdServ
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariableCreateKnows(value int32) bool {
+func OpcuaNodeIdServicesVariableCreateKnows(value int32)  bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariableCreateValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastOpcuaNodeIdServicesVariableCreate(structType any) OpcuaNodeIdServicesVariableCreate {
@@ -197,3 +197,4 @@ func (e OpcuaNodeIdServicesVariableCreate) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariableCreate) String() string {
 	return e.PLC4XEnumName()
 }
+
