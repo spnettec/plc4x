@@ -28,10 +28,19 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class ManualEipIoTest {
 
     public static void main(String[] args) throws Exception {
-        final PlcConnection connection = new DefaultPlcDriverManager().getConnection("logix://localhost");
-        final PlcReadRequest readRequest = connection.readRequestBuilder().addTagAddress("MyTag", "MyTag").build();
+        final PlcConnection connection = new DefaultPlcDriverManager().getConnection("logix://192.168.50.36");
+        final PlcReadRequest readRequest = connection.readRequestBuilder()
+            .addTagAddress("B1", "B1")
+            .addTagAddress("B2", "B2")
+            .addTagAddress("DI1", "DI1")
+            .addTagAddress("DI2", "DI2")
+            .addTagAddress("I1", "I1")
+            .addTagAddress("I2", "I2")
+            .addTagAddress("R1", "R1")
+            .addTagAddress("R2", "R2")
+            .build();
         final PlcReadResponse plcReadResponse = readRequest.execute().get();
         connection.close();
-        assertEquals(plcReadResponse.getInteger("MyTag"), 0);
+        System.out.println(plcReadResponse.getAsPlcValue());
     }
 }
