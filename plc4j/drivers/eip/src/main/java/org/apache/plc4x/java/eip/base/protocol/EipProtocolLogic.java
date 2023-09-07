@@ -419,74 +419,81 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
 
     private CompletableFuture<PlcReadResponse> readWithoutMessageRouter(PlcReadRequest readRequest) {
         CompletableFuture<PlcReadResponse> future = new CompletableFuture<>();
-        Map<String, ResponseItem<PlcValue>> values = new HashMap<>();
+        RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
 
         PathSegment classSegment = new LogicalSegment(new ClassID((byte) 0, (short) 6));
         PathSegment instanceSegment = new LogicalSegment(new InstanceID((byte) 0, (short) 1));
 
         DefaultPlcReadRequest request = (DefaultPlcReadRequest) readRequest;
-        for (String tagName : request.getTagNames()) {
-            CompletableFuture<Boolean> internalFuture = new CompletableFuture<>();
-            RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
-            EipTag eipTag = (EipTag) request.getTag(tagName);
-            String tag = eipTag.getTag();
+        List<CipService> requests = new ArrayList<>(request.getNumberOfTags());
+        for (PlcTag field : request.getTags()) {
+            EipTag plcField = (EipTag) field;
+            String tag = plcField.getTag();
 
             try {
                 CipReadRequest req = new CipReadRequest(
                     toAnsi(tag),
                     1);
-
-                CipUnconnectedRequest requestItem = new CipUnconnectedRequest(
-                    classSegment,
-                    instanceSegment,
-                    req,
-                    (byte) this.configuration.getBackplane(),
-                    (byte) this.configuration.getSlot());
-
-                List<TypeId> typeIds = new ArrayList<>(2);
-
-                typeIds.add(nullAddressItem);
-                typeIds.add(new UnConnectedDataItem(requestItem));
-
-                CipRRData pkt = new CipRRData(
-                    sessionHandle,
-                    CIPStatus.Success.getValue(),
-                    DEFAULT_SENDER_CONTEXT,
-                    0L,
-                    0L,
-                    0,
-                    typeIds);
-
-                transaction.submit(() -> context.sendRequest(pkt)
-                    .expectResponse(EipPacket.class, REQUEST_TIMEOUT)
-                    .onTimeout(future::completeExceptionally)
-                    .onError((p, e) -> future.completeExceptionally(e))
-                    .check(p -> p instanceof CipRRData)
-                    .unwrap(p -> (CipRRData) p)
-                    .check(p -> p.getSessionHandle() == sessionHandle)
-                    .handle(p -> {
-                        List<TypeId> responseTypeIds = p.getTypeIds();
-                        UnConnectedDataItem dataItem = (UnConnectedDataItem) responseTypeIds.get(1);
-                        Map<String, ResponseItem<PlcValue>> readResponse = decodeSingleReadResponse(dataItem.getService(), tagName, eipTag);
-                        values.putAll(readResponse);
-                        internalFuture.complete(true);
-                        // Finish the request-transaction.
-                        transaction.endRequest();
-                    }));
-                // TODO: Remove this ...
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
+                requests.add(req);
             } catch (SerializationException e) {
                 e.printStackTrace();
             }
         }
 
-        // TODO: This seems to be blocking here ... we should probably do this asynchronously
-        PlcReadResponse readResponse = new DefaultPlcReadResponse(readRequest, values);
-        future.complete(readResponse);
+        List<TypeId> typeIds =new ArrayList<>(2);
+
+        typeIds.add(nullAddressItem);
+        if (requests.size() == 1) {
+            CipUnconnectedRequest requestItem = new CipUnconnectedRequest(
+                classSegment,
+                instanceSegment,
+                requests.get(0),
+                (byte) this.configuration.getBackplane(),
+                (byte) this.configuration.getSlot());
+            typeIds.add(new UnConnectedDataItem(requestItem));
+        } else {
+            List<Integer> offsets = new ArrayList<>(requests.size());
+            offsets.add(18);
+            for (CipService cipRequest : requests) {
+                if (requests.indexOf(cipRequest) != (requests.size() - 1)) {
+                    offsets.add(offsets.get(requests.indexOf(cipRequest)) + cipRequest.getLengthInBytes());
+                }
+            }
+            MultipleServiceRequest serviceRequest = new MultipleServiceRequest(new Services(offsets, requests));
+            CipUnconnectedRequest unreq = new CipUnconnectedRequest(
+                classSegment,
+                instanceSegment,
+                serviceRequest,
+                (byte) this.configuration.getBackplane(),
+                (byte) this.configuration.getSlot());
+            typeIds.add(new UnConnectedDataItem(unreq));
+        }
+
+        CipRRData pkt = new CipRRData(
+            sessionHandle,
+            CIPStatus.Success.getValue(),
+            DEFAULT_SENDER_CONTEXT,
+            0L,
+            0L,
+            0,
+            typeIds
+        );
+
+        transaction.submit(() -> context.sendRequest(pkt)
+            .expectResponse(EipPacket.class, REQUEST_TIMEOUT)
+            .onTimeout(future::completeExceptionally)
+            .onError((p, e) -> future.completeExceptionally(e))
+            .check(p -> p instanceof CipRRData)
+            .unwrap(p -> (CipRRData) p)
+            .check(p -> p.getSessionHandle() == sessionHandle)
+            .handle(p -> {
+                List<TypeId> responseTypeIds = p.getTypeIds();
+                UnConnectedDataItem dataItem = (UnConnectedDataItem) responseTypeIds.get(1);
+                PlcReadResponse readResponse = decodeReadResponse(dataItem.getService(), request);
+                future.complete(readResponse);
+                // Finish the request-transaction.
+                transaction.endRequest();
+            }));
 
         return future;
     }
