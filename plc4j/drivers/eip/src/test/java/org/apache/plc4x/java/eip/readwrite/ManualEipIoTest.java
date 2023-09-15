@@ -22,12 +22,15 @@ import org.apache.plc4x.java.DefaultPlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
+import org.apache.plc4x.java.api.messages.PlcWriteRequest;
+import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ManualEipIoTest {
 
     public static void main(String[] args) throws Exception {
+        /*
         final PlcConnection connection = new DefaultPlcDriverManager().getConnection("logix://192.168.50.36");
         final PlcReadRequest readRequest = connection.readRequestBuilder()
             .addTagAddress("B1", "B1")
@@ -42,5 +45,16 @@ public class ManualEipIoTest {
         final PlcReadResponse plcReadResponse = readRequest.execute().get();
         connection.close();
         System.out.println(plcReadResponse.getAsPlcValue());
+        */
+
+        final PlcConnection connection = new DefaultPlcDriverManager().getConnection("logix://192.168.50.36");
+        final PlcWriteRequest readRequest = connection.writeRequestBuilder()
+            .addTagAddress("B2", "B2:BOOL",true)
+            .addTagAddress("I2", "I2:INT",5)
+            .build();
+        final PlcWriteResponse plcReadResponse = readRequest.execute().get();
+        connection.close();
+        System.out.println(plcReadResponse);
+
     }
 }
