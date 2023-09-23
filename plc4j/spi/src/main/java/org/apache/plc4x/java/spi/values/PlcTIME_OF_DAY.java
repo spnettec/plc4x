@@ -60,7 +60,7 @@ public class PlcTIME_OF_DAY extends PlcSimpleValue<LocalTime> {
     }
 
     public long getMillisecondsSinceMidnight() {
-        return ((long) value.toSecondOfDay() * 1000) + (value.getNano() / 1000_000);
+        return (value.toNanoOfDay() / 1000_000);
     }
 
     @Override
@@ -70,7 +70,7 @@ public class PlcTIME_OF_DAY extends PlcSimpleValue<LocalTime> {
 
     @Override
     public long getLong() {
-        return ((long) value.toSecondOfDay()) * 1000;
+        return getMillisecondsSinceMidnight();
     }
 
     @Override
