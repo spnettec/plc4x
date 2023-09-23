@@ -40,25 +40,25 @@ type IOpcuaNodeIdServicesVariableModify interface {
 	utils.Serializable
 }
 
-const(
-	OpcuaNodeIdServicesVariableModify_ModifyConnectionMethodType_InputArguments OpcuaNodeIdServicesVariableModify = 23730
-	OpcuaNodeIdServicesVariableModify_ModifyConnectionMethodType_OutputArguments OpcuaNodeIdServicesVariableModify = 23731
-	OpcuaNodeIdServicesVariableModify_ModifyWriterGroupMethodType_InputArguments OpcuaNodeIdServicesVariableModify = 23749
-	OpcuaNodeIdServicesVariableModify_ModifyWriterGroupMethodType_OutputArguments OpcuaNodeIdServicesVariableModify = 23750
-	OpcuaNodeIdServicesVariableModify_ModifyReaderGroupMethodType_InputArguments OpcuaNodeIdServicesVariableModify = 23771
-	OpcuaNodeIdServicesVariableModify_ModifyReaderGroupMethodType_OutputArguments OpcuaNodeIdServicesVariableModify = 23772
-	OpcuaNodeIdServicesVariableModify_ModifyDataSetWriterMethodType_InputArguments OpcuaNodeIdServicesVariableModify = 23782
+const (
+	OpcuaNodeIdServicesVariableModify_ModifyConnectionMethodType_InputArguments     OpcuaNodeIdServicesVariableModify = 23730
+	OpcuaNodeIdServicesVariableModify_ModifyConnectionMethodType_OutputArguments    OpcuaNodeIdServicesVariableModify = 23731
+	OpcuaNodeIdServicesVariableModify_ModifyWriterGroupMethodType_InputArguments    OpcuaNodeIdServicesVariableModify = 23749
+	OpcuaNodeIdServicesVariableModify_ModifyWriterGroupMethodType_OutputArguments   OpcuaNodeIdServicesVariableModify = 23750
+	OpcuaNodeIdServicesVariableModify_ModifyReaderGroupMethodType_InputArguments    OpcuaNodeIdServicesVariableModify = 23771
+	OpcuaNodeIdServicesVariableModify_ModifyReaderGroupMethodType_OutputArguments   OpcuaNodeIdServicesVariableModify = 23772
+	OpcuaNodeIdServicesVariableModify_ModifyDataSetWriterMethodType_InputArguments  OpcuaNodeIdServicesVariableModify = 23782
 	OpcuaNodeIdServicesVariableModify_ModifyDataSetWriterMethodType_OutputArguments OpcuaNodeIdServicesVariableModify = 23783
-	OpcuaNodeIdServicesVariableModify_ModifyDataSetReaderMethodType_InputArguments OpcuaNodeIdServicesVariableModify = 23793
+	OpcuaNodeIdServicesVariableModify_ModifyDataSetReaderMethodType_InputArguments  OpcuaNodeIdServicesVariableModify = 23793
 	OpcuaNodeIdServicesVariableModify_ModifyDataSetReaderMethodType_OutputArguments OpcuaNodeIdServicesVariableModify = 23794
-	OpcuaNodeIdServicesVariableModify_ModifyUserMethodType_InputArguments OpcuaNodeIdServicesVariableModify = 24285
+	OpcuaNodeIdServicesVariableModify_ModifyUserMethodType_InputArguments           OpcuaNodeIdServicesVariableModify = 24285
 )
 
 var OpcuaNodeIdServicesVariableModifyValues []OpcuaNodeIdServicesVariableModify
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariableModifyValues = []OpcuaNodeIdServicesVariableModify {
+	OpcuaNodeIdServicesVariableModifyValues = []OpcuaNodeIdServicesVariableModify{
 		OpcuaNodeIdServicesVariableModify_ModifyConnectionMethodType_InputArguments,
 		OpcuaNodeIdServicesVariableModify_ModifyConnectionMethodType_OutputArguments,
 		OpcuaNodeIdServicesVariableModify_ModifyWriterGroupMethodType_InputArguments,
@@ -75,28 +75,28 @@ func init() {
 
 func OpcuaNodeIdServicesVariableModifyByValue(value int32) (enum OpcuaNodeIdServicesVariableModify, ok bool) {
 	switch value {
-		case 23730:
-			return OpcuaNodeIdServicesVariableModify_ModifyConnectionMethodType_InputArguments, true
-		case 23731:
-			return OpcuaNodeIdServicesVariableModify_ModifyConnectionMethodType_OutputArguments, true
-		case 23749:
-			return OpcuaNodeIdServicesVariableModify_ModifyWriterGroupMethodType_InputArguments, true
-		case 23750:
-			return OpcuaNodeIdServicesVariableModify_ModifyWriterGroupMethodType_OutputArguments, true
-		case 23771:
-			return OpcuaNodeIdServicesVariableModify_ModifyReaderGroupMethodType_InputArguments, true
-		case 23772:
-			return OpcuaNodeIdServicesVariableModify_ModifyReaderGroupMethodType_OutputArguments, true
-		case 23782:
-			return OpcuaNodeIdServicesVariableModify_ModifyDataSetWriterMethodType_InputArguments, true
-		case 23783:
-			return OpcuaNodeIdServicesVariableModify_ModifyDataSetWriterMethodType_OutputArguments, true
-		case 23793:
-			return OpcuaNodeIdServicesVariableModify_ModifyDataSetReaderMethodType_InputArguments, true
-		case 23794:
-			return OpcuaNodeIdServicesVariableModify_ModifyDataSetReaderMethodType_OutputArguments, true
-		case 24285:
-			return OpcuaNodeIdServicesVariableModify_ModifyUserMethodType_InputArguments, true
+	case 23730:
+		return OpcuaNodeIdServicesVariableModify_ModifyConnectionMethodType_InputArguments, true
+	case 23731:
+		return OpcuaNodeIdServicesVariableModify_ModifyConnectionMethodType_OutputArguments, true
+	case 23749:
+		return OpcuaNodeIdServicesVariableModify_ModifyWriterGroupMethodType_InputArguments, true
+	case 23750:
+		return OpcuaNodeIdServicesVariableModify_ModifyWriterGroupMethodType_OutputArguments, true
+	case 23771:
+		return OpcuaNodeIdServicesVariableModify_ModifyReaderGroupMethodType_InputArguments, true
+	case 23772:
+		return OpcuaNodeIdServicesVariableModify_ModifyReaderGroupMethodType_OutputArguments, true
+	case 23782:
+		return OpcuaNodeIdServicesVariableModify_ModifyDataSetWriterMethodType_InputArguments, true
+	case 23783:
+		return OpcuaNodeIdServicesVariableModify_ModifyDataSetWriterMethodType_OutputArguments, true
+	case 23793:
+		return OpcuaNodeIdServicesVariableModify_ModifyDataSetReaderMethodType_InputArguments, true
+	case 23794:
+		return OpcuaNodeIdServicesVariableModify_ModifyDataSetReaderMethodType_OutputArguments, true
+	case 24285:
+		return OpcuaNodeIdServicesVariableModify_ModifyUserMethodType_InputArguments, true
 	}
 	return 0, false
 }
@@ -129,13 +129,13 @@ func OpcuaNodeIdServicesVariableModifyByName(value string) (enum OpcuaNodeIdServ
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariableModifyKnows(value int32)  bool {
+func OpcuaNodeIdServicesVariableModifyKnows(value int32) bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariableModifyValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastOpcuaNodeIdServicesVariableModify(structType any) OpcuaNodeIdServicesVariableModify {
@@ -221,4 +221,3 @@ func (e OpcuaNodeIdServicesVariableModify) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariableModify) String() string {
 	return e.PLC4XEnumName()
 }
-

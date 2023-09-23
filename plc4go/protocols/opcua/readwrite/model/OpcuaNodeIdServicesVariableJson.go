@@ -40,10 +40,10 @@ type IOpcuaNodeIdServicesVariableJson interface {
 	utils.Serializable
 }
 
-const(
-	OpcuaNodeIdServicesVariableJson_JsonNetworkMessageContentMask_OptionSetValues OpcuaNodeIdServicesVariableJson = 15655
-	OpcuaNodeIdServicesVariableJson_JsonDataSetMessageContentMask_OptionSetValues OpcuaNodeIdServicesVariableJson = 15659
-	OpcuaNodeIdServicesVariableJson_JsonWriterGroupMessageType_NetworkMessageContentMask OpcuaNodeIdServicesVariableJson = 21127
+const (
+	OpcuaNodeIdServicesVariableJson_JsonNetworkMessageContentMask_OptionSetValues          OpcuaNodeIdServicesVariableJson = 15655
+	OpcuaNodeIdServicesVariableJson_JsonDataSetMessageContentMask_OptionSetValues          OpcuaNodeIdServicesVariableJson = 15659
+	OpcuaNodeIdServicesVariableJson_JsonWriterGroupMessageType_NetworkMessageContentMask   OpcuaNodeIdServicesVariableJson = 21127
 	OpcuaNodeIdServicesVariableJson_JsonDataSetWriterMessageType_DataSetMessageContentMask OpcuaNodeIdServicesVariableJson = 21129
 	OpcuaNodeIdServicesVariableJson_JsonDataSetReaderMessageType_NetworkMessageContentMask OpcuaNodeIdServicesVariableJson = 21131
 	OpcuaNodeIdServicesVariableJson_JsonDataSetReaderMessageType_DataSetMessageContentMask OpcuaNodeIdServicesVariableJson = 21132
@@ -53,7 +53,7 @@ var OpcuaNodeIdServicesVariableJsonValues []OpcuaNodeIdServicesVariableJson
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariableJsonValues = []OpcuaNodeIdServicesVariableJson {
+	OpcuaNodeIdServicesVariableJsonValues = []OpcuaNodeIdServicesVariableJson{
 		OpcuaNodeIdServicesVariableJson_JsonNetworkMessageContentMask_OptionSetValues,
 		OpcuaNodeIdServicesVariableJson_JsonDataSetMessageContentMask_OptionSetValues,
 		OpcuaNodeIdServicesVariableJson_JsonWriterGroupMessageType_NetworkMessageContentMask,
@@ -65,18 +65,18 @@ func init() {
 
 func OpcuaNodeIdServicesVariableJsonByValue(value int32) (enum OpcuaNodeIdServicesVariableJson, ok bool) {
 	switch value {
-		case 15655:
-			return OpcuaNodeIdServicesVariableJson_JsonNetworkMessageContentMask_OptionSetValues, true
-		case 15659:
-			return OpcuaNodeIdServicesVariableJson_JsonDataSetMessageContentMask_OptionSetValues, true
-		case 21127:
-			return OpcuaNodeIdServicesVariableJson_JsonWriterGroupMessageType_NetworkMessageContentMask, true
-		case 21129:
-			return OpcuaNodeIdServicesVariableJson_JsonDataSetWriterMessageType_DataSetMessageContentMask, true
-		case 21131:
-			return OpcuaNodeIdServicesVariableJson_JsonDataSetReaderMessageType_NetworkMessageContentMask, true
-		case 21132:
-			return OpcuaNodeIdServicesVariableJson_JsonDataSetReaderMessageType_DataSetMessageContentMask, true
+	case 15655:
+		return OpcuaNodeIdServicesVariableJson_JsonNetworkMessageContentMask_OptionSetValues, true
+	case 15659:
+		return OpcuaNodeIdServicesVariableJson_JsonDataSetMessageContentMask_OptionSetValues, true
+	case 21127:
+		return OpcuaNodeIdServicesVariableJson_JsonWriterGroupMessageType_NetworkMessageContentMask, true
+	case 21129:
+		return OpcuaNodeIdServicesVariableJson_JsonDataSetWriterMessageType_DataSetMessageContentMask, true
+	case 21131:
+		return OpcuaNodeIdServicesVariableJson_JsonDataSetReaderMessageType_NetworkMessageContentMask, true
+	case 21132:
+		return OpcuaNodeIdServicesVariableJson_JsonDataSetReaderMessageType_DataSetMessageContentMask, true
 	}
 	return 0, false
 }
@@ -99,13 +99,13 @@ func OpcuaNodeIdServicesVariableJsonByName(value string) (enum OpcuaNodeIdServic
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariableJsonKnows(value int32)  bool {
+func OpcuaNodeIdServicesVariableJsonKnows(value int32) bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariableJsonValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastOpcuaNodeIdServicesVariableJson(structType any) OpcuaNodeIdServicesVariableJson {
@@ -181,4 +181,3 @@ func (e OpcuaNodeIdServicesVariableJson) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariableJson) String() string {
 	return e.PLC4XEnumName()
 }
-

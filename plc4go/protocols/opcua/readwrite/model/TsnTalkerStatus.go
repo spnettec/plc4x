@@ -40,9 +40,9 @@ type ITsnTalkerStatus interface {
 	utils.Serializable
 }
 
-const(
-	TsnTalkerStatus_tsnTalkerStatusNone TsnTalkerStatus = 0
-	TsnTalkerStatus_tsnTalkerStatusReady TsnTalkerStatus = 1
+const (
+	TsnTalkerStatus_tsnTalkerStatusNone   TsnTalkerStatus = 0
+	TsnTalkerStatus_tsnTalkerStatusReady  TsnTalkerStatus = 1
 	TsnTalkerStatus_tsnTalkerStatusFailed TsnTalkerStatus = 2
 )
 
@@ -50,7 +50,7 @@ var TsnTalkerStatusValues []TsnTalkerStatus
 
 func init() {
 	_ = errors.New
-	TsnTalkerStatusValues = []TsnTalkerStatus {
+	TsnTalkerStatusValues = []TsnTalkerStatus{
 		TsnTalkerStatus_tsnTalkerStatusNone,
 		TsnTalkerStatus_tsnTalkerStatusReady,
 		TsnTalkerStatus_tsnTalkerStatusFailed,
@@ -59,12 +59,12 @@ func init() {
 
 func TsnTalkerStatusByValue(value uint32) (enum TsnTalkerStatus, ok bool) {
 	switch value {
-		case 0:
-			return TsnTalkerStatus_tsnTalkerStatusNone, true
-		case 1:
-			return TsnTalkerStatus_tsnTalkerStatusReady, true
-		case 2:
-			return TsnTalkerStatus_tsnTalkerStatusFailed, true
+	case 0:
+		return TsnTalkerStatus_tsnTalkerStatusNone, true
+	case 1:
+		return TsnTalkerStatus_tsnTalkerStatusReady, true
+	case 2:
+		return TsnTalkerStatus_tsnTalkerStatusFailed, true
 	}
 	return 0, false
 }
@@ -81,13 +81,13 @@ func TsnTalkerStatusByName(value string) (enum TsnTalkerStatus, ok bool) {
 	return 0, false
 }
 
-func TsnTalkerStatusKnows(value uint32)  bool {
+func TsnTalkerStatusKnows(value uint32) bool {
 	for _, typeValue := range TsnTalkerStatusValues {
 		if uint32(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastTsnTalkerStatus(structType any) TsnTalkerStatus {
@@ -157,4 +157,3 @@ func (e TsnTalkerStatus) PLC4XEnumName() string {
 func (e TsnTalkerStatus) String() string {
 	return e.PLC4XEnumName()
 }
-

@@ -40,231 +40,231 @@ type IOpcuaNodeIdServicesVariablePublished interface {
 	utils.Serializable
 }
 
-const(
-	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_ConfigurationVersion OpcuaNodeIdServicesVariablePublished = 14519
-	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_ConfigurationVersion OpcuaNodeIdServicesVariablePublished = 14544
-	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_PublishedData OpcuaNodeIdServicesVariablePublished = 14548
-	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_AddVariables_InputArguments OpcuaNodeIdServicesVariablePublished = 14556
-	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_AddVariables_OutputArguments OpcuaNodeIdServicesVariablePublished = 14557
-	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_RemoveVariables_InputArguments OpcuaNodeIdServicesVariablePublished = 14559
-	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_RemoveVariables_OutputArguments OpcuaNodeIdServicesVariablePublished = 14560
-	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsAddVariablesMethodType_InputArguments OpcuaNodeIdServicesVariablePublished = 14565
-	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsAddVariablesMethodType_OutputArguments OpcuaNodeIdServicesVariablePublished = 14566
-	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsRemoveVariablesMethodType_InputArguments OpcuaNodeIdServicesVariablePublished = 14568
-	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsRemoveVariablesMethodType_OutputArguments OpcuaNodeIdServicesVariablePublished = 14569
-	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_ConfigurationVersion OpcuaNodeIdServicesVariablePublished = 14582
-	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_PubSubEventNotifier OpcuaNodeIdServicesVariablePublished = 14586
-	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_SelectedFields OpcuaNodeIdServicesVariablePublished = 14587
-	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_Filter OpcuaNodeIdServicesVariablePublished = 14588
-	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_ModifyFieldSelection_InputArguments OpcuaNodeIdServicesVariablePublished = 15053
-	OpcuaNodeIdServicesVariablePublished_PublishedEventsTypeModifyFieldSelectionMethodType_InputArguments OpcuaNodeIdServicesVariablePublished = 15055
-	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Status_State OpcuaNodeIdServicesVariablePublished = 15224
-	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetMetaData OpcuaNodeIdServicesVariablePublished = 15229
-	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Status_State OpcuaNodeIdServicesVariablePublished = 15232
-	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetMetaData OpcuaNodeIdServicesVariablePublished = 15237
-	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Status_State OpcuaNodeIdServicesVariablePublished = 15240
-	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetMetaData OpcuaNodeIdServicesVariablePublished = 15245
-	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_ExtensionFields_AddExtensionField_InputArguments OpcuaNodeIdServicesVariablePublished = 15483
-	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_ExtensionFields_AddExtensionField_OutputArguments OpcuaNodeIdServicesVariablePublished = 15484
-	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_ExtensionFields_RemoveExtensionField_InputArguments OpcuaNodeIdServicesVariablePublished = 15486
-	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_ExtensionFields_AddExtensionField_InputArguments OpcuaNodeIdServicesVariablePublished = 15505
-	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_ExtensionFields_AddExtensionField_OutputArguments OpcuaNodeIdServicesVariablePublished = 15506
-	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_ExtensionFields_RemoveExtensionField_InputArguments OpcuaNodeIdServicesVariablePublished = 15508
-	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_ExtensionFields_AddExtensionField_InputArguments OpcuaNodeIdServicesVariablePublished = 15513
-	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_ExtensionFields_AddExtensionField_OutputArguments OpcuaNodeIdServicesVariablePublished = 15514
-	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_ExtensionFields_RemoveExtensionField_InputArguments OpcuaNodeIdServicesVariablePublished = 15516
-	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_ModifyFieldSelection_OutputArguments OpcuaNodeIdServicesVariablePublished = 15517
-	OpcuaNodeIdServicesVariablePublished_PublishedEventsTypeModifyFieldSelectionMethodType_OutputArguments OpcuaNodeIdServicesVariablePublished = 15518
-	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_DataSetWriterId OpcuaNodeIdServicesVariablePublished = 16720
-	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_DataSetFieldContentMask OpcuaNodeIdServicesVariablePublished = 16721
-	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_KeyFrameCount OpcuaNodeIdServicesVariablePublished = 16731
-	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetClassId OpcuaNodeIdServicesVariablePublished = 16759
-	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_DataSetWriterId OpcuaNodeIdServicesVariablePublished = 16760
-	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_DataSetFieldContentMask OpcuaNodeIdServicesVariablePublished = 16761
-	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_KeyFrameCount OpcuaNodeIdServicesVariablePublished = 16771
-	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetClassId OpcuaNodeIdServicesVariablePublished = 16800
-	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_DataSetWriterId OpcuaNodeIdServicesVariablePublished = 16801
-	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_DataSetFieldContentMask OpcuaNodeIdServicesVariablePublished = 16802
-	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_KeyFrameCount OpcuaNodeIdServicesVariablePublished = 16812
-	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetClassId OpcuaNodeIdServicesVariablePublished = 16841
-	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_DataSetWriterProperties OpcuaNodeIdServicesVariablePublished = 17482
-	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_DataSetWriterProperties OpcuaNodeIdServicesVariablePublished = 17483
-	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_DataSetWriterProperties OpcuaNodeIdServicesVariablePublished = 17484
-	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_DiagnosticsLevel OpcuaNodeIdServicesVariablePublished = 18872
-	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_TotalInformation OpcuaNodeIdServicesVariablePublished = 18873
-	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_TotalInformation_Active OpcuaNodeIdServicesVariablePublished = 18874
-	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_TotalInformation_Classification OpcuaNodeIdServicesVariablePublished = 18875
-	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_TotalInformation_DiagnosticsLevel OpcuaNodeIdServicesVariablePublished = 18876
-	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_TotalInformation_TimeFirstChange OpcuaNodeIdServicesVariablePublished = 18877
-	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_TotalError OpcuaNodeIdServicesVariablePublished = 18878
-	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_TotalError_Active OpcuaNodeIdServicesVariablePublished = 18879
-	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_TotalError_Classification OpcuaNodeIdServicesVariablePublished = 18880
-	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_TotalError_DiagnosticsLevel OpcuaNodeIdServicesVariablePublished = 18881
-	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_TotalError_TimeFirstChange OpcuaNodeIdServicesVariablePublished = 18882
-	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_SubError OpcuaNodeIdServicesVariablePublished = 18884
-	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateError OpcuaNodeIdServicesVariablePublished = 18886
-	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateError_Active OpcuaNodeIdServicesVariablePublished = 18887
-	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateError_Classification OpcuaNodeIdServicesVariablePublished = 18888
-	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateError_DiagnosticsLevel OpcuaNodeIdServicesVariablePublished = 18889
-	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateError_TimeFirstChange OpcuaNodeIdServicesVariablePublished = 18890
-	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByMethod OpcuaNodeIdServicesVariablePublished = 18891
-	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_Active OpcuaNodeIdServicesVariablePublished = 18892
-	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_Classification OpcuaNodeIdServicesVariablePublished = 18893
-	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_DiagnosticsLevel OpcuaNodeIdServicesVariablePublished = 18894
-	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_TimeFirstChange OpcuaNodeIdServicesVariablePublished = 18895
-	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByParent OpcuaNodeIdServicesVariablePublished = 18896
-	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByParent_Active OpcuaNodeIdServicesVariablePublished = 18897
-	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByParent_Classification OpcuaNodeIdServicesVariablePublished = 18898
-	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByParent_DiagnosticsLevel OpcuaNodeIdServicesVariablePublished = 18899
-	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByParent_TimeFirstChange OpcuaNodeIdServicesVariablePublished = 18900
-	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalFromError OpcuaNodeIdServicesVariablePublished = 18901
-	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalFromError_Active OpcuaNodeIdServicesVariablePublished = 18902
-	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalFromError_Classification OpcuaNodeIdServicesVariablePublished = 18903
-	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalFromError_DiagnosticsLevel OpcuaNodeIdServicesVariablePublished = 18904
-	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalFromError_TimeFirstChange OpcuaNodeIdServicesVariablePublished = 18905
-	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StatePausedByParent OpcuaNodeIdServicesVariablePublished = 18906
-	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StatePausedByParent_Active OpcuaNodeIdServicesVariablePublished = 18907
-	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StatePausedByParent_Classification OpcuaNodeIdServicesVariablePublished = 18908
-	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StatePausedByParent_DiagnosticsLevel OpcuaNodeIdServicesVariablePublished = 18909
-	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StatePausedByParent_TimeFirstChange OpcuaNodeIdServicesVariablePublished = 18910
-	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateDisabledByMethod OpcuaNodeIdServicesVariablePublished = 18911
-	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_Active OpcuaNodeIdServicesVariablePublished = 18912
-	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_Classification OpcuaNodeIdServicesVariablePublished = 18913
-	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_DiagnosticsLevel OpcuaNodeIdServicesVariablePublished = 18914
-	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_TimeFirstChange OpcuaNodeIdServicesVariablePublished = 18915
-	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_FailedDataSetMessages OpcuaNodeIdServicesVariablePublished = 18917
-	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_FailedDataSetMessages_Active OpcuaNodeIdServicesVariablePublished = 18918
-	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_FailedDataSetMessages_Classification OpcuaNodeIdServicesVariablePublished = 18919
-	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_FailedDataSetMessages_DiagnosticsLevel OpcuaNodeIdServicesVariablePublished = 18920
-	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_FailedDataSetMessages_TimeFirstChange OpcuaNodeIdServicesVariablePublished = 18921
-	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_MessageSequenceNumber OpcuaNodeIdServicesVariablePublished = 18922
-	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_MessageSequenceNumber_DiagnosticsLevel OpcuaNodeIdServicesVariablePublished = 18923
-	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_StatusCode OpcuaNodeIdServicesVariablePublished = 18924
-	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_StatusCode_DiagnosticsLevel OpcuaNodeIdServicesVariablePublished = 18925
-	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_MajorVersion OpcuaNodeIdServicesVariablePublished = 18926
-	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_MajorVersion_DiagnosticsLevel OpcuaNodeIdServicesVariablePublished = 18927
-	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_MinorVersion OpcuaNodeIdServicesVariablePublished = 18928
-	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_MinorVersion_DiagnosticsLevel OpcuaNodeIdServicesVariablePublished = 18929
-	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_DiagnosticsLevel OpcuaNodeIdServicesVariablePublished = 18931
-	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_TotalInformation OpcuaNodeIdServicesVariablePublished = 18932
-	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_TotalInformation_Active OpcuaNodeIdServicesVariablePublished = 18933
-	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_TotalInformation_Classification OpcuaNodeIdServicesVariablePublished = 18934
-	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_TotalInformation_DiagnosticsLevel OpcuaNodeIdServicesVariablePublished = 18935
-	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_TotalInformation_TimeFirstChange OpcuaNodeIdServicesVariablePublished = 18936
-	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_TotalError OpcuaNodeIdServicesVariablePublished = 18937
-	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_TotalError_Active OpcuaNodeIdServicesVariablePublished = 18938
-	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_TotalError_Classification OpcuaNodeIdServicesVariablePublished = 18939
-	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_TotalError_DiagnosticsLevel OpcuaNodeIdServicesVariablePublished = 18940
-	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_TotalError_TimeFirstChange OpcuaNodeIdServicesVariablePublished = 18941
-	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_SubError OpcuaNodeIdServicesVariablePublished = 18943
-	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateError OpcuaNodeIdServicesVariablePublished = 18945
-	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateError_Active OpcuaNodeIdServicesVariablePublished = 18946
-	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateError_Classification OpcuaNodeIdServicesVariablePublished = 18947
-	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateError_DiagnosticsLevel OpcuaNodeIdServicesVariablePublished = 18948
-	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateError_TimeFirstChange OpcuaNodeIdServicesVariablePublished = 18949
-	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByMethod OpcuaNodeIdServicesVariablePublished = 18950
-	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_Active OpcuaNodeIdServicesVariablePublished = 18951
-	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_Classification OpcuaNodeIdServicesVariablePublished = 18952
-	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_DiagnosticsLevel OpcuaNodeIdServicesVariablePublished = 18953
-	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_TimeFirstChange OpcuaNodeIdServicesVariablePublished = 18954
-	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByParent OpcuaNodeIdServicesVariablePublished = 18955
-	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByParent_Active OpcuaNodeIdServicesVariablePublished = 18956
-	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByParent_Classification OpcuaNodeIdServicesVariablePublished = 18957
-	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByParent_DiagnosticsLevel OpcuaNodeIdServicesVariablePublished = 18958
-	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByParent_TimeFirstChange OpcuaNodeIdServicesVariablePublished = 18959
-	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalFromError OpcuaNodeIdServicesVariablePublished = 18960
-	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalFromError_Active OpcuaNodeIdServicesVariablePublished = 18961
-	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalFromError_Classification OpcuaNodeIdServicesVariablePublished = 18962
+const (
+	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_ConfigurationVersion                                                                            OpcuaNodeIdServicesVariablePublished = 14519
+	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_ConfigurationVersion                                                                          OpcuaNodeIdServicesVariablePublished = 14544
+	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_PublishedData                                                                                 OpcuaNodeIdServicesVariablePublished = 14548
+	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_AddVariables_InputArguments                                                                   OpcuaNodeIdServicesVariablePublished = 14556
+	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_AddVariables_OutputArguments                                                                  OpcuaNodeIdServicesVariablePublished = 14557
+	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_RemoveVariables_InputArguments                                                                OpcuaNodeIdServicesVariablePublished = 14559
+	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_RemoveVariables_OutputArguments                                                               OpcuaNodeIdServicesVariablePublished = 14560
+	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsAddVariablesMethodType_InputArguments                                                              OpcuaNodeIdServicesVariablePublished = 14565
+	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsAddVariablesMethodType_OutputArguments                                                             OpcuaNodeIdServicesVariablePublished = 14566
+	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsRemoveVariablesMethodType_InputArguments                                                           OpcuaNodeIdServicesVariablePublished = 14568
+	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsRemoveVariablesMethodType_OutputArguments                                                          OpcuaNodeIdServicesVariablePublished = 14569
+	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_ConfigurationVersion                                                                             OpcuaNodeIdServicesVariablePublished = 14582
+	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_PubSubEventNotifier                                                                              OpcuaNodeIdServicesVariablePublished = 14586
+	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_SelectedFields                                                                                   OpcuaNodeIdServicesVariablePublished = 14587
+	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_Filter                                                                                           OpcuaNodeIdServicesVariablePublished = 14588
+	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_ModifyFieldSelection_InputArguments                                                              OpcuaNodeIdServicesVariablePublished = 15053
+	OpcuaNodeIdServicesVariablePublished_PublishedEventsTypeModifyFieldSelectionMethodType_InputArguments                                                     OpcuaNodeIdServicesVariablePublished = 15055
+	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Status_State                                                      OpcuaNodeIdServicesVariablePublished = 15224
+	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetMetaData                                                                                 OpcuaNodeIdServicesVariablePublished = 15229
+	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Status_State                                                    OpcuaNodeIdServicesVariablePublished = 15232
+	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetMetaData                                                                               OpcuaNodeIdServicesVariablePublished = 15237
+	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Status_State                                                       OpcuaNodeIdServicesVariablePublished = 15240
+	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetMetaData                                                                                  OpcuaNodeIdServicesVariablePublished = 15245
+	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_ExtensionFields_AddExtensionField_InputArguments                                                OpcuaNodeIdServicesVariablePublished = 15483
+	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_ExtensionFields_AddExtensionField_OutputArguments                                               OpcuaNodeIdServicesVariablePublished = 15484
+	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_ExtensionFields_RemoveExtensionField_InputArguments                                             OpcuaNodeIdServicesVariablePublished = 15486
+	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_ExtensionFields_AddExtensionField_InputArguments                                              OpcuaNodeIdServicesVariablePublished = 15505
+	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_ExtensionFields_AddExtensionField_OutputArguments                                             OpcuaNodeIdServicesVariablePublished = 15506
+	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_ExtensionFields_RemoveExtensionField_InputArguments                                           OpcuaNodeIdServicesVariablePublished = 15508
+	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_ExtensionFields_AddExtensionField_InputArguments                                                 OpcuaNodeIdServicesVariablePublished = 15513
+	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_ExtensionFields_AddExtensionField_OutputArguments                                                OpcuaNodeIdServicesVariablePublished = 15514
+	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_ExtensionFields_RemoveExtensionField_InputArguments                                              OpcuaNodeIdServicesVariablePublished = 15516
+	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_ModifyFieldSelection_OutputArguments                                                             OpcuaNodeIdServicesVariablePublished = 15517
+	OpcuaNodeIdServicesVariablePublished_PublishedEventsTypeModifyFieldSelectionMethodType_OutputArguments                                                    OpcuaNodeIdServicesVariablePublished = 15518
+	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_DataSetWriterId                                                   OpcuaNodeIdServicesVariablePublished = 16720
+	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_DataSetFieldContentMask                                           OpcuaNodeIdServicesVariablePublished = 16721
+	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_KeyFrameCount                                                     OpcuaNodeIdServicesVariablePublished = 16731
+	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetClassId                                                                                  OpcuaNodeIdServicesVariablePublished = 16759
+	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_DataSetWriterId                                                 OpcuaNodeIdServicesVariablePublished = 16760
+	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_DataSetFieldContentMask                                         OpcuaNodeIdServicesVariablePublished = 16761
+	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_KeyFrameCount                                                   OpcuaNodeIdServicesVariablePublished = 16771
+	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetClassId                                                                                OpcuaNodeIdServicesVariablePublished = 16800
+	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_DataSetWriterId                                                    OpcuaNodeIdServicesVariablePublished = 16801
+	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_DataSetFieldContentMask                                            OpcuaNodeIdServicesVariablePublished = 16802
+	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_KeyFrameCount                                                      OpcuaNodeIdServicesVariablePublished = 16812
+	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetClassId                                                                                   OpcuaNodeIdServicesVariablePublished = 16841
+	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_DataSetWriterProperties                                           OpcuaNodeIdServicesVariablePublished = 17482
+	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_DataSetWriterProperties                                         OpcuaNodeIdServicesVariablePublished = 17483
+	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_DataSetWriterProperties                                            OpcuaNodeIdServicesVariablePublished = 17484
+	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_DiagnosticsLevel                                      OpcuaNodeIdServicesVariablePublished = 18872
+	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_TotalInformation                                      OpcuaNodeIdServicesVariablePublished = 18873
+	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_TotalInformation_Active                               OpcuaNodeIdServicesVariablePublished = 18874
+	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_TotalInformation_Classification                       OpcuaNodeIdServicesVariablePublished = 18875
+	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_TotalInformation_DiagnosticsLevel                     OpcuaNodeIdServicesVariablePublished = 18876
+	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_TotalInformation_TimeFirstChange                      OpcuaNodeIdServicesVariablePublished = 18877
+	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_TotalError                                            OpcuaNodeIdServicesVariablePublished = 18878
+	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_TotalError_Active                                     OpcuaNodeIdServicesVariablePublished = 18879
+	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_TotalError_Classification                             OpcuaNodeIdServicesVariablePublished = 18880
+	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_TotalError_DiagnosticsLevel                           OpcuaNodeIdServicesVariablePublished = 18881
+	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_TotalError_TimeFirstChange                            OpcuaNodeIdServicesVariablePublished = 18882
+	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_SubError                                              OpcuaNodeIdServicesVariablePublished = 18884
+	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateError                                   OpcuaNodeIdServicesVariablePublished = 18886
+	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateError_Active                            OpcuaNodeIdServicesVariablePublished = 18887
+	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateError_Classification                    OpcuaNodeIdServicesVariablePublished = 18888
+	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateError_DiagnosticsLevel                  OpcuaNodeIdServicesVariablePublished = 18889
+	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateError_TimeFirstChange                   OpcuaNodeIdServicesVariablePublished = 18890
+	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByMethod                     OpcuaNodeIdServicesVariablePublished = 18891
+	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_Active              OpcuaNodeIdServicesVariablePublished = 18892
+	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_Classification      OpcuaNodeIdServicesVariablePublished = 18893
+	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_DiagnosticsLevel    OpcuaNodeIdServicesVariablePublished = 18894
+	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_TimeFirstChange     OpcuaNodeIdServicesVariablePublished = 18895
+	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByParent                     OpcuaNodeIdServicesVariablePublished = 18896
+	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByParent_Active              OpcuaNodeIdServicesVariablePublished = 18897
+	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByParent_Classification      OpcuaNodeIdServicesVariablePublished = 18898
+	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByParent_DiagnosticsLevel    OpcuaNodeIdServicesVariablePublished = 18899
+	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByParent_TimeFirstChange     OpcuaNodeIdServicesVariablePublished = 18900
+	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalFromError                    OpcuaNodeIdServicesVariablePublished = 18901
+	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalFromError_Active             OpcuaNodeIdServicesVariablePublished = 18902
+	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalFromError_Classification     OpcuaNodeIdServicesVariablePublished = 18903
+	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalFromError_DiagnosticsLevel   OpcuaNodeIdServicesVariablePublished = 18904
+	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalFromError_TimeFirstChange    OpcuaNodeIdServicesVariablePublished = 18905
+	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StatePausedByParent                          OpcuaNodeIdServicesVariablePublished = 18906
+	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StatePausedByParent_Active                   OpcuaNodeIdServicesVariablePublished = 18907
+	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StatePausedByParent_Classification           OpcuaNodeIdServicesVariablePublished = 18908
+	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StatePausedByParent_DiagnosticsLevel         OpcuaNodeIdServicesVariablePublished = 18909
+	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StatePausedByParent_TimeFirstChange          OpcuaNodeIdServicesVariablePublished = 18910
+	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateDisabledByMethod                        OpcuaNodeIdServicesVariablePublished = 18911
+	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_Active                 OpcuaNodeIdServicesVariablePublished = 18912
+	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_Classification         OpcuaNodeIdServicesVariablePublished = 18913
+	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_DiagnosticsLevel       OpcuaNodeIdServicesVariablePublished = 18914
+	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_TimeFirstChange        OpcuaNodeIdServicesVariablePublished = 18915
+	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_FailedDataSetMessages                        OpcuaNodeIdServicesVariablePublished = 18917
+	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_FailedDataSetMessages_Active                 OpcuaNodeIdServicesVariablePublished = 18918
+	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_FailedDataSetMessages_Classification         OpcuaNodeIdServicesVariablePublished = 18919
+	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_FailedDataSetMessages_DiagnosticsLevel       OpcuaNodeIdServicesVariablePublished = 18920
+	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_FailedDataSetMessages_TimeFirstChange        OpcuaNodeIdServicesVariablePublished = 18921
+	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_MessageSequenceNumber                      OpcuaNodeIdServicesVariablePublished = 18922
+	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_MessageSequenceNumber_DiagnosticsLevel     OpcuaNodeIdServicesVariablePublished = 18923
+	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_StatusCode                                 OpcuaNodeIdServicesVariablePublished = 18924
+	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_StatusCode_DiagnosticsLevel                OpcuaNodeIdServicesVariablePublished = 18925
+	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_MajorVersion                               OpcuaNodeIdServicesVariablePublished = 18926
+	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_MajorVersion_DiagnosticsLevel              OpcuaNodeIdServicesVariablePublished = 18927
+	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_MinorVersion                               OpcuaNodeIdServicesVariablePublished = 18928
+	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_MinorVersion_DiagnosticsLevel              OpcuaNodeIdServicesVariablePublished = 18929
+	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_DiagnosticsLevel                                    OpcuaNodeIdServicesVariablePublished = 18931
+	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_TotalInformation                                    OpcuaNodeIdServicesVariablePublished = 18932
+	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_TotalInformation_Active                             OpcuaNodeIdServicesVariablePublished = 18933
+	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_TotalInformation_Classification                     OpcuaNodeIdServicesVariablePublished = 18934
+	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_TotalInformation_DiagnosticsLevel                   OpcuaNodeIdServicesVariablePublished = 18935
+	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_TotalInformation_TimeFirstChange                    OpcuaNodeIdServicesVariablePublished = 18936
+	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_TotalError                                          OpcuaNodeIdServicesVariablePublished = 18937
+	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_TotalError_Active                                   OpcuaNodeIdServicesVariablePublished = 18938
+	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_TotalError_Classification                           OpcuaNodeIdServicesVariablePublished = 18939
+	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_TotalError_DiagnosticsLevel                         OpcuaNodeIdServicesVariablePublished = 18940
+	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_TotalError_TimeFirstChange                          OpcuaNodeIdServicesVariablePublished = 18941
+	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_SubError                                            OpcuaNodeIdServicesVariablePublished = 18943
+	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateError                                 OpcuaNodeIdServicesVariablePublished = 18945
+	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateError_Active                          OpcuaNodeIdServicesVariablePublished = 18946
+	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateError_Classification                  OpcuaNodeIdServicesVariablePublished = 18947
+	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateError_DiagnosticsLevel                OpcuaNodeIdServicesVariablePublished = 18948
+	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateError_TimeFirstChange                 OpcuaNodeIdServicesVariablePublished = 18949
+	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByMethod                   OpcuaNodeIdServicesVariablePublished = 18950
+	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_Active            OpcuaNodeIdServicesVariablePublished = 18951
+	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_Classification    OpcuaNodeIdServicesVariablePublished = 18952
+	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_DiagnosticsLevel  OpcuaNodeIdServicesVariablePublished = 18953
+	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_TimeFirstChange   OpcuaNodeIdServicesVariablePublished = 18954
+	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByParent                   OpcuaNodeIdServicesVariablePublished = 18955
+	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByParent_Active            OpcuaNodeIdServicesVariablePublished = 18956
+	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByParent_Classification    OpcuaNodeIdServicesVariablePublished = 18957
+	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByParent_DiagnosticsLevel  OpcuaNodeIdServicesVariablePublished = 18958
+	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByParent_TimeFirstChange   OpcuaNodeIdServicesVariablePublished = 18959
+	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalFromError                  OpcuaNodeIdServicesVariablePublished = 18960
+	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalFromError_Active           OpcuaNodeIdServicesVariablePublished = 18961
+	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalFromError_Classification   OpcuaNodeIdServicesVariablePublished = 18962
 	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalFromError_DiagnosticsLevel OpcuaNodeIdServicesVariablePublished = 18963
-	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalFromError_TimeFirstChange OpcuaNodeIdServicesVariablePublished = 18964
-	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StatePausedByParent OpcuaNodeIdServicesVariablePublished = 18965
-	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StatePausedByParent_Active OpcuaNodeIdServicesVariablePublished = 18966
-	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StatePausedByParent_Classification OpcuaNodeIdServicesVariablePublished = 18967
-	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StatePausedByParent_DiagnosticsLevel OpcuaNodeIdServicesVariablePublished = 18968
-	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StatePausedByParent_TimeFirstChange OpcuaNodeIdServicesVariablePublished = 18969
-	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateDisabledByMethod OpcuaNodeIdServicesVariablePublished = 18970
-	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_Active OpcuaNodeIdServicesVariablePublished = 18971
-	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_Classification OpcuaNodeIdServicesVariablePublished = 18972
-	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_DiagnosticsLevel OpcuaNodeIdServicesVariablePublished = 18973
-	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_TimeFirstChange OpcuaNodeIdServicesVariablePublished = 18974
-	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_FailedDataSetMessages OpcuaNodeIdServicesVariablePublished = 18976
-	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_FailedDataSetMessages_Active OpcuaNodeIdServicesVariablePublished = 18977
-	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_FailedDataSetMessages_Classification OpcuaNodeIdServicesVariablePublished = 18978
-	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_FailedDataSetMessages_DiagnosticsLevel OpcuaNodeIdServicesVariablePublished = 18979
-	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_FailedDataSetMessages_TimeFirstChange OpcuaNodeIdServicesVariablePublished = 18980
-	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_MessageSequenceNumber OpcuaNodeIdServicesVariablePublished = 18981
-	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_MessageSequenceNumber_DiagnosticsLevel OpcuaNodeIdServicesVariablePublished = 18982
-	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_StatusCode OpcuaNodeIdServicesVariablePublished = 18983
-	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_StatusCode_DiagnosticsLevel OpcuaNodeIdServicesVariablePublished = 18984
-	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_MajorVersion OpcuaNodeIdServicesVariablePublished = 18985
-	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_MajorVersion_DiagnosticsLevel OpcuaNodeIdServicesVariablePublished = 18986
-	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_MinorVersion OpcuaNodeIdServicesVariablePublished = 18987
-	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_MinorVersion_DiagnosticsLevel OpcuaNodeIdServicesVariablePublished = 18988
-	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_DiagnosticsLevel OpcuaNodeIdServicesVariablePublished = 18990
-	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_TotalInformation OpcuaNodeIdServicesVariablePublished = 18991
-	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_TotalInformation_Active OpcuaNodeIdServicesVariablePublished = 18992
-	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_TotalInformation_Classification OpcuaNodeIdServicesVariablePublished = 18993
-	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_TotalInformation_DiagnosticsLevel OpcuaNodeIdServicesVariablePublished = 18994
-	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_TotalInformation_TimeFirstChange OpcuaNodeIdServicesVariablePublished = 18995
-	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_TotalError OpcuaNodeIdServicesVariablePublished = 18996
-	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_TotalError_Active OpcuaNodeIdServicesVariablePublished = 18997
-	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_TotalError_Classification OpcuaNodeIdServicesVariablePublished = 18998
-	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_TotalError_DiagnosticsLevel OpcuaNodeIdServicesVariablePublished = 18999
-	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_TotalError_TimeFirstChange OpcuaNodeIdServicesVariablePublished = 19000
-	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_SubError OpcuaNodeIdServicesVariablePublished = 19002
-	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateError OpcuaNodeIdServicesVariablePublished = 19004
-	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateError_Active OpcuaNodeIdServicesVariablePublished = 19005
-	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateError_Classification OpcuaNodeIdServicesVariablePublished = 19006
-	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateError_DiagnosticsLevel OpcuaNodeIdServicesVariablePublished = 19007
-	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateError_TimeFirstChange OpcuaNodeIdServicesVariablePublished = 19008
-	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByMethod OpcuaNodeIdServicesVariablePublished = 19009
-	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_Active OpcuaNodeIdServicesVariablePublished = 19010
-	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_Classification OpcuaNodeIdServicesVariablePublished = 19011
-	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_DiagnosticsLevel OpcuaNodeIdServicesVariablePublished = 19012
-	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_TimeFirstChange OpcuaNodeIdServicesVariablePublished = 19013
-	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByParent OpcuaNodeIdServicesVariablePublished = 19014
-	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByParent_Active OpcuaNodeIdServicesVariablePublished = 19015
-	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByParent_Classification OpcuaNodeIdServicesVariablePublished = 19016
-	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByParent_DiagnosticsLevel OpcuaNodeIdServicesVariablePublished = 19017
-	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByParent_TimeFirstChange OpcuaNodeIdServicesVariablePublished = 19018
-	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalFromError OpcuaNodeIdServicesVariablePublished = 19019
-	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalFromError_Active OpcuaNodeIdServicesVariablePublished = 19020
-	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalFromError_Classification OpcuaNodeIdServicesVariablePublished = 19021
-	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalFromError_DiagnosticsLevel OpcuaNodeIdServicesVariablePublished = 19022
-	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalFromError_TimeFirstChange OpcuaNodeIdServicesVariablePublished = 19023
-	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StatePausedByParent OpcuaNodeIdServicesVariablePublished = 19024
-	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StatePausedByParent_Active OpcuaNodeIdServicesVariablePublished = 19025
-	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StatePausedByParent_Classification OpcuaNodeIdServicesVariablePublished = 19026
-	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StatePausedByParent_DiagnosticsLevel OpcuaNodeIdServicesVariablePublished = 19027
-	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StatePausedByParent_TimeFirstChange OpcuaNodeIdServicesVariablePublished = 19028
-	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateDisabledByMethod OpcuaNodeIdServicesVariablePublished = 19029
-	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_Active OpcuaNodeIdServicesVariablePublished = 19030
-	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_Classification OpcuaNodeIdServicesVariablePublished = 19031
-	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_DiagnosticsLevel OpcuaNodeIdServicesVariablePublished = 19032
-	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_TimeFirstChange OpcuaNodeIdServicesVariablePublished = 19033
-	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_FailedDataSetMessages OpcuaNodeIdServicesVariablePublished = 19035
-	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_FailedDataSetMessages_Active OpcuaNodeIdServicesVariablePublished = 19036
-	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_FailedDataSetMessages_Classification OpcuaNodeIdServicesVariablePublished = 19037
-	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_FailedDataSetMessages_DiagnosticsLevel OpcuaNodeIdServicesVariablePublished = 19038
-	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_FailedDataSetMessages_TimeFirstChange OpcuaNodeIdServicesVariablePublished = 19039
-	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_MessageSequenceNumber OpcuaNodeIdServicesVariablePublished = 19040
-	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_MessageSequenceNumber_DiagnosticsLevel OpcuaNodeIdServicesVariablePublished = 19041
-	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_StatusCode OpcuaNodeIdServicesVariablePublished = 19042
-	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_StatusCode_DiagnosticsLevel OpcuaNodeIdServicesVariablePublished = 19043
-	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_MajorVersion OpcuaNodeIdServicesVariablePublished = 19044
-	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_MajorVersion_DiagnosticsLevel OpcuaNodeIdServicesVariablePublished = 19045
-	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_MinorVersion OpcuaNodeIdServicesVariablePublished = 19046
-	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_MinorVersion_DiagnosticsLevel OpcuaNodeIdServicesVariablePublished = 19047
-	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_CyclicDataSet OpcuaNodeIdServicesVariablePublished = 25521
-	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_CyclicDataSet OpcuaNodeIdServicesVariablePublished = 25522
-	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_CyclicDataSet OpcuaNodeIdServicesVariablePublished = 25523
+	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalFromError_TimeFirstChange  OpcuaNodeIdServicesVariablePublished = 18964
+	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StatePausedByParent                        OpcuaNodeIdServicesVariablePublished = 18965
+	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StatePausedByParent_Active                 OpcuaNodeIdServicesVariablePublished = 18966
+	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StatePausedByParent_Classification         OpcuaNodeIdServicesVariablePublished = 18967
+	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StatePausedByParent_DiagnosticsLevel       OpcuaNodeIdServicesVariablePublished = 18968
+	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StatePausedByParent_TimeFirstChange        OpcuaNodeIdServicesVariablePublished = 18969
+	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateDisabledByMethod                      OpcuaNodeIdServicesVariablePublished = 18970
+	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_Active               OpcuaNodeIdServicesVariablePublished = 18971
+	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_Classification       OpcuaNodeIdServicesVariablePublished = 18972
+	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_DiagnosticsLevel     OpcuaNodeIdServicesVariablePublished = 18973
+	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_TimeFirstChange      OpcuaNodeIdServicesVariablePublished = 18974
+	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_FailedDataSetMessages                      OpcuaNodeIdServicesVariablePublished = 18976
+	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_FailedDataSetMessages_Active               OpcuaNodeIdServicesVariablePublished = 18977
+	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_FailedDataSetMessages_Classification       OpcuaNodeIdServicesVariablePublished = 18978
+	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_FailedDataSetMessages_DiagnosticsLevel     OpcuaNodeIdServicesVariablePublished = 18979
+	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_FailedDataSetMessages_TimeFirstChange      OpcuaNodeIdServicesVariablePublished = 18980
+	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_MessageSequenceNumber                    OpcuaNodeIdServicesVariablePublished = 18981
+	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_MessageSequenceNumber_DiagnosticsLevel   OpcuaNodeIdServicesVariablePublished = 18982
+	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_StatusCode                               OpcuaNodeIdServicesVariablePublished = 18983
+	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_StatusCode_DiagnosticsLevel              OpcuaNodeIdServicesVariablePublished = 18984
+	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_MajorVersion                             OpcuaNodeIdServicesVariablePublished = 18985
+	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_MajorVersion_DiagnosticsLevel            OpcuaNodeIdServicesVariablePublished = 18986
+	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_MinorVersion                             OpcuaNodeIdServicesVariablePublished = 18987
+	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_MinorVersion_DiagnosticsLevel            OpcuaNodeIdServicesVariablePublished = 18988
+	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_DiagnosticsLevel                                       OpcuaNodeIdServicesVariablePublished = 18990
+	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_TotalInformation                                       OpcuaNodeIdServicesVariablePublished = 18991
+	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_TotalInformation_Active                                OpcuaNodeIdServicesVariablePublished = 18992
+	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_TotalInformation_Classification                        OpcuaNodeIdServicesVariablePublished = 18993
+	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_TotalInformation_DiagnosticsLevel                      OpcuaNodeIdServicesVariablePublished = 18994
+	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_TotalInformation_TimeFirstChange                       OpcuaNodeIdServicesVariablePublished = 18995
+	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_TotalError                                             OpcuaNodeIdServicesVariablePublished = 18996
+	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_TotalError_Active                                      OpcuaNodeIdServicesVariablePublished = 18997
+	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_TotalError_Classification                              OpcuaNodeIdServicesVariablePublished = 18998
+	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_TotalError_DiagnosticsLevel                            OpcuaNodeIdServicesVariablePublished = 18999
+	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_TotalError_TimeFirstChange                             OpcuaNodeIdServicesVariablePublished = 19000
+	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_SubError                                               OpcuaNodeIdServicesVariablePublished = 19002
+	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateError                                    OpcuaNodeIdServicesVariablePublished = 19004
+	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateError_Active                             OpcuaNodeIdServicesVariablePublished = 19005
+	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateError_Classification                     OpcuaNodeIdServicesVariablePublished = 19006
+	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateError_DiagnosticsLevel                   OpcuaNodeIdServicesVariablePublished = 19007
+	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateError_TimeFirstChange                    OpcuaNodeIdServicesVariablePublished = 19008
+	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByMethod                      OpcuaNodeIdServicesVariablePublished = 19009
+	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_Active               OpcuaNodeIdServicesVariablePublished = 19010
+	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_Classification       OpcuaNodeIdServicesVariablePublished = 19011
+	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_DiagnosticsLevel     OpcuaNodeIdServicesVariablePublished = 19012
+	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_TimeFirstChange      OpcuaNodeIdServicesVariablePublished = 19013
+	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByParent                      OpcuaNodeIdServicesVariablePublished = 19014
+	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByParent_Active               OpcuaNodeIdServicesVariablePublished = 19015
+	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByParent_Classification       OpcuaNodeIdServicesVariablePublished = 19016
+	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByParent_DiagnosticsLevel     OpcuaNodeIdServicesVariablePublished = 19017
+	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByParent_TimeFirstChange      OpcuaNodeIdServicesVariablePublished = 19018
+	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalFromError                     OpcuaNodeIdServicesVariablePublished = 19019
+	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalFromError_Active              OpcuaNodeIdServicesVariablePublished = 19020
+	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalFromError_Classification      OpcuaNodeIdServicesVariablePublished = 19021
+	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalFromError_DiagnosticsLevel    OpcuaNodeIdServicesVariablePublished = 19022
+	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalFromError_TimeFirstChange     OpcuaNodeIdServicesVariablePublished = 19023
+	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StatePausedByParent                           OpcuaNodeIdServicesVariablePublished = 19024
+	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StatePausedByParent_Active                    OpcuaNodeIdServicesVariablePublished = 19025
+	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StatePausedByParent_Classification            OpcuaNodeIdServicesVariablePublished = 19026
+	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StatePausedByParent_DiagnosticsLevel          OpcuaNodeIdServicesVariablePublished = 19027
+	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StatePausedByParent_TimeFirstChange           OpcuaNodeIdServicesVariablePublished = 19028
+	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateDisabledByMethod                         OpcuaNodeIdServicesVariablePublished = 19029
+	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_Active                  OpcuaNodeIdServicesVariablePublished = 19030
+	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_Classification          OpcuaNodeIdServicesVariablePublished = 19031
+	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_DiagnosticsLevel        OpcuaNodeIdServicesVariablePublished = 19032
+	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_TimeFirstChange         OpcuaNodeIdServicesVariablePublished = 19033
+	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_FailedDataSetMessages                         OpcuaNodeIdServicesVariablePublished = 19035
+	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_FailedDataSetMessages_Active                  OpcuaNodeIdServicesVariablePublished = 19036
+	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_FailedDataSetMessages_Classification          OpcuaNodeIdServicesVariablePublished = 19037
+	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_FailedDataSetMessages_DiagnosticsLevel        OpcuaNodeIdServicesVariablePublished = 19038
+	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_FailedDataSetMessages_TimeFirstChange         OpcuaNodeIdServicesVariablePublished = 19039
+	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_MessageSequenceNumber                       OpcuaNodeIdServicesVariablePublished = 19040
+	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_MessageSequenceNumber_DiagnosticsLevel      OpcuaNodeIdServicesVariablePublished = 19041
+	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_StatusCode                                  OpcuaNodeIdServicesVariablePublished = 19042
+	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_StatusCode_DiagnosticsLevel                 OpcuaNodeIdServicesVariablePublished = 19043
+	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_MajorVersion                                OpcuaNodeIdServicesVariablePublished = 19044
+	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_MajorVersion_DiagnosticsLevel               OpcuaNodeIdServicesVariablePublished = 19045
+	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_MinorVersion                                OpcuaNodeIdServicesVariablePublished = 19046
+	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_MinorVersion_DiagnosticsLevel               OpcuaNodeIdServicesVariablePublished = 19047
+	OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_CyclicDataSet                                                                                   OpcuaNodeIdServicesVariablePublished = 25521
+	OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_CyclicDataSet                                                                                 OpcuaNodeIdServicesVariablePublished = 25522
+	OpcuaNodeIdServicesVariablePublished_PublishedEventsType_CyclicDataSet                                                                                    OpcuaNodeIdServicesVariablePublished = 25523
 )
 
 var OpcuaNodeIdServicesVariablePublishedValues []OpcuaNodeIdServicesVariablePublished
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariablePublishedValues = []OpcuaNodeIdServicesVariablePublished {
+	OpcuaNodeIdServicesVariablePublishedValues = []OpcuaNodeIdServicesVariablePublished{
 		OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_ConfigurationVersion,
 		OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_ConfigurationVersion,
 		OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_PublishedData,
@@ -487,440 +487,440 @@ func init() {
 
 func OpcuaNodeIdServicesVariablePublishedByValue(value int32) (enum OpcuaNodeIdServicesVariablePublished, ok bool) {
 	switch value {
-		case 14519:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_ConfigurationVersion, true
-		case 14544:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_ConfigurationVersion, true
-		case 14548:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_PublishedData, true
-		case 14556:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_AddVariables_InputArguments, true
-		case 14557:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_AddVariables_OutputArguments, true
-		case 14559:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_RemoveVariables_InputArguments, true
-		case 14560:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_RemoveVariables_OutputArguments, true
-		case 14565:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsAddVariablesMethodType_InputArguments, true
-		case 14566:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsAddVariablesMethodType_OutputArguments, true
-		case 14568:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsRemoveVariablesMethodType_InputArguments, true
-		case 14569:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsRemoveVariablesMethodType_OutputArguments, true
-		case 14582:
-			return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_ConfigurationVersion, true
-		case 14586:
-			return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_PubSubEventNotifier, true
-		case 14587:
-			return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_SelectedFields, true
-		case 14588:
-			return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_Filter, true
-		case 15053:
-			return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_ModifyFieldSelection_InputArguments, true
-		case 15055:
-			return OpcuaNodeIdServicesVariablePublished_PublishedEventsTypeModifyFieldSelectionMethodType_InputArguments, true
-		case 15224:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Status_State, true
-		case 15229:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetMetaData, true
-		case 15232:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Status_State, true
-		case 15237:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetMetaData, true
-		case 15240:
-			return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Status_State, true
-		case 15245:
-			return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetMetaData, true
-		case 15483:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_ExtensionFields_AddExtensionField_InputArguments, true
-		case 15484:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_ExtensionFields_AddExtensionField_OutputArguments, true
-		case 15486:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_ExtensionFields_RemoveExtensionField_InputArguments, true
-		case 15505:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_ExtensionFields_AddExtensionField_InputArguments, true
-		case 15506:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_ExtensionFields_AddExtensionField_OutputArguments, true
-		case 15508:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_ExtensionFields_RemoveExtensionField_InputArguments, true
-		case 15513:
-			return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_ExtensionFields_AddExtensionField_InputArguments, true
-		case 15514:
-			return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_ExtensionFields_AddExtensionField_OutputArguments, true
-		case 15516:
-			return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_ExtensionFields_RemoveExtensionField_InputArguments, true
-		case 15517:
-			return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_ModifyFieldSelection_OutputArguments, true
-		case 15518:
-			return OpcuaNodeIdServicesVariablePublished_PublishedEventsTypeModifyFieldSelectionMethodType_OutputArguments, true
-		case 16720:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_DataSetWriterId, true
-		case 16721:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_DataSetFieldContentMask, true
-		case 16731:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_KeyFrameCount, true
-		case 16759:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetClassId, true
-		case 16760:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_DataSetWriterId, true
-		case 16761:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_DataSetFieldContentMask, true
-		case 16771:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_KeyFrameCount, true
-		case 16800:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetClassId, true
-		case 16801:
-			return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_DataSetWriterId, true
-		case 16802:
-			return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_DataSetFieldContentMask, true
-		case 16812:
-			return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_KeyFrameCount, true
-		case 16841:
-			return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetClassId, true
-		case 17482:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_DataSetWriterProperties, true
-		case 17483:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_DataSetWriterProperties, true
-		case 17484:
-			return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_DataSetWriterProperties, true
-		case 18872:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_DiagnosticsLevel, true
-		case 18873:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_TotalInformation, true
-		case 18874:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_TotalInformation_Active, true
-		case 18875:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_TotalInformation_Classification, true
-		case 18876:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_TotalInformation_DiagnosticsLevel, true
-		case 18877:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_TotalInformation_TimeFirstChange, true
-		case 18878:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_TotalError, true
-		case 18879:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_TotalError_Active, true
-		case 18880:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_TotalError_Classification, true
-		case 18881:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_TotalError_DiagnosticsLevel, true
-		case 18882:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_TotalError_TimeFirstChange, true
-		case 18884:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_SubError, true
-		case 18886:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateError, true
-		case 18887:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateError_Active, true
-		case 18888:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateError_Classification, true
-		case 18889:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateError_DiagnosticsLevel, true
-		case 18890:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateError_TimeFirstChange, true
-		case 18891:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByMethod, true
-		case 18892:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_Active, true
-		case 18893:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_Classification, true
-		case 18894:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_DiagnosticsLevel, true
-		case 18895:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_TimeFirstChange, true
-		case 18896:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByParent, true
-		case 18897:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByParent_Active, true
-		case 18898:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByParent_Classification, true
-		case 18899:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByParent_DiagnosticsLevel, true
-		case 18900:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByParent_TimeFirstChange, true
-		case 18901:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalFromError, true
-		case 18902:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalFromError_Active, true
-		case 18903:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalFromError_Classification, true
-		case 18904:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalFromError_DiagnosticsLevel, true
-		case 18905:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalFromError_TimeFirstChange, true
-		case 18906:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StatePausedByParent, true
-		case 18907:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StatePausedByParent_Active, true
-		case 18908:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StatePausedByParent_Classification, true
-		case 18909:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StatePausedByParent_DiagnosticsLevel, true
-		case 18910:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StatePausedByParent_TimeFirstChange, true
-		case 18911:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateDisabledByMethod, true
-		case 18912:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_Active, true
-		case 18913:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_Classification, true
-		case 18914:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_DiagnosticsLevel, true
-		case 18915:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_TimeFirstChange, true
-		case 18917:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_FailedDataSetMessages, true
-		case 18918:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_FailedDataSetMessages_Active, true
-		case 18919:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_FailedDataSetMessages_Classification, true
-		case 18920:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_FailedDataSetMessages_DiagnosticsLevel, true
-		case 18921:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_FailedDataSetMessages_TimeFirstChange, true
-		case 18922:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_MessageSequenceNumber, true
-		case 18923:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_MessageSequenceNumber_DiagnosticsLevel, true
-		case 18924:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_StatusCode, true
-		case 18925:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_StatusCode_DiagnosticsLevel, true
-		case 18926:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_MajorVersion, true
-		case 18927:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_MajorVersion_DiagnosticsLevel, true
-		case 18928:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_MinorVersion, true
-		case 18929:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_MinorVersion_DiagnosticsLevel, true
-		case 18931:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_DiagnosticsLevel, true
-		case 18932:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_TotalInformation, true
-		case 18933:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_TotalInformation_Active, true
-		case 18934:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_TotalInformation_Classification, true
-		case 18935:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_TotalInformation_DiagnosticsLevel, true
-		case 18936:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_TotalInformation_TimeFirstChange, true
-		case 18937:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_TotalError, true
-		case 18938:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_TotalError_Active, true
-		case 18939:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_TotalError_Classification, true
-		case 18940:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_TotalError_DiagnosticsLevel, true
-		case 18941:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_TotalError_TimeFirstChange, true
-		case 18943:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_SubError, true
-		case 18945:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateError, true
-		case 18946:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateError_Active, true
-		case 18947:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateError_Classification, true
-		case 18948:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateError_DiagnosticsLevel, true
-		case 18949:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateError_TimeFirstChange, true
-		case 18950:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByMethod, true
-		case 18951:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_Active, true
-		case 18952:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_Classification, true
-		case 18953:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_DiagnosticsLevel, true
-		case 18954:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_TimeFirstChange, true
-		case 18955:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByParent, true
-		case 18956:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByParent_Active, true
-		case 18957:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByParent_Classification, true
-		case 18958:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByParent_DiagnosticsLevel, true
-		case 18959:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByParent_TimeFirstChange, true
-		case 18960:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalFromError, true
-		case 18961:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalFromError_Active, true
-		case 18962:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalFromError_Classification, true
-		case 18963:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalFromError_DiagnosticsLevel, true
-		case 18964:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalFromError_TimeFirstChange, true
-		case 18965:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StatePausedByParent, true
-		case 18966:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StatePausedByParent_Active, true
-		case 18967:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StatePausedByParent_Classification, true
-		case 18968:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StatePausedByParent_DiagnosticsLevel, true
-		case 18969:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StatePausedByParent_TimeFirstChange, true
-		case 18970:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateDisabledByMethod, true
-		case 18971:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_Active, true
-		case 18972:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_Classification, true
-		case 18973:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_DiagnosticsLevel, true
-		case 18974:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_TimeFirstChange, true
-		case 18976:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_FailedDataSetMessages, true
-		case 18977:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_FailedDataSetMessages_Active, true
-		case 18978:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_FailedDataSetMessages_Classification, true
-		case 18979:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_FailedDataSetMessages_DiagnosticsLevel, true
-		case 18980:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_FailedDataSetMessages_TimeFirstChange, true
-		case 18981:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_MessageSequenceNumber, true
-		case 18982:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_MessageSequenceNumber_DiagnosticsLevel, true
-		case 18983:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_StatusCode, true
-		case 18984:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_StatusCode_DiagnosticsLevel, true
-		case 18985:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_MajorVersion, true
-		case 18986:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_MajorVersion_DiagnosticsLevel, true
-		case 18987:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_MinorVersion, true
-		case 18988:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_MinorVersion_DiagnosticsLevel, true
-		case 18990:
-			return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_DiagnosticsLevel, true
-		case 18991:
-			return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_TotalInformation, true
-		case 18992:
-			return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_TotalInformation_Active, true
-		case 18993:
-			return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_TotalInformation_Classification, true
-		case 18994:
-			return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_TotalInformation_DiagnosticsLevel, true
-		case 18995:
-			return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_TotalInformation_TimeFirstChange, true
-		case 18996:
-			return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_TotalError, true
-		case 18997:
-			return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_TotalError_Active, true
-		case 18998:
-			return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_TotalError_Classification, true
-		case 18999:
-			return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_TotalError_DiagnosticsLevel, true
-		case 19000:
-			return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_TotalError_TimeFirstChange, true
-		case 19002:
-			return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_SubError, true
-		case 19004:
-			return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateError, true
-		case 19005:
-			return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateError_Active, true
-		case 19006:
-			return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateError_Classification, true
-		case 19007:
-			return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateError_DiagnosticsLevel, true
-		case 19008:
-			return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateError_TimeFirstChange, true
-		case 19009:
-			return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByMethod, true
-		case 19010:
-			return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_Active, true
-		case 19011:
-			return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_Classification, true
-		case 19012:
-			return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_DiagnosticsLevel, true
-		case 19013:
-			return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_TimeFirstChange, true
-		case 19014:
-			return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByParent, true
-		case 19015:
-			return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByParent_Active, true
-		case 19016:
-			return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByParent_Classification, true
-		case 19017:
-			return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByParent_DiagnosticsLevel, true
-		case 19018:
-			return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByParent_TimeFirstChange, true
-		case 19019:
-			return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalFromError, true
-		case 19020:
-			return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalFromError_Active, true
-		case 19021:
-			return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalFromError_Classification, true
-		case 19022:
-			return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalFromError_DiagnosticsLevel, true
-		case 19023:
-			return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalFromError_TimeFirstChange, true
-		case 19024:
-			return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StatePausedByParent, true
-		case 19025:
-			return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StatePausedByParent_Active, true
-		case 19026:
-			return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StatePausedByParent_Classification, true
-		case 19027:
-			return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StatePausedByParent_DiagnosticsLevel, true
-		case 19028:
-			return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StatePausedByParent_TimeFirstChange, true
-		case 19029:
-			return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateDisabledByMethod, true
-		case 19030:
-			return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_Active, true
-		case 19031:
-			return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_Classification, true
-		case 19032:
-			return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_DiagnosticsLevel, true
-		case 19033:
-			return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_TimeFirstChange, true
-		case 19035:
-			return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_FailedDataSetMessages, true
-		case 19036:
-			return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_FailedDataSetMessages_Active, true
-		case 19037:
-			return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_FailedDataSetMessages_Classification, true
-		case 19038:
-			return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_FailedDataSetMessages_DiagnosticsLevel, true
-		case 19039:
-			return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_FailedDataSetMessages_TimeFirstChange, true
-		case 19040:
-			return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_MessageSequenceNumber, true
-		case 19041:
-			return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_MessageSequenceNumber_DiagnosticsLevel, true
-		case 19042:
-			return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_StatusCode, true
-		case 19043:
-			return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_StatusCode_DiagnosticsLevel, true
-		case 19044:
-			return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_MajorVersion, true
-		case 19045:
-			return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_MajorVersion_DiagnosticsLevel, true
-		case 19046:
-			return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_MinorVersion, true
-		case 19047:
-			return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_MinorVersion_DiagnosticsLevel, true
-		case 25521:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_CyclicDataSet, true
-		case 25522:
-			return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_CyclicDataSet, true
-		case 25523:
-			return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_CyclicDataSet, true
+	case 14519:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_ConfigurationVersion, true
+	case 14544:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_ConfigurationVersion, true
+	case 14548:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_PublishedData, true
+	case 14556:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_AddVariables_InputArguments, true
+	case 14557:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_AddVariables_OutputArguments, true
+	case 14559:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_RemoveVariables_InputArguments, true
+	case 14560:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_RemoveVariables_OutputArguments, true
+	case 14565:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsAddVariablesMethodType_InputArguments, true
+	case 14566:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsAddVariablesMethodType_OutputArguments, true
+	case 14568:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsRemoveVariablesMethodType_InputArguments, true
+	case 14569:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsRemoveVariablesMethodType_OutputArguments, true
+	case 14582:
+		return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_ConfigurationVersion, true
+	case 14586:
+		return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_PubSubEventNotifier, true
+	case 14587:
+		return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_SelectedFields, true
+	case 14588:
+		return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_Filter, true
+	case 15053:
+		return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_ModifyFieldSelection_InputArguments, true
+	case 15055:
+		return OpcuaNodeIdServicesVariablePublished_PublishedEventsTypeModifyFieldSelectionMethodType_InputArguments, true
+	case 15224:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Status_State, true
+	case 15229:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetMetaData, true
+	case 15232:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Status_State, true
+	case 15237:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetMetaData, true
+	case 15240:
+		return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Status_State, true
+	case 15245:
+		return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetMetaData, true
+	case 15483:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_ExtensionFields_AddExtensionField_InputArguments, true
+	case 15484:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_ExtensionFields_AddExtensionField_OutputArguments, true
+	case 15486:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_ExtensionFields_RemoveExtensionField_InputArguments, true
+	case 15505:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_ExtensionFields_AddExtensionField_InputArguments, true
+	case 15506:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_ExtensionFields_AddExtensionField_OutputArguments, true
+	case 15508:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_ExtensionFields_RemoveExtensionField_InputArguments, true
+	case 15513:
+		return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_ExtensionFields_AddExtensionField_InputArguments, true
+	case 15514:
+		return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_ExtensionFields_AddExtensionField_OutputArguments, true
+	case 15516:
+		return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_ExtensionFields_RemoveExtensionField_InputArguments, true
+	case 15517:
+		return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_ModifyFieldSelection_OutputArguments, true
+	case 15518:
+		return OpcuaNodeIdServicesVariablePublished_PublishedEventsTypeModifyFieldSelectionMethodType_OutputArguments, true
+	case 16720:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_DataSetWriterId, true
+	case 16721:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_DataSetFieldContentMask, true
+	case 16731:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_KeyFrameCount, true
+	case 16759:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetClassId, true
+	case 16760:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_DataSetWriterId, true
+	case 16761:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_DataSetFieldContentMask, true
+	case 16771:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_KeyFrameCount, true
+	case 16800:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetClassId, true
+	case 16801:
+		return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_DataSetWriterId, true
+	case 16802:
+		return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_DataSetFieldContentMask, true
+	case 16812:
+		return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_KeyFrameCount, true
+	case 16841:
+		return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetClassId, true
+	case 17482:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_DataSetWriterProperties, true
+	case 17483:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_DataSetWriterProperties, true
+	case 17484:
+		return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_DataSetWriterProperties, true
+	case 18872:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_DiagnosticsLevel, true
+	case 18873:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_TotalInformation, true
+	case 18874:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_TotalInformation_Active, true
+	case 18875:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_TotalInformation_Classification, true
+	case 18876:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_TotalInformation_DiagnosticsLevel, true
+	case 18877:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_TotalInformation_TimeFirstChange, true
+	case 18878:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_TotalError, true
+	case 18879:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_TotalError_Active, true
+	case 18880:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_TotalError_Classification, true
+	case 18881:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_TotalError_DiagnosticsLevel, true
+	case 18882:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_TotalError_TimeFirstChange, true
+	case 18884:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_SubError, true
+	case 18886:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateError, true
+	case 18887:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateError_Active, true
+	case 18888:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateError_Classification, true
+	case 18889:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateError_DiagnosticsLevel, true
+	case 18890:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateError_TimeFirstChange, true
+	case 18891:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByMethod, true
+	case 18892:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_Active, true
+	case 18893:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_Classification, true
+	case 18894:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_DiagnosticsLevel, true
+	case 18895:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_TimeFirstChange, true
+	case 18896:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByParent, true
+	case 18897:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByParent_Active, true
+	case 18898:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByParent_Classification, true
+	case 18899:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByParent_DiagnosticsLevel, true
+	case 18900:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByParent_TimeFirstChange, true
+	case 18901:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalFromError, true
+	case 18902:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalFromError_Active, true
+	case 18903:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalFromError_Classification, true
+	case 18904:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalFromError_DiagnosticsLevel, true
+	case 18905:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalFromError_TimeFirstChange, true
+	case 18906:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StatePausedByParent, true
+	case 18907:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StatePausedByParent_Active, true
+	case 18908:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StatePausedByParent_Classification, true
+	case 18909:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StatePausedByParent_DiagnosticsLevel, true
+	case 18910:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StatePausedByParent_TimeFirstChange, true
+	case 18911:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateDisabledByMethod, true
+	case 18912:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_Active, true
+	case 18913:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_Classification, true
+	case 18914:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_DiagnosticsLevel, true
+	case 18915:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_TimeFirstChange, true
+	case 18917:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_FailedDataSetMessages, true
+	case 18918:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_FailedDataSetMessages_Active, true
+	case 18919:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_FailedDataSetMessages_Classification, true
+	case 18920:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_FailedDataSetMessages_DiagnosticsLevel, true
+	case 18921:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Counters_FailedDataSetMessages_TimeFirstChange, true
+	case 18922:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_MessageSequenceNumber, true
+	case 18923:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_MessageSequenceNumber_DiagnosticsLevel, true
+	case 18924:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_StatusCode, true
+	case 18925:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_StatusCode_DiagnosticsLevel, true
+	case 18926:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_MajorVersion, true
+	case 18927:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_MajorVersion_DiagnosticsLevel, true
+	case 18928:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_MinorVersion, true
+	case 18929:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_MinorVersion_DiagnosticsLevel, true
+	case 18931:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_DiagnosticsLevel, true
+	case 18932:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_TotalInformation, true
+	case 18933:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_TotalInformation_Active, true
+	case 18934:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_TotalInformation_Classification, true
+	case 18935:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_TotalInformation_DiagnosticsLevel, true
+	case 18936:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_TotalInformation_TimeFirstChange, true
+	case 18937:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_TotalError, true
+	case 18938:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_TotalError_Active, true
+	case 18939:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_TotalError_Classification, true
+	case 18940:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_TotalError_DiagnosticsLevel, true
+	case 18941:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_TotalError_TimeFirstChange, true
+	case 18943:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_SubError, true
+	case 18945:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateError, true
+	case 18946:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateError_Active, true
+	case 18947:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateError_Classification, true
+	case 18948:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateError_DiagnosticsLevel, true
+	case 18949:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateError_TimeFirstChange, true
+	case 18950:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByMethod, true
+	case 18951:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_Active, true
+	case 18952:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_Classification, true
+	case 18953:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_DiagnosticsLevel, true
+	case 18954:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_TimeFirstChange, true
+	case 18955:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByParent, true
+	case 18956:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByParent_Active, true
+	case 18957:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByParent_Classification, true
+	case 18958:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByParent_DiagnosticsLevel, true
+	case 18959:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByParent_TimeFirstChange, true
+	case 18960:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalFromError, true
+	case 18961:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalFromError_Active, true
+	case 18962:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalFromError_Classification, true
+	case 18963:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalFromError_DiagnosticsLevel, true
+	case 18964:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalFromError_TimeFirstChange, true
+	case 18965:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StatePausedByParent, true
+	case 18966:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StatePausedByParent_Active, true
+	case 18967:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StatePausedByParent_Classification, true
+	case 18968:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StatePausedByParent_DiagnosticsLevel, true
+	case 18969:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StatePausedByParent_TimeFirstChange, true
+	case 18970:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateDisabledByMethod, true
+	case 18971:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_Active, true
+	case 18972:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_Classification, true
+	case 18973:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_DiagnosticsLevel, true
+	case 18974:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_TimeFirstChange, true
+	case 18976:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_FailedDataSetMessages, true
+	case 18977:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_FailedDataSetMessages_Active, true
+	case 18978:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_FailedDataSetMessages_Classification, true
+	case 18979:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_FailedDataSetMessages_DiagnosticsLevel, true
+	case 18980:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Counters_FailedDataSetMessages_TimeFirstChange, true
+	case 18981:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_MessageSequenceNumber, true
+	case 18982:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_MessageSequenceNumber_DiagnosticsLevel, true
+	case 18983:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_StatusCode, true
+	case 18984:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_StatusCode_DiagnosticsLevel, true
+	case 18985:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_MajorVersion, true
+	case 18986:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_MajorVersion_DiagnosticsLevel, true
+	case 18987:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_MinorVersion, true
+	case 18988:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_MinorVersion_DiagnosticsLevel, true
+	case 18990:
+		return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_DiagnosticsLevel, true
+	case 18991:
+		return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_TotalInformation, true
+	case 18992:
+		return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_TotalInformation_Active, true
+	case 18993:
+		return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_TotalInformation_Classification, true
+	case 18994:
+		return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_TotalInformation_DiagnosticsLevel, true
+	case 18995:
+		return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_TotalInformation_TimeFirstChange, true
+	case 18996:
+		return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_TotalError, true
+	case 18997:
+		return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_TotalError_Active, true
+	case 18998:
+		return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_TotalError_Classification, true
+	case 18999:
+		return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_TotalError_DiagnosticsLevel, true
+	case 19000:
+		return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_TotalError_TimeFirstChange, true
+	case 19002:
+		return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_SubError, true
+	case 19004:
+		return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateError, true
+	case 19005:
+		return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateError_Active, true
+	case 19006:
+		return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateError_Classification, true
+	case 19007:
+		return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateError_DiagnosticsLevel, true
+	case 19008:
+		return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateError_TimeFirstChange, true
+	case 19009:
+		return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByMethod, true
+	case 19010:
+		return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_Active, true
+	case 19011:
+		return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_Classification, true
+	case 19012:
+		return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_DiagnosticsLevel, true
+	case 19013:
+		return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_TimeFirstChange, true
+	case 19014:
+		return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByParent, true
+	case 19015:
+		return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByParent_Active, true
+	case 19016:
+		return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByParent_Classification, true
+	case 19017:
+		return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByParent_DiagnosticsLevel, true
+	case 19018:
+		return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalByParent_TimeFirstChange, true
+	case 19019:
+		return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalFromError, true
+	case 19020:
+		return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalFromError_Active, true
+	case 19021:
+		return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalFromError_Classification, true
+	case 19022:
+		return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalFromError_DiagnosticsLevel, true
+	case 19023:
+		return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateOperationalFromError_TimeFirstChange, true
+	case 19024:
+		return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StatePausedByParent, true
+	case 19025:
+		return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StatePausedByParent_Active, true
+	case 19026:
+		return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StatePausedByParent_Classification, true
+	case 19027:
+		return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StatePausedByParent_DiagnosticsLevel, true
+	case 19028:
+		return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StatePausedByParent_TimeFirstChange, true
+	case 19029:
+		return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateDisabledByMethod, true
+	case 19030:
+		return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_Active, true
+	case 19031:
+		return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_Classification, true
+	case 19032:
+		return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_DiagnosticsLevel, true
+	case 19033:
+		return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_TimeFirstChange, true
+	case 19035:
+		return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_FailedDataSetMessages, true
+	case 19036:
+		return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_FailedDataSetMessages_Active, true
+	case 19037:
+		return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_FailedDataSetMessages_Classification, true
+	case 19038:
+		return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_FailedDataSetMessages_DiagnosticsLevel, true
+	case 19039:
+		return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Counters_FailedDataSetMessages_TimeFirstChange, true
+	case 19040:
+		return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_MessageSequenceNumber, true
+	case 19041:
+		return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_MessageSequenceNumber_DiagnosticsLevel, true
+	case 19042:
+		return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_StatusCode, true
+	case 19043:
+		return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_StatusCode_DiagnosticsLevel, true
+	case 19044:
+		return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_MajorVersion, true
+	case 19045:
+		return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_MajorVersion_DiagnosticsLevel, true
+	case 19046:
+		return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_MinorVersion, true
+	case 19047:
+		return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_LiveValues_MinorVersion_DiagnosticsLevel, true
+	case 25521:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataSetType_CyclicDataSet, true
+	case 25522:
+		return OpcuaNodeIdServicesVariablePublished_PublishedDataItemsType_CyclicDataSet, true
+	case 25523:
+		return OpcuaNodeIdServicesVariablePublished_PublishedEventsType_CyclicDataSet, true
 	}
 	return 0, false
 }
@@ -1365,13 +1365,13 @@ func OpcuaNodeIdServicesVariablePublishedByName(value string) (enum OpcuaNodeIdS
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariablePublishedKnows(value int32)  bool {
+func OpcuaNodeIdServicesVariablePublishedKnows(value int32) bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariablePublishedValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastOpcuaNodeIdServicesVariablePublished(structType any) OpcuaNodeIdServicesVariablePublished {
@@ -1869,4 +1869,3 @@ func (e OpcuaNodeIdServicesVariablePublished) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariablePublished) String() string {
 	return e.PLC4XEnumName()
 }
-

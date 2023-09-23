@@ -459,7 +459,6 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
             (byte) this.configuration.getSlot());
         typeIds.add(new UnConnectedDataItem(unreq));
 
-
         CipRRData pkt = new CipRRData(
             sessionHandle,
             CIPStatus.Success.getValue(),
@@ -479,7 +478,11 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
             .check(p -> p.getSessionHandle() == sessionHandle)
             .handle(p -> {
                 List<TypeId> responseTypeIds = p.getTypeIds();
-                UnConnectedDataItem dataItem = (UnConnectedDataItem) responseTypeIds.get(0);
+                TypeId typeId = responseTypeIds.get(0);
+                if (typeId instanceof NullAddressItem) {
+                    typeId = responseTypeIds.get(1);
+                }
+                UnConnectedDataItem dataItem = (UnConnectedDataItem) typeId;
                 PlcReadResponse readResponse = decodeReadResponse(dataItem.getService(), request);
                 future.complete(readResponse);
                 // Finish the request-transaction.
@@ -906,7 +909,8 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
             0L,
             0L,
             0,
-            typeIds);
+            typeIds
+        );
 
         transaction.submit(() -> context.sendRequest(pkt)
             .expectResponse(EipPacket.class, REQUEST_TIMEOUT)
@@ -917,7 +921,11 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
             .check(p -> p.getSessionHandle() == sessionHandle)
             .handle(p -> {
                 List<TypeId> responseTypeIds = p.getTypeIds();
-                UnConnectedDataItem dataItem = (UnConnectedDataItem) responseTypeIds.get(0);
+                TypeId typeId = responseTypeIds.get(0);
+                if (typeId instanceof NullAddressItem) {
+                    typeId = responseTypeIds.get(1);
+                }
+                UnConnectedDataItem dataItem = (UnConnectedDataItem) typeId;
                 PlcWriteResponse writeResponse = (PlcWriteResponse) decodeWriteResponse(dataItem.getService(), writeRequest);
                 future.complete(writeResponse);
                 // Finish the request-transaction.

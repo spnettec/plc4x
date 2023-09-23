@@ -40,8 +40,8 @@ type IOpcuaNodeIdServicesVariableMove interface {
 	utils.Serializable
 }
 
-const(
-	OpcuaNodeIdServicesVariableMove_MoveOrCopyMethodType_InputArguments OpcuaNodeIdServicesVariableMove = 13351
+const (
+	OpcuaNodeIdServicesVariableMove_MoveOrCopyMethodType_InputArguments  OpcuaNodeIdServicesVariableMove = 13351
 	OpcuaNodeIdServicesVariableMove_MoveOrCopyMethodType_OutputArguments OpcuaNodeIdServicesVariableMove = 13352
 )
 
@@ -49,7 +49,7 @@ var OpcuaNodeIdServicesVariableMoveValues []OpcuaNodeIdServicesVariableMove
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariableMoveValues = []OpcuaNodeIdServicesVariableMove {
+	OpcuaNodeIdServicesVariableMoveValues = []OpcuaNodeIdServicesVariableMove{
 		OpcuaNodeIdServicesVariableMove_MoveOrCopyMethodType_InputArguments,
 		OpcuaNodeIdServicesVariableMove_MoveOrCopyMethodType_OutputArguments,
 	}
@@ -57,10 +57,10 @@ func init() {
 
 func OpcuaNodeIdServicesVariableMoveByValue(value int32) (enum OpcuaNodeIdServicesVariableMove, ok bool) {
 	switch value {
-		case 13351:
-			return OpcuaNodeIdServicesVariableMove_MoveOrCopyMethodType_InputArguments, true
-		case 13352:
-			return OpcuaNodeIdServicesVariableMove_MoveOrCopyMethodType_OutputArguments, true
+	case 13351:
+		return OpcuaNodeIdServicesVariableMove_MoveOrCopyMethodType_InputArguments, true
+	case 13352:
+		return OpcuaNodeIdServicesVariableMove_MoveOrCopyMethodType_OutputArguments, true
 	}
 	return 0, false
 }
@@ -75,13 +75,13 @@ func OpcuaNodeIdServicesVariableMoveByName(value string) (enum OpcuaNodeIdServic
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariableMoveKnows(value int32)  bool {
+func OpcuaNodeIdServicesVariableMoveKnows(value int32) bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariableMoveValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastOpcuaNodeIdServicesVariableMove(structType any) OpcuaNodeIdServicesVariableMove {
@@ -149,4 +149,3 @@ func (e OpcuaNodeIdServicesVariableMove) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariableMove) String() string {
 	return e.PLC4XEnumName()
 }
-

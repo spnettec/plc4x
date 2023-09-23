@@ -40,10 +40,10 @@ type IOpcuaNodeIdServicesVariableExtension interface {
 	utils.Serializable
 }
 
-const(
-	OpcuaNodeIdServicesVariableExtension_ExtensionFieldsType_ExtensionFieldName_Placeholder OpcuaNodeIdServicesVariableExtension = 15490
-	OpcuaNodeIdServicesVariableExtension_ExtensionFieldsType_AddExtensionField_InputArguments OpcuaNodeIdServicesVariableExtension = 15492
-	OpcuaNodeIdServicesVariableExtension_ExtensionFieldsType_AddExtensionField_OutputArguments OpcuaNodeIdServicesVariableExtension = 15493
+const (
+	OpcuaNodeIdServicesVariableExtension_ExtensionFieldsType_ExtensionFieldName_Placeholder      OpcuaNodeIdServicesVariableExtension = 15490
+	OpcuaNodeIdServicesVariableExtension_ExtensionFieldsType_AddExtensionField_InputArguments    OpcuaNodeIdServicesVariableExtension = 15492
+	OpcuaNodeIdServicesVariableExtension_ExtensionFieldsType_AddExtensionField_OutputArguments   OpcuaNodeIdServicesVariableExtension = 15493
 	OpcuaNodeIdServicesVariableExtension_ExtensionFieldsType_RemoveExtensionField_InputArguments OpcuaNodeIdServicesVariableExtension = 15495
 )
 
@@ -51,7 +51,7 @@ var OpcuaNodeIdServicesVariableExtensionValues []OpcuaNodeIdServicesVariableExte
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariableExtensionValues = []OpcuaNodeIdServicesVariableExtension {
+	OpcuaNodeIdServicesVariableExtensionValues = []OpcuaNodeIdServicesVariableExtension{
 		OpcuaNodeIdServicesVariableExtension_ExtensionFieldsType_ExtensionFieldName_Placeholder,
 		OpcuaNodeIdServicesVariableExtension_ExtensionFieldsType_AddExtensionField_InputArguments,
 		OpcuaNodeIdServicesVariableExtension_ExtensionFieldsType_AddExtensionField_OutputArguments,
@@ -61,14 +61,14 @@ func init() {
 
 func OpcuaNodeIdServicesVariableExtensionByValue(value int32) (enum OpcuaNodeIdServicesVariableExtension, ok bool) {
 	switch value {
-		case 15490:
-			return OpcuaNodeIdServicesVariableExtension_ExtensionFieldsType_ExtensionFieldName_Placeholder, true
-		case 15492:
-			return OpcuaNodeIdServicesVariableExtension_ExtensionFieldsType_AddExtensionField_InputArguments, true
-		case 15493:
-			return OpcuaNodeIdServicesVariableExtension_ExtensionFieldsType_AddExtensionField_OutputArguments, true
-		case 15495:
-			return OpcuaNodeIdServicesVariableExtension_ExtensionFieldsType_RemoveExtensionField_InputArguments, true
+	case 15490:
+		return OpcuaNodeIdServicesVariableExtension_ExtensionFieldsType_ExtensionFieldName_Placeholder, true
+	case 15492:
+		return OpcuaNodeIdServicesVariableExtension_ExtensionFieldsType_AddExtensionField_InputArguments, true
+	case 15493:
+		return OpcuaNodeIdServicesVariableExtension_ExtensionFieldsType_AddExtensionField_OutputArguments, true
+	case 15495:
+		return OpcuaNodeIdServicesVariableExtension_ExtensionFieldsType_RemoveExtensionField_InputArguments, true
 	}
 	return 0, false
 }
@@ -87,13 +87,13 @@ func OpcuaNodeIdServicesVariableExtensionByName(value string) (enum OpcuaNodeIdS
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariableExtensionKnows(value int32)  bool {
+func OpcuaNodeIdServicesVariableExtensionKnows(value int32) bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariableExtensionValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastOpcuaNodeIdServicesVariableExtension(structType any) OpcuaNodeIdServicesVariableExtension {
@@ -165,4 +165,3 @@ func (e OpcuaNodeIdServicesVariableExtension) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariableExtension) String() string {
 	return e.PLC4XEnumName()
 }
-

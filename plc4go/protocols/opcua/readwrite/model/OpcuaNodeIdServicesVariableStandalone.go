@@ -40,16 +40,16 @@ type IOpcuaNodeIdServicesVariableStandalone interface {
 	utils.Serializable
 }
 
-const(
+const (
 	OpcuaNodeIdServicesVariableStandalone_StandaloneSubscribedDataSetType_DataSetMetaData OpcuaNodeIdServicesVariableStandalone = 23830
-	OpcuaNodeIdServicesVariableStandalone_StandaloneSubscribedDataSetType_IsConnected OpcuaNodeIdServicesVariableStandalone = 23831
+	OpcuaNodeIdServicesVariableStandalone_StandaloneSubscribedDataSetType_IsConnected     OpcuaNodeIdServicesVariableStandalone = 23831
 )
 
 var OpcuaNodeIdServicesVariableStandaloneValues []OpcuaNodeIdServicesVariableStandalone
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariableStandaloneValues = []OpcuaNodeIdServicesVariableStandalone {
+	OpcuaNodeIdServicesVariableStandaloneValues = []OpcuaNodeIdServicesVariableStandalone{
 		OpcuaNodeIdServicesVariableStandalone_StandaloneSubscribedDataSetType_DataSetMetaData,
 		OpcuaNodeIdServicesVariableStandalone_StandaloneSubscribedDataSetType_IsConnected,
 	}
@@ -57,10 +57,10 @@ func init() {
 
 func OpcuaNodeIdServicesVariableStandaloneByValue(value int32) (enum OpcuaNodeIdServicesVariableStandalone, ok bool) {
 	switch value {
-		case 23830:
-			return OpcuaNodeIdServicesVariableStandalone_StandaloneSubscribedDataSetType_DataSetMetaData, true
-		case 23831:
-			return OpcuaNodeIdServicesVariableStandalone_StandaloneSubscribedDataSetType_IsConnected, true
+	case 23830:
+		return OpcuaNodeIdServicesVariableStandalone_StandaloneSubscribedDataSetType_DataSetMetaData, true
+	case 23831:
+		return OpcuaNodeIdServicesVariableStandalone_StandaloneSubscribedDataSetType_IsConnected, true
 	}
 	return 0, false
 }
@@ -75,13 +75,13 @@ func OpcuaNodeIdServicesVariableStandaloneByName(value string) (enum OpcuaNodeId
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariableStandaloneKnows(value int32)  bool {
+func OpcuaNodeIdServicesVariableStandaloneKnows(value int32) bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariableStandaloneValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastOpcuaNodeIdServicesVariableStandalone(structType any) OpcuaNodeIdServicesVariableStandalone {
@@ -149,4 +149,3 @@ func (e OpcuaNodeIdServicesVariableStandalone) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariableStandalone) String() string {
 	return e.PLC4XEnumName()
 }
-

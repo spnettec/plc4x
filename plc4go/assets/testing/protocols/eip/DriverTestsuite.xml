@@ -256,7 +256,7 @@
         </parser-arguments>
         <EipPacket>
           <command dataType="uint" bitLength="16">111</command>
-          <packetLength dataType="uint" bitLength="16">40</packetLength>
+          <packetLength dataType="uint" bitLength="16">50</packetLength>
           <sessionHandle dataType="uint" bitLength="32">1074224669</sessionHandle>
           <status dataType="uint" bitLength="32">0</status>
           <senderContext dataType="byte" bitLength="64">0x504c433458202020</senderContext>
@@ -275,7 +275,7 @@
               <TypeId>
                 <id dataType="uint" bitLength="16">178</id>
                 <UnConnectedDataItem>
-                  <packetSize dataType="uint" bitLength="16">24</packetSize>
+                  <packetSize dataType="uint" bitLength="16">34</packetSize>
                   <service>
                     <CipService>
                       <response dataType="bit" bitLength="1">false</response>
@@ -315,16 +315,34 @@
                           </PathSegment>
                         </instanceSegment>
                         <reserved dataType="uint" bitLength="16">40197</reserved>
-                        <messageSize dataType="uint" bitLength="16">10</messageSize>
+                        <messageSize dataType="uint" bitLength="16">20</messageSize>
                         <unconnectedService>
                           <CipService>
                             <response dataType="bit" bitLength="1">false</response>
-                            <service dataType="uint" bitLength="7">76</service>
-                            <CipReadRequest>
-                              <requestPathSize dataType="uint" bitLength="8">3</requestPathSize>
-                              <tag dataType="byte" bitLength="48">0x910472617465</tag>
-                              <elementNb dataType="uint" bitLength="16">1</elementNb>
-                            </CipReadRequest>
+                            <service dataType="uint" bitLength="7">10</service>
+                            <MultipleServiceRequest>
+                              <requestPathSize dataType="uint" bitLength="8">2</requestPathSize>
+                              <requestPath dataType="uint" bitLength="32">19137056</requestPath>
+                              <data>
+                                <Services>
+                                  <serviceNb dataType="uint" bitLength="16">1</serviceNb>
+                                  <offsets isList="true">
+                                    <value dataType="uint" bitLength="16">4</value>
+                                  </offsets>
+                                  <services isList="true">
+                                    <CipService>
+                                      <response dataType="bit" bitLength="1">false</response>
+                                      <service dataType="uint" bitLength="7">76</service>
+                                      <CipReadRequest>
+                                        <requestPathSize dataType="uint" bitLength="8">3</requestPathSize>
+                                        <tag dataType="byte" bitLength="48">0x910472617465</tag>
+                                        <elementNb dataType="uint" bitLength="16">1</elementNb>
+                                      </CipReadRequest>
+                                    </CipService>
+                                  </services>
+                                </Services>
+                              </data>
+                            </MultipleServiceRequest>
                           </CipService>
                         </unconnectedService>
                         <route dataType="uint" bitLength="16">1</route>

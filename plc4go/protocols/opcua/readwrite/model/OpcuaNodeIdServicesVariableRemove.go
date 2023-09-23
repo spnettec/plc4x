@@ -40,29 +40,29 @@ type IOpcuaNodeIdServicesVariableRemove interface {
 	utils.Serializable
 }
 
-const(
-	OpcuaNodeIdServicesVariableRemove_RemoveCertificateMethodType_InputArguments OpcuaNodeIdServicesVariableRemove = 12521
-	OpcuaNodeIdServicesVariableRemove_RemoveConnectionMethodType_InputArguments OpcuaNodeIdServicesVariableRemove = 14184
-	OpcuaNodeIdServicesVariableRemove_RemovePublishedDataSetMethodType_InputArguments OpcuaNodeIdServicesVariableRemove = 14508
-	OpcuaNodeIdServicesVariableRemove_RemoveSecurityGroupMethodType_InputArguments OpcuaNodeIdServicesVariableRemove = 15470
-	OpcuaNodeIdServicesVariableRemove_RemoveExtensionFieldMethodType_InputArguments OpcuaNodeIdServicesVariableRemove = 15500
-	OpcuaNodeIdServicesVariableRemove_RemoveIdentityMethodType_InputArguments OpcuaNodeIdServicesVariableRemove = 15639
-	OpcuaNodeIdServicesVariableRemove_RemoveRoleMethodType_InputArguments OpcuaNodeIdServicesVariableRemove = 16006
-	OpcuaNodeIdServicesVariableRemove_RemoveApplicationMethodType_InputArguments OpcuaNodeIdServicesVariableRemove = 16187
-	OpcuaNodeIdServicesVariableRemove_RemoveEndpointMethodType_InputArguments OpcuaNodeIdServicesVariableRemove = 16191
-	OpcuaNodeIdServicesVariableRemove_RemoveDataSetFolderMethodType_InputArguments OpcuaNodeIdServicesVariableRemove = 17201
-	OpcuaNodeIdServicesVariableRemove_RemoveSubscribedDataSetMethodType_InputArguments OpcuaNodeIdServicesVariableRemove = 23825
-	OpcuaNodeIdServicesVariableRemove_RemoveUserMethodType_InputArguments OpcuaNodeIdServicesVariableRemove = 24287
+const (
+	OpcuaNodeIdServicesVariableRemove_RemoveCertificateMethodType_InputArguments         OpcuaNodeIdServicesVariableRemove = 12521
+	OpcuaNodeIdServicesVariableRemove_RemoveConnectionMethodType_InputArguments          OpcuaNodeIdServicesVariableRemove = 14184
+	OpcuaNodeIdServicesVariableRemove_RemovePublishedDataSetMethodType_InputArguments    OpcuaNodeIdServicesVariableRemove = 14508
+	OpcuaNodeIdServicesVariableRemove_RemoveSecurityGroupMethodType_InputArguments       OpcuaNodeIdServicesVariableRemove = 15470
+	OpcuaNodeIdServicesVariableRemove_RemoveExtensionFieldMethodType_InputArguments      OpcuaNodeIdServicesVariableRemove = 15500
+	OpcuaNodeIdServicesVariableRemove_RemoveIdentityMethodType_InputArguments            OpcuaNodeIdServicesVariableRemove = 15639
+	OpcuaNodeIdServicesVariableRemove_RemoveRoleMethodType_InputArguments                OpcuaNodeIdServicesVariableRemove = 16006
+	OpcuaNodeIdServicesVariableRemove_RemoveApplicationMethodType_InputArguments         OpcuaNodeIdServicesVariableRemove = 16187
+	OpcuaNodeIdServicesVariableRemove_RemoveEndpointMethodType_InputArguments            OpcuaNodeIdServicesVariableRemove = 16191
+	OpcuaNodeIdServicesVariableRemove_RemoveDataSetFolderMethodType_InputArguments       OpcuaNodeIdServicesVariableRemove = 17201
+	OpcuaNodeIdServicesVariableRemove_RemoveSubscribedDataSetMethodType_InputArguments   OpcuaNodeIdServicesVariableRemove = 23825
+	OpcuaNodeIdServicesVariableRemove_RemoveUserMethodType_InputArguments                OpcuaNodeIdServicesVariableRemove = 24287
 	OpcuaNodeIdServicesVariableRemove_RemoveSecurityGroupFolderMethodType_InputArguments OpcuaNodeIdServicesVariableRemove = 25292
-	OpcuaNodeIdServicesVariableRemove_RemovePushTargetMethodType_InputArguments OpcuaNodeIdServicesVariableRemove = 25380
-	OpcuaNodeIdServicesVariableRemove_RemovePushTargetFolderMethodType_InputArguments OpcuaNodeIdServicesVariableRemove = 25385
+	OpcuaNodeIdServicesVariableRemove_RemovePushTargetMethodType_InputArguments          OpcuaNodeIdServicesVariableRemove = 25380
+	OpcuaNodeIdServicesVariableRemove_RemovePushTargetFolderMethodType_InputArguments    OpcuaNodeIdServicesVariableRemove = 25385
 )
 
 var OpcuaNodeIdServicesVariableRemoveValues []OpcuaNodeIdServicesVariableRemove
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariableRemoveValues = []OpcuaNodeIdServicesVariableRemove {
+	OpcuaNodeIdServicesVariableRemoveValues = []OpcuaNodeIdServicesVariableRemove{
 		OpcuaNodeIdServicesVariableRemove_RemoveCertificateMethodType_InputArguments,
 		OpcuaNodeIdServicesVariableRemove_RemoveConnectionMethodType_InputArguments,
 		OpcuaNodeIdServicesVariableRemove_RemovePublishedDataSetMethodType_InputArguments,
@@ -83,36 +83,36 @@ func init() {
 
 func OpcuaNodeIdServicesVariableRemoveByValue(value int32) (enum OpcuaNodeIdServicesVariableRemove, ok bool) {
 	switch value {
-		case 12521:
-			return OpcuaNodeIdServicesVariableRemove_RemoveCertificateMethodType_InputArguments, true
-		case 14184:
-			return OpcuaNodeIdServicesVariableRemove_RemoveConnectionMethodType_InputArguments, true
-		case 14508:
-			return OpcuaNodeIdServicesVariableRemove_RemovePublishedDataSetMethodType_InputArguments, true
-		case 15470:
-			return OpcuaNodeIdServicesVariableRemove_RemoveSecurityGroupMethodType_InputArguments, true
-		case 15500:
-			return OpcuaNodeIdServicesVariableRemove_RemoveExtensionFieldMethodType_InputArguments, true
-		case 15639:
-			return OpcuaNodeIdServicesVariableRemove_RemoveIdentityMethodType_InputArguments, true
-		case 16006:
-			return OpcuaNodeIdServicesVariableRemove_RemoveRoleMethodType_InputArguments, true
-		case 16187:
-			return OpcuaNodeIdServicesVariableRemove_RemoveApplicationMethodType_InputArguments, true
-		case 16191:
-			return OpcuaNodeIdServicesVariableRemove_RemoveEndpointMethodType_InputArguments, true
-		case 17201:
-			return OpcuaNodeIdServicesVariableRemove_RemoveDataSetFolderMethodType_InputArguments, true
-		case 23825:
-			return OpcuaNodeIdServicesVariableRemove_RemoveSubscribedDataSetMethodType_InputArguments, true
-		case 24287:
-			return OpcuaNodeIdServicesVariableRemove_RemoveUserMethodType_InputArguments, true
-		case 25292:
-			return OpcuaNodeIdServicesVariableRemove_RemoveSecurityGroupFolderMethodType_InputArguments, true
-		case 25380:
-			return OpcuaNodeIdServicesVariableRemove_RemovePushTargetMethodType_InputArguments, true
-		case 25385:
-			return OpcuaNodeIdServicesVariableRemove_RemovePushTargetFolderMethodType_InputArguments, true
+	case 12521:
+		return OpcuaNodeIdServicesVariableRemove_RemoveCertificateMethodType_InputArguments, true
+	case 14184:
+		return OpcuaNodeIdServicesVariableRemove_RemoveConnectionMethodType_InputArguments, true
+	case 14508:
+		return OpcuaNodeIdServicesVariableRemove_RemovePublishedDataSetMethodType_InputArguments, true
+	case 15470:
+		return OpcuaNodeIdServicesVariableRemove_RemoveSecurityGroupMethodType_InputArguments, true
+	case 15500:
+		return OpcuaNodeIdServicesVariableRemove_RemoveExtensionFieldMethodType_InputArguments, true
+	case 15639:
+		return OpcuaNodeIdServicesVariableRemove_RemoveIdentityMethodType_InputArguments, true
+	case 16006:
+		return OpcuaNodeIdServicesVariableRemove_RemoveRoleMethodType_InputArguments, true
+	case 16187:
+		return OpcuaNodeIdServicesVariableRemove_RemoveApplicationMethodType_InputArguments, true
+	case 16191:
+		return OpcuaNodeIdServicesVariableRemove_RemoveEndpointMethodType_InputArguments, true
+	case 17201:
+		return OpcuaNodeIdServicesVariableRemove_RemoveDataSetFolderMethodType_InputArguments, true
+	case 23825:
+		return OpcuaNodeIdServicesVariableRemove_RemoveSubscribedDataSetMethodType_InputArguments, true
+	case 24287:
+		return OpcuaNodeIdServicesVariableRemove_RemoveUserMethodType_InputArguments, true
+	case 25292:
+		return OpcuaNodeIdServicesVariableRemove_RemoveSecurityGroupFolderMethodType_InputArguments, true
+	case 25380:
+		return OpcuaNodeIdServicesVariableRemove_RemovePushTargetMethodType_InputArguments, true
+	case 25385:
+		return OpcuaNodeIdServicesVariableRemove_RemovePushTargetFolderMethodType_InputArguments, true
 	}
 	return 0, false
 }
@@ -153,13 +153,13 @@ func OpcuaNodeIdServicesVariableRemoveByName(value string) (enum OpcuaNodeIdServ
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariableRemoveKnows(value int32)  bool {
+func OpcuaNodeIdServicesVariableRemoveKnows(value int32) bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariableRemoveValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastOpcuaNodeIdServicesVariableRemove(structType any) OpcuaNodeIdServicesVariableRemove {
@@ -253,4 +253,3 @@ func (e OpcuaNodeIdServicesVariableRemove) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariableRemove) String() string {
 	return e.PLC4XEnumName()
 }
-

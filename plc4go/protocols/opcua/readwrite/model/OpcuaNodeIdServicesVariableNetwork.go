@@ -40,23 +40,23 @@ type IOpcuaNodeIdServicesVariableNetwork interface {
 	utils.Serializable
 }
 
-const(
-	OpcuaNodeIdServicesVariableNetwork_NetworkAddressType_NetworkInterface_Selections OpcuaNodeIdServicesVariableNetwork = 17582
-	OpcuaNodeIdServicesVariableNetwork_NetworkAddressType_NetworkInterface_SelectionDescriptions OpcuaNodeIdServicesVariableNetwork = 17583
-	OpcuaNodeIdServicesVariableNetwork_NetworkAddressType_NetworkInterface_RestrictToList OpcuaNodeIdServicesVariableNetwork = 17584
-	OpcuaNodeIdServicesVariableNetwork_NetworkAddressUrlType_NetworkInterface_Selections OpcuaNodeIdServicesVariableNetwork = 17585
+const (
+	OpcuaNodeIdServicesVariableNetwork_NetworkAddressType_NetworkInterface_Selections               OpcuaNodeIdServicesVariableNetwork = 17582
+	OpcuaNodeIdServicesVariableNetwork_NetworkAddressType_NetworkInterface_SelectionDescriptions    OpcuaNodeIdServicesVariableNetwork = 17583
+	OpcuaNodeIdServicesVariableNetwork_NetworkAddressType_NetworkInterface_RestrictToList           OpcuaNodeIdServicesVariableNetwork = 17584
+	OpcuaNodeIdServicesVariableNetwork_NetworkAddressUrlType_NetworkInterface_Selections            OpcuaNodeIdServicesVariableNetwork = 17585
 	OpcuaNodeIdServicesVariableNetwork_NetworkAddressUrlType_NetworkInterface_SelectionDescriptions OpcuaNodeIdServicesVariableNetwork = 17586
-	OpcuaNodeIdServicesVariableNetwork_NetworkAddressUrlType_NetworkInterface_RestrictToList OpcuaNodeIdServicesVariableNetwork = 17587
-	OpcuaNodeIdServicesVariableNetwork_NetworkAddressType_NetworkInterface OpcuaNodeIdServicesVariableNetwork = 21146
-	OpcuaNodeIdServicesVariableNetwork_NetworkAddressUrlType_NetworkInterface OpcuaNodeIdServicesVariableNetwork = 21148
-	OpcuaNodeIdServicesVariableNetwork_NetworkAddressUrlType_Url OpcuaNodeIdServicesVariableNetwork = 21149
+	OpcuaNodeIdServicesVariableNetwork_NetworkAddressUrlType_NetworkInterface_RestrictToList        OpcuaNodeIdServicesVariableNetwork = 17587
+	OpcuaNodeIdServicesVariableNetwork_NetworkAddressType_NetworkInterface                          OpcuaNodeIdServicesVariableNetwork = 21146
+	OpcuaNodeIdServicesVariableNetwork_NetworkAddressUrlType_NetworkInterface                       OpcuaNodeIdServicesVariableNetwork = 21148
+	OpcuaNodeIdServicesVariableNetwork_NetworkAddressUrlType_Url                                    OpcuaNodeIdServicesVariableNetwork = 21149
 )
 
 var OpcuaNodeIdServicesVariableNetworkValues []OpcuaNodeIdServicesVariableNetwork
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariableNetworkValues = []OpcuaNodeIdServicesVariableNetwork {
+	OpcuaNodeIdServicesVariableNetworkValues = []OpcuaNodeIdServicesVariableNetwork{
 		OpcuaNodeIdServicesVariableNetwork_NetworkAddressType_NetworkInterface_Selections,
 		OpcuaNodeIdServicesVariableNetwork_NetworkAddressType_NetworkInterface_SelectionDescriptions,
 		OpcuaNodeIdServicesVariableNetwork_NetworkAddressType_NetworkInterface_RestrictToList,
@@ -71,24 +71,24 @@ func init() {
 
 func OpcuaNodeIdServicesVariableNetworkByValue(value int32) (enum OpcuaNodeIdServicesVariableNetwork, ok bool) {
 	switch value {
-		case 17582:
-			return OpcuaNodeIdServicesVariableNetwork_NetworkAddressType_NetworkInterface_Selections, true
-		case 17583:
-			return OpcuaNodeIdServicesVariableNetwork_NetworkAddressType_NetworkInterface_SelectionDescriptions, true
-		case 17584:
-			return OpcuaNodeIdServicesVariableNetwork_NetworkAddressType_NetworkInterface_RestrictToList, true
-		case 17585:
-			return OpcuaNodeIdServicesVariableNetwork_NetworkAddressUrlType_NetworkInterface_Selections, true
-		case 17586:
-			return OpcuaNodeIdServicesVariableNetwork_NetworkAddressUrlType_NetworkInterface_SelectionDescriptions, true
-		case 17587:
-			return OpcuaNodeIdServicesVariableNetwork_NetworkAddressUrlType_NetworkInterface_RestrictToList, true
-		case 21146:
-			return OpcuaNodeIdServicesVariableNetwork_NetworkAddressType_NetworkInterface, true
-		case 21148:
-			return OpcuaNodeIdServicesVariableNetwork_NetworkAddressUrlType_NetworkInterface, true
-		case 21149:
-			return OpcuaNodeIdServicesVariableNetwork_NetworkAddressUrlType_Url, true
+	case 17582:
+		return OpcuaNodeIdServicesVariableNetwork_NetworkAddressType_NetworkInterface_Selections, true
+	case 17583:
+		return OpcuaNodeIdServicesVariableNetwork_NetworkAddressType_NetworkInterface_SelectionDescriptions, true
+	case 17584:
+		return OpcuaNodeIdServicesVariableNetwork_NetworkAddressType_NetworkInterface_RestrictToList, true
+	case 17585:
+		return OpcuaNodeIdServicesVariableNetwork_NetworkAddressUrlType_NetworkInterface_Selections, true
+	case 17586:
+		return OpcuaNodeIdServicesVariableNetwork_NetworkAddressUrlType_NetworkInterface_SelectionDescriptions, true
+	case 17587:
+		return OpcuaNodeIdServicesVariableNetwork_NetworkAddressUrlType_NetworkInterface_RestrictToList, true
+	case 21146:
+		return OpcuaNodeIdServicesVariableNetwork_NetworkAddressType_NetworkInterface, true
+	case 21148:
+		return OpcuaNodeIdServicesVariableNetwork_NetworkAddressUrlType_NetworkInterface, true
+	case 21149:
+		return OpcuaNodeIdServicesVariableNetwork_NetworkAddressUrlType_Url, true
 	}
 	return 0, false
 }
@@ -117,13 +117,13 @@ func OpcuaNodeIdServicesVariableNetworkByName(value string) (enum OpcuaNodeIdSer
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariableNetworkKnows(value int32)  bool {
+func OpcuaNodeIdServicesVariableNetworkKnows(value int32) bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariableNetworkValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastOpcuaNodeIdServicesVariableNetwork(structType any) OpcuaNodeIdServicesVariableNetwork {
@@ -205,4 +205,3 @@ func (e OpcuaNodeIdServicesVariableNetwork) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariableNetwork) String() string {
 	return e.PLC4XEnumName()
 }
-

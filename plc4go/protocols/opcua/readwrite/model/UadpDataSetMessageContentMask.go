@@ -40,13 +40,13 @@ type IUadpDataSetMessageContentMask interface {
 	utils.Serializable
 }
 
-const(
-	UadpDataSetMessageContentMask_uadpDataSetMessageContentMaskNone UadpDataSetMessageContentMask = 0
-	UadpDataSetMessageContentMask_uadpDataSetMessageContentMaskTimestamp UadpDataSetMessageContentMask = 1
-	UadpDataSetMessageContentMask_uadpDataSetMessageContentMaskPicoSeconds UadpDataSetMessageContentMask = 2
-	UadpDataSetMessageContentMask_uadpDataSetMessageContentMaskStatus UadpDataSetMessageContentMask = 4
-	UadpDataSetMessageContentMask_uadpDataSetMessageContentMaskMajorVersion UadpDataSetMessageContentMask = 8
-	UadpDataSetMessageContentMask_uadpDataSetMessageContentMaskMinorVersion UadpDataSetMessageContentMask = 16
+const (
+	UadpDataSetMessageContentMask_uadpDataSetMessageContentMaskNone           UadpDataSetMessageContentMask = 0
+	UadpDataSetMessageContentMask_uadpDataSetMessageContentMaskTimestamp      UadpDataSetMessageContentMask = 1
+	UadpDataSetMessageContentMask_uadpDataSetMessageContentMaskPicoSeconds    UadpDataSetMessageContentMask = 2
+	UadpDataSetMessageContentMask_uadpDataSetMessageContentMaskStatus         UadpDataSetMessageContentMask = 4
+	UadpDataSetMessageContentMask_uadpDataSetMessageContentMaskMajorVersion   UadpDataSetMessageContentMask = 8
+	UadpDataSetMessageContentMask_uadpDataSetMessageContentMaskMinorVersion   UadpDataSetMessageContentMask = 16
 	UadpDataSetMessageContentMask_uadpDataSetMessageContentMaskSequenceNumber UadpDataSetMessageContentMask = 32
 )
 
@@ -54,7 +54,7 @@ var UadpDataSetMessageContentMaskValues []UadpDataSetMessageContentMask
 
 func init() {
 	_ = errors.New
-	UadpDataSetMessageContentMaskValues = []UadpDataSetMessageContentMask {
+	UadpDataSetMessageContentMaskValues = []UadpDataSetMessageContentMask{
 		UadpDataSetMessageContentMask_uadpDataSetMessageContentMaskNone,
 		UadpDataSetMessageContentMask_uadpDataSetMessageContentMaskTimestamp,
 		UadpDataSetMessageContentMask_uadpDataSetMessageContentMaskPicoSeconds,
@@ -67,20 +67,20 @@ func init() {
 
 func UadpDataSetMessageContentMaskByValue(value uint32) (enum UadpDataSetMessageContentMask, ok bool) {
 	switch value {
-		case 0:
-			return UadpDataSetMessageContentMask_uadpDataSetMessageContentMaskNone, true
-		case 1:
-			return UadpDataSetMessageContentMask_uadpDataSetMessageContentMaskTimestamp, true
-		case 16:
-			return UadpDataSetMessageContentMask_uadpDataSetMessageContentMaskMinorVersion, true
-		case 2:
-			return UadpDataSetMessageContentMask_uadpDataSetMessageContentMaskPicoSeconds, true
-		case 32:
-			return UadpDataSetMessageContentMask_uadpDataSetMessageContentMaskSequenceNumber, true
-		case 4:
-			return UadpDataSetMessageContentMask_uadpDataSetMessageContentMaskStatus, true
-		case 8:
-			return UadpDataSetMessageContentMask_uadpDataSetMessageContentMaskMajorVersion, true
+	case 0:
+		return UadpDataSetMessageContentMask_uadpDataSetMessageContentMaskNone, true
+	case 1:
+		return UadpDataSetMessageContentMask_uadpDataSetMessageContentMaskTimestamp, true
+	case 16:
+		return UadpDataSetMessageContentMask_uadpDataSetMessageContentMaskMinorVersion, true
+	case 2:
+		return UadpDataSetMessageContentMask_uadpDataSetMessageContentMaskPicoSeconds, true
+	case 32:
+		return UadpDataSetMessageContentMask_uadpDataSetMessageContentMaskSequenceNumber, true
+	case 4:
+		return UadpDataSetMessageContentMask_uadpDataSetMessageContentMaskStatus, true
+	case 8:
+		return UadpDataSetMessageContentMask_uadpDataSetMessageContentMaskMajorVersion, true
 	}
 	return 0, false
 }
@@ -105,13 +105,13 @@ func UadpDataSetMessageContentMaskByName(value string) (enum UadpDataSetMessageC
 	return 0, false
 }
 
-func UadpDataSetMessageContentMaskKnows(value uint32)  bool {
+func UadpDataSetMessageContentMaskKnows(value uint32) bool {
 	for _, typeValue := range UadpDataSetMessageContentMaskValues {
 		if uint32(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastUadpDataSetMessageContentMask(structType any) UadpDataSetMessageContentMask {
@@ -189,4 +189,3 @@ func (e UadpDataSetMessageContentMask) PLC4XEnumName() string {
 func (e UadpDataSetMessageContentMask) String() string {
 	return e.PLC4XEnumName()
 }
-

@@ -40,7 +40,7 @@ type ISecurityTokenRequestType interface {
 	utils.Serializable
 }
 
-const(
+const (
 	SecurityTokenRequestType_securityTokenRequestTypeIssue SecurityTokenRequestType = 0
 	SecurityTokenRequestType_securityTokenRequestTypeRenew SecurityTokenRequestType = 1
 )
@@ -49,7 +49,7 @@ var SecurityTokenRequestTypeValues []SecurityTokenRequestType
 
 func init() {
 	_ = errors.New
-	SecurityTokenRequestTypeValues = []SecurityTokenRequestType {
+	SecurityTokenRequestTypeValues = []SecurityTokenRequestType{
 		SecurityTokenRequestType_securityTokenRequestTypeIssue,
 		SecurityTokenRequestType_securityTokenRequestTypeRenew,
 	}
@@ -57,10 +57,10 @@ func init() {
 
 func SecurityTokenRequestTypeByValue(value uint32) (enum SecurityTokenRequestType, ok bool) {
 	switch value {
-		case 0:
-			return SecurityTokenRequestType_securityTokenRequestTypeIssue, true
-		case 1:
-			return SecurityTokenRequestType_securityTokenRequestTypeRenew, true
+	case 0:
+		return SecurityTokenRequestType_securityTokenRequestTypeIssue, true
+	case 1:
+		return SecurityTokenRequestType_securityTokenRequestTypeRenew, true
 	}
 	return 0, false
 }
@@ -75,13 +75,13 @@ func SecurityTokenRequestTypeByName(value string) (enum SecurityTokenRequestType
 	return 0, false
 }
 
-func SecurityTokenRequestTypeKnows(value uint32)  bool {
+func SecurityTokenRequestTypeKnows(value uint32) bool {
 	for _, typeValue := range SecurityTokenRequestTypeValues {
 		if uint32(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastSecurityTokenRequestType(structType any) SecurityTokenRequestType {
@@ -149,4 +149,3 @@ func (e SecurityTokenRequestType) PLC4XEnumName() string {
 func (e SecurityTokenRequestType) String() string {
 	return e.PLC4XEnumName()
 }
-

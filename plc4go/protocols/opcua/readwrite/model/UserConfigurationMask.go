@@ -40,11 +40,11 @@ type IUserConfigurationMask interface {
 	utils.Serializable
 }
 
-const(
-	UserConfigurationMask_userConfigurationMaskNone UserConfigurationMask = 0
-	UserConfigurationMask_userConfigurationMaskNoDelete UserConfigurationMask = 1
-	UserConfigurationMask_userConfigurationMaskDisabled UserConfigurationMask = 2
-	UserConfigurationMask_userConfigurationMaskNoChangeByUser UserConfigurationMask = 4
+const (
+	UserConfigurationMask_userConfigurationMaskNone               UserConfigurationMask = 0
+	UserConfigurationMask_userConfigurationMaskNoDelete           UserConfigurationMask = 1
+	UserConfigurationMask_userConfigurationMaskDisabled           UserConfigurationMask = 2
+	UserConfigurationMask_userConfigurationMaskNoChangeByUser     UserConfigurationMask = 4
 	UserConfigurationMask_userConfigurationMaskMustChangePassword UserConfigurationMask = 8
 )
 
@@ -52,7 +52,7 @@ var UserConfigurationMaskValues []UserConfigurationMask
 
 func init() {
 	_ = errors.New
-	UserConfigurationMaskValues = []UserConfigurationMask {
+	UserConfigurationMaskValues = []UserConfigurationMask{
 		UserConfigurationMask_userConfigurationMaskNone,
 		UserConfigurationMask_userConfigurationMaskNoDelete,
 		UserConfigurationMask_userConfigurationMaskDisabled,
@@ -63,16 +63,16 @@ func init() {
 
 func UserConfigurationMaskByValue(value uint32) (enum UserConfigurationMask, ok bool) {
 	switch value {
-		case 0:
-			return UserConfigurationMask_userConfigurationMaskNone, true
-		case 1:
-			return UserConfigurationMask_userConfigurationMaskNoDelete, true
-		case 2:
-			return UserConfigurationMask_userConfigurationMaskDisabled, true
-		case 4:
-			return UserConfigurationMask_userConfigurationMaskNoChangeByUser, true
-		case 8:
-			return UserConfigurationMask_userConfigurationMaskMustChangePassword, true
+	case 0:
+		return UserConfigurationMask_userConfigurationMaskNone, true
+	case 1:
+		return UserConfigurationMask_userConfigurationMaskNoDelete, true
+	case 2:
+		return UserConfigurationMask_userConfigurationMaskDisabled, true
+	case 4:
+		return UserConfigurationMask_userConfigurationMaskNoChangeByUser, true
+	case 8:
+		return UserConfigurationMask_userConfigurationMaskMustChangePassword, true
 	}
 	return 0, false
 }
@@ -93,13 +93,13 @@ func UserConfigurationMaskByName(value string) (enum UserConfigurationMask, ok b
 	return 0, false
 }
 
-func UserConfigurationMaskKnows(value uint32)  bool {
+func UserConfigurationMaskKnows(value uint32) bool {
 	for _, typeValue := range UserConfigurationMaskValues {
 		if uint32(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastUserConfigurationMask(structType any) UserConfigurationMask {
@@ -173,4 +173,3 @@ func (e UserConfigurationMask) PLC4XEnumName() string {
 func (e UserConfigurationMask) String() string {
 	return e.PLC4XEnumName()
 }
-

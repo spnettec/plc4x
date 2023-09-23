@@ -40,8 +40,8 @@ type IOpcuaNodeIdServicesVariableUpdate interface {
 	utils.Serializable
 }
 
-const(
-	OpcuaNodeIdServicesVariableUpdate_UpdateCertificateMethodType_InputArguments OpcuaNodeIdServicesVariableUpdate = 12579
+const (
+	OpcuaNodeIdServicesVariableUpdate_UpdateCertificateMethodType_InputArguments  OpcuaNodeIdServicesVariableUpdate = 12579
 	OpcuaNodeIdServicesVariableUpdate_UpdateCertificateMethodType_OutputArguments OpcuaNodeIdServicesVariableUpdate = 12580
 )
 
@@ -49,7 +49,7 @@ var OpcuaNodeIdServicesVariableUpdateValues []OpcuaNodeIdServicesVariableUpdate
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariableUpdateValues = []OpcuaNodeIdServicesVariableUpdate {
+	OpcuaNodeIdServicesVariableUpdateValues = []OpcuaNodeIdServicesVariableUpdate{
 		OpcuaNodeIdServicesVariableUpdate_UpdateCertificateMethodType_InputArguments,
 		OpcuaNodeIdServicesVariableUpdate_UpdateCertificateMethodType_OutputArguments,
 	}
@@ -57,10 +57,10 @@ func init() {
 
 func OpcuaNodeIdServicesVariableUpdateByValue(value int32) (enum OpcuaNodeIdServicesVariableUpdate, ok bool) {
 	switch value {
-		case 12579:
-			return OpcuaNodeIdServicesVariableUpdate_UpdateCertificateMethodType_InputArguments, true
-		case 12580:
-			return OpcuaNodeIdServicesVariableUpdate_UpdateCertificateMethodType_OutputArguments, true
+	case 12579:
+		return OpcuaNodeIdServicesVariableUpdate_UpdateCertificateMethodType_InputArguments, true
+	case 12580:
+		return OpcuaNodeIdServicesVariableUpdate_UpdateCertificateMethodType_OutputArguments, true
 	}
 	return 0, false
 }
@@ -75,13 +75,13 @@ func OpcuaNodeIdServicesVariableUpdateByName(value string) (enum OpcuaNodeIdServ
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariableUpdateKnows(value int32)  bool {
+func OpcuaNodeIdServicesVariableUpdateKnows(value int32) bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariableUpdateValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastOpcuaNodeIdServicesVariableUpdate(structType any) OpcuaNodeIdServicesVariableUpdate {
@@ -149,4 +149,3 @@ func (e OpcuaNodeIdServicesVariableUpdate) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariableUpdate) String() string {
 	return e.PLC4XEnumName()
 }
-

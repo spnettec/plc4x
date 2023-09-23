@@ -40,9 +40,9 @@ type IMonitoringMode interface {
 	utils.Serializable
 }
 
-const(
-	MonitoringMode_monitoringModeDisabled MonitoringMode = 0
-	MonitoringMode_monitoringModeSampling MonitoringMode = 1
+const (
+	MonitoringMode_monitoringModeDisabled  MonitoringMode = 0
+	MonitoringMode_monitoringModeSampling  MonitoringMode = 1
 	MonitoringMode_monitoringModeReporting MonitoringMode = 2
 )
 
@@ -50,7 +50,7 @@ var MonitoringModeValues []MonitoringMode
 
 func init() {
 	_ = errors.New
-	MonitoringModeValues = []MonitoringMode {
+	MonitoringModeValues = []MonitoringMode{
 		MonitoringMode_monitoringModeDisabled,
 		MonitoringMode_monitoringModeSampling,
 		MonitoringMode_monitoringModeReporting,
@@ -59,12 +59,12 @@ func init() {
 
 func MonitoringModeByValue(value uint32) (enum MonitoringMode, ok bool) {
 	switch value {
-		case 0:
-			return MonitoringMode_monitoringModeDisabled, true
-		case 1:
-			return MonitoringMode_monitoringModeSampling, true
-		case 2:
-			return MonitoringMode_monitoringModeReporting, true
+	case 0:
+		return MonitoringMode_monitoringModeDisabled, true
+	case 1:
+		return MonitoringMode_monitoringModeSampling, true
+	case 2:
+		return MonitoringMode_monitoringModeReporting, true
 	}
 	return 0, false
 }
@@ -81,13 +81,13 @@ func MonitoringModeByName(value string) (enum MonitoringMode, ok bool) {
 	return 0, false
 }
 
-func MonitoringModeKnows(value uint32)  bool {
+func MonitoringModeKnows(value uint32) bool {
 	for _, typeValue := range MonitoringModeValues {
 		if uint32(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastMonitoringMode(structType any) MonitoringMode {
@@ -157,4 +157,3 @@ func (e MonitoringMode) PLC4XEnumName() string {
 func (e MonitoringMode) String() string {
 	return e.PLC4XEnumName()
 }
-

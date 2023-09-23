@@ -40,9 +40,9 @@ type IOpcuaNodeIdServicesVariableAudio interface {
 	utils.Serializable
 }
 
-const(
-	OpcuaNodeIdServicesVariableAudio_AudioVariableType_ListId OpcuaNodeIdServicesVariableAudio = 17988
-	OpcuaNodeIdServicesVariableAudio_AudioVariableType_AgencyId OpcuaNodeIdServicesVariableAudio = 17989
+const (
+	OpcuaNodeIdServicesVariableAudio_AudioVariableType_ListId    OpcuaNodeIdServicesVariableAudio = 17988
+	OpcuaNodeIdServicesVariableAudio_AudioVariableType_AgencyId  OpcuaNodeIdServicesVariableAudio = 17989
 	OpcuaNodeIdServicesVariableAudio_AudioVariableType_VersionId OpcuaNodeIdServicesVariableAudio = 17990
 )
 
@@ -50,7 +50,7 @@ var OpcuaNodeIdServicesVariableAudioValues []OpcuaNodeIdServicesVariableAudio
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariableAudioValues = []OpcuaNodeIdServicesVariableAudio {
+	OpcuaNodeIdServicesVariableAudioValues = []OpcuaNodeIdServicesVariableAudio{
 		OpcuaNodeIdServicesVariableAudio_AudioVariableType_ListId,
 		OpcuaNodeIdServicesVariableAudio_AudioVariableType_AgencyId,
 		OpcuaNodeIdServicesVariableAudio_AudioVariableType_VersionId,
@@ -59,12 +59,12 @@ func init() {
 
 func OpcuaNodeIdServicesVariableAudioByValue(value int32) (enum OpcuaNodeIdServicesVariableAudio, ok bool) {
 	switch value {
-		case 17988:
-			return OpcuaNodeIdServicesVariableAudio_AudioVariableType_ListId, true
-		case 17989:
-			return OpcuaNodeIdServicesVariableAudio_AudioVariableType_AgencyId, true
-		case 17990:
-			return OpcuaNodeIdServicesVariableAudio_AudioVariableType_VersionId, true
+	case 17988:
+		return OpcuaNodeIdServicesVariableAudio_AudioVariableType_ListId, true
+	case 17989:
+		return OpcuaNodeIdServicesVariableAudio_AudioVariableType_AgencyId, true
+	case 17990:
+		return OpcuaNodeIdServicesVariableAudio_AudioVariableType_VersionId, true
 	}
 	return 0, false
 }
@@ -81,13 +81,13 @@ func OpcuaNodeIdServicesVariableAudioByName(value string) (enum OpcuaNodeIdServi
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariableAudioKnows(value int32)  bool {
+func OpcuaNodeIdServicesVariableAudioKnows(value int32) bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariableAudioValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastOpcuaNodeIdServicesVariableAudio(structType any) OpcuaNodeIdServicesVariableAudio {
@@ -157,4 +157,3 @@ func (e OpcuaNodeIdServicesVariableAudio) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariableAudio) String() string {
 	return e.PLC4XEnumName()
 }
-

@@ -40,41 +40,41 @@ type IOpcuaNodeIdServicesVariableNamespace interface {
 	utils.Serializable
 }
 
-const(
-	OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_NamespaceUri OpcuaNodeIdServicesVariableNamespace = 11617
-	OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_NamespaceVersion OpcuaNodeIdServicesVariableNamespace = 11618
-	OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_NamespacePublicationDate OpcuaNodeIdServicesVariableNamespace = 11619
-	OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_IsNamespaceSubset OpcuaNodeIdServicesVariableNamespace = 11620
-	OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_StaticNodeIdTypes OpcuaNodeIdServicesVariableNamespace = 11621
-	OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_StaticNumericNodeIdRange OpcuaNodeIdServicesVariableNamespace = 11622
-	OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_StaticStringNodeIdPattern OpcuaNodeIdServicesVariableNamespace = 11623
-	OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_NamespaceFile_Size OpcuaNodeIdServicesVariableNamespace = 11625
-	OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_NamespaceFile_OpenCount OpcuaNodeIdServicesVariableNamespace = 11628
-	OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_NamespaceFile_Open_InputArguments OpcuaNodeIdServicesVariableNamespace = 11630
-	OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_NamespaceFile_Open_OutputArguments OpcuaNodeIdServicesVariableNamespace = 11631
-	OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_NamespaceFile_Close_InputArguments OpcuaNodeIdServicesVariableNamespace = 11633
-	OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_NamespaceFile_Read_InputArguments OpcuaNodeIdServicesVariableNamespace = 11635
-	OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_NamespaceFile_Read_OutputArguments OpcuaNodeIdServicesVariableNamespace = 11636
-	OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_NamespaceFile_Write_InputArguments OpcuaNodeIdServicesVariableNamespace = 11638
-	OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_NamespaceFile_GetPosition_InputArguments OpcuaNodeIdServicesVariableNamespace = 11640
+const (
+	OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_NamespaceUri                              OpcuaNodeIdServicesVariableNamespace = 11617
+	OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_NamespaceVersion                          OpcuaNodeIdServicesVariableNamespace = 11618
+	OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_NamespacePublicationDate                  OpcuaNodeIdServicesVariableNamespace = 11619
+	OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_IsNamespaceSubset                         OpcuaNodeIdServicesVariableNamespace = 11620
+	OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_StaticNodeIdTypes                         OpcuaNodeIdServicesVariableNamespace = 11621
+	OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_StaticNumericNodeIdRange                  OpcuaNodeIdServicesVariableNamespace = 11622
+	OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_StaticStringNodeIdPattern                 OpcuaNodeIdServicesVariableNamespace = 11623
+	OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_NamespaceFile_Size                        OpcuaNodeIdServicesVariableNamespace = 11625
+	OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_NamespaceFile_OpenCount                   OpcuaNodeIdServicesVariableNamespace = 11628
+	OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_NamespaceFile_Open_InputArguments         OpcuaNodeIdServicesVariableNamespace = 11630
+	OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_NamespaceFile_Open_OutputArguments        OpcuaNodeIdServicesVariableNamespace = 11631
+	OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_NamespaceFile_Close_InputArguments        OpcuaNodeIdServicesVariableNamespace = 11633
+	OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_NamespaceFile_Read_InputArguments         OpcuaNodeIdServicesVariableNamespace = 11635
+	OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_NamespaceFile_Read_OutputArguments        OpcuaNodeIdServicesVariableNamespace = 11636
+	OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_NamespaceFile_Write_InputArguments        OpcuaNodeIdServicesVariableNamespace = 11638
+	OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_NamespaceFile_GetPosition_InputArguments  OpcuaNodeIdServicesVariableNamespace = 11640
 	OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_NamespaceFile_GetPosition_OutputArguments OpcuaNodeIdServicesVariableNamespace = 11641
-	OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_NamespaceFile_SetPosition_InputArguments OpcuaNodeIdServicesVariableNamespace = 11643
-	OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_NamespaceFile_Writable OpcuaNodeIdServicesVariableNamespace = 12690
-	OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_NamespaceFile_UserWritable OpcuaNodeIdServicesVariableNamespace = 12691
-	OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_NamespaceFile_MimeType OpcuaNodeIdServicesVariableNamespace = 13399
-	OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_DefaultRolePermissions OpcuaNodeIdServicesVariableNamespace = 16137
-	OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_DefaultUserRolePermissions OpcuaNodeIdServicesVariableNamespace = 16138
-	OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_DefaultAccessRestrictions OpcuaNodeIdServicesVariableNamespace = 16139
-	OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_NamespaceFile_MaxByteStringLength OpcuaNodeIdServicesVariableNamespace = 24246
-	OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_NamespaceFile_LastModifiedTime OpcuaNodeIdServicesVariableNamespace = 25202
-	OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_ConfigurationVersion OpcuaNodeIdServicesVariableNamespace = 25267
+	OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_NamespaceFile_SetPosition_InputArguments  OpcuaNodeIdServicesVariableNamespace = 11643
+	OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_NamespaceFile_Writable                    OpcuaNodeIdServicesVariableNamespace = 12690
+	OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_NamespaceFile_UserWritable                OpcuaNodeIdServicesVariableNamespace = 12691
+	OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_NamespaceFile_MimeType                    OpcuaNodeIdServicesVariableNamespace = 13399
+	OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_DefaultRolePermissions                    OpcuaNodeIdServicesVariableNamespace = 16137
+	OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_DefaultUserRolePermissions                OpcuaNodeIdServicesVariableNamespace = 16138
+	OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_DefaultAccessRestrictions                 OpcuaNodeIdServicesVariableNamespace = 16139
+	OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_NamespaceFile_MaxByteStringLength         OpcuaNodeIdServicesVariableNamespace = 24246
+	OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_NamespaceFile_LastModifiedTime            OpcuaNodeIdServicesVariableNamespace = 25202
+	OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_ConfigurationVersion                      OpcuaNodeIdServicesVariableNamespace = 25267
 )
 
 var OpcuaNodeIdServicesVariableNamespaceValues []OpcuaNodeIdServicesVariableNamespace
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariableNamespaceValues = []OpcuaNodeIdServicesVariableNamespace {
+	OpcuaNodeIdServicesVariableNamespaceValues = []OpcuaNodeIdServicesVariableNamespace{
 		OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_NamespaceUri,
 		OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_NamespaceVersion,
 		OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_NamespacePublicationDate,
@@ -107,60 +107,60 @@ func init() {
 
 func OpcuaNodeIdServicesVariableNamespaceByValue(value int32) (enum OpcuaNodeIdServicesVariableNamespace, ok bool) {
 	switch value {
-		case 11617:
-			return OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_NamespaceUri, true
-		case 11618:
-			return OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_NamespaceVersion, true
-		case 11619:
-			return OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_NamespacePublicationDate, true
-		case 11620:
-			return OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_IsNamespaceSubset, true
-		case 11621:
-			return OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_StaticNodeIdTypes, true
-		case 11622:
-			return OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_StaticNumericNodeIdRange, true
-		case 11623:
-			return OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_StaticStringNodeIdPattern, true
-		case 11625:
-			return OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_NamespaceFile_Size, true
-		case 11628:
-			return OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_NamespaceFile_OpenCount, true
-		case 11630:
-			return OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_NamespaceFile_Open_InputArguments, true
-		case 11631:
-			return OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_NamespaceFile_Open_OutputArguments, true
-		case 11633:
-			return OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_NamespaceFile_Close_InputArguments, true
-		case 11635:
-			return OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_NamespaceFile_Read_InputArguments, true
-		case 11636:
-			return OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_NamespaceFile_Read_OutputArguments, true
-		case 11638:
-			return OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_NamespaceFile_Write_InputArguments, true
-		case 11640:
-			return OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_NamespaceFile_GetPosition_InputArguments, true
-		case 11641:
-			return OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_NamespaceFile_GetPosition_OutputArguments, true
-		case 11643:
-			return OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_NamespaceFile_SetPosition_InputArguments, true
-		case 12690:
-			return OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_NamespaceFile_Writable, true
-		case 12691:
-			return OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_NamespaceFile_UserWritable, true
-		case 13399:
-			return OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_NamespaceFile_MimeType, true
-		case 16137:
-			return OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_DefaultRolePermissions, true
-		case 16138:
-			return OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_DefaultUserRolePermissions, true
-		case 16139:
-			return OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_DefaultAccessRestrictions, true
-		case 24246:
-			return OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_NamespaceFile_MaxByteStringLength, true
-		case 25202:
-			return OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_NamespaceFile_LastModifiedTime, true
-		case 25267:
-			return OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_ConfigurationVersion, true
+	case 11617:
+		return OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_NamespaceUri, true
+	case 11618:
+		return OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_NamespaceVersion, true
+	case 11619:
+		return OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_NamespacePublicationDate, true
+	case 11620:
+		return OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_IsNamespaceSubset, true
+	case 11621:
+		return OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_StaticNodeIdTypes, true
+	case 11622:
+		return OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_StaticNumericNodeIdRange, true
+	case 11623:
+		return OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_StaticStringNodeIdPattern, true
+	case 11625:
+		return OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_NamespaceFile_Size, true
+	case 11628:
+		return OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_NamespaceFile_OpenCount, true
+	case 11630:
+		return OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_NamespaceFile_Open_InputArguments, true
+	case 11631:
+		return OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_NamespaceFile_Open_OutputArguments, true
+	case 11633:
+		return OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_NamespaceFile_Close_InputArguments, true
+	case 11635:
+		return OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_NamespaceFile_Read_InputArguments, true
+	case 11636:
+		return OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_NamespaceFile_Read_OutputArguments, true
+	case 11638:
+		return OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_NamespaceFile_Write_InputArguments, true
+	case 11640:
+		return OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_NamespaceFile_GetPosition_InputArguments, true
+	case 11641:
+		return OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_NamespaceFile_GetPosition_OutputArguments, true
+	case 11643:
+		return OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_NamespaceFile_SetPosition_InputArguments, true
+	case 12690:
+		return OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_NamespaceFile_Writable, true
+	case 12691:
+		return OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_NamespaceFile_UserWritable, true
+	case 13399:
+		return OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_NamespaceFile_MimeType, true
+	case 16137:
+		return OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_DefaultRolePermissions, true
+	case 16138:
+		return OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_DefaultUserRolePermissions, true
+	case 16139:
+		return OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_DefaultAccessRestrictions, true
+	case 24246:
+		return OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_NamespaceFile_MaxByteStringLength, true
+	case 25202:
+		return OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_NamespaceFile_LastModifiedTime, true
+	case 25267:
+		return OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_ConfigurationVersion, true
 	}
 	return 0, false
 }
@@ -225,13 +225,13 @@ func OpcuaNodeIdServicesVariableNamespaceByName(value string) (enum OpcuaNodeIdS
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariableNamespaceKnows(value int32)  bool {
+func OpcuaNodeIdServicesVariableNamespaceKnows(value int32) bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariableNamespaceValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastOpcuaNodeIdServicesVariableNamespace(structType any) OpcuaNodeIdServicesVariableNamespace {
@@ -349,4 +349,3 @@ func (e OpcuaNodeIdServicesVariableNamespace) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariableNamespace) String() string {
 	return e.PLC4XEnumName()
 }
-

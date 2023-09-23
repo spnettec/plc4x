@@ -40,39 +40,39 @@ type IOpcuaNodeIdServicesVariableDatagram interface {
 	utils.Serializable
 }
 
-const(
-	OpcuaNodeIdServicesVariableDatagram_DatagramConnectionTransportType_DiscoveryAddress_NetworkInterface OpcuaNodeIdServicesVariableDatagram = 15154
-	OpcuaNodeIdServicesVariableDatagram_DatagramConnectionTransportType_DiscoveryAddress_NetworkInterface_Selections OpcuaNodeIdServicesVariableDatagram = 17579
+const (
+	OpcuaNodeIdServicesVariableDatagram_DatagramConnectionTransportType_DiscoveryAddress_NetworkInterface                       OpcuaNodeIdServicesVariableDatagram = 15154
+	OpcuaNodeIdServicesVariableDatagram_DatagramConnectionTransportType_DiscoveryAddress_NetworkInterface_Selections            OpcuaNodeIdServicesVariableDatagram = 17579
 	OpcuaNodeIdServicesVariableDatagram_DatagramConnectionTransportType_DiscoveryAddress_NetworkInterface_SelectionDescriptions OpcuaNodeIdServicesVariableDatagram = 17580
-	OpcuaNodeIdServicesVariableDatagram_DatagramConnectionTransportType_DiscoveryAddress_NetworkInterface_RestrictToList OpcuaNodeIdServicesVariableDatagram = 17581
-	OpcuaNodeIdServicesVariableDatagram_DatagramWriterGroupTransportType_MessageRepeatCount OpcuaNodeIdServicesVariableDatagram = 21134
-	OpcuaNodeIdServicesVariableDatagram_DatagramWriterGroupTransportType_MessageRepeatDelay OpcuaNodeIdServicesVariableDatagram = 21135
-	OpcuaNodeIdServicesVariableDatagram_DatagramConnectionTransportType_DiscoveryAnnounceRate OpcuaNodeIdServicesVariableDatagram = 23839
-	OpcuaNodeIdServicesVariableDatagram_DatagramConnectionTransportType_DiscoveryMaxMessageSize OpcuaNodeIdServicesVariableDatagram = 23840
-	OpcuaNodeIdServicesVariableDatagram_DatagramWriterGroupTransportType_Address_NetworkInterface OpcuaNodeIdServicesVariableDatagram = 23843
-	OpcuaNodeIdServicesVariableDatagram_DatagramWriterGroupTransportType_Address_NetworkInterface_Selections OpcuaNodeIdServicesVariableDatagram = 23844
-	OpcuaNodeIdServicesVariableDatagram_DatagramWriterGroupTransportType_Address_NetworkInterface_SelectionDescriptions OpcuaNodeIdServicesVariableDatagram = 23845
-	OpcuaNodeIdServicesVariableDatagram_DatagramWriterGroupTransportType_Address_NetworkInterface_RestrictToList OpcuaNodeIdServicesVariableDatagram = 23846
-	OpcuaNodeIdServicesVariableDatagram_DatagramWriterGroupTransportType_DatagramQos OpcuaNodeIdServicesVariableDatagram = 23847
-	OpcuaNodeIdServicesVariableDatagram_DatagramWriterGroupTransportType_DiscoveryAnnounceRate OpcuaNodeIdServicesVariableDatagram = 23848
-	OpcuaNodeIdServicesVariableDatagram_DatagramWriterGroupTransportType_Topic OpcuaNodeIdServicesVariableDatagram = 23849
-	OpcuaNodeIdServicesVariableDatagram_DatagramDataSetReaderTransportType_Address_NetworkInterface OpcuaNodeIdServicesVariableDatagram = 24018
-	OpcuaNodeIdServicesVariableDatagram_DatagramDataSetReaderTransportType_Address_NetworkInterface_Selections OpcuaNodeIdServicesVariableDatagram = 24019
-	OpcuaNodeIdServicesVariableDatagram_DatagramDataSetReaderTransportType_Address_NetworkInterface_SelectionDescriptions OpcuaNodeIdServicesVariableDatagram = 24020
-	OpcuaNodeIdServicesVariableDatagram_DatagramDataSetReaderTransportType_Address_NetworkInterface_RestrictToList OpcuaNodeIdServicesVariableDatagram = 24021
-	OpcuaNodeIdServicesVariableDatagram_DatagramDataSetReaderTransportType_DatagramQos OpcuaNodeIdServicesVariableDatagram = 24022
-	OpcuaNodeIdServicesVariableDatagram_DatagramDataSetReaderTransportType_Topic OpcuaNodeIdServicesVariableDatagram = 24023
-	OpcuaNodeIdServicesVariableDatagram_DatagramConnectionTransportType_QosCategory OpcuaNodeIdServicesVariableDatagram = 25525
-	OpcuaNodeIdServicesVariableDatagram_DatagramConnectionTransportType_DatagramQos OpcuaNodeIdServicesVariableDatagram = 25526
-	OpcuaNodeIdServicesVariableDatagram_DatagramWriterGroupTransportType_QosCategory OpcuaNodeIdServicesVariableDatagram = 25527
-	OpcuaNodeIdServicesVariableDatagram_DatagramDataSetReaderTransportType_QosCategory OpcuaNodeIdServicesVariableDatagram = 25528
+	OpcuaNodeIdServicesVariableDatagram_DatagramConnectionTransportType_DiscoveryAddress_NetworkInterface_RestrictToList        OpcuaNodeIdServicesVariableDatagram = 17581
+	OpcuaNodeIdServicesVariableDatagram_DatagramWriterGroupTransportType_MessageRepeatCount                                     OpcuaNodeIdServicesVariableDatagram = 21134
+	OpcuaNodeIdServicesVariableDatagram_DatagramWriterGroupTransportType_MessageRepeatDelay                                     OpcuaNodeIdServicesVariableDatagram = 21135
+	OpcuaNodeIdServicesVariableDatagram_DatagramConnectionTransportType_DiscoveryAnnounceRate                                   OpcuaNodeIdServicesVariableDatagram = 23839
+	OpcuaNodeIdServicesVariableDatagram_DatagramConnectionTransportType_DiscoveryMaxMessageSize                                 OpcuaNodeIdServicesVariableDatagram = 23840
+	OpcuaNodeIdServicesVariableDatagram_DatagramWriterGroupTransportType_Address_NetworkInterface                               OpcuaNodeIdServicesVariableDatagram = 23843
+	OpcuaNodeIdServicesVariableDatagram_DatagramWriterGroupTransportType_Address_NetworkInterface_Selections                    OpcuaNodeIdServicesVariableDatagram = 23844
+	OpcuaNodeIdServicesVariableDatagram_DatagramWriterGroupTransportType_Address_NetworkInterface_SelectionDescriptions         OpcuaNodeIdServicesVariableDatagram = 23845
+	OpcuaNodeIdServicesVariableDatagram_DatagramWriterGroupTransportType_Address_NetworkInterface_RestrictToList                OpcuaNodeIdServicesVariableDatagram = 23846
+	OpcuaNodeIdServicesVariableDatagram_DatagramWriterGroupTransportType_DatagramQos                                            OpcuaNodeIdServicesVariableDatagram = 23847
+	OpcuaNodeIdServicesVariableDatagram_DatagramWriterGroupTransportType_DiscoveryAnnounceRate                                  OpcuaNodeIdServicesVariableDatagram = 23848
+	OpcuaNodeIdServicesVariableDatagram_DatagramWriterGroupTransportType_Topic                                                  OpcuaNodeIdServicesVariableDatagram = 23849
+	OpcuaNodeIdServicesVariableDatagram_DatagramDataSetReaderTransportType_Address_NetworkInterface                             OpcuaNodeIdServicesVariableDatagram = 24018
+	OpcuaNodeIdServicesVariableDatagram_DatagramDataSetReaderTransportType_Address_NetworkInterface_Selections                  OpcuaNodeIdServicesVariableDatagram = 24019
+	OpcuaNodeIdServicesVariableDatagram_DatagramDataSetReaderTransportType_Address_NetworkInterface_SelectionDescriptions       OpcuaNodeIdServicesVariableDatagram = 24020
+	OpcuaNodeIdServicesVariableDatagram_DatagramDataSetReaderTransportType_Address_NetworkInterface_RestrictToList              OpcuaNodeIdServicesVariableDatagram = 24021
+	OpcuaNodeIdServicesVariableDatagram_DatagramDataSetReaderTransportType_DatagramQos                                          OpcuaNodeIdServicesVariableDatagram = 24022
+	OpcuaNodeIdServicesVariableDatagram_DatagramDataSetReaderTransportType_Topic                                                OpcuaNodeIdServicesVariableDatagram = 24023
+	OpcuaNodeIdServicesVariableDatagram_DatagramConnectionTransportType_QosCategory                                             OpcuaNodeIdServicesVariableDatagram = 25525
+	OpcuaNodeIdServicesVariableDatagram_DatagramConnectionTransportType_DatagramQos                                             OpcuaNodeIdServicesVariableDatagram = 25526
+	OpcuaNodeIdServicesVariableDatagram_DatagramWriterGroupTransportType_QosCategory                                            OpcuaNodeIdServicesVariableDatagram = 25527
+	OpcuaNodeIdServicesVariableDatagram_DatagramDataSetReaderTransportType_QosCategory                                          OpcuaNodeIdServicesVariableDatagram = 25528
 )
 
 var OpcuaNodeIdServicesVariableDatagramValues []OpcuaNodeIdServicesVariableDatagram
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariableDatagramValues = []OpcuaNodeIdServicesVariableDatagram {
+	OpcuaNodeIdServicesVariableDatagramValues = []OpcuaNodeIdServicesVariableDatagram{
 		OpcuaNodeIdServicesVariableDatagram_DatagramConnectionTransportType_DiscoveryAddress_NetworkInterface,
 		OpcuaNodeIdServicesVariableDatagram_DatagramConnectionTransportType_DiscoveryAddress_NetworkInterface_Selections,
 		OpcuaNodeIdServicesVariableDatagram_DatagramConnectionTransportType_DiscoveryAddress_NetworkInterface_SelectionDescriptions,
@@ -103,56 +103,56 @@ func init() {
 
 func OpcuaNodeIdServicesVariableDatagramByValue(value int32) (enum OpcuaNodeIdServicesVariableDatagram, ok bool) {
 	switch value {
-		case 15154:
-			return OpcuaNodeIdServicesVariableDatagram_DatagramConnectionTransportType_DiscoveryAddress_NetworkInterface, true
-		case 17579:
-			return OpcuaNodeIdServicesVariableDatagram_DatagramConnectionTransportType_DiscoveryAddress_NetworkInterface_Selections, true
-		case 17580:
-			return OpcuaNodeIdServicesVariableDatagram_DatagramConnectionTransportType_DiscoveryAddress_NetworkInterface_SelectionDescriptions, true
-		case 17581:
-			return OpcuaNodeIdServicesVariableDatagram_DatagramConnectionTransportType_DiscoveryAddress_NetworkInterface_RestrictToList, true
-		case 21134:
-			return OpcuaNodeIdServicesVariableDatagram_DatagramWriterGroupTransportType_MessageRepeatCount, true
-		case 21135:
-			return OpcuaNodeIdServicesVariableDatagram_DatagramWriterGroupTransportType_MessageRepeatDelay, true
-		case 23839:
-			return OpcuaNodeIdServicesVariableDatagram_DatagramConnectionTransportType_DiscoveryAnnounceRate, true
-		case 23840:
-			return OpcuaNodeIdServicesVariableDatagram_DatagramConnectionTransportType_DiscoveryMaxMessageSize, true
-		case 23843:
-			return OpcuaNodeIdServicesVariableDatagram_DatagramWriterGroupTransportType_Address_NetworkInterface, true
-		case 23844:
-			return OpcuaNodeIdServicesVariableDatagram_DatagramWriterGroupTransportType_Address_NetworkInterface_Selections, true
-		case 23845:
-			return OpcuaNodeIdServicesVariableDatagram_DatagramWriterGroupTransportType_Address_NetworkInterface_SelectionDescriptions, true
-		case 23846:
-			return OpcuaNodeIdServicesVariableDatagram_DatagramWriterGroupTransportType_Address_NetworkInterface_RestrictToList, true
-		case 23847:
-			return OpcuaNodeIdServicesVariableDatagram_DatagramWriterGroupTransportType_DatagramQos, true
-		case 23848:
-			return OpcuaNodeIdServicesVariableDatagram_DatagramWriterGroupTransportType_DiscoveryAnnounceRate, true
-		case 23849:
-			return OpcuaNodeIdServicesVariableDatagram_DatagramWriterGroupTransportType_Topic, true
-		case 24018:
-			return OpcuaNodeIdServicesVariableDatagram_DatagramDataSetReaderTransportType_Address_NetworkInterface, true
-		case 24019:
-			return OpcuaNodeIdServicesVariableDatagram_DatagramDataSetReaderTransportType_Address_NetworkInterface_Selections, true
-		case 24020:
-			return OpcuaNodeIdServicesVariableDatagram_DatagramDataSetReaderTransportType_Address_NetworkInterface_SelectionDescriptions, true
-		case 24021:
-			return OpcuaNodeIdServicesVariableDatagram_DatagramDataSetReaderTransportType_Address_NetworkInterface_RestrictToList, true
-		case 24022:
-			return OpcuaNodeIdServicesVariableDatagram_DatagramDataSetReaderTransportType_DatagramQos, true
-		case 24023:
-			return OpcuaNodeIdServicesVariableDatagram_DatagramDataSetReaderTransportType_Topic, true
-		case 25525:
-			return OpcuaNodeIdServicesVariableDatagram_DatagramConnectionTransportType_QosCategory, true
-		case 25526:
-			return OpcuaNodeIdServicesVariableDatagram_DatagramConnectionTransportType_DatagramQos, true
-		case 25527:
-			return OpcuaNodeIdServicesVariableDatagram_DatagramWriterGroupTransportType_QosCategory, true
-		case 25528:
-			return OpcuaNodeIdServicesVariableDatagram_DatagramDataSetReaderTransportType_QosCategory, true
+	case 15154:
+		return OpcuaNodeIdServicesVariableDatagram_DatagramConnectionTransportType_DiscoveryAddress_NetworkInterface, true
+	case 17579:
+		return OpcuaNodeIdServicesVariableDatagram_DatagramConnectionTransportType_DiscoveryAddress_NetworkInterface_Selections, true
+	case 17580:
+		return OpcuaNodeIdServicesVariableDatagram_DatagramConnectionTransportType_DiscoveryAddress_NetworkInterface_SelectionDescriptions, true
+	case 17581:
+		return OpcuaNodeIdServicesVariableDatagram_DatagramConnectionTransportType_DiscoveryAddress_NetworkInterface_RestrictToList, true
+	case 21134:
+		return OpcuaNodeIdServicesVariableDatagram_DatagramWriterGroupTransportType_MessageRepeatCount, true
+	case 21135:
+		return OpcuaNodeIdServicesVariableDatagram_DatagramWriterGroupTransportType_MessageRepeatDelay, true
+	case 23839:
+		return OpcuaNodeIdServicesVariableDatagram_DatagramConnectionTransportType_DiscoveryAnnounceRate, true
+	case 23840:
+		return OpcuaNodeIdServicesVariableDatagram_DatagramConnectionTransportType_DiscoveryMaxMessageSize, true
+	case 23843:
+		return OpcuaNodeIdServicesVariableDatagram_DatagramWriterGroupTransportType_Address_NetworkInterface, true
+	case 23844:
+		return OpcuaNodeIdServicesVariableDatagram_DatagramWriterGroupTransportType_Address_NetworkInterface_Selections, true
+	case 23845:
+		return OpcuaNodeIdServicesVariableDatagram_DatagramWriterGroupTransportType_Address_NetworkInterface_SelectionDescriptions, true
+	case 23846:
+		return OpcuaNodeIdServicesVariableDatagram_DatagramWriterGroupTransportType_Address_NetworkInterface_RestrictToList, true
+	case 23847:
+		return OpcuaNodeIdServicesVariableDatagram_DatagramWriterGroupTransportType_DatagramQos, true
+	case 23848:
+		return OpcuaNodeIdServicesVariableDatagram_DatagramWriterGroupTransportType_DiscoveryAnnounceRate, true
+	case 23849:
+		return OpcuaNodeIdServicesVariableDatagram_DatagramWriterGroupTransportType_Topic, true
+	case 24018:
+		return OpcuaNodeIdServicesVariableDatagram_DatagramDataSetReaderTransportType_Address_NetworkInterface, true
+	case 24019:
+		return OpcuaNodeIdServicesVariableDatagram_DatagramDataSetReaderTransportType_Address_NetworkInterface_Selections, true
+	case 24020:
+		return OpcuaNodeIdServicesVariableDatagram_DatagramDataSetReaderTransportType_Address_NetworkInterface_SelectionDescriptions, true
+	case 24021:
+		return OpcuaNodeIdServicesVariableDatagram_DatagramDataSetReaderTransportType_Address_NetworkInterface_RestrictToList, true
+	case 24022:
+		return OpcuaNodeIdServicesVariableDatagram_DatagramDataSetReaderTransportType_DatagramQos, true
+	case 24023:
+		return OpcuaNodeIdServicesVariableDatagram_DatagramDataSetReaderTransportType_Topic, true
+	case 25525:
+		return OpcuaNodeIdServicesVariableDatagram_DatagramConnectionTransportType_QosCategory, true
+	case 25526:
+		return OpcuaNodeIdServicesVariableDatagram_DatagramConnectionTransportType_DatagramQos, true
+	case 25527:
+		return OpcuaNodeIdServicesVariableDatagram_DatagramWriterGroupTransportType_QosCategory, true
+	case 25528:
+		return OpcuaNodeIdServicesVariableDatagram_DatagramDataSetReaderTransportType_QosCategory, true
 	}
 	return 0, false
 }
@@ -213,13 +213,13 @@ func OpcuaNodeIdServicesVariableDatagramByName(value string) (enum OpcuaNodeIdSe
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariableDatagramKnows(value int32)  bool {
+func OpcuaNodeIdServicesVariableDatagramKnows(value int32) bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariableDatagramValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastOpcuaNodeIdServicesVariableDatagram(structType any) OpcuaNodeIdServicesVariableDatagram {
@@ -333,4 +333,3 @@ func (e OpcuaNodeIdServicesVariableDatagram) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariableDatagram) String() string {
 	return e.PLC4XEnumName()
 }
-

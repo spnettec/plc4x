@@ -40,18 +40,18 @@ type INPDUNetworkPriority interface {
 	utils.Serializable
 }
 
-const(
-	NPDUNetworkPriority_LIFE_SAVETY_MESSAGE NPDUNetworkPriority = 3
+const (
+	NPDUNetworkPriority_LIFE_SAVETY_MESSAGE        NPDUNetworkPriority = 3
 	NPDUNetworkPriority_CRITICAL_EQUIPMENT_MESSAGE NPDUNetworkPriority = 2
-	NPDUNetworkPriority_URGENT_MESSAGE NPDUNetworkPriority = 1
-	NPDUNetworkPriority_NORMAL_MESSAGE NPDUNetworkPriority = 0
+	NPDUNetworkPriority_URGENT_MESSAGE             NPDUNetworkPriority = 1
+	NPDUNetworkPriority_NORMAL_MESSAGE             NPDUNetworkPriority = 0
 )
 
 var NPDUNetworkPriorityValues []NPDUNetworkPriority
 
 func init() {
 	_ = errors.New
-	NPDUNetworkPriorityValues = []NPDUNetworkPriority {
+	NPDUNetworkPriorityValues = []NPDUNetworkPriority{
 		NPDUNetworkPriority_LIFE_SAVETY_MESSAGE,
 		NPDUNetworkPriority_CRITICAL_EQUIPMENT_MESSAGE,
 		NPDUNetworkPriority_URGENT_MESSAGE,
@@ -61,14 +61,14 @@ func init() {
 
 func NPDUNetworkPriorityByValue(value uint8) (enum NPDUNetworkPriority, ok bool) {
 	switch value {
-		case 0:
-			return NPDUNetworkPriority_NORMAL_MESSAGE, true
-		case 1:
-			return NPDUNetworkPriority_URGENT_MESSAGE, true
-		case 2:
-			return NPDUNetworkPriority_CRITICAL_EQUIPMENT_MESSAGE, true
-		case 3:
-			return NPDUNetworkPriority_LIFE_SAVETY_MESSAGE, true
+	case 0:
+		return NPDUNetworkPriority_NORMAL_MESSAGE, true
+	case 1:
+		return NPDUNetworkPriority_URGENT_MESSAGE, true
+	case 2:
+		return NPDUNetworkPriority_CRITICAL_EQUIPMENT_MESSAGE, true
+	case 3:
+		return NPDUNetworkPriority_LIFE_SAVETY_MESSAGE, true
 	}
 	return 0, false
 }
@@ -87,13 +87,13 @@ func NPDUNetworkPriorityByName(value string) (enum NPDUNetworkPriority, ok bool)
 	return 0, false
 }
 
-func NPDUNetworkPriorityKnows(value uint8)  bool {
+func NPDUNetworkPriorityKnows(value uint8) bool {
 	for _, typeValue := range NPDUNetworkPriorityValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastNPDUNetworkPriority(structType any) NPDUNetworkPriority {
@@ -165,4 +165,3 @@ func (e NPDUNetworkPriority) PLC4XEnumName() string {
 func (e NPDUNetworkPriority) String() string {
 	return e.PLC4XEnumName()
 }
-

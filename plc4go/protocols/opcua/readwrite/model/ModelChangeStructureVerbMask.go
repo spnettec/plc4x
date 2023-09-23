@@ -40,19 +40,19 @@ type IModelChangeStructureVerbMask interface {
 	utils.Serializable
 }
 
-const(
-	ModelChangeStructureVerbMask_modelChangeStructureVerbMaskNodeAdded ModelChangeStructureVerbMask = 1
-	ModelChangeStructureVerbMask_modelChangeStructureVerbMaskNodeDeleted ModelChangeStructureVerbMask = 2
-	ModelChangeStructureVerbMask_modelChangeStructureVerbMaskReferenceAdded ModelChangeStructureVerbMask = 4
+const (
+	ModelChangeStructureVerbMask_modelChangeStructureVerbMaskNodeAdded        ModelChangeStructureVerbMask = 1
+	ModelChangeStructureVerbMask_modelChangeStructureVerbMaskNodeDeleted      ModelChangeStructureVerbMask = 2
+	ModelChangeStructureVerbMask_modelChangeStructureVerbMaskReferenceAdded   ModelChangeStructureVerbMask = 4
 	ModelChangeStructureVerbMask_modelChangeStructureVerbMaskReferenceDeleted ModelChangeStructureVerbMask = 8
-	ModelChangeStructureVerbMask_modelChangeStructureVerbMaskDataTypeChanged ModelChangeStructureVerbMask = 16
+	ModelChangeStructureVerbMask_modelChangeStructureVerbMaskDataTypeChanged  ModelChangeStructureVerbMask = 16
 )
 
 var ModelChangeStructureVerbMaskValues []ModelChangeStructureVerbMask
 
 func init() {
 	_ = errors.New
-	ModelChangeStructureVerbMaskValues = []ModelChangeStructureVerbMask {
+	ModelChangeStructureVerbMaskValues = []ModelChangeStructureVerbMask{
 		ModelChangeStructureVerbMask_modelChangeStructureVerbMaskNodeAdded,
 		ModelChangeStructureVerbMask_modelChangeStructureVerbMaskNodeDeleted,
 		ModelChangeStructureVerbMask_modelChangeStructureVerbMaskReferenceAdded,
@@ -63,16 +63,16 @@ func init() {
 
 func ModelChangeStructureVerbMaskByValue(value uint32) (enum ModelChangeStructureVerbMask, ok bool) {
 	switch value {
-		case 1:
-			return ModelChangeStructureVerbMask_modelChangeStructureVerbMaskNodeAdded, true
-		case 16:
-			return ModelChangeStructureVerbMask_modelChangeStructureVerbMaskDataTypeChanged, true
-		case 2:
-			return ModelChangeStructureVerbMask_modelChangeStructureVerbMaskNodeDeleted, true
-		case 4:
-			return ModelChangeStructureVerbMask_modelChangeStructureVerbMaskReferenceAdded, true
-		case 8:
-			return ModelChangeStructureVerbMask_modelChangeStructureVerbMaskReferenceDeleted, true
+	case 1:
+		return ModelChangeStructureVerbMask_modelChangeStructureVerbMaskNodeAdded, true
+	case 16:
+		return ModelChangeStructureVerbMask_modelChangeStructureVerbMaskDataTypeChanged, true
+	case 2:
+		return ModelChangeStructureVerbMask_modelChangeStructureVerbMaskNodeDeleted, true
+	case 4:
+		return ModelChangeStructureVerbMask_modelChangeStructureVerbMaskReferenceAdded, true
+	case 8:
+		return ModelChangeStructureVerbMask_modelChangeStructureVerbMaskReferenceDeleted, true
 	}
 	return 0, false
 }
@@ -93,13 +93,13 @@ func ModelChangeStructureVerbMaskByName(value string) (enum ModelChangeStructure
 	return 0, false
 }
 
-func ModelChangeStructureVerbMaskKnows(value uint32)  bool {
+func ModelChangeStructureVerbMaskKnows(value uint32) bool {
 	for _, typeValue := range ModelChangeStructureVerbMaskValues {
 		if uint32(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastModelChangeStructureVerbMask(structType any) ModelChangeStructureVerbMask {
@@ -173,4 +173,3 @@ func (e ModelChangeStructureVerbMask) PLC4XEnumName() string {
 func (e ModelChangeStructureVerbMask) String() string {
 	return e.PLC4XEnumName()
 }
-

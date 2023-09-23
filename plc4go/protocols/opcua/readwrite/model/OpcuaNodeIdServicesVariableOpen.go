@@ -40,11 +40,11 @@ type IOpcuaNodeIdServicesVariableOpen interface {
 	utils.Serializable
 }
 
-const(
-	OpcuaNodeIdServicesVariableOpen_OpenMethodType_InputArguments OpcuaNodeIdServicesVariableOpen = 11739
-	OpcuaNodeIdServicesVariableOpen_OpenMethodType_OutputArguments OpcuaNodeIdServicesVariableOpen = 11740
-	OpcuaNodeIdServicesVariableOpen_OpenFileMode_EnumValues OpcuaNodeIdServicesVariableOpen = 11940
-	OpcuaNodeIdServicesVariableOpen_OpenWithMasksMethodType_InputArguments OpcuaNodeIdServicesVariableOpen = 12514
+const (
+	OpcuaNodeIdServicesVariableOpen_OpenMethodType_InputArguments           OpcuaNodeIdServicesVariableOpen = 11739
+	OpcuaNodeIdServicesVariableOpen_OpenMethodType_OutputArguments          OpcuaNodeIdServicesVariableOpen = 11740
+	OpcuaNodeIdServicesVariableOpen_OpenFileMode_EnumValues                 OpcuaNodeIdServicesVariableOpen = 11940
+	OpcuaNodeIdServicesVariableOpen_OpenWithMasksMethodType_InputArguments  OpcuaNodeIdServicesVariableOpen = 12514
 	OpcuaNodeIdServicesVariableOpen_OpenWithMasksMethodType_OutputArguments OpcuaNodeIdServicesVariableOpen = 12515
 )
 
@@ -52,7 +52,7 @@ var OpcuaNodeIdServicesVariableOpenValues []OpcuaNodeIdServicesVariableOpen
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariableOpenValues = []OpcuaNodeIdServicesVariableOpen {
+	OpcuaNodeIdServicesVariableOpenValues = []OpcuaNodeIdServicesVariableOpen{
 		OpcuaNodeIdServicesVariableOpen_OpenMethodType_InputArguments,
 		OpcuaNodeIdServicesVariableOpen_OpenMethodType_OutputArguments,
 		OpcuaNodeIdServicesVariableOpen_OpenFileMode_EnumValues,
@@ -63,16 +63,16 @@ func init() {
 
 func OpcuaNodeIdServicesVariableOpenByValue(value int32) (enum OpcuaNodeIdServicesVariableOpen, ok bool) {
 	switch value {
-		case 11739:
-			return OpcuaNodeIdServicesVariableOpen_OpenMethodType_InputArguments, true
-		case 11740:
-			return OpcuaNodeIdServicesVariableOpen_OpenMethodType_OutputArguments, true
-		case 11940:
-			return OpcuaNodeIdServicesVariableOpen_OpenFileMode_EnumValues, true
-		case 12514:
-			return OpcuaNodeIdServicesVariableOpen_OpenWithMasksMethodType_InputArguments, true
-		case 12515:
-			return OpcuaNodeIdServicesVariableOpen_OpenWithMasksMethodType_OutputArguments, true
+	case 11739:
+		return OpcuaNodeIdServicesVariableOpen_OpenMethodType_InputArguments, true
+	case 11740:
+		return OpcuaNodeIdServicesVariableOpen_OpenMethodType_OutputArguments, true
+	case 11940:
+		return OpcuaNodeIdServicesVariableOpen_OpenFileMode_EnumValues, true
+	case 12514:
+		return OpcuaNodeIdServicesVariableOpen_OpenWithMasksMethodType_InputArguments, true
+	case 12515:
+		return OpcuaNodeIdServicesVariableOpen_OpenWithMasksMethodType_OutputArguments, true
 	}
 	return 0, false
 }
@@ -93,13 +93,13 @@ func OpcuaNodeIdServicesVariableOpenByName(value string) (enum OpcuaNodeIdServic
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariableOpenKnows(value int32)  bool {
+func OpcuaNodeIdServicesVariableOpenKnows(value int32) bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariableOpenValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastOpcuaNodeIdServicesVariableOpen(structType any) OpcuaNodeIdServicesVariableOpen {
@@ -173,4 +173,3 @@ func (e OpcuaNodeIdServicesVariableOpen) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariableOpen) String() string {
 	return e.PLC4XEnumName()
 }
-

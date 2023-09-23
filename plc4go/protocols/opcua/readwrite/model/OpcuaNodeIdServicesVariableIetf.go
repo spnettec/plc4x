@@ -40,15 +40,15 @@ type IOpcuaNodeIdServicesVariableIetf interface {
 	utils.Serializable
 }
 
-const(
-	OpcuaNodeIdServicesVariableIetf_IetfBaseNetworkInterfaceType_AdminStatus OpcuaNodeIdServicesVariableIetf = 25222
-	OpcuaNodeIdServicesVariableIetf_IetfBaseNetworkInterfaceType_OperStatus OpcuaNodeIdServicesVariableIetf = 25223
-	OpcuaNodeIdServicesVariableIetf_IetfBaseNetworkInterfaceType_PhysAddress OpcuaNodeIdServicesVariableIetf = 25224
-	OpcuaNodeIdServicesVariableIetf_IetfBaseNetworkInterfaceType_Speed OpcuaNodeIdServicesVariableIetf = 25225
-	OpcuaNodeIdServicesVariableIetf_IetfBaseNetworkInterfaceType_Speed_Definition OpcuaNodeIdServicesVariableIetf = 25248
-	OpcuaNodeIdServicesVariableIetf_IetfBaseNetworkInterfaceType_Speed_ValuePrecision OpcuaNodeIdServicesVariableIetf = 25249
-	OpcuaNodeIdServicesVariableIetf_IetfBaseNetworkInterfaceType_Speed_InstrumentRange OpcuaNodeIdServicesVariableIetf = 25250
-	OpcuaNodeIdServicesVariableIetf_IetfBaseNetworkInterfaceType_Speed_EURange OpcuaNodeIdServicesVariableIetf = 25251
+const (
+	OpcuaNodeIdServicesVariableIetf_IetfBaseNetworkInterfaceType_AdminStatus            OpcuaNodeIdServicesVariableIetf = 25222
+	OpcuaNodeIdServicesVariableIetf_IetfBaseNetworkInterfaceType_OperStatus             OpcuaNodeIdServicesVariableIetf = 25223
+	OpcuaNodeIdServicesVariableIetf_IetfBaseNetworkInterfaceType_PhysAddress            OpcuaNodeIdServicesVariableIetf = 25224
+	OpcuaNodeIdServicesVariableIetf_IetfBaseNetworkInterfaceType_Speed                  OpcuaNodeIdServicesVariableIetf = 25225
+	OpcuaNodeIdServicesVariableIetf_IetfBaseNetworkInterfaceType_Speed_Definition       OpcuaNodeIdServicesVariableIetf = 25248
+	OpcuaNodeIdServicesVariableIetf_IetfBaseNetworkInterfaceType_Speed_ValuePrecision   OpcuaNodeIdServicesVariableIetf = 25249
+	OpcuaNodeIdServicesVariableIetf_IetfBaseNetworkInterfaceType_Speed_InstrumentRange  OpcuaNodeIdServicesVariableIetf = 25250
+	OpcuaNodeIdServicesVariableIetf_IetfBaseNetworkInterfaceType_Speed_EURange          OpcuaNodeIdServicesVariableIetf = 25251
 	OpcuaNodeIdServicesVariableIetf_IetfBaseNetworkInterfaceType_Speed_EngineeringUnits OpcuaNodeIdServicesVariableIetf = 25252
 )
 
@@ -56,7 +56,7 @@ var OpcuaNodeIdServicesVariableIetfValues []OpcuaNodeIdServicesVariableIetf
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariableIetfValues = []OpcuaNodeIdServicesVariableIetf {
+	OpcuaNodeIdServicesVariableIetfValues = []OpcuaNodeIdServicesVariableIetf{
 		OpcuaNodeIdServicesVariableIetf_IetfBaseNetworkInterfaceType_AdminStatus,
 		OpcuaNodeIdServicesVariableIetf_IetfBaseNetworkInterfaceType_OperStatus,
 		OpcuaNodeIdServicesVariableIetf_IetfBaseNetworkInterfaceType_PhysAddress,
@@ -71,24 +71,24 @@ func init() {
 
 func OpcuaNodeIdServicesVariableIetfByValue(value int32) (enum OpcuaNodeIdServicesVariableIetf, ok bool) {
 	switch value {
-		case 25222:
-			return OpcuaNodeIdServicesVariableIetf_IetfBaseNetworkInterfaceType_AdminStatus, true
-		case 25223:
-			return OpcuaNodeIdServicesVariableIetf_IetfBaseNetworkInterfaceType_OperStatus, true
-		case 25224:
-			return OpcuaNodeIdServicesVariableIetf_IetfBaseNetworkInterfaceType_PhysAddress, true
-		case 25225:
-			return OpcuaNodeIdServicesVariableIetf_IetfBaseNetworkInterfaceType_Speed, true
-		case 25248:
-			return OpcuaNodeIdServicesVariableIetf_IetfBaseNetworkInterfaceType_Speed_Definition, true
-		case 25249:
-			return OpcuaNodeIdServicesVariableIetf_IetfBaseNetworkInterfaceType_Speed_ValuePrecision, true
-		case 25250:
-			return OpcuaNodeIdServicesVariableIetf_IetfBaseNetworkInterfaceType_Speed_InstrumentRange, true
-		case 25251:
-			return OpcuaNodeIdServicesVariableIetf_IetfBaseNetworkInterfaceType_Speed_EURange, true
-		case 25252:
-			return OpcuaNodeIdServicesVariableIetf_IetfBaseNetworkInterfaceType_Speed_EngineeringUnits, true
+	case 25222:
+		return OpcuaNodeIdServicesVariableIetf_IetfBaseNetworkInterfaceType_AdminStatus, true
+	case 25223:
+		return OpcuaNodeIdServicesVariableIetf_IetfBaseNetworkInterfaceType_OperStatus, true
+	case 25224:
+		return OpcuaNodeIdServicesVariableIetf_IetfBaseNetworkInterfaceType_PhysAddress, true
+	case 25225:
+		return OpcuaNodeIdServicesVariableIetf_IetfBaseNetworkInterfaceType_Speed, true
+	case 25248:
+		return OpcuaNodeIdServicesVariableIetf_IetfBaseNetworkInterfaceType_Speed_Definition, true
+	case 25249:
+		return OpcuaNodeIdServicesVariableIetf_IetfBaseNetworkInterfaceType_Speed_ValuePrecision, true
+	case 25250:
+		return OpcuaNodeIdServicesVariableIetf_IetfBaseNetworkInterfaceType_Speed_InstrumentRange, true
+	case 25251:
+		return OpcuaNodeIdServicesVariableIetf_IetfBaseNetworkInterfaceType_Speed_EURange, true
+	case 25252:
+		return OpcuaNodeIdServicesVariableIetf_IetfBaseNetworkInterfaceType_Speed_EngineeringUnits, true
 	}
 	return 0, false
 }
@@ -117,13 +117,13 @@ func OpcuaNodeIdServicesVariableIetfByName(value string) (enum OpcuaNodeIdServic
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariableIetfKnows(value int32)  bool {
+func OpcuaNodeIdServicesVariableIetfKnows(value int32) bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariableIetfValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastOpcuaNodeIdServicesVariableIetf(structType any) OpcuaNodeIdServicesVariableIetf {
@@ -205,4 +205,3 @@ func (e OpcuaNodeIdServicesVariableIetf) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariableIetf) String() string {
 	return e.PLC4XEnumName()
 }
-

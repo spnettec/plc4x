@@ -40,319 +40,319 @@ type IOpcuaNodeIdServicesVariableSystem interface {
 	utils.Serializable
 }
 
-const(
-	OpcuaNodeIdServicesVariableSystem_SystemEventType_EventId OpcuaNodeIdServicesVariableSystem = 3653
-	OpcuaNodeIdServicesVariableSystem_SystemEventType_EventType OpcuaNodeIdServicesVariableSystem = 3654
-	OpcuaNodeIdServicesVariableSystem_SystemEventType_SourceNode OpcuaNodeIdServicesVariableSystem = 3655
-	OpcuaNodeIdServicesVariableSystem_SystemEventType_SourceName OpcuaNodeIdServicesVariableSystem = 3656
-	OpcuaNodeIdServicesVariableSystem_SystemEventType_Time OpcuaNodeIdServicesVariableSystem = 3657
-	OpcuaNodeIdServicesVariableSystem_SystemEventType_ReceiveTime OpcuaNodeIdServicesVariableSystem = 3658
-	OpcuaNodeIdServicesVariableSystem_SystemEventType_LocalTime OpcuaNodeIdServicesVariableSystem = 3659
-	OpcuaNodeIdServicesVariableSystem_SystemEventType_Message OpcuaNodeIdServicesVariableSystem = 3660
-	OpcuaNodeIdServicesVariableSystem_SystemEventType_Severity OpcuaNodeIdServicesVariableSystem = 3661
-	OpcuaNodeIdServicesVariableSystem_SystemStatusChangeEventType_EventId OpcuaNodeIdServicesVariableSystem = 11447
-	OpcuaNodeIdServicesVariableSystem_SystemStatusChangeEventType_EventType OpcuaNodeIdServicesVariableSystem = 11448
-	OpcuaNodeIdServicesVariableSystem_SystemStatusChangeEventType_SourceNode OpcuaNodeIdServicesVariableSystem = 11449
-	OpcuaNodeIdServicesVariableSystem_SystemStatusChangeEventType_SourceName OpcuaNodeIdServicesVariableSystem = 11450
-	OpcuaNodeIdServicesVariableSystem_SystemStatusChangeEventType_Time OpcuaNodeIdServicesVariableSystem = 11451
-	OpcuaNodeIdServicesVariableSystem_SystemStatusChangeEventType_ReceiveTime OpcuaNodeIdServicesVariableSystem = 11452
-	OpcuaNodeIdServicesVariableSystem_SystemStatusChangeEventType_LocalTime OpcuaNodeIdServicesVariableSystem = 11453
-	OpcuaNodeIdServicesVariableSystem_SystemStatusChangeEventType_Message OpcuaNodeIdServicesVariableSystem = 11454
-	OpcuaNodeIdServicesVariableSystem_SystemStatusChangeEventType_Severity OpcuaNodeIdServicesVariableSystem = 11455
-	OpcuaNodeIdServicesVariableSystem_SystemStatusChangeEventType_SystemState OpcuaNodeIdServicesVariableSystem = 11696
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_EventId OpcuaNodeIdServicesVariableSystem = 11754
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_EventType OpcuaNodeIdServicesVariableSystem = 11755
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_SourceNode OpcuaNodeIdServicesVariableSystem = 11756
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_SourceName OpcuaNodeIdServicesVariableSystem = 11757
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_Time OpcuaNodeIdServicesVariableSystem = 11758
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ReceiveTime OpcuaNodeIdServicesVariableSystem = 11759
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_LocalTime OpcuaNodeIdServicesVariableSystem = 11760
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_Message OpcuaNodeIdServicesVariableSystem = 11761
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_Severity OpcuaNodeIdServicesVariableSystem = 11762
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ConditionClassId OpcuaNodeIdServicesVariableSystem = 11763
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ConditionClassName OpcuaNodeIdServicesVariableSystem = 11764
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ConditionName OpcuaNodeIdServicesVariableSystem = 11765
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_BranchId OpcuaNodeIdServicesVariableSystem = 11766
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_Retain OpcuaNodeIdServicesVariableSystem = 11767
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_EnabledState OpcuaNodeIdServicesVariableSystem = 11768
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_EnabledState_Id OpcuaNodeIdServicesVariableSystem = 11769
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_EnabledState_Name OpcuaNodeIdServicesVariableSystem = 11770
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_EnabledState_Number OpcuaNodeIdServicesVariableSystem = 11771
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_EnabledState_EffectiveDisplayName OpcuaNodeIdServicesVariableSystem = 11772
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_EnabledState_TransitionTime OpcuaNodeIdServicesVariableSystem = 11773
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_EnabledState_EffectiveTransitionTime OpcuaNodeIdServicesVariableSystem = 11774
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_EnabledState_TrueState OpcuaNodeIdServicesVariableSystem = 11775
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_EnabledState_FalseState OpcuaNodeIdServicesVariableSystem = 11776
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_Quality OpcuaNodeIdServicesVariableSystem = 11777
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_Quality_SourceTimestamp OpcuaNodeIdServicesVariableSystem = 11778
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_LastSeverity OpcuaNodeIdServicesVariableSystem = 11779
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_LastSeverity_SourceTimestamp OpcuaNodeIdServicesVariableSystem = 11780
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_Comment OpcuaNodeIdServicesVariableSystem = 11781
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_Comment_SourceTimestamp OpcuaNodeIdServicesVariableSystem = 11782
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ClientUserId OpcuaNodeIdServicesVariableSystem = 11783
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_AddComment_InputArguments OpcuaNodeIdServicesVariableSystem = 11787
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ConditionRefresh_InputArguments OpcuaNodeIdServicesVariableSystem = 11789
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_AckedState OpcuaNodeIdServicesVariableSystem = 11790
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_AckedState_Id OpcuaNodeIdServicesVariableSystem = 11791
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_AckedState_Name OpcuaNodeIdServicesVariableSystem = 11792
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_AckedState_Number OpcuaNodeIdServicesVariableSystem = 11793
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_AckedState_EffectiveDisplayName OpcuaNodeIdServicesVariableSystem = 11794
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_AckedState_TransitionTime OpcuaNodeIdServicesVariableSystem = 11795
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_AckedState_EffectiveTransitionTime OpcuaNodeIdServicesVariableSystem = 11796
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_AckedState_TrueState OpcuaNodeIdServicesVariableSystem = 11797
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_AckedState_FalseState OpcuaNodeIdServicesVariableSystem = 11798
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ConfirmedState OpcuaNodeIdServicesVariableSystem = 11799
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ConfirmedState_Id OpcuaNodeIdServicesVariableSystem = 11800
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ConfirmedState_Name OpcuaNodeIdServicesVariableSystem = 11801
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ConfirmedState_Number OpcuaNodeIdServicesVariableSystem = 11802
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ConfirmedState_EffectiveDisplayName OpcuaNodeIdServicesVariableSystem = 11803
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ConfirmedState_TransitionTime OpcuaNodeIdServicesVariableSystem = 11804
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ConfirmedState_EffectiveTransitionTime OpcuaNodeIdServicesVariableSystem = 11805
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ConfirmedState_TrueState OpcuaNodeIdServicesVariableSystem = 11806
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ConfirmedState_FalseState OpcuaNodeIdServicesVariableSystem = 11807
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_Acknowledge_InputArguments OpcuaNodeIdServicesVariableSystem = 11809
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_Confirm_InputArguments OpcuaNodeIdServicesVariableSystem = 11811
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ActiveState OpcuaNodeIdServicesVariableSystem = 11812
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ActiveState_Id OpcuaNodeIdServicesVariableSystem = 11813
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ActiveState_Name OpcuaNodeIdServicesVariableSystem = 11814
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ActiveState_Number OpcuaNodeIdServicesVariableSystem = 11815
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ActiveState_EffectiveDisplayName OpcuaNodeIdServicesVariableSystem = 11816
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ActiveState_TransitionTime OpcuaNodeIdServicesVariableSystem = 11817
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ActiveState_EffectiveTransitionTime OpcuaNodeIdServicesVariableSystem = 11818
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ActiveState_TrueState OpcuaNodeIdServicesVariableSystem = 11819
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ActiveState_FalseState OpcuaNodeIdServicesVariableSystem = 11820
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_InputNode OpcuaNodeIdServicesVariableSystem = 11821
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_SuppressedState OpcuaNodeIdServicesVariableSystem = 11822
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_SuppressedState_Id OpcuaNodeIdServicesVariableSystem = 11823
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_SuppressedState_Name OpcuaNodeIdServicesVariableSystem = 11824
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_SuppressedState_Number OpcuaNodeIdServicesVariableSystem = 11825
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_SuppressedState_EffectiveDisplayName OpcuaNodeIdServicesVariableSystem = 11826
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_SuppressedState_TransitionTime OpcuaNodeIdServicesVariableSystem = 11827
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_SuppressedState_EffectiveTransitionTime OpcuaNodeIdServicesVariableSystem = 11828
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_SuppressedState_TrueState OpcuaNodeIdServicesVariableSystem = 11829
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_SuppressedState_FalseState OpcuaNodeIdServicesVariableSystem = 11830
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ShelvingState_CurrentState OpcuaNodeIdServicesVariableSystem = 11832
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ShelvingState_CurrentState_Id OpcuaNodeIdServicesVariableSystem = 11833
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ShelvingState_CurrentState_Name OpcuaNodeIdServicesVariableSystem = 11834
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ShelvingState_CurrentState_Number OpcuaNodeIdServicesVariableSystem = 11835
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ShelvingState_CurrentState_EffectiveDisplayName OpcuaNodeIdServicesVariableSystem = 11836
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ShelvingState_LastTransition OpcuaNodeIdServicesVariableSystem = 11837
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ShelvingState_LastTransition_Id OpcuaNodeIdServicesVariableSystem = 11838
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ShelvingState_LastTransition_Name OpcuaNodeIdServicesVariableSystem = 11839
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ShelvingState_LastTransition_Number OpcuaNodeIdServicesVariableSystem = 11840
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ShelvingState_LastTransition_TransitionTime OpcuaNodeIdServicesVariableSystem = 11841
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ShelvingState_LastTransition_EffectiveTransitionTime OpcuaNodeIdServicesVariableSystem = 11842
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ShelvingState_UnshelveTime OpcuaNodeIdServicesVariableSystem = 11843
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ShelvingState_TimedShelve_InputArguments OpcuaNodeIdServicesVariableSystem = 11847
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_SuppressedOrShelved OpcuaNodeIdServicesVariableSystem = 11848
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_MaxTimeShelved OpcuaNodeIdServicesVariableSystem = 11849
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_NormalState OpcuaNodeIdServicesVariableSystem = 11850
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ConditionRefresh2_InputArguments OpcuaNodeIdServicesVariableSystem = 13009
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ConditionSubClassId OpcuaNodeIdServicesVariableSystem = 16972
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ConditionSubClassName OpcuaNodeIdServicesVariableSystem = 16973
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_OutOfServiceState OpcuaNodeIdServicesVariableSystem = 16974
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_OutOfServiceState_Id OpcuaNodeIdServicesVariableSystem = 16975
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_OutOfServiceState_Name OpcuaNodeIdServicesVariableSystem = 16976
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_OutOfServiceState_Number OpcuaNodeIdServicesVariableSystem = 16977
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_OutOfServiceState_EffectiveDisplayName OpcuaNodeIdServicesVariableSystem = 16978
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_OutOfServiceState_TransitionTime OpcuaNodeIdServicesVariableSystem = 16979
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_OutOfServiceState_EffectiveTransitionTime OpcuaNodeIdServicesVariableSystem = 16980
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_OutOfServiceState_TrueState OpcuaNodeIdServicesVariableSystem = 16981
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_OutOfServiceState_FalseState OpcuaNodeIdServicesVariableSystem = 16982
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_SilenceState OpcuaNodeIdServicesVariableSystem = 16983
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_SilenceState_Id OpcuaNodeIdServicesVariableSystem = 16984
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_SilenceState_Name OpcuaNodeIdServicesVariableSystem = 16985
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_SilenceState_Number OpcuaNodeIdServicesVariableSystem = 16986
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_SilenceState_EffectiveDisplayName OpcuaNodeIdServicesVariableSystem = 16987
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_SilenceState_TransitionTime OpcuaNodeIdServicesVariableSystem = 16988
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_SilenceState_EffectiveTransitionTime OpcuaNodeIdServicesVariableSystem = 16989
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_SilenceState_TrueState OpcuaNodeIdServicesVariableSystem = 16990
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_SilenceState_FalseState OpcuaNodeIdServicesVariableSystem = 16991
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_AudibleEnabled OpcuaNodeIdServicesVariableSystem = 16992
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_AudibleSound OpcuaNodeIdServicesVariableSystem = 16993
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_OnDelay OpcuaNodeIdServicesVariableSystem = 16998
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_OffDelay OpcuaNodeIdServicesVariableSystem = 16999
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_FirstInGroupFlag OpcuaNodeIdServicesVariableSystem = 17000
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ReAlarmTime OpcuaNodeIdServicesVariableSystem = 17003
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ReAlarmRepeatCount OpcuaNodeIdServicesVariableSystem = 17004
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ShelvingState_AvailableStates OpcuaNodeIdServicesVariableSystem = 17696
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ShelvingState_AvailableTransitions OpcuaNodeIdServicesVariableSystem = 17697
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_AudibleSound_ListId OpcuaNodeIdServicesVariableSystem = 17956
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_AudibleSound_AgencyId OpcuaNodeIdServicesVariableSystem = 17957
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_AudibleSound_VersionId OpcuaNodeIdServicesVariableSystem = 17958
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_LatchedState OpcuaNodeIdServicesVariableSystem = 18327
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_LatchedState_Id OpcuaNodeIdServicesVariableSystem = 18328
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_LatchedState_Name OpcuaNodeIdServicesVariableSystem = 18329
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_LatchedState_Number OpcuaNodeIdServicesVariableSystem = 18330
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_LatchedState_EffectiveDisplayName OpcuaNodeIdServicesVariableSystem = 18331
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_LatchedState_TransitionTime OpcuaNodeIdServicesVariableSystem = 18332
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_LatchedState_EffectiveTransitionTime OpcuaNodeIdServicesVariableSystem = 18333
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_LatchedState_TrueState OpcuaNodeIdServicesVariableSystem = 18334
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_LatchedState_FalseState OpcuaNodeIdServicesVariableSystem = 18335
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_EventId OpcuaNodeIdServicesVariableSystem = 18497
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_EventType OpcuaNodeIdServicesVariableSystem = 18498
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_SourceNode OpcuaNodeIdServicesVariableSystem = 18499
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_SourceName OpcuaNodeIdServicesVariableSystem = 18500
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_Time OpcuaNodeIdServicesVariableSystem = 18501
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ReceiveTime OpcuaNodeIdServicesVariableSystem = 18502
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_LocalTime OpcuaNodeIdServicesVariableSystem = 18503
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_Message OpcuaNodeIdServicesVariableSystem = 18504
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_Severity OpcuaNodeIdServicesVariableSystem = 18505
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ConditionClassId OpcuaNodeIdServicesVariableSystem = 18506
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ConditionClassName OpcuaNodeIdServicesVariableSystem = 18507
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ConditionSubClassId OpcuaNodeIdServicesVariableSystem = 18508
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ConditionSubClassName OpcuaNodeIdServicesVariableSystem = 18509
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ConditionName OpcuaNodeIdServicesVariableSystem = 18510
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_BranchId OpcuaNodeIdServicesVariableSystem = 18511
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_Retain OpcuaNodeIdServicesVariableSystem = 18512
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_EnabledState OpcuaNodeIdServicesVariableSystem = 18513
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_EnabledState_Id OpcuaNodeIdServicesVariableSystem = 18514
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_EnabledState_Name OpcuaNodeIdServicesVariableSystem = 18515
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_EnabledState_Number OpcuaNodeIdServicesVariableSystem = 18516
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_EnabledState_EffectiveDisplayName OpcuaNodeIdServicesVariableSystem = 18517
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_EnabledState_TransitionTime OpcuaNodeIdServicesVariableSystem = 18518
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_EnabledState_EffectiveTransitionTime OpcuaNodeIdServicesVariableSystem = 18519
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_EnabledState_TrueState OpcuaNodeIdServicesVariableSystem = 18520
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_EnabledState_FalseState OpcuaNodeIdServicesVariableSystem = 18521
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_Quality OpcuaNodeIdServicesVariableSystem = 18522
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_Quality_SourceTimestamp OpcuaNodeIdServicesVariableSystem = 18523
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_LastSeverity OpcuaNodeIdServicesVariableSystem = 18524
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_LastSeverity_SourceTimestamp OpcuaNodeIdServicesVariableSystem = 18525
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_Comment OpcuaNodeIdServicesVariableSystem = 18526
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_Comment_SourceTimestamp OpcuaNodeIdServicesVariableSystem = 18527
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ClientUserId OpcuaNodeIdServicesVariableSystem = 18528
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_AddComment_InputArguments OpcuaNodeIdServicesVariableSystem = 18532
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ConditionRefresh_InputArguments OpcuaNodeIdServicesVariableSystem = 18534
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ConditionRefresh2_InputArguments OpcuaNodeIdServicesVariableSystem = 18536
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_AckedState OpcuaNodeIdServicesVariableSystem = 18537
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_AckedState_Id OpcuaNodeIdServicesVariableSystem = 18538
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_AckedState_Name OpcuaNodeIdServicesVariableSystem = 18539
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_AckedState_Number OpcuaNodeIdServicesVariableSystem = 18540
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_AckedState_EffectiveDisplayName OpcuaNodeIdServicesVariableSystem = 18541
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_AckedState_TransitionTime OpcuaNodeIdServicesVariableSystem = 18542
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_AckedState_EffectiveTransitionTime OpcuaNodeIdServicesVariableSystem = 18543
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_AckedState_TrueState OpcuaNodeIdServicesVariableSystem = 18544
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_AckedState_FalseState OpcuaNodeIdServicesVariableSystem = 18545
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ConfirmedState OpcuaNodeIdServicesVariableSystem = 18546
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ConfirmedState_Id OpcuaNodeIdServicesVariableSystem = 18547
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ConfirmedState_Name OpcuaNodeIdServicesVariableSystem = 18548
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ConfirmedState_Number OpcuaNodeIdServicesVariableSystem = 18549
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ConfirmedState_EffectiveDisplayName OpcuaNodeIdServicesVariableSystem = 18550
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ConfirmedState_TransitionTime OpcuaNodeIdServicesVariableSystem = 18551
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ConfirmedState_EffectiveTransitionTime OpcuaNodeIdServicesVariableSystem = 18552
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ConfirmedState_TrueState OpcuaNodeIdServicesVariableSystem = 18553
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ConfirmedState_FalseState OpcuaNodeIdServicesVariableSystem = 18554
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_Acknowledge_InputArguments OpcuaNodeIdServicesVariableSystem = 18556
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_Confirm_InputArguments OpcuaNodeIdServicesVariableSystem = 18558
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ActiveState OpcuaNodeIdServicesVariableSystem = 18559
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ActiveState_Id OpcuaNodeIdServicesVariableSystem = 18560
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ActiveState_Name OpcuaNodeIdServicesVariableSystem = 18561
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ActiveState_Number OpcuaNodeIdServicesVariableSystem = 18562
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ActiveState_EffectiveDisplayName OpcuaNodeIdServicesVariableSystem = 18563
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ActiveState_TransitionTime OpcuaNodeIdServicesVariableSystem = 18564
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ActiveState_EffectiveTransitionTime OpcuaNodeIdServicesVariableSystem = 18565
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ActiveState_TrueState OpcuaNodeIdServicesVariableSystem = 18566
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ActiveState_FalseState OpcuaNodeIdServicesVariableSystem = 18567
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_InputNode OpcuaNodeIdServicesVariableSystem = 18568
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_SuppressedState OpcuaNodeIdServicesVariableSystem = 18569
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_SuppressedState_Id OpcuaNodeIdServicesVariableSystem = 18570
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_SuppressedState_Name OpcuaNodeIdServicesVariableSystem = 18571
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_SuppressedState_Number OpcuaNodeIdServicesVariableSystem = 18572
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_SuppressedState_EffectiveDisplayName OpcuaNodeIdServicesVariableSystem = 18573
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_SuppressedState_TransitionTime OpcuaNodeIdServicesVariableSystem = 18574
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_SuppressedState_EffectiveTransitionTime OpcuaNodeIdServicesVariableSystem = 18575
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_SuppressedState_TrueState OpcuaNodeIdServicesVariableSystem = 18576
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_SuppressedState_FalseState OpcuaNodeIdServicesVariableSystem = 18577
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_OutOfServiceState OpcuaNodeIdServicesVariableSystem = 18578
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_OutOfServiceState_Id OpcuaNodeIdServicesVariableSystem = 18579
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_OutOfServiceState_Name OpcuaNodeIdServicesVariableSystem = 18580
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_OutOfServiceState_Number OpcuaNodeIdServicesVariableSystem = 18581
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_OutOfServiceState_EffectiveDisplayName OpcuaNodeIdServicesVariableSystem = 18582
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_OutOfServiceState_TransitionTime OpcuaNodeIdServicesVariableSystem = 18583
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_OutOfServiceState_EffectiveTransitionTime OpcuaNodeIdServicesVariableSystem = 18584
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_OutOfServiceState_TrueState OpcuaNodeIdServicesVariableSystem = 18585
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_OutOfServiceState_FalseState OpcuaNodeIdServicesVariableSystem = 18586
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ShelvingState_CurrentState OpcuaNodeIdServicesVariableSystem = 18588
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ShelvingState_CurrentState_Id OpcuaNodeIdServicesVariableSystem = 18589
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ShelvingState_CurrentState_Name OpcuaNodeIdServicesVariableSystem = 18590
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ShelvingState_CurrentState_Number OpcuaNodeIdServicesVariableSystem = 18591
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ShelvingState_CurrentState_EffectiveDisplayName OpcuaNodeIdServicesVariableSystem = 18592
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ShelvingState_LastTransition OpcuaNodeIdServicesVariableSystem = 18593
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ShelvingState_LastTransition_Id OpcuaNodeIdServicesVariableSystem = 18594
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ShelvingState_LastTransition_Name OpcuaNodeIdServicesVariableSystem = 18595
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ShelvingState_LastTransition_Number OpcuaNodeIdServicesVariableSystem = 18596
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ShelvingState_LastTransition_TransitionTime OpcuaNodeIdServicesVariableSystem = 18597
+const (
+	OpcuaNodeIdServicesVariableSystem_SystemEventType_EventId                                                        OpcuaNodeIdServicesVariableSystem = 3653
+	OpcuaNodeIdServicesVariableSystem_SystemEventType_EventType                                                      OpcuaNodeIdServicesVariableSystem = 3654
+	OpcuaNodeIdServicesVariableSystem_SystemEventType_SourceNode                                                     OpcuaNodeIdServicesVariableSystem = 3655
+	OpcuaNodeIdServicesVariableSystem_SystemEventType_SourceName                                                     OpcuaNodeIdServicesVariableSystem = 3656
+	OpcuaNodeIdServicesVariableSystem_SystemEventType_Time                                                           OpcuaNodeIdServicesVariableSystem = 3657
+	OpcuaNodeIdServicesVariableSystem_SystemEventType_ReceiveTime                                                    OpcuaNodeIdServicesVariableSystem = 3658
+	OpcuaNodeIdServicesVariableSystem_SystemEventType_LocalTime                                                      OpcuaNodeIdServicesVariableSystem = 3659
+	OpcuaNodeIdServicesVariableSystem_SystemEventType_Message                                                        OpcuaNodeIdServicesVariableSystem = 3660
+	OpcuaNodeIdServicesVariableSystem_SystemEventType_Severity                                                       OpcuaNodeIdServicesVariableSystem = 3661
+	OpcuaNodeIdServicesVariableSystem_SystemStatusChangeEventType_EventId                                            OpcuaNodeIdServicesVariableSystem = 11447
+	OpcuaNodeIdServicesVariableSystem_SystemStatusChangeEventType_EventType                                          OpcuaNodeIdServicesVariableSystem = 11448
+	OpcuaNodeIdServicesVariableSystem_SystemStatusChangeEventType_SourceNode                                         OpcuaNodeIdServicesVariableSystem = 11449
+	OpcuaNodeIdServicesVariableSystem_SystemStatusChangeEventType_SourceName                                         OpcuaNodeIdServicesVariableSystem = 11450
+	OpcuaNodeIdServicesVariableSystem_SystemStatusChangeEventType_Time                                               OpcuaNodeIdServicesVariableSystem = 11451
+	OpcuaNodeIdServicesVariableSystem_SystemStatusChangeEventType_ReceiveTime                                        OpcuaNodeIdServicesVariableSystem = 11452
+	OpcuaNodeIdServicesVariableSystem_SystemStatusChangeEventType_LocalTime                                          OpcuaNodeIdServicesVariableSystem = 11453
+	OpcuaNodeIdServicesVariableSystem_SystemStatusChangeEventType_Message                                            OpcuaNodeIdServicesVariableSystem = 11454
+	OpcuaNodeIdServicesVariableSystem_SystemStatusChangeEventType_Severity                                           OpcuaNodeIdServicesVariableSystem = 11455
+	OpcuaNodeIdServicesVariableSystem_SystemStatusChangeEventType_SystemState                                        OpcuaNodeIdServicesVariableSystem = 11696
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_EventId                                               OpcuaNodeIdServicesVariableSystem = 11754
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_EventType                                             OpcuaNodeIdServicesVariableSystem = 11755
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_SourceNode                                            OpcuaNodeIdServicesVariableSystem = 11756
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_SourceName                                            OpcuaNodeIdServicesVariableSystem = 11757
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_Time                                                  OpcuaNodeIdServicesVariableSystem = 11758
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ReceiveTime                                           OpcuaNodeIdServicesVariableSystem = 11759
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_LocalTime                                             OpcuaNodeIdServicesVariableSystem = 11760
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_Message                                               OpcuaNodeIdServicesVariableSystem = 11761
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_Severity                                              OpcuaNodeIdServicesVariableSystem = 11762
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ConditionClassId                                      OpcuaNodeIdServicesVariableSystem = 11763
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ConditionClassName                                    OpcuaNodeIdServicesVariableSystem = 11764
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ConditionName                                         OpcuaNodeIdServicesVariableSystem = 11765
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_BranchId                                              OpcuaNodeIdServicesVariableSystem = 11766
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_Retain                                                OpcuaNodeIdServicesVariableSystem = 11767
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_EnabledState                                          OpcuaNodeIdServicesVariableSystem = 11768
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_EnabledState_Id                                       OpcuaNodeIdServicesVariableSystem = 11769
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_EnabledState_Name                                     OpcuaNodeIdServicesVariableSystem = 11770
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_EnabledState_Number                                   OpcuaNodeIdServicesVariableSystem = 11771
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_EnabledState_EffectiveDisplayName                     OpcuaNodeIdServicesVariableSystem = 11772
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_EnabledState_TransitionTime                           OpcuaNodeIdServicesVariableSystem = 11773
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_EnabledState_EffectiveTransitionTime                  OpcuaNodeIdServicesVariableSystem = 11774
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_EnabledState_TrueState                                OpcuaNodeIdServicesVariableSystem = 11775
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_EnabledState_FalseState                               OpcuaNodeIdServicesVariableSystem = 11776
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_Quality                                               OpcuaNodeIdServicesVariableSystem = 11777
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_Quality_SourceTimestamp                               OpcuaNodeIdServicesVariableSystem = 11778
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_LastSeverity                                          OpcuaNodeIdServicesVariableSystem = 11779
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_LastSeverity_SourceTimestamp                          OpcuaNodeIdServicesVariableSystem = 11780
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_Comment                                               OpcuaNodeIdServicesVariableSystem = 11781
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_Comment_SourceTimestamp                               OpcuaNodeIdServicesVariableSystem = 11782
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ClientUserId                                          OpcuaNodeIdServicesVariableSystem = 11783
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_AddComment_InputArguments                             OpcuaNodeIdServicesVariableSystem = 11787
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ConditionRefresh_InputArguments                       OpcuaNodeIdServicesVariableSystem = 11789
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_AckedState                                            OpcuaNodeIdServicesVariableSystem = 11790
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_AckedState_Id                                         OpcuaNodeIdServicesVariableSystem = 11791
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_AckedState_Name                                       OpcuaNodeIdServicesVariableSystem = 11792
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_AckedState_Number                                     OpcuaNodeIdServicesVariableSystem = 11793
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_AckedState_EffectiveDisplayName                       OpcuaNodeIdServicesVariableSystem = 11794
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_AckedState_TransitionTime                             OpcuaNodeIdServicesVariableSystem = 11795
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_AckedState_EffectiveTransitionTime                    OpcuaNodeIdServicesVariableSystem = 11796
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_AckedState_TrueState                                  OpcuaNodeIdServicesVariableSystem = 11797
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_AckedState_FalseState                                 OpcuaNodeIdServicesVariableSystem = 11798
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ConfirmedState                                        OpcuaNodeIdServicesVariableSystem = 11799
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ConfirmedState_Id                                     OpcuaNodeIdServicesVariableSystem = 11800
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ConfirmedState_Name                                   OpcuaNodeIdServicesVariableSystem = 11801
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ConfirmedState_Number                                 OpcuaNodeIdServicesVariableSystem = 11802
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ConfirmedState_EffectiveDisplayName                   OpcuaNodeIdServicesVariableSystem = 11803
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ConfirmedState_TransitionTime                         OpcuaNodeIdServicesVariableSystem = 11804
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ConfirmedState_EffectiveTransitionTime                OpcuaNodeIdServicesVariableSystem = 11805
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ConfirmedState_TrueState                              OpcuaNodeIdServicesVariableSystem = 11806
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ConfirmedState_FalseState                             OpcuaNodeIdServicesVariableSystem = 11807
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_Acknowledge_InputArguments                            OpcuaNodeIdServicesVariableSystem = 11809
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_Confirm_InputArguments                                OpcuaNodeIdServicesVariableSystem = 11811
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ActiveState                                           OpcuaNodeIdServicesVariableSystem = 11812
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ActiveState_Id                                        OpcuaNodeIdServicesVariableSystem = 11813
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ActiveState_Name                                      OpcuaNodeIdServicesVariableSystem = 11814
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ActiveState_Number                                    OpcuaNodeIdServicesVariableSystem = 11815
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ActiveState_EffectiveDisplayName                      OpcuaNodeIdServicesVariableSystem = 11816
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ActiveState_TransitionTime                            OpcuaNodeIdServicesVariableSystem = 11817
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ActiveState_EffectiveTransitionTime                   OpcuaNodeIdServicesVariableSystem = 11818
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ActiveState_TrueState                                 OpcuaNodeIdServicesVariableSystem = 11819
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ActiveState_FalseState                                OpcuaNodeIdServicesVariableSystem = 11820
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_InputNode                                             OpcuaNodeIdServicesVariableSystem = 11821
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_SuppressedState                                       OpcuaNodeIdServicesVariableSystem = 11822
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_SuppressedState_Id                                    OpcuaNodeIdServicesVariableSystem = 11823
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_SuppressedState_Name                                  OpcuaNodeIdServicesVariableSystem = 11824
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_SuppressedState_Number                                OpcuaNodeIdServicesVariableSystem = 11825
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_SuppressedState_EffectiveDisplayName                  OpcuaNodeIdServicesVariableSystem = 11826
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_SuppressedState_TransitionTime                        OpcuaNodeIdServicesVariableSystem = 11827
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_SuppressedState_EffectiveTransitionTime               OpcuaNodeIdServicesVariableSystem = 11828
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_SuppressedState_TrueState                             OpcuaNodeIdServicesVariableSystem = 11829
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_SuppressedState_FalseState                            OpcuaNodeIdServicesVariableSystem = 11830
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ShelvingState_CurrentState                            OpcuaNodeIdServicesVariableSystem = 11832
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ShelvingState_CurrentState_Id                         OpcuaNodeIdServicesVariableSystem = 11833
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ShelvingState_CurrentState_Name                       OpcuaNodeIdServicesVariableSystem = 11834
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ShelvingState_CurrentState_Number                     OpcuaNodeIdServicesVariableSystem = 11835
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ShelvingState_CurrentState_EffectiveDisplayName       OpcuaNodeIdServicesVariableSystem = 11836
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ShelvingState_LastTransition                          OpcuaNodeIdServicesVariableSystem = 11837
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ShelvingState_LastTransition_Id                       OpcuaNodeIdServicesVariableSystem = 11838
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ShelvingState_LastTransition_Name                     OpcuaNodeIdServicesVariableSystem = 11839
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ShelvingState_LastTransition_Number                   OpcuaNodeIdServicesVariableSystem = 11840
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ShelvingState_LastTransition_TransitionTime           OpcuaNodeIdServicesVariableSystem = 11841
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ShelvingState_LastTransition_EffectiveTransitionTime  OpcuaNodeIdServicesVariableSystem = 11842
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ShelvingState_UnshelveTime                            OpcuaNodeIdServicesVariableSystem = 11843
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ShelvingState_TimedShelve_InputArguments              OpcuaNodeIdServicesVariableSystem = 11847
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_SuppressedOrShelved                                   OpcuaNodeIdServicesVariableSystem = 11848
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_MaxTimeShelved                                        OpcuaNodeIdServicesVariableSystem = 11849
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_NormalState                                           OpcuaNodeIdServicesVariableSystem = 11850
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ConditionRefresh2_InputArguments                      OpcuaNodeIdServicesVariableSystem = 13009
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ConditionSubClassId                                   OpcuaNodeIdServicesVariableSystem = 16972
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ConditionSubClassName                                 OpcuaNodeIdServicesVariableSystem = 16973
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_OutOfServiceState                                     OpcuaNodeIdServicesVariableSystem = 16974
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_OutOfServiceState_Id                                  OpcuaNodeIdServicesVariableSystem = 16975
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_OutOfServiceState_Name                                OpcuaNodeIdServicesVariableSystem = 16976
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_OutOfServiceState_Number                              OpcuaNodeIdServicesVariableSystem = 16977
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_OutOfServiceState_EffectiveDisplayName                OpcuaNodeIdServicesVariableSystem = 16978
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_OutOfServiceState_TransitionTime                      OpcuaNodeIdServicesVariableSystem = 16979
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_OutOfServiceState_EffectiveTransitionTime             OpcuaNodeIdServicesVariableSystem = 16980
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_OutOfServiceState_TrueState                           OpcuaNodeIdServicesVariableSystem = 16981
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_OutOfServiceState_FalseState                          OpcuaNodeIdServicesVariableSystem = 16982
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_SilenceState                                          OpcuaNodeIdServicesVariableSystem = 16983
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_SilenceState_Id                                       OpcuaNodeIdServicesVariableSystem = 16984
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_SilenceState_Name                                     OpcuaNodeIdServicesVariableSystem = 16985
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_SilenceState_Number                                   OpcuaNodeIdServicesVariableSystem = 16986
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_SilenceState_EffectiveDisplayName                     OpcuaNodeIdServicesVariableSystem = 16987
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_SilenceState_TransitionTime                           OpcuaNodeIdServicesVariableSystem = 16988
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_SilenceState_EffectiveTransitionTime                  OpcuaNodeIdServicesVariableSystem = 16989
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_SilenceState_TrueState                                OpcuaNodeIdServicesVariableSystem = 16990
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_SilenceState_FalseState                               OpcuaNodeIdServicesVariableSystem = 16991
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_AudibleEnabled                                        OpcuaNodeIdServicesVariableSystem = 16992
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_AudibleSound                                          OpcuaNodeIdServicesVariableSystem = 16993
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_OnDelay                                               OpcuaNodeIdServicesVariableSystem = 16998
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_OffDelay                                              OpcuaNodeIdServicesVariableSystem = 16999
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_FirstInGroupFlag                                      OpcuaNodeIdServicesVariableSystem = 17000
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ReAlarmTime                                           OpcuaNodeIdServicesVariableSystem = 17003
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ReAlarmRepeatCount                                    OpcuaNodeIdServicesVariableSystem = 17004
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ShelvingState_AvailableStates                         OpcuaNodeIdServicesVariableSystem = 17696
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ShelvingState_AvailableTransitions                    OpcuaNodeIdServicesVariableSystem = 17697
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_AudibleSound_ListId                                   OpcuaNodeIdServicesVariableSystem = 17956
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_AudibleSound_AgencyId                                 OpcuaNodeIdServicesVariableSystem = 17957
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_AudibleSound_VersionId                                OpcuaNodeIdServicesVariableSystem = 17958
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_LatchedState                                          OpcuaNodeIdServicesVariableSystem = 18327
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_LatchedState_Id                                       OpcuaNodeIdServicesVariableSystem = 18328
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_LatchedState_Name                                     OpcuaNodeIdServicesVariableSystem = 18329
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_LatchedState_Number                                   OpcuaNodeIdServicesVariableSystem = 18330
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_LatchedState_EffectiveDisplayName                     OpcuaNodeIdServicesVariableSystem = 18331
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_LatchedState_TransitionTime                           OpcuaNodeIdServicesVariableSystem = 18332
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_LatchedState_EffectiveTransitionTime                  OpcuaNodeIdServicesVariableSystem = 18333
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_LatchedState_TrueState                                OpcuaNodeIdServicesVariableSystem = 18334
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_LatchedState_FalseState                               OpcuaNodeIdServicesVariableSystem = 18335
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_EventId                                              OpcuaNodeIdServicesVariableSystem = 18497
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_EventType                                            OpcuaNodeIdServicesVariableSystem = 18498
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_SourceNode                                           OpcuaNodeIdServicesVariableSystem = 18499
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_SourceName                                           OpcuaNodeIdServicesVariableSystem = 18500
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_Time                                                 OpcuaNodeIdServicesVariableSystem = 18501
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ReceiveTime                                          OpcuaNodeIdServicesVariableSystem = 18502
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_LocalTime                                            OpcuaNodeIdServicesVariableSystem = 18503
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_Message                                              OpcuaNodeIdServicesVariableSystem = 18504
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_Severity                                             OpcuaNodeIdServicesVariableSystem = 18505
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ConditionClassId                                     OpcuaNodeIdServicesVariableSystem = 18506
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ConditionClassName                                   OpcuaNodeIdServicesVariableSystem = 18507
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ConditionSubClassId                                  OpcuaNodeIdServicesVariableSystem = 18508
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ConditionSubClassName                                OpcuaNodeIdServicesVariableSystem = 18509
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ConditionName                                        OpcuaNodeIdServicesVariableSystem = 18510
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_BranchId                                             OpcuaNodeIdServicesVariableSystem = 18511
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_Retain                                               OpcuaNodeIdServicesVariableSystem = 18512
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_EnabledState                                         OpcuaNodeIdServicesVariableSystem = 18513
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_EnabledState_Id                                      OpcuaNodeIdServicesVariableSystem = 18514
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_EnabledState_Name                                    OpcuaNodeIdServicesVariableSystem = 18515
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_EnabledState_Number                                  OpcuaNodeIdServicesVariableSystem = 18516
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_EnabledState_EffectiveDisplayName                    OpcuaNodeIdServicesVariableSystem = 18517
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_EnabledState_TransitionTime                          OpcuaNodeIdServicesVariableSystem = 18518
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_EnabledState_EffectiveTransitionTime                 OpcuaNodeIdServicesVariableSystem = 18519
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_EnabledState_TrueState                               OpcuaNodeIdServicesVariableSystem = 18520
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_EnabledState_FalseState                              OpcuaNodeIdServicesVariableSystem = 18521
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_Quality                                              OpcuaNodeIdServicesVariableSystem = 18522
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_Quality_SourceTimestamp                              OpcuaNodeIdServicesVariableSystem = 18523
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_LastSeverity                                         OpcuaNodeIdServicesVariableSystem = 18524
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_LastSeverity_SourceTimestamp                         OpcuaNodeIdServicesVariableSystem = 18525
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_Comment                                              OpcuaNodeIdServicesVariableSystem = 18526
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_Comment_SourceTimestamp                              OpcuaNodeIdServicesVariableSystem = 18527
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ClientUserId                                         OpcuaNodeIdServicesVariableSystem = 18528
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_AddComment_InputArguments                            OpcuaNodeIdServicesVariableSystem = 18532
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ConditionRefresh_InputArguments                      OpcuaNodeIdServicesVariableSystem = 18534
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ConditionRefresh2_InputArguments                     OpcuaNodeIdServicesVariableSystem = 18536
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_AckedState                                           OpcuaNodeIdServicesVariableSystem = 18537
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_AckedState_Id                                        OpcuaNodeIdServicesVariableSystem = 18538
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_AckedState_Name                                      OpcuaNodeIdServicesVariableSystem = 18539
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_AckedState_Number                                    OpcuaNodeIdServicesVariableSystem = 18540
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_AckedState_EffectiveDisplayName                      OpcuaNodeIdServicesVariableSystem = 18541
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_AckedState_TransitionTime                            OpcuaNodeIdServicesVariableSystem = 18542
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_AckedState_EffectiveTransitionTime                   OpcuaNodeIdServicesVariableSystem = 18543
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_AckedState_TrueState                                 OpcuaNodeIdServicesVariableSystem = 18544
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_AckedState_FalseState                                OpcuaNodeIdServicesVariableSystem = 18545
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ConfirmedState                                       OpcuaNodeIdServicesVariableSystem = 18546
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ConfirmedState_Id                                    OpcuaNodeIdServicesVariableSystem = 18547
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ConfirmedState_Name                                  OpcuaNodeIdServicesVariableSystem = 18548
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ConfirmedState_Number                                OpcuaNodeIdServicesVariableSystem = 18549
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ConfirmedState_EffectiveDisplayName                  OpcuaNodeIdServicesVariableSystem = 18550
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ConfirmedState_TransitionTime                        OpcuaNodeIdServicesVariableSystem = 18551
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ConfirmedState_EffectiveTransitionTime               OpcuaNodeIdServicesVariableSystem = 18552
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ConfirmedState_TrueState                             OpcuaNodeIdServicesVariableSystem = 18553
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ConfirmedState_FalseState                            OpcuaNodeIdServicesVariableSystem = 18554
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_Acknowledge_InputArguments                           OpcuaNodeIdServicesVariableSystem = 18556
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_Confirm_InputArguments                               OpcuaNodeIdServicesVariableSystem = 18558
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ActiveState                                          OpcuaNodeIdServicesVariableSystem = 18559
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ActiveState_Id                                       OpcuaNodeIdServicesVariableSystem = 18560
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ActiveState_Name                                     OpcuaNodeIdServicesVariableSystem = 18561
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ActiveState_Number                                   OpcuaNodeIdServicesVariableSystem = 18562
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ActiveState_EffectiveDisplayName                     OpcuaNodeIdServicesVariableSystem = 18563
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ActiveState_TransitionTime                           OpcuaNodeIdServicesVariableSystem = 18564
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ActiveState_EffectiveTransitionTime                  OpcuaNodeIdServicesVariableSystem = 18565
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ActiveState_TrueState                                OpcuaNodeIdServicesVariableSystem = 18566
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ActiveState_FalseState                               OpcuaNodeIdServicesVariableSystem = 18567
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_InputNode                                            OpcuaNodeIdServicesVariableSystem = 18568
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_SuppressedState                                      OpcuaNodeIdServicesVariableSystem = 18569
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_SuppressedState_Id                                   OpcuaNodeIdServicesVariableSystem = 18570
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_SuppressedState_Name                                 OpcuaNodeIdServicesVariableSystem = 18571
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_SuppressedState_Number                               OpcuaNodeIdServicesVariableSystem = 18572
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_SuppressedState_EffectiveDisplayName                 OpcuaNodeIdServicesVariableSystem = 18573
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_SuppressedState_TransitionTime                       OpcuaNodeIdServicesVariableSystem = 18574
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_SuppressedState_EffectiveTransitionTime              OpcuaNodeIdServicesVariableSystem = 18575
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_SuppressedState_TrueState                            OpcuaNodeIdServicesVariableSystem = 18576
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_SuppressedState_FalseState                           OpcuaNodeIdServicesVariableSystem = 18577
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_OutOfServiceState                                    OpcuaNodeIdServicesVariableSystem = 18578
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_OutOfServiceState_Id                                 OpcuaNodeIdServicesVariableSystem = 18579
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_OutOfServiceState_Name                               OpcuaNodeIdServicesVariableSystem = 18580
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_OutOfServiceState_Number                             OpcuaNodeIdServicesVariableSystem = 18581
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_OutOfServiceState_EffectiveDisplayName               OpcuaNodeIdServicesVariableSystem = 18582
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_OutOfServiceState_TransitionTime                     OpcuaNodeIdServicesVariableSystem = 18583
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_OutOfServiceState_EffectiveTransitionTime            OpcuaNodeIdServicesVariableSystem = 18584
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_OutOfServiceState_TrueState                          OpcuaNodeIdServicesVariableSystem = 18585
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_OutOfServiceState_FalseState                         OpcuaNodeIdServicesVariableSystem = 18586
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ShelvingState_CurrentState                           OpcuaNodeIdServicesVariableSystem = 18588
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ShelvingState_CurrentState_Id                        OpcuaNodeIdServicesVariableSystem = 18589
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ShelvingState_CurrentState_Name                      OpcuaNodeIdServicesVariableSystem = 18590
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ShelvingState_CurrentState_Number                    OpcuaNodeIdServicesVariableSystem = 18591
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ShelvingState_CurrentState_EffectiveDisplayName      OpcuaNodeIdServicesVariableSystem = 18592
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ShelvingState_LastTransition                         OpcuaNodeIdServicesVariableSystem = 18593
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ShelvingState_LastTransition_Id                      OpcuaNodeIdServicesVariableSystem = 18594
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ShelvingState_LastTransition_Name                    OpcuaNodeIdServicesVariableSystem = 18595
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ShelvingState_LastTransition_Number                  OpcuaNodeIdServicesVariableSystem = 18596
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ShelvingState_LastTransition_TransitionTime          OpcuaNodeIdServicesVariableSystem = 18597
 	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ShelvingState_LastTransition_EffectiveTransitionTime OpcuaNodeIdServicesVariableSystem = 18598
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ShelvingState_AvailableStates OpcuaNodeIdServicesVariableSystem = 18599
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ShelvingState_AvailableTransitions OpcuaNodeIdServicesVariableSystem = 18600
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ShelvingState_UnshelveTime OpcuaNodeIdServicesVariableSystem = 18601
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ShelvingState_TimedShelve_InputArguments OpcuaNodeIdServicesVariableSystem = 18603
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_SuppressedOrShelved OpcuaNodeIdServicesVariableSystem = 18606
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_MaxTimeShelved OpcuaNodeIdServicesVariableSystem = 18607
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_AudibleEnabled OpcuaNodeIdServicesVariableSystem = 18608
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_AudibleSound OpcuaNodeIdServicesVariableSystem = 18609
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_AudibleSound_ListId OpcuaNodeIdServicesVariableSystem = 18610
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_AudibleSound_AgencyId OpcuaNodeIdServicesVariableSystem = 18611
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_AudibleSound_VersionId OpcuaNodeIdServicesVariableSystem = 18612
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_SilenceState OpcuaNodeIdServicesVariableSystem = 18613
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_SilenceState_Id OpcuaNodeIdServicesVariableSystem = 18614
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_SilenceState_Name OpcuaNodeIdServicesVariableSystem = 18615
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_SilenceState_Number OpcuaNodeIdServicesVariableSystem = 18616
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_SilenceState_EffectiveDisplayName OpcuaNodeIdServicesVariableSystem = 18617
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_SilenceState_TransitionTime OpcuaNodeIdServicesVariableSystem = 18618
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_SilenceState_EffectiveTransitionTime OpcuaNodeIdServicesVariableSystem = 18619
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_SilenceState_TrueState OpcuaNodeIdServicesVariableSystem = 18620
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_SilenceState_FalseState OpcuaNodeIdServicesVariableSystem = 18621
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_OnDelay OpcuaNodeIdServicesVariableSystem = 18622
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_OffDelay OpcuaNodeIdServicesVariableSystem = 18623
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_FirstInGroupFlag OpcuaNodeIdServicesVariableSystem = 18624
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_LatchedState OpcuaNodeIdServicesVariableSystem = 18626
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_LatchedState_Id OpcuaNodeIdServicesVariableSystem = 18627
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_LatchedState_Name OpcuaNodeIdServicesVariableSystem = 18628
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_LatchedState_Number OpcuaNodeIdServicesVariableSystem = 18629
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_LatchedState_EffectiveDisplayName OpcuaNodeIdServicesVariableSystem = 18630
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_LatchedState_TransitionTime OpcuaNodeIdServicesVariableSystem = 18631
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_LatchedState_EffectiveTransitionTime OpcuaNodeIdServicesVariableSystem = 18632
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_LatchedState_TrueState OpcuaNodeIdServicesVariableSystem = 18633
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_LatchedState_FalseState OpcuaNodeIdServicesVariableSystem = 18634
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ReAlarmTime OpcuaNodeIdServicesVariableSystem = 18636
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ReAlarmRepeatCount OpcuaNodeIdServicesVariableSystem = 18637
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_NormalState OpcuaNodeIdServicesVariableSystem = 18644
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_Suppress2_InputArguments OpcuaNodeIdServicesVariableSystem = 24449
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_Unsuppress2_InputArguments OpcuaNodeIdServicesVariableSystem = 24451
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_RemoveFromService2_InputArguments OpcuaNodeIdServicesVariableSystem = 24453
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_PlaceInService2_InputArguments OpcuaNodeIdServicesVariableSystem = 24455
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_Reset2_InputArguments OpcuaNodeIdServicesVariableSystem = 24457
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_Suppress2_InputArguments OpcuaNodeIdServicesVariableSystem = 24479
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_Unsuppress2_InputArguments OpcuaNodeIdServicesVariableSystem = 24481
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_RemoveFromService2_InputArguments OpcuaNodeIdServicesVariableSystem = 24483
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_PlaceInService2_InputArguments OpcuaNodeIdServicesVariableSystem = 24485
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_Reset2_InputArguments OpcuaNodeIdServicesVariableSystem = 24487
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ShelvingState_TimedShelve2_InputArguments OpcuaNodeIdServicesVariableSystem = 24923
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ShelvingState_Unshelve2_InputArguments OpcuaNodeIdServicesVariableSystem = 24925
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ShelvingState_OneShotShelve2_InputArguments OpcuaNodeIdServicesVariableSystem = 24927
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ShelvingState_TimedShelve2_InputArguments OpcuaNodeIdServicesVariableSystem = 24947
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ShelvingState_Unshelve2_InputArguments OpcuaNodeIdServicesVariableSystem = 24949
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ShelvingState_OneShotShelve2_InputArguments OpcuaNodeIdServicesVariableSystem = 24951
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_GetGroupMemberships_OutputArguments OpcuaNodeIdServicesVariableSystem = 25170
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_GetGroupMemberships_OutputArguments OpcuaNodeIdServicesVariableSystem = 25173
-	OpcuaNodeIdServicesVariableSystem_SystemEventType_ConditionClassId OpcuaNodeIdServicesVariableSystem = 31875
-	OpcuaNodeIdServicesVariableSystem_SystemEventType_ConditionClassName OpcuaNodeIdServicesVariableSystem = 31876
-	OpcuaNodeIdServicesVariableSystem_SystemEventType_ConditionSubClassId OpcuaNodeIdServicesVariableSystem = 31877
-	OpcuaNodeIdServicesVariableSystem_SystemEventType_ConditionSubClassName OpcuaNodeIdServicesVariableSystem = 31878
-	OpcuaNodeIdServicesVariableSystem_SystemStatusChangeEventType_ConditionClassId OpcuaNodeIdServicesVariableSystem = 31883
-	OpcuaNodeIdServicesVariableSystem_SystemStatusChangeEventType_ConditionClassName OpcuaNodeIdServicesVariableSystem = 31884
-	OpcuaNodeIdServicesVariableSystem_SystemStatusChangeEventType_ConditionSubClassId OpcuaNodeIdServicesVariableSystem = 31885
-	OpcuaNodeIdServicesVariableSystem_SystemStatusChangeEventType_ConditionSubClassName OpcuaNodeIdServicesVariableSystem = 31886
-	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_SupportsFilteredRetain OpcuaNodeIdServicesVariableSystem = 32238
-	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_SupportsFilteredRetain OpcuaNodeIdServicesVariableSystem = 32241
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ShelvingState_AvailableStates                        OpcuaNodeIdServicesVariableSystem = 18599
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ShelvingState_AvailableTransitions                   OpcuaNodeIdServicesVariableSystem = 18600
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ShelvingState_UnshelveTime                           OpcuaNodeIdServicesVariableSystem = 18601
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ShelvingState_TimedShelve_InputArguments             OpcuaNodeIdServicesVariableSystem = 18603
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_SuppressedOrShelved                                  OpcuaNodeIdServicesVariableSystem = 18606
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_MaxTimeShelved                                       OpcuaNodeIdServicesVariableSystem = 18607
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_AudibleEnabled                                       OpcuaNodeIdServicesVariableSystem = 18608
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_AudibleSound                                         OpcuaNodeIdServicesVariableSystem = 18609
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_AudibleSound_ListId                                  OpcuaNodeIdServicesVariableSystem = 18610
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_AudibleSound_AgencyId                                OpcuaNodeIdServicesVariableSystem = 18611
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_AudibleSound_VersionId                               OpcuaNodeIdServicesVariableSystem = 18612
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_SilenceState                                         OpcuaNodeIdServicesVariableSystem = 18613
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_SilenceState_Id                                      OpcuaNodeIdServicesVariableSystem = 18614
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_SilenceState_Name                                    OpcuaNodeIdServicesVariableSystem = 18615
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_SilenceState_Number                                  OpcuaNodeIdServicesVariableSystem = 18616
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_SilenceState_EffectiveDisplayName                    OpcuaNodeIdServicesVariableSystem = 18617
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_SilenceState_TransitionTime                          OpcuaNodeIdServicesVariableSystem = 18618
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_SilenceState_EffectiveTransitionTime                 OpcuaNodeIdServicesVariableSystem = 18619
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_SilenceState_TrueState                               OpcuaNodeIdServicesVariableSystem = 18620
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_SilenceState_FalseState                              OpcuaNodeIdServicesVariableSystem = 18621
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_OnDelay                                              OpcuaNodeIdServicesVariableSystem = 18622
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_OffDelay                                             OpcuaNodeIdServicesVariableSystem = 18623
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_FirstInGroupFlag                                     OpcuaNodeIdServicesVariableSystem = 18624
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_LatchedState                                         OpcuaNodeIdServicesVariableSystem = 18626
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_LatchedState_Id                                      OpcuaNodeIdServicesVariableSystem = 18627
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_LatchedState_Name                                    OpcuaNodeIdServicesVariableSystem = 18628
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_LatchedState_Number                                  OpcuaNodeIdServicesVariableSystem = 18629
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_LatchedState_EffectiveDisplayName                    OpcuaNodeIdServicesVariableSystem = 18630
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_LatchedState_TransitionTime                          OpcuaNodeIdServicesVariableSystem = 18631
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_LatchedState_EffectiveTransitionTime                 OpcuaNodeIdServicesVariableSystem = 18632
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_LatchedState_TrueState                               OpcuaNodeIdServicesVariableSystem = 18633
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_LatchedState_FalseState                              OpcuaNodeIdServicesVariableSystem = 18634
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ReAlarmTime                                          OpcuaNodeIdServicesVariableSystem = 18636
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ReAlarmRepeatCount                                   OpcuaNodeIdServicesVariableSystem = 18637
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_NormalState                                          OpcuaNodeIdServicesVariableSystem = 18644
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_Suppress2_InputArguments                              OpcuaNodeIdServicesVariableSystem = 24449
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_Unsuppress2_InputArguments                            OpcuaNodeIdServicesVariableSystem = 24451
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_RemoveFromService2_InputArguments                     OpcuaNodeIdServicesVariableSystem = 24453
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_PlaceInService2_InputArguments                        OpcuaNodeIdServicesVariableSystem = 24455
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_Reset2_InputArguments                                 OpcuaNodeIdServicesVariableSystem = 24457
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_Suppress2_InputArguments                             OpcuaNodeIdServicesVariableSystem = 24479
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_Unsuppress2_InputArguments                           OpcuaNodeIdServicesVariableSystem = 24481
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_RemoveFromService2_InputArguments                    OpcuaNodeIdServicesVariableSystem = 24483
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_PlaceInService2_InputArguments                       OpcuaNodeIdServicesVariableSystem = 24485
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_Reset2_InputArguments                                OpcuaNodeIdServicesVariableSystem = 24487
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ShelvingState_TimedShelve2_InputArguments             OpcuaNodeIdServicesVariableSystem = 24923
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ShelvingState_Unshelve2_InputArguments                OpcuaNodeIdServicesVariableSystem = 24925
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ShelvingState_OneShotShelve2_InputArguments           OpcuaNodeIdServicesVariableSystem = 24927
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ShelvingState_TimedShelve2_InputArguments            OpcuaNodeIdServicesVariableSystem = 24947
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ShelvingState_Unshelve2_InputArguments               OpcuaNodeIdServicesVariableSystem = 24949
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ShelvingState_OneShotShelve2_InputArguments          OpcuaNodeIdServicesVariableSystem = 24951
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_GetGroupMemberships_OutputArguments                   OpcuaNodeIdServicesVariableSystem = 25170
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_GetGroupMemberships_OutputArguments                  OpcuaNodeIdServicesVariableSystem = 25173
+	OpcuaNodeIdServicesVariableSystem_SystemEventType_ConditionClassId                                               OpcuaNodeIdServicesVariableSystem = 31875
+	OpcuaNodeIdServicesVariableSystem_SystemEventType_ConditionClassName                                             OpcuaNodeIdServicesVariableSystem = 31876
+	OpcuaNodeIdServicesVariableSystem_SystemEventType_ConditionSubClassId                                            OpcuaNodeIdServicesVariableSystem = 31877
+	OpcuaNodeIdServicesVariableSystem_SystemEventType_ConditionSubClassName                                          OpcuaNodeIdServicesVariableSystem = 31878
+	OpcuaNodeIdServicesVariableSystem_SystemStatusChangeEventType_ConditionClassId                                   OpcuaNodeIdServicesVariableSystem = 31883
+	OpcuaNodeIdServicesVariableSystem_SystemStatusChangeEventType_ConditionClassName                                 OpcuaNodeIdServicesVariableSystem = 31884
+	OpcuaNodeIdServicesVariableSystem_SystemStatusChangeEventType_ConditionSubClassId                                OpcuaNodeIdServicesVariableSystem = 31885
+	OpcuaNodeIdServicesVariableSystem_SystemStatusChangeEventType_ConditionSubClassName                              OpcuaNodeIdServicesVariableSystem = 31886
+	OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_SupportsFilteredRetain                                OpcuaNodeIdServicesVariableSystem = 32238
+	OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_SupportsFilteredRetain                               OpcuaNodeIdServicesVariableSystem = 32241
 )
 
 var OpcuaNodeIdServicesVariableSystemValues []OpcuaNodeIdServicesVariableSystem
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariableSystemValues = []OpcuaNodeIdServicesVariableSystem {
+	OpcuaNodeIdServicesVariableSystemValues = []OpcuaNodeIdServicesVariableSystem{
 		OpcuaNodeIdServicesVariableSystem_SystemEventType_EventId,
 		OpcuaNodeIdServicesVariableSystem_SystemEventType_EventType,
 		OpcuaNodeIdServicesVariableSystem_SystemEventType_SourceNode,
@@ -663,616 +663,616 @@ func init() {
 
 func OpcuaNodeIdServicesVariableSystemByValue(value int32) (enum OpcuaNodeIdServicesVariableSystem, ok bool) {
 	switch value {
-		case 11447:
-			return OpcuaNodeIdServicesVariableSystem_SystemStatusChangeEventType_EventId, true
-		case 11448:
-			return OpcuaNodeIdServicesVariableSystem_SystemStatusChangeEventType_EventType, true
-		case 11449:
-			return OpcuaNodeIdServicesVariableSystem_SystemStatusChangeEventType_SourceNode, true
-		case 11450:
-			return OpcuaNodeIdServicesVariableSystem_SystemStatusChangeEventType_SourceName, true
-		case 11451:
-			return OpcuaNodeIdServicesVariableSystem_SystemStatusChangeEventType_Time, true
-		case 11452:
-			return OpcuaNodeIdServicesVariableSystem_SystemStatusChangeEventType_ReceiveTime, true
-		case 11453:
-			return OpcuaNodeIdServicesVariableSystem_SystemStatusChangeEventType_LocalTime, true
-		case 11454:
-			return OpcuaNodeIdServicesVariableSystem_SystemStatusChangeEventType_Message, true
-		case 11455:
-			return OpcuaNodeIdServicesVariableSystem_SystemStatusChangeEventType_Severity, true
-		case 11696:
-			return OpcuaNodeIdServicesVariableSystem_SystemStatusChangeEventType_SystemState, true
-		case 11754:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_EventId, true
-		case 11755:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_EventType, true
-		case 11756:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_SourceNode, true
-		case 11757:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_SourceName, true
-		case 11758:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_Time, true
-		case 11759:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ReceiveTime, true
-		case 11760:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_LocalTime, true
-		case 11761:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_Message, true
-		case 11762:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_Severity, true
-		case 11763:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ConditionClassId, true
-		case 11764:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ConditionClassName, true
-		case 11765:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ConditionName, true
-		case 11766:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_BranchId, true
-		case 11767:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_Retain, true
-		case 11768:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_EnabledState, true
-		case 11769:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_EnabledState_Id, true
-		case 11770:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_EnabledState_Name, true
-		case 11771:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_EnabledState_Number, true
-		case 11772:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_EnabledState_EffectiveDisplayName, true
-		case 11773:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_EnabledState_TransitionTime, true
-		case 11774:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_EnabledState_EffectiveTransitionTime, true
-		case 11775:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_EnabledState_TrueState, true
-		case 11776:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_EnabledState_FalseState, true
-		case 11777:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_Quality, true
-		case 11778:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_Quality_SourceTimestamp, true
-		case 11779:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_LastSeverity, true
-		case 11780:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_LastSeverity_SourceTimestamp, true
-		case 11781:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_Comment, true
-		case 11782:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_Comment_SourceTimestamp, true
-		case 11783:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ClientUserId, true
-		case 11787:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_AddComment_InputArguments, true
-		case 11789:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ConditionRefresh_InputArguments, true
-		case 11790:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_AckedState, true
-		case 11791:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_AckedState_Id, true
-		case 11792:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_AckedState_Name, true
-		case 11793:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_AckedState_Number, true
-		case 11794:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_AckedState_EffectiveDisplayName, true
-		case 11795:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_AckedState_TransitionTime, true
-		case 11796:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_AckedState_EffectiveTransitionTime, true
-		case 11797:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_AckedState_TrueState, true
-		case 11798:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_AckedState_FalseState, true
-		case 11799:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ConfirmedState, true
-		case 11800:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ConfirmedState_Id, true
-		case 11801:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ConfirmedState_Name, true
-		case 11802:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ConfirmedState_Number, true
-		case 11803:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ConfirmedState_EffectiveDisplayName, true
-		case 11804:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ConfirmedState_TransitionTime, true
-		case 11805:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ConfirmedState_EffectiveTransitionTime, true
-		case 11806:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ConfirmedState_TrueState, true
-		case 11807:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ConfirmedState_FalseState, true
-		case 11809:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_Acknowledge_InputArguments, true
-		case 11811:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_Confirm_InputArguments, true
-		case 11812:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ActiveState, true
-		case 11813:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ActiveState_Id, true
-		case 11814:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ActiveState_Name, true
-		case 11815:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ActiveState_Number, true
-		case 11816:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ActiveState_EffectiveDisplayName, true
-		case 11817:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ActiveState_TransitionTime, true
-		case 11818:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ActiveState_EffectiveTransitionTime, true
-		case 11819:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ActiveState_TrueState, true
-		case 11820:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ActiveState_FalseState, true
-		case 11821:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_InputNode, true
-		case 11822:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_SuppressedState, true
-		case 11823:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_SuppressedState_Id, true
-		case 11824:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_SuppressedState_Name, true
-		case 11825:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_SuppressedState_Number, true
-		case 11826:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_SuppressedState_EffectiveDisplayName, true
-		case 11827:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_SuppressedState_TransitionTime, true
-		case 11828:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_SuppressedState_EffectiveTransitionTime, true
-		case 11829:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_SuppressedState_TrueState, true
-		case 11830:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_SuppressedState_FalseState, true
-		case 11832:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ShelvingState_CurrentState, true
-		case 11833:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ShelvingState_CurrentState_Id, true
-		case 11834:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ShelvingState_CurrentState_Name, true
-		case 11835:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ShelvingState_CurrentState_Number, true
-		case 11836:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ShelvingState_CurrentState_EffectiveDisplayName, true
-		case 11837:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ShelvingState_LastTransition, true
-		case 11838:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ShelvingState_LastTransition_Id, true
-		case 11839:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ShelvingState_LastTransition_Name, true
-		case 11840:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ShelvingState_LastTransition_Number, true
-		case 11841:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ShelvingState_LastTransition_TransitionTime, true
-		case 11842:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ShelvingState_LastTransition_EffectiveTransitionTime, true
-		case 11843:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ShelvingState_UnshelveTime, true
-		case 11847:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ShelvingState_TimedShelve_InputArguments, true
-		case 11848:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_SuppressedOrShelved, true
-		case 11849:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_MaxTimeShelved, true
-		case 11850:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_NormalState, true
-		case 13009:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ConditionRefresh2_InputArguments, true
-		case 16972:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ConditionSubClassId, true
-		case 16973:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ConditionSubClassName, true
-		case 16974:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_OutOfServiceState, true
-		case 16975:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_OutOfServiceState_Id, true
-		case 16976:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_OutOfServiceState_Name, true
-		case 16977:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_OutOfServiceState_Number, true
-		case 16978:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_OutOfServiceState_EffectiveDisplayName, true
-		case 16979:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_OutOfServiceState_TransitionTime, true
-		case 16980:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_OutOfServiceState_EffectiveTransitionTime, true
-		case 16981:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_OutOfServiceState_TrueState, true
-		case 16982:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_OutOfServiceState_FalseState, true
-		case 16983:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_SilenceState, true
-		case 16984:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_SilenceState_Id, true
-		case 16985:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_SilenceState_Name, true
-		case 16986:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_SilenceState_Number, true
-		case 16987:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_SilenceState_EffectiveDisplayName, true
-		case 16988:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_SilenceState_TransitionTime, true
-		case 16989:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_SilenceState_EffectiveTransitionTime, true
-		case 16990:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_SilenceState_TrueState, true
-		case 16991:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_SilenceState_FalseState, true
-		case 16992:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_AudibleEnabled, true
-		case 16993:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_AudibleSound, true
-		case 16998:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_OnDelay, true
-		case 16999:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_OffDelay, true
-		case 17000:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_FirstInGroupFlag, true
-		case 17003:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ReAlarmTime, true
-		case 17004:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ReAlarmRepeatCount, true
-		case 17696:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ShelvingState_AvailableStates, true
-		case 17697:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ShelvingState_AvailableTransitions, true
-		case 17956:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_AudibleSound_ListId, true
-		case 17957:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_AudibleSound_AgencyId, true
-		case 17958:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_AudibleSound_VersionId, true
-		case 18327:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_LatchedState, true
-		case 18328:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_LatchedState_Id, true
-		case 18329:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_LatchedState_Name, true
-		case 18330:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_LatchedState_Number, true
-		case 18331:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_LatchedState_EffectiveDisplayName, true
-		case 18332:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_LatchedState_TransitionTime, true
-		case 18333:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_LatchedState_EffectiveTransitionTime, true
-		case 18334:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_LatchedState_TrueState, true
-		case 18335:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_LatchedState_FalseState, true
-		case 18497:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_EventId, true
-		case 18498:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_EventType, true
-		case 18499:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_SourceNode, true
-		case 18500:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_SourceName, true
-		case 18501:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_Time, true
-		case 18502:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ReceiveTime, true
-		case 18503:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_LocalTime, true
-		case 18504:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_Message, true
-		case 18505:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_Severity, true
-		case 18506:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ConditionClassId, true
-		case 18507:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ConditionClassName, true
-		case 18508:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ConditionSubClassId, true
-		case 18509:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ConditionSubClassName, true
-		case 18510:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ConditionName, true
-		case 18511:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_BranchId, true
-		case 18512:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_Retain, true
-		case 18513:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_EnabledState, true
-		case 18514:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_EnabledState_Id, true
-		case 18515:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_EnabledState_Name, true
-		case 18516:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_EnabledState_Number, true
-		case 18517:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_EnabledState_EffectiveDisplayName, true
-		case 18518:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_EnabledState_TransitionTime, true
-		case 18519:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_EnabledState_EffectiveTransitionTime, true
-		case 18520:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_EnabledState_TrueState, true
-		case 18521:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_EnabledState_FalseState, true
-		case 18522:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_Quality, true
-		case 18523:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_Quality_SourceTimestamp, true
-		case 18524:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_LastSeverity, true
-		case 18525:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_LastSeverity_SourceTimestamp, true
-		case 18526:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_Comment, true
-		case 18527:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_Comment_SourceTimestamp, true
-		case 18528:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ClientUserId, true
-		case 18532:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_AddComment_InputArguments, true
-		case 18534:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ConditionRefresh_InputArguments, true
-		case 18536:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ConditionRefresh2_InputArguments, true
-		case 18537:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_AckedState, true
-		case 18538:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_AckedState_Id, true
-		case 18539:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_AckedState_Name, true
-		case 18540:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_AckedState_Number, true
-		case 18541:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_AckedState_EffectiveDisplayName, true
-		case 18542:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_AckedState_TransitionTime, true
-		case 18543:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_AckedState_EffectiveTransitionTime, true
-		case 18544:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_AckedState_TrueState, true
-		case 18545:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_AckedState_FalseState, true
-		case 18546:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ConfirmedState, true
-		case 18547:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ConfirmedState_Id, true
-		case 18548:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ConfirmedState_Name, true
-		case 18549:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ConfirmedState_Number, true
-		case 18550:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ConfirmedState_EffectiveDisplayName, true
-		case 18551:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ConfirmedState_TransitionTime, true
-		case 18552:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ConfirmedState_EffectiveTransitionTime, true
-		case 18553:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ConfirmedState_TrueState, true
-		case 18554:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ConfirmedState_FalseState, true
-		case 18556:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_Acknowledge_InputArguments, true
-		case 18558:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_Confirm_InputArguments, true
-		case 18559:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ActiveState, true
-		case 18560:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ActiveState_Id, true
-		case 18561:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ActiveState_Name, true
-		case 18562:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ActiveState_Number, true
-		case 18563:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ActiveState_EffectiveDisplayName, true
-		case 18564:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ActiveState_TransitionTime, true
-		case 18565:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ActiveState_EffectiveTransitionTime, true
-		case 18566:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ActiveState_TrueState, true
-		case 18567:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ActiveState_FalseState, true
-		case 18568:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_InputNode, true
-		case 18569:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_SuppressedState, true
-		case 18570:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_SuppressedState_Id, true
-		case 18571:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_SuppressedState_Name, true
-		case 18572:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_SuppressedState_Number, true
-		case 18573:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_SuppressedState_EffectiveDisplayName, true
-		case 18574:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_SuppressedState_TransitionTime, true
-		case 18575:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_SuppressedState_EffectiveTransitionTime, true
-		case 18576:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_SuppressedState_TrueState, true
-		case 18577:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_SuppressedState_FalseState, true
-		case 18578:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_OutOfServiceState, true
-		case 18579:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_OutOfServiceState_Id, true
-		case 18580:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_OutOfServiceState_Name, true
-		case 18581:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_OutOfServiceState_Number, true
-		case 18582:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_OutOfServiceState_EffectiveDisplayName, true
-		case 18583:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_OutOfServiceState_TransitionTime, true
-		case 18584:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_OutOfServiceState_EffectiveTransitionTime, true
-		case 18585:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_OutOfServiceState_TrueState, true
-		case 18586:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_OutOfServiceState_FalseState, true
-		case 18588:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ShelvingState_CurrentState, true
-		case 18589:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ShelvingState_CurrentState_Id, true
-		case 18590:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ShelvingState_CurrentState_Name, true
-		case 18591:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ShelvingState_CurrentState_Number, true
-		case 18592:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ShelvingState_CurrentState_EffectiveDisplayName, true
-		case 18593:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ShelvingState_LastTransition, true
-		case 18594:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ShelvingState_LastTransition_Id, true
-		case 18595:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ShelvingState_LastTransition_Name, true
-		case 18596:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ShelvingState_LastTransition_Number, true
-		case 18597:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ShelvingState_LastTransition_TransitionTime, true
-		case 18598:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ShelvingState_LastTransition_EffectiveTransitionTime, true
-		case 18599:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ShelvingState_AvailableStates, true
-		case 18600:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ShelvingState_AvailableTransitions, true
-		case 18601:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ShelvingState_UnshelveTime, true
-		case 18603:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ShelvingState_TimedShelve_InputArguments, true
-		case 18606:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_SuppressedOrShelved, true
-		case 18607:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_MaxTimeShelved, true
-		case 18608:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_AudibleEnabled, true
-		case 18609:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_AudibleSound, true
-		case 18610:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_AudibleSound_ListId, true
-		case 18611:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_AudibleSound_AgencyId, true
-		case 18612:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_AudibleSound_VersionId, true
-		case 18613:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_SilenceState, true
-		case 18614:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_SilenceState_Id, true
-		case 18615:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_SilenceState_Name, true
-		case 18616:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_SilenceState_Number, true
-		case 18617:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_SilenceState_EffectiveDisplayName, true
-		case 18618:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_SilenceState_TransitionTime, true
-		case 18619:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_SilenceState_EffectiveTransitionTime, true
-		case 18620:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_SilenceState_TrueState, true
-		case 18621:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_SilenceState_FalseState, true
-		case 18622:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_OnDelay, true
-		case 18623:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_OffDelay, true
-		case 18624:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_FirstInGroupFlag, true
-		case 18626:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_LatchedState, true
-		case 18627:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_LatchedState_Id, true
-		case 18628:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_LatchedState_Name, true
-		case 18629:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_LatchedState_Number, true
-		case 18630:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_LatchedState_EffectiveDisplayName, true
-		case 18631:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_LatchedState_TransitionTime, true
-		case 18632:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_LatchedState_EffectiveTransitionTime, true
-		case 18633:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_LatchedState_TrueState, true
-		case 18634:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_LatchedState_FalseState, true
-		case 18636:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ReAlarmTime, true
-		case 18637:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ReAlarmRepeatCount, true
-		case 18644:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_NormalState, true
-		case 24449:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_Suppress2_InputArguments, true
-		case 24451:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_Unsuppress2_InputArguments, true
-		case 24453:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_RemoveFromService2_InputArguments, true
-		case 24455:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_PlaceInService2_InputArguments, true
-		case 24457:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_Reset2_InputArguments, true
-		case 24479:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_Suppress2_InputArguments, true
-		case 24481:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_Unsuppress2_InputArguments, true
-		case 24483:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_RemoveFromService2_InputArguments, true
-		case 24485:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_PlaceInService2_InputArguments, true
-		case 24487:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_Reset2_InputArguments, true
-		case 24923:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ShelvingState_TimedShelve2_InputArguments, true
-		case 24925:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ShelvingState_Unshelve2_InputArguments, true
-		case 24927:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ShelvingState_OneShotShelve2_InputArguments, true
-		case 24947:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ShelvingState_TimedShelve2_InputArguments, true
-		case 24949:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ShelvingState_Unshelve2_InputArguments, true
-		case 24951:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ShelvingState_OneShotShelve2_InputArguments, true
-		case 25170:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_GetGroupMemberships_OutputArguments, true
-		case 25173:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_GetGroupMemberships_OutputArguments, true
-		case 31875:
-			return OpcuaNodeIdServicesVariableSystem_SystemEventType_ConditionClassId, true
-		case 31876:
-			return OpcuaNodeIdServicesVariableSystem_SystemEventType_ConditionClassName, true
-		case 31877:
-			return OpcuaNodeIdServicesVariableSystem_SystemEventType_ConditionSubClassId, true
-		case 31878:
-			return OpcuaNodeIdServicesVariableSystem_SystemEventType_ConditionSubClassName, true
-		case 31883:
-			return OpcuaNodeIdServicesVariableSystem_SystemStatusChangeEventType_ConditionClassId, true
-		case 31884:
-			return OpcuaNodeIdServicesVariableSystem_SystemStatusChangeEventType_ConditionClassName, true
-		case 31885:
-			return OpcuaNodeIdServicesVariableSystem_SystemStatusChangeEventType_ConditionSubClassId, true
-		case 31886:
-			return OpcuaNodeIdServicesVariableSystem_SystemStatusChangeEventType_ConditionSubClassName, true
-		case 32238:
-			return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_SupportsFilteredRetain, true
-		case 32241:
-			return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_SupportsFilteredRetain, true
-		case 3653:
-			return OpcuaNodeIdServicesVariableSystem_SystemEventType_EventId, true
-		case 3654:
-			return OpcuaNodeIdServicesVariableSystem_SystemEventType_EventType, true
-		case 3655:
-			return OpcuaNodeIdServicesVariableSystem_SystemEventType_SourceNode, true
-		case 3656:
-			return OpcuaNodeIdServicesVariableSystem_SystemEventType_SourceName, true
-		case 3657:
-			return OpcuaNodeIdServicesVariableSystem_SystemEventType_Time, true
-		case 3658:
-			return OpcuaNodeIdServicesVariableSystem_SystemEventType_ReceiveTime, true
-		case 3659:
-			return OpcuaNodeIdServicesVariableSystem_SystemEventType_LocalTime, true
-		case 3660:
-			return OpcuaNodeIdServicesVariableSystem_SystemEventType_Message, true
-		case 3661:
-			return OpcuaNodeIdServicesVariableSystem_SystemEventType_Severity, true
+	case 11447:
+		return OpcuaNodeIdServicesVariableSystem_SystemStatusChangeEventType_EventId, true
+	case 11448:
+		return OpcuaNodeIdServicesVariableSystem_SystemStatusChangeEventType_EventType, true
+	case 11449:
+		return OpcuaNodeIdServicesVariableSystem_SystemStatusChangeEventType_SourceNode, true
+	case 11450:
+		return OpcuaNodeIdServicesVariableSystem_SystemStatusChangeEventType_SourceName, true
+	case 11451:
+		return OpcuaNodeIdServicesVariableSystem_SystemStatusChangeEventType_Time, true
+	case 11452:
+		return OpcuaNodeIdServicesVariableSystem_SystemStatusChangeEventType_ReceiveTime, true
+	case 11453:
+		return OpcuaNodeIdServicesVariableSystem_SystemStatusChangeEventType_LocalTime, true
+	case 11454:
+		return OpcuaNodeIdServicesVariableSystem_SystemStatusChangeEventType_Message, true
+	case 11455:
+		return OpcuaNodeIdServicesVariableSystem_SystemStatusChangeEventType_Severity, true
+	case 11696:
+		return OpcuaNodeIdServicesVariableSystem_SystemStatusChangeEventType_SystemState, true
+	case 11754:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_EventId, true
+	case 11755:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_EventType, true
+	case 11756:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_SourceNode, true
+	case 11757:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_SourceName, true
+	case 11758:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_Time, true
+	case 11759:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ReceiveTime, true
+	case 11760:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_LocalTime, true
+	case 11761:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_Message, true
+	case 11762:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_Severity, true
+	case 11763:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ConditionClassId, true
+	case 11764:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ConditionClassName, true
+	case 11765:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ConditionName, true
+	case 11766:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_BranchId, true
+	case 11767:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_Retain, true
+	case 11768:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_EnabledState, true
+	case 11769:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_EnabledState_Id, true
+	case 11770:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_EnabledState_Name, true
+	case 11771:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_EnabledState_Number, true
+	case 11772:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_EnabledState_EffectiveDisplayName, true
+	case 11773:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_EnabledState_TransitionTime, true
+	case 11774:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_EnabledState_EffectiveTransitionTime, true
+	case 11775:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_EnabledState_TrueState, true
+	case 11776:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_EnabledState_FalseState, true
+	case 11777:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_Quality, true
+	case 11778:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_Quality_SourceTimestamp, true
+	case 11779:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_LastSeverity, true
+	case 11780:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_LastSeverity_SourceTimestamp, true
+	case 11781:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_Comment, true
+	case 11782:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_Comment_SourceTimestamp, true
+	case 11783:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ClientUserId, true
+	case 11787:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_AddComment_InputArguments, true
+	case 11789:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ConditionRefresh_InputArguments, true
+	case 11790:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_AckedState, true
+	case 11791:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_AckedState_Id, true
+	case 11792:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_AckedState_Name, true
+	case 11793:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_AckedState_Number, true
+	case 11794:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_AckedState_EffectiveDisplayName, true
+	case 11795:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_AckedState_TransitionTime, true
+	case 11796:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_AckedState_EffectiveTransitionTime, true
+	case 11797:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_AckedState_TrueState, true
+	case 11798:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_AckedState_FalseState, true
+	case 11799:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ConfirmedState, true
+	case 11800:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ConfirmedState_Id, true
+	case 11801:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ConfirmedState_Name, true
+	case 11802:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ConfirmedState_Number, true
+	case 11803:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ConfirmedState_EffectiveDisplayName, true
+	case 11804:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ConfirmedState_TransitionTime, true
+	case 11805:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ConfirmedState_EffectiveTransitionTime, true
+	case 11806:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ConfirmedState_TrueState, true
+	case 11807:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ConfirmedState_FalseState, true
+	case 11809:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_Acknowledge_InputArguments, true
+	case 11811:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_Confirm_InputArguments, true
+	case 11812:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ActiveState, true
+	case 11813:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ActiveState_Id, true
+	case 11814:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ActiveState_Name, true
+	case 11815:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ActiveState_Number, true
+	case 11816:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ActiveState_EffectiveDisplayName, true
+	case 11817:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ActiveState_TransitionTime, true
+	case 11818:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ActiveState_EffectiveTransitionTime, true
+	case 11819:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ActiveState_TrueState, true
+	case 11820:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ActiveState_FalseState, true
+	case 11821:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_InputNode, true
+	case 11822:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_SuppressedState, true
+	case 11823:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_SuppressedState_Id, true
+	case 11824:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_SuppressedState_Name, true
+	case 11825:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_SuppressedState_Number, true
+	case 11826:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_SuppressedState_EffectiveDisplayName, true
+	case 11827:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_SuppressedState_TransitionTime, true
+	case 11828:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_SuppressedState_EffectiveTransitionTime, true
+	case 11829:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_SuppressedState_TrueState, true
+	case 11830:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_SuppressedState_FalseState, true
+	case 11832:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ShelvingState_CurrentState, true
+	case 11833:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ShelvingState_CurrentState_Id, true
+	case 11834:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ShelvingState_CurrentState_Name, true
+	case 11835:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ShelvingState_CurrentState_Number, true
+	case 11836:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ShelvingState_CurrentState_EffectiveDisplayName, true
+	case 11837:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ShelvingState_LastTransition, true
+	case 11838:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ShelvingState_LastTransition_Id, true
+	case 11839:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ShelvingState_LastTransition_Name, true
+	case 11840:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ShelvingState_LastTransition_Number, true
+	case 11841:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ShelvingState_LastTransition_TransitionTime, true
+	case 11842:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ShelvingState_LastTransition_EffectiveTransitionTime, true
+	case 11843:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ShelvingState_UnshelveTime, true
+	case 11847:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ShelvingState_TimedShelve_InputArguments, true
+	case 11848:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_SuppressedOrShelved, true
+	case 11849:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_MaxTimeShelved, true
+	case 11850:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_NormalState, true
+	case 13009:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ConditionRefresh2_InputArguments, true
+	case 16972:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ConditionSubClassId, true
+	case 16973:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ConditionSubClassName, true
+	case 16974:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_OutOfServiceState, true
+	case 16975:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_OutOfServiceState_Id, true
+	case 16976:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_OutOfServiceState_Name, true
+	case 16977:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_OutOfServiceState_Number, true
+	case 16978:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_OutOfServiceState_EffectiveDisplayName, true
+	case 16979:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_OutOfServiceState_TransitionTime, true
+	case 16980:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_OutOfServiceState_EffectiveTransitionTime, true
+	case 16981:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_OutOfServiceState_TrueState, true
+	case 16982:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_OutOfServiceState_FalseState, true
+	case 16983:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_SilenceState, true
+	case 16984:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_SilenceState_Id, true
+	case 16985:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_SilenceState_Name, true
+	case 16986:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_SilenceState_Number, true
+	case 16987:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_SilenceState_EffectiveDisplayName, true
+	case 16988:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_SilenceState_TransitionTime, true
+	case 16989:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_SilenceState_EffectiveTransitionTime, true
+	case 16990:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_SilenceState_TrueState, true
+	case 16991:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_SilenceState_FalseState, true
+	case 16992:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_AudibleEnabled, true
+	case 16993:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_AudibleSound, true
+	case 16998:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_OnDelay, true
+	case 16999:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_OffDelay, true
+	case 17000:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_FirstInGroupFlag, true
+	case 17003:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ReAlarmTime, true
+	case 17004:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ReAlarmRepeatCount, true
+	case 17696:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ShelvingState_AvailableStates, true
+	case 17697:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ShelvingState_AvailableTransitions, true
+	case 17956:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_AudibleSound_ListId, true
+	case 17957:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_AudibleSound_AgencyId, true
+	case 17958:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_AudibleSound_VersionId, true
+	case 18327:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_LatchedState, true
+	case 18328:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_LatchedState_Id, true
+	case 18329:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_LatchedState_Name, true
+	case 18330:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_LatchedState_Number, true
+	case 18331:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_LatchedState_EffectiveDisplayName, true
+	case 18332:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_LatchedState_TransitionTime, true
+	case 18333:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_LatchedState_EffectiveTransitionTime, true
+	case 18334:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_LatchedState_TrueState, true
+	case 18335:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_LatchedState_FalseState, true
+	case 18497:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_EventId, true
+	case 18498:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_EventType, true
+	case 18499:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_SourceNode, true
+	case 18500:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_SourceName, true
+	case 18501:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_Time, true
+	case 18502:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ReceiveTime, true
+	case 18503:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_LocalTime, true
+	case 18504:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_Message, true
+	case 18505:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_Severity, true
+	case 18506:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ConditionClassId, true
+	case 18507:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ConditionClassName, true
+	case 18508:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ConditionSubClassId, true
+	case 18509:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ConditionSubClassName, true
+	case 18510:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ConditionName, true
+	case 18511:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_BranchId, true
+	case 18512:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_Retain, true
+	case 18513:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_EnabledState, true
+	case 18514:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_EnabledState_Id, true
+	case 18515:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_EnabledState_Name, true
+	case 18516:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_EnabledState_Number, true
+	case 18517:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_EnabledState_EffectiveDisplayName, true
+	case 18518:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_EnabledState_TransitionTime, true
+	case 18519:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_EnabledState_EffectiveTransitionTime, true
+	case 18520:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_EnabledState_TrueState, true
+	case 18521:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_EnabledState_FalseState, true
+	case 18522:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_Quality, true
+	case 18523:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_Quality_SourceTimestamp, true
+	case 18524:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_LastSeverity, true
+	case 18525:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_LastSeverity_SourceTimestamp, true
+	case 18526:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_Comment, true
+	case 18527:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_Comment_SourceTimestamp, true
+	case 18528:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ClientUserId, true
+	case 18532:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_AddComment_InputArguments, true
+	case 18534:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ConditionRefresh_InputArguments, true
+	case 18536:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ConditionRefresh2_InputArguments, true
+	case 18537:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_AckedState, true
+	case 18538:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_AckedState_Id, true
+	case 18539:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_AckedState_Name, true
+	case 18540:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_AckedState_Number, true
+	case 18541:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_AckedState_EffectiveDisplayName, true
+	case 18542:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_AckedState_TransitionTime, true
+	case 18543:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_AckedState_EffectiveTransitionTime, true
+	case 18544:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_AckedState_TrueState, true
+	case 18545:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_AckedState_FalseState, true
+	case 18546:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ConfirmedState, true
+	case 18547:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ConfirmedState_Id, true
+	case 18548:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ConfirmedState_Name, true
+	case 18549:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ConfirmedState_Number, true
+	case 18550:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ConfirmedState_EffectiveDisplayName, true
+	case 18551:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ConfirmedState_TransitionTime, true
+	case 18552:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ConfirmedState_EffectiveTransitionTime, true
+	case 18553:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ConfirmedState_TrueState, true
+	case 18554:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ConfirmedState_FalseState, true
+	case 18556:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_Acknowledge_InputArguments, true
+	case 18558:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_Confirm_InputArguments, true
+	case 18559:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ActiveState, true
+	case 18560:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ActiveState_Id, true
+	case 18561:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ActiveState_Name, true
+	case 18562:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ActiveState_Number, true
+	case 18563:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ActiveState_EffectiveDisplayName, true
+	case 18564:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ActiveState_TransitionTime, true
+	case 18565:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ActiveState_EffectiveTransitionTime, true
+	case 18566:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ActiveState_TrueState, true
+	case 18567:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ActiveState_FalseState, true
+	case 18568:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_InputNode, true
+	case 18569:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_SuppressedState, true
+	case 18570:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_SuppressedState_Id, true
+	case 18571:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_SuppressedState_Name, true
+	case 18572:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_SuppressedState_Number, true
+	case 18573:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_SuppressedState_EffectiveDisplayName, true
+	case 18574:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_SuppressedState_TransitionTime, true
+	case 18575:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_SuppressedState_EffectiveTransitionTime, true
+	case 18576:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_SuppressedState_TrueState, true
+	case 18577:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_SuppressedState_FalseState, true
+	case 18578:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_OutOfServiceState, true
+	case 18579:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_OutOfServiceState_Id, true
+	case 18580:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_OutOfServiceState_Name, true
+	case 18581:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_OutOfServiceState_Number, true
+	case 18582:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_OutOfServiceState_EffectiveDisplayName, true
+	case 18583:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_OutOfServiceState_TransitionTime, true
+	case 18584:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_OutOfServiceState_EffectiveTransitionTime, true
+	case 18585:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_OutOfServiceState_TrueState, true
+	case 18586:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_OutOfServiceState_FalseState, true
+	case 18588:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ShelvingState_CurrentState, true
+	case 18589:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ShelvingState_CurrentState_Id, true
+	case 18590:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ShelvingState_CurrentState_Name, true
+	case 18591:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ShelvingState_CurrentState_Number, true
+	case 18592:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ShelvingState_CurrentState_EffectiveDisplayName, true
+	case 18593:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ShelvingState_LastTransition, true
+	case 18594:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ShelvingState_LastTransition_Id, true
+	case 18595:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ShelvingState_LastTransition_Name, true
+	case 18596:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ShelvingState_LastTransition_Number, true
+	case 18597:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ShelvingState_LastTransition_TransitionTime, true
+	case 18598:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ShelvingState_LastTransition_EffectiveTransitionTime, true
+	case 18599:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ShelvingState_AvailableStates, true
+	case 18600:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ShelvingState_AvailableTransitions, true
+	case 18601:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ShelvingState_UnshelveTime, true
+	case 18603:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ShelvingState_TimedShelve_InputArguments, true
+	case 18606:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_SuppressedOrShelved, true
+	case 18607:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_MaxTimeShelved, true
+	case 18608:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_AudibleEnabled, true
+	case 18609:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_AudibleSound, true
+	case 18610:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_AudibleSound_ListId, true
+	case 18611:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_AudibleSound_AgencyId, true
+	case 18612:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_AudibleSound_VersionId, true
+	case 18613:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_SilenceState, true
+	case 18614:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_SilenceState_Id, true
+	case 18615:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_SilenceState_Name, true
+	case 18616:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_SilenceState_Number, true
+	case 18617:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_SilenceState_EffectiveDisplayName, true
+	case 18618:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_SilenceState_TransitionTime, true
+	case 18619:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_SilenceState_EffectiveTransitionTime, true
+	case 18620:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_SilenceState_TrueState, true
+	case 18621:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_SilenceState_FalseState, true
+	case 18622:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_OnDelay, true
+	case 18623:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_OffDelay, true
+	case 18624:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_FirstInGroupFlag, true
+	case 18626:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_LatchedState, true
+	case 18627:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_LatchedState_Id, true
+	case 18628:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_LatchedState_Name, true
+	case 18629:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_LatchedState_Number, true
+	case 18630:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_LatchedState_EffectiveDisplayName, true
+	case 18631:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_LatchedState_TransitionTime, true
+	case 18632:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_LatchedState_EffectiveTransitionTime, true
+	case 18633:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_LatchedState_TrueState, true
+	case 18634:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_LatchedState_FalseState, true
+	case 18636:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ReAlarmTime, true
+	case 18637:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ReAlarmRepeatCount, true
+	case 18644:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_NormalState, true
+	case 24449:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_Suppress2_InputArguments, true
+	case 24451:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_Unsuppress2_InputArguments, true
+	case 24453:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_RemoveFromService2_InputArguments, true
+	case 24455:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_PlaceInService2_InputArguments, true
+	case 24457:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_Reset2_InputArguments, true
+	case 24479:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_Suppress2_InputArguments, true
+	case 24481:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_Unsuppress2_InputArguments, true
+	case 24483:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_RemoveFromService2_InputArguments, true
+	case 24485:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_PlaceInService2_InputArguments, true
+	case 24487:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_Reset2_InputArguments, true
+	case 24923:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ShelvingState_TimedShelve2_InputArguments, true
+	case 24925:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ShelvingState_Unshelve2_InputArguments, true
+	case 24927:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_ShelvingState_OneShotShelve2_InputArguments, true
+	case 24947:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ShelvingState_TimedShelve2_InputArguments, true
+	case 24949:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ShelvingState_Unshelve2_InputArguments, true
+	case 24951:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_ShelvingState_OneShotShelve2_InputArguments, true
+	case 25170:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_GetGroupMemberships_OutputArguments, true
+	case 25173:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_GetGroupMemberships_OutputArguments, true
+	case 31875:
+		return OpcuaNodeIdServicesVariableSystem_SystemEventType_ConditionClassId, true
+	case 31876:
+		return OpcuaNodeIdServicesVariableSystem_SystemEventType_ConditionClassName, true
+	case 31877:
+		return OpcuaNodeIdServicesVariableSystem_SystemEventType_ConditionSubClassId, true
+	case 31878:
+		return OpcuaNodeIdServicesVariableSystem_SystemEventType_ConditionSubClassName, true
+	case 31883:
+		return OpcuaNodeIdServicesVariableSystem_SystemStatusChangeEventType_ConditionClassId, true
+	case 31884:
+		return OpcuaNodeIdServicesVariableSystem_SystemStatusChangeEventType_ConditionClassName, true
+	case 31885:
+		return OpcuaNodeIdServicesVariableSystem_SystemStatusChangeEventType_ConditionSubClassId, true
+	case 31886:
+		return OpcuaNodeIdServicesVariableSystem_SystemStatusChangeEventType_ConditionSubClassName, true
+	case 32238:
+		return OpcuaNodeIdServicesVariableSystem_SystemOffNormalAlarmType_SupportsFilteredRetain, true
+	case 32241:
+		return OpcuaNodeIdServicesVariableSystem_SystemDiagnosticAlarmType_SupportsFilteredRetain, true
+	case 3653:
+		return OpcuaNodeIdServicesVariableSystem_SystemEventType_EventId, true
+	case 3654:
+		return OpcuaNodeIdServicesVariableSystem_SystemEventType_EventType, true
+	case 3655:
+		return OpcuaNodeIdServicesVariableSystem_SystemEventType_SourceNode, true
+	case 3656:
+		return OpcuaNodeIdServicesVariableSystem_SystemEventType_SourceName, true
+	case 3657:
+		return OpcuaNodeIdServicesVariableSystem_SystemEventType_Time, true
+	case 3658:
+		return OpcuaNodeIdServicesVariableSystem_SystemEventType_ReceiveTime, true
+	case 3659:
+		return OpcuaNodeIdServicesVariableSystem_SystemEventType_LocalTime, true
+	case 3660:
+		return OpcuaNodeIdServicesVariableSystem_SystemEventType_Message, true
+	case 3661:
+		return OpcuaNodeIdServicesVariableSystem_SystemEventType_Severity, true
 	}
 	return 0, false
 }
@@ -1893,13 +1893,13 @@ func OpcuaNodeIdServicesVariableSystemByName(value string) (enum OpcuaNodeIdServ
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariableSystemKnows(value int32)  bool {
+func OpcuaNodeIdServicesVariableSystemKnows(value int32) bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariableSystemValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastOpcuaNodeIdServicesVariableSystem(structType any) OpcuaNodeIdServicesVariableSystem {
@@ -2573,4 +2573,3 @@ func (e OpcuaNodeIdServicesVariableSystem) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariableSystem) String() string {
 	return e.PLC4XEnumName()
 }
-

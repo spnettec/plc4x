@@ -40,18 +40,18 @@ type ITsnListenerStatus interface {
 	utils.Serializable
 }
 
-const(
-	TsnListenerStatus_tsnListenerStatusNone TsnListenerStatus = 0
-	TsnListenerStatus_tsnListenerStatusReady TsnListenerStatus = 1
+const (
+	TsnListenerStatus_tsnListenerStatusNone          TsnListenerStatus = 0
+	TsnListenerStatus_tsnListenerStatusReady         TsnListenerStatus = 1
 	TsnListenerStatus_tsnListenerStatusPartialFailed TsnListenerStatus = 2
-	TsnListenerStatus_tsnListenerStatusFailed TsnListenerStatus = 3
+	TsnListenerStatus_tsnListenerStatusFailed        TsnListenerStatus = 3
 )
 
 var TsnListenerStatusValues []TsnListenerStatus
 
 func init() {
 	_ = errors.New
-	TsnListenerStatusValues = []TsnListenerStatus {
+	TsnListenerStatusValues = []TsnListenerStatus{
 		TsnListenerStatus_tsnListenerStatusNone,
 		TsnListenerStatus_tsnListenerStatusReady,
 		TsnListenerStatus_tsnListenerStatusPartialFailed,
@@ -61,14 +61,14 @@ func init() {
 
 func TsnListenerStatusByValue(value uint32) (enum TsnListenerStatus, ok bool) {
 	switch value {
-		case 0:
-			return TsnListenerStatus_tsnListenerStatusNone, true
-		case 1:
-			return TsnListenerStatus_tsnListenerStatusReady, true
-		case 2:
-			return TsnListenerStatus_tsnListenerStatusPartialFailed, true
-		case 3:
-			return TsnListenerStatus_tsnListenerStatusFailed, true
+	case 0:
+		return TsnListenerStatus_tsnListenerStatusNone, true
+	case 1:
+		return TsnListenerStatus_tsnListenerStatusReady, true
+	case 2:
+		return TsnListenerStatus_tsnListenerStatusPartialFailed, true
+	case 3:
+		return TsnListenerStatus_tsnListenerStatusFailed, true
 	}
 	return 0, false
 }
@@ -87,13 +87,13 @@ func TsnListenerStatusByName(value string) (enum TsnListenerStatus, ok bool) {
 	return 0, false
 }
 
-func TsnListenerStatusKnows(value uint32)  bool {
+func TsnListenerStatusKnows(value uint32) bool {
 	for _, typeValue := range TsnListenerStatusValues {
 		if uint32(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastTsnListenerStatus(structType any) TsnListenerStatus {
@@ -165,4 +165,3 @@ func (e TsnListenerStatus) PLC4XEnumName() string {
 func (e TsnListenerStatus) String() string {
 	return e.PLC4XEnumName()
 }
-

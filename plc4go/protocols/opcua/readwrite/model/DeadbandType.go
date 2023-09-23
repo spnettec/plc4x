@@ -40,17 +40,17 @@ type IDeadbandType interface {
 	utils.Serializable
 }
 
-const(
-	DeadbandType_deadbandTypeNone DeadbandType = 0
+const (
+	DeadbandType_deadbandTypeNone     DeadbandType = 0
 	DeadbandType_deadbandTypeAbsolute DeadbandType = 1
-	DeadbandType_deadbandTypePercent DeadbandType = 2
+	DeadbandType_deadbandTypePercent  DeadbandType = 2
 )
 
 var DeadbandTypeValues []DeadbandType
 
 func init() {
 	_ = errors.New
-	DeadbandTypeValues = []DeadbandType {
+	DeadbandTypeValues = []DeadbandType{
 		DeadbandType_deadbandTypeNone,
 		DeadbandType_deadbandTypeAbsolute,
 		DeadbandType_deadbandTypePercent,
@@ -59,12 +59,12 @@ func init() {
 
 func DeadbandTypeByValue(value uint32) (enum DeadbandType, ok bool) {
 	switch value {
-		case 0:
-			return DeadbandType_deadbandTypeNone, true
-		case 1:
-			return DeadbandType_deadbandTypeAbsolute, true
-		case 2:
-			return DeadbandType_deadbandTypePercent, true
+	case 0:
+		return DeadbandType_deadbandTypeNone, true
+	case 1:
+		return DeadbandType_deadbandTypeAbsolute, true
+	case 2:
+		return DeadbandType_deadbandTypePercent, true
 	}
 	return 0, false
 }
@@ -81,13 +81,13 @@ func DeadbandTypeByName(value string) (enum DeadbandType, ok bool) {
 	return 0, false
 }
 
-func DeadbandTypeKnows(value uint32)  bool {
+func DeadbandTypeKnows(value uint32) bool {
 	for _, typeValue := range DeadbandTypeValues {
 		if uint32(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastDeadbandType(structType any) DeadbandType {
@@ -157,4 +157,3 @@ func (e DeadbandType) PLC4XEnumName() string {
 func (e DeadbandType) String() string {
 	return e.PLC4XEnumName()
 }
-
