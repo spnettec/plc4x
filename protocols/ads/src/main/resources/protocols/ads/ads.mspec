@@ -462,10 +462,10 @@
         // Characters & Strings
         // -----------------------------------------
         ['CHAR' CHAR
-            [simple   string 8                       value    encoding='"UTF-8"'   ]
+            [simple   string 8                       value    encoding='"Windows-1252"']
         ]
         ['WCHAR' WCHAR
-            [simple   string 16                      value    encoding='"UTF-16LE"']
+            [simple   string 16                      value    encoding='"UTF-16LE"'    ]
         ]
         ['STRING' STRING
             // TODO: Fix this length

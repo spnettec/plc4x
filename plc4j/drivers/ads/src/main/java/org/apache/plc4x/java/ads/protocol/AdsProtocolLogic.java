@@ -404,7 +404,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                                     // Subscribe to symbol-version changes (Address: GroupID: 0xF008, Offset: 0, Read length: 1)
                                     subscriptionTags.put("symbolVersion", new DefaultPlcSubscriptionTag(
                                         PlcSubscriptionType.CHANGE_OF_STATE,
-                                        new DirectAdsTag(0xF008, 0x0000, "USINT", 1,"UTF-8"),
+                                        new DirectAdsTag(0xF008, 0x0000, "USINT", 1, "UTF-8"),
                                         Duration.ofMillis(1000)));
                                     LinkedHashMap<String, List<Consumer<PlcSubscriptionEvent>>> consumer = new LinkedHashMap<>();
                                     consumer.put("onlineVersion", Collections.singletonList(plcSubscriptionEvent -> {
