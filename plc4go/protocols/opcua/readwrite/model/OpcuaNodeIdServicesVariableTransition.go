@@ -40,49 +40,49 @@ type IOpcuaNodeIdServicesVariableTransition interface {
 	utils.Serializable
 }
 
-const (
-	OpcuaNodeIdServicesVariableTransition_TransitionType_TransitionNumber                        OpcuaNodeIdServicesVariableTransition = 2312
-	OpcuaNodeIdServicesVariableTransition_TransitionVariableType_Id                              OpcuaNodeIdServicesVariableTransition = 2763
-	OpcuaNodeIdServicesVariableTransition_TransitionVariableType_Name                            OpcuaNodeIdServicesVariableTransition = 2764
-	OpcuaNodeIdServicesVariableTransition_TransitionVariableType_Number                          OpcuaNodeIdServicesVariableTransition = 2765
-	OpcuaNodeIdServicesVariableTransition_TransitionVariableType_TransitionTime                  OpcuaNodeIdServicesVariableTransition = 2766
-	OpcuaNodeIdServicesVariableTransition_TransitionEventType_Transition                         OpcuaNodeIdServicesVariableTransition = 2774
-	OpcuaNodeIdServicesVariableTransition_TransitionEventType_FromState                          OpcuaNodeIdServicesVariableTransition = 2775
-	OpcuaNodeIdServicesVariableTransition_TransitionEventType_ToState                            OpcuaNodeIdServicesVariableTransition = 2776
-	OpcuaNodeIdServicesVariableTransition_TransitionEventType_EventId                            OpcuaNodeIdServicesVariableTransition = 3737
-	OpcuaNodeIdServicesVariableTransition_TransitionEventType_EventType                          OpcuaNodeIdServicesVariableTransition = 3738
-	OpcuaNodeIdServicesVariableTransition_TransitionEventType_SourceNode                         OpcuaNodeIdServicesVariableTransition = 3739
-	OpcuaNodeIdServicesVariableTransition_TransitionEventType_SourceName                         OpcuaNodeIdServicesVariableTransition = 3740
-	OpcuaNodeIdServicesVariableTransition_TransitionEventType_Time                               OpcuaNodeIdServicesVariableTransition = 3741
-	OpcuaNodeIdServicesVariableTransition_TransitionEventType_ReceiveTime                        OpcuaNodeIdServicesVariableTransition = 3742
-	OpcuaNodeIdServicesVariableTransition_TransitionEventType_LocalTime                          OpcuaNodeIdServicesVariableTransition = 3743
-	OpcuaNodeIdServicesVariableTransition_TransitionEventType_Message                            OpcuaNodeIdServicesVariableTransition = 3744
-	OpcuaNodeIdServicesVariableTransition_TransitionEventType_Severity                           OpcuaNodeIdServicesVariableTransition = 3745
-	OpcuaNodeIdServicesVariableTransition_TransitionEventType_FromState_Id                       OpcuaNodeIdServicesVariableTransition = 3746
-	OpcuaNodeIdServicesVariableTransition_TransitionEventType_FromState_Name                     OpcuaNodeIdServicesVariableTransition = 3747
-	OpcuaNodeIdServicesVariableTransition_TransitionEventType_FromState_Number                   OpcuaNodeIdServicesVariableTransition = 3748
-	OpcuaNodeIdServicesVariableTransition_TransitionEventType_FromState_EffectiveDisplayName     OpcuaNodeIdServicesVariableTransition = 3749
-	OpcuaNodeIdServicesVariableTransition_TransitionEventType_ToState_Id                         OpcuaNodeIdServicesVariableTransition = 3750
-	OpcuaNodeIdServicesVariableTransition_TransitionEventType_ToState_Name                       OpcuaNodeIdServicesVariableTransition = 3751
-	OpcuaNodeIdServicesVariableTransition_TransitionEventType_ToState_Number                     OpcuaNodeIdServicesVariableTransition = 3752
-	OpcuaNodeIdServicesVariableTransition_TransitionEventType_ToState_EffectiveDisplayName       OpcuaNodeIdServicesVariableTransition = 3753
-	OpcuaNodeIdServicesVariableTransition_TransitionEventType_Transition_Id                      OpcuaNodeIdServicesVariableTransition = 3754
-	OpcuaNodeIdServicesVariableTransition_TransitionEventType_Transition_Name                    OpcuaNodeIdServicesVariableTransition = 3755
-	OpcuaNodeIdServicesVariableTransition_TransitionEventType_Transition_Number                  OpcuaNodeIdServicesVariableTransition = 3756
-	OpcuaNodeIdServicesVariableTransition_TransitionEventType_Transition_TransitionTime          OpcuaNodeIdServicesVariableTransition = 3757
-	OpcuaNodeIdServicesVariableTransition_TransitionVariableType_EffectiveTransitionTime         OpcuaNodeIdServicesVariableTransition = 11456
+const(
+	OpcuaNodeIdServicesVariableTransition_TransitionType_TransitionNumber OpcuaNodeIdServicesVariableTransition = 2312
+	OpcuaNodeIdServicesVariableTransition_TransitionVariableType_Id OpcuaNodeIdServicesVariableTransition = 2763
+	OpcuaNodeIdServicesVariableTransition_TransitionVariableType_Name OpcuaNodeIdServicesVariableTransition = 2764
+	OpcuaNodeIdServicesVariableTransition_TransitionVariableType_Number OpcuaNodeIdServicesVariableTransition = 2765
+	OpcuaNodeIdServicesVariableTransition_TransitionVariableType_TransitionTime OpcuaNodeIdServicesVariableTransition = 2766
+	OpcuaNodeIdServicesVariableTransition_TransitionEventType_Transition OpcuaNodeIdServicesVariableTransition = 2774
+	OpcuaNodeIdServicesVariableTransition_TransitionEventType_FromState OpcuaNodeIdServicesVariableTransition = 2775
+	OpcuaNodeIdServicesVariableTransition_TransitionEventType_ToState OpcuaNodeIdServicesVariableTransition = 2776
+	OpcuaNodeIdServicesVariableTransition_TransitionEventType_EventId OpcuaNodeIdServicesVariableTransition = 3737
+	OpcuaNodeIdServicesVariableTransition_TransitionEventType_EventType OpcuaNodeIdServicesVariableTransition = 3738
+	OpcuaNodeIdServicesVariableTransition_TransitionEventType_SourceNode OpcuaNodeIdServicesVariableTransition = 3739
+	OpcuaNodeIdServicesVariableTransition_TransitionEventType_SourceName OpcuaNodeIdServicesVariableTransition = 3740
+	OpcuaNodeIdServicesVariableTransition_TransitionEventType_Time OpcuaNodeIdServicesVariableTransition = 3741
+	OpcuaNodeIdServicesVariableTransition_TransitionEventType_ReceiveTime OpcuaNodeIdServicesVariableTransition = 3742
+	OpcuaNodeIdServicesVariableTransition_TransitionEventType_LocalTime OpcuaNodeIdServicesVariableTransition = 3743
+	OpcuaNodeIdServicesVariableTransition_TransitionEventType_Message OpcuaNodeIdServicesVariableTransition = 3744
+	OpcuaNodeIdServicesVariableTransition_TransitionEventType_Severity OpcuaNodeIdServicesVariableTransition = 3745
+	OpcuaNodeIdServicesVariableTransition_TransitionEventType_FromState_Id OpcuaNodeIdServicesVariableTransition = 3746
+	OpcuaNodeIdServicesVariableTransition_TransitionEventType_FromState_Name OpcuaNodeIdServicesVariableTransition = 3747
+	OpcuaNodeIdServicesVariableTransition_TransitionEventType_FromState_Number OpcuaNodeIdServicesVariableTransition = 3748
+	OpcuaNodeIdServicesVariableTransition_TransitionEventType_FromState_EffectiveDisplayName OpcuaNodeIdServicesVariableTransition = 3749
+	OpcuaNodeIdServicesVariableTransition_TransitionEventType_ToState_Id OpcuaNodeIdServicesVariableTransition = 3750
+	OpcuaNodeIdServicesVariableTransition_TransitionEventType_ToState_Name OpcuaNodeIdServicesVariableTransition = 3751
+	OpcuaNodeIdServicesVariableTransition_TransitionEventType_ToState_Number OpcuaNodeIdServicesVariableTransition = 3752
+	OpcuaNodeIdServicesVariableTransition_TransitionEventType_ToState_EffectiveDisplayName OpcuaNodeIdServicesVariableTransition = 3753
+	OpcuaNodeIdServicesVariableTransition_TransitionEventType_Transition_Id OpcuaNodeIdServicesVariableTransition = 3754
+	OpcuaNodeIdServicesVariableTransition_TransitionEventType_Transition_Name OpcuaNodeIdServicesVariableTransition = 3755
+	OpcuaNodeIdServicesVariableTransition_TransitionEventType_Transition_Number OpcuaNodeIdServicesVariableTransition = 3756
+	OpcuaNodeIdServicesVariableTransition_TransitionEventType_Transition_TransitionTime OpcuaNodeIdServicesVariableTransition = 3757
+	OpcuaNodeIdServicesVariableTransition_TransitionVariableType_EffectiveTransitionTime OpcuaNodeIdServicesVariableTransition = 11456
 	OpcuaNodeIdServicesVariableTransition_TransitionEventType_Transition_EffectiveTransitionTime OpcuaNodeIdServicesVariableTransition = 11460
-	OpcuaNodeIdServicesVariableTransition_TransitionEventType_ConditionClassId                   OpcuaNodeIdServicesVariableTransition = 31919
-	OpcuaNodeIdServicesVariableTransition_TransitionEventType_ConditionClassName                 OpcuaNodeIdServicesVariableTransition = 31920
-	OpcuaNodeIdServicesVariableTransition_TransitionEventType_ConditionSubClassId                OpcuaNodeIdServicesVariableTransition = 31921
-	OpcuaNodeIdServicesVariableTransition_TransitionEventType_ConditionSubClassName              OpcuaNodeIdServicesVariableTransition = 31922
+	OpcuaNodeIdServicesVariableTransition_TransitionEventType_ConditionClassId OpcuaNodeIdServicesVariableTransition = 31919
+	OpcuaNodeIdServicesVariableTransition_TransitionEventType_ConditionClassName OpcuaNodeIdServicesVariableTransition = 31920
+	OpcuaNodeIdServicesVariableTransition_TransitionEventType_ConditionSubClassId OpcuaNodeIdServicesVariableTransition = 31921
+	OpcuaNodeIdServicesVariableTransition_TransitionEventType_ConditionSubClassName OpcuaNodeIdServicesVariableTransition = 31922
 )
 
 var OpcuaNodeIdServicesVariableTransitionValues []OpcuaNodeIdServicesVariableTransition
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariableTransitionValues = []OpcuaNodeIdServicesVariableTransition{
+	OpcuaNodeIdServicesVariableTransitionValues = []OpcuaNodeIdServicesVariableTransition {
 		OpcuaNodeIdServicesVariableTransition_TransitionType_TransitionNumber,
 		OpcuaNodeIdServicesVariableTransition_TransitionVariableType_Id,
 		OpcuaNodeIdServicesVariableTransition_TransitionVariableType_Name,
@@ -123,76 +123,76 @@ func init() {
 
 func OpcuaNodeIdServicesVariableTransitionByValue(value int32) (enum OpcuaNodeIdServicesVariableTransition, ok bool) {
 	switch value {
-	case 11456:
-		return OpcuaNodeIdServicesVariableTransition_TransitionVariableType_EffectiveTransitionTime, true
-	case 11460:
-		return OpcuaNodeIdServicesVariableTransition_TransitionEventType_Transition_EffectiveTransitionTime, true
-	case 2312:
-		return OpcuaNodeIdServicesVariableTransition_TransitionType_TransitionNumber, true
-	case 2763:
-		return OpcuaNodeIdServicesVariableTransition_TransitionVariableType_Id, true
-	case 2764:
-		return OpcuaNodeIdServicesVariableTransition_TransitionVariableType_Name, true
-	case 2765:
-		return OpcuaNodeIdServicesVariableTransition_TransitionVariableType_Number, true
-	case 2766:
-		return OpcuaNodeIdServicesVariableTransition_TransitionVariableType_TransitionTime, true
-	case 2774:
-		return OpcuaNodeIdServicesVariableTransition_TransitionEventType_Transition, true
-	case 2775:
-		return OpcuaNodeIdServicesVariableTransition_TransitionEventType_FromState, true
-	case 2776:
-		return OpcuaNodeIdServicesVariableTransition_TransitionEventType_ToState, true
-	case 31919:
-		return OpcuaNodeIdServicesVariableTransition_TransitionEventType_ConditionClassId, true
-	case 31920:
-		return OpcuaNodeIdServicesVariableTransition_TransitionEventType_ConditionClassName, true
-	case 31921:
-		return OpcuaNodeIdServicesVariableTransition_TransitionEventType_ConditionSubClassId, true
-	case 31922:
-		return OpcuaNodeIdServicesVariableTransition_TransitionEventType_ConditionSubClassName, true
-	case 3737:
-		return OpcuaNodeIdServicesVariableTransition_TransitionEventType_EventId, true
-	case 3738:
-		return OpcuaNodeIdServicesVariableTransition_TransitionEventType_EventType, true
-	case 3739:
-		return OpcuaNodeIdServicesVariableTransition_TransitionEventType_SourceNode, true
-	case 3740:
-		return OpcuaNodeIdServicesVariableTransition_TransitionEventType_SourceName, true
-	case 3741:
-		return OpcuaNodeIdServicesVariableTransition_TransitionEventType_Time, true
-	case 3742:
-		return OpcuaNodeIdServicesVariableTransition_TransitionEventType_ReceiveTime, true
-	case 3743:
-		return OpcuaNodeIdServicesVariableTransition_TransitionEventType_LocalTime, true
-	case 3744:
-		return OpcuaNodeIdServicesVariableTransition_TransitionEventType_Message, true
-	case 3745:
-		return OpcuaNodeIdServicesVariableTransition_TransitionEventType_Severity, true
-	case 3746:
-		return OpcuaNodeIdServicesVariableTransition_TransitionEventType_FromState_Id, true
-	case 3747:
-		return OpcuaNodeIdServicesVariableTransition_TransitionEventType_FromState_Name, true
-	case 3748:
-		return OpcuaNodeIdServicesVariableTransition_TransitionEventType_FromState_Number, true
-	case 3749:
-		return OpcuaNodeIdServicesVariableTransition_TransitionEventType_FromState_EffectiveDisplayName, true
-	case 3750:
-		return OpcuaNodeIdServicesVariableTransition_TransitionEventType_ToState_Id, true
-	case 3751:
-		return OpcuaNodeIdServicesVariableTransition_TransitionEventType_ToState_Name, true
-	case 3752:
-		return OpcuaNodeIdServicesVariableTransition_TransitionEventType_ToState_Number, true
-	case 3753:
-		return OpcuaNodeIdServicesVariableTransition_TransitionEventType_ToState_EffectiveDisplayName, true
-	case 3754:
-		return OpcuaNodeIdServicesVariableTransition_TransitionEventType_Transition_Id, true
-	case 3755:
-		return OpcuaNodeIdServicesVariableTransition_TransitionEventType_Transition_Name, true
-	case 3756:
-		return OpcuaNodeIdServicesVariableTransition_TransitionEventType_Transition_Number, true
-	case 3757:
-		return OpcuaNodeIdServicesVariableTransition_TransitionEventType_Transition_TransitionTime, true
+		case 11456:
+			return OpcuaNodeIdServicesVariableTransition_TransitionVariableType_EffectiveTransitionTime, true
+		case 11460:
+			return OpcuaNodeIdServicesVariableTransition_TransitionEventType_Transition_EffectiveTransitionTime, true
+		case 2312:
+			return OpcuaNodeIdServicesVariableTransition_TransitionType_TransitionNumber, true
+		case 2763:
+			return OpcuaNodeIdServicesVariableTransition_TransitionVariableType_Id, true
+		case 2764:
+			return OpcuaNodeIdServicesVariableTransition_TransitionVariableType_Name, true
+		case 2765:
+			return OpcuaNodeIdServicesVariableTransition_TransitionVariableType_Number, true
+		case 2766:
+			return OpcuaNodeIdServicesVariableTransition_TransitionVariableType_TransitionTime, true
+		case 2774:
+			return OpcuaNodeIdServicesVariableTransition_TransitionEventType_Transition, true
+		case 2775:
+			return OpcuaNodeIdServicesVariableTransition_TransitionEventType_FromState, true
+		case 2776:
+			return OpcuaNodeIdServicesVariableTransition_TransitionEventType_ToState, true
+		case 31919:
+			return OpcuaNodeIdServicesVariableTransition_TransitionEventType_ConditionClassId, true
+		case 31920:
+			return OpcuaNodeIdServicesVariableTransition_TransitionEventType_ConditionClassName, true
+		case 31921:
+			return OpcuaNodeIdServicesVariableTransition_TransitionEventType_ConditionSubClassId, true
+		case 31922:
+			return OpcuaNodeIdServicesVariableTransition_TransitionEventType_ConditionSubClassName, true
+		case 3737:
+			return OpcuaNodeIdServicesVariableTransition_TransitionEventType_EventId, true
+		case 3738:
+			return OpcuaNodeIdServicesVariableTransition_TransitionEventType_EventType, true
+		case 3739:
+			return OpcuaNodeIdServicesVariableTransition_TransitionEventType_SourceNode, true
+		case 3740:
+			return OpcuaNodeIdServicesVariableTransition_TransitionEventType_SourceName, true
+		case 3741:
+			return OpcuaNodeIdServicesVariableTransition_TransitionEventType_Time, true
+		case 3742:
+			return OpcuaNodeIdServicesVariableTransition_TransitionEventType_ReceiveTime, true
+		case 3743:
+			return OpcuaNodeIdServicesVariableTransition_TransitionEventType_LocalTime, true
+		case 3744:
+			return OpcuaNodeIdServicesVariableTransition_TransitionEventType_Message, true
+		case 3745:
+			return OpcuaNodeIdServicesVariableTransition_TransitionEventType_Severity, true
+		case 3746:
+			return OpcuaNodeIdServicesVariableTransition_TransitionEventType_FromState_Id, true
+		case 3747:
+			return OpcuaNodeIdServicesVariableTransition_TransitionEventType_FromState_Name, true
+		case 3748:
+			return OpcuaNodeIdServicesVariableTransition_TransitionEventType_FromState_Number, true
+		case 3749:
+			return OpcuaNodeIdServicesVariableTransition_TransitionEventType_FromState_EffectiveDisplayName, true
+		case 3750:
+			return OpcuaNodeIdServicesVariableTransition_TransitionEventType_ToState_Id, true
+		case 3751:
+			return OpcuaNodeIdServicesVariableTransition_TransitionEventType_ToState_Name, true
+		case 3752:
+			return OpcuaNodeIdServicesVariableTransition_TransitionEventType_ToState_Number, true
+		case 3753:
+			return OpcuaNodeIdServicesVariableTransition_TransitionEventType_ToState_EffectiveDisplayName, true
+		case 3754:
+			return OpcuaNodeIdServicesVariableTransition_TransitionEventType_Transition_Id, true
+		case 3755:
+			return OpcuaNodeIdServicesVariableTransition_TransitionEventType_Transition_Name, true
+		case 3756:
+			return OpcuaNodeIdServicesVariableTransition_TransitionEventType_Transition_Number, true
+		case 3757:
+			return OpcuaNodeIdServicesVariableTransition_TransitionEventType_Transition_TransitionTime, true
 	}
 	return 0, false
 }
@@ -273,13 +273,13 @@ func OpcuaNodeIdServicesVariableTransitionByName(value string) (enum OpcuaNodeId
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariableTransitionKnows(value int32) bool {
+func OpcuaNodeIdServicesVariableTransitionKnows(value int32)  bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariableTransitionValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastOpcuaNodeIdServicesVariableTransition(structType any) OpcuaNodeIdServicesVariableTransition {
@@ -413,3 +413,4 @@ func (e OpcuaNodeIdServicesVariableTransition) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariableTransition) String() string {
 	return e.PLC4XEnumName()
 }
+

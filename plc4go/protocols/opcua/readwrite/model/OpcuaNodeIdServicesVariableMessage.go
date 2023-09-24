@@ -40,7 +40,7 @@ type IOpcuaNodeIdServicesVariableMessage interface {
 	utils.Serializable
 }
 
-const (
+const(
 	OpcuaNodeIdServicesVariableMessage_MessageSecurityMode_EnumStrings OpcuaNodeIdServicesVariableMessage = 7595
 )
 
@@ -48,15 +48,15 @@ var OpcuaNodeIdServicesVariableMessageValues []OpcuaNodeIdServicesVariableMessag
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariableMessageValues = []OpcuaNodeIdServicesVariableMessage{
+	OpcuaNodeIdServicesVariableMessageValues = []OpcuaNodeIdServicesVariableMessage {
 		OpcuaNodeIdServicesVariableMessage_MessageSecurityMode_EnumStrings,
 	}
 }
 
 func OpcuaNodeIdServicesVariableMessageByValue(value int32) (enum OpcuaNodeIdServicesVariableMessage, ok bool) {
 	switch value {
-	case 7595:
-		return OpcuaNodeIdServicesVariableMessage_MessageSecurityMode_EnumStrings, true
+		case 7595:
+			return OpcuaNodeIdServicesVariableMessage_MessageSecurityMode_EnumStrings, true
 	}
 	return 0, false
 }
@@ -69,13 +69,13 @@ func OpcuaNodeIdServicesVariableMessageByName(value string) (enum OpcuaNodeIdSer
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariableMessageKnows(value int32) bool {
+func OpcuaNodeIdServicesVariableMessageKnows(value int32)  bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariableMessageValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastOpcuaNodeIdServicesVariableMessage(structType any) OpcuaNodeIdServicesVariableMessage {
@@ -141,3 +141,4 @@ func (e OpcuaNodeIdServicesVariableMessage) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariableMessage) String() string {
 	return e.PLC4XEnumName()
 }
+

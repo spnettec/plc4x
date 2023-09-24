@@ -40,70 +40,70 @@ type IOpcuaNodeIdServicesVariableAcknowledgeable interface {
 	utils.Serializable
 }
 
-const (
-	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_EventId                                OpcuaNodeIdServicesVariableAcknowledgeable = 5113
-	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_EventType                              OpcuaNodeIdServicesVariableAcknowledgeable = 5114
-	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_SourceNode                             OpcuaNodeIdServicesVariableAcknowledgeable = 5115
-	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_SourceName                             OpcuaNodeIdServicesVariableAcknowledgeable = 5116
-	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_Time                                   OpcuaNodeIdServicesVariableAcknowledgeable = 5117
-	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ReceiveTime                            OpcuaNodeIdServicesVariableAcknowledgeable = 5118
-	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_LocalTime                              OpcuaNodeIdServicesVariableAcknowledgeable = 5119
-	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_Message                                OpcuaNodeIdServicesVariableAcknowledgeable = 5120
-	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_Severity                               OpcuaNodeIdServicesVariableAcknowledgeable = 5121
-	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_Retain                                 OpcuaNodeIdServicesVariableAcknowledgeable = 5122
-	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConditionRefresh_InputArguments        OpcuaNodeIdServicesVariableAcknowledgeable = 5124
-	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConditionName                          OpcuaNodeIdServicesVariableAcknowledgeable = 9071
-	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_BranchId                               OpcuaNodeIdServicesVariableAcknowledgeable = 9072
-	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_EnabledState                           OpcuaNodeIdServicesVariableAcknowledgeable = 9073
-	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_EnabledState_Id                        OpcuaNodeIdServicesVariableAcknowledgeable = 9074
-	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_EnabledState_Name                      OpcuaNodeIdServicesVariableAcknowledgeable = 9075
-	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_EnabledState_Number                    OpcuaNodeIdServicesVariableAcknowledgeable = 9076
-	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_EnabledState_EffectiveDisplayName      OpcuaNodeIdServicesVariableAcknowledgeable = 9077
-	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_EnabledState_TransitionTime            OpcuaNodeIdServicesVariableAcknowledgeable = 9078
-	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_EnabledState_EffectiveTransitionTime   OpcuaNodeIdServicesVariableAcknowledgeable = 9079
-	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_EnabledState_TrueState                 OpcuaNodeIdServicesVariableAcknowledgeable = 9080
-	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_EnabledState_FalseState                OpcuaNodeIdServicesVariableAcknowledgeable = 9081
-	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_Quality                                OpcuaNodeIdServicesVariableAcknowledgeable = 9082
-	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_Quality_SourceTimestamp                OpcuaNodeIdServicesVariableAcknowledgeable = 9083
-	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_LastSeverity                           OpcuaNodeIdServicesVariableAcknowledgeable = 9084
-	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_LastSeverity_SourceTimestamp           OpcuaNodeIdServicesVariableAcknowledgeable = 9085
-	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_Comment                                OpcuaNodeIdServicesVariableAcknowledgeable = 9086
-	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_Comment_SourceTimestamp                OpcuaNodeIdServicesVariableAcknowledgeable = 9087
-	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ClientUserId                           OpcuaNodeIdServicesVariableAcknowledgeable = 9088
-	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_AddComment_InputArguments              OpcuaNodeIdServicesVariableAcknowledgeable = 9092
-	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_AckedState                             OpcuaNodeIdServicesVariableAcknowledgeable = 9093
-	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_AckedState_Id                          OpcuaNodeIdServicesVariableAcknowledgeable = 9094
-	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_AckedState_Name                        OpcuaNodeIdServicesVariableAcknowledgeable = 9095
-	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_AckedState_Number                      OpcuaNodeIdServicesVariableAcknowledgeable = 9096
-	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_AckedState_EffectiveDisplayName        OpcuaNodeIdServicesVariableAcknowledgeable = 9097
-	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_AckedState_TransitionTime              OpcuaNodeIdServicesVariableAcknowledgeable = 9098
-	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_AckedState_EffectiveTransitionTime     OpcuaNodeIdServicesVariableAcknowledgeable = 9099
-	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_AckedState_TrueState                   OpcuaNodeIdServicesVariableAcknowledgeable = 9100
-	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_AckedState_FalseState                  OpcuaNodeIdServicesVariableAcknowledgeable = 9101
-	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConfirmedState                         OpcuaNodeIdServicesVariableAcknowledgeable = 9102
-	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConfirmedState_Id                      OpcuaNodeIdServicesVariableAcknowledgeable = 9103
-	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConfirmedState_Name                    OpcuaNodeIdServicesVariableAcknowledgeable = 9104
-	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConfirmedState_Number                  OpcuaNodeIdServicesVariableAcknowledgeable = 9105
-	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConfirmedState_EffectiveDisplayName    OpcuaNodeIdServicesVariableAcknowledgeable = 9106
-	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConfirmedState_TransitionTime          OpcuaNodeIdServicesVariableAcknowledgeable = 9107
+const(
+	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_EventId OpcuaNodeIdServicesVariableAcknowledgeable = 5113
+	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_EventType OpcuaNodeIdServicesVariableAcknowledgeable = 5114
+	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_SourceNode OpcuaNodeIdServicesVariableAcknowledgeable = 5115
+	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_SourceName OpcuaNodeIdServicesVariableAcknowledgeable = 5116
+	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_Time OpcuaNodeIdServicesVariableAcknowledgeable = 5117
+	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ReceiveTime OpcuaNodeIdServicesVariableAcknowledgeable = 5118
+	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_LocalTime OpcuaNodeIdServicesVariableAcknowledgeable = 5119
+	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_Message OpcuaNodeIdServicesVariableAcknowledgeable = 5120
+	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_Severity OpcuaNodeIdServicesVariableAcknowledgeable = 5121
+	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_Retain OpcuaNodeIdServicesVariableAcknowledgeable = 5122
+	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConditionRefresh_InputArguments OpcuaNodeIdServicesVariableAcknowledgeable = 5124
+	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConditionName OpcuaNodeIdServicesVariableAcknowledgeable = 9071
+	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_BranchId OpcuaNodeIdServicesVariableAcknowledgeable = 9072
+	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_EnabledState OpcuaNodeIdServicesVariableAcknowledgeable = 9073
+	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_EnabledState_Id OpcuaNodeIdServicesVariableAcknowledgeable = 9074
+	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_EnabledState_Name OpcuaNodeIdServicesVariableAcknowledgeable = 9075
+	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_EnabledState_Number OpcuaNodeIdServicesVariableAcknowledgeable = 9076
+	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_EnabledState_EffectiveDisplayName OpcuaNodeIdServicesVariableAcknowledgeable = 9077
+	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_EnabledState_TransitionTime OpcuaNodeIdServicesVariableAcknowledgeable = 9078
+	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_EnabledState_EffectiveTransitionTime OpcuaNodeIdServicesVariableAcknowledgeable = 9079
+	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_EnabledState_TrueState OpcuaNodeIdServicesVariableAcknowledgeable = 9080
+	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_EnabledState_FalseState OpcuaNodeIdServicesVariableAcknowledgeable = 9081
+	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_Quality OpcuaNodeIdServicesVariableAcknowledgeable = 9082
+	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_Quality_SourceTimestamp OpcuaNodeIdServicesVariableAcknowledgeable = 9083
+	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_LastSeverity OpcuaNodeIdServicesVariableAcknowledgeable = 9084
+	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_LastSeverity_SourceTimestamp OpcuaNodeIdServicesVariableAcknowledgeable = 9085
+	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_Comment OpcuaNodeIdServicesVariableAcknowledgeable = 9086
+	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_Comment_SourceTimestamp OpcuaNodeIdServicesVariableAcknowledgeable = 9087
+	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ClientUserId OpcuaNodeIdServicesVariableAcknowledgeable = 9088
+	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_AddComment_InputArguments OpcuaNodeIdServicesVariableAcknowledgeable = 9092
+	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_AckedState OpcuaNodeIdServicesVariableAcknowledgeable = 9093
+	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_AckedState_Id OpcuaNodeIdServicesVariableAcknowledgeable = 9094
+	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_AckedState_Name OpcuaNodeIdServicesVariableAcknowledgeable = 9095
+	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_AckedState_Number OpcuaNodeIdServicesVariableAcknowledgeable = 9096
+	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_AckedState_EffectiveDisplayName OpcuaNodeIdServicesVariableAcknowledgeable = 9097
+	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_AckedState_TransitionTime OpcuaNodeIdServicesVariableAcknowledgeable = 9098
+	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_AckedState_EffectiveTransitionTime OpcuaNodeIdServicesVariableAcknowledgeable = 9099
+	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_AckedState_TrueState OpcuaNodeIdServicesVariableAcknowledgeable = 9100
+	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_AckedState_FalseState OpcuaNodeIdServicesVariableAcknowledgeable = 9101
+	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConfirmedState OpcuaNodeIdServicesVariableAcknowledgeable = 9102
+	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConfirmedState_Id OpcuaNodeIdServicesVariableAcknowledgeable = 9103
+	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConfirmedState_Name OpcuaNodeIdServicesVariableAcknowledgeable = 9104
+	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConfirmedState_Number OpcuaNodeIdServicesVariableAcknowledgeable = 9105
+	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConfirmedState_EffectiveDisplayName OpcuaNodeIdServicesVariableAcknowledgeable = 9106
+	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConfirmedState_TransitionTime OpcuaNodeIdServicesVariableAcknowledgeable = 9107
 	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConfirmedState_EffectiveTransitionTime OpcuaNodeIdServicesVariableAcknowledgeable = 9108
-	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConfirmedState_TrueState               OpcuaNodeIdServicesVariableAcknowledgeable = 9109
-	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConfirmedState_FalseState              OpcuaNodeIdServicesVariableAcknowledgeable = 9110
-	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_Acknowledge_InputArguments             OpcuaNodeIdServicesVariableAcknowledgeable = 9112
-	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_Confirm_InputArguments                 OpcuaNodeIdServicesVariableAcknowledgeable = 9114
-	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConditionClassId                       OpcuaNodeIdServicesVariableAcknowledgeable = 11116
-	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConditionClassName                     OpcuaNodeIdServicesVariableAcknowledgeable = 11117
-	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConditionRefresh2_InputArguments       OpcuaNodeIdServicesVariableAcknowledgeable = 12919
-	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConditionSubClassId                    OpcuaNodeIdServicesVariableAcknowledgeable = 16367
-	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConditionSubClassName                  OpcuaNodeIdServicesVariableAcknowledgeable = 16368
-	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_SupportsFilteredRetain                 OpcuaNodeIdServicesVariableAcknowledgeable = 32062
+	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConfirmedState_TrueState OpcuaNodeIdServicesVariableAcknowledgeable = 9109
+	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConfirmedState_FalseState OpcuaNodeIdServicesVariableAcknowledgeable = 9110
+	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_Acknowledge_InputArguments OpcuaNodeIdServicesVariableAcknowledgeable = 9112
+	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_Confirm_InputArguments OpcuaNodeIdServicesVariableAcknowledgeable = 9114
+	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConditionClassId OpcuaNodeIdServicesVariableAcknowledgeable = 11116
+	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConditionClassName OpcuaNodeIdServicesVariableAcknowledgeable = 11117
+	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConditionRefresh2_InputArguments OpcuaNodeIdServicesVariableAcknowledgeable = 12919
+	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConditionSubClassId OpcuaNodeIdServicesVariableAcknowledgeable = 16367
+	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConditionSubClassName OpcuaNodeIdServicesVariableAcknowledgeable = 16368
+	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_SupportsFilteredRetain OpcuaNodeIdServicesVariableAcknowledgeable = 32062
 )
 
 var OpcuaNodeIdServicesVariableAcknowledgeableValues []OpcuaNodeIdServicesVariableAcknowledgeable
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariableAcknowledgeableValues = []OpcuaNodeIdServicesVariableAcknowledgeable{
+	OpcuaNodeIdServicesVariableAcknowledgeableValues = []OpcuaNodeIdServicesVariableAcknowledgeable {
 		OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_EventId,
 		OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_EventType,
 		OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_SourceNode,
@@ -165,118 +165,118 @@ func init() {
 
 func OpcuaNodeIdServicesVariableAcknowledgeableByValue(value int32) (enum OpcuaNodeIdServicesVariableAcknowledgeable, ok bool) {
 	switch value {
-	case 11116:
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConditionClassId, true
-	case 11117:
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConditionClassName, true
-	case 12919:
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConditionRefresh2_InputArguments, true
-	case 16367:
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConditionSubClassId, true
-	case 16368:
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConditionSubClassName, true
-	case 32062:
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_SupportsFilteredRetain, true
-	case 5113:
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_EventId, true
-	case 5114:
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_EventType, true
-	case 5115:
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_SourceNode, true
-	case 5116:
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_SourceName, true
-	case 5117:
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_Time, true
-	case 5118:
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ReceiveTime, true
-	case 5119:
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_LocalTime, true
-	case 5120:
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_Message, true
-	case 5121:
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_Severity, true
-	case 5122:
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_Retain, true
-	case 5124:
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConditionRefresh_InputArguments, true
-	case 9071:
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConditionName, true
-	case 9072:
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_BranchId, true
-	case 9073:
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_EnabledState, true
-	case 9074:
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_EnabledState_Id, true
-	case 9075:
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_EnabledState_Name, true
-	case 9076:
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_EnabledState_Number, true
-	case 9077:
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_EnabledState_EffectiveDisplayName, true
-	case 9078:
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_EnabledState_TransitionTime, true
-	case 9079:
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_EnabledState_EffectiveTransitionTime, true
-	case 9080:
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_EnabledState_TrueState, true
-	case 9081:
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_EnabledState_FalseState, true
-	case 9082:
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_Quality, true
-	case 9083:
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_Quality_SourceTimestamp, true
-	case 9084:
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_LastSeverity, true
-	case 9085:
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_LastSeverity_SourceTimestamp, true
-	case 9086:
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_Comment, true
-	case 9087:
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_Comment_SourceTimestamp, true
-	case 9088:
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ClientUserId, true
-	case 9092:
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_AddComment_InputArguments, true
-	case 9093:
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_AckedState, true
-	case 9094:
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_AckedState_Id, true
-	case 9095:
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_AckedState_Name, true
-	case 9096:
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_AckedState_Number, true
-	case 9097:
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_AckedState_EffectiveDisplayName, true
-	case 9098:
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_AckedState_TransitionTime, true
-	case 9099:
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_AckedState_EffectiveTransitionTime, true
-	case 9100:
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_AckedState_TrueState, true
-	case 9101:
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_AckedState_FalseState, true
-	case 9102:
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConfirmedState, true
-	case 9103:
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConfirmedState_Id, true
-	case 9104:
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConfirmedState_Name, true
-	case 9105:
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConfirmedState_Number, true
-	case 9106:
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConfirmedState_EffectiveDisplayName, true
-	case 9107:
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConfirmedState_TransitionTime, true
-	case 9108:
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConfirmedState_EffectiveTransitionTime, true
-	case 9109:
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConfirmedState_TrueState, true
-	case 9110:
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConfirmedState_FalseState, true
-	case 9112:
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_Acknowledge_InputArguments, true
-	case 9114:
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_Confirm_InputArguments, true
+		case 11116:
+			return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConditionClassId, true
+		case 11117:
+			return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConditionClassName, true
+		case 12919:
+			return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConditionRefresh2_InputArguments, true
+		case 16367:
+			return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConditionSubClassId, true
+		case 16368:
+			return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConditionSubClassName, true
+		case 32062:
+			return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_SupportsFilteredRetain, true
+		case 5113:
+			return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_EventId, true
+		case 5114:
+			return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_EventType, true
+		case 5115:
+			return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_SourceNode, true
+		case 5116:
+			return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_SourceName, true
+		case 5117:
+			return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_Time, true
+		case 5118:
+			return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ReceiveTime, true
+		case 5119:
+			return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_LocalTime, true
+		case 5120:
+			return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_Message, true
+		case 5121:
+			return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_Severity, true
+		case 5122:
+			return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_Retain, true
+		case 5124:
+			return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConditionRefresh_InputArguments, true
+		case 9071:
+			return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConditionName, true
+		case 9072:
+			return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_BranchId, true
+		case 9073:
+			return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_EnabledState, true
+		case 9074:
+			return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_EnabledState_Id, true
+		case 9075:
+			return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_EnabledState_Name, true
+		case 9076:
+			return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_EnabledState_Number, true
+		case 9077:
+			return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_EnabledState_EffectiveDisplayName, true
+		case 9078:
+			return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_EnabledState_TransitionTime, true
+		case 9079:
+			return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_EnabledState_EffectiveTransitionTime, true
+		case 9080:
+			return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_EnabledState_TrueState, true
+		case 9081:
+			return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_EnabledState_FalseState, true
+		case 9082:
+			return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_Quality, true
+		case 9083:
+			return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_Quality_SourceTimestamp, true
+		case 9084:
+			return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_LastSeverity, true
+		case 9085:
+			return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_LastSeverity_SourceTimestamp, true
+		case 9086:
+			return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_Comment, true
+		case 9087:
+			return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_Comment_SourceTimestamp, true
+		case 9088:
+			return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ClientUserId, true
+		case 9092:
+			return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_AddComment_InputArguments, true
+		case 9093:
+			return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_AckedState, true
+		case 9094:
+			return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_AckedState_Id, true
+		case 9095:
+			return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_AckedState_Name, true
+		case 9096:
+			return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_AckedState_Number, true
+		case 9097:
+			return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_AckedState_EffectiveDisplayName, true
+		case 9098:
+			return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_AckedState_TransitionTime, true
+		case 9099:
+			return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_AckedState_EffectiveTransitionTime, true
+		case 9100:
+			return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_AckedState_TrueState, true
+		case 9101:
+			return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_AckedState_FalseState, true
+		case 9102:
+			return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConfirmedState, true
+		case 9103:
+			return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConfirmedState_Id, true
+		case 9104:
+			return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConfirmedState_Name, true
+		case 9105:
+			return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConfirmedState_Number, true
+		case 9106:
+			return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConfirmedState_EffectiveDisplayName, true
+		case 9107:
+			return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConfirmedState_TransitionTime, true
+		case 9108:
+			return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConfirmedState_EffectiveTransitionTime, true
+		case 9109:
+			return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConfirmedState_TrueState, true
+		case 9110:
+			return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConfirmedState_FalseState, true
+		case 9112:
+			return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_Acknowledge_InputArguments, true
+		case 9114:
+			return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_Confirm_InputArguments, true
 	}
 	return 0, false
 }
@@ -399,13 +399,13 @@ func OpcuaNodeIdServicesVariableAcknowledgeableByName(value string) (enum OpcuaN
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariableAcknowledgeableKnows(value int32) bool {
+func OpcuaNodeIdServicesVariableAcknowledgeableKnows(value int32)  bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariableAcknowledgeableValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastOpcuaNodeIdServicesVariableAcknowledgeable(structType any) OpcuaNodeIdServicesVariableAcknowledgeable {
@@ -581,3 +581,4 @@ func (e OpcuaNodeIdServicesVariableAcknowledgeable) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariableAcknowledgeable) String() string {
 	return e.PLC4XEnumName()
 }
+

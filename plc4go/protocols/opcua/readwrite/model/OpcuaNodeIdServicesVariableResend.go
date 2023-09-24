@@ -40,7 +40,7 @@ type IOpcuaNodeIdServicesVariableResend interface {
 	utils.Serializable
 }
 
-const (
+const(
 	OpcuaNodeIdServicesVariableResend_ResendDataMethodType_InputArguments OpcuaNodeIdServicesVariableResend = 12876
 )
 
@@ -48,15 +48,15 @@ var OpcuaNodeIdServicesVariableResendValues []OpcuaNodeIdServicesVariableResend
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariableResendValues = []OpcuaNodeIdServicesVariableResend{
+	OpcuaNodeIdServicesVariableResendValues = []OpcuaNodeIdServicesVariableResend {
 		OpcuaNodeIdServicesVariableResend_ResendDataMethodType_InputArguments,
 	}
 }
 
 func OpcuaNodeIdServicesVariableResendByValue(value int32) (enum OpcuaNodeIdServicesVariableResend, ok bool) {
 	switch value {
-	case 12876:
-		return OpcuaNodeIdServicesVariableResend_ResendDataMethodType_InputArguments, true
+		case 12876:
+			return OpcuaNodeIdServicesVariableResend_ResendDataMethodType_InputArguments, true
 	}
 	return 0, false
 }
@@ -69,13 +69,13 @@ func OpcuaNodeIdServicesVariableResendByName(value string) (enum OpcuaNodeIdServ
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariableResendKnows(value int32) bool {
+func OpcuaNodeIdServicesVariableResendKnows(value int32)  bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariableResendValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastOpcuaNodeIdServicesVariableResend(structType any) OpcuaNodeIdServicesVariableResend {
@@ -141,3 +141,4 @@ func (e OpcuaNodeIdServicesVariableResend) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariableResend) String() string {
 	return e.PLC4XEnumName()
 }
+

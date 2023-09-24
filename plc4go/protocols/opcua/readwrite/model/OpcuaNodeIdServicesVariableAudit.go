@@ -40,999 +40,999 @@ type IOpcuaNodeIdServicesVariableAudit interface {
 	utils.Serializable
 }
 
-const (
-	OpcuaNodeIdServicesVariableAudit_AuditEventType_ActionTimeStamp                               OpcuaNodeIdServicesVariableAudit = 2053
-	OpcuaNodeIdServicesVariableAudit_AuditEventType_Status                                        OpcuaNodeIdServicesVariableAudit = 2054
-	OpcuaNodeIdServicesVariableAudit_AuditEventType_ServerId                                      OpcuaNodeIdServicesVariableAudit = 2055
-	OpcuaNodeIdServicesVariableAudit_AuditEventType_ClientAuditEntryId                            OpcuaNodeIdServicesVariableAudit = 2056
-	OpcuaNodeIdServicesVariableAudit_AuditEventType_ClientUserId                                  OpcuaNodeIdServicesVariableAudit = 2057
-	OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_ClientCertificate            OpcuaNodeIdServicesVariableAudit = 2061
-	OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_RequestType                  OpcuaNodeIdServicesVariableAudit = 2062
-	OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_SecurityPolicyUri            OpcuaNodeIdServicesVariableAudit = 2063
-	OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_SecurityMode                 OpcuaNodeIdServicesVariableAudit = 2065
-	OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_RequestedLifetime            OpcuaNodeIdServicesVariableAudit = 2066
-	OpcuaNodeIdServicesVariableAudit_AuditSessionEventType_SessionId                              OpcuaNodeIdServicesVariableAudit = 2070
-	OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_SecureChannelId                  OpcuaNodeIdServicesVariableAudit = 2072
-	OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_ClientCertificate                OpcuaNodeIdServicesVariableAudit = 2073
-	OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_RevisedSessionTimeout            OpcuaNodeIdServicesVariableAudit = 2074
-	OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_ClientSoftwareCertificates     OpcuaNodeIdServicesVariableAudit = 2076
-	OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_UserIdentityToken              OpcuaNodeIdServicesVariableAudit = 2077
-	OpcuaNodeIdServicesVariableAudit_AuditCancelEventType_RequestHandle                           OpcuaNodeIdServicesVariableAudit = 2079
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateEventType_Certificate                        OpcuaNodeIdServicesVariableAudit = 2081
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateDataMismatchEventType_InvalidHostname        OpcuaNodeIdServicesVariableAudit = 2083
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateDataMismatchEventType_InvalidUri             OpcuaNodeIdServicesVariableAudit = 2084
-	OpcuaNodeIdServicesVariableAudit_AuditAddNodesEventType_NodesToAdd                            OpcuaNodeIdServicesVariableAudit = 2092
-	OpcuaNodeIdServicesVariableAudit_AuditDeleteNodesEventType_NodesToDelete                      OpcuaNodeIdServicesVariableAudit = 2094
-	OpcuaNodeIdServicesVariableAudit_AuditAddReferencesEventType_ReferencesToAdd                  OpcuaNodeIdServicesVariableAudit = 2096
-	OpcuaNodeIdServicesVariableAudit_AuditDeleteReferencesEventType_ReferencesToDelete            OpcuaNodeIdServicesVariableAudit = 2098
-	OpcuaNodeIdServicesVariableAudit_AuditWriteUpdateEventType_IndexRange                         OpcuaNodeIdServicesVariableAudit = 2101
-	OpcuaNodeIdServicesVariableAudit_AuditWriteUpdateEventType_OldValue                           OpcuaNodeIdServicesVariableAudit = 2102
-	OpcuaNodeIdServicesVariableAudit_AuditWriteUpdateEventType_NewValue                           OpcuaNodeIdServicesVariableAudit = 2103
-	OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_MethodId                          OpcuaNodeIdServicesVariableAudit = 2128
-	OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_InputArguments                    OpcuaNodeIdServicesVariableAudit = 2129
-	OpcuaNodeIdServicesVariableAudit_AuditChannelEventType_SecureChannelId                        OpcuaNodeIdServicesVariableAudit = 2745
-	OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_ClientCertificateThumbprint  OpcuaNodeIdServicesVariableAudit = 2746
-	OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_ClientCertificateThumbprint      OpcuaNodeIdServicesVariableAudit = 2747
-	OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_EndpointUrl                        OpcuaNodeIdServicesVariableAudit = 2749
-	OpcuaNodeIdServicesVariableAudit_AuditWriteUpdateEventType_AttributeId                        OpcuaNodeIdServicesVariableAudit = 2750
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryUpdateEventType_ParameterDataTypeId              OpcuaNodeIdServicesVariableAudit = 2751
-	OpcuaNodeIdServicesVariableAudit_AuditUpdateStateEventType_OldStateId                         OpcuaNodeIdServicesVariableAudit = 2777
-	OpcuaNodeIdServicesVariableAudit_AuditUpdateStateEventType_NewStateId                         OpcuaNodeIdServicesVariableAudit = 2778
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_Filter                      OpcuaNodeIdServicesVariableAudit = 3003
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_IsDeleteModified        OpcuaNodeIdServicesVariableAudit = 3015
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_StartTime               OpcuaNodeIdServicesVariableAudit = 3016
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_EndTime                 OpcuaNodeIdServicesVariableAudit = 3017
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryAtTimeDeleteEventType_ReqTimes                   OpcuaNodeIdServicesVariableAudit = 3020
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryAtTimeDeleteEventType_OldValues                  OpcuaNodeIdServicesVariableAudit = 3021
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventDeleteEventType_EventIds                    OpcuaNodeIdServicesVariableAudit = 3023
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventDeleteEventType_OldValues                   OpcuaNodeIdServicesVariableAudit = 3024
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_UpdatedNode                 OpcuaNodeIdServicesVariableAudit = 3025
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_UpdatedNode                 OpcuaNodeIdServicesVariableAudit = 3026
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryDeleteEventType_UpdatedNode                      OpcuaNodeIdServicesVariableAudit = 3027
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_PerformInsertReplace        OpcuaNodeIdServicesVariableAudit = 3028
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_NewValues                   OpcuaNodeIdServicesVariableAudit = 3029
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_OldValues                   OpcuaNodeIdServicesVariableAudit = 3030
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_PerformInsertReplace        OpcuaNodeIdServicesVariableAudit = 3031
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_NewValues                   OpcuaNodeIdServicesVariableAudit = 3032
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_OldValues                   OpcuaNodeIdServicesVariableAudit = 3033
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_OldValues               OpcuaNodeIdServicesVariableAudit = 3034
-	OpcuaNodeIdServicesVariableAudit_AuditEventType_EventId                                       OpcuaNodeIdServicesVariableAudit = 3200
-	OpcuaNodeIdServicesVariableAudit_AuditEventType_EventType                                     OpcuaNodeIdServicesVariableAudit = 3201
-	OpcuaNodeIdServicesVariableAudit_AuditEventType_SourceNode                                    OpcuaNodeIdServicesVariableAudit = 3202
-	OpcuaNodeIdServicesVariableAudit_AuditEventType_SourceName                                    OpcuaNodeIdServicesVariableAudit = 3203
-	OpcuaNodeIdServicesVariableAudit_AuditEventType_Time                                          OpcuaNodeIdServicesVariableAudit = 3204
-	OpcuaNodeIdServicesVariableAudit_AuditEventType_ReceiveTime                                   OpcuaNodeIdServicesVariableAudit = 3205
-	OpcuaNodeIdServicesVariableAudit_AuditEventType_LocalTime                                     OpcuaNodeIdServicesVariableAudit = 3206
-	OpcuaNodeIdServicesVariableAudit_AuditEventType_Message                                       OpcuaNodeIdServicesVariableAudit = 3207
-	OpcuaNodeIdServicesVariableAudit_AuditEventType_Severity                                      OpcuaNodeIdServicesVariableAudit = 3208
-	OpcuaNodeIdServicesVariableAudit_AuditSecurityEventType_EventId                               OpcuaNodeIdServicesVariableAudit = 3209
-	OpcuaNodeIdServicesVariableAudit_AuditSecurityEventType_EventType                             OpcuaNodeIdServicesVariableAudit = 3210
-	OpcuaNodeIdServicesVariableAudit_AuditSecurityEventType_SourceNode                            OpcuaNodeIdServicesVariableAudit = 3211
-	OpcuaNodeIdServicesVariableAudit_AuditSecurityEventType_SourceName                            OpcuaNodeIdServicesVariableAudit = 3212
-	OpcuaNodeIdServicesVariableAudit_AuditSecurityEventType_Time                                  OpcuaNodeIdServicesVariableAudit = 3213
-	OpcuaNodeIdServicesVariableAudit_AuditSecurityEventType_ReceiveTime                           OpcuaNodeIdServicesVariableAudit = 3214
-	OpcuaNodeIdServicesVariableAudit_AuditSecurityEventType_LocalTime                             OpcuaNodeIdServicesVariableAudit = 3215
-	OpcuaNodeIdServicesVariableAudit_AuditSecurityEventType_Message                               OpcuaNodeIdServicesVariableAudit = 3216
-	OpcuaNodeIdServicesVariableAudit_AuditSecurityEventType_Severity                              OpcuaNodeIdServicesVariableAudit = 3217
-	OpcuaNodeIdServicesVariableAudit_AuditSecurityEventType_ActionTimeStamp                       OpcuaNodeIdServicesVariableAudit = 3218
-	OpcuaNodeIdServicesVariableAudit_AuditSecurityEventType_Status                                OpcuaNodeIdServicesVariableAudit = 3219
-	OpcuaNodeIdServicesVariableAudit_AuditSecurityEventType_ServerId                              OpcuaNodeIdServicesVariableAudit = 3220
-	OpcuaNodeIdServicesVariableAudit_AuditSecurityEventType_ClientAuditEntryId                    OpcuaNodeIdServicesVariableAudit = 3221
-	OpcuaNodeIdServicesVariableAudit_AuditSecurityEventType_ClientUserId                          OpcuaNodeIdServicesVariableAudit = 3222
-	OpcuaNodeIdServicesVariableAudit_AuditChannelEventType_EventId                                OpcuaNodeIdServicesVariableAudit = 3223
-	OpcuaNodeIdServicesVariableAudit_AuditChannelEventType_EventType                              OpcuaNodeIdServicesVariableAudit = 3224
-	OpcuaNodeIdServicesVariableAudit_AuditChannelEventType_SourceNode                             OpcuaNodeIdServicesVariableAudit = 3225
-	OpcuaNodeIdServicesVariableAudit_AuditChannelEventType_SourceName                             OpcuaNodeIdServicesVariableAudit = 3226
-	OpcuaNodeIdServicesVariableAudit_AuditChannelEventType_Time                                   OpcuaNodeIdServicesVariableAudit = 3227
-	OpcuaNodeIdServicesVariableAudit_AuditChannelEventType_ReceiveTime                            OpcuaNodeIdServicesVariableAudit = 3228
-	OpcuaNodeIdServicesVariableAudit_AuditChannelEventType_LocalTime                              OpcuaNodeIdServicesVariableAudit = 3229
-	OpcuaNodeIdServicesVariableAudit_AuditChannelEventType_Message                                OpcuaNodeIdServicesVariableAudit = 3230
-	OpcuaNodeIdServicesVariableAudit_AuditChannelEventType_Severity                               OpcuaNodeIdServicesVariableAudit = 3231
-	OpcuaNodeIdServicesVariableAudit_AuditChannelEventType_ActionTimeStamp                        OpcuaNodeIdServicesVariableAudit = 3232
-	OpcuaNodeIdServicesVariableAudit_AuditChannelEventType_Status                                 OpcuaNodeIdServicesVariableAudit = 3233
-	OpcuaNodeIdServicesVariableAudit_AuditChannelEventType_ServerId                               OpcuaNodeIdServicesVariableAudit = 3234
-	OpcuaNodeIdServicesVariableAudit_AuditChannelEventType_ClientAuditEntryId                     OpcuaNodeIdServicesVariableAudit = 3235
-	OpcuaNodeIdServicesVariableAudit_AuditChannelEventType_ClientUserId                           OpcuaNodeIdServicesVariableAudit = 3236
-	OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_EventId                      OpcuaNodeIdServicesVariableAudit = 3237
-	OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_EventType                    OpcuaNodeIdServicesVariableAudit = 3238
-	OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_SourceNode                   OpcuaNodeIdServicesVariableAudit = 3239
-	OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_SourceName                   OpcuaNodeIdServicesVariableAudit = 3240
-	OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_Time                         OpcuaNodeIdServicesVariableAudit = 3241
-	OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_ReceiveTime                  OpcuaNodeIdServicesVariableAudit = 3242
-	OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_LocalTime                    OpcuaNodeIdServicesVariableAudit = 3243
-	OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_Message                      OpcuaNodeIdServicesVariableAudit = 3244
-	OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_Severity                     OpcuaNodeIdServicesVariableAudit = 3245
-	OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_ActionTimeStamp              OpcuaNodeIdServicesVariableAudit = 3246
-	OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_Status                       OpcuaNodeIdServicesVariableAudit = 3247
-	OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_ServerId                     OpcuaNodeIdServicesVariableAudit = 3248
-	OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_ClientAuditEntryId           OpcuaNodeIdServicesVariableAudit = 3249
-	OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_ClientUserId                 OpcuaNodeIdServicesVariableAudit = 3250
-	OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_SecureChannelId              OpcuaNodeIdServicesVariableAudit = 3251
-	OpcuaNodeIdServicesVariableAudit_AuditSessionEventType_EventId                                OpcuaNodeIdServicesVariableAudit = 3252
-	OpcuaNodeIdServicesVariableAudit_AuditSessionEventType_EventType                              OpcuaNodeIdServicesVariableAudit = 3253
-	OpcuaNodeIdServicesVariableAudit_AuditSessionEventType_SourceNode                             OpcuaNodeIdServicesVariableAudit = 3254
-	OpcuaNodeIdServicesVariableAudit_AuditSessionEventType_SourceName                             OpcuaNodeIdServicesVariableAudit = 3255
-	OpcuaNodeIdServicesVariableAudit_AuditSessionEventType_Time                                   OpcuaNodeIdServicesVariableAudit = 3256
-	OpcuaNodeIdServicesVariableAudit_AuditSessionEventType_ReceiveTime                            OpcuaNodeIdServicesVariableAudit = 3257
-	OpcuaNodeIdServicesVariableAudit_AuditSessionEventType_LocalTime                              OpcuaNodeIdServicesVariableAudit = 3258
-	OpcuaNodeIdServicesVariableAudit_AuditSessionEventType_Message                                OpcuaNodeIdServicesVariableAudit = 3259
-	OpcuaNodeIdServicesVariableAudit_AuditSessionEventType_Severity                               OpcuaNodeIdServicesVariableAudit = 3260
-	OpcuaNodeIdServicesVariableAudit_AuditSessionEventType_ActionTimeStamp                        OpcuaNodeIdServicesVariableAudit = 3261
-	OpcuaNodeIdServicesVariableAudit_AuditSessionEventType_Status                                 OpcuaNodeIdServicesVariableAudit = 3262
-	OpcuaNodeIdServicesVariableAudit_AuditSessionEventType_ServerId                               OpcuaNodeIdServicesVariableAudit = 3263
-	OpcuaNodeIdServicesVariableAudit_AuditSessionEventType_ClientAuditEntryId                     OpcuaNodeIdServicesVariableAudit = 3264
-	OpcuaNodeIdServicesVariableAudit_AuditSessionEventType_ClientUserId                           OpcuaNodeIdServicesVariableAudit = 3265
-	OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_EventId                          OpcuaNodeIdServicesVariableAudit = 3266
-	OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_EventType                        OpcuaNodeIdServicesVariableAudit = 3267
-	OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_SourceNode                       OpcuaNodeIdServicesVariableAudit = 3268
-	OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_SourceName                       OpcuaNodeIdServicesVariableAudit = 3269
-	OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_Time                             OpcuaNodeIdServicesVariableAudit = 3270
-	OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_ReceiveTime                      OpcuaNodeIdServicesVariableAudit = 3271
-	OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_LocalTime                        OpcuaNodeIdServicesVariableAudit = 3272
-	OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_Message                          OpcuaNodeIdServicesVariableAudit = 3273
-	OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_Severity                         OpcuaNodeIdServicesVariableAudit = 3274
-	OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_ActionTimeStamp                  OpcuaNodeIdServicesVariableAudit = 3275
-	OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_Status                           OpcuaNodeIdServicesVariableAudit = 3276
-	OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_ServerId                         OpcuaNodeIdServicesVariableAudit = 3277
-	OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_ClientAuditEntryId               OpcuaNodeIdServicesVariableAudit = 3278
-	OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_ClientUserId                     OpcuaNodeIdServicesVariableAudit = 3279
-	OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_EventId                            OpcuaNodeIdServicesVariableAudit = 3281
-	OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_EventType                          OpcuaNodeIdServicesVariableAudit = 3282
-	OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_SourceNode                         OpcuaNodeIdServicesVariableAudit = 3283
-	OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_SourceName                         OpcuaNodeIdServicesVariableAudit = 3284
-	OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_Time                               OpcuaNodeIdServicesVariableAudit = 3285
-	OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_ReceiveTime                        OpcuaNodeIdServicesVariableAudit = 3286
-	OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_LocalTime                          OpcuaNodeIdServicesVariableAudit = 3287
-	OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_Message                            OpcuaNodeIdServicesVariableAudit = 3288
-	OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_Severity                           OpcuaNodeIdServicesVariableAudit = 3289
-	OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_ActionTimeStamp                    OpcuaNodeIdServicesVariableAudit = 3290
-	OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_Status                             OpcuaNodeIdServicesVariableAudit = 3291
-	OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_ServerId                           OpcuaNodeIdServicesVariableAudit = 3292
-	OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_ClientAuditEntryId                 OpcuaNodeIdServicesVariableAudit = 3293
-	OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_ClientUserId                       OpcuaNodeIdServicesVariableAudit = 3294
-	OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_SecureChannelId                    OpcuaNodeIdServicesVariableAudit = 3296
-	OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_ClientCertificate                  OpcuaNodeIdServicesVariableAudit = 3297
-	OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_ClientCertificateThumbprint        OpcuaNodeIdServicesVariableAudit = 3298
-	OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_RevisedSessionTimeout              OpcuaNodeIdServicesVariableAudit = 3299
-	OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_EventId                        OpcuaNodeIdServicesVariableAudit = 3300
-	OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_EventType                      OpcuaNodeIdServicesVariableAudit = 3301
-	OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_SourceNode                     OpcuaNodeIdServicesVariableAudit = 3302
-	OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_SourceName                     OpcuaNodeIdServicesVariableAudit = 3303
-	OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_Time                           OpcuaNodeIdServicesVariableAudit = 3304
-	OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_ReceiveTime                    OpcuaNodeIdServicesVariableAudit = 3305
-	OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_LocalTime                      OpcuaNodeIdServicesVariableAudit = 3306
-	OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_Message                        OpcuaNodeIdServicesVariableAudit = 3307
-	OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_Severity                       OpcuaNodeIdServicesVariableAudit = 3308
-	OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_ActionTimeStamp                OpcuaNodeIdServicesVariableAudit = 3309
-	OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_Status                         OpcuaNodeIdServicesVariableAudit = 3310
-	OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_ServerId                       OpcuaNodeIdServicesVariableAudit = 3311
-	OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_ClientAuditEntryId             OpcuaNodeIdServicesVariableAudit = 3312
-	OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_ClientUserId                   OpcuaNodeIdServicesVariableAudit = 3313
-	OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_SessionId                      OpcuaNodeIdServicesVariableAudit = 3314
-	OpcuaNodeIdServicesVariableAudit_AuditCancelEventType_EventId                                 OpcuaNodeIdServicesVariableAudit = 3315
-	OpcuaNodeIdServicesVariableAudit_AuditCancelEventType_EventType                               OpcuaNodeIdServicesVariableAudit = 3316
-	OpcuaNodeIdServicesVariableAudit_AuditCancelEventType_SourceNode                              OpcuaNodeIdServicesVariableAudit = 3317
-	OpcuaNodeIdServicesVariableAudit_AuditCancelEventType_SourceName                              OpcuaNodeIdServicesVariableAudit = 3318
-	OpcuaNodeIdServicesVariableAudit_AuditCancelEventType_Time                                    OpcuaNodeIdServicesVariableAudit = 3319
-	OpcuaNodeIdServicesVariableAudit_AuditCancelEventType_ReceiveTime                             OpcuaNodeIdServicesVariableAudit = 3320
-	OpcuaNodeIdServicesVariableAudit_AuditCancelEventType_LocalTime                               OpcuaNodeIdServicesVariableAudit = 3321
-	OpcuaNodeIdServicesVariableAudit_AuditCancelEventType_Message                                 OpcuaNodeIdServicesVariableAudit = 3322
-	OpcuaNodeIdServicesVariableAudit_AuditCancelEventType_Severity                                OpcuaNodeIdServicesVariableAudit = 3323
-	OpcuaNodeIdServicesVariableAudit_AuditCancelEventType_ActionTimeStamp                         OpcuaNodeIdServicesVariableAudit = 3324
-	OpcuaNodeIdServicesVariableAudit_AuditCancelEventType_Status                                  OpcuaNodeIdServicesVariableAudit = 3325
-	OpcuaNodeIdServicesVariableAudit_AuditCancelEventType_ServerId                                OpcuaNodeIdServicesVariableAudit = 3326
-	OpcuaNodeIdServicesVariableAudit_AuditCancelEventType_ClientAuditEntryId                      OpcuaNodeIdServicesVariableAudit = 3327
-	OpcuaNodeIdServicesVariableAudit_AuditCancelEventType_ClientUserId                            OpcuaNodeIdServicesVariableAudit = 3328
-	OpcuaNodeIdServicesVariableAudit_AuditCancelEventType_SessionId                               OpcuaNodeIdServicesVariableAudit = 3329
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateEventType_EventId                            OpcuaNodeIdServicesVariableAudit = 3330
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateEventType_EventType                          OpcuaNodeIdServicesVariableAudit = 3331
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateEventType_SourceNode                         OpcuaNodeIdServicesVariableAudit = 3332
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateEventType_SourceName                         OpcuaNodeIdServicesVariableAudit = 3333
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateEventType_Time                               OpcuaNodeIdServicesVariableAudit = 3334
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateEventType_ReceiveTime                        OpcuaNodeIdServicesVariableAudit = 3335
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateEventType_LocalTime                          OpcuaNodeIdServicesVariableAudit = 3336
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateEventType_Message                            OpcuaNodeIdServicesVariableAudit = 3337
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateEventType_Severity                           OpcuaNodeIdServicesVariableAudit = 3338
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateEventType_ActionTimeStamp                    OpcuaNodeIdServicesVariableAudit = 3339
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateEventType_Status                             OpcuaNodeIdServicesVariableAudit = 3340
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateEventType_ServerId                           OpcuaNodeIdServicesVariableAudit = 3341
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateEventType_ClientAuditEntryId                 OpcuaNodeIdServicesVariableAudit = 3342
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateEventType_ClientUserId                       OpcuaNodeIdServicesVariableAudit = 3343
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateDataMismatchEventType_EventId                OpcuaNodeIdServicesVariableAudit = 3344
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateDataMismatchEventType_EventType              OpcuaNodeIdServicesVariableAudit = 3345
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateDataMismatchEventType_SourceNode             OpcuaNodeIdServicesVariableAudit = 3346
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateDataMismatchEventType_SourceName             OpcuaNodeIdServicesVariableAudit = 3347
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateDataMismatchEventType_Time                   OpcuaNodeIdServicesVariableAudit = 3348
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateDataMismatchEventType_ReceiveTime            OpcuaNodeIdServicesVariableAudit = 3349
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateDataMismatchEventType_LocalTime              OpcuaNodeIdServicesVariableAudit = 3350
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateDataMismatchEventType_Message                OpcuaNodeIdServicesVariableAudit = 3351
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateDataMismatchEventType_Severity               OpcuaNodeIdServicesVariableAudit = 3352
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateDataMismatchEventType_ActionTimeStamp        OpcuaNodeIdServicesVariableAudit = 3353
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateDataMismatchEventType_Status                 OpcuaNodeIdServicesVariableAudit = 3354
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateDataMismatchEventType_ServerId               OpcuaNodeIdServicesVariableAudit = 3355
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateDataMismatchEventType_ClientAuditEntryId     OpcuaNodeIdServicesVariableAudit = 3356
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateDataMismatchEventType_ClientUserId           OpcuaNodeIdServicesVariableAudit = 3357
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateDataMismatchEventType_Certificate            OpcuaNodeIdServicesVariableAudit = 3358
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateExpiredEventType_EventId                     OpcuaNodeIdServicesVariableAudit = 3359
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateExpiredEventType_EventType                   OpcuaNodeIdServicesVariableAudit = 3360
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateExpiredEventType_SourceNode                  OpcuaNodeIdServicesVariableAudit = 3361
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateExpiredEventType_SourceName                  OpcuaNodeIdServicesVariableAudit = 3362
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateExpiredEventType_Time                        OpcuaNodeIdServicesVariableAudit = 3363
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateExpiredEventType_ReceiveTime                 OpcuaNodeIdServicesVariableAudit = 3364
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateExpiredEventType_LocalTime                   OpcuaNodeIdServicesVariableAudit = 3365
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateExpiredEventType_Message                     OpcuaNodeIdServicesVariableAudit = 3366
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateExpiredEventType_Severity                    OpcuaNodeIdServicesVariableAudit = 3367
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateExpiredEventType_ActionTimeStamp             OpcuaNodeIdServicesVariableAudit = 3368
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateExpiredEventType_Status                      OpcuaNodeIdServicesVariableAudit = 3369
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateExpiredEventType_ServerId                    OpcuaNodeIdServicesVariableAudit = 3370
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateExpiredEventType_ClientAuditEntryId          OpcuaNodeIdServicesVariableAudit = 3371
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateExpiredEventType_ClientUserId                OpcuaNodeIdServicesVariableAudit = 3372
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateExpiredEventType_Certificate                 OpcuaNodeIdServicesVariableAudit = 3373
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateInvalidEventType_EventId                     OpcuaNodeIdServicesVariableAudit = 3374
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateInvalidEventType_EventType                   OpcuaNodeIdServicesVariableAudit = 3375
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateInvalidEventType_SourceNode                  OpcuaNodeIdServicesVariableAudit = 3376
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateInvalidEventType_SourceName                  OpcuaNodeIdServicesVariableAudit = 3377
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateInvalidEventType_Time                        OpcuaNodeIdServicesVariableAudit = 3378
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateInvalidEventType_ReceiveTime                 OpcuaNodeIdServicesVariableAudit = 3379
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateInvalidEventType_LocalTime                   OpcuaNodeIdServicesVariableAudit = 3380
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateInvalidEventType_Message                     OpcuaNodeIdServicesVariableAudit = 3381
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateInvalidEventType_Severity                    OpcuaNodeIdServicesVariableAudit = 3382
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateInvalidEventType_ActionTimeStamp             OpcuaNodeIdServicesVariableAudit = 3383
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateInvalidEventType_Status                      OpcuaNodeIdServicesVariableAudit = 3384
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateInvalidEventType_ServerId                    OpcuaNodeIdServicesVariableAudit = 3385
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateInvalidEventType_ClientAuditEntryId          OpcuaNodeIdServicesVariableAudit = 3386
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateInvalidEventType_ClientUserId                OpcuaNodeIdServicesVariableAudit = 3387
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateInvalidEventType_Certificate                 OpcuaNodeIdServicesVariableAudit = 3388
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateUntrustedEventType_EventId                   OpcuaNodeIdServicesVariableAudit = 3389
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateUntrustedEventType_EventType                 OpcuaNodeIdServicesVariableAudit = 3390
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateUntrustedEventType_SourceNode                OpcuaNodeIdServicesVariableAudit = 3391
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateUntrustedEventType_SourceName                OpcuaNodeIdServicesVariableAudit = 3392
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateUntrustedEventType_Time                      OpcuaNodeIdServicesVariableAudit = 3393
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateUntrustedEventType_ReceiveTime               OpcuaNodeIdServicesVariableAudit = 3394
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateUntrustedEventType_LocalTime                 OpcuaNodeIdServicesVariableAudit = 3395
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateUntrustedEventType_Message                   OpcuaNodeIdServicesVariableAudit = 3396
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateUntrustedEventType_Severity                  OpcuaNodeIdServicesVariableAudit = 3397
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateUntrustedEventType_ActionTimeStamp           OpcuaNodeIdServicesVariableAudit = 3398
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateUntrustedEventType_Status                    OpcuaNodeIdServicesVariableAudit = 3399
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateUntrustedEventType_ServerId                  OpcuaNodeIdServicesVariableAudit = 3400
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateUntrustedEventType_ClientAuditEntryId        OpcuaNodeIdServicesVariableAudit = 3401
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateUntrustedEventType_ClientUserId              OpcuaNodeIdServicesVariableAudit = 3402
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateUntrustedEventType_Certificate               OpcuaNodeIdServicesVariableAudit = 3403
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateRevokedEventType_EventId                     OpcuaNodeIdServicesVariableAudit = 3404
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateRevokedEventType_EventType                   OpcuaNodeIdServicesVariableAudit = 3405
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateRevokedEventType_SourceNode                  OpcuaNodeIdServicesVariableAudit = 3406
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateRevokedEventType_SourceName                  OpcuaNodeIdServicesVariableAudit = 3407
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateRevokedEventType_Time                        OpcuaNodeIdServicesVariableAudit = 3408
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateRevokedEventType_ReceiveTime                 OpcuaNodeIdServicesVariableAudit = 3409
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateRevokedEventType_LocalTime                   OpcuaNodeIdServicesVariableAudit = 3410
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateRevokedEventType_Message                     OpcuaNodeIdServicesVariableAudit = 3411
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateRevokedEventType_Severity                    OpcuaNodeIdServicesVariableAudit = 3412
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateRevokedEventType_ActionTimeStamp             OpcuaNodeIdServicesVariableAudit = 3413
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateRevokedEventType_Status                      OpcuaNodeIdServicesVariableAudit = 3414
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateRevokedEventType_ServerId                    OpcuaNodeIdServicesVariableAudit = 3415
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateRevokedEventType_ClientAuditEntryId          OpcuaNodeIdServicesVariableAudit = 3416
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateRevokedEventType_ClientUserId                OpcuaNodeIdServicesVariableAudit = 3417
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateRevokedEventType_Certificate                 OpcuaNodeIdServicesVariableAudit = 3418
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateMismatchEventType_EventId                    OpcuaNodeIdServicesVariableAudit = 3419
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateMismatchEventType_EventType                  OpcuaNodeIdServicesVariableAudit = 3420
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateMismatchEventType_SourceNode                 OpcuaNodeIdServicesVariableAudit = 3421
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateMismatchEventType_SourceName                 OpcuaNodeIdServicesVariableAudit = 3422
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateMismatchEventType_Time                       OpcuaNodeIdServicesVariableAudit = 3423
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateMismatchEventType_ReceiveTime                OpcuaNodeIdServicesVariableAudit = 3424
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateMismatchEventType_LocalTime                  OpcuaNodeIdServicesVariableAudit = 3425
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateMismatchEventType_Message                    OpcuaNodeIdServicesVariableAudit = 3426
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateMismatchEventType_Severity                   OpcuaNodeIdServicesVariableAudit = 3427
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateMismatchEventType_ActionTimeStamp            OpcuaNodeIdServicesVariableAudit = 3428
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateMismatchEventType_Status                     OpcuaNodeIdServicesVariableAudit = 3429
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateMismatchEventType_ServerId                   OpcuaNodeIdServicesVariableAudit = 3430
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateMismatchEventType_ClientAuditEntryId         OpcuaNodeIdServicesVariableAudit = 3431
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateMismatchEventType_ClientUserId               OpcuaNodeIdServicesVariableAudit = 3432
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateMismatchEventType_Certificate                OpcuaNodeIdServicesVariableAudit = 3433
-	OpcuaNodeIdServicesVariableAudit_AuditNodeManagementEventType_EventId                         OpcuaNodeIdServicesVariableAudit = 3434
-	OpcuaNodeIdServicesVariableAudit_AuditNodeManagementEventType_EventType                       OpcuaNodeIdServicesVariableAudit = 3435
-	OpcuaNodeIdServicesVariableAudit_AuditNodeManagementEventType_SourceNode                      OpcuaNodeIdServicesVariableAudit = 3436
-	OpcuaNodeIdServicesVariableAudit_AuditNodeManagementEventType_SourceName                      OpcuaNodeIdServicesVariableAudit = 3437
-	OpcuaNodeIdServicesVariableAudit_AuditNodeManagementEventType_Time                            OpcuaNodeIdServicesVariableAudit = 3438
-	OpcuaNodeIdServicesVariableAudit_AuditNodeManagementEventType_ReceiveTime                     OpcuaNodeIdServicesVariableAudit = 3439
-	OpcuaNodeIdServicesVariableAudit_AuditNodeManagementEventType_LocalTime                       OpcuaNodeIdServicesVariableAudit = 3440
-	OpcuaNodeIdServicesVariableAudit_AuditNodeManagementEventType_Message                         OpcuaNodeIdServicesVariableAudit = 3441
-	OpcuaNodeIdServicesVariableAudit_AuditNodeManagementEventType_Severity                        OpcuaNodeIdServicesVariableAudit = 3442
-	OpcuaNodeIdServicesVariableAudit_AuditNodeManagementEventType_ActionTimeStamp                 OpcuaNodeIdServicesVariableAudit = 3443
-	OpcuaNodeIdServicesVariableAudit_AuditNodeManagementEventType_Status                          OpcuaNodeIdServicesVariableAudit = 3444
-	OpcuaNodeIdServicesVariableAudit_AuditNodeManagementEventType_ServerId                        OpcuaNodeIdServicesVariableAudit = 3445
-	OpcuaNodeIdServicesVariableAudit_AuditNodeManagementEventType_ClientAuditEntryId              OpcuaNodeIdServicesVariableAudit = 3446
-	OpcuaNodeIdServicesVariableAudit_AuditNodeManagementEventType_ClientUserId                    OpcuaNodeIdServicesVariableAudit = 3447
-	OpcuaNodeIdServicesVariableAudit_AuditAddNodesEventType_EventId                               OpcuaNodeIdServicesVariableAudit = 3448
-	OpcuaNodeIdServicesVariableAudit_AuditAddNodesEventType_EventType                             OpcuaNodeIdServicesVariableAudit = 3449
-	OpcuaNodeIdServicesVariableAudit_AuditAddNodesEventType_SourceNode                            OpcuaNodeIdServicesVariableAudit = 3450
-	OpcuaNodeIdServicesVariableAudit_AuditAddNodesEventType_SourceName                            OpcuaNodeIdServicesVariableAudit = 3451
-	OpcuaNodeIdServicesVariableAudit_AuditAddNodesEventType_Time                                  OpcuaNodeIdServicesVariableAudit = 3452
-	OpcuaNodeIdServicesVariableAudit_AuditAddNodesEventType_ReceiveTime                           OpcuaNodeIdServicesVariableAudit = 3453
-	OpcuaNodeIdServicesVariableAudit_AuditAddNodesEventType_LocalTime                             OpcuaNodeIdServicesVariableAudit = 3454
-	OpcuaNodeIdServicesVariableAudit_AuditAddNodesEventType_Message                               OpcuaNodeIdServicesVariableAudit = 3455
-	OpcuaNodeIdServicesVariableAudit_AuditAddNodesEventType_Severity                              OpcuaNodeIdServicesVariableAudit = 3456
-	OpcuaNodeIdServicesVariableAudit_AuditAddNodesEventType_ActionTimeStamp                       OpcuaNodeIdServicesVariableAudit = 3457
-	OpcuaNodeIdServicesVariableAudit_AuditAddNodesEventType_Status                                OpcuaNodeIdServicesVariableAudit = 3458
-	OpcuaNodeIdServicesVariableAudit_AuditAddNodesEventType_ServerId                              OpcuaNodeIdServicesVariableAudit = 3459
-	OpcuaNodeIdServicesVariableAudit_AuditAddNodesEventType_ClientAuditEntryId                    OpcuaNodeIdServicesVariableAudit = 3460
-	OpcuaNodeIdServicesVariableAudit_AuditAddNodesEventType_ClientUserId                          OpcuaNodeIdServicesVariableAudit = 3461
-	OpcuaNodeIdServicesVariableAudit_AuditDeleteNodesEventType_EventId                            OpcuaNodeIdServicesVariableAudit = 3462
-	OpcuaNodeIdServicesVariableAudit_AuditDeleteNodesEventType_EventType                          OpcuaNodeIdServicesVariableAudit = 3463
-	OpcuaNodeIdServicesVariableAudit_AuditDeleteNodesEventType_SourceNode                         OpcuaNodeIdServicesVariableAudit = 3464
-	OpcuaNodeIdServicesVariableAudit_AuditDeleteNodesEventType_SourceName                         OpcuaNodeIdServicesVariableAudit = 3465
-	OpcuaNodeIdServicesVariableAudit_AuditDeleteNodesEventType_Time                               OpcuaNodeIdServicesVariableAudit = 3466
-	OpcuaNodeIdServicesVariableAudit_AuditDeleteNodesEventType_ReceiveTime                        OpcuaNodeIdServicesVariableAudit = 3467
-	OpcuaNodeIdServicesVariableAudit_AuditDeleteNodesEventType_LocalTime                          OpcuaNodeIdServicesVariableAudit = 3468
-	OpcuaNodeIdServicesVariableAudit_AuditDeleteNodesEventType_Message                            OpcuaNodeIdServicesVariableAudit = 3469
-	OpcuaNodeIdServicesVariableAudit_AuditDeleteNodesEventType_Severity                           OpcuaNodeIdServicesVariableAudit = 3470
-	OpcuaNodeIdServicesVariableAudit_AuditDeleteNodesEventType_ActionTimeStamp                    OpcuaNodeIdServicesVariableAudit = 3471
-	OpcuaNodeIdServicesVariableAudit_AuditDeleteNodesEventType_Status                             OpcuaNodeIdServicesVariableAudit = 3472
-	OpcuaNodeIdServicesVariableAudit_AuditDeleteNodesEventType_ServerId                           OpcuaNodeIdServicesVariableAudit = 3473
-	OpcuaNodeIdServicesVariableAudit_AuditDeleteNodesEventType_ClientAuditEntryId                 OpcuaNodeIdServicesVariableAudit = 3474
-	OpcuaNodeIdServicesVariableAudit_AuditDeleteNodesEventType_ClientUserId                       OpcuaNodeIdServicesVariableAudit = 3475
-	OpcuaNodeIdServicesVariableAudit_AuditAddReferencesEventType_EventId                          OpcuaNodeIdServicesVariableAudit = 3476
-	OpcuaNodeIdServicesVariableAudit_AuditAddReferencesEventType_EventType                        OpcuaNodeIdServicesVariableAudit = 3477
-	OpcuaNodeIdServicesVariableAudit_AuditAddReferencesEventType_SourceNode                       OpcuaNodeIdServicesVariableAudit = 3478
-	OpcuaNodeIdServicesVariableAudit_AuditAddReferencesEventType_SourceName                       OpcuaNodeIdServicesVariableAudit = 3479
-	OpcuaNodeIdServicesVariableAudit_AuditAddReferencesEventType_Time                             OpcuaNodeIdServicesVariableAudit = 3480
-	OpcuaNodeIdServicesVariableAudit_AuditAddReferencesEventType_ReceiveTime                      OpcuaNodeIdServicesVariableAudit = 3481
-	OpcuaNodeIdServicesVariableAudit_AuditAddReferencesEventType_LocalTime                        OpcuaNodeIdServicesVariableAudit = 3482
-	OpcuaNodeIdServicesVariableAudit_AuditAddReferencesEventType_Message                          OpcuaNodeIdServicesVariableAudit = 3483
-	OpcuaNodeIdServicesVariableAudit_AuditAddReferencesEventType_Severity                         OpcuaNodeIdServicesVariableAudit = 3484
-	OpcuaNodeIdServicesVariableAudit_AuditAddReferencesEventType_ActionTimeStamp                  OpcuaNodeIdServicesVariableAudit = 3485
-	OpcuaNodeIdServicesVariableAudit_AuditAddReferencesEventType_Status                           OpcuaNodeIdServicesVariableAudit = 3486
-	OpcuaNodeIdServicesVariableAudit_AuditAddReferencesEventType_ServerId                         OpcuaNodeIdServicesVariableAudit = 3487
-	OpcuaNodeIdServicesVariableAudit_AuditAddReferencesEventType_ClientAuditEntryId               OpcuaNodeIdServicesVariableAudit = 3488
-	OpcuaNodeIdServicesVariableAudit_AuditAddReferencesEventType_ClientUserId                     OpcuaNodeIdServicesVariableAudit = 3489
-	OpcuaNodeIdServicesVariableAudit_AuditDeleteReferencesEventType_EventId                       OpcuaNodeIdServicesVariableAudit = 3490
-	OpcuaNodeIdServicesVariableAudit_AuditDeleteReferencesEventType_EventType                     OpcuaNodeIdServicesVariableAudit = 3491
-	OpcuaNodeIdServicesVariableAudit_AuditDeleteReferencesEventType_SourceNode                    OpcuaNodeIdServicesVariableAudit = 3492
-	OpcuaNodeIdServicesVariableAudit_AuditDeleteReferencesEventType_SourceName                    OpcuaNodeIdServicesVariableAudit = 3493
-	OpcuaNodeIdServicesVariableAudit_AuditDeleteReferencesEventType_Time                          OpcuaNodeIdServicesVariableAudit = 3494
-	OpcuaNodeIdServicesVariableAudit_AuditDeleteReferencesEventType_ReceiveTime                   OpcuaNodeIdServicesVariableAudit = 3495
-	OpcuaNodeIdServicesVariableAudit_AuditDeleteReferencesEventType_LocalTime                     OpcuaNodeIdServicesVariableAudit = 3496
-	OpcuaNodeIdServicesVariableAudit_AuditDeleteReferencesEventType_Message                       OpcuaNodeIdServicesVariableAudit = 3497
-	OpcuaNodeIdServicesVariableAudit_AuditDeleteReferencesEventType_Severity                      OpcuaNodeIdServicesVariableAudit = 3498
-	OpcuaNodeIdServicesVariableAudit_AuditDeleteReferencesEventType_ActionTimeStamp               OpcuaNodeIdServicesVariableAudit = 3499
-	OpcuaNodeIdServicesVariableAudit_AuditDeleteReferencesEventType_Status                        OpcuaNodeIdServicesVariableAudit = 3500
-	OpcuaNodeIdServicesVariableAudit_AuditDeleteReferencesEventType_ServerId                      OpcuaNodeIdServicesVariableAudit = 3501
-	OpcuaNodeIdServicesVariableAudit_AuditDeleteReferencesEventType_ClientAuditEntryId            OpcuaNodeIdServicesVariableAudit = 3502
-	OpcuaNodeIdServicesVariableAudit_AuditDeleteReferencesEventType_ClientUserId                  OpcuaNodeIdServicesVariableAudit = 3503
-	OpcuaNodeIdServicesVariableAudit_AuditUpdateEventType_EventId                                 OpcuaNodeIdServicesVariableAudit = 3504
-	OpcuaNodeIdServicesVariableAudit_AuditUpdateEventType_EventType                               OpcuaNodeIdServicesVariableAudit = 3505
-	OpcuaNodeIdServicesVariableAudit_AuditUpdateEventType_SourceNode                              OpcuaNodeIdServicesVariableAudit = 3506
-	OpcuaNodeIdServicesVariableAudit_AuditUpdateEventType_SourceName                              OpcuaNodeIdServicesVariableAudit = 3507
-	OpcuaNodeIdServicesVariableAudit_AuditUpdateEventType_Time                                    OpcuaNodeIdServicesVariableAudit = 3508
-	OpcuaNodeIdServicesVariableAudit_AuditUpdateEventType_ReceiveTime                             OpcuaNodeIdServicesVariableAudit = 3509
-	OpcuaNodeIdServicesVariableAudit_AuditUpdateEventType_LocalTime                               OpcuaNodeIdServicesVariableAudit = 3510
-	OpcuaNodeIdServicesVariableAudit_AuditUpdateEventType_Message                                 OpcuaNodeIdServicesVariableAudit = 3511
-	OpcuaNodeIdServicesVariableAudit_AuditUpdateEventType_Severity                                OpcuaNodeIdServicesVariableAudit = 3512
-	OpcuaNodeIdServicesVariableAudit_AuditUpdateEventType_ActionTimeStamp                         OpcuaNodeIdServicesVariableAudit = 3513
-	OpcuaNodeIdServicesVariableAudit_AuditUpdateEventType_Status                                  OpcuaNodeIdServicesVariableAudit = 3514
-	OpcuaNodeIdServicesVariableAudit_AuditUpdateEventType_ServerId                                OpcuaNodeIdServicesVariableAudit = 3515
-	OpcuaNodeIdServicesVariableAudit_AuditUpdateEventType_ClientAuditEntryId                      OpcuaNodeIdServicesVariableAudit = 3516
-	OpcuaNodeIdServicesVariableAudit_AuditUpdateEventType_ClientUserId                            OpcuaNodeIdServicesVariableAudit = 3517
-	OpcuaNodeIdServicesVariableAudit_AuditWriteUpdateEventType_EventId                            OpcuaNodeIdServicesVariableAudit = 3518
-	OpcuaNodeIdServicesVariableAudit_AuditWriteUpdateEventType_EventType                          OpcuaNodeIdServicesVariableAudit = 3519
-	OpcuaNodeIdServicesVariableAudit_AuditWriteUpdateEventType_SourceNode                         OpcuaNodeIdServicesVariableAudit = 3520
-	OpcuaNodeIdServicesVariableAudit_AuditWriteUpdateEventType_SourceName                         OpcuaNodeIdServicesVariableAudit = 3521
-	OpcuaNodeIdServicesVariableAudit_AuditWriteUpdateEventType_Time                               OpcuaNodeIdServicesVariableAudit = 3522
-	OpcuaNodeIdServicesVariableAudit_AuditWriteUpdateEventType_ReceiveTime                        OpcuaNodeIdServicesVariableAudit = 3523
-	OpcuaNodeIdServicesVariableAudit_AuditWriteUpdateEventType_LocalTime                          OpcuaNodeIdServicesVariableAudit = 3524
-	OpcuaNodeIdServicesVariableAudit_AuditWriteUpdateEventType_Message                            OpcuaNodeIdServicesVariableAudit = 3525
-	OpcuaNodeIdServicesVariableAudit_AuditWriteUpdateEventType_Severity                           OpcuaNodeIdServicesVariableAudit = 3526
-	OpcuaNodeIdServicesVariableAudit_AuditWriteUpdateEventType_ActionTimeStamp                    OpcuaNodeIdServicesVariableAudit = 3527
-	OpcuaNodeIdServicesVariableAudit_AuditWriteUpdateEventType_Status                             OpcuaNodeIdServicesVariableAudit = 3528
-	OpcuaNodeIdServicesVariableAudit_AuditWriteUpdateEventType_ServerId                           OpcuaNodeIdServicesVariableAudit = 3529
-	OpcuaNodeIdServicesVariableAudit_AuditWriteUpdateEventType_ClientAuditEntryId                 OpcuaNodeIdServicesVariableAudit = 3530
-	OpcuaNodeIdServicesVariableAudit_AuditWriteUpdateEventType_ClientUserId                       OpcuaNodeIdServicesVariableAudit = 3531
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryUpdateEventType_EventId                          OpcuaNodeIdServicesVariableAudit = 3532
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryUpdateEventType_EventType                        OpcuaNodeIdServicesVariableAudit = 3533
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryUpdateEventType_SourceNode                       OpcuaNodeIdServicesVariableAudit = 3534
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryUpdateEventType_SourceName                       OpcuaNodeIdServicesVariableAudit = 3535
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryUpdateEventType_Time                             OpcuaNodeIdServicesVariableAudit = 3536
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryUpdateEventType_ReceiveTime                      OpcuaNodeIdServicesVariableAudit = 3537
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryUpdateEventType_LocalTime                        OpcuaNodeIdServicesVariableAudit = 3538
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryUpdateEventType_Message                          OpcuaNodeIdServicesVariableAudit = 3539
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryUpdateEventType_Severity                         OpcuaNodeIdServicesVariableAudit = 3540
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryUpdateEventType_ActionTimeStamp                  OpcuaNodeIdServicesVariableAudit = 3541
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryUpdateEventType_Status                           OpcuaNodeIdServicesVariableAudit = 3542
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryUpdateEventType_ServerId                         OpcuaNodeIdServicesVariableAudit = 3543
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryUpdateEventType_ClientAuditEntryId               OpcuaNodeIdServicesVariableAudit = 3544
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryUpdateEventType_ClientUserId                     OpcuaNodeIdServicesVariableAudit = 3545
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_EventId                     OpcuaNodeIdServicesVariableAudit = 3546
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_EventType                   OpcuaNodeIdServicesVariableAudit = 3547
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_SourceNode                  OpcuaNodeIdServicesVariableAudit = 3548
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_SourceName                  OpcuaNodeIdServicesVariableAudit = 3549
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_Time                        OpcuaNodeIdServicesVariableAudit = 3550
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_ReceiveTime                 OpcuaNodeIdServicesVariableAudit = 3551
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_LocalTime                   OpcuaNodeIdServicesVariableAudit = 3552
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_Message                     OpcuaNodeIdServicesVariableAudit = 3553
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_Severity                    OpcuaNodeIdServicesVariableAudit = 3554
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_ActionTimeStamp             OpcuaNodeIdServicesVariableAudit = 3555
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_Status                      OpcuaNodeIdServicesVariableAudit = 3556
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_ServerId                    OpcuaNodeIdServicesVariableAudit = 3557
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_ClientAuditEntryId          OpcuaNodeIdServicesVariableAudit = 3558
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_ClientUserId                OpcuaNodeIdServicesVariableAudit = 3559
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_ParameterDataTypeId         OpcuaNodeIdServicesVariableAudit = 3560
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_EventId                     OpcuaNodeIdServicesVariableAudit = 3561
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_EventType                   OpcuaNodeIdServicesVariableAudit = 3562
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_SourceNode                  OpcuaNodeIdServicesVariableAudit = 3563
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_SourceName                  OpcuaNodeIdServicesVariableAudit = 3564
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_Time                        OpcuaNodeIdServicesVariableAudit = 3565
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_ReceiveTime                 OpcuaNodeIdServicesVariableAudit = 3566
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_LocalTime                   OpcuaNodeIdServicesVariableAudit = 3567
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_Message                     OpcuaNodeIdServicesVariableAudit = 3568
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_Severity                    OpcuaNodeIdServicesVariableAudit = 3569
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_ActionTimeStamp             OpcuaNodeIdServicesVariableAudit = 3570
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_Status                      OpcuaNodeIdServicesVariableAudit = 3571
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_ServerId                    OpcuaNodeIdServicesVariableAudit = 3572
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_ClientAuditEntryId          OpcuaNodeIdServicesVariableAudit = 3573
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_ClientUserId                OpcuaNodeIdServicesVariableAudit = 3574
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_ParameterDataTypeId         OpcuaNodeIdServicesVariableAudit = 3575
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryDeleteEventType_EventId                          OpcuaNodeIdServicesVariableAudit = 3576
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryDeleteEventType_EventType                        OpcuaNodeIdServicesVariableAudit = 3577
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryDeleteEventType_SourceNode                       OpcuaNodeIdServicesVariableAudit = 3578
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryDeleteEventType_SourceName                       OpcuaNodeIdServicesVariableAudit = 3579
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryDeleteEventType_Time                             OpcuaNodeIdServicesVariableAudit = 3580
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryDeleteEventType_ReceiveTime                      OpcuaNodeIdServicesVariableAudit = 3581
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryDeleteEventType_LocalTime                        OpcuaNodeIdServicesVariableAudit = 3582
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryDeleteEventType_Message                          OpcuaNodeIdServicesVariableAudit = 3583
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryDeleteEventType_Severity                         OpcuaNodeIdServicesVariableAudit = 3584
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryDeleteEventType_ActionTimeStamp                  OpcuaNodeIdServicesVariableAudit = 3585
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryDeleteEventType_Status                           OpcuaNodeIdServicesVariableAudit = 3586
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryDeleteEventType_ServerId                         OpcuaNodeIdServicesVariableAudit = 3587
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryDeleteEventType_ClientAuditEntryId               OpcuaNodeIdServicesVariableAudit = 3588
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryDeleteEventType_ClientUserId                     OpcuaNodeIdServicesVariableAudit = 3589
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryDeleteEventType_ParameterDataTypeId              OpcuaNodeIdServicesVariableAudit = 3590
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_EventId                 OpcuaNodeIdServicesVariableAudit = 3591
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_EventType               OpcuaNodeIdServicesVariableAudit = 3592
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_SourceNode              OpcuaNodeIdServicesVariableAudit = 3593
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_SourceName              OpcuaNodeIdServicesVariableAudit = 3594
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_Time                    OpcuaNodeIdServicesVariableAudit = 3595
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_ReceiveTime             OpcuaNodeIdServicesVariableAudit = 3596
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_LocalTime               OpcuaNodeIdServicesVariableAudit = 3597
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_Message                 OpcuaNodeIdServicesVariableAudit = 3598
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_Severity                OpcuaNodeIdServicesVariableAudit = 3599
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_ActionTimeStamp         OpcuaNodeIdServicesVariableAudit = 3600
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_Status                  OpcuaNodeIdServicesVariableAudit = 3601
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_ServerId                OpcuaNodeIdServicesVariableAudit = 3602
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_ClientAuditEntryId      OpcuaNodeIdServicesVariableAudit = 3603
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_ClientUserId            OpcuaNodeIdServicesVariableAudit = 3604
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_ParameterDataTypeId     OpcuaNodeIdServicesVariableAudit = 3605
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_UpdatedNode             OpcuaNodeIdServicesVariableAudit = 3606
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryAtTimeDeleteEventType_EventId                    OpcuaNodeIdServicesVariableAudit = 3607
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryAtTimeDeleteEventType_EventType                  OpcuaNodeIdServicesVariableAudit = 3608
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryAtTimeDeleteEventType_SourceNode                 OpcuaNodeIdServicesVariableAudit = 3609
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryAtTimeDeleteEventType_SourceName                 OpcuaNodeIdServicesVariableAudit = 3610
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryAtTimeDeleteEventType_Time                       OpcuaNodeIdServicesVariableAudit = 3611
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryAtTimeDeleteEventType_ReceiveTime                OpcuaNodeIdServicesVariableAudit = 3612
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryAtTimeDeleteEventType_LocalTime                  OpcuaNodeIdServicesVariableAudit = 3613
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryAtTimeDeleteEventType_Message                    OpcuaNodeIdServicesVariableAudit = 3614
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryAtTimeDeleteEventType_Severity                   OpcuaNodeIdServicesVariableAudit = 3615
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryAtTimeDeleteEventType_ActionTimeStamp            OpcuaNodeIdServicesVariableAudit = 3616
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryAtTimeDeleteEventType_Status                     OpcuaNodeIdServicesVariableAudit = 3617
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryAtTimeDeleteEventType_ServerId                   OpcuaNodeIdServicesVariableAudit = 3618
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryAtTimeDeleteEventType_ClientAuditEntryId         OpcuaNodeIdServicesVariableAudit = 3619
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryAtTimeDeleteEventType_ClientUserId               OpcuaNodeIdServicesVariableAudit = 3620
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryAtTimeDeleteEventType_ParameterDataTypeId        OpcuaNodeIdServicesVariableAudit = 3621
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryAtTimeDeleteEventType_UpdatedNode                OpcuaNodeIdServicesVariableAudit = 3622
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventDeleteEventType_EventId                     OpcuaNodeIdServicesVariableAudit = 3623
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventDeleteEventType_EventType                   OpcuaNodeIdServicesVariableAudit = 3624
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventDeleteEventType_SourceNode                  OpcuaNodeIdServicesVariableAudit = 3625
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventDeleteEventType_SourceName                  OpcuaNodeIdServicesVariableAudit = 3626
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventDeleteEventType_Time                        OpcuaNodeIdServicesVariableAudit = 3627
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventDeleteEventType_ReceiveTime                 OpcuaNodeIdServicesVariableAudit = 3628
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventDeleteEventType_LocalTime                   OpcuaNodeIdServicesVariableAudit = 3629
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventDeleteEventType_Message                     OpcuaNodeIdServicesVariableAudit = 3630
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventDeleteEventType_Severity                    OpcuaNodeIdServicesVariableAudit = 3631
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventDeleteEventType_ActionTimeStamp             OpcuaNodeIdServicesVariableAudit = 3632
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventDeleteEventType_Status                      OpcuaNodeIdServicesVariableAudit = 3633
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventDeleteEventType_ServerId                    OpcuaNodeIdServicesVariableAudit = 3634
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventDeleteEventType_ClientAuditEntryId          OpcuaNodeIdServicesVariableAudit = 3635
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventDeleteEventType_ClientUserId                OpcuaNodeIdServicesVariableAudit = 3636
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventDeleteEventType_ParameterDataTypeId         OpcuaNodeIdServicesVariableAudit = 3637
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventDeleteEventType_UpdatedNode                 OpcuaNodeIdServicesVariableAudit = 3638
-	OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_EventId                           OpcuaNodeIdServicesVariableAudit = 3639
-	OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_EventType                         OpcuaNodeIdServicesVariableAudit = 3640
-	OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_SourceNode                        OpcuaNodeIdServicesVariableAudit = 3641
-	OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_SourceName                        OpcuaNodeIdServicesVariableAudit = 3642
-	OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_Time                              OpcuaNodeIdServicesVariableAudit = 3643
-	OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_ReceiveTime                       OpcuaNodeIdServicesVariableAudit = 3644
-	OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_LocalTime                         OpcuaNodeIdServicesVariableAudit = 3645
-	OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_Message                           OpcuaNodeIdServicesVariableAudit = 3646
-	OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_Severity                          OpcuaNodeIdServicesVariableAudit = 3647
-	OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_ActionTimeStamp                   OpcuaNodeIdServicesVariableAudit = 3648
-	OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_Status                            OpcuaNodeIdServicesVariableAudit = 3649
-	OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_ServerId                          OpcuaNodeIdServicesVariableAudit = 3650
-	OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_ClientAuditEntryId                OpcuaNodeIdServicesVariableAudit = 3651
-	OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_ClientUserId                      OpcuaNodeIdServicesVariableAudit = 3652
-	OpcuaNodeIdServicesVariableAudit_AuditUpdateStateEventType_EventId                            OpcuaNodeIdServicesVariableAudit = 3758
-	OpcuaNodeIdServicesVariableAudit_AuditUpdateStateEventType_EventType                          OpcuaNodeIdServicesVariableAudit = 3759
-	OpcuaNodeIdServicesVariableAudit_AuditUpdateStateEventType_SourceNode                         OpcuaNodeIdServicesVariableAudit = 3760
-	OpcuaNodeIdServicesVariableAudit_AuditUpdateStateEventType_SourceName                         OpcuaNodeIdServicesVariableAudit = 3761
-	OpcuaNodeIdServicesVariableAudit_AuditUpdateStateEventType_Time                               OpcuaNodeIdServicesVariableAudit = 3762
-	OpcuaNodeIdServicesVariableAudit_AuditUpdateStateEventType_ReceiveTime                        OpcuaNodeIdServicesVariableAudit = 3763
-	OpcuaNodeIdServicesVariableAudit_AuditUpdateStateEventType_LocalTime                          OpcuaNodeIdServicesVariableAudit = 3764
-	OpcuaNodeIdServicesVariableAudit_AuditUpdateStateEventType_Message                            OpcuaNodeIdServicesVariableAudit = 3765
-	OpcuaNodeIdServicesVariableAudit_AuditUpdateStateEventType_Severity                           OpcuaNodeIdServicesVariableAudit = 3766
-	OpcuaNodeIdServicesVariableAudit_AuditUpdateStateEventType_ActionTimeStamp                    OpcuaNodeIdServicesVariableAudit = 3767
-	OpcuaNodeIdServicesVariableAudit_AuditUpdateStateEventType_Status                             OpcuaNodeIdServicesVariableAudit = 3768
-	OpcuaNodeIdServicesVariableAudit_AuditUpdateStateEventType_ServerId                           OpcuaNodeIdServicesVariableAudit = 3769
-	OpcuaNodeIdServicesVariableAudit_AuditUpdateStateEventType_ClientAuditEntryId                 OpcuaNodeIdServicesVariableAudit = 3770
-	OpcuaNodeIdServicesVariableAudit_AuditUpdateStateEventType_ClientUserId                       OpcuaNodeIdServicesVariableAudit = 3771
-	OpcuaNodeIdServicesVariableAudit_AuditUpdateStateEventType_MethodId                           OpcuaNodeIdServicesVariableAudit = 3772
-	OpcuaNodeIdServicesVariableAudit_AuditUpdateStateEventType_InputArguments                     OpcuaNodeIdServicesVariableAudit = 3773
-	OpcuaNodeIdServicesVariableAudit_AuditConditionEventType_EventId                              OpcuaNodeIdServicesVariableAudit = 3996
-	OpcuaNodeIdServicesVariableAudit_AuditConditionEventType_EventType                            OpcuaNodeIdServicesVariableAudit = 3997
-	OpcuaNodeIdServicesVariableAudit_AuditConditionEventType_SourceNode                           OpcuaNodeIdServicesVariableAudit = 3998
-	OpcuaNodeIdServicesVariableAudit_AuditConditionEventType_SourceName                           OpcuaNodeIdServicesVariableAudit = 3999
-	OpcuaNodeIdServicesVariableAudit_AuditConditionEventType_Time                                 OpcuaNodeIdServicesVariableAudit = 4000
-	OpcuaNodeIdServicesVariableAudit_AuditConditionEventType_ReceiveTime                          OpcuaNodeIdServicesVariableAudit = 4001
-	OpcuaNodeIdServicesVariableAudit_AuditConditionEventType_LocalTime                            OpcuaNodeIdServicesVariableAudit = 4002
-	OpcuaNodeIdServicesVariableAudit_AuditConditionEventType_Message                              OpcuaNodeIdServicesVariableAudit = 4003
-	OpcuaNodeIdServicesVariableAudit_AuditConditionEventType_Severity                             OpcuaNodeIdServicesVariableAudit = 4004
-	OpcuaNodeIdServicesVariableAudit_AuditConditionEventType_ActionTimeStamp                      OpcuaNodeIdServicesVariableAudit = 4005
-	OpcuaNodeIdServicesVariableAudit_AuditConditionEventType_Status                               OpcuaNodeIdServicesVariableAudit = 4006
-	OpcuaNodeIdServicesVariableAudit_AuditConditionEventType_ServerId                             OpcuaNodeIdServicesVariableAudit = 4007
-	OpcuaNodeIdServicesVariableAudit_AuditConditionEventType_ClientAuditEntryId                   OpcuaNodeIdServicesVariableAudit = 4008
-	OpcuaNodeIdServicesVariableAudit_AuditConditionEventType_ClientUserId                         OpcuaNodeIdServicesVariableAudit = 4009
-	OpcuaNodeIdServicesVariableAudit_AuditConditionEventType_MethodId                             OpcuaNodeIdServicesVariableAudit = 4010
-	OpcuaNodeIdServicesVariableAudit_AuditConditionEventType_InputArguments                       OpcuaNodeIdServicesVariableAudit = 4011
-	OpcuaNodeIdServicesVariableAudit_AuditConditionEnableEventType_EventId                        OpcuaNodeIdServicesVariableAudit = 4106
-	OpcuaNodeIdServicesVariableAudit_AuditConditionEnableEventType_EventType                      OpcuaNodeIdServicesVariableAudit = 4107
-	OpcuaNodeIdServicesVariableAudit_AuditConditionEnableEventType_SourceNode                     OpcuaNodeIdServicesVariableAudit = 4108
-	OpcuaNodeIdServicesVariableAudit_AuditConditionEnableEventType_SourceName                     OpcuaNodeIdServicesVariableAudit = 4109
-	OpcuaNodeIdServicesVariableAudit_AuditConditionEnableEventType_Time                           OpcuaNodeIdServicesVariableAudit = 4110
-	OpcuaNodeIdServicesVariableAudit_AuditConditionEnableEventType_ReceiveTime                    OpcuaNodeIdServicesVariableAudit = 4111
-	OpcuaNodeIdServicesVariableAudit_AuditConditionEnableEventType_LocalTime                      OpcuaNodeIdServicesVariableAudit = 4112
-	OpcuaNodeIdServicesVariableAudit_AuditConditionEnableEventType_Message                        OpcuaNodeIdServicesVariableAudit = 4113
-	OpcuaNodeIdServicesVariableAudit_AuditConditionEnableEventType_Severity                       OpcuaNodeIdServicesVariableAudit = 4114
-	OpcuaNodeIdServicesVariableAudit_AuditConditionEnableEventType_ActionTimeStamp                OpcuaNodeIdServicesVariableAudit = 4115
-	OpcuaNodeIdServicesVariableAudit_AuditConditionEnableEventType_Status                         OpcuaNodeIdServicesVariableAudit = 4116
-	OpcuaNodeIdServicesVariableAudit_AuditConditionEnableEventType_ServerId                       OpcuaNodeIdServicesVariableAudit = 4117
-	OpcuaNodeIdServicesVariableAudit_AuditConditionEnableEventType_ClientAuditEntryId             OpcuaNodeIdServicesVariableAudit = 4118
-	OpcuaNodeIdServicesVariableAudit_AuditConditionEnableEventType_ClientUserId                   OpcuaNodeIdServicesVariableAudit = 4119
-	OpcuaNodeIdServicesVariableAudit_AuditConditionEnableEventType_MethodId                       OpcuaNodeIdServicesVariableAudit = 4120
-	OpcuaNodeIdServicesVariableAudit_AuditConditionEnableEventType_InputArguments                 OpcuaNodeIdServicesVariableAudit = 4121
-	OpcuaNodeIdServicesVariableAudit_AuditConditionCommentEventType_EventId                       OpcuaNodeIdServicesVariableAudit = 4170
-	OpcuaNodeIdServicesVariableAudit_AuditConditionCommentEventType_EventType                     OpcuaNodeIdServicesVariableAudit = 4171
-	OpcuaNodeIdServicesVariableAudit_AuditConditionCommentEventType_SourceNode                    OpcuaNodeIdServicesVariableAudit = 4172
-	OpcuaNodeIdServicesVariableAudit_AuditConditionCommentEventType_SourceName                    OpcuaNodeIdServicesVariableAudit = 4173
-	OpcuaNodeIdServicesVariableAudit_AuditConditionCommentEventType_Time                          OpcuaNodeIdServicesVariableAudit = 4174
-	OpcuaNodeIdServicesVariableAudit_AuditConditionCommentEventType_ReceiveTime                   OpcuaNodeIdServicesVariableAudit = 4175
-	OpcuaNodeIdServicesVariableAudit_AuditConditionCommentEventType_LocalTime                     OpcuaNodeIdServicesVariableAudit = 4176
-	OpcuaNodeIdServicesVariableAudit_AuditConditionCommentEventType_Message                       OpcuaNodeIdServicesVariableAudit = 4177
-	OpcuaNodeIdServicesVariableAudit_AuditConditionCommentEventType_Severity                      OpcuaNodeIdServicesVariableAudit = 4178
-	OpcuaNodeIdServicesVariableAudit_AuditConditionCommentEventType_ActionTimeStamp               OpcuaNodeIdServicesVariableAudit = 4179
-	OpcuaNodeIdServicesVariableAudit_AuditConditionCommentEventType_Status                        OpcuaNodeIdServicesVariableAudit = 4180
-	OpcuaNodeIdServicesVariableAudit_AuditConditionCommentEventType_ServerId                      OpcuaNodeIdServicesVariableAudit = 4181
-	OpcuaNodeIdServicesVariableAudit_AuditConditionCommentEventType_ClientAuditEntryId            OpcuaNodeIdServicesVariableAudit = 4182
-	OpcuaNodeIdServicesVariableAudit_AuditConditionCommentEventType_ClientUserId                  OpcuaNodeIdServicesVariableAudit = 4183
-	OpcuaNodeIdServicesVariableAudit_AuditConditionCommentEventType_MethodId                      OpcuaNodeIdServicesVariableAudit = 4184
-	OpcuaNodeIdServicesVariableAudit_AuditConditionCommentEventType_InputArguments                OpcuaNodeIdServicesVariableAudit = 4185
-	OpcuaNodeIdServicesVariableAudit_AuditConditionRespondEventType_EventId                       OpcuaNodeIdServicesVariableAudit = 8928
-	OpcuaNodeIdServicesVariableAudit_AuditConditionRespondEventType_EventType                     OpcuaNodeIdServicesVariableAudit = 8929
-	OpcuaNodeIdServicesVariableAudit_AuditConditionRespondEventType_SourceNode                    OpcuaNodeIdServicesVariableAudit = 8930
-	OpcuaNodeIdServicesVariableAudit_AuditConditionRespondEventType_SourceName                    OpcuaNodeIdServicesVariableAudit = 8931
-	OpcuaNodeIdServicesVariableAudit_AuditConditionRespondEventType_Time                          OpcuaNodeIdServicesVariableAudit = 8932
-	OpcuaNodeIdServicesVariableAudit_AuditConditionRespondEventType_ReceiveTime                   OpcuaNodeIdServicesVariableAudit = 8933
-	OpcuaNodeIdServicesVariableAudit_AuditConditionRespondEventType_LocalTime                     OpcuaNodeIdServicesVariableAudit = 8934
-	OpcuaNodeIdServicesVariableAudit_AuditConditionRespondEventType_Message                       OpcuaNodeIdServicesVariableAudit = 8935
-	OpcuaNodeIdServicesVariableAudit_AuditConditionRespondEventType_Severity                      OpcuaNodeIdServicesVariableAudit = 8936
-	OpcuaNodeIdServicesVariableAudit_AuditConditionRespondEventType_ActionTimeStamp               OpcuaNodeIdServicesVariableAudit = 8937
-	OpcuaNodeIdServicesVariableAudit_AuditConditionRespondEventType_Status                        OpcuaNodeIdServicesVariableAudit = 8938
-	OpcuaNodeIdServicesVariableAudit_AuditConditionRespondEventType_ServerId                      OpcuaNodeIdServicesVariableAudit = 8939
-	OpcuaNodeIdServicesVariableAudit_AuditConditionRespondEventType_ClientAuditEntryId            OpcuaNodeIdServicesVariableAudit = 8940
-	OpcuaNodeIdServicesVariableAudit_AuditConditionRespondEventType_ClientUserId                  OpcuaNodeIdServicesVariableAudit = 8941
-	OpcuaNodeIdServicesVariableAudit_AuditConditionRespondEventType_MethodId                      OpcuaNodeIdServicesVariableAudit = 8942
-	OpcuaNodeIdServicesVariableAudit_AuditConditionRespondEventType_InputArguments                OpcuaNodeIdServicesVariableAudit = 8943
-	OpcuaNodeIdServicesVariableAudit_AuditConditionAcknowledgeEventType_EventId                   OpcuaNodeIdServicesVariableAudit = 8945
-	OpcuaNodeIdServicesVariableAudit_AuditConditionAcknowledgeEventType_EventType                 OpcuaNodeIdServicesVariableAudit = 8946
-	OpcuaNodeIdServicesVariableAudit_AuditConditionAcknowledgeEventType_SourceNode                OpcuaNodeIdServicesVariableAudit = 8947
-	OpcuaNodeIdServicesVariableAudit_AuditConditionAcknowledgeEventType_SourceName                OpcuaNodeIdServicesVariableAudit = 8948
-	OpcuaNodeIdServicesVariableAudit_AuditConditionAcknowledgeEventType_Time                      OpcuaNodeIdServicesVariableAudit = 8949
-	OpcuaNodeIdServicesVariableAudit_AuditConditionAcknowledgeEventType_ReceiveTime               OpcuaNodeIdServicesVariableAudit = 8950
-	OpcuaNodeIdServicesVariableAudit_AuditConditionAcknowledgeEventType_LocalTime                 OpcuaNodeIdServicesVariableAudit = 8951
-	OpcuaNodeIdServicesVariableAudit_AuditConditionAcknowledgeEventType_Message                   OpcuaNodeIdServicesVariableAudit = 8952
-	OpcuaNodeIdServicesVariableAudit_AuditConditionAcknowledgeEventType_Severity                  OpcuaNodeIdServicesVariableAudit = 8953
-	OpcuaNodeIdServicesVariableAudit_AuditConditionAcknowledgeEventType_ActionTimeStamp           OpcuaNodeIdServicesVariableAudit = 8954
-	OpcuaNodeIdServicesVariableAudit_AuditConditionAcknowledgeEventType_Status                    OpcuaNodeIdServicesVariableAudit = 8955
-	OpcuaNodeIdServicesVariableAudit_AuditConditionAcknowledgeEventType_ServerId                  OpcuaNodeIdServicesVariableAudit = 8956
-	OpcuaNodeIdServicesVariableAudit_AuditConditionAcknowledgeEventType_ClientAuditEntryId        OpcuaNodeIdServicesVariableAudit = 8957
-	OpcuaNodeIdServicesVariableAudit_AuditConditionAcknowledgeEventType_ClientUserId              OpcuaNodeIdServicesVariableAudit = 8958
-	OpcuaNodeIdServicesVariableAudit_AuditConditionAcknowledgeEventType_MethodId                  OpcuaNodeIdServicesVariableAudit = 8959
-	OpcuaNodeIdServicesVariableAudit_AuditConditionAcknowledgeEventType_InputArguments            OpcuaNodeIdServicesVariableAudit = 8960
-	OpcuaNodeIdServicesVariableAudit_AuditConditionConfirmEventType_EventId                       OpcuaNodeIdServicesVariableAudit = 8962
-	OpcuaNodeIdServicesVariableAudit_AuditConditionConfirmEventType_EventType                     OpcuaNodeIdServicesVariableAudit = 8963
-	OpcuaNodeIdServicesVariableAudit_AuditConditionConfirmEventType_SourceNode                    OpcuaNodeIdServicesVariableAudit = 8964
-	OpcuaNodeIdServicesVariableAudit_AuditConditionConfirmEventType_SourceName                    OpcuaNodeIdServicesVariableAudit = 8965
-	OpcuaNodeIdServicesVariableAudit_AuditConditionConfirmEventType_Time                          OpcuaNodeIdServicesVariableAudit = 8966
-	OpcuaNodeIdServicesVariableAudit_AuditConditionConfirmEventType_ReceiveTime                   OpcuaNodeIdServicesVariableAudit = 8967
-	OpcuaNodeIdServicesVariableAudit_AuditConditionConfirmEventType_LocalTime                     OpcuaNodeIdServicesVariableAudit = 8968
-	OpcuaNodeIdServicesVariableAudit_AuditConditionConfirmEventType_Message                       OpcuaNodeIdServicesVariableAudit = 8969
-	OpcuaNodeIdServicesVariableAudit_AuditConditionConfirmEventType_Severity                      OpcuaNodeIdServicesVariableAudit = 8970
-	OpcuaNodeIdServicesVariableAudit_AuditConditionConfirmEventType_ActionTimeStamp               OpcuaNodeIdServicesVariableAudit = 8971
-	OpcuaNodeIdServicesVariableAudit_AuditConditionConfirmEventType_Status                        OpcuaNodeIdServicesVariableAudit = 8972
-	OpcuaNodeIdServicesVariableAudit_AuditConditionConfirmEventType_ServerId                      OpcuaNodeIdServicesVariableAudit = 8973
-	OpcuaNodeIdServicesVariableAudit_AuditConditionConfirmEventType_ClientAuditEntryId            OpcuaNodeIdServicesVariableAudit = 8974
-	OpcuaNodeIdServicesVariableAudit_AuditConditionConfirmEventType_ClientUserId                  OpcuaNodeIdServicesVariableAudit = 8975
-	OpcuaNodeIdServicesVariableAudit_AuditConditionConfirmEventType_MethodId                      OpcuaNodeIdServicesVariableAudit = 8976
-	OpcuaNodeIdServicesVariableAudit_AuditConditionConfirmEventType_InputArguments                OpcuaNodeIdServicesVariableAudit = 8977
-	OpcuaNodeIdServicesVariableAudit_AuditConditionShelvingEventType_EventId                      OpcuaNodeIdServicesVariableAudit = 11094
-	OpcuaNodeIdServicesVariableAudit_AuditConditionShelvingEventType_EventType                    OpcuaNodeIdServicesVariableAudit = 11095
-	OpcuaNodeIdServicesVariableAudit_AuditConditionShelvingEventType_SourceNode                   OpcuaNodeIdServicesVariableAudit = 11096
-	OpcuaNodeIdServicesVariableAudit_AuditConditionShelvingEventType_SourceName                   OpcuaNodeIdServicesVariableAudit = 11097
-	OpcuaNodeIdServicesVariableAudit_AuditConditionShelvingEventType_Time                         OpcuaNodeIdServicesVariableAudit = 11098
-	OpcuaNodeIdServicesVariableAudit_AuditConditionShelvingEventType_ReceiveTime                  OpcuaNodeIdServicesVariableAudit = 11099
-	OpcuaNodeIdServicesVariableAudit_AuditConditionShelvingEventType_LocalTime                    OpcuaNodeIdServicesVariableAudit = 11100
-	OpcuaNodeIdServicesVariableAudit_AuditConditionShelvingEventType_Message                      OpcuaNodeIdServicesVariableAudit = 11101
-	OpcuaNodeIdServicesVariableAudit_AuditConditionShelvingEventType_Severity                     OpcuaNodeIdServicesVariableAudit = 11102
-	OpcuaNodeIdServicesVariableAudit_AuditConditionShelvingEventType_ActionTimeStamp              OpcuaNodeIdServicesVariableAudit = 11103
-	OpcuaNodeIdServicesVariableAudit_AuditConditionShelvingEventType_Status                       OpcuaNodeIdServicesVariableAudit = 11104
-	OpcuaNodeIdServicesVariableAudit_AuditConditionShelvingEventType_ServerId                     OpcuaNodeIdServicesVariableAudit = 11105
-	OpcuaNodeIdServicesVariableAudit_AuditConditionShelvingEventType_ClientAuditEntryId           OpcuaNodeIdServicesVariableAudit = 11106
-	OpcuaNodeIdServicesVariableAudit_AuditConditionShelvingEventType_ClientUserId                 OpcuaNodeIdServicesVariableAudit = 11107
-	OpcuaNodeIdServicesVariableAudit_AuditConditionShelvingEventType_MethodId                     OpcuaNodeIdServicesVariableAudit = 11108
-	OpcuaNodeIdServicesVariableAudit_AuditConditionShelvingEventType_InputArguments               OpcuaNodeIdServicesVariableAudit = 11109
-	OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_SecureChannelId                OpcuaNodeIdServicesVariableAudit = 11485
-	OpcuaNodeIdServicesVariableAudit_AuditConditionCommentEventType_Comment                       OpcuaNodeIdServicesVariableAudit = 11851
-	OpcuaNodeIdServicesVariableAudit_AuditConditionRespondEventType_SelectedResponse              OpcuaNodeIdServicesVariableAudit = 11852
-	OpcuaNodeIdServicesVariableAudit_AuditConditionAcknowledgeEventType_Comment                   OpcuaNodeIdServicesVariableAudit = 11853
-	OpcuaNodeIdServicesVariableAudit_AuditConditionConfirmEventType_Comment                       OpcuaNodeIdServicesVariableAudit = 11854
-	OpcuaNodeIdServicesVariableAudit_AuditConditionShelvingEventType_ShelvingTime                 OpcuaNodeIdServicesVariableAudit = 11855
-	OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_EventId                      OpcuaNodeIdServicesVariableAudit = 11857
-	OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_EventType                    OpcuaNodeIdServicesVariableAudit = 11858
-	OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_SourceNode                   OpcuaNodeIdServicesVariableAudit = 11859
-	OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_SourceName                   OpcuaNodeIdServicesVariableAudit = 11860
-	OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_Time                         OpcuaNodeIdServicesVariableAudit = 11861
-	OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_ReceiveTime                  OpcuaNodeIdServicesVariableAudit = 11862
-	OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_LocalTime                    OpcuaNodeIdServicesVariableAudit = 11863
-	OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_Message                      OpcuaNodeIdServicesVariableAudit = 11864
-	OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_Severity                     OpcuaNodeIdServicesVariableAudit = 11865
-	OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_ActionTimeStamp              OpcuaNodeIdServicesVariableAudit = 11866
-	OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_Status                       OpcuaNodeIdServicesVariableAudit = 11867
-	OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_ServerId                     OpcuaNodeIdServicesVariableAudit = 11868
-	OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_ClientAuditEntryId           OpcuaNodeIdServicesVariableAudit = 11869
-	OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_ClientUserId                 OpcuaNodeIdServicesVariableAudit = 11870
-	OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_MethodId                     OpcuaNodeIdServicesVariableAudit = 11871
-	OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_InputArguments               OpcuaNodeIdServicesVariableAudit = 11872
-	OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_OldStateId                   OpcuaNodeIdServicesVariableAudit = 11873
-	OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_NewStateId                   OpcuaNodeIdServicesVariableAudit = 11874
-	OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_TransitionNumber             OpcuaNodeIdServicesVariableAudit = 11875
-	OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_SessionId                        OpcuaNodeIdServicesVariableAudit = 14413
-	OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_SessionId                          OpcuaNodeIdServicesVariableAudit = 14414
-	OpcuaNodeIdServicesVariableAudit_AuditConditionResetEventType_EventId                         OpcuaNodeIdServicesVariableAudit = 15014
-	OpcuaNodeIdServicesVariableAudit_AuditConditionResetEventType_EventType                       OpcuaNodeIdServicesVariableAudit = 15015
-	OpcuaNodeIdServicesVariableAudit_AuditConditionResetEventType_SourceNode                      OpcuaNodeIdServicesVariableAudit = 15016
-	OpcuaNodeIdServicesVariableAudit_AuditConditionResetEventType_SourceName                      OpcuaNodeIdServicesVariableAudit = 15017
-	OpcuaNodeIdServicesVariableAudit_AuditConditionResetEventType_Time                            OpcuaNodeIdServicesVariableAudit = 15018
-	OpcuaNodeIdServicesVariableAudit_AuditConditionResetEventType_ReceiveTime                     OpcuaNodeIdServicesVariableAudit = 15019
-	OpcuaNodeIdServicesVariableAudit_AuditConditionResetEventType_LocalTime                       OpcuaNodeIdServicesVariableAudit = 15020
-	OpcuaNodeIdServicesVariableAudit_AuditConditionResetEventType_Message                         OpcuaNodeIdServicesVariableAudit = 15021
-	OpcuaNodeIdServicesVariableAudit_AuditConditionResetEventType_Severity                        OpcuaNodeIdServicesVariableAudit = 15022
-	OpcuaNodeIdServicesVariableAudit_AuditConditionResetEventType_ActionTimeStamp                 OpcuaNodeIdServicesVariableAudit = 15023
-	OpcuaNodeIdServicesVariableAudit_AuditConditionResetEventType_Status                          OpcuaNodeIdServicesVariableAudit = 15024
-	OpcuaNodeIdServicesVariableAudit_AuditConditionResetEventType_ServerId                        OpcuaNodeIdServicesVariableAudit = 15025
-	OpcuaNodeIdServicesVariableAudit_AuditConditionResetEventType_ClientAuditEntryId              OpcuaNodeIdServicesVariableAudit = 15026
-	OpcuaNodeIdServicesVariableAudit_AuditConditionResetEventType_ClientUserId                    OpcuaNodeIdServicesVariableAudit = 15027
-	OpcuaNodeIdServicesVariableAudit_AuditConditionResetEventType_MethodId                        OpcuaNodeIdServicesVariableAudit = 15028
-	OpcuaNodeIdServicesVariableAudit_AuditConditionResetEventType_InputArguments                  OpcuaNodeIdServicesVariableAudit = 15029
-	OpcuaNodeIdServicesVariableAudit_AuditConditionCommentEventType_ConditionEventId              OpcuaNodeIdServicesVariableAudit = 17222
-	OpcuaNodeIdServicesVariableAudit_AuditConditionAcknowledgeEventType_ConditionEventId          OpcuaNodeIdServicesVariableAudit = 17223
-	OpcuaNodeIdServicesVariableAudit_AuditConditionConfirmEventType_ConditionEventId              OpcuaNodeIdServicesVariableAudit = 17224
-	OpcuaNodeIdServicesVariableAudit_AuditConditionSuppressionEventType_EventId                   OpcuaNodeIdServicesVariableAudit = 17226
-	OpcuaNodeIdServicesVariableAudit_AuditConditionSuppressionEventType_EventType                 OpcuaNodeIdServicesVariableAudit = 17227
-	OpcuaNodeIdServicesVariableAudit_AuditConditionSuppressionEventType_SourceNode                OpcuaNodeIdServicesVariableAudit = 17228
-	OpcuaNodeIdServicesVariableAudit_AuditConditionSuppressionEventType_SourceName                OpcuaNodeIdServicesVariableAudit = 17229
-	OpcuaNodeIdServicesVariableAudit_AuditConditionSuppressionEventType_Time                      OpcuaNodeIdServicesVariableAudit = 17230
-	OpcuaNodeIdServicesVariableAudit_AuditConditionSuppressionEventType_ReceiveTime               OpcuaNodeIdServicesVariableAudit = 17231
-	OpcuaNodeIdServicesVariableAudit_AuditConditionSuppressionEventType_LocalTime                 OpcuaNodeIdServicesVariableAudit = 17232
-	OpcuaNodeIdServicesVariableAudit_AuditConditionSuppressionEventType_Message                   OpcuaNodeIdServicesVariableAudit = 17233
-	OpcuaNodeIdServicesVariableAudit_AuditConditionSuppressionEventType_Severity                  OpcuaNodeIdServicesVariableAudit = 17234
-	OpcuaNodeIdServicesVariableAudit_AuditConditionSuppressionEventType_ActionTimeStamp           OpcuaNodeIdServicesVariableAudit = 17235
-	OpcuaNodeIdServicesVariableAudit_AuditConditionSuppressionEventType_Status                    OpcuaNodeIdServicesVariableAudit = 17236
-	OpcuaNodeIdServicesVariableAudit_AuditConditionSuppressionEventType_ServerId                  OpcuaNodeIdServicesVariableAudit = 17237
-	OpcuaNodeIdServicesVariableAudit_AuditConditionSuppressionEventType_ClientAuditEntryId        OpcuaNodeIdServicesVariableAudit = 17238
-	OpcuaNodeIdServicesVariableAudit_AuditConditionSuppressionEventType_ClientUserId              OpcuaNodeIdServicesVariableAudit = 17239
-	OpcuaNodeIdServicesVariableAudit_AuditConditionSuppressionEventType_MethodId                  OpcuaNodeIdServicesVariableAudit = 17240
-	OpcuaNodeIdServicesVariableAudit_AuditConditionSuppressionEventType_InputArguments            OpcuaNodeIdServicesVariableAudit = 17241
-	OpcuaNodeIdServicesVariableAudit_AuditConditionSilenceEventType_EventId                       OpcuaNodeIdServicesVariableAudit = 17243
-	OpcuaNodeIdServicesVariableAudit_AuditConditionSilenceEventType_EventType                     OpcuaNodeIdServicesVariableAudit = 17244
-	OpcuaNodeIdServicesVariableAudit_AuditConditionSilenceEventType_SourceNode                    OpcuaNodeIdServicesVariableAudit = 17245
-	OpcuaNodeIdServicesVariableAudit_AuditConditionSilenceEventType_SourceName                    OpcuaNodeIdServicesVariableAudit = 17246
-	OpcuaNodeIdServicesVariableAudit_AuditConditionSilenceEventType_Time                          OpcuaNodeIdServicesVariableAudit = 17247
-	OpcuaNodeIdServicesVariableAudit_AuditConditionSilenceEventType_ReceiveTime                   OpcuaNodeIdServicesVariableAudit = 17248
-	OpcuaNodeIdServicesVariableAudit_AuditConditionSilenceEventType_LocalTime                     OpcuaNodeIdServicesVariableAudit = 17249
-	OpcuaNodeIdServicesVariableAudit_AuditConditionSilenceEventType_Message                       OpcuaNodeIdServicesVariableAudit = 17250
-	OpcuaNodeIdServicesVariableAudit_AuditConditionSilenceEventType_Severity                      OpcuaNodeIdServicesVariableAudit = 17251
-	OpcuaNodeIdServicesVariableAudit_AuditConditionSilenceEventType_ActionTimeStamp               OpcuaNodeIdServicesVariableAudit = 17252
-	OpcuaNodeIdServicesVariableAudit_AuditConditionSilenceEventType_Status                        OpcuaNodeIdServicesVariableAudit = 17253
-	OpcuaNodeIdServicesVariableAudit_AuditConditionSilenceEventType_ServerId                      OpcuaNodeIdServicesVariableAudit = 17254
-	OpcuaNodeIdServicesVariableAudit_AuditConditionSilenceEventType_ClientAuditEntryId            OpcuaNodeIdServicesVariableAudit = 17255
-	OpcuaNodeIdServicesVariableAudit_AuditConditionSilenceEventType_ClientUserId                  OpcuaNodeIdServicesVariableAudit = 17256
-	OpcuaNodeIdServicesVariableAudit_AuditConditionSilenceEventType_MethodId                      OpcuaNodeIdServicesVariableAudit = 17257
-	OpcuaNodeIdServicesVariableAudit_AuditConditionSilenceEventType_InputArguments                OpcuaNodeIdServicesVariableAudit = 17258
-	OpcuaNodeIdServicesVariableAudit_AuditConditionOutOfServiceEventType_EventId                  OpcuaNodeIdServicesVariableAudit = 17260
-	OpcuaNodeIdServicesVariableAudit_AuditConditionOutOfServiceEventType_EventType                OpcuaNodeIdServicesVariableAudit = 17261
-	OpcuaNodeIdServicesVariableAudit_AuditConditionOutOfServiceEventType_SourceNode               OpcuaNodeIdServicesVariableAudit = 17262
-	OpcuaNodeIdServicesVariableAudit_AuditConditionOutOfServiceEventType_SourceName               OpcuaNodeIdServicesVariableAudit = 17263
-	OpcuaNodeIdServicesVariableAudit_AuditConditionOutOfServiceEventType_Time                     OpcuaNodeIdServicesVariableAudit = 17264
-	OpcuaNodeIdServicesVariableAudit_AuditConditionOutOfServiceEventType_ReceiveTime              OpcuaNodeIdServicesVariableAudit = 17265
-	OpcuaNodeIdServicesVariableAudit_AuditConditionOutOfServiceEventType_LocalTime                OpcuaNodeIdServicesVariableAudit = 17266
-	OpcuaNodeIdServicesVariableAudit_AuditConditionOutOfServiceEventType_Message                  OpcuaNodeIdServicesVariableAudit = 17267
-	OpcuaNodeIdServicesVariableAudit_AuditConditionOutOfServiceEventType_Severity                 OpcuaNodeIdServicesVariableAudit = 17268
-	OpcuaNodeIdServicesVariableAudit_AuditConditionOutOfServiceEventType_ActionTimeStamp          OpcuaNodeIdServicesVariableAudit = 17269
-	OpcuaNodeIdServicesVariableAudit_AuditConditionOutOfServiceEventType_Status                   OpcuaNodeIdServicesVariableAudit = 17270
-	OpcuaNodeIdServicesVariableAudit_AuditConditionOutOfServiceEventType_ServerId                 OpcuaNodeIdServicesVariableAudit = 17271
-	OpcuaNodeIdServicesVariableAudit_AuditConditionOutOfServiceEventType_ClientAuditEntryId       OpcuaNodeIdServicesVariableAudit = 17272
-	OpcuaNodeIdServicesVariableAudit_AuditConditionOutOfServiceEventType_ClientUserId             OpcuaNodeIdServicesVariableAudit = 17273
-	OpcuaNodeIdServicesVariableAudit_AuditConditionOutOfServiceEventType_MethodId                 OpcuaNodeIdServicesVariableAudit = 17274
-	OpcuaNodeIdServicesVariableAudit_AuditConditionOutOfServiceEventType_InputArguments           OpcuaNodeIdServicesVariableAudit = 17275
-	OpcuaNodeIdServicesVariableAudit_AuditSecurityEventType_StatusCodeId                          OpcuaNodeIdServicesVariableAudit = 17615
-	OpcuaNodeIdServicesVariableAudit_AuditChannelEventType_StatusCodeId                           OpcuaNodeIdServicesVariableAudit = 17616
-	OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_StatusCodeId                 OpcuaNodeIdServicesVariableAudit = 17617
-	OpcuaNodeIdServicesVariableAudit_AuditSessionEventType_StatusCodeId                           OpcuaNodeIdServicesVariableAudit = 17618
-	OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_StatusCodeId                     OpcuaNodeIdServicesVariableAudit = 17619
-	OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_StatusCodeId                       OpcuaNodeIdServicesVariableAudit = 17620
-	OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_StatusCodeId                   OpcuaNodeIdServicesVariableAudit = 17621
-	OpcuaNodeIdServicesVariableAudit_AuditCancelEventType_StatusCodeId                            OpcuaNodeIdServicesVariableAudit = 17622
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateEventType_StatusCodeId                       OpcuaNodeIdServicesVariableAudit = 17623
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateDataMismatchEventType_StatusCodeId           OpcuaNodeIdServicesVariableAudit = 17624
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateExpiredEventType_StatusCodeId                OpcuaNodeIdServicesVariableAudit = 17625
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateInvalidEventType_StatusCodeId                OpcuaNodeIdServicesVariableAudit = 17626
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateUntrustedEventType_StatusCodeId              OpcuaNodeIdServicesVariableAudit = 17627
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateRevokedEventType_StatusCodeId                OpcuaNodeIdServicesVariableAudit = 17628
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateMismatchEventType_StatusCodeId               OpcuaNodeIdServicesVariableAudit = 17629
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_EventId                OpcuaNodeIdServicesVariableAudit = 19096
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_EventType              OpcuaNodeIdServicesVariableAudit = 19097
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_SourceNode             OpcuaNodeIdServicesVariableAudit = 19098
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_SourceName             OpcuaNodeIdServicesVariableAudit = 19099
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_Time                   OpcuaNodeIdServicesVariableAudit = 19100
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_ReceiveTime            OpcuaNodeIdServicesVariableAudit = 19101
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_LocalTime              OpcuaNodeIdServicesVariableAudit = 19102
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_Message                OpcuaNodeIdServicesVariableAudit = 19103
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_Severity               OpcuaNodeIdServicesVariableAudit = 19104
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_ActionTimeStamp        OpcuaNodeIdServicesVariableAudit = 19105
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_Status                 OpcuaNodeIdServicesVariableAudit = 19106
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_ServerId               OpcuaNodeIdServicesVariableAudit = 19289
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_ClientAuditEntryId     OpcuaNodeIdServicesVariableAudit = 19290
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_ClientUserId           OpcuaNodeIdServicesVariableAudit = 19291
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_ParameterDataTypeId    OpcuaNodeIdServicesVariableAudit = 19292
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_PerformInsertReplace   OpcuaNodeIdServicesVariableAudit = 19293
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_NewValues              OpcuaNodeIdServicesVariableAudit = 19294
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_OldValues              OpcuaNodeIdServicesVariableAudit = 19295
-	OpcuaNodeIdServicesVariableAudit_AuditClientEventType_EventId                                 OpcuaNodeIdServicesVariableAudit = 23607
-	OpcuaNodeIdServicesVariableAudit_AuditClientEventType_EventType                               OpcuaNodeIdServicesVariableAudit = 23610
-	OpcuaNodeIdServicesVariableAudit_AuditClientEventType_SourceNode                              OpcuaNodeIdServicesVariableAudit = 23611
-	OpcuaNodeIdServicesVariableAudit_AuditClientEventType_SourceName                              OpcuaNodeIdServicesVariableAudit = 23891
-	OpcuaNodeIdServicesVariableAudit_AuditClientEventType_Time                                    OpcuaNodeIdServicesVariableAudit = 23892
-	OpcuaNodeIdServicesVariableAudit_AuditClientEventType_ReceiveTime                             OpcuaNodeIdServicesVariableAudit = 23893
-	OpcuaNodeIdServicesVariableAudit_AuditClientEventType_LocalTime                               OpcuaNodeIdServicesVariableAudit = 23894
-	OpcuaNodeIdServicesVariableAudit_AuditClientEventType_Message                                 OpcuaNodeIdServicesVariableAudit = 23895
-	OpcuaNodeIdServicesVariableAudit_AuditClientEventType_Severity                                OpcuaNodeIdServicesVariableAudit = 23896
-	OpcuaNodeIdServicesVariableAudit_AuditClientEventType_ActionTimeStamp                         OpcuaNodeIdServicesVariableAudit = 23903
-	OpcuaNodeIdServicesVariableAudit_AuditClientEventType_Status                                  OpcuaNodeIdServicesVariableAudit = 23904
-	OpcuaNodeIdServicesVariableAudit_AuditClientEventType_ServerId                                OpcuaNodeIdServicesVariableAudit = 23905
-	OpcuaNodeIdServicesVariableAudit_AuditClientEventType_ClientAuditEntryId                      OpcuaNodeIdServicesVariableAudit = 23906
-	OpcuaNodeIdServicesVariableAudit_AuditClientEventType_ClientUserId                            OpcuaNodeIdServicesVariableAudit = 23907
-	OpcuaNodeIdServicesVariableAudit_AuditClientEventType_ServerUri                               OpcuaNodeIdServicesVariableAudit = 23908
-	OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_EventId               OpcuaNodeIdServicesVariableAudit = 23927
-	OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_EventType             OpcuaNodeIdServicesVariableAudit = 23930
-	OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_SourceNode            OpcuaNodeIdServicesVariableAudit = 23931
-	OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_SourceName            OpcuaNodeIdServicesVariableAudit = 23959
-	OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_Time                  OpcuaNodeIdServicesVariableAudit = 23960
-	OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_ReceiveTime           OpcuaNodeIdServicesVariableAudit = 23961
-	OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_LocalTime             OpcuaNodeIdServicesVariableAudit = 23962
-	OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_Message               OpcuaNodeIdServicesVariableAudit = 23963
-	OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_Severity              OpcuaNodeIdServicesVariableAudit = 23964
-	OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_ActionTimeStamp       OpcuaNodeIdServicesVariableAudit = 23971
-	OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_Status                OpcuaNodeIdServicesVariableAudit = 23972
-	OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_ServerId              OpcuaNodeIdServicesVariableAudit = 23973
-	OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_ClientAuditEntryId    OpcuaNodeIdServicesVariableAudit = 23974
-	OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_ClientUserId          OpcuaNodeIdServicesVariableAudit = 23975
-	OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_ServerUri             OpcuaNodeIdServicesVariableAudit = 23976
-	OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_ObjectId              OpcuaNodeIdServicesVariableAudit = 23994
-	OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_MethodId              OpcuaNodeIdServicesVariableAudit = 23995
-	OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_StatusCodeId          OpcuaNodeIdServicesVariableAudit = 23998
-	OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_InputArguments        OpcuaNodeIdServicesVariableAudit = 23999
-	OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_CertificateErrorEventId      OpcuaNodeIdServicesVariableAudit = 24135
-	OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_OutputArguments       OpcuaNodeIdServicesVariableAudit = 25684
-	OpcuaNodeIdServicesVariableAudit_AuditEventType_ConditionClassId                              OpcuaNodeIdServicesVariableAudit = 31775
-	OpcuaNodeIdServicesVariableAudit_AuditEventType_ConditionClassName                            OpcuaNodeIdServicesVariableAudit = 31776
-	OpcuaNodeIdServicesVariableAudit_AuditEventType_ConditionSubClassId                           OpcuaNodeIdServicesVariableAudit = 31777
-	OpcuaNodeIdServicesVariableAudit_AuditEventType_ConditionSubClassName                         OpcuaNodeIdServicesVariableAudit = 31778
-	OpcuaNodeIdServicesVariableAudit_AuditSecurityEventType_ConditionClassId                      OpcuaNodeIdServicesVariableAudit = 31779
-	OpcuaNodeIdServicesVariableAudit_AuditSecurityEventType_ConditionClassName                    OpcuaNodeIdServicesVariableAudit = 31780
-	OpcuaNodeIdServicesVariableAudit_AuditSecurityEventType_ConditionSubClassId                   OpcuaNodeIdServicesVariableAudit = 31781
-	OpcuaNodeIdServicesVariableAudit_AuditSecurityEventType_ConditionSubClassName                 OpcuaNodeIdServicesVariableAudit = 31782
-	OpcuaNodeIdServicesVariableAudit_AuditChannelEventType_ConditionClassId                       OpcuaNodeIdServicesVariableAudit = 31783
-	OpcuaNodeIdServicesVariableAudit_AuditChannelEventType_ConditionClassName                     OpcuaNodeIdServicesVariableAudit = 31784
-	OpcuaNodeIdServicesVariableAudit_AuditChannelEventType_ConditionSubClassId                    OpcuaNodeIdServicesVariableAudit = 31785
-	OpcuaNodeIdServicesVariableAudit_AuditChannelEventType_ConditionSubClassName                  OpcuaNodeIdServicesVariableAudit = 31786
-	OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_ConditionClassId             OpcuaNodeIdServicesVariableAudit = 31787
-	OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_ConditionClassName           OpcuaNodeIdServicesVariableAudit = 31788
-	OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_ConditionSubClassId          OpcuaNodeIdServicesVariableAudit = 31789
-	OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_ConditionSubClassName        OpcuaNodeIdServicesVariableAudit = 31790
-	OpcuaNodeIdServicesVariableAudit_AuditSessionEventType_ConditionClassId                       OpcuaNodeIdServicesVariableAudit = 31791
-	OpcuaNodeIdServicesVariableAudit_AuditSessionEventType_ConditionClassName                     OpcuaNodeIdServicesVariableAudit = 31792
-	OpcuaNodeIdServicesVariableAudit_AuditSessionEventType_ConditionSubClassId                    OpcuaNodeIdServicesVariableAudit = 31793
-	OpcuaNodeIdServicesVariableAudit_AuditSessionEventType_ConditionSubClassName                  OpcuaNodeIdServicesVariableAudit = 31794
-	OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_ConditionClassId                 OpcuaNodeIdServicesVariableAudit = 31795
-	OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_ConditionClassName               OpcuaNodeIdServicesVariableAudit = 31796
-	OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_ConditionSubClassId              OpcuaNodeIdServicesVariableAudit = 31797
-	OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_ConditionSubClassName            OpcuaNodeIdServicesVariableAudit = 31798
-	OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_ConditionClassId                   OpcuaNodeIdServicesVariableAudit = 31799
-	OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_ConditionClassName                 OpcuaNodeIdServicesVariableAudit = 31800
-	OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_ConditionSubClassId                OpcuaNodeIdServicesVariableAudit = 31801
-	OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_ConditionSubClassName              OpcuaNodeIdServicesVariableAudit = 31802
-	OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_ConditionClassId               OpcuaNodeIdServicesVariableAudit = 31803
-	OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_ConditionClassName             OpcuaNodeIdServicesVariableAudit = 31804
-	OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_ConditionSubClassId            OpcuaNodeIdServicesVariableAudit = 31805
-	OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_ConditionSubClassName          OpcuaNodeIdServicesVariableAudit = 31806
-	OpcuaNodeIdServicesVariableAudit_AuditCancelEventType_ConditionClassId                        OpcuaNodeIdServicesVariableAudit = 31807
-	OpcuaNodeIdServicesVariableAudit_AuditCancelEventType_ConditionClassName                      OpcuaNodeIdServicesVariableAudit = 31808
-	OpcuaNodeIdServicesVariableAudit_AuditCancelEventType_ConditionSubClassId                     OpcuaNodeIdServicesVariableAudit = 31809
-	OpcuaNodeIdServicesVariableAudit_AuditCancelEventType_ConditionSubClassName                   OpcuaNodeIdServicesVariableAudit = 31810
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateEventType_ConditionClassId                   OpcuaNodeIdServicesVariableAudit = 31811
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateEventType_ConditionClassName                 OpcuaNodeIdServicesVariableAudit = 31812
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateEventType_ConditionSubClassId                OpcuaNodeIdServicesVariableAudit = 31813
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateEventType_ConditionSubClassName              OpcuaNodeIdServicesVariableAudit = 31814
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateDataMismatchEventType_ConditionClassId       OpcuaNodeIdServicesVariableAudit = 31815
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateDataMismatchEventType_ConditionClassName     OpcuaNodeIdServicesVariableAudit = 31816
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateDataMismatchEventType_ConditionSubClassId    OpcuaNodeIdServicesVariableAudit = 31817
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateDataMismatchEventType_ConditionSubClassName  OpcuaNodeIdServicesVariableAudit = 31818
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateExpiredEventType_ConditionClassId            OpcuaNodeIdServicesVariableAudit = 31819
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateExpiredEventType_ConditionClassName          OpcuaNodeIdServicesVariableAudit = 31820
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateExpiredEventType_ConditionSubClassId         OpcuaNodeIdServicesVariableAudit = 31821
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateExpiredEventType_ConditionSubClassName       OpcuaNodeIdServicesVariableAudit = 31822
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateInvalidEventType_ConditionClassId            OpcuaNodeIdServicesVariableAudit = 31823
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateInvalidEventType_ConditionClassName          OpcuaNodeIdServicesVariableAudit = 31824
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateInvalidEventType_ConditionSubClassId         OpcuaNodeIdServicesVariableAudit = 31825
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateInvalidEventType_ConditionSubClassName       OpcuaNodeIdServicesVariableAudit = 31826
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateUntrustedEventType_ConditionClassId          OpcuaNodeIdServicesVariableAudit = 31827
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateUntrustedEventType_ConditionClassName        OpcuaNodeIdServicesVariableAudit = 31828
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateUntrustedEventType_ConditionSubClassId       OpcuaNodeIdServicesVariableAudit = 31829
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateUntrustedEventType_ConditionSubClassName     OpcuaNodeIdServicesVariableAudit = 31830
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateRevokedEventType_ConditionClassId            OpcuaNodeIdServicesVariableAudit = 31831
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateRevokedEventType_ConditionClassName          OpcuaNodeIdServicesVariableAudit = 31832
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateRevokedEventType_ConditionSubClassId         OpcuaNodeIdServicesVariableAudit = 31833
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateRevokedEventType_ConditionSubClassName       OpcuaNodeIdServicesVariableAudit = 31834
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateMismatchEventType_ConditionClassId           OpcuaNodeIdServicesVariableAudit = 31835
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateMismatchEventType_ConditionClassName         OpcuaNodeIdServicesVariableAudit = 31836
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateMismatchEventType_ConditionSubClassId        OpcuaNodeIdServicesVariableAudit = 31837
-	OpcuaNodeIdServicesVariableAudit_AuditCertificateMismatchEventType_ConditionSubClassName      OpcuaNodeIdServicesVariableAudit = 31838
-	OpcuaNodeIdServicesVariableAudit_AuditNodeManagementEventType_ConditionClassId                OpcuaNodeIdServicesVariableAudit = 31839
-	OpcuaNodeIdServicesVariableAudit_AuditNodeManagementEventType_ConditionClassName              OpcuaNodeIdServicesVariableAudit = 31840
-	OpcuaNodeIdServicesVariableAudit_AuditNodeManagementEventType_ConditionSubClassId             OpcuaNodeIdServicesVariableAudit = 31841
-	OpcuaNodeIdServicesVariableAudit_AuditNodeManagementEventType_ConditionSubClassName           OpcuaNodeIdServicesVariableAudit = 31842
-	OpcuaNodeIdServicesVariableAudit_AuditAddNodesEventType_ConditionClassId                      OpcuaNodeIdServicesVariableAudit = 31843
-	OpcuaNodeIdServicesVariableAudit_AuditAddNodesEventType_ConditionClassName                    OpcuaNodeIdServicesVariableAudit = 31844
-	OpcuaNodeIdServicesVariableAudit_AuditAddNodesEventType_ConditionSubClassId                   OpcuaNodeIdServicesVariableAudit = 31845
-	OpcuaNodeIdServicesVariableAudit_AuditAddNodesEventType_ConditionSubClassName                 OpcuaNodeIdServicesVariableAudit = 31846
-	OpcuaNodeIdServicesVariableAudit_AuditDeleteNodesEventType_ConditionClassId                   OpcuaNodeIdServicesVariableAudit = 31847
-	OpcuaNodeIdServicesVariableAudit_AuditDeleteNodesEventType_ConditionClassName                 OpcuaNodeIdServicesVariableAudit = 31848
-	OpcuaNodeIdServicesVariableAudit_AuditDeleteNodesEventType_ConditionSubClassId                OpcuaNodeIdServicesVariableAudit = 31849
-	OpcuaNodeIdServicesVariableAudit_AuditDeleteNodesEventType_ConditionSubClassName              OpcuaNodeIdServicesVariableAudit = 31850
-	OpcuaNodeIdServicesVariableAudit_AuditAddReferencesEventType_ConditionClassId                 OpcuaNodeIdServicesVariableAudit = 31851
-	OpcuaNodeIdServicesVariableAudit_AuditAddReferencesEventType_ConditionClassName               OpcuaNodeIdServicesVariableAudit = 31852
-	OpcuaNodeIdServicesVariableAudit_AuditAddReferencesEventType_ConditionSubClassId              OpcuaNodeIdServicesVariableAudit = 31853
-	OpcuaNodeIdServicesVariableAudit_AuditAddReferencesEventType_ConditionSubClassName            OpcuaNodeIdServicesVariableAudit = 31854
-	OpcuaNodeIdServicesVariableAudit_AuditDeleteReferencesEventType_ConditionClassId              OpcuaNodeIdServicesVariableAudit = 31855
-	OpcuaNodeIdServicesVariableAudit_AuditDeleteReferencesEventType_ConditionClassName            OpcuaNodeIdServicesVariableAudit = 31856
-	OpcuaNodeIdServicesVariableAudit_AuditDeleteReferencesEventType_ConditionSubClassId           OpcuaNodeIdServicesVariableAudit = 31857
-	OpcuaNodeIdServicesVariableAudit_AuditDeleteReferencesEventType_ConditionSubClassName         OpcuaNodeIdServicesVariableAudit = 31858
-	OpcuaNodeIdServicesVariableAudit_AuditUpdateEventType_ConditionClassId                        OpcuaNodeIdServicesVariableAudit = 31859
-	OpcuaNodeIdServicesVariableAudit_AuditUpdateEventType_ConditionClassName                      OpcuaNodeIdServicesVariableAudit = 31860
-	OpcuaNodeIdServicesVariableAudit_AuditUpdateEventType_ConditionSubClassId                     OpcuaNodeIdServicesVariableAudit = 31861
-	OpcuaNodeIdServicesVariableAudit_AuditUpdateEventType_ConditionSubClassName                   OpcuaNodeIdServicesVariableAudit = 31862
-	OpcuaNodeIdServicesVariableAudit_AuditWriteUpdateEventType_ConditionClassId                   OpcuaNodeIdServicesVariableAudit = 31863
-	OpcuaNodeIdServicesVariableAudit_AuditWriteUpdateEventType_ConditionClassName                 OpcuaNodeIdServicesVariableAudit = 31864
-	OpcuaNodeIdServicesVariableAudit_AuditWriteUpdateEventType_ConditionSubClassId                OpcuaNodeIdServicesVariableAudit = 31865
-	OpcuaNodeIdServicesVariableAudit_AuditWriteUpdateEventType_ConditionSubClassName              OpcuaNodeIdServicesVariableAudit = 31866
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryUpdateEventType_ConditionClassId                 OpcuaNodeIdServicesVariableAudit = 31867
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryUpdateEventType_ConditionClassName               OpcuaNodeIdServicesVariableAudit = 31868
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryUpdateEventType_ConditionSubClassId              OpcuaNodeIdServicesVariableAudit = 31869
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryUpdateEventType_ConditionSubClassName            OpcuaNodeIdServicesVariableAudit = 31870
-	OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_ConditionClassId                  OpcuaNodeIdServicesVariableAudit = 31871
-	OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_ConditionClassName                OpcuaNodeIdServicesVariableAudit = 31872
-	OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_ConditionSubClassId               OpcuaNodeIdServicesVariableAudit = 31873
-	OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_ConditionSubClassName             OpcuaNodeIdServicesVariableAudit = 31874
-	OpcuaNodeIdServicesVariableAudit_AuditClientEventType_ConditionClassId                        OpcuaNodeIdServicesVariableAudit = 31907
-	OpcuaNodeIdServicesVariableAudit_AuditClientEventType_ConditionClassName                      OpcuaNodeIdServicesVariableAudit = 31908
-	OpcuaNodeIdServicesVariableAudit_AuditClientEventType_ConditionSubClassId                     OpcuaNodeIdServicesVariableAudit = 31909
-	OpcuaNodeIdServicesVariableAudit_AuditClientEventType_ConditionSubClassName                   OpcuaNodeIdServicesVariableAudit = 31910
-	OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_ConditionClassId      OpcuaNodeIdServicesVariableAudit = 31911
-	OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_ConditionClassName    OpcuaNodeIdServicesVariableAudit = 31912
-	OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_ConditionSubClassId   OpcuaNodeIdServicesVariableAudit = 31913
+const(
+	OpcuaNodeIdServicesVariableAudit_AuditEventType_ActionTimeStamp OpcuaNodeIdServicesVariableAudit = 2053
+	OpcuaNodeIdServicesVariableAudit_AuditEventType_Status OpcuaNodeIdServicesVariableAudit = 2054
+	OpcuaNodeIdServicesVariableAudit_AuditEventType_ServerId OpcuaNodeIdServicesVariableAudit = 2055
+	OpcuaNodeIdServicesVariableAudit_AuditEventType_ClientAuditEntryId OpcuaNodeIdServicesVariableAudit = 2056
+	OpcuaNodeIdServicesVariableAudit_AuditEventType_ClientUserId OpcuaNodeIdServicesVariableAudit = 2057
+	OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_ClientCertificate OpcuaNodeIdServicesVariableAudit = 2061
+	OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_RequestType OpcuaNodeIdServicesVariableAudit = 2062
+	OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_SecurityPolicyUri OpcuaNodeIdServicesVariableAudit = 2063
+	OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_SecurityMode OpcuaNodeIdServicesVariableAudit = 2065
+	OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_RequestedLifetime OpcuaNodeIdServicesVariableAudit = 2066
+	OpcuaNodeIdServicesVariableAudit_AuditSessionEventType_SessionId OpcuaNodeIdServicesVariableAudit = 2070
+	OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_SecureChannelId OpcuaNodeIdServicesVariableAudit = 2072
+	OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_ClientCertificate OpcuaNodeIdServicesVariableAudit = 2073
+	OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_RevisedSessionTimeout OpcuaNodeIdServicesVariableAudit = 2074
+	OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_ClientSoftwareCertificates OpcuaNodeIdServicesVariableAudit = 2076
+	OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_UserIdentityToken OpcuaNodeIdServicesVariableAudit = 2077
+	OpcuaNodeIdServicesVariableAudit_AuditCancelEventType_RequestHandle OpcuaNodeIdServicesVariableAudit = 2079
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateEventType_Certificate OpcuaNodeIdServicesVariableAudit = 2081
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateDataMismatchEventType_InvalidHostname OpcuaNodeIdServicesVariableAudit = 2083
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateDataMismatchEventType_InvalidUri OpcuaNodeIdServicesVariableAudit = 2084
+	OpcuaNodeIdServicesVariableAudit_AuditAddNodesEventType_NodesToAdd OpcuaNodeIdServicesVariableAudit = 2092
+	OpcuaNodeIdServicesVariableAudit_AuditDeleteNodesEventType_NodesToDelete OpcuaNodeIdServicesVariableAudit = 2094
+	OpcuaNodeIdServicesVariableAudit_AuditAddReferencesEventType_ReferencesToAdd OpcuaNodeIdServicesVariableAudit = 2096
+	OpcuaNodeIdServicesVariableAudit_AuditDeleteReferencesEventType_ReferencesToDelete OpcuaNodeIdServicesVariableAudit = 2098
+	OpcuaNodeIdServicesVariableAudit_AuditWriteUpdateEventType_IndexRange OpcuaNodeIdServicesVariableAudit = 2101
+	OpcuaNodeIdServicesVariableAudit_AuditWriteUpdateEventType_OldValue OpcuaNodeIdServicesVariableAudit = 2102
+	OpcuaNodeIdServicesVariableAudit_AuditWriteUpdateEventType_NewValue OpcuaNodeIdServicesVariableAudit = 2103
+	OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_MethodId OpcuaNodeIdServicesVariableAudit = 2128
+	OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_InputArguments OpcuaNodeIdServicesVariableAudit = 2129
+	OpcuaNodeIdServicesVariableAudit_AuditChannelEventType_SecureChannelId OpcuaNodeIdServicesVariableAudit = 2745
+	OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_ClientCertificateThumbprint OpcuaNodeIdServicesVariableAudit = 2746
+	OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_ClientCertificateThumbprint OpcuaNodeIdServicesVariableAudit = 2747
+	OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_EndpointUrl OpcuaNodeIdServicesVariableAudit = 2749
+	OpcuaNodeIdServicesVariableAudit_AuditWriteUpdateEventType_AttributeId OpcuaNodeIdServicesVariableAudit = 2750
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryUpdateEventType_ParameterDataTypeId OpcuaNodeIdServicesVariableAudit = 2751
+	OpcuaNodeIdServicesVariableAudit_AuditUpdateStateEventType_OldStateId OpcuaNodeIdServicesVariableAudit = 2777
+	OpcuaNodeIdServicesVariableAudit_AuditUpdateStateEventType_NewStateId OpcuaNodeIdServicesVariableAudit = 2778
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_Filter OpcuaNodeIdServicesVariableAudit = 3003
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_IsDeleteModified OpcuaNodeIdServicesVariableAudit = 3015
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_StartTime OpcuaNodeIdServicesVariableAudit = 3016
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_EndTime OpcuaNodeIdServicesVariableAudit = 3017
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryAtTimeDeleteEventType_ReqTimes OpcuaNodeIdServicesVariableAudit = 3020
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryAtTimeDeleteEventType_OldValues OpcuaNodeIdServicesVariableAudit = 3021
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventDeleteEventType_EventIds OpcuaNodeIdServicesVariableAudit = 3023
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventDeleteEventType_OldValues OpcuaNodeIdServicesVariableAudit = 3024
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_UpdatedNode OpcuaNodeIdServicesVariableAudit = 3025
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_UpdatedNode OpcuaNodeIdServicesVariableAudit = 3026
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryDeleteEventType_UpdatedNode OpcuaNodeIdServicesVariableAudit = 3027
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_PerformInsertReplace OpcuaNodeIdServicesVariableAudit = 3028
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_NewValues OpcuaNodeIdServicesVariableAudit = 3029
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_OldValues OpcuaNodeIdServicesVariableAudit = 3030
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_PerformInsertReplace OpcuaNodeIdServicesVariableAudit = 3031
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_NewValues OpcuaNodeIdServicesVariableAudit = 3032
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_OldValues OpcuaNodeIdServicesVariableAudit = 3033
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_OldValues OpcuaNodeIdServicesVariableAudit = 3034
+	OpcuaNodeIdServicesVariableAudit_AuditEventType_EventId OpcuaNodeIdServicesVariableAudit = 3200
+	OpcuaNodeIdServicesVariableAudit_AuditEventType_EventType OpcuaNodeIdServicesVariableAudit = 3201
+	OpcuaNodeIdServicesVariableAudit_AuditEventType_SourceNode OpcuaNodeIdServicesVariableAudit = 3202
+	OpcuaNodeIdServicesVariableAudit_AuditEventType_SourceName OpcuaNodeIdServicesVariableAudit = 3203
+	OpcuaNodeIdServicesVariableAudit_AuditEventType_Time OpcuaNodeIdServicesVariableAudit = 3204
+	OpcuaNodeIdServicesVariableAudit_AuditEventType_ReceiveTime OpcuaNodeIdServicesVariableAudit = 3205
+	OpcuaNodeIdServicesVariableAudit_AuditEventType_LocalTime OpcuaNodeIdServicesVariableAudit = 3206
+	OpcuaNodeIdServicesVariableAudit_AuditEventType_Message OpcuaNodeIdServicesVariableAudit = 3207
+	OpcuaNodeIdServicesVariableAudit_AuditEventType_Severity OpcuaNodeIdServicesVariableAudit = 3208
+	OpcuaNodeIdServicesVariableAudit_AuditSecurityEventType_EventId OpcuaNodeIdServicesVariableAudit = 3209
+	OpcuaNodeIdServicesVariableAudit_AuditSecurityEventType_EventType OpcuaNodeIdServicesVariableAudit = 3210
+	OpcuaNodeIdServicesVariableAudit_AuditSecurityEventType_SourceNode OpcuaNodeIdServicesVariableAudit = 3211
+	OpcuaNodeIdServicesVariableAudit_AuditSecurityEventType_SourceName OpcuaNodeIdServicesVariableAudit = 3212
+	OpcuaNodeIdServicesVariableAudit_AuditSecurityEventType_Time OpcuaNodeIdServicesVariableAudit = 3213
+	OpcuaNodeIdServicesVariableAudit_AuditSecurityEventType_ReceiveTime OpcuaNodeIdServicesVariableAudit = 3214
+	OpcuaNodeIdServicesVariableAudit_AuditSecurityEventType_LocalTime OpcuaNodeIdServicesVariableAudit = 3215
+	OpcuaNodeIdServicesVariableAudit_AuditSecurityEventType_Message OpcuaNodeIdServicesVariableAudit = 3216
+	OpcuaNodeIdServicesVariableAudit_AuditSecurityEventType_Severity OpcuaNodeIdServicesVariableAudit = 3217
+	OpcuaNodeIdServicesVariableAudit_AuditSecurityEventType_ActionTimeStamp OpcuaNodeIdServicesVariableAudit = 3218
+	OpcuaNodeIdServicesVariableAudit_AuditSecurityEventType_Status OpcuaNodeIdServicesVariableAudit = 3219
+	OpcuaNodeIdServicesVariableAudit_AuditSecurityEventType_ServerId OpcuaNodeIdServicesVariableAudit = 3220
+	OpcuaNodeIdServicesVariableAudit_AuditSecurityEventType_ClientAuditEntryId OpcuaNodeIdServicesVariableAudit = 3221
+	OpcuaNodeIdServicesVariableAudit_AuditSecurityEventType_ClientUserId OpcuaNodeIdServicesVariableAudit = 3222
+	OpcuaNodeIdServicesVariableAudit_AuditChannelEventType_EventId OpcuaNodeIdServicesVariableAudit = 3223
+	OpcuaNodeIdServicesVariableAudit_AuditChannelEventType_EventType OpcuaNodeIdServicesVariableAudit = 3224
+	OpcuaNodeIdServicesVariableAudit_AuditChannelEventType_SourceNode OpcuaNodeIdServicesVariableAudit = 3225
+	OpcuaNodeIdServicesVariableAudit_AuditChannelEventType_SourceName OpcuaNodeIdServicesVariableAudit = 3226
+	OpcuaNodeIdServicesVariableAudit_AuditChannelEventType_Time OpcuaNodeIdServicesVariableAudit = 3227
+	OpcuaNodeIdServicesVariableAudit_AuditChannelEventType_ReceiveTime OpcuaNodeIdServicesVariableAudit = 3228
+	OpcuaNodeIdServicesVariableAudit_AuditChannelEventType_LocalTime OpcuaNodeIdServicesVariableAudit = 3229
+	OpcuaNodeIdServicesVariableAudit_AuditChannelEventType_Message OpcuaNodeIdServicesVariableAudit = 3230
+	OpcuaNodeIdServicesVariableAudit_AuditChannelEventType_Severity OpcuaNodeIdServicesVariableAudit = 3231
+	OpcuaNodeIdServicesVariableAudit_AuditChannelEventType_ActionTimeStamp OpcuaNodeIdServicesVariableAudit = 3232
+	OpcuaNodeIdServicesVariableAudit_AuditChannelEventType_Status OpcuaNodeIdServicesVariableAudit = 3233
+	OpcuaNodeIdServicesVariableAudit_AuditChannelEventType_ServerId OpcuaNodeIdServicesVariableAudit = 3234
+	OpcuaNodeIdServicesVariableAudit_AuditChannelEventType_ClientAuditEntryId OpcuaNodeIdServicesVariableAudit = 3235
+	OpcuaNodeIdServicesVariableAudit_AuditChannelEventType_ClientUserId OpcuaNodeIdServicesVariableAudit = 3236
+	OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_EventId OpcuaNodeIdServicesVariableAudit = 3237
+	OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_EventType OpcuaNodeIdServicesVariableAudit = 3238
+	OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_SourceNode OpcuaNodeIdServicesVariableAudit = 3239
+	OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_SourceName OpcuaNodeIdServicesVariableAudit = 3240
+	OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_Time OpcuaNodeIdServicesVariableAudit = 3241
+	OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_ReceiveTime OpcuaNodeIdServicesVariableAudit = 3242
+	OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_LocalTime OpcuaNodeIdServicesVariableAudit = 3243
+	OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_Message OpcuaNodeIdServicesVariableAudit = 3244
+	OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_Severity OpcuaNodeIdServicesVariableAudit = 3245
+	OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_ActionTimeStamp OpcuaNodeIdServicesVariableAudit = 3246
+	OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_Status OpcuaNodeIdServicesVariableAudit = 3247
+	OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_ServerId OpcuaNodeIdServicesVariableAudit = 3248
+	OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_ClientAuditEntryId OpcuaNodeIdServicesVariableAudit = 3249
+	OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_ClientUserId OpcuaNodeIdServicesVariableAudit = 3250
+	OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_SecureChannelId OpcuaNodeIdServicesVariableAudit = 3251
+	OpcuaNodeIdServicesVariableAudit_AuditSessionEventType_EventId OpcuaNodeIdServicesVariableAudit = 3252
+	OpcuaNodeIdServicesVariableAudit_AuditSessionEventType_EventType OpcuaNodeIdServicesVariableAudit = 3253
+	OpcuaNodeIdServicesVariableAudit_AuditSessionEventType_SourceNode OpcuaNodeIdServicesVariableAudit = 3254
+	OpcuaNodeIdServicesVariableAudit_AuditSessionEventType_SourceName OpcuaNodeIdServicesVariableAudit = 3255
+	OpcuaNodeIdServicesVariableAudit_AuditSessionEventType_Time OpcuaNodeIdServicesVariableAudit = 3256
+	OpcuaNodeIdServicesVariableAudit_AuditSessionEventType_ReceiveTime OpcuaNodeIdServicesVariableAudit = 3257
+	OpcuaNodeIdServicesVariableAudit_AuditSessionEventType_LocalTime OpcuaNodeIdServicesVariableAudit = 3258
+	OpcuaNodeIdServicesVariableAudit_AuditSessionEventType_Message OpcuaNodeIdServicesVariableAudit = 3259
+	OpcuaNodeIdServicesVariableAudit_AuditSessionEventType_Severity OpcuaNodeIdServicesVariableAudit = 3260
+	OpcuaNodeIdServicesVariableAudit_AuditSessionEventType_ActionTimeStamp OpcuaNodeIdServicesVariableAudit = 3261
+	OpcuaNodeIdServicesVariableAudit_AuditSessionEventType_Status OpcuaNodeIdServicesVariableAudit = 3262
+	OpcuaNodeIdServicesVariableAudit_AuditSessionEventType_ServerId OpcuaNodeIdServicesVariableAudit = 3263
+	OpcuaNodeIdServicesVariableAudit_AuditSessionEventType_ClientAuditEntryId OpcuaNodeIdServicesVariableAudit = 3264
+	OpcuaNodeIdServicesVariableAudit_AuditSessionEventType_ClientUserId OpcuaNodeIdServicesVariableAudit = 3265
+	OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_EventId OpcuaNodeIdServicesVariableAudit = 3266
+	OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_EventType OpcuaNodeIdServicesVariableAudit = 3267
+	OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_SourceNode OpcuaNodeIdServicesVariableAudit = 3268
+	OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_SourceName OpcuaNodeIdServicesVariableAudit = 3269
+	OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_Time OpcuaNodeIdServicesVariableAudit = 3270
+	OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_ReceiveTime OpcuaNodeIdServicesVariableAudit = 3271
+	OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_LocalTime OpcuaNodeIdServicesVariableAudit = 3272
+	OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_Message OpcuaNodeIdServicesVariableAudit = 3273
+	OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_Severity OpcuaNodeIdServicesVariableAudit = 3274
+	OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_ActionTimeStamp OpcuaNodeIdServicesVariableAudit = 3275
+	OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_Status OpcuaNodeIdServicesVariableAudit = 3276
+	OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_ServerId OpcuaNodeIdServicesVariableAudit = 3277
+	OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_ClientAuditEntryId OpcuaNodeIdServicesVariableAudit = 3278
+	OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_ClientUserId OpcuaNodeIdServicesVariableAudit = 3279
+	OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_EventId OpcuaNodeIdServicesVariableAudit = 3281
+	OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_EventType OpcuaNodeIdServicesVariableAudit = 3282
+	OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_SourceNode OpcuaNodeIdServicesVariableAudit = 3283
+	OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_SourceName OpcuaNodeIdServicesVariableAudit = 3284
+	OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_Time OpcuaNodeIdServicesVariableAudit = 3285
+	OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_ReceiveTime OpcuaNodeIdServicesVariableAudit = 3286
+	OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_LocalTime OpcuaNodeIdServicesVariableAudit = 3287
+	OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_Message OpcuaNodeIdServicesVariableAudit = 3288
+	OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_Severity OpcuaNodeIdServicesVariableAudit = 3289
+	OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_ActionTimeStamp OpcuaNodeIdServicesVariableAudit = 3290
+	OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_Status OpcuaNodeIdServicesVariableAudit = 3291
+	OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_ServerId OpcuaNodeIdServicesVariableAudit = 3292
+	OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_ClientAuditEntryId OpcuaNodeIdServicesVariableAudit = 3293
+	OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_ClientUserId OpcuaNodeIdServicesVariableAudit = 3294
+	OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_SecureChannelId OpcuaNodeIdServicesVariableAudit = 3296
+	OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_ClientCertificate OpcuaNodeIdServicesVariableAudit = 3297
+	OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_ClientCertificateThumbprint OpcuaNodeIdServicesVariableAudit = 3298
+	OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_RevisedSessionTimeout OpcuaNodeIdServicesVariableAudit = 3299
+	OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_EventId OpcuaNodeIdServicesVariableAudit = 3300
+	OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_EventType OpcuaNodeIdServicesVariableAudit = 3301
+	OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_SourceNode OpcuaNodeIdServicesVariableAudit = 3302
+	OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_SourceName OpcuaNodeIdServicesVariableAudit = 3303
+	OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_Time OpcuaNodeIdServicesVariableAudit = 3304
+	OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_ReceiveTime OpcuaNodeIdServicesVariableAudit = 3305
+	OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_LocalTime OpcuaNodeIdServicesVariableAudit = 3306
+	OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_Message OpcuaNodeIdServicesVariableAudit = 3307
+	OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_Severity OpcuaNodeIdServicesVariableAudit = 3308
+	OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_ActionTimeStamp OpcuaNodeIdServicesVariableAudit = 3309
+	OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_Status OpcuaNodeIdServicesVariableAudit = 3310
+	OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_ServerId OpcuaNodeIdServicesVariableAudit = 3311
+	OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_ClientAuditEntryId OpcuaNodeIdServicesVariableAudit = 3312
+	OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_ClientUserId OpcuaNodeIdServicesVariableAudit = 3313
+	OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_SessionId OpcuaNodeIdServicesVariableAudit = 3314
+	OpcuaNodeIdServicesVariableAudit_AuditCancelEventType_EventId OpcuaNodeIdServicesVariableAudit = 3315
+	OpcuaNodeIdServicesVariableAudit_AuditCancelEventType_EventType OpcuaNodeIdServicesVariableAudit = 3316
+	OpcuaNodeIdServicesVariableAudit_AuditCancelEventType_SourceNode OpcuaNodeIdServicesVariableAudit = 3317
+	OpcuaNodeIdServicesVariableAudit_AuditCancelEventType_SourceName OpcuaNodeIdServicesVariableAudit = 3318
+	OpcuaNodeIdServicesVariableAudit_AuditCancelEventType_Time OpcuaNodeIdServicesVariableAudit = 3319
+	OpcuaNodeIdServicesVariableAudit_AuditCancelEventType_ReceiveTime OpcuaNodeIdServicesVariableAudit = 3320
+	OpcuaNodeIdServicesVariableAudit_AuditCancelEventType_LocalTime OpcuaNodeIdServicesVariableAudit = 3321
+	OpcuaNodeIdServicesVariableAudit_AuditCancelEventType_Message OpcuaNodeIdServicesVariableAudit = 3322
+	OpcuaNodeIdServicesVariableAudit_AuditCancelEventType_Severity OpcuaNodeIdServicesVariableAudit = 3323
+	OpcuaNodeIdServicesVariableAudit_AuditCancelEventType_ActionTimeStamp OpcuaNodeIdServicesVariableAudit = 3324
+	OpcuaNodeIdServicesVariableAudit_AuditCancelEventType_Status OpcuaNodeIdServicesVariableAudit = 3325
+	OpcuaNodeIdServicesVariableAudit_AuditCancelEventType_ServerId OpcuaNodeIdServicesVariableAudit = 3326
+	OpcuaNodeIdServicesVariableAudit_AuditCancelEventType_ClientAuditEntryId OpcuaNodeIdServicesVariableAudit = 3327
+	OpcuaNodeIdServicesVariableAudit_AuditCancelEventType_ClientUserId OpcuaNodeIdServicesVariableAudit = 3328
+	OpcuaNodeIdServicesVariableAudit_AuditCancelEventType_SessionId OpcuaNodeIdServicesVariableAudit = 3329
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateEventType_EventId OpcuaNodeIdServicesVariableAudit = 3330
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateEventType_EventType OpcuaNodeIdServicesVariableAudit = 3331
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateEventType_SourceNode OpcuaNodeIdServicesVariableAudit = 3332
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateEventType_SourceName OpcuaNodeIdServicesVariableAudit = 3333
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateEventType_Time OpcuaNodeIdServicesVariableAudit = 3334
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateEventType_ReceiveTime OpcuaNodeIdServicesVariableAudit = 3335
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateEventType_LocalTime OpcuaNodeIdServicesVariableAudit = 3336
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateEventType_Message OpcuaNodeIdServicesVariableAudit = 3337
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateEventType_Severity OpcuaNodeIdServicesVariableAudit = 3338
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateEventType_ActionTimeStamp OpcuaNodeIdServicesVariableAudit = 3339
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateEventType_Status OpcuaNodeIdServicesVariableAudit = 3340
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateEventType_ServerId OpcuaNodeIdServicesVariableAudit = 3341
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateEventType_ClientAuditEntryId OpcuaNodeIdServicesVariableAudit = 3342
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateEventType_ClientUserId OpcuaNodeIdServicesVariableAudit = 3343
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateDataMismatchEventType_EventId OpcuaNodeIdServicesVariableAudit = 3344
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateDataMismatchEventType_EventType OpcuaNodeIdServicesVariableAudit = 3345
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateDataMismatchEventType_SourceNode OpcuaNodeIdServicesVariableAudit = 3346
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateDataMismatchEventType_SourceName OpcuaNodeIdServicesVariableAudit = 3347
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateDataMismatchEventType_Time OpcuaNodeIdServicesVariableAudit = 3348
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateDataMismatchEventType_ReceiveTime OpcuaNodeIdServicesVariableAudit = 3349
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateDataMismatchEventType_LocalTime OpcuaNodeIdServicesVariableAudit = 3350
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateDataMismatchEventType_Message OpcuaNodeIdServicesVariableAudit = 3351
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateDataMismatchEventType_Severity OpcuaNodeIdServicesVariableAudit = 3352
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateDataMismatchEventType_ActionTimeStamp OpcuaNodeIdServicesVariableAudit = 3353
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateDataMismatchEventType_Status OpcuaNodeIdServicesVariableAudit = 3354
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateDataMismatchEventType_ServerId OpcuaNodeIdServicesVariableAudit = 3355
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateDataMismatchEventType_ClientAuditEntryId OpcuaNodeIdServicesVariableAudit = 3356
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateDataMismatchEventType_ClientUserId OpcuaNodeIdServicesVariableAudit = 3357
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateDataMismatchEventType_Certificate OpcuaNodeIdServicesVariableAudit = 3358
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateExpiredEventType_EventId OpcuaNodeIdServicesVariableAudit = 3359
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateExpiredEventType_EventType OpcuaNodeIdServicesVariableAudit = 3360
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateExpiredEventType_SourceNode OpcuaNodeIdServicesVariableAudit = 3361
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateExpiredEventType_SourceName OpcuaNodeIdServicesVariableAudit = 3362
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateExpiredEventType_Time OpcuaNodeIdServicesVariableAudit = 3363
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateExpiredEventType_ReceiveTime OpcuaNodeIdServicesVariableAudit = 3364
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateExpiredEventType_LocalTime OpcuaNodeIdServicesVariableAudit = 3365
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateExpiredEventType_Message OpcuaNodeIdServicesVariableAudit = 3366
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateExpiredEventType_Severity OpcuaNodeIdServicesVariableAudit = 3367
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateExpiredEventType_ActionTimeStamp OpcuaNodeIdServicesVariableAudit = 3368
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateExpiredEventType_Status OpcuaNodeIdServicesVariableAudit = 3369
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateExpiredEventType_ServerId OpcuaNodeIdServicesVariableAudit = 3370
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateExpiredEventType_ClientAuditEntryId OpcuaNodeIdServicesVariableAudit = 3371
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateExpiredEventType_ClientUserId OpcuaNodeIdServicesVariableAudit = 3372
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateExpiredEventType_Certificate OpcuaNodeIdServicesVariableAudit = 3373
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateInvalidEventType_EventId OpcuaNodeIdServicesVariableAudit = 3374
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateInvalidEventType_EventType OpcuaNodeIdServicesVariableAudit = 3375
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateInvalidEventType_SourceNode OpcuaNodeIdServicesVariableAudit = 3376
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateInvalidEventType_SourceName OpcuaNodeIdServicesVariableAudit = 3377
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateInvalidEventType_Time OpcuaNodeIdServicesVariableAudit = 3378
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateInvalidEventType_ReceiveTime OpcuaNodeIdServicesVariableAudit = 3379
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateInvalidEventType_LocalTime OpcuaNodeIdServicesVariableAudit = 3380
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateInvalidEventType_Message OpcuaNodeIdServicesVariableAudit = 3381
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateInvalidEventType_Severity OpcuaNodeIdServicesVariableAudit = 3382
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateInvalidEventType_ActionTimeStamp OpcuaNodeIdServicesVariableAudit = 3383
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateInvalidEventType_Status OpcuaNodeIdServicesVariableAudit = 3384
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateInvalidEventType_ServerId OpcuaNodeIdServicesVariableAudit = 3385
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateInvalidEventType_ClientAuditEntryId OpcuaNodeIdServicesVariableAudit = 3386
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateInvalidEventType_ClientUserId OpcuaNodeIdServicesVariableAudit = 3387
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateInvalidEventType_Certificate OpcuaNodeIdServicesVariableAudit = 3388
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateUntrustedEventType_EventId OpcuaNodeIdServicesVariableAudit = 3389
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateUntrustedEventType_EventType OpcuaNodeIdServicesVariableAudit = 3390
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateUntrustedEventType_SourceNode OpcuaNodeIdServicesVariableAudit = 3391
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateUntrustedEventType_SourceName OpcuaNodeIdServicesVariableAudit = 3392
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateUntrustedEventType_Time OpcuaNodeIdServicesVariableAudit = 3393
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateUntrustedEventType_ReceiveTime OpcuaNodeIdServicesVariableAudit = 3394
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateUntrustedEventType_LocalTime OpcuaNodeIdServicesVariableAudit = 3395
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateUntrustedEventType_Message OpcuaNodeIdServicesVariableAudit = 3396
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateUntrustedEventType_Severity OpcuaNodeIdServicesVariableAudit = 3397
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateUntrustedEventType_ActionTimeStamp OpcuaNodeIdServicesVariableAudit = 3398
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateUntrustedEventType_Status OpcuaNodeIdServicesVariableAudit = 3399
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateUntrustedEventType_ServerId OpcuaNodeIdServicesVariableAudit = 3400
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateUntrustedEventType_ClientAuditEntryId OpcuaNodeIdServicesVariableAudit = 3401
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateUntrustedEventType_ClientUserId OpcuaNodeIdServicesVariableAudit = 3402
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateUntrustedEventType_Certificate OpcuaNodeIdServicesVariableAudit = 3403
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateRevokedEventType_EventId OpcuaNodeIdServicesVariableAudit = 3404
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateRevokedEventType_EventType OpcuaNodeIdServicesVariableAudit = 3405
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateRevokedEventType_SourceNode OpcuaNodeIdServicesVariableAudit = 3406
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateRevokedEventType_SourceName OpcuaNodeIdServicesVariableAudit = 3407
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateRevokedEventType_Time OpcuaNodeIdServicesVariableAudit = 3408
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateRevokedEventType_ReceiveTime OpcuaNodeIdServicesVariableAudit = 3409
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateRevokedEventType_LocalTime OpcuaNodeIdServicesVariableAudit = 3410
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateRevokedEventType_Message OpcuaNodeIdServicesVariableAudit = 3411
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateRevokedEventType_Severity OpcuaNodeIdServicesVariableAudit = 3412
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateRevokedEventType_ActionTimeStamp OpcuaNodeIdServicesVariableAudit = 3413
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateRevokedEventType_Status OpcuaNodeIdServicesVariableAudit = 3414
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateRevokedEventType_ServerId OpcuaNodeIdServicesVariableAudit = 3415
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateRevokedEventType_ClientAuditEntryId OpcuaNodeIdServicesVariableAudit = 3416
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateRevokedEventType_ClientUserId OpcuaNodeIdServicesVariableAudit = 3417
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateRevokedEventType_Certificate OpcuaNodeIdServicesVariableAudit = 3418
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateMismatchEventType_EventId OpcuaNodeIdServicesVariableAudit = 3419
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateMismatchEventType_EventType OpcuaNodeIdServicesVariableAudit = 3420
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateMismatchEventType_SourceNode OpcuaNodeIdServicesVariableAudit = 3421
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateMismatchEventType_SourceName OpcuaNodeIdServicesVariableAudit = 3422
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateMismatchEventType_Time OpcuaNodeIdServicesVariableAudit = 3423
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateMismatchEventType_ReceiveTime OpcuaNodeIdServicesVariableAudit = 3424
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateMismatchEventType_LocalTime OpcuaNodeIdServicesVariableAudit = 3425
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateMismatchEventType_Message OpcuaNodeIdServicesVariableAudit = 3426
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateMismatchEventType_Severity OpcuaNodeIdServicesVariableAudit = 3427
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateMismatchEventType_ActionTimeStamp OpcuaNodeIdServicesVariableAudit = 3428
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateMismatchEventType_Status OpcuaNodeIdServicesVariableAudit = 3429
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateMismatchEventType_ServerId OpcuaNodeIdServicesVariableAudit = 3430
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateMismatchEventType_ClientAuditEntryId OpcuaNodeIdServicesVariableAudit = 3431
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateMismatchEventType_ClientUserId OpcuaNodeIdServicesVariableAudit = 3432
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateMismatchEventType_Certificate OpcuaNodeIdServicesVariableAudit = 3433
+	OpcuaNodeIdServicesVariableAudit_AuditNodeManagementEventType_EventId OpcuaNodeIdServicesVariableAudit = 3434
+	OpcuaNodeIdServicesVariableAudit_AuditNodeManagementEventType_EventType OpcuaNodeIdServicesVariableAudit = 3435
+	OpcuaNodeIdServicesVariableAudit_AuditNodeManagementEventType_SourceNode OpcuaNodeIdServicesVariableAudit = 3436
+	OpcuaNodeIdServicesVariableAudit_AuditNodeManagementEventType_SourceName OpcuaNodeIdServicesVariableAudit = 3437
+	OpcuaNodeIdServicesVariableAudit_AuditNodeManagementEventType_Time OpcuaNodeIdServicesVariableAudit = 3438
+	OpcuaNodeIdServicesVariableAudit_AuditNodeManagementEventType_ReceiveTime OpcuaNodeIdServicesVariableAudit = 3439
+	OpcuaNodeIdServicesVariableAudit_AuditNodeManagementEventType_LocalTime OpcuaNodeIdServicesVariableAudit = 3440
+	OpcuaNodeIdServicesVariableAudit_AuditNodeManagementEventType_Message OpcuaNodeIdServicesVariableAudit = 3441
+	OpcuaNodeIdServicesVariableAudit_AuditNodeManagementEventType_Severity OpcuaNodeIdServicesVariableAudit = 3442
+	OpcuaNodeIdServicesVariableAudit_AuditNodeManagementEventType_ActionTimeStamp OpcuaNodeIdServicesVariableAudit = 3443
+	OpcuaNodeIdServicesVariableAudit_AuditNodeManagementEventType_Status OpcuaNodeIdServicesVariableAudit = 3444
+	OpcuaNodeIdServicesVariableAudit_AuditNodeManagementEventType_ServerId OpcuaNodeIdServicesVariableAudit = 3445
+	OpcuaNodeIdServicesVariableAudit_AuditNodeManagementEventType_ClientAuditEntryId OpcuaNodeIdServicesVariableAudit = 3446
+	OpcuaNodeIdServicesVariableAudit_AuditNodeManagementEventType_ClientUserId OpcuaNodeIdServicesVariableAudit = 3447
+	OpcuaNodeIdServicesVariableAudit_AuditAddNodesEventType_EventId OpcuaNodeIdServicesVariableAudit = 3448
+	OpcuaNodeIdServicesVariableAudit_AuditAddNodesEventType_EventType OpcuaNodeIdServicesVariableAudit = 3449
+	OpcuaNodeIdServicesVariableAudit_AuditAddNodesEventType_SourceNode OpcuaNodeIdServicesVariableAudit = 3450
+	OpcuaNodeIdServicesVariableAudit_AuditAddNodesEventType_SourceName OpcuaNodeIdServicesVariableAudit = 3451
+	OpcuaNodeIdServicesVariableAudit_AuditAddNodesEventType_Time OpcuaNodeIdServicesVariableAudit = 3452
+	OpcuaNodeIdServicesVariableAudit_AuditAddNodesEventType_ReceiveTime OpcuaNodeIdServicesVariableAudit = 3453
+	OpcuaNodeIdServicesVariableAudit_AuditAddNodesEventType_LocalTime OpcuaNodeIdServicesVariableAudit = 3454
+	OpcuaNodeIdServicesVariableAudit_AuditAddNodesEventType_Message OpcuaNodeIdServicesVariableAudit = 3455
+	OpcuaNodeIdServicesVariableAudit_AuditAddNodesEventType_Severity OpcuaNodeIdServicesVariableAudit = 3456
+	OpcuaNodeIdServicesVariableAudit_AuditAddNodesEventType_ActionTimeStamp OpcuaNodeIdServicesVariableAudit = 3457
+	OpcuaNodeIdServicesVariableAudit_AuditAddNodesEventType_Status OpcuaNodeIdServicesVariableAudit = 3458
+	OpcuaNodeIdServicesVariableAudit_AuditAddNodesEventType_ServerId OpcuaNodeIdServicesVariableAudit = 3459
+	OpcuaNodeIdServicesVariableAudit_AuditAddNodesEventType_ClientAuditEntryId OpcuaNodeIdServicesVariableAudit = 3460
+	OpcuaNodeIdServicesVariableAudit_AuditAddNodesEventType_ClientUserId OpcuaNodeIdServicesVariableAudit = 3461
+	OpcuaNodeIdServicesVariableAudit_AuditDeleteNodesEventType_EventId OpcuaNodeIdServicesVariableAudit = 3462
+	OpcuaNodeIdServicesVariableAudit_AuditDeleteNodesEventType_EventType OpcuaNodeIdServicesVariableAudit = 3463
+	OpcuaNodeIdServicesVariableAudit_AuditDeleteNodesEventType_SourceNode OpcuaNodeIdServicesVariableAudit = 3464
+	OpcuaNodeIdServicesVariableAudit_AuditDeleteNodesEventType_SourceName OpcuaNodeIdServicesVariableAudit = 3465
+	OpcuaNodeIdServicesVariableAudit_AuditDeleteNodesEventType_Time OpcuaNodeIdServicesVariableAudit = 3466
+	OpcuaNodeIdServicesVariableAudit_AuditDeleteNodesEventType_ReceiveTime OpcuaNodeIdServicesVariableAudit = 3467
+	OpcuaNodeIdServicesVariableAudit_AuditDeleteNodesEventType_LocalTime OpcuaNodeIdServicesVariableAudit = 3468
+	OpcuaNodeIdServicesVariableAudit_AuditDeleteNodesEventType_Message OpcuaNodeIdServicesVariableAudit = 3469
+	OpcuaNodeIdServicesVariableAudit_AuditDeleteNodesEventType_Severity OpcuaNodeIdServicesVariableAudit = 3470
+	OpcuaNodeIdServicesVariableAudit_AuditDeleteNodesEventType_ActionTimeStamp OpcuaNodeIdServicesVariableAudit = 3471
+	OpcuaNodeIdServicesVariableAudit_AuditDeleteNodesEventType_Status OpcuaNodeIdServicesVariableAudit = 3472
+	OpcuaNodeIdServicesVariableAudit_AuditDeleteNodesEventType_ServerId OpcuaNodeIdServicesVariableAudit = 3473
+	OpcuaNodeIdServicesVariableAudit_AuditDeleteNodesEventType_ClientAuditEntryId OpcuaNodeIdServicesVariableAudit = 3474
+	OpcuaNodeIdServicesVariableAudit_AuditDeleteNodesEventType_ClientUserId OpcuaNodeIdServicesVariableAudit = 3475
+	OpcuaNodeIdServicesVariableAudit_AuditAddReferencesEventType_EventId OpcuaNodeIdServicesVariableAudit = 3476
+	OpcuaNodeIdServicesVariableAudit_AuditAddReferencesEventType_EventType OpcuaNodeIdServicesVariableAudit = 3477
+	OpcuaNodeIdServicesVariableAudit_AuditAddReferencesEventType_SourceNode OpcuaNodeIdServicesVariableAudit = 3478
+	OpcuaNodeIdServicesVariableAudit_AuditAddReferencesEventType_SourceName OpcuaNodeIdServicesVariableAudit = 3479
+	OpcuaNodeIdServicesVariableAudit_AuditAddReferencesEventType_Time OpcuaNodeIdServicesVariableAudit = 3480
+	OpcuaNodeIdServicesVariableAudit_AuditAddReferencesEventType_ReceiveTime OpcuaNodeIdServicesVariableAudit = 3481
+	OpcuaNodeIdServicesVariableAudit_AuditAddReferencesEventType_LocalTime OpcuaNodeIdServicesVariableAudit = 3482
+	OpcuaNodeIdServicesVariableAudit_AuditAddReferencesEventType_Message OpcuaNodeIdServicesVariableAudit = 3483
+	OpcuaNodeIdServicesVariableAudit_AuditAddReferencesEventType_Severity OpcuaNodeIdServicesVariableAudit = 3484
+	OpcuaNodeIdServicesVariableAudit_AuditAddReferencesEventType_ActionTimeStamp OpcuaNodeIdServicesVariableAudit = 3485
+	OpcuaNodeIdServicesVariableAudit_AuditAddReferencesEventType_Status OpcuaNodeIdServicesVariableAudit = 3486
+	OpcuaNodeIdServicesVariableAudit_AuditAddReferencesEventType_ServerId OpcuaNodeIdServicesVariableAudit = 3487
+	OpcuaNodeIdServicesVariableAudit_AuditAddReferencesEventType_ClientAuditEntryId OpcuaNodeIdServicesVariableAudit = 3488
+	OpcuaNodeIdServicesVariableAudit_AuditAddReferencesEventType_ClientUserId OpcuaNodeIdServicesVariableAudit = 3489
+	OpcuaNodeIdServicesVariableAudit_AuditDeleteReferencesEventType_EventId OpcuaNodeIdServicesVariableAudit = 3490
+	OpcuaNodeIdServicesVariableAudit_AuditDeleteReferencesEventType_EventType OpcuaNodeIdServicesVariableAudit = 3491
+	OpcuaNodeIdServicesVariableAudit_AuditDeleteReferencesEventType_SourceNode OpcuaNodeIdServicesVariableAudit = 3492
+	OpcuaNodeIdServicesVariableAudit_AuditDeleteReferencesEventType_SourceName OpcuaNodeIdServicesVariableAudit = 3493
+	OpcuaNodeIdServicesVariableAudit_AuditDeleteReferencesEventType_Time OpcuaNodeIdServicesVariableAudit = 3494
+	OpcuaNodeIdServicesVariableAudit_AuditDeleteReferencesEventType_ReceiveTime OpcuaNodeIdServicesVariableAudit = 3495
+	OpcuaNodeIdServicesVariableAudit_AuditDeleteReferencesEventType_LocalTime OpcuaNodeIdServicesVariableAudit = 3496
+	OpcuaNodeIdServicesVariableAudit_AuditDeleteReferencesEventType_Message OpcuaNodeIdServicesVariableAudit = 3497
+	OpcuaNodeIdServicesVariableAudit_AuditDeleteReferencesEventType_Severity OpcuaNodeIdServicesVariableAudit = 3498
+	OpcuaNodeIdServicesVariableAudit_AuditDeleteReferencesEventType_ActionTimeStamp OpcuaNodeIdServicesVariableAudit = 3499
+	OpcuaNodeIdServicesVariableAudit_AuditDeleteReferencesEventType_Status OpcuaNodeIdServicesVariableAudit = 3500
+	OpcuaNodeIdServicesVariableAudit_AuditDeleteReferencesEventType_ServerId OpcuaNodeIdServicesVariableAudit = 3501
+	OpcuaNodeIdServicesVariableAudit_AuditDeleteReferencesEventType_ClientAuditEntryId OpcuaNodeIdServicesVariableAudit = 3502
+	OpcuaNodeIdServicesVariableAudit_AuditDeleteReferencesEventType_ClientUserId OpcuaNodeIdServicesVariableAudit = 3503
+	OpcuaNodeIdServicesVariableAudit_AuditUpdateEventType_EventId OpcuaNodeIdServicesVariableAudit = 3504
+	OpcuaNodeIdServicesVariableAudit_AuditUpdateEventType_EventType OpcuaNodeIdServicesVariableAudit = 3505
+	OpcuaNodeIdServicesVariableAudit_AuditUpdateEventType_SourceNode OpcuaNodeIdServicesVariableAudit = 3506
+	OpcuaNodeIdServicesVariableAudit_AuditUpdateEventType_SourceName OpcuaNodeIdServicesVariableAudit = 3507
+	OpcuaNodeIdServicesVariableAudit_AuditUpdateEventType_Time OpcuaNodeIdServicesVariableAudit = 3508
+	OpcuaNodeIdServicesVariableAudit_AuditUpdateEventType_ReceiveTime OpcuaNodeIdServicesVariableAudit = 3509
+	OpcuaNodeIdServicesVariableAudit_AuditUpdateEventType_LocalTime OpcuaNodeIdServicesVariableAudit = 3510
+	OpcuaNodeIdServicesVariableAudit_AuditUpdateEventType_Message OpcuaNodeIdServicesVariableAudit = 3511
+	OpcuaNodeIdServicesVariableAudit_AuditUpdateEventType_Severity OpcuaNodeIdServicesVariableAudit = 3512
+	OpcuaNodeIdServicesVariableAudit_AuditUpdateEventType_ActionTimeStamp OpcuaNodeIdServicesVariableAudit = 3513
+	OpcuaNodeIdServicesVariableAudit_AuditUpdateEventType_Status OpcuaNodeIdServicesVariableAudit = 3514
+	OpcuaNodeIdServicesVariableAudit_AuditUpdateEventType_ServerId OpcuaNodeIdServicesVariableAudit = 3515
+	OpcuaNodeIdServicesVariableAudit_AuditUpdateEventType_ClientAuditEntryId OpcuaNodeIdServicesVariableAudit = 3516
+	OpcuaNodeIdServicesVariableAudit_AuditUpdateEventType_ClientUserId OpcuaNodeIdServicesVariableAudit = 3517
+	OpcuaNodeIdServicesVariableAudit_AuditWriteUpdateEventType_EventId OpcuaNodeIdServicesVariableAudit = 3518
+	OpcuaNodeIdServicesVariableAudit_AuditWriteUpdateEventType_EventType OpcuaNodeIdServicesVariableAudit = 3519
+	OpcuaNodeIdServicesVariableAudit_AuditWriteUpdateEventType_SourceNode OpcuaNodeIdServicesVariableAudit = 3520
+	OpcuaNodeIdServicesVariableAudit_AuditWriteUpdateEventType_SourceName OpcuaNodeIdServicesVariableAudit = 3521
+	OpcuaNodeIdServicesVariableAudit_AuditWriteUpdateEventType_Time OpcuaNodeIdServicesVariableAudit = 3522
+	OpcuaNodeIdServicesVariableAudit_AuditWriteUpdateEventType_ReceiveTime OpcuaNodeIdServicesVariableAudit = 3523
+	OpcuaNodeIdServicesVariableAudit_AuditWriteUpdateEventType_LocalTime OpcuaNodeIdServicesVariableAudit = 3524
+	OpcuaNodeIdServicesVariableAudit_AuditWriteUpdateEventType_Message OpcuaNodeIdServicesVariableAudit = 3525
+	OpcuaNodeIdServicesVariableAudit_AuditWriteUpdateEventType_Severity OpcuaNodeIdServicesVariableAudit = 3526
+	OpcuaNodeIdServicesVariableAudit_AuditWriteUpdateEventType_ActionTimeStamp OpcuaNodeIdServicesVariableAudit = 3527
+	OpcuaNodeIdServicesVariableAudit_AuditWriteUpdateEventType_Status OpcuaNodeIdServicesVariableAudit = 3528
+	OpcuaNodeIdServicesVariableAudit_AuditWriteUpdateEventType_ServerId OpcuaNodeIdServicesVariableAudit = 3529
+	OpcuaNodeIdServicesVariableAudit_AuditWriteUpdateEventType_ClientAuditEntryId OpcuaNodeIdServicesVariableAudit = 3530
+	OpcuaNodeIdServicesVariableAudit_AuditWriteUpdateEventType_ClientUserId OpcuaNodeIdServicesVariableAudit = 3531
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryUpdateEventType_EventId OpcuaNodeIdServicesVariableAudit = 3532
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryUpdateEventType_EventType OpcuaNodeIdServicesVariableAudit = 3533
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryUpdateEventType_SourceNode OpcuaNodeIdServicesVariableAudit = 3534
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryUpdateEventType_SourceName OpcuaNodeIdServicesVariableAudit = 3535
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryUpdateEventType_Time OpcuaNodeIdServicesVariableAudit = 3536
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryUpdateEventType_ReceiveTime OpcuaNodeIdServicesVariableAudit = 3537
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryUpdateEventType_LocalTime OpcuaNodeIdServicesVariableAudit = 3538
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryUpdateEventType_Message OpcuaNodeIdServicesVariableAudit = 3539
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryUpdateEventType_Severity OpcuaNodeIdServicesVariableAudit = 3540
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryUpdateEventType_ActionTimeStamp OpcuaNodeIdServicesVariableAudit = 3541
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryUpdateEventType_Status OpcuaNodeIdServicesVariableAudit = 3542
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryUpdateEventType_ServerId OpcuaNodeIdServicesVariableAudit = 3543
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryUpdateEventType_ClientAuditEntryId OpcuaNodeIdServicesVariableAudit = 3544
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryUpdateEventType_ClientUserId OpcuaNodeIdServicesVariableAudit = 3545
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_EventId OpcuaNodeIdServicesVariableAudit = 3546
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_EventType OpcuaNodeIdServicesVariableAudit = 3547
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_SourceNode OpcuaNodeIdServicesVariableAudit = 3548
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_SourceName OpcuaNodeIdServicesVariableAudit = 3549
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_Time OpcuaNodeIdServicesVariableAudit = 3550
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_ReceiveTime OpcuaNodeIdServicesVariableAudit = 3551
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_LocalTime OpcuaNodeIdServicesVariableAudit = 3552
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_Message OpcuaNodeIdServicesVariableAudit = 3553
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_Severity OpcuaNodeIdServicesVariableAudit = 3554
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_ActionTimeStamp OpcuaNodeIdServicesVariableAudit = 3555
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_Status OpcuaNodeIdServicesVariableAudit = 3556
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_ServerId OpcuaNodeIdServicesVariableAudit = 3557
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_ClientAuditEntryId OpcuaNodeIdServicesVariableAudit = 3558
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_ClientUserId OpcuaNodeIdServicesVariableAudit = 3559
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_ParameterDataTypeId OpcuaNodeIdServicesVariableAudit = 3560
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_EventId OpcuaNodeIdServicesVariableAudit = 3561
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_EventType OpcuaNodeIdServicesVariableAudit = 3562
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_SourceNode OpcuaNodeIdServicesVariableAudit = 3563
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_SourceName OpcuaNodeIdServicesVariableAudit = 3564
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_Time OpcuaNodeIdServicesVariableAudit = 3565
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_ReceiveTime OpcuaNodeIdServicesVariableAudit = 3566
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_LocalTime OpcuaNodeIdServicesVariableAudit = 3567
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_Message OpcuaNodeIdServicesVariableAudit = 3568
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_Severity OpcuaNodeIdServicesVariableAudit = 3569
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_ActionTimeStamp OpcuaNodeIdServicesVariableAudit = 3570
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_Status OpcuaNodeIdServicesVariableAudit = 3571
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_ServerId OpcuaNodeIdServicesVariableAudit = 3572
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_ClientAuditEntryId OpcuaNodeIdServicesVariableAudit = 3573
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_ClientUserId OpcuaNodeIdServicesVariableAudit = 3574
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_ParameterDataTypeId OpcuaNodeIdServicesVariableAudit = 3575
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryDeleteEventType_EventId OpcuaNodeIdServicesVariableAudit = 3576
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryDeleteEventType_EventType OpcuaNodeIdServicesVariableAudit = 3577
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryDeleteEventType_SourceNode OpcuaNodeIdServicesVariableAudit = 3578
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryDeleteEventType_SourceName OpcuaNodeIdServicesVariableAudit = 3579
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryDeleteEventType_Time OpcuaNodeIdServicesVariableAudit = 3580
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryDeleteEventType_ReceiveTime OpcuaNodeIdServicesVariableAudit = 3581
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryDeleteEventType_LocalTime OpcuaNodeIdServicesVariableAudit = 3582
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryDeleteEventType_Message OpcuaNodeIdServicesVariableAudit = 3583
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryDeleteEventType_Severity OpcuaNodeIdServicesVariableAudit = 3584
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryDeleteEventType_ActionTimeStamp OpcuaNodeIdServicesVariableAudit = 3585
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryDeleteEventType_Status OpcuaNodeIdServicesVariableAudit = 3586
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryDeleteEventType_ServerId OpcuaNodeIdServicesVariableAudit = 3587
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryDeleteEventType_ClientAuditEntryId OpcuaNodeIdServicesVariableAudit = 3588
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryDeleteEventType_ClientUserId OpcuaNodeIdServicesVariableAudit = 3589
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryDeleteEventType_ParameterDataTypeId OpcuaNodeIdServicesVariableAudit = 3590
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_EventId OpcuaNodeIdServicesVariableAudit = 3591
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_EventType OpcuaNodeIdServicesVariableAudit = 3592
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_SourceNode OpcuaNodeIdServicesVariableAudit = 3593
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_SourceName OpcuaNodeIdServicesVariableAudit = 3594
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_Time OpcuaNodeIdServicesVariableAudit = 3595
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_ReceiveTime OpcuaNodeIdServicesVariableAudit = 3596
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_LocalTime OpcuaNodeIdServicesVariableAudit = 3597
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_Message OpcuaNodeIdServicesVariableAudit = 3598
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_Severity OpcuaNodeIdServicesVariableAudit = 3599
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_ActionTimeStamp OpcuaNodeIdServicesVariableAudit = 3600
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_Status OpcuaNodeIdServicesVariableAudit = 3601
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_ServerId OpcuaNodeIdServicesVariableAudit = 3602
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_ClientAuditEntryId OpcuaNodeIdServicesVariableAudit = 3603
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_ClientUserId OpcuaNodeIdServicesVariableAudit = 3604
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_ParameterDataTypeId OpcuaNodeIdServicesVariableAudit = 3605
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_UpdatedNode OpcuaNodeIdServicesVariableAudit = 3606
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryAtTimeDeleteEventType_EventId OpcuaNodeIdServicesVariableAudit = 3607
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryAtTimeDeleteEventType_EventType OpcuaNodeIdServicesVariableAudit = 3608
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryAtTimeDeleteEventType_SourceNode OpcuaNodeIdServicesVariableAudit = 3609
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryAtTimeDeleteEventType_SourceName OpcuaNodeIdServicesVariableAudit = 3610
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryAtTimeDeleteEventType_Time OpcuaNodeIdServicesVariableAudit = 3611
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryAtTimeDeleteEventType_ReceiveTime OpcuaNodeIdServicesVariableAudit = 3612
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryAtTimeDeleteEventType_LocalTime OpcuaNodeIdServicesVariableAudit = 3613
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryAtTimeDeleteEventType_Message OpcuaNodeIdServicesVariableAudit = 3614
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryAtTimeDeleteEventType_Severity OpcuaNodeIdServicesVariableAudit = 3615
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryAtTimeDeleteEventType_ActionTimeStamp OpcuaNodeIdServicesVariableAudit = 3616
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryAtTimeDeleteEventType_Status OpcuaNodeIdServicesVariableAudit = 3617
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryAtTimeDeleteEventType_ServerId OpcuaNodeIdServicesVariableAudit = 3618
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryAtTimeDeleteEventType_ClientAuditEntryId OpcuaNodeIdServicesVariableAudit = 3619
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryAtTimeDeleteEventType_ClientUserId OpcuaNodeIdServicesVariableAudit = 3620
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryAtTimeDeleteEventType_ParameterDataTypeId OpcuaNodeIdServicesVariableAudit = 3621
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryAtTimeDeleteEventType_UpdatedNode OpcuaNodeIdServicesVariableAudit = 3622
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventDeleteEventType_EventId OpcuaNodeIdServicesVariableAudit = 3623
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventDeleteEventType_EventType OpcuaNodeIdServicesVariableAudit = 3624
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventDeleteEventType_SourceNode OpcuaNodeIdServicesVariableAudit = 3625
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventDeleteEventType_SourceName OpcuaNodeIdServicesVariableAudit = 3626
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventDeleteEventType_Time OpcuaNodeIdServicesVariableAudit = 3627
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventDeleteEventType_ReceiveTime OpcuaNodeIdServicesVariableAudit = 3628
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventDeleteEventType_LocalTime OpcuaNodeIdServicesVariableAudit = 3629
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventDeleteEventType_Message OpcuaNodeIdServicesVariableAudit = 3630
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventDeleteEventType_Severity OpcuaNodeIdServicesVariableAudit = 3631
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventDeleteEventType_ActionTimeStamp OpcuaNodeIdServicesVariableAudit = 3632
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventDeleteEventType_Status OpcuaNodeIdServicesVariableAudit = 3633
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventDeleteEventType_ServerId OpcuaNodeIdServicesVariableAudit = 3634
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventDeleteEventType_ClientAuditEntryId OpcuaNodeIdServicesVariableAudit = 3635
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventDeleteEventType_ClientUserId OpcuaNodeIdServicesVariableAudit = 3636
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventDeleteEventType_ParameterDataTypeId OpcuaNodeIdServicesVariableAudit = 3637
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventDeleteEventType_UpdatedNode OpcuaNodeIdServicesVariableAudit = 3638
+	OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_EventId OpcuaNodeIdServicesVariableAudit = 3639
+	OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_EventType OpcuaNodeIdServicesVariableAudit = 3640
+	OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_SourceNode OpcuaNodeIdServicesVariableAudit = 3641
+	OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_SourceName OpcuaNodeIdServicesVariableAudit = 3642
+	OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_Time OpcuaNodeIdServicesVariableAudit = 3643
+	OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_ReceiveTime OpcuaNodeIdServicesVariableAudit = 3644
+	OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_LocalTime OpcuaNodeIdServicesVariableAudit = 3645
+	OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_Message OpcuaNodeIdServicesVariableAudit = 3646
+	OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_Severity OpcuaNodeIdServicesVariableAudit = 3647
+	OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_ActionTimeStamp OpcuaNodeIdServicesVariableAudit = 3648
+	OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_Status OpcuaNodeIdServicesVariableAudit = 3649
+	OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_ServerId OpcuaNodeIdServicesVariableAudit = 3650
+	OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_ClientAuditEntryId OpcuaNodeIdServicesVariableAudit = 3651
+	OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_ClientUserId OpcuaNodeIdServicesVariableAudit = 3652
+	OpcuaNodeIdServicesVariableAudit_AuditUpdateStateEventType_EventId OpcuaNodeIdServicesVariableAudit = 3758
+	OpcuaNodeIdServicesVariableAudit_AuditUpdateStateEventType_EventType OpcuaNodeIdServicesVariableAudit = 3759
+	OpcuaNodeIdServicesVariableAudit_AuditUpdateStateEventType_SourceNode OpcuaNodeIdServicesVariableAudit = 3760
+	OpcuaNodeIdServicesVariableAudit_AuditUpdateStateEventType_SourceName OpcuaNodeIdServicesVariableAudit = 3761
+	OpcuaNodeIdServicesVariableAudit_AuditUpdateStateEventType_Time OpcuaNodeIdServicesVariableAudit = 3762
+	OpcuaNodeIdServicesVariableAudit_AuditUpdateStateEventType_ReceiveTime OpcuaNodeIdServicesVariableAudit = 3763
+	OpcuaNodeIdServicesVariableAudit_AuditUpdateStateEventType_LocalTime OpcuaNodeIdServicesVariableAudit = 3764
+	OpcuaNodeIdServicesVariableAudit_AuditUpdateStateEventType_Message OpcuaNodeIdServicesVariableAudit = 3765
+	OpcuaNodeIdServicesVariableAudit_AuditUpdateStateEventType_Severity OpcuaNodeIdServicesVariableAudit = 3766
+	OpcuaNodeIdServicesVariableAudit_AuditUpdateStateEventType_ActionTimeStamp OpcuaNodeIdServicesVariableAudit = 3767
+	OpcuaNodeIdServicesVariableAudit_AuditUpdateStateEventType_Status OpcuaNodeIdServicesVariableAudit = 3768
+	OpcuaNodeIdServicesVariableAudit_AuditUpdateStateEventType_ServerId OpcuaNodeIdServicesVariableAudit = 3769
+	OpcuaNodeIdServicesVariableAudit_AuditUpdateStateEventType_ClientAuditEntryId OpcuaNodeIdServicesVariableAudit = 3770
+	OpcuaNodeIdServicesVariableAudit_AuditUpdateStateEventType_ClientUserId OpcuaNodeIdServicesVariableAudit = 3771
+	OpcuaNodeIdServicesVariableAudit_AuditUpdateStateEventType_MethodId OpcuaNodeIdServicesVariableAudit = 3772
+	OpcuaNodeIdServicesVariableAudit_AuditUpdateStateEventType_InputArguments OpcuaNodeIdServicesVariableAudit = 3773
+	OpcuaNodeIdServicesVariableAudit_AuditConditionEventType_EventId OpcuaNodeIdServicesVariableAudit = 3996
+	OpcuaNodeIdServicesVariableAudit_AuditConditionEventType_EventType OpcuaNodeIdServicesVariableAudit = 3997
+	OpcuaNodeIdServicesVariableAudit_AuditConditionEventType_SourceNode OpcuaNodeIdServicesVariableAudit = 3998
+	OpcuaNodeIdServicesVariableAudit_AuditConditionEventType_SourceName OpcuaNodeIdServicesVariableAudit = 3999
+	OpcuaNodeIdServicesVariableAudit_AuditConditionEventType_Time OpcuaNodeIdServicesVariableAudit = 4000
+	OpcuaNodeIdServicesVariableAudit_AuditConditionEventType_ReceiveTime OpcuaNodeIdServicesVariableAudit = 4001
+	OpcuaNodeIdServicesVariableAudit_AuditConditionEventType_LocalTime OpcuaNodeIdServicesVariableAudit = 4002
+	OpcuaNodeIdServicesVariableAudit_AuditConditionEventType_Message OpcuaNodeIdServicesVariableAudit = 4003
+	OpcuaNodeIdServicesVariableAudit_AuditConditionEventType_Severity OpcuaNodeIdServicesVariableAudit = 4004
+	OpcuaNodeIdServicesVariableAudit_AuditConditionEventType_ActionTimeStamp OpcuaNodeIdServicesVariableAudit = 4005
+	OpcuaNodeIdServicesVariableAudit_AuditConditionEventType_Status OpcuaNodeIdServicesVariableAudit = 4006
+	OpcuaNodeIdServicesVariableAudit_AuditConditionEventType_ServerId OpcuaNodeIdServicesVariableAudit = 4007
+	OpcuaNodeIdServicesVariableAudit_AuditConditionEventType_ClientAuditEntryId OpcuaNodeIdServicesVariableAudit = 4008
+	OpcuaNodeIdServicesVariableAudit_AuditConditionEventType_ClientUserId OpcuaNodeIdServicesVariableAudit = 4009
+	OpcuaNodeIdServicesVariableAudit_AuditConditionEventType_MethodId OpcuaNodeIdServicesVariableAudit = 4010
+	OpcuaNodeIdServicesVariableAudit_AuditConditionEventType_InputArguments OpcuaNodeIdServicesVariableAudit = 4011
+	OpcuaNodeIdServicesVariableAudit_AuditConditionEnableEventType_EventId OpcuaNodeIdServicesVariableAudit = 4106
+	OpcuaNodeIdServicesVariableAudit_AuditConditionEnableEventType_EventType OpcuaNodeIdServicesVariableAudit = 4107
+	OpcuaNodeIdServicesVariableAudit_AuditConditionEnableEventType_SourceNode OpcuaNodeIdServicesVariableAudit = 4108
+	OpcuaNodeIdServicesVariableAudit_AuditConditionEnableEventType_SourceName OpcuaNodeIdServicesVariableAudit = 4109
+	OpcuaNodeIdServicesVariableAudit_AuditConditionEnableEventType_Time OpcuaNodeIdServicesVariableAudit = 4110
+	OpcuaNodeIdServicesVariableAudit_AuditConditionEnableEventType_ReceiveTime OpcuaNodeIdServicesVariableAudit = 4111
+	OpcuaNodeIdServicesVariableAudit_AuditConditionEnableEventType_LocalTime OpcuaNodeIdServicesVariableAudit = 4112
+	OpcuaNodeIdServicesVariableAudit_AuditConditionEnableEventType_Message OpcuaNodeIdServicesVariableAudit = 4113
+	OpcuaNodeIdServicesVariableAudit_AuditConditionEnableEventType_Severity OpcuaNodeIdServicesVariableAudit = 4114
+	OpcuaNodeIdServicesVariableAudit_AuditConditionEnableEventType_ActionTimeStamp OpcuaNodeIdServicesVariableAudit = 4115
+	OpcuaNodeIdServicesVariableAudit_AuditConditionEnableEventType_Status OpcuaNodeIdServicesVariableAudit = 4116
+	OpcuaNodeIdServicesVariableAudit_AuditConditionEnableEventType_ServerId OpcuaNodeIdServicesVariableAudit = 4117
+	OpcuaNodeIdServicesVariableAudit_AuditConditionEnableEventType_ClientAuditEntryId OpcuaNodeIdServicesVariableAudit = 4118
+	OpcuaNodeIdServicesVariableAudit_AuditConditionEnableEventType_ClientUserId OpcuaNodeIdServicesVariableAudit = 4119
+	OpcuaNodeIdServicesVariableAudit_AuditConditionEnableEventType_MethodId OpcuaNodeIdServicesVariableAudit = 4120
+	OpcuaNodeIdServicesVariableAudit_AuditConditionEnableEventType_InputArguments OpcuaNodeIdServicesVariableAudit = 4121
+	OpcuaNodeIdServicesVariableAudit_AuditConditionCommentEventType_EventId OpcuaNodeIdServicesVariableAudit = 4170
+	OpcuaNodeIdServicesVariableAudit_AuditConditionCommentEventType_EventType OpcuaNodeIdServicesVariableAudit = 4171
+	OpcuaNodeIdServicesVariableAudit_AuditConditionCommentEventType_SourceNode OpcuaNodeIdServicesVariableAudit = 4172
+	OpcuaNodeIdServicesVariableAudit_AuditConditionCommentEventType_SourceName OpcuaNodeIdServicesVariableAudit = 4173
+	OpcuaNodeIdServicesVariableAudit_AuditConditionCommentEventType_Time OpcuaNodeIdServicesVariableAudit = 4174
+	OpcuaNodeIdServicesVariableAudit_AuditConditionCommentEventType_ReceiveTime OpcuaNodeIdServicesVariableAudit = 4175
+	OpcuaNodeIdServicesVariableAudit_AuditConditionCommentEventType_LocalTime OpcuaNodeIdServicesVariableAudit = 4176
+	OpcuaNodeIdServicesVariableAudit_AuditConditionCommentEventType_Message OpcuaNodeIdServicesVariableAudit = 4177
+	OpcuaNodeIdServicesVariableAudit_AuditConditionCommentEventType_Severity OpcuaNodeIdServicesVariableAudit = 4178
+	OpcuaNodeIdServicesVariableAudit_AuditConditionCommentEventType_ActionTimeStamp OpcuaNodeIdServicesVariableAudit = 4179
+	OpcuaNodeIdServicesVariableAudit_AuditConditionCommentEventType_Status OpcuaNodeIdServicesVariableAudit = 4180
+	OpcuaNodeIdServicesVariableAudit_AuditConditionCommentEventType_ServerId OpcuaNodeIdServicesVariableAudit = 4181
+	OpcuaNodeIdServicesVariableAudit_AuditConditionCommentEventType_ClientAuditEntryId OpcuaNodeIdServicesVariableAudit = 4182
+	OpcuaNodeIdServicesVariableAudit_AuditConditionCommentEventType_ClientUserId OpcuaNodeIdServicesVariableAudit = 4183
+	OpcuaNodeIdServicesVariableAudit_AuditConditionCommentEventType_MethodId OpcuaNodeIdServicesVariableAudit = 4184
+	OpcuaNodeIdServicesVariableAudit_AuditConditionCommentEventType_InputArguments OpcuaNodeIdServicesVariableAudit = 4185
+	OpcuaNodeIdServicesVariableAudit_AuditConditionRespondEventType_EventId OpcuaNodeIdServicesVariableAudit = 8928
+	OpcuaNodeIdServicesVariableAudit_AuditConditionRespondEventType_EventType OpcuaNodeIdServicesVariableAudit = 8929
+	OpcuaNodeIdServicesVariableAudit_AuditConditionRespondEventType_SourceNode OpcuaNodeIdServicesVariableAudit = 8930
+	OpcuaNodeIdServicesVariableAudit_AuditConditionRespondEventType_SourceName OpcuaNodeIdServicesVariableAudit = 8931
+	OpcuaNodeIdServicesVariableAudit_AuditConditionRespondEventType_Time OpcuaNodeIdServicesVariableAudit = 8932
+	OpcuaNodeIdServicesVariableAudit_AuditConditionRespondEventType_ReceiveTime OpcuaNodeIdServicesVariableAudit = 8933
+	OpcuaNodeIdServicesVariableAudit_AuditConditionRespondEventType_LocalTime OpcuaNodeIdServicesVariableAudit = 8934
+	OpcuaNodeIdServicesVariableAudit_AuditConditionRespondEventType_Message OpcuaNodeIdServicesVariableAudit = 8935
+	OpcuaNodeIdServicesVariableAudit_AuditConditionRespondEventType_Severity OpcuaNodeIdServicesVariableAudit = 8936
+	OpcuaNodeIdServicesVariableAudit_AuditConditionRespondEventType_ActionTimeStamp OpcuaNodeIdServicesVariableAudit = 8937
+	OpcuaNodeIdServicesVariableAudit_AuditConditionRespondEventType_Status OpcuaNodeIdServicesVariableAudit = 8938
+	OpcuaNodeIdServicesVariableAudit_AuditConditionRespondEventType_ServerId OpcuaNodeIdServicesVariableAudit = 8939
+	OpcuaNodeIdServicesVariableAudit_AuditConditionRespondEventType_ClientAuditEntryId OpcuaNodeIdServicesVariableAudit = 8940
+	OpcuaNodeIdServicesVariableAudit_AuditConditionRespondEventType_ClientUserId OpcuaNodeIdServicesVariableAudit = 8941
+	OpcuaNodeIdServicesVariableAudit_AuditConditionRespondEventType_MethodId OpcuaNodeIdServicesVariableAudit = 8942
+	OpcuaNodeIdServicesVariableAudit_AuditConditionRespondEventType_InputArguments OpcuaNodeIdServicesVariableAudit = 8943
+	OpcuaNodeIdServicesVariableAudit_AuditConditionAcknowledgeEventType_EventId OpcuaNodeIdServicesVariableAudit = 8945
+	OpcuaNodeIdServicesVariableAudit_AuditConditionAcknowledgeEventType_EventType OpcuaNodeIdServicesVariableAudit = 8946
+	OpcuaNodeIdServicesVariableAudit_AuditConditionAcknowledgeEventType_SourceNode OpcuaNodeIdServicesVariableAudit = 8947
+	OpcuaNodeIdServicesVariableAudit_AuditConditionAcknowledgeEventType_SourceName OpcuaNodeIdServicesVariableAudit = 8948
+	OpcuaNodeIdServicesVariableAudit_AuditConditionAcknowledgeEventType_Time OpcuaNodeIdServicesVariableAudit = 8949
+	OpcuaNodeIdServicesVariableAudit_AuditConditionAcknowledgeEventType_ReceiveTime OpcuaNodeIdServicesVariableAudit = 8950
+	OpcuaNodeIdServicesVariableAudit_AuditConditionAcknowledgeEventType_LocalTime OpcuaNodeIdServicesVariableAudit = 8951
+	OpcuaNodeIdServicesVariableAudit_AuditConditionAcknowledgeEventType_Message OpcuaNodeIdServicesVariableAudit = 8952
+	OpcuaNodeIdServicesVariableAudit_AuditConditionAcknowledgeEventType_Severity OpcuaNodeIdServicesVariableAudit = 8953
+	OpcuaNodeIdServicesVariableAudit_AuditConditionAcknowledgeEventType_ActionTimeStamp OpcuaNodeIdServicesVariableAudit = 8954
+	OpcuaNodeIdServicesVariableAudit_AuditConditionAcknowledgeEventType_Status OpcuaNodeIdServicesVariableAudit = 8955
+	OpcuaNodeIdServicesVariableAudit_AuditConditionAcknowledgeEventType_ServerId OpcuaNodeIdServicesVariableAudit = 8956
+	OpcuaNodeIdServicesVariableAudit_AuditConditionAcknowledgeEventType_ClientAuditEntryId OpcuaNodeIdServicesVariableAudit = 8957
+	OpcuaNodeIdServicesVariableAudit_AuditConditionAcknowledgeEventType_ClientUserId OpcuaNodeIdServicesVariableAudit = 8958
+	OpcuaNodeIdServicesVariableAudit_AuditConditionAcknowledgeEventType_MethodId OpcuaNodeIdServicesVariableAudit = 8959
+	OpcuaNodeIdServicesVariableAudit_AuditConditionAcknowledgeEventType_InputArguments OpcuaNodeIdServicesVariableAudit = 8960
+	OpcuaNodeIdServicesVariableAudit_AuditConditionConfirmEventType_EventId OpcuaNodeIdServicesVariableAudit = 8962
+	OpcuaNodeIdServicesVariableAudit_AuditConditionConfirmEventType_EventType OpcuaNodeIdServicesVariableAudit = 8963
+	OpcuaNodeIdServicesVariableAudit_AuditConditionConfirmEventType_SourceNode OpcuaNodeIdServicesVariableAudit = 8964
+	OpcuaNodeIdServicesVariableAudit_AuditConditionConfirmEventType_SourceName OpcuaNodeIdServicesVariableAudit = 8965
+	OpcuaNodeIdServicesVariableAudit_AuditConditionConfirmEventType_Time OpcuaNodeIdServicesVariableAudit = 8966
+	OpcuaNodeIdServicesVariableAudit_AuditConditionConfirmEventType_ReceiveTime OpcuaNodeIdServicesVariableAudit = 8967
+	OpcuaNodeIdServicesVariableAudit_AuditConditionConfirmEventType_LocalTime OpcuaNodeIdServicesVariableAudit = 8968
+	OpcuaNodeIdServicesVariableAudit_AuditConditionConfirmEventType_Message OpcuaNodeIdServicesVariableAudit = 8969
+	OpcuaNodeIdServicesVariableAudit_AuditConditionConfirmEventType_Severity OpcuaNodeIdServicesVariableAudit = 8970
+	OpcuaNodeIdServicesVariableAudit_AuditConditionConfirmEventType_ActionTimeStamp OpcuaNodeIdServicesVariableAudit = 8971
+	OpcuaNodeIdServicesVariableAudit_AuditConditionConfirmEventType_Status OpcuaNodeIdServicesVariableAudit = 8972
+	OpcuaNodeIdServicesVariableAudit_AuditConditionConfirmEventType_ServerId OpcuaNodeIdServicesVariableAudit = 8973
+	OpcuaNodeIdServicesVariableAudit_AuditConditionConfirmEventType_ClientAuditEntryId OpcuaNodeIdServicesVariableAudit = 8974
+	OpcuaNodeIdServicesVariableAudit_AuditConditionConfirmEventType_ClientUserId OpcuaNodeIdServicesVariableAudit = 8975
+	OpcuaNodeIdServicesVariableAudit_AuditConditionConfirmEventType_MethodId OpcuaNodeIdServicesVariableAudit = 8976
+	OpcuaNodeIdServicesVariableAudit_AuditConditionConfirmEventType_InputArguments OpcuaNodeIdServicesVariableAudit = 8977
+	OpcuaNodeIdServicesVariableAudit_AuditConditionShelvingEventType_EventId OpcuaNodeIdServicesVariableAudit = 11094
+	OpcuaNodeIdServicesVariableAudit_AuditConditionShelvingEventType_EventType OpcuaNodeIdServicesVariableAudit = 11095
+	OpcuaNodeIdServicesVariableAudit_AuditConditionShelvingEventType_SourceNode OpcuaNodeIdServicesVariableAudit = 11096
+	OpcuaNodeIdServicesVariableAudit_AuditConditionShelvingEventType_SourceName OpcuaNodeIdServicesVariableAudit = 11097
+	OpcuaNodeIdServicesVariableAudit_AuditConditionShelvingEventType_Time OpcuaNodeIdServicesVariableAudit = 11098
+	OpcuaNodeIdServicesVariableAudit_AuditConditionShelvingEventType_ReceiveTime OpcuaNodeIdServicesVariableAudit = 11099
+	OpcuaNodeIdServicesVariableAudit_AuditConditionShelvingEventType_LocalTime OpcuaNodeIdServicesVariableAudit = 11100
+	OpcuaNodeIdServicesVariableAudit_AuditConditionShelvingEventType_Message OpcuaNodeIdServicesVariableAudit = 11101
+	OpcuaNodeIdServicesVariableAudit_AuditConditionShelvingEventType_Severity OpcuaNodeIdServicesVariableAudit = 11102
+	OpcuaNodeIdServicesVariableAudit_AuditConditionShelvingEventType_ActionTimeStamp OpcuaNodeIdServicesVariableAudit = 11103
+	OpcuaNodeIdServicesVariableAudit_AuditConditionShelvingEventType_Status OpcuaNodeIdServicesVariableAudit = 11104
+	OpcuaNodeIdServicesVariableAudit_AuditConditionShelvingEventType_ServerId OpcuaNodeIdServicesVariableAudit = 11105
+	OpcuaNodeIdServicesVariableAudit_AuditConditionShelvingEventType_ClientAuditEntryId OpcuaNodeIdServicesVariableAudit = 11106
+	OpcuaNodeIdServicesVariableAudit_AuditConditionShelvingEventType_ClientUserId OpcuaNodeIdServicesVariableAudit = 11107
+	OpcuaNodeIdServicesVariableAudit_AuditConditionShelvingEventType_MethodId OpcuaNodeIdServicesVariableAudit = 11108
+	OpcuaNodeIdServicesVariableAudit_AuditConditionShelvingEventType_InputArguments OpcuaNodeIdServicesVariableAudit = 11109
+	OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_SecureChannelId OpcuaNodeIdServicesVariableAudit = 11485
+	OpcuaNodeIdServicesVariableAudit_AuditConditionCommentEventType_Comment OpcuaNodeIdServicesVariableAudit = 11851
+	OpcuaNodeIdServicesVariableAudit_AuditConditionRespondEventType_SelectedResponse OpcuaNodeIdServicesVariableAudit = 11852
+	OpcuaNodeIdServicesVariableAudit_AuditConditionAcknowledgeEventType_Comment OpcuaNodeIdServicesVariableAudit = 11853
+	OpcuaNodeIdServicesVariableAudit_AuditConditionConfirmEventType_Comment OpcuaNodeIdServicesVariableAudit = 11854
+	OpcuaNodeIdServicesVariableAudit_AuditConditionShelvingEventType_ShelvingTime OpcuaNodeIdServicesVariableAudit = 11855
+	OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_EventId OpcuaNodeIdServicesVariableAudit = 11857
+	OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_EventType OpcuaNodeIdServicesVariableAudit = 11858
+	OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_SourceNode OpcuaNodeIdServicesVariableAudit = 11859
+	OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_SourceName OpcuaNodeIdServicesVariableAudit = 11860
+	OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_Time OpcuaNodeIdServicesVariableAudit = 11861
+	OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_ReceiveTime OpcuaNodeIdServicesVariableAudit = 11862
+	OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_LocalTime OpcuaNodeIdServicesVariableAudit = 11863
+	OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_Message OpcuaNodeIdServicesVariableAudit = 11864
+	OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_Severity OpcuaNodeIdServicesVariableAudit = 11865
+	OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_ActionTimeStamp OpcuaNodeIdServicesVariableAudit = 11866
+	OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_Status OpcuaNodeIdServicesVariableAudit = 11867
+	OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_ServerId OpcuaNodeIdServicesVariableAudit = 11868
+	OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_ClientAuditEntryId OpcuaNodeIdServicesVariableAudit = 11869
+	OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_ClientUserId OpcuaNodeIdServicesVariableAudit = 11870
+	OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_MethodId OpcuaNodeIdServicesVariableAudit = 11871
+	OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_InputArguments OpcuaNodeIdServicesVariableAudit = 11872
+	OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_OldStateId OpcuaNodeIdServicesVariableAudit = 11873
+	OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_NewStateId OpcuaNodeIdServicesVariableAudit = 11874
+	OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_TransitionNumber OpcuaNodeIdServicesVariableAudit = 11875
+	OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_SessionId OpcuaNodeIdServicesVariableAudit = 14413
+	OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_SessionId OpcuaNodeIdServicesVariableAudit = 14414
+	OpcuaNodeIdServicesVariableAudit_AuditConditionResetEventType_EventId OpcuaNodeIdServicesVariableAudit = 15014
+	OpcuaNodeIdServicesVariableAudit_AuditConditionResetEventType_EventType OpcuaNodeIdServicesVariableAudit = 15015
+	OpcuaNodeIdServicesVariableAudit_AuditConditionResetEventType_SourceNode OpcuaNodeIdServicesVariableAudit = 15016
+	OpcuaNodeIdServicesVariableAudit_AuditConditionResetEventType_SourceName OpcuaNodeIdServicesVariableAudit = 15017
+	OpcuaNodeIdServicesVariableAudit_AuditConditionResetEventType_Time OpcuaNodeIdServicesVariableAudit = 15018
+	OpcuaNodeIdServicesVariableAudit_AuditConditionResetEventType_ReceiveTime OpcuaNodeIdServicesVariableAudit = 15019
+	OpcuaNodeIdServicesVariableAudit_AuditConditionResetEventType_LocalTime OpcuaNodeIdServicesVariableAudit = 15020
+	OpcuaNodeIdServicesVariableAudit_AuditConditionResetEventType_Message OpcuaNodeIdServicesVariableAudit = 15021
+	OpcuaNodeIdServicesVariableAudit_AuditConditionResetEventType_Severity OpcuaNodeIdServicesVariableAudit = 15022
+	OpcuaNodeIdServicesVariableAudit_AuditConditionResetEventType_ActionTimeStamp OpcuaNodeIdServicesVariableAudit = 15023
+	OpcuaNodeIdServicesVariableAudit_AuditConditionResetEventType_Status OpcuaNodeIdServicesVariableAudit = 15024
+	OpcuaNodeIdServicesVariableAudit_AuditConditionResetEventType_ServerId OpcuaNodeIdServicesVariableAudit = 15025
+	OpcuaNodeIdServicesVariableAudit_AuditConditionResetEventType_ClientAuditEntryId OpcuaNodeIdServicesVariableAudit = 15026
+	OpcuaNodeIdServicesVariableAudit_AuditConditionResetEventType_ClientUserId OpcuaNodeIdServicesVariableAudit = 15027
+	OpcuaNodeIdServicesVariableAudit_AuditConditionResetEventType_MethodId OpcuaNodeIdServicesVariableAudit = 15028
+	OpcuaNodeIdServicesVariableAudit_AuditConditionResetEventType_InputArguments OpcuaNodeIdServicesVariableAudit = 15029
+	OpcuaNodeIdServicesVariableAudit_AuditConditionCommentEventType_ConditionEventId OpcuaNodeIdServicesVariableAudit = 17222
+	OpcuaNodeIdServicesVariableAudit_AuditConditionAcknowledgeEventType_ConditionEventId OpcuaNodeIdServicesVariableAudit = 17223
+	OpcuaNodeIdServicesVariableAudit_AuditConditionConfirmEventType_ConditionEventId OpcuaNodeIdServicesVariableAudit = 17224
+	OpcuaNodeIdServicesVariableAudit_AuditConditionSuppressionEventType_EventId OpcuaNodeIdServicesVariableAudit = 17226
+	OpcuaNodeIdServicesVariableAudit_AuditConditionSuppressionEventType_EventType OpcuaNodeIdServicesVariableAudit = 17227
+	OpcuaNodeIdServicesVariableAudit_AuditConditionSuppressionEventType_SourceNode OpcuaNodeIdServicesVariableAudit = 17228
+	OpcuaNodeIdServicesVariableAudit_AuditConditionSuppressionEventType_SourceName OpcuaNodeIdServicesVariableAudit = 17229
+	OpcuaNodeIdServicesVariableAudit_AuditConditionSuppressionEventType_Time OpcuaNodeIdServicesVariableAudit = 17230
+	OpcuaNodeIdServicesVariableAudit_AuditConditionSuppressionEventType_ReceiveTime OpcuaNodeIdServicesVariableAudit = 17231
+	OpcuaNodeIdServicesVariableAudit_AuditConditionSuppressionEventType_LocalTime OpcuaNodeIdServicesVariableAudit = 17232
+	OpcuaNodeIdServicesVariableAudit_AuditConditionSuppressionEventType_Message OpcuaNodeIdServicesVariableAudit = 17233
+	OpcuaNodeIdServicesVariableAudit_AuditConditionSuppressionEventType_Severity OpcuaNodeIdServicesVariableAudit = 17234
+	OpcuaNodeIdServicesVariableAudit_AuditConditionSuppressionEventType_ActionTimeStamp OpcuaNodeIdServicesVariableAudit = 17235
+	OpcuaNodeIdServicesVariableAudit_AuditConditionSuppressionEventType_Status OpcuaNodeIdServicesVariableAudit = 17236
+	OpcuaNodeIdServicesVariableAudit_AuditConditionSuppressionEventType_ServerId OpcuaNodeIdServicesVariableAudit = 17237
+	OpcuaNodeIdServicesVariableAudit_AuditConditionSuppressionEventType_ClientAuditEntryId OpcuaNodeIdServicesVariableAudit = 17238
+	OpcuaNodeIdServicesVariableAudit_AuditConditionSuppressionEventType_ClientUserId OpcuaNodeIdServicesVariableAudit = 17239
+	OpcuaNodeIdServicesVariableAudit_AuditConditionSuppressionEventType_MethodId OpcuaNodeIdServicesVariableAudit = 17240
+	OpcuaNodeIdServicesVariableAudit_AuditConditionSuppressionEventType_InputArguments OpcuaNodeIdServicesVariableAudit = 17241
+	OpcuaNodeIdServicesVariableAudit_AuditConditionSilenceEventType_EventId OpcuaNodeIdServicesVariableAudit = 17243
+	OpcuaNodeIdServicesVariableAudit_AuditConditionSilenceEventType_EventType OpcuaNodeIdServicesVariableAudit = 17244
+	OpcuaNodeIdServicesVariableAudit_AuditConditionSilenceEventType_SourceNode OpcuaNodeIdServicesVariableAudit = 17245
+	OpcuaNodeIdServicesVariableAudit_AuditConditionSilenceEventType_SourceName OpcuaNodeIdServicesVariableAudit = 17246
+	OpcuaNodeIdServicesVariableAudit_AuditConditionSilenceEventType_Time OpcuaNodeIdServicesVariableAudit = 17247
+	OpcuaNodeIdServicesVariableAudit_AuditConditionSilenceEventType_ReceiveTime OpcuaNodeIdServicesVariableAudit = 17248
+	OpcuaNodeIdServicesVariableAudit_AuditConditionSilenceEventType_LocalTime OpcuaNodeIdServicesVariableAudit = 17249
+	OpcuaNodeIdServicesVariableAudit_AuditConditionSilenceEventType_Message OpcuaNodeIdServicesVariableAudit = 17250
+	OpcuaNodeIdServicesVariableAudit_AuditConditionSilenceEventType_Severity OpcuaNodeIdServicesVariableAudit = 17251
+	OpcuaNodeIdServicesVariableAudit_AuditConditionSilenceEventType_ActionTimeStamp OpcuaNodeIdServicesVariableAudit = 17252
+	OpcuaNodeIdServicesVariableAudit_AuditConditionSilenceEventType_Status OpcuaNodeIdServicesVariableAudit = 17253
+	OpcuaNodeIdServicesVariableAudit_AuditConditionSilenceEventType_ServerId OpcuaNodeIdServicesVariableAudit = 17254
+	OpcuaNodeIdServicesVariableAudit_AuditConditionSilenceEventType_ClientAuditEntryId OpcuaNodeIdServicesVariableAudit = 17255
+	OpcuaNodeIdServicesVariableAudit_AuditConditionSilenceEventType_ClientUserId OpcuaNodeIdServicesVariableAudit = 17256
+	OpcuaNodeIdServicesVariableAudit_AuditConditionSilenceEventType_MethodId OpcuaNodeIdServicesVariableAudit = 17257
+	OpcuaNodeIdServicesVariableAudit_AuditConditionSilenceEventType_InputArguments OpcuaNodeIdServicesVariableAudit = 17258
+	OpcuaNodeIdServicesVariableAudit_AuditConditionOutOfServiceEventType_EventId OpcuaNodeIdServicesVariableAudit = 17260
+	OpcuaNodeIdServicesVariableAudit_AuditConditionOutOfServiceEventType_EventType OpcuaNodeIdServicesVariableAudit = 17261
+	OpcuaNodeIdServicesVariableAudit_AuditConditionOutOfServiceEventType_SourceNode OpcuaNodeIdServicesVariableAudit = 17262
+	OpcuaNodeIdServicesVariableAudit_AuditConditionOutOfServiceEventType_SourceName OpcuaNodeIdServicesVariableAudit = 17263
+	OpcuaNodeIdServicesVariableAudit_AuditConditionOutOfServiceEventType_Time OpcuaNodeIdServicesVariableAudit = 17264
+	OpcuaNodeIdServicesVariableAudit_AuditConditionOutOfServiceEventType_ReceiveTime OpcuaNodeIdServicesVariableAudit = 17265
+	OpcuaNodeIdServicesVariableAudit_AuditConditionOutOfServiceEventType_LocalTime OpcuaNodeIdServicesVariableAudit = 17266
+	OpcuaNodeIdServicesVariableAudit_AuditConditionOutOfServiceEventType_Message OpcuaNodeIdServicesVariableAudit = 17267
+	OpcuaNodeIdServicesVariableAudit_AuditConditionOutOfServiceEventType_Severity OpcuaNodeIdServicesVariableAudit = 17268
+	OpcuaNodeIdServicesVariableAudit_AuditConditionOutOfServiceEventType_ActionTimeStamp OpcuaNodeIdServicesVariableAudit = 17269
+	OpcuaNodeIdServicesVariableAudit_AuditConditionOutOfServiceEventType_Status OpcuaNodeIdServicesVariableAudit = 17270
+	OpcuaNodeIdServicesVariableAudit_AuditConditionOutOfServiceEventType_ServerId OpcuaNodeIdServicesVariableAudit = 17271
+	OpcuaNodeIdServicesVariableAudit_AuditConditionOutOfServiceEventType_ClientAuditEntryId OpcuaNodeIdServicesVariableAudit = 17272
+	OpcuaNodeIdServicesVariableAudit_AuditConditionOutOfServiceEventType_ClientUserId OpcuaNodeIdServicesVariableAudit = 17273
+	OpcuaNodeIdServicesVariableAudit_AuditConditionOutOfServiceEventType_MethodId OpcuaNodeIdServicesVariableAudit = 17274
+	OpcuaNodeIdServicesVariableAudit_AuditConditionOutOfServiceEventType_InputArguments OpcuaNodeIdServicesVariableAudit = 17275
+	OpcuaNodeIdServicesVariableAudit_AuditSecurityEventType_StatusCodeId OpcuaNodeIdServicesVariableAudit = 17615
+	OpcuaNodeIdServicesVariableAudit_AuditChannelEventType_StatusCodeId OpcuaNodeIdServicesVariableAudit = 17616
+	OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_StatusCodeId OpcuaNodeIdServicesVariableAudit = 17617
+	OpcuaNodeIdServicesVariableAudit_AuditSessionEventType_StatusCodeId OpcuaNodeIdServicesVariableAudit = 17618
+	OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_StatusCodeId OpcuaNodeIdServicesVariableAudit = 17619
+	OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_StatusCodeId OpcuaNodeIdServicesVariableAudit = 17620
+	OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_StatusCodeId OpcuaNodeIdServicesVariableAudit = 17621
+	OpcuaNodeIdServicesVariableAudit_AuditCancelEventType_StatusCodeId OpcuaNodeIdServicesVariableAudit = 17622
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateEventType_StatusCodeId OpcuaNodeIdServicesVariableAudit = 17623
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateDataMismatchEventType_StatusCodeId OpcuaNodeIdServicesVariableAudit = 17624
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateExpiredEventType_StatusCodeId OpcuaNodeIdServicesVariableAudit = 17625
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateInvalidEventType_StatusCodeId OpcuaNodeIdServicesVariableAudit = 17626
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateUntrustedEventType_StatusCodeId OpcuaNodeIdServicesVariableAudit = 17627
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateRevokedEventType_StatusCodeId OpcuaNodeIdServicesVariableAudit = 17628
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateMismatchEventType_StatusCodeId OpcuaNodeIdServicesVariableAudit = 17629
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_EventId OpcuaNodeIdServicesVariableAudit = 19096
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_EventType OpcuaNodeIdServicesVariableAudit = 19097
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_SourceNode OpcuaNodeIdServicesVariableAudit = 19098
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_SourceName OpcuaNodeIdServicesVariableAudit = 19099
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_Time OpcuaNodeIdServicesVariableAudit = 19100
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_ReceiveTime OpcuaNodeIdServicesVariableAudit = 19101
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_LocalTime OpcuaNodeIdServicesVariableAudit = 19102
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_Message OpcuaNodeIdServicesVariableAudit = 19103
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_Severity OpcuaNodeIdServicesVariableAudit = 19104
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_ActionTimeStamp OpcuaNodeIdServicesVariableAudit = 19105
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_Status OpcuaNodeIdServicesVariableAudit = 19106
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_ServerId OpcuaNodeIdServicesVariableAudit = 19289
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_ClientAuditEntryId OpcuaNodeIdServicesVariableAudit = 19290
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_ClientUserId OpcuaNodeIdServicesVariableAudit = 19291
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_ParameterDataTypeId OpcuaNodeIdServicesVariableAudit = 19292
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_PerformInsertReplace OpcuaNodeIdServicesVariableAudit = 19293
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_NewValues OpcuaNodeIdServicesVariableAudit = 19294
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_OldValues OpcuaNodeIdServicesVariableAudit = 19295
+	OpcuaNodeIdServicesVariableAudit_AuditClientEventType_EventId OpcuaNodeIdServicesVariableAudit = 23607
+	OpcuaNodeIdServicesVariableAudit_AuditClientEventType_EventType OpcuaNodeIdServicesVariableAudit = 23610
+	OpcuaNodeIdServicesVariableAudit_AuditClientEventType_SourceNode OpcuaNodeIdServicesVariableAudit = 23611
+	OpcuaNodeIdServicesVariableAudit_AuditClientEventType_SourceName OpcuaNodeIdServicesVariableAudit = 23891
+	OpcuaNodeIdServicesVariableAudit_AuditClientEventType_Time OpcuaNodeIdServicesVariableAudit = 23892
+	OpcuaNodeIdServicesVariableAudit_AuditClientEventType_ReceiveTime OpcuaNodeIdServicesVariableAudit = 23893
+	OpcuaNodeIdServicesVariableAudit_AuditClientEventType_LocalTime OpcuaNodeIdServicesVariableAudit = 23894
+	OpcuaNodeIdServicesVariableAudit_AuditClientEventType_Message OpcuaNodeIdServicesVariableAudit = 23895
+	OpcuaNodeIdServicesVariableAudit_AuditClientEventType_Severity OpcuaNodeIdServicesVariableAudit = 23896
+	OpcuaNodeIdServicesVariableAudit_AuditClientEventType_ActionTimeStamp OpcuaNodeIdServicesVariableAudit = 23903
+	OpcuaNodeIdServicesVariableAudit_AuditClientEventType_Status OpcuaNodeIdServicesVariableAudit = 23904
+	OpcuaNodeIdServicesVariableAudit_AuditClientEventType_ServerId OpcuaNodeIdServicesVariableAudit = 23905
+	OpcuaNodeIdServicesVariableAudit_AuditClientEventType_ClientAuditEntryId OpcuaNodeIdServicesVariableAudit = 23906
+	OpcuaNodeIdServicesVariableAudit_AuditClientEventType_ClientUserId OpcuaNodeIdServicesVariableAudit = 23907
+	OpcuaNodeIdServicesVariableAudit_AuditClientEventType_ServerUri OpcuaNodeIdServicesVariableAudit = 23908
+	OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_EventId OpcuaNodeIdServicesVariableAudit = 23927
+	OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_EventType OpcuaNodeIdServicesVariableAudit = 23930
+	OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_SourceNode OpcuaNodeIdServicesVariableAudit = 23931
+	OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_SourceName OpcuaNodeIdServicesVariableAudit = 23959
+	OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_Time OpcuaNodeIdServicesVariableAudit = 23960
+	OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_ReceiveTime OpcuaNodeIdServicesVariableAudit = 23961
+	OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_LocalTime OpcuaNodeIdServicesVariableAudit = 23962
+	OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_Message OpcuaNodeIdServicesVariableAudit = 23963
+	OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_Severity OpcuaNodeIdServicesVariableAudit = 23964
+	OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_ActionTimeStamp OpcuaNodeIdServicesVariableAudit = 23971
+	OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_Status OpcuaNodeIdServicesVariableAudit = 23972
+	OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_ServerId OpcuaNodeIdServicesVariableAudit = 23973
+	OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_ClientAuditEntryId OpcuaNodeIdServicesVariableAudit = 23974
+	OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_ClientUserId OpcuaNodeIdServicesVariableAudit = 23975
+	OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_ServerUri OpcuaNodeIdServicesVariableAudit = 23976
+	OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_ObjectId OpcuaNodeIdServicesVariableAudit = 23994
+	OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_MethodId OpcuaNodeIdServicesVariableAudit = 23995
+	OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_StatusCodeId OpcuaNodeIdServicesVariableAudit = 23998
+	OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_InputArguments OpcuaNodeIdServicesVariableAudit = 23999
+	OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_CertificateErrorEventId OpcuaNodeIdServicesVariableAudit = 24135
+	OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_OutputArguments OpcuaNodeIdServicesVariableAudit = 25684
+	OpcuaNodeIdServicesVariableAudit_AuditEventType_ConditionClassId OpcuaNodeIdServicesVariableAudit = 31775
+	OpcuaNodeIdServicesVariableAudit_AuditEventType_ConditionClassName OpcuaNodeIdServicesVariableAudit = 31776
+	OpcuaNodeIdServicesVariableAudit_AuditEventType_ConditionSubClassId OpcuaNodeIdServicesVariableAudit = 31777
+	OpcuaNodeIdServicesVariableAudit_AuditEventType_ConditionSubClassName OpcuaNodeIdServicesVariableAudit = 31778
+	OpcuaNodeIdServicesVariableAudit_AuditSecurityEventType_ConditionClassId OpcuaNodeIdServicesVariableAudit = 31779
+	OpcuaNodeIdServicesVariableAudit_AuditSecurityEventType_ConditionClassName OpcuaNodeIdServicesVariableAudit = 31780
+	OpcuaNodeIdServicesVariableAudit_AuditSecurityEventType_ConditionSubClassId OpcuaNodeIdServicesVariableAudit = 31781
+	OpcuaNodeIdServicesVariableAudit_AuditSecurityEventType_ConditionSubClassName OpcuaNodeIdServicesVariableAudit = 31782
+	OpcuaNodeIdServicesVariableAudit_AuditChannelEventType_ConditionClassId OpcuaNodeIdServicesVariableAudit = 31783
+	OpcuaNodeIdServicesVariableAudit_AuditChannelEventType_ConditionClassName OpcuaNodeIdServicesVariableAudit = 31784
+	OpcuaNodeIdServicesVariableAudit_AuditChannelEventType_ConditionSubClassId OpcuaNodeIdServicesVariableAudit = 31785
+	OpcuaNodeIdServicesVariableAudit_AuditChannelEventType_ConditionSubClassName OpcuaNodeIdServicesVariableAudit = 31786
+	OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_ConditionClassId OpcuaNodeIdServicesVariableAudit = 31787
+	OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_ConditionClassName OpcuaNodeIdServicesVariableAudit = 31788
+	OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_ConditionSubClassId OpcuaNodeIdServicesVariableAudit = 31789
+	OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_ConditionSubClassName OpcuaNodeIdServicesVariableAudit = 31790
+	OpcuaNodeIdServicesVariableAudit_AuditSessionEventType_ConditionClassId OpcuaNodeIdServicesVariableAudit = 31791
+	OpcuaNodeIdServicesVariableAudit_AuditSessionEventType_ConditionClassName OpcuaNodeIdServicesVariableAudit = 31792
+	OpcuaNodeIdServicesVariableAudit_AuditSessionEventType_ConditionSubClassId OpcuaNodeIdServicesVariableAudit = 31793
+	OpcuaNodeIdServicesVariableAudit_AuditSessionEventType_ConditionSubClassName OpcuaNodeIdServicesVariableAudit = 31794
+	OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_ConditionClassId OpcuaNodeIdServicesVariableAudit = 31795
+	OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_ConditionClassName OpcuaNodeIdServicesVariableAudit = 31796
+	OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_ConditionSubClassId OpcuaNodeIdServicesVariableAudit = 31797
+	OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_ConditionSubClassName OpcuaNodeIdServicesVariableAudit = 31798
+	OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_ConditionClassId OpcuaNodeIdServicesVariableAudit = 31799
+	OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_ConditionClassName OpcuaNodeIdServicesVariableAudit = 31800
+	OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_ConditionSubClassId OpcuaNodeIdServicesVariableAudit = 31801
+	OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_ConditionSubClassName OpcuaNodeIdServicesVariableAudit = 31802
+	OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_ConditionClassId OpcuaNodeIdServicesVariableAudit = 31803
+	OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_ConditionClassName OpcuaNodeIdServicesVariableAudit = 31804
+	OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_ConditionSubClassId OpcuaNodeIdServicesVariableAudit = 31805
+	OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_ConditionSubClassName OpcuaNodeIdServicesVariableAudit = 31806
+	OpcuaNodeIdServicesVariableAudit_AuditCancelEventType_ConditionClassId OpcuaNodeIdServicesVariableAudit = 31807
+	OpcuaNodeIdServicesVariableAudit_AuditCancelEventType_ConditionClassName OpcuaNodeIdServicesVariableAudit = 31808
+	OpcuaNodeIdServicesVariableAudit_AuditCancelEventType_ConditionSubClassId OpcuaNodeIdServicesVariableAudit = 31809
+	OpcuaNodeIdServicesVariableAudit_AuditCancelEventType_ConditionSubClassName OpcuaNodeIdServicesVariableAudit = 31810
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateEventType_ConditionClassId OpcuaNodeIdServicesVariableAudit = 31811
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateEventType_ConditionClassName OpcuaNodeIdServicesVariableAudit = 31812
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateEventType_ConditionSubClassId OpcuaNodeIdServicesVariableAudit = 31813
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateEventType_ConditionSubClassName OpcuaNodeIdServicesVariableAudit = 31814
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateDataMismatchEventType_ConditionClassId OpcuaNodeIdServicesVariableAudit = 31815
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateDataMismatchEventType_ConditionClassName OpcuaNodeIdServicesVariableAudit = 31816
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateDataMismatchEventType_ConditionSubClassId OpcuaNodeIdServicesVariableAudit = 31817
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateDataMismatchEventType_ConditionSubClassName OpcuaNodeIdServicesVariableAudit = 31818
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateExpiredEventType_ConditionClassId OpcuaNodeIdServicesVariableAudit = 31819
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateExpiredEventType_ConditionClassName OpcuaNodeIdServicesVariableAudit = 31820
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateExpiredEventType_ConditionSubClassId OpcuaNodeIdServicesVariableAudit = 31821
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateExpiredEventType_ConditionSubClassName OpcuaNodeIdServicesVariableAudit = 31822
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateInvalidEventType_ConditionClassId OpcuaNodeIdServicesVariableAudit = 31823
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateInvalidEventType_ConditionClassName OpcuaNodeIdServicesVariableAudit = 31824
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateInvalidEventType_ConditionSubClassId OpcuaNodeIdServicesVariableAudit = 31825
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateInvalidEventType_ConditionSubClassName OpcuaNodeIdServicesVariableAudit = 31826
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateUntrustedEventType_ConditionClassId OpcuaNodeIdServicesVariableAudit = 31827
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateUntrustedEventType_ConditionClassName OpcuaNodeIdServicesVariableAudit = 31828
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateUntrustedEventType_ConditionSubClassId OpcuaNodeIdServicesVariableAudit = 31829
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateUntrustedEventType_ConditionSubClassName OpcuaNodeIdServicesVariableAudit = 31830
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateRevokedEventType_ConditionClassId OpcuaNodeIdServicesVariableAudit = 31831
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateRevokedEventType_ConditionClassName OpcuaNodeIdServicesVariableAudit = 31832
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateRevokedEventType_ConditionSubClassId OpcuaNodeIdServicesVariableAudit = 31833
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateRevokedEventType_ConditionSubClassName OpcuaNodeIdServicesVariableAudit = 31834
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateMismatchEventType_ConditionClassId OpcuaNodeIdServicesVariableAudit = 31835
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateMismatchEventType_ConditionClassName OpcuaNodeIdServicesVariableAudit = 31836
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateMismatchEventType_ConditionSubClassId OpcuaNodeIdServicesVariableAudit = 31837
+	OpcuaNodeIdServicesVariableAudit_AuditCertificateMismatchEventType_ConditionSubClassName OpcuaNodeIdServicesVariableAudit = 31838
+	OpcuaNodeIdServicesVariableAudit_AuditNodeManagementEventType_ConditionClassId OpcuaNodeIdServicesVariableAudit = 31839
+	OpcuaNodeIdServicesVariableAudit_AuditNodeManagementEventType_ConditionClassName OpcuaNodeIdServicesVariableAudit = 31840
+	OpcuaNodeIdServicesVariableAudit_AuditNodeManagementEventType_ConditionSubClassId OpcuaNodeIdServicesVariableAudit = 31841
+	OpcuaNodeIdServicesVariableAudit_AuditNodeManagementEventType_ConditionSubClassName OpcuaNodeIdServicesVariableAudit = 31842
+	OpcuaNodeIdServicesVariableAudit_AuditAddNodesEventType_ConditionClassId OpcuaNodeIdServicesVariableAudit = 31843
+	OpcuaNodeIdServicesVariableAudit_AuditAddNodesEventType_ConditionClassName OpcuaNodeIdServicesVariableAudit = 31844
+	OpcuaNodeIdServicesVariableAudit_AuditAddNodesEventType_ConditionSubClassId OpcuaNodeIdServicesVariableAudit = 31845
+	OpcuaNodeIdServicesVariableAudit_AuditAddNodesEventType_ConditionSubClassName OpcuaNodeIdServicesVariableAudit = 31846
+	OpcuaNodeIdServicesVariableAudit_AuditDeleteNodesEventType_ConditionClassId OpcuaNodeIdServicesVariableAudit = 31847
+	OpcuaNodeIdServicesVariableAudit_AuditDeleteNodesEventType_ConditionClassName OpcuaNodeIdServicesVariableAudit = 31848
+	OpcuaNodeIdServicesVariableAudit_AuditDeleteNodesEventType_ConditionSubClassId OpcuaNodeIdServicesVariableAudit = 31849
+	OpcuaNodeIdServicesVariableAudit_AuditDeleteNodesEventType_ConditionSubClassName OpcuaNodeIdServicesVariableAudit = 31850
+	OpcuaNodeIdServicesVariableAudit_AuditAddReferencesEventType_ConditionClassId OpcuaNodeIdServicesVariableAudit = 31851
+	OpcuaNodeIdServicesVariableAudit_AuditAddReferencesEventType_ConditionClassName OpcuaNodeIdServicesVariableAudit = 31852
+	OpcuaNodeIdServicesVariableAudit_AuditAddReferencesEventType_ConditionSubClassId OpcuaNodeIdServicesVariableAudit = 31853
+	OpcuaNodeIdServicesVariableAudit_AuditAddReferencesEventType_ConditionSubClassName OpcuaNodeIdServicesVariableAudit = 31854
+	OpcuaNodeIdServicesVariableAudit_AuditDeleteReferencesEventType_ConditionClassId OpcuaNodeIdServicesVariableAudit = 31855
+	OpcuaNodeIdServicesVariableAudit_AuditDeleteReferencesEventType_ConditionClassName OpcuaNodeIdServicesVariableAudit = 31856
+	OpcuaNodeIdServicesVariableAudit_AuditDeleteReferencesEventType_ConditionSubClassId OpcuaNodeIdServicesVariableAudit = 31857
+	OpcuaNodeIdServicesVariableAudit_AuditDeleteReferencesEventType_ConditionSubClassName OpcuaNodeIdServicesVariableAudit = 31858
+	OpcuaNodeIdServicesVariableAudit_AuditUpdateEventType_ConditionClassId OpcuaNodeIdServicesVariableAudit = 31859
+	OpcuaNodeIdServicesVariableAudit_AuditUpdateEventType_ConditionClassName OpcuaNodeIdServicesVariableAudit = 31860
+	OpcuaNodeIdServicesVariableAudit_AuditUpdateEventType_ConditionSubClassId OpcuaNodeIdServicesVariableAudit = 31861
+	OpcuaNodeIdServicesVariableAudit_AuditUpdateEventType_ConditionSubClassName OpcuaNodeIdServicesVariableAudit = 31862
+	OpcuaNodeIdServicesVariableAudit_AuditWriteUpdateEventType_ConditionClassId OpcuaNodeIdServicesVariableAudit = 31863
+	OpcuaNodeIdServicesVariableAudit_AuditWriteUpdateEventType_ConditionClassName OpcuaNodeIdServicesVariableAudit = 31864
+	OpcuaNodeIdServicesVariableAudit_AuditWriteUpdateEventType_ConditionSubClassId OpcuaNodeIdServicesVariableAudit = 31865
+	OpcuaNodeIdServicesVariableAudit_AuditWriteUpdateEventType_ConditionSubClassName OpcuaNodeIdServicesVariableAudit = 31866
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryUpdateEventType_ConditionClassId OpcuaNodeIdServicesVariableAudit = 31867
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryUpdateEventType_ConditionClassName OpcuaNodeIdServicesVariableAudit = 31868
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryUpdateEventType_ConditionSubClassId OpcuaNodeIdServicesVariableAudit = 31869
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryUpdateEventType_ConditionSubClassName OpcuaNodeIdServicesVariableAudit = 31870
+	OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_ConditionClassId OpcuaNodeIdServicesVariableAudit = 31871
+	OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_ConditionClassName OpcuaNodeIdServicesVariableAudit = 31872
+	OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_ConditionSubClassId OpcuaNodeIdServicesVariableAudit = 31873
+	OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_ConditionSubClassName OpcuaNodeIdServicesVariableAudit = 31874
+	OpcuaNodeIdServicesVariableAudit_AuditClientEventType_ConditionClassId OpcuaNodeIdServicesVariableAudit = 31907
+	OpcuaNodeIdServicesVariableAudit_AuditClientEventType_ConditionClassName OpcuaNodeIdServicesVariableAudit = 31908
+	OpcuaNodeIdServicesVariableAudit_AuditClientEventType_ConditionSubClassId OpcuaNodeIdServicesVariableAudit = 31909
+	OpcuaNodeIdServicesVariableAudit_AuditClientEventType_ConditionSubClassName OpcuaNodeIdServicesVariableAudit = 31910
+	OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_ConditionClassId OpcuaNodeIdServicesVariableAudit = 31911
+	OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_ConditionClassName OpcuaNodeIdServicesVariableAudit = 31912
+	OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_ConditionSubClassId OpcuaNodeIdServicesVariableAudit = 31913
 	OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_ConditionSubClassName OpcuaNodeIdServicesVariableAudit = 31914
-	OpcuaNodeIdServicesVariableAudit_AuditUpdateStateEventType_ConditionClassId                   OpcuaNodeIdServicesVariableAudit = 31923
-	OpcuaNodeIdServicesVariableAudit_AuditUpdateStateEventType_ConditionClassName                 OpcuaNodeIdServicesVariableAudit = 31924
-	OpcuaNodeIdServicesVariableAudit_AuditUpdateStateEventType_ConditionSubClassId                OpcuaNodeIdServicesVariableAudit = 31925
-	OpcuaNodeIdServicesVariableAudit_AuditUpdateStateEventType_ConditionSubClassName              OpcuaNodeIdServicesVariableAudit = 31926
-	OpcuaNodeIdServicesVariableAudit_AuditConditionEventType_ConditionClassId                     OpcuaNodeIdServicesVariableAudit = 31931
-	OpcuaNodeIdServicesVariableAudit_AuditConditionEventType_ConditionClassName                   OpcuaNodeIdServicesVariableAudit = 31932
-	OpcuaNodeIdServicesVariableAudit_AuditConditionEventType_ConditionSubClassId                  OpcuaNodeIdServicesVariableAudit = 31933
-	OpcuaNodeIdServicesVariableAudit_AuditConditionEventType_ConditionSubClassName                OpcuaNodeIdServicesVariableAudit = 31934
-	OpcuaNodeIdServicesVariableAudit_AuditConditionEnableEventType_ConditionClassId               OpcuaNodeIdServicesVariableAudit = 31935
-	OpcuaNodeIdServicesVariableAudit_AuditConditionEnableEventType_ConditionClassName             OpcuaNodeIdServicesVariableAudit = 31936
-	OpcuaNodeIdServicesVariableAudit_AuditConditionEnableEventType_ConditionSubClassId            OpcuaNodeIdServicesVariableAudit = 31937
-	OpcuaNodeIdServicesVariableAudit_AuditConditionEnableEventType_ConditionSubClassName          OpcuaNodeIdServicesVariableAudit = 31938
-	OpcuaNodeIdServicesVariableAudit_AuditConditionCommentEventType_ConditionClassId              OpcuaNodeIdServicesVariableAudit = 31939
-	OpcuaNodeIdServicesVariableAudit_AuditConditionCommentEventType_ConditionClassName            OpcuaNodeIdServicesVariableAudit = 31940
-	OpcuaNodeIdServicesVariableAudit_AuditConditionCommentEventType_ConditionSubClassId           OpcuaNodeIdServicesVariableAudit = 31941
-	OpcuaNodeIdServicesVariableAudit_AuditConditionCommentEventType_ConditionSubClassName         OpcuaNodeIdServicesVariableAudit = 31942
-	OpcuaNodeIdServicesVariableAudit_AuditConditionRespondEventType_ConditionClassId              OpcuaNodeIdServicesVariableAudit = 31943
-	OpcuaNodeIdServicesVariableAudit_AuditConditionRespondEventType_ConditionClassName            OpcuaNodeIdServicesVariableAudit = 31944
-	OpcuaNodeIdServicesVariableAudit_AuditConditionRespondEventType_ConditionSubClassId           OpcuaNodeIdServicesVariableAudit = 31945
-	OpcuaNodeIdServicesVariableAudit_AuditConditionRespondEventType_ConditionSubClassName         OpcuaNodeIdServicesVariableAudit = 31946
-	OpcuaNodeIdServicesVariableAudit_AuditConditionAcknowledgeEventType_ConditionClassId          OpcuaNodeIdServicesVariableAudit = 31947
-	OpcuaNodeIdServicesVariableAudit_AuditConditionAcknowledgeEventType_ConditionClassName        OpcuaNodeIdServicesVariableAudit = 31948
-	OpcuaNodeIdServicesVariableAudit_AuditConditionAcknowledgeEventType_ConditionSubClassId       OpcuaNodeIdServicesVariableAudit = 31949
-	OpcuaNodeIdServicesVariableAudit_AuditConditionAcknowledgeEventType_ConditionSubClassName     OpcuaNodeIdServicesVariableAudit = 31950
-	OpcuaNodeIdServicesVariableAudit_AuditConditionConfirmEventType_ConditionClassId              OpcuaNodeIdServicesVariableAudit = 31951
-	OpcuaNodeIdServicesVariableAudit_AuditConditionConfirmEventType_ConditionClassName            OpcuaNodeIdServicesVariableAudit = 31952
-	OpcuaNodeIdServicesVariableAudit_AuditConditionConfirmEventType_ConditionSubClassId           OpcuaNodeIdServicesVariableAudit = 31953
-	OpcuaNodeIdServicesVariableAudit_AuditConditionConfirmEventType_ConditionSubClassName         OpcuaNodeIdServicesVariableAudit = 31954
-	OpcuaNodeIdServicesVariableAudit_AuditConditionShelvingEventType_ConditionClassId             OpcuaNodeIdServicesVariableAudit = 31955
-	OpcuaNodeIdServicesVariableAudit_AuditConditionShelvingEventType_ConditionClassName           OpcuaNodeIdServicesVariableAudit = 31956
-	OpcuaNodeIdServicesVariableAudit_AuditConditionShelvingEventType_ConditionSubClassId          OpcuaNodeIdServicesVariableAudit = 31957
-	OpcuaNodeIdServicesVariableAudit_AuditConditionShelvingEventType_ConditionSubClassName        OpcuaNodeIdServicesVariableAudit = 31958
-	OpcuaNodeIdServicesVariableAudit_AuditConditionSuppressionEventType_ConditionClassId          OpcuaNodeIdServicesVariableAudit = 31959
-	OpcuaNodeIdServicesVariableAudit_AuditConditionSuppressionEventType_ConditionClassName        OpcuaNodeIdServicesVariableAudit = 31960
-	OpcuaNodeIdServicesVariableAudit_AuditConditionSuppressionEventType_ConditionSubClassId       OpcuaNodeIdServicesVariableAudit = 31961
-	OpcuaNodeIdServicesVariableAudit_AuditConditionSuppressionEventType_ConditionSubClassName     OpcuaNodeIdServicesVariableAudit = 31962
-	OpcuaNodeIdServicesVariableAudit_AuditConditionSilenceEventType_ConditionClassId              OpcuaNodeIdServicesVariableAudit = 31963
-	OpcuaNodeIdServicesVariableAudit_AuditConditionSilenceEventType_ConditionClassName            OpcuaNodeIdServicesVariableAudit = 31964
-	OpcuaNodeIdServicesVariableAudit_AuditConditionSilenceEventType_ConditionSubClassId           OpcuaNodeIdServicesVariableAudit = 31965
-	OpcuaNodeIdServicesVariableAudit_AuditConditionSilenceEventType_ConditionSubClassName         OpcuaNodeIdServicesVariableAudit = 31966
-	OpcuaNodeIdServicesVariableAudit_AuditConditionResetEventType_ConditionClassId                OpcuaNodeIdServicesVariableAudit = 31967
-	OpcuaNodeIdServicesVariableAudit_AuditConditionResetEventType_ConditionClassName              OpcuaNodeIdServicesVariableAudit = 31968
-	OpcuaNodeIdServicesVariableAudit_AuditConditionResetEventType_ConditionSubClassId             OpcuaNodeIdServicesVariableAudit = 31969
-	OpcuaNodeIdServicesVariableAudit_AuditConditionResetEventType_ConditionSubClassName           OpcuaNodeIdServicesVariableAudit = 31970
-	OpcuaNodeIdServicesVariableAudit_AuditConditionOutOfServiceEventType_ConditionClassId         OpcuaNodeIdServicesVariableAudit = 31971
-	OpcuaNodeIdServicesVariableAudit_AuditConditionOutOfServiceEventType_ConditionClassName       OpcuaNodeIdServicesVariableAudit = 31972
-	OpcuaNodeIdServicesVariableAudit_AuditConditionOutOfServiceEventType_ConditionSubClassId      OpcuaNodeIdServicesVariableAudit = 31973
-	OpcuaNodeIdServicesVariableAudit_AuditConditionOutOfServiceEventType_ConditionSubClassName    OpcuaNodeIdServicesVariableAudit = 31974
-	OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_ConditionClassId             OpcuaNodeIdServicesVariableAudit = 31991
-	OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_ConditionClassName           OpcuaNodeIdServicesVariableAudit = 31992
-	OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_ConditionSubClassId          OpcuaNodeIdServicesVariableAudit = 31993
-	OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_ConditionSubClassName        OpcuaNodeIdServicesVariableAudit = 31994
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_ConditionClassId            OpcuaNodeIdServicesVariableAudit = 31999
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_ConditionClassName          OpcuaNodeIdServicesVariableAudit = 32000
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_ConditionSubClassId         OpcuaNodeIdServicesVariableAudit = 32001
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_ConditionSubClassName       OpcuaNodeIdServicesVariableAudit = 32002
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_ConditionClassId            OpcuaNodeIdServicesVariableAudit = 32003
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_ConditionClassName          OpcuaNodeIdServicesVariableAudit = 32004
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_ConditionSubClassId         OpcuaNodeIdServicesVariableAudit = 32005
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_ConditionSubClassName       OpcuaNodeIdServicesVariableAudit = 32006
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_ConditionClassId       OpcuaNodeIdServicesVariableAudit = 32007
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_ConditionClassName     OpcuaNodeIdServicesVariableAudit = 32008
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_ConditionSubClassId    OpcuaNodeIdServicesVariableAudit = 32009
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_ConditionSubClassName  OpcuaNodeIdServicesVariableAudit = 32010
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryDeleteEventType_ConditionClassId                 OpcuaNodeIdServicesVariableAudit = 32011
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryDeleteEventType_ConditionClassName               OpcuaNodeIdServicesVariableAudit = 32012
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryDeleteEventType_ConditionSubClassId              OpcuaNodeIdServicesVariableAudit = 32013
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryDeleteEventType_ConditionSubClassName            OpcuaNodeIdServicesVariableAudit = 32014
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_ConditionClassId        OpcuaNodeIdServicesVariableAudit = 32015
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_ConditionClassName      OpcuaNodeIdServicesVariableAudit = 32016
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_ConditionSubClassId     OpcuaNodeIdServicesVariableAudit = 32017
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_ConditionSubClassName   OpcuaNodeIdServicesVariableAudit = 32018
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryAtTimeDeleteEventType_ConditionClassId           OpcuaNodeIdServicesVariableAudit = 32019
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryAtTimeDeleteEventType_ConditionClassName         OpcuaNodeIdServicesVariableAudit = 32020
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryAtTimeDeleteEventType_ConditionSubClassId        OpcuaNodeIdServicesVariableAudit = 32021
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryAtTimeDeleteEventType_ConditionSubClassName      OpcuaNodeIdServicesVariableAudit = 32022
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventDeleteEventType_ConditionClassId            OpcuaNodeIdServicesVariableAudit = 32023
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventDeleteEventType_ConditionClassName          OpcuaNodeIdServicesVariableAudit = 32024
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventDeleteEventType_ConditionSubClassId         OpcuaNodeIdServicesVariableAudit = 32025
-	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventDeleteEventType_ConditionSubClassName       OpcuaNodeIdServicesVariableAudit = 32026
+	OpcuaNodeIdServicesVariableAudit_AuditUpdateStateEventType_ConditionClassId OpcuaNodeIdServicesVariableAudit = 31923
+	OpcuaNodeIdServicesVariableAudit_AuditUpdateStateEventType_ConditionClassName OpcuaNodeIdServicesVariableAudit = 31924
+	OpcuaNodeIdServicesVariableAudit_AuditUpdateStateEventType_ConditionSubClassId OpcuaNodeIdServicesVariableAudit = 31925
+	OpcuaNodeIdServicesVariableAudit_AuditUpdateStateEventType_ConditionSubClassName OpcuaNodeIdServicesVariableAudit = 31926
+	OpcuaNodeIdServicesVariableAudit_AuditConditionEventType_ConditionClassId OpcuaNodeIdServicesVariableAudit = 31931
+	OpcuaNodeIdServicesVariableAudit_AuditConditionEventType_ConditionClassName OpcuaNodeIdServicesVariableAudit = 31932
+	OpcuaNodeIdServicesVariableAudit_AuditConditionEventType_ConditionSubClassId OpcuaNodeIdServicesVariableAudit = 31933
+	OpcuaNodeIdServicesVariableAudit_AuditConditionEventType_ConditionSubClassName OpcuaNodeIdServicesVariableAudit = 31934
+	OpcuaNodeIdServicesVariableAudit_AuditConditionEnableEventType_ConditionClassId OpcuaNodeIdServicesVariableAudit = 31935
+	OpcuaNodeIdServicesVariableAudit_AuditConditionEnableEventType_ConditionClassName OpcuaNodeIdServicesVariableAudit = 31936
+	OpcuaNodeIdServicesVariableAudit_AuditConditionEnableEventType_ConditionSubClassId OpcuaNodeIdServicesVariableAudit = 31937
+	OpcuaNodeIdServicesVariableAudit_AuditConditionEnableEventType_ConditionSubClassName OpcuaNodeIdServicesVariableAudit = 31938
+	OpcuaNodeIdServicesVariableAudit_AuditConditionCommentEventType_ConditionClassId OpcuaNodeIdServicesVariableAudit = 31939
+	OpcuaNodeIdServicesVariableAudit_AuditConditionCommentEventType_ConditionClassName OpcuaNodeIdServicesVariableAudit = 31940
+	OpcuaNodeIdServicesVariableAudit_AuditConditionCommentEventType_ConditionSubClassId OpcuaNodeIdServicesVariableAudit = 31941
+	OpcuaNodeIdServicesVariableAudit_AuditConditionCommentEventType_ConditionSubClassName OpcuaNodeIdServicesVariableAudit = 31942
+	OpcuaNodeIdServicesVariableAudit_AuditConditionRespondEventType_ConditionClassId OpcuaNodeIdServicesVariableAudit = 31943
+	OpcuaNodeIdServicesVariableAudit_AuditConditionRespondEventType_ConditionClassName OpcuaNodeIdServicesVariableAudit = 31944
+	OpcuaNodeIdServicesVariableAudit_AuditConditionRespondEventType_ConditionSubClassId OpcuaNodeIdServicesVariableAudit = 31945
+	OpcuaNodeIdServicesVariableAudit_AuditConditionRespondEventType_ConditionSubClassName OpcuaNodeIdServicesVariableAudit = 31946
+	OpcuaNodeIdServicesVariableAudit_AuditConditionAcknowledgeEventType_ConditionClassId OpcuaNodeIdServicesVariableAudit = 31947
+	OpcuaNodeIdServicesVariableAudit_AuditConditionAcknowledgeEventType_ConditionClassName OpcuaNodeIdServicesVariableAudit = 31948
+	OpcuaNodeIdServicesVariableAudit_AuditConditionAcknowledgeEventType_ConditionSubClassId OpcuaNodeIdServicesVariableAudit = 31949
+	OpcuaNodeIdServicesVariableAudit_AuditConditionAcknowledgeEventType_ConditionSubClassName OpcuaNodeIdServicesVariableAudit = 31950
+	OpcuaNodeIdServicesVariableAudit_AuditConditionConfirmEventType_ConditionClassId OpcuaNodeIdServicesVariableAudit = 31951
+	OpcuaNodeIdServicesVariableAudit_AuditConditionConfirmEventType_ConditionClassName OpcuaNodeIdServicesVariableAudit = 31952
+	OpcuaNodeIdServicesVariableAudit_AuditConditionConfirmEventType_ConditionSubClassId OpcuaNodeIdServicesVariableAudit = 31953
+	OpcuaNodeIdServicesVariableAudit_AuditConditionConfirmEventType_ConditionSubClassName OpcuaNodeIdServicesVariableAudit = 31954
+	OpcuaNodeIdServicesVariableAudit_AuditConditionShelvingEventType_ConditionClassId OpcuaNodeIdServicesVariableAudit = 31955
+	OpcuaNodeIdServicesVariableAudit_AuditConditionShelvingEventType_ConditionClassName OpcuaNodeIdServicesVariableAudit = 31956
+	OpcuaNodeIdServicesVariableAudit_AuditConditionShelvingEventType_ConditionSubClassId OpcuaNodeIdServicesVariableAudit = 31957
+	OpcuaNodeIdServicesVariableAudit_AuditConditionShelvingEventType_ConditionSubClassName OpcuaNodeIdServicesVariableAudit = 31958
+	OpcuaNodeIdServicesVariableAudit_AuditConditionSuppressionEventType_ConditionClassId OpcuaNodeIdServicesVariableAudit = 31959
+	OpcuaNodeIdServicesVariableAudit_AuditConditionSuppressionEventType_ConditionClassName OpcuaNodeIdServicesVariableAudit = 31960
+	OpcuaNodeIdServicesVariableAudit_AuditConditionSuppressionEventType_ConditionSubClassId OpcuaNodeIdServicesVariableAudit = 31961
+	OpcuaNodeIdServicesVariableAudit_AuditConditionSuppressionEventType_ConditionSubClassName OpcuaNodeIdServicesVariableAudit = 31962
+	OpcuaNodeIdServicesVariableAudit_AuditConditionSilenceEventType_ConditionClassId OpcuaNodeIdServicesVariableAudit = 31963
+	OpcuaNodeIdServicesVariableAudit_AuditConditionSilenceEventType_ConditionClassName OpcuaNodeIdServicesVariableAudit = 31964
+	OpcuaNodeIdServicesVariableAudit_AuditConditionSilenceEventType_ConditionSubClassId OpcuaNodeIdServicesVariableAudit = 31965
+	OpcuaNodeIdServicesVariableAudit_AuditConditionSilenceEventType_ConditionSubClassName OpcuaNodeIdServicesVariableAudit = 31966
+	OpcuaNodeIdServicesVariableAudit_AuditConditionResetEventType_ConditionClassId OpcuaNodeIdServicesVariableAudit = 31967
+	OpcuaNodeIdServicesVariableAudit_AuditConditionResetEventType_ConditionClassName OpcuaNodeIdServicesVariableAudit = 31968
+	OpcuaNodeIdServicesVariableAudit_AuditConditionResetEventType_ConditionSubClassId OpcuaNodeIdServicesVariableAudit = 31969
+	OpcuaNodeIdServicesVariableAudit_AuditConditionResetEventType_ConditionSubClassName OpcuaNodeIdServicesVariableAudit = 31970
+	OpcuaNodeIdServicesVariableAudit_AuditConditionOutOfServiceEventType_ConditionClassId OpcuaNodeIdServicesVariableAudit = 31971
+	OpcuaNodeIdServicesVariableAudit_AuditConditionOutOfServiceEventType_ConditionClassName OpcuaNodeIdServicesVariableAudit = 31972
+	OpcuaNodeIdServicesVariableAudit_AuditConditionOutOfServiceEventType_ConditionSubClassId OpcuaNodeIdServicesVariableAudit = 31973
+	OpcuaNodeIdServicesVariableAudit_AuditConditionOutOfServiceEventType_ConditionSubClassName OpcuaNodeIdServicesVariableAudit = 31974
+	OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_ConditionClassId OpcuaNodeIdServicesVariableAudit = 31991
+	OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_ConditionClassName OpcuaNodeIdServicesVariableAudit = 31992
+	OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_ConditionSubClassId OpcuaNodeIdServicesVariableAudit = 31993
+	OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_ConditionSubClassName OpcuaNodeIdServicesVariableAudit = 31994
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_ConditionClassId OpcuaNodeIdServicesVariableAudit = 31999
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_ConditionClassName OpcuaNodeIdServicesVariableAudit = 32000
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_ConditionSubClassId OpcuaNodeIdServicesVariableAudit = 32001
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_ConditionSubClassName OpcuaNodeIdServicesVariableAudit = 32002
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_ConditionClassId OpcuaNodeIdServicesVariableAudit = 32003
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_ConditionClassName OpcuaNodeIdServicesVariableAudit = 32004
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_ConditionSubClassId OpcuaNodeIdServicesVariableAudit = 32005
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_ConditionSubClassName OpcuaNodeIdServicesVariableAudit = 32006
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_ConditionClassId OpcuaNodeIdServicesVariableAudit = 32007
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_ConditionClassName OpcuaNodeIdServicesVariableAudit = 32008
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_ConditionSubClassId OpcuaNodeIdServicesVariableAudit = 32009
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_ConditionSubClassName OpcuaNodeIdServicesVariableAudit = 32010
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryDeleteEventType_ConditionClassId OpcuaNodeIdServicesVariableAudit = 32011
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryDeleteEventType_ConditionClassName OpcuaNodeIdServicesVariableAudit = 32012
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryDeleteEventType_ConditionSubClassId OpcuaNodeIdServicesVariableAudit = 32013
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryDeleteEventType_ConditionSubClassName OpcuaNodeIdServicesVariableAudit = 32014
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_ConditionClassId OpcuaNodeIdServicesVariableAudit = 32015
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_ConditionClassName OpcuaNodeIdServicesVariableAudit = 32016
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_ConditionSubClassId OpcuaNodeIdServicesVariableAudit = 32017
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_ConditionSubClassName OpcuaNodeIdServicesVariableAudit = 32018
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryAtTimeDeleteEventType_ConditionClassId OpcuaNodeIdServicesVariableAudit = 32019
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryAtTimeDeleteEventType_ConditionClassName OpcuaNodeIdServicesVariableAudit = 32020
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryAtTimeDeleteEventType_ConditionSubClassId OpcuaNodeIdServicesVariableAudit = 32021
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryAtTimeDeleteEventType_ConditionSubClassName OpcuaNodeIdServicesVariableAudit = 32022
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventDeleteEventType_ConditionClassId OpcuaNodeIdServicesVariableAudit = 32023
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventDeleteEventType_ConditionClassName OpcuaNodeIdServicesVariableAudit = 32024
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventDeleteEventType_ConditionSubClassId OpcuaNodeIdServicesVariableAudit = 32025
+	OpcuaNodeIdServicesVariableAudit_AuditHistoryEventDeleteEventType_ConditionSubClassName OpcuaNodeIdServicesVariableAudit = 32026
 )
 
 var OpcuaNodeIdServicesVariableAuditValues []OpcuaNodeIdServicesVariableAudit
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariableAuditValues = []OpcuaNodeIdServicesVariableAudit{
+	OpcuaNodeIdServicesVariableAuditValues = []OpcuaNodeIdServicesVariableAudit {
 		OpcuaNodeIdServicesVariableAudit_AuditEventType_ActionTimeStamp,
 		OpcuaNodeIdServicesVariableAudit_AuditEventType_Status,
 		OpcuaNodeIdServicesVariableAudit_AuditEventType_ServerId,
@@ -2023,1976 +2023,1976 @@ func init() {
 
 func OpcuaNodeIdServicesVariableAuditByValue(value int32) (enum OpcuaNodeIdServicesVariableAudit, ok bool) {
 	switch value {
-	case 11094:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionShelvingEventType_EventId, true
-	case 11095:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionShelvingEventType_EventType, true
-	case 11096:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionShelvingEventType_SourceNode, true
-	case 11097:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionShelvingEventType_SourceName, true
-	case 11098:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionShelvingEventType_Time, true
-	case 11099:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionShelvingEventType_ReceiveTime, true
-	case 11100:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionShelvingEventType_LocalTime, true
-	case 11101:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionShelvingEventType_Message, true
-	case 11102:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionShelvingEventType_Severity, true
-	case 11103:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionShelvingEventType_ActionTimeStamp, true
-	case 11104:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionShelvingEventType_Status, true
-	case 11105:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionShelvingEventType_ServerId, true
-	case 11106:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionShelvingEventType_ClientAuditEntryId, true
-	case 11107:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionShelvingEventType_ClientUserId, true
-	case 11108:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionShelvingEventType_MethodId, true
-	case 11109:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionShelvingEventType_InputArguments, true
-	case 11485:
-		return OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_SecureChannelId, true
-	case 11851:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionCommentEventType_Comment, true
-	case 11852:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionRespondEventType_SelectedResponse, true
-	case 11853:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionAcknowledgeEventType_Comment, true
-	case 11854:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionConfirmEventType_Comment, true
-	case 11855:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionShelvingEventType_ShelvingTime, true
-	case 11857:
-		return OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_EventId, true
-	case 11858:
-		return OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_EventType, true
-	case 11859:
-		return OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_SourceNode, true
-	case 11860:
-		return OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_SourceName, true
-	case 11861:
-		return OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_Time, true
-	case 11862:
-		return OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_ReceiveTime, true
-	case 11863:
-		return OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_LocalTime, true
-	case 11864:
-		return OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_Message, true
-	case 11865:
-		return OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_Severity, true
-	case 11866:
-		return OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_ActionTimeStamp, true
-	case 11867:
-		return OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_Status, true
-	case 11868:
-		return OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_ServerId, true
-	case 11869:
-		return OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_ClientAuditEntryId, true
-	case 11870:
-		return OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_ClientUserId, true
-	case 11871:
-		return OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_MethodId, true
-	case 11872:
-		return OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_InputArguments, true
-	case 11873:
-		return OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_OldStateId, true
-	case 11874:
-		return OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_NewStateId, true
-	case 11875:
-		return OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_TransitionNumber, true
-	case 14413:
-		return OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_SessionId, true
-	case 14414:
-		return OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_SessionId, true
-	case 15014:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionResetEventType_EventId, true
-	case 15015:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionResetEventType_EventType, true
-	case 15016:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionResetEventType_SourceNode, true
-	case 15017:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionResetEventType_SourceName, true
-	case 15018:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionResetEventType_Time, true
-	case 15019:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionResetEventType_ReceiveTime, true
-	case 15020:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionResetEventType_LocalTime, true
-	case 15021:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionResetEventType_Message, true
-	case 15022:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionResetEventType_Severity, true
-	case 15023:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionResetEventType_ActionTimeStamp, true
-	case 15024:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionResetEventType_Status, true
-	case 15025:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionResetEventType_ServerId, true
-	case 15026:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionResetEventType_ClientAuditEntryId, true
-	case 15027:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionResetEventType_ClientUserId, true
-	case 15028:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionResetEventType_MethodId, true
-	case 15029:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionResetEventType_InputArguments, true
-	case 17222:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionCommentEventType_ConditionEventId, true
-	case 17223:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionAcknowledgeEventType_ConditionEventId, true
-	case 17224:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionConfirmEventType_ConditionEventId, true
-	case 17226:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionSuppressionEventType_EventId, true
-	case 17227:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionSuppressionEventType_EventType, true
-	case 17228:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionSuppressionEventType_SourceNode, true
-	case 17229:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionSuppressionEventType_SourceName, true
-	case 17230:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionSuppressionEventType_Time, true
-	case 17231:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionSuppressionEventType_ReceiveTime, true
-	case 17232:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionSuppressionEventType_LocalTime, true
-	case 17233:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionSuppressionEventType_Message, true
-	case 17234:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionSuppressionEventType_Severity, true
-	case 17235:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionSuppressionEventType_ActionTimeStamp, true
-	case 17236:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionSuppressionEventType_Status, true
-	case 17237:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionSuppressionEventType_ServerId, true
-	case 17238:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionSuppressionEventType_ClientAuditEntryId, true
-	case 17239:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionSuppressionEventType_ClientUserId, true
-	case 17240:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionSuppressionEventType_MethodId, true
-	case 17241:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionSuppressionEventType_InputArguments, true
-	case 17243:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionSilenceEventType_EventId, true
-	case 17244:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionSilenceEventType_EventType, true
-	case 17245:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionSilenceEventType_SourceNode, true
-	case 17246:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionSilenceEventType_SourceName, true
-	case 17247:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionSilenceEventType_Time, true
-	case 17248:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionSilenceEventType_ReceiveTime, true
-	case 17249:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionSilenceEventType_LocalTime, true
-	case 17250:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionSilenceEventType_Message, true
-	case 17251:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionSilenceEventType_Severity, true
-	case 17252:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionSilenceEventType_ActionTimeStamp, true
-	case 17253:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionSilenceEventType_Status, true
-	case 17254:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionSilenceEventType_ServerId, true
-	case 17255:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionSilenceEventType_ClientAuditEntryId, true
-	case 17256:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionSilenceEventType_ClientUserId, true
-	case 17257:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionSilenceEventType_MethodId, true
-	case 17258:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionSilenceEventType_InputArguments, true
-	case 17260:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionOutOfServiceEventType_EventId, true
-	case 17261:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionOutOfServiceEventType_EventType, true
-	case 17262:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionOutOfServiceEventType_SourceNode, true
-	case 17263:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionOutOfServiceEventType_SourceName, true
-	case 17264:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionOutOfServiceEventType_Time, true
-	case 17265:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionOutOfServiceEventType_ReceiveTime, true
-	case 17266:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionOutOfServiceEventType_LocalTime, true
-	case 17267:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionOutOfServiceEventType_Message, true
-	case 17268:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionOutOfServiceEventType_Severity, true
-	case 17269:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionOutOfServiceEventType_ActionTimeStamp, true
-	case 17270:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionOutOfServiceEventType_Status, true
-	case 17271:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionOutOfServiceEventType_ServerId, true
-	case 17272:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionOutOfServiceEventType_ClientAuditEntryId, true
-	case 17273:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionOutOfServiceEventType_ClientUserId, true
-	case 17274:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionOutOfServiceEventType_MethodId, true
-	case 17275:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionOutOfServiceEventType_InputArguments, true
-	case 17615:
-		return OpcuaNodeIdServicesVariableAudit_AuditSecurityEventType_StatusCodeId, true
-	case 17616:
-		return OpcuaNodeIdServicesVariableAudit_AuditChannelEventType_StatusCodeId, true
-	case 17617:
-		return OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_StatusCodeId, true
-	case 17618:
-		return OpcuaNodeIdServicesVariableAudit_AuditSessionEventType_StatusCodeId, true
-	case 17619:
-		return OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_StatusCodeId, true
-	case 17620:
-		return OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_StatusCodeId, true
-	case 17621:
-		return OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_StatusCodeId, true
-	case 17622:
-		return OpcuaNodeIdServicesVariableAudit_AuditCancelEventType_StatusCodeId, true
-	case 17623:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateEventType_StatusCodeId, true
-	case 17624:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateDataMismatchEventType_StatusCodeId, true
-	case 17625:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateExpiredEventType_StatusCodeId, true
-	case 17626:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateInvalidEventType_StatusCodeId, true
-	case 17627:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateUntrustedEventType_StatusCodeId, true
-	case 17628:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateRevokedEventType_StatusCodeId, true
-	case 17629:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateMismatchEventType_StatusCodeId, true
-	case 19096:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_EventId, true
-	case 19097:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_EventType, true
-	case 19098:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_SourceNode, true
-	case 19099:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_SourceName, true
-	case 19100:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_Time, true
-	case 19101:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_ReceiveTime, true
-	case 19102:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_LocalTime, true
-	case 19103:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_Message, true
-	case 19104:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_Severity, true
-	case 19105:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_ActionTimeStamp, true
-	case 19106:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_Status, true
-	case 19289:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_ServerId, true
-	case 19290:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_ClientAuditEntryId, true
-	case 19291:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_ClientUserId, true
-	case 19292:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_ParameterDataTypeId, true
-	case 19293:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_PerformInsertReplace, true
-	case 19294:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_NewValues, true
-	case 19295:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_OldValues, true
-	case 2053:
-		return OpcuaNodeIdServicesVariableAudit_AuditEventType_ActionTimeStamp, true
-	case 2054:
-		return OpcuaNodeIdServicesVariableAudit_AuditEventType_Status, true
-	case 2055:
-		return OpcuaNodeIdServicesVariableAudit_AuditEventType_ServerId, true
-	case 2056:
-		return OpcuaNodeIdServicesVariableAudit_AuditEventType_ClientAuditEntryId, true
-	case 2057:
-		return OpcuaNodeIdServicesVariableAudit_AuditEventType_ClientUserId, true
-	case 2061:
-		return OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_ClientCertificate, true
-	case 2062:
-		return OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_RequestType, true
-	case 2063:
-		return OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_SecurityPolicyUri, true
-	case 2065:
-		return OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_SecurityMode, true
-	case 2066:
-		return OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_RequestedLifetime, true
-	case 2070:
-		return OpcuaNodeIdServicesVariableAudit_AuditSessionEventType_SessionId, true
-	case 2072:
-		return OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_SecureChannelId, true
-	case 2073:
-		return OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_ClientCertificate, true
-	case 2074:
-		return OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_RevisedSessionTimeout, true
-	case 2076:
-		return OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_ClientSoftwareCertificates, true
-	case 2077:
-		return OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_UserIdentityToken, true
-	case 2079:
-		return OpcuaNodeIdServicesVariableAudit_AuditCancelEventType_RequestHandle, true
-	case 2081:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateEventType_Certificate, true
-	case 2083:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateDataMismatchEventType_InvalidHostname, true
-	case 2084:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateDataMismatchEventType_InvalidUri, true
-	case 2092:
-		return OpcuaNodeIdServicesVariableAudit_AuditAddNodesEventType_NodesToAdd, true
-	case 2094:
-		return OpcuaNodeIdServicesVariableAudit_AuditDeleteNodesEventType_NodesToDelete, true
-	case 2096:
-		return OpcuaNodeIdServicesVariableAudit_AuditAddReferencesEventType_ReferencesToAdd, true
-	case 2098:
-		return OpcuaNodeIdServicesVariableAudit_AuditDeleteReferencesEventType_ReferencesToDelete, true
-	case 2101:
-		return OpcuaNodeIdServicesVariableAudit_AuditWriteUpdateEventType_IndexRange, true
-	case 2102:
-		return OpcuaNodeIdServicesVariableAudit_AuditWriteUpdateEventType_OldValue, true
-	case 2103:
-		return OpcuaNodeIdServicesVariableAudit_AuditWriteUpdateEventType_NewValue, true
-	case 2128:
-		return OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_MethodId, true
-	case 2129:
-		return OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_InputArguments, true
-	case 23607:
-		return OpcuaNodeIdServicesVariableAudit_AuditClientEventType_EventId, true
-	case 23610:
-		return OpcuaNodeIdServicesVariableAudit_AuditClientEventType_EventType, true
-	case 23611:
-		return OpcuaNodeIdServicesVariableAudit_AuditClientEventType_SourceNode, true
-	case 23891:
-		return OpcuaNodeIdServicesVariableAudit_AuditClientEventType_SourceName, true
-	case 23892:
-		return OpcuaNodeIdServicesVariableAudit_AuditClientEventType_Time, true
-	case 23893:
-		return OpcuaNodeIdServicesVariableAudit_AuditClientEventType_ReceiveTime, true
-	case 23894:
-		return OpcuaNodeIdServicesVariableAudit_AuditClientEventType_LocalTime, true
-	case 23895:
-		return OpcuaNodeIdServicesVariableAudit_AuditClientEventType_Message, true
-	case 23896:
-		return OpcuaNodeIdServicesVariableAudit_AuditClientEventType_Severity, true
-	case 23903:
-		return OpcuaNodeIdServicesVariableAudit_AuditClientEventType_ActionTimeStamp, true
-	case 23904:
-		return OpcuaNodeIdServicesVariableAudit_AuditClientEventType_Status, true
-	case 23905:
-		return OpcuaNodeIdServicesVariableAudit_AuditClientEventType_ServerId, true
-	case 23906:
-		return OpcuaNodeIdServicesVariableAudit_AuditClientEventType_ClientAuditEntryId, true
-	case 23907:
-		return OpcuaNodeIdServicesVariableAudit_AuditClientEventType_ClientUserId, true
-	case 23908:
-		return OpcuaNodeIdServicesVariableAudit_AuditClientEventType_ServerUri, true
-	case 23927:
-		return OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_EventId, true
-	case 23930:
-		return OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_EventType, true
-	case 23931:
-		return OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_SourceNode, true
-	case 23959:
-		return OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_SourceName, true
-	case 23960:
-		return OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_Time, true
-	case 23961:
-		return OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_ReceiveTime, true
-	case 23962:
-		return OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_LocalTime, true
-	case 23963:
-		return OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_Message, true
-	case 23964:
-		return OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_Severity, true
-	case 23971:
-		return OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_ActionTimeStamp, true
-	case 23972:
-		return OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_Status, true
-	case 23973:
-		return OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_ServerId, true
-	case 23974:
-		return OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_ClientAuditEntryId, true
-	case 23975:
-		return OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_ClientUserId, true
-	case 23976:
-		return OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_ServerUri, true
-	case 23994:
-		return OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_ObjectId, true
-	case 23995:
-		return OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_MethodId, true
-	case 23998:
-		return OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_StatusCodeId, true
-	case 23999:
-		return OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_InputArguments, true
-	case 24135:
-		return OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_CertificateErrorEventId, true
-	case 25684:
-		return OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_OutputArguments, true
-	case 2745:
-		return OpcuaNodeIdServicesVariableAudit_AuditChannelEventType_SecureChannelId, true
-	case 2746:
-		return OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_ClientCertificateThumbprint, true
-	case 2747:
-		return OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_ClientCertificateThumbprint, true
-	case 2749:
-		return OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_EndpointUrl, true
-	case 2750:
-		return OpcuaNodeIdServicesVariableAudit_AuditWriteUpdateEventType_AttributeId, true
-	case 2751:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryUpdateEventType_ParameterDataTypeId, true
-	case 2777:
-		return OpcuaNodeIdServicesVariableAudit_AuditUpdateStateEventType_OldStateId, true
-	case 2778:
-		return OpcuaNodeIdServicesVariableAudit_AuditUpdateStateEventType_NewStateId, true
-	case 3003:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_Filter, true
-	case 3015:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_IsDeleteModified, true
-	case 3016:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_StartTime, true
-	case 3017:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_EndTime, true
-	case 3020:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryAtTimeDeleteEventType_ReqTimes, true
-	case 3021:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryAtTimeDeleteEventType_OldValues, true
-	case 3023:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventDeleteEventType_EventIds, true
-	case 3024:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventDeleteEventType_OldValues, true
-	case 3025:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_UpdatedNode, true
-	case 3026:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_UpdatedNode, true
-	case 3027:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryDeleteEventType_UpdatedNode, true
-	case 3028:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_PerformInsertReplace, true
-	case 3029:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_NewValues, true
-	case 3030:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_OldValues, true
-	case 3031:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_PerformInsertReplace, true
-	case 3032:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_NewValues, true
-	case 3033:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_OldValues, true
-	case 3034:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_OldValues, true
-	case 31775:
-		return OpcuaNodeIdServicesVariableAudit_AuditEventType_ConditionClassId, true
-	case 31776:
-		return OpcuaNodeIdServicesVariableAudit_AuditEventType_ConditionClassName, true
-	case 31777:
-		return OpcuaNodeIdServicesVariableAudit_AuditEventType_ConditionSubClassId, true
-	case 31778:
-		return OpcuaNodeIdServicesVariableAudit_AuditEventType_ConditionSubClassName, true
-	case 31779:
-		return OpcuaNodeIdServicesVariableAudit_AuditSecurityEventType_ConditionClassId, true
-	case 31780:
-		return OpcuaNodeIdServicesVariableAudit_AuditSecurityEventType_ConditionClassName, true
-	case 31781:
-		return OpcuaNodeIdServicesVariableAudit_AuditSecurityEventType_ConditionSubClassId, true
-	case 31782:
-		return OpcuaNodeIdServicesVariableAudit_AuditSecurityEventType_ConditionSubClassName, true
-	case 31783:
-		return OpcuaNodeIdServicesVariableAudit_AuditChannelEventType_ConditionClassId, true
-	case 31784:
-		return OpcuaNodeIdServicesVariableAudit_AuditChannelEventType_ConditionClassName, true
-	case 31785:
-		return OpcuaNodeIdServicesVariableAudit_AuditChannelEventType_ConditionSubClassId, true
-	case 31786:
-		return OpcuaNodeIdServicesVariableAudit_AuditChannelEventType_ConditionSubClassName, true
-	case 31787:
-		return OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_ConditionClassId, true
-	case 31788:
-		return OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_ConditionClassName, true
-	case 31789:
-		return OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_ConditionSubClassId, true
-	case 31790:
-		return OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_ConditionSubClassName, true
-	case 31791:
-		return OpcuaNodeIdServicesVariableAudit_AuditSessionEventType_ConditionClassId, true
-	case 31792:
-		return OpcuaNodeIdServicesVariableAudit_AuditSessionEventType_ConditionClassName, true
-	case 31793:
-		return OpcuaNodeIdServicesVariableAudit_AuditSessionEventType_ConditionSubClassId, true
-	case 31794:
-		return OpcuaNodeIdServicesVariableAudit_AuditSessionEventType_ConditionSubClassName, true
-	case 31795:
-		return OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_ConditionClassId, true
-	case 31796:
-		return OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_ConditionClassName, true
-	case 31797:
-		return OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_ConditionSubClassId, true
-	case 31798:
-		return OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_ConditionSubClassName, true
-	case 31799:
-		return OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_ConditionClassId, true
-	case 31800:
-		return OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_ConditionClassName, true
-	case 31801:
-		return OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_ConditionSubClassId, true
-	case 31802:
-		return OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_ConditionSubClassName, true
-	case 31803:
-		return OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_ConditionClassId, true
-	case 31804:
-		return OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_ConditionClassName, true
-	case 31805:
-		return OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_ConditionSubClassId, true
-	case 31806:
-		return OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_ConditionSubClassName, true
-	case 31807:
-		return OpcuaNodeIdServicesVariableAudit_AuditCancelEventType_ConditionClassId, true
-	case 31808:
-		return OpcuaNodeIdServicesVariableAudit_AuditCancelEventType_ConditionClassName, true
-	case 31809:
-		return OpcuaNodeIdServicesVariableAudit_AuditCancelEventType_ConditionSubClassId, true
-	case 31810:
-		return OpcuaNodeIdServicesVariableAudit_AuditCancelEventType_ConditionSubClassName, true
-	case 31811:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateEventType_ConditionClassId, true
-	case 31812:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateEventType_ConditionClassName, true
-	case 31813:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateEventType_ConditionSubClassId, true
-	case 31814:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateEventType_ConditionSubClassName, true
-	case 31815:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateDataMismatchEventType_ConditionClassId, true
-	case 31816:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateDataMismatchEventType_ConditionClassName, true
-	case 31817:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateDataMismatchEventType_ConditionSubClassId, true
-	case 31818:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateDataMismatchEventType_ConditionSubClassName, true
-	case 31819:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateExpiredEventType_ConditionClassId, true
-	case 31820:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateExpiredEventType_ConditionClassName, true
-	case 31821:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateExpiredEventType_ConditionSubClassId, true
-	case 31822:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateExpiredEventType_ConditionSubClassName, true
-	case 31823:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateInvalidEventType_ConditionClassId, true
-	case 31824:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateInvalidEventType_ConditionClassName, true
-	case 31825:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateInvalidEventType_ConditionSubClassId, true
-	case 31826:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateInvalidEventType_ConditionSubClassName, true
-	case 31827:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateUntrustedEventType_ConditionClassId, true
-	case 31828:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateUntrustedEventType_ConditionClassName, true
-	case 31829:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateUntrustedEventType_ConditionSubClassId, true
-	case 31830:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateUntrustedEventType_ConditionSubClassName, true
-	case 31831:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateRevokedEventType_ConditionClassId, true
-	case 31832:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateRevokedEventType_ConditionClassName, true
-	case 31833:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateRevokedEventType_ConditionSubClassId, true
-	case 31834:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateRevokedEventType_ConditionSubClassName, true
-	case 31835:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateMismatchEventType_ConditionClassId, true
-	case 31836:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateMismatchEventType_ConditionClassName, true
-	case 31837:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateMismatchEventType_ConditionSubClassId, true
-	case 31838:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateMismatchEventType_ConditionSubClassName, true
-	case 31839:
-		return OpcuaNodeIdServicesVariableAudit_AuditNodeManagementEventType_ConditionClassId, true
-	case 31840:
-		return OpcuaNodeIdServicesVariableAudit_AuditNodeManagementEventType_ConditionClassName, true
-	case 31841:
-		return OpcuaNodeIdServicesVariableAudit_AuditNodeManagementEventType_ConditionSubClassId, true
-	case 31842:
-		return OpcuaNodeIdServicesVariableAudit_AuditNodeManagementEventType_ConditionSubClassName, true
-	case 31843:
-		return OpcuaNodeIdServicesVariableAudit_AuditAddNodesEventType_ConditionClassId, true
-	case 31844:
-		return OpcuaNodeIdServicesVariableAudit_AuditAddNodesEventType_ConditionClassName, true
-	case 31845:
-		return OpcuaNodeIdServicesVariableAudit_AuditAddNodesEventType_ConditionSubClassId, true
-	case 31846:
-		return OpcuaNodeIdServicesVariableAudit_AuditAddNodesEventType_ConditionSubClassName, true
-	case 31847:
-		return OpcuaNodeIdServicesVariableAudit_AuditDeleteNodesEventType_ConditionClassId, true
-	case 31848:
-		return OpcuaNodeIdServicesVariableAudit_AuditDeleteNodesEventType_ConditionClassName, true
-	case 31849:
-		return OpcuaNodeIdServicesVariableAudit_AuditDeleteNodesEventType_ConditionSubClassId, true
-	case 31850:
-		return OpcuaNodeIdServicesVariableAudit_AuditDeleteNodesEventType_ConditionSubClassName, true
-	case 31851:
-		return OpcuaNodeIdServicesVariableAudit_AuditAddReferencesEventType_ConditionClassId, true
-	case 31852:
-		return OpcuaNodeIdServicesVariableAudit_AuditAddReferencesEventType_ConditionClassName, true
-	case 31853:
-		return OpcuaNodeIdServicesVariableAudit_AuditAddReferencesEventType_ConditionSubClassId, true
-	case 31854:
-		return OpcuaNodeIdServicesVariableAudit_AuditAddReferencesEventType_ConditionSubClassName, true
-	case 31855:
-		return OpcuaNodeIdServicesVariableAudit_AuditDeleteReferencesEventType_ConditionClassId, true
-	case 31856:
-		return OpcuaNodeIdServicesVariableAudit_AuditDeleteReferencesEventType_ConditionClassName, true
-	case 31857:
-		return OpcuaNodeIdServicesVariableAudit_AuditDeleteReferencesEventType_ConditionSubClassId, true
-	case 31858:
-		return OpcuaNodeIdServicesVariableAudit_AuditDeleteReferencesEventType_ConditionSubClassName, true
-	case 31859:
-		return OpcuaNodeIdServicesVariableAudit_AuditUpdateEventType_ConditionClassId, true
-	case 31860:
-		return OpcuaNodeIdServicesVariableAudit_AuditUpdateEventType_ConditionClassName, true
-	case 31861:
-		return OpcuaNodeIdServicesVariableAudit_AuditUpdateEventType_ConditionSubClassId, true
-	case 31862:
-		return OpcuaNodeIdServicesVariableAudit_AuditUpdateEventType_ConditionSubClassName, true
-	case 31863:
-		return OpcuaNodeIdServicesVariableAudit_AuditWriteUpdateEventType_ConditionClassId, true
-	case 31864:
-		return OpcuaNodeIdServicesVariableAudit_AuditWriteUpdateEventType_ConditionClassName, true
-	case 31865:
-		return OpcuaNodeIdServicesVariableAudit_AuditWriteUpdateEventType_ConditionSubClassId, true
-	case 31866:
-		return OpcuaNodeIdServicesVariableAudit_AuditWriteUpdateEventType_ConditionSubClassName, true
-	case 31867:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryUpdateEventType_ConditionClassId, true
-	case 31868:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryUpdateEventType_ConditionClassName, true
-	case 31869:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryUpdateEventType_ConditionSubClassId, true
-	case 31870:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryUpdateEventType_ConditionSubClassName, true
-	case 31871:
-		return OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_ConditionClassId, true
-	case 31872:
-		return OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_ConditionClassName, true
-	case 31873:
-		return OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_ConditionSubClassId, true
-	case 31874:
-		return OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_ConditionSubClassName, true
-	case 31907:
-		return OpcuaNodeIdServicesVariableAudit_AuditClientEventType_ConditionClassId, true
-	case 31908:
-		return OpcuaNodeIdServicesVariableAudit_AuditClientEventType_ConditionClassName, true
-	case 31909:
-		return OpcuaNodeIdServicesVariableAudit_AuditClientEventType_ConditionSubClassId, true
-	case 31910:
-		return OpcuaNodeIdServicesVariableAudit_AuditClientEventType_ConditionSubClassName, true
-	case 31911:
-		return OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_ConditionClassId, true
-	case 31912:
-		return OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_ConditionClassName, true
-	case 31913:
-		return OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_ConditionSubClassId, true
-	case 31914:
-		return OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_ConditionSubClassName, true
-	case 31923:
-		return OpcuaNodeIdServicesVariableAudit_AuditUpdateStateEventType_ConditionClassId, true
-	case 31924:
-		return OpcuaNodeIdServicesVariableAudit_AuditUpdateStateEventType_ConditionClassName, true
-	case 31925:
-		return OpcuaNodeIdServicesVariableAudit_AuditUpdateStateEventType_ConditionSubClassId, true
-	case 31926:
-		return OpcuaNodeIdServicesVariableAudit_AuditUpdateStateEventType_ConditionSubClassName, true
-	case 31931:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionEventType_ConditionClassId, true
-	case 31932:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionEventType_ConditionClassName, true
-	case 31933:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionEventType_ConditionSubClassId, true
-	case 31934:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionEventType_ConditionSubClassName, true
-	case 31935:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionEnableEventType_ConditionClassId, true
-	case 31936:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionEnableEventType_ConditionClassName, true
-	case 31937:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionEnableEventType_ConditionSubClassId, true
-	case 31938:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionEnableEventType_ConditionSubClassName, true
-	case 31939:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionCommentEventType_ConditionClassId, true
-	case 31940:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionCommentEventType_ConditionClassName, true
-	case 31941:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionCommentEventType_ConditionSubClassId, true
-	case 31942:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionCommentEventType_ConditionSubClassName, true
-	case 31943:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionRespondEventType_ConditionClassId, true
-	case 31944:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionRespondEventType_ConditionClassName, true
-	case 31945:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionRespondEventType_ConditionSubClassId, true
-	case 31946:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionRespondEventType_ConditionSubClassName, true
-	case 31947:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionAcknowledgeEventType_ConditionClassId, true
-	case 31948:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionAcknowledgeEventType_ConditionClassName, true
-	case 31949:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionAcknowledgeEventType_ConditionSubClassId, true
-	case 31950:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionAcknowledgeEventType_ConditionSubClassName, true
-	case 31951:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionConfirmEventType_ConditionClassId, true
-	case 31952:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionConfirmEventType_ConditionClassName, true
-	case 31953:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionConfirmEventType_ConditionSubClassId, true
-	case 31954:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionConfirmEventType_ConditionSubClassName, true
-	case 31955:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionShelvingEventType_ConditionClassId, true
-	case 31956:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionShelvingEventType_ConditionClassName, true
-	case 31957:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionShelvingEventType_ConditionSubClassId, true
-	case 31958:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionShelvingEventType_ConditionSubClassName, true
-	case 31959:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionSuppressionEventType_ConditionClassId, true
-	case 31960:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionSuppressionEventType_ConditionClassName, true
-	case 31961:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionSuppressionEventType_ConditionSubClassId, true
-	case 31962:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionSuppressionEventType_ConditionSubClassName, true
-	case 31963:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionSilenceEventType_ConditionClassId, true
-	case 31964:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionSilenceEventType_ConditionClassName, true
-	case 31965:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionSilenceEventType_ConditionSubClassId, true
-	case 31966:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionSilenceEventType_ConditionSubClassName, true
-	case 31967:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionResetEventType_ConditionClassId, true
-	case 31968:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionResetEventType_ConditionClassName, true
-	case 31969:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionResetEventType_ConditionSubClassId, true
-	case 31970:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionResetEventType_ConditionSubClassName, true
-	case 31971:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionOutOfServiceEventType_ConditionClassId, true
-	case 31972:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionOutOfServiceEventType_ConditionClassName, true
-	case 31973:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionOutOfServiceEventType_ConditionSubClassId, true
-	case 31974:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionOutOfServiceEventType_ConditionSubClassName, true
-	case 31991:
-		return OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_ConditionClassId, true
-	case 31992:
-		return OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_ConditionClassName, true
-	case 31993:
-		return OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_ConditionSubClassId, true
-	case 31994:
-		return OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_ConditionSubClassName, true
-	case 31999:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_ConditionClassId, true
-	case 3200:
-		return OpcuaNodeIdServicesVariableAudit_AuditEventType_EventId, true
-	case 32000:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_ConditionClassName, true
-	case 32001:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_ConditionSubClassId, true
-	case 32002:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_ConditionSubClassName, true
-	case 32003:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_ConditionClassId, true
-	case 32004:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_ConditionClassName, true
-	case 32005:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_ConditionSubClassId, true
-	case 32006:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_ConditionSubClassName, true
-	case 32007:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_ConditionClassId, true
-	case 32008:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_ConditionClassName, true
-	case 32009:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_ConditionSubClassId, true
-	case 3201:
-		return OpcuaNodeIdServicesVariableAudit_AuditEventType_EventType, true
-	case 32010:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_ConditionSubClassName, true
-	case 32011:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryDeleteEventType_ConditionClassId, true
-	case 32012:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryDeleteEventType_ConditionClassName, true
-	case 32013:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryDeleteEventType_ConditionSubClassId, true
-	case 32014:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryDeleteEventType_ConditionSubClassName, true
-	case 32015:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_ConditionClassId, true
-	case 32016:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_ConditionClassName, true
-	case 32017:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_ConditionSubClassId, true
-	case 32018:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_ConditionSubClassName, true
-	case 32019:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryAtTimeDeleteEventType_ConditionClassId, true
-	case 3202:
-		return OpcuaNodeIdServicesVariableAudit_AuditEventType_SourceNode, true
-	case 32020:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryAtTimeDeleteEventType_ConditionClassName, true
-	case 32021:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryAtTimeDeleteEventType_ConditionSubClassId, true
-	case 32022:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryAtTimeDeleteEventType_ConditionSubClassName, true
-	case 32023:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventDeleteEventType_ConditionClassId, true
-	case 32024:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventDeleteEventType_ConditionClassName, true
-	case 32025:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventDeleteEventType_ConditionSubClassId, true
-	case 32026:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventDeleteEventType_ConditionSubClassName, true
-	case 3203:
-		return OpcuaNodeIdServicesVariableAudit_AuditEventType_SourceName, true
-	case 3204:
-		return OpcuaNodeIdServicesVariableAudit_AuditEventType_Time, true
-	case 3205:
-		return OpcuaNodeIdServicesVariableAudit_AuditEventType_ReceiveTime, true
-	case 3206:
-		return OpcuaNodeIdServicesVariableAudit_AuditEventType_LocalTime, true
-	case 3207:
-		return OpcuaNodeIdServicesVariableAudit_AuditEventType_Message, true
-	case 3208:
-		return OpcuaNodeIdServicesVariableAudit_AuditEventType_Severity, true
-	case 3209:
-		return OpcuaNodeIdServicesVariableAudit_AuditSecurityEventType_EventId, true
-	case 3210:
-		return OpcuaNodeIdServicesVariableAudit_AuditSecurityEventType_EventType, true
-	case 3211:
-		return OpcuaNodeIdServicesVariableAudit_AuditSecurityEventType_SourceNode, true
-	case 3212:
-		return OpcuaNodeIdServicesVariableAudit_AuditSecurityEventType_SourceName, true
-	case 3213:
-		return OpcuaNodeIdServicesVariableAudit_AuditSecurityEventType_Time, true
-	case 3214:
-		return OpcuaNodeIdServicesVariableAudit_AuditSecurityEventType_ReceiveTime, true
-	case 3215:
-		return OpcuaNodeIdServicesVariableAudit_AuditSecurityEventType_LocalTime, true
-	case 3216:
-		return OpcuaNodeIdServicesVariableAudit_AuditSecurityEventType_Message, true
-	case 3217:
-		return OpcuaNodeIdServicesVariableAudit_AuditSecurityEventType_Severity, true
-	case 3218:
-		return OpcuaNodeIdServicesVariableAudit_AuditSecurityEventType_ActionTimeStamp, true
-	case 3219:
-		return OpcuaNodeIdServicesVariableAudit_AuditSecurityEventType_Status, true
-	case 3220:
-		return OpcuaNodeIdServicesVariableAudit_AuditSecurityEventType_ServerId, true
-	case 3221:
-		return OpcuaNodeIdServicesVariableAudit_AuditSecurityEventType_ClientAuditEntryId, true
-	case 3222:
-		return OpcuaNodeIdServicesVariableAudit_AuditSecurityEventType_ClientUserId, true
-	case 3223:
-		return OpcuaNodeIdServicesVariableAudit_AuditChannelEventType_EventId, true
-	case 3224:
-		return OpcuaNodeIdServicesVariableAudit_AuditChannelEventType_EventType, true
-	case 3225:
-		return OpcuaNodeIdServicesVariableAudit_AuditChannelEventType_SourceNode, true
-	case 3226:
-		return OpcuaNodeIdServicesVariableAudit_AuditChannelEventType_SourceName, true
-	case 3227:
-		return OpcuaNodeIdServicesVariableAudit_AuditChannelEventType_Time, true
-	case 3228:
-		return OpcuaNodeIdServicesVariableAudit_AuditChannelEventType_ReceiveTime, true
-	case 3229:
-		return OpcuaNodeIdServicesVariableAudit_AuditChannelEventType_LocalTime, true
-	case 3230:
-		return OpcuaNodeIdServicesVariableAudit_AuditChannelEventType_Message, true
-	case 3231:
-		return OpcuaNodeIdServicesVariableAudit_AuditChannelEventType_Severity, true
-	case 3232:
-		return OpcuaNodeIdServicesVariableAudit_AuditChannelEventType_ActionTimeStamp, true
-	case 3233:
-		return OpcuaNodeIdServicesVariableAudit_AuditChannelEventType_Status, true
-	case 3234:
-		return OpcuaNodeIdServicesVariableAudit_AuditChannelEventType_ServerId, true
-	case 3235:
-		return OpcuaNodeIdServicesVariableAudit_AuditChannelEventType_ClientAuditEntryId, true
-	case 3236:
-		return OpcuaNodeIdServicesVariableAudit_AuditChannelEventType_ClientUserId, true
-	case 3237:
-		return OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_EventId, true
-	case 3238:
-		return OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_EventType, true
-	case 3239:
-		return OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_SourceNode, true
-	case 3240:
-		return OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_SourceName, true
-	case 3241:
-		return OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_Time, true
-	case 3242:
-		return OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_ReceiveTime, true
-	case 3243:
-		return OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_LocalTime, true
-	case 3244:
-		return OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_Message, true
-	case 3245:
-		return OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_Severity, true
-	case 3246:
-		return OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_ActionTimeStamp, true
-	case 3247:
-		return OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_Status, true
-	case 3248:
-		return OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_ServerId, true
-	case 3249:
-		return OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_ClientAuditEntryId, true
-	case 3250:
-		return OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_ClientUserId, true
-	case 3251:
-		return OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_SecureChannelId, true
-	case 3252:
-		return OpcuaNodeIdServicesVariableAudit_AuditSessionEventType_EventId, true
-	case 3253:
-		return OpcuaNodeIdServicesVariableAudit_AuditSessionEventType_EventType, true
-	case 3254:
-		return OpcuaNodeIdServicesVariableAudit_AuditSessionEventType_SourceNode, true
-	case 3255:
-		return OpcuaNodeIdServicesVariableAudit_AuditSessionEventType_SourceName, true
-	case 3256:
-		return OpcuaNodeIdServicesVariableAudit_AuditSessionEventType_Time, true
-	case 3257:
-		return OpcuaNodeIdServicesVariableAudit_AuditSessionEventType_ReceiveTime, true
-	case 3258:
-		return OpcuaNodeIdServicesVariableAudit_AuditSessionEventType_LocalTime, true
-	case 3259:
-		return OpcuaNodeIdServicesVariableAudit_AuditSessionEventType_Message, true
-	case 3260:
-		return OpcuaNodeIdServicesVariableAudit_AuditSessionEventType_Severity, true
-	case 3261:
-		return OpcuaNodeIdServicesVariableAudit_AuditSessionEventType_ActionTimeStamp, true
-	case 3262:
-		return OpcuaNodeIdServicesVariableAudit_AuditSessionEventType_Status, true
-	case 3263:
-		return OpcuaNodeIdServicesVariableAudit_AuditSessionEventType_ServerId, true
-	case 3264:
-		return OpcuaNodeIdServicesVariableAudit_AuditSessionEventType_ClientAuditEntryId, true
-	case 3265:
-		return OpcuaNodeIdServicesVariableAudit_AuditSessionEventType_ClientUserId, true
-	case 3266:
-		return OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_EventId, true
-	case 3267:
-		return OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_EventType, true
-	case 3268:
-		return OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_SourceNode, true
-	case 3269:
-		return OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_SourceName, true
-	case 3270:
-		return OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_Time, true
-	case 3271:
-		return OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_ReceiveTime, true
-	case 3272:
-		return OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_LocalTime, true
-	case 3273:
-		return OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_Message, true
-	case 3274:
-		return OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_Severity, true
-	case 3275:
-		return OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_ActionTimeStamp, true
-	case 3276:
-		return OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_Status, true
-	case 3277:
-		return OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_ServerId, true
-	case 3278:
-		return OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_ClientAuditEntryId, true
-	case 3279:
-		return OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_ClientUserId, true
-	case 3281:
-		return OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_EventId, true
-	case 3282:
-		return OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_EventType, true
-	case 3283:
-		return OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_SourceNode, true
-	case 3284:
-		return OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_SourceName, true
-	case 3285:
-		return OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_Time, true
-	case 3286:
-		return OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_ReceiveTime, true
-	case 3287:
-		return OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_LocalTime, true
-	case 3288:
-		return OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_Message, true
-	case 3289:
-		return OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_Severity, true
-	case 3290:
-		return OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_ActionTimeStamp, true
-	case 3291:
-		return OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_Status, true
-	case 3292:
-		return OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_ServerId, true
-	case 3293:
-		return OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_ClientAuditEntryId, true
-	case 3294:
-		return OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_ClientUserId, true
-	case 3296:
-		return OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_SecureChannelId, true
-	case 3297:
-		return OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_ClientCertificate, true
-	case 3298:
-		return OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_ClientCertificateThumbprint, true
-	case 3299:
-		return OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_RevisedSessionTimeout, true
-	case 3300:
-		return OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_EventId, true
-	case 3301:
-		return OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_EventType, true
-	case 3302:
-		return OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_SourceNode, true
-	case 3303:
-		return OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_SourceName, true
-	case 3304:
-		return OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_Time, true
-	case 3305:
-		return OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_ReceiveTime, true
-	case 3306:
-		return OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_LocalTime, true
-	case 3307:
-		return OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_Message, true
-	case 3308:
-		return OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_Severity, true
-	case 3309:
-		return OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_ActionTimeStamp, true
-	case 3310:
-		return OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_Status, true
-	case 3311:
-		return OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_ServerId, true
-	case 3312:
-		return OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_ClientAuditEntryId, true
-	case 3313:
-		return OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_ClientUserId, true
-	case 3314:
-		return OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_SessionId, true
-	case 3315:
-		return OpcuaNodeIdServicesVariableAudit_AuditCancelEventType_EventId, true
-	case 3316:
-		return OpcuaNodeIdServicesVariableAudit_AuditCancelEventType_EventType, true
-	case 3317:
-		return OpcuaNodeIdServicesVariableAudit_AuditCancelEventType_SourceNode, true
-	case 3318:
-		return OpcuaNodeIdServicesVariableAudit_AuditCancelEventType_SourceName, true
-	case 3319:
-		return OpcuaNodeIdServicesVariableAudit_AuditCancelEventType_Time, true
-	case 3320:
-		return OpcuaNodeIdServicesVariableAudit_AuditCancelEventType_ReceiveTime, true
-	case 3321:
-		return OpcuaNodeIdServicesVariableAudit_AuditCancelEventType_LocalTime, true
-	case 3322:
-		return OpcuaNodeIdServicesVariableAudit_AuditCancelEventType_Message, true
-	case 3323:
-		return OpcuaNodeIdServicesVariableAudit_AuditCancelEventType_Severity, true
-	case 3324:
-		return OpcuaNodeIdServicesVariableAudit_AuditCancelEventType_ActionTimeStamp, true
-	case 3325:
-		return OpcuaNodeIdServicesVariableAudit_AuditCancelEventType_Status, true
-	case 3326:
-		return OpcuaNodeIdServicesVariableAudit_AuditCancelEventType_ServerId, true
-	case 3327:
-		return OpcuaNodeIdServicesVariableAudit_AuditCancelEventType_ClientAuditEntryId, true
-	case 3328:
-		return OpcuaNodeIdServicesVariableAudit_AuditCancelEventType_ClientUserId, true
-	case 3329:
-		return OpcuaNodeIdServicesVariableAudit_AuditCancelEventType_SessionId, true
-	case 3330:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateEventType_EventId, true
-	case 3331:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateEventType_EventType, true
-	case 3332:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateEventType_SourceNode, true
-	case 3333:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateEventType_SourceName, true
-	case 3334:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateEventType_Time, true
-	case 3335:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateEventType_ReceiveTime, true
-	case 3336:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateEventType_LocalTime, true
-	case 3337:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateEventType_Message, true
-	case 3338:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateEventType_Severity, true
-	case 3339:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateEventType_ActionTimeStamp, true
-	case 3340:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateEventType_Status, true
-	case 3341:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateEventType_ServerId, true
-	case 3342:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateEventType_ClientAuditEntryId, true
-	case 3343:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateEventType_ClientUserId, true
-	case 3344:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateDataMismatchEventType_EventId, true
-	case 3345:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateDataMismatchEventType_EventType, true
-	case 3346:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateDataMismatchEventType_SourceNode, true
-	case 3347:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateDataMismatchEventType_SourceName, true
-	case 3348:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateDataMismatchEventType_Time, true
-	case 3349:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateDataMismatchEventType_ReceiveTime, true
-	case 3350:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateDataMismatchEventType_LocalTime, true
-	case 3351:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateDataMismatchEventType_Message, true
-	case 3352:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateDataMismatchEventType_Severity, true
-	case 3353:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateDataMismatchEventType_ActionTimeStamp, true
-	case 3354:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateDataMismatchEventType_Status, true
-	case 3355:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateDataMismatchEventType_ServerId, true
-	case 3356:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateDataMismatchEventType_ClientAuditEntryId, true
-	case 3357:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateDataMismatchEventType_ClientUserId, true
-	case 3358:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateDataMismatchEventType_Certificate, true
-	case 3359:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateExpiredEventType_EventId, true
-	case 3360:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateExpiredEventType_EventType, true
-	case 3361:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateExpiredEventType_SourceNode, true
-	case 3362:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateExpiredEventType_SourceName, true
-	case 3363:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateExpiredEventType_Time, true
-	case 3364:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateExpiredEventType_ReceiveTime, true
-	case 3365:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateExpiredEventType_LocalTime, true
-	case 3366:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateExpiredEventType_Message, true
-	case 3367:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateExpiredEventType_Severity, true
-	case 3368:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateExpiredEventType_ActionTimeStamp, true
-	case 3369:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateExpiredEventType_Status, true
-	case 3370:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateExpiredEventType_ServerId, true
-	case 3371:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateExpiredEventType_ClientAuditEntryId, true
-	case 3372:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateExpiredEventType_ClientUserId, true
-	case 3373:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateExpiredEventType_Certificate, true
-	case 3374:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateInvalidEventType_EventId, true
-	case 3375:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateInvalidEventType_EventType, true
-	case 3376:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateInvalidEventType_SourceNode, true
-	case 3377:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateInvalidEventType_SourceName, true
-	case 3378:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateInvalidEventType_Time, true
-	case 3379:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateInvalidEventType_ReceiveTime, true
-	case 3380:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateInvalidEventType_LocalTime, true
-	case 3381:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateInvalidEventType_Message, true
-	case 3382:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateInvalidEventType_Severity, true
-	case 3383:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateInvalidEventType_ActionTimeStamp, true
-	case 3384:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateInvalidEventType_Status, true
-	case 3385:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateInvalidEventType_ServerId, true
-	case 3386:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateInvalidEventType_ClientAuditEntryId, true
-	case 3387:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateInvalidEventType_ClientUserId, true
-	case 3388:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateInvalidEventType_Certificate, true
-	case 3389:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateUntrustedEventType_EventId, true
-	case 3390:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateUntrustedEventType_EventType, true
-	case 3391:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateUntrustedEventType_SourceNode, true
-	case 3392:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateUntrustedEventType_SourceName, true
-	case 3393:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateUntrustedEventType_Time, true
-	case 3394:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateUntrustedEventType_ReceiveTime, true
-	case 3395:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateUntrustedEventType_LocalTime, true
-	case 3396:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateUntrustedEventType_Message, true
-	case 3397:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateUntrustedEventType_Severity, true
-	case 3398:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateUntrustedEventType_ActionTimeStamp, true
-	case 3399:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateUntrustedEventType_Status, true
-	case 3400:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateUntrustedEventType_ServerId, true
-	case 3401:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateUntrustedEventType_ClientAuditEntryId, true
-	case 3402:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateUntrustedEventType_ClientUserId, true
-	case 3403:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateUntrustedEventType_Certificate, true
-	case 3404:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateRevokedEventType_EventId, true
-	case 3405:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateRevokedEventType_EventType, true
-	case 3406:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateRevokedEventType_SourceNode, true
-	case 3407:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateRevokedEventType_SourceName, true
-	case 3408:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateRevokedEventType_Time, true
-	case 3409:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateRevokedEventType_ReceiveTime, true
-	case 3410:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateRevokedEventType_LocalTime, true
-	case 3411:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateRevokedEventType_Message, true
-	case 3412:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateRevokedEventType_Severity, true
-	case 3413:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateRevokedEventType_ActionTimeStamp, true
-	case 3414:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateRevokedEventType_Status, true
-	case 3415:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateRevokedEventType_ServerId, true
-	case 3416:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateRevokedEventType_ClientAuditEntryId, true
-	case 3417:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateRevokedEventType_ClientUserId, true
-	case 3418:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateRevokedEventType_Certificate, true
-	case 3419:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateMismatchEventType_EventId, true
-	case 3420:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateMismatchEventType_EventType, true
-	case 3421:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateMismatchEventType_SourceNode, true
-	case 3422:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateMismatchEventType_SourceName, true
-	case 3423:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateMismatchEventType_Time, true
-	case 3424:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateMismatchEventType_ReceiveTime, true
-	case 3425:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateMismatchEventType_LocalTime, true
-	case 3426:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateMismatchEventType_Message, true
-	case 3427:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateMismatchEventType_Severity, true
-	case 3428:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateMismatchEventType_ActionTimeStamp, true
-	case 3429:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateMismatchEventType_Status, true
-	case 3430:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateMismatchEventType_ServerId, true
-	case 3431:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateMismatchEventType_ClientAuditEntryId, true
-	case 3432:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateMismatchEventType_ClientUserId, true
-	case 3433:
-		return OpcuaNodeIdServicesVariableAudit_AuditCertificateMismatchEventType_Certificate, true
-	case 3434:
-		return OpcuaNodeIdServicesVariableAudit_AuditNodeManagementEventType_EventId, true
-	case 3435:
-		return OpcuaNodeIdServicesVariableAudit_AuditNodeManagementEventType_EventType, true
-	case 3436:
-		return OpcuaNodeIdServicesVariableAudit_AuditNodeManagementEventType_SourceNode, true
-	case 3437:
-		return OpcuaNodeIdServicesVariableAudit_AuditNodeManagementEventType_SourceName, true
-	case 3438:
-		return OpcuaNodeIdServicesVariableAudit_AuditNodeManagementEventType_Time, true
-	case 3439:
-		return OpcuaNodeIdServicesVariableAudit_AuditNodeManagementEventType_ReceiveTime, true
-	case 3440:
-		return OpcuaNodeIdServicesVariableAudit_AuditNodeManagementEventType_LocalTime, true
-	case 3441:
-		return OpcuaNodeIdServicesVariableAudit_AuditNodeManagementEventType_Message, true
-	case 3442:
-		return OpcuaNodeIdServicesVariableAudit_AuditNodeManagementEventType_Severity, true
-	case 3443:
-		return OpcuaNodeIdServicesVariableAudit_AuditNodeManagementEventType_ActionTimeStamp, true
-	case 3444:
-		return OpcuaNodeIdServicesVariableAudit_AuditNodeManagementEventType_Status, true
-	case 3445:
-		return OpcuaNodeIdServicesVariableAudit_AuditNodeManagementEventType_ServerId, true
-	case 3446:
-		return OpcuaNodeIdServicesVariableAudit_AuditNodeManagementEventType_ClientAuditEntryId, true
-	case 3447:
-		return OpcuaNodeIdServicesVariableAudit_AuditNodeManagementEventType_ClientUserId, true
-	case 3448:
-		return OpcuaNodeIdServicesVariableAudit_AuditAddNodesEventType_EventId, true
-	case 3449:
-		return OpcuaNodeIdServicesVariableAudit_AuditAddNodesEventType_EventType, true
-	case 3450:
-		return OpcuaNodeIdServicesVariableAudit_AuditAddNodesEventType_SourceNode, true
-	case 3451:
-		return OpcuaNodeIdServicesVariableAudit_AuditAddNodesEventType_SourceName, true
-	case 3452:
-		return OpcuaNodeIdServicesVariableAudit_AuditAddNodesEventType_Time, true
-	case 3453:
-		return OpcuaNodeIdServicesVariableAudit_AuditAddNodesEventType_ReceiveTime, true
-	case 3454:
-		return OpcuaNodeIdServicesVariableAudit_AuditAddNodesEventType_LocalTime, true
-	case 3455:
-		return OpcuaNodeIdServicesVariableAudit_AuditAddNodesEventType_Message, true
-	case 3456:
-		return OpcuaNodeIdServicesVariableAudit_AuditAddNodesEventType_Severity, true
-	case 3457:
-		return OpcuaNodeIdServicesVariableAudit_AuditAddNodesEventType_ActionTimeStamp, true
-	case 3458:
-		return OpcuaNodeIdServicesVariableAudit_AuditAddNodesEventType_Status, true
-	case 3459:
-		return OpcuaNodeIdServicesVariableAudit_AuditAddNodesEventType_ServerId, true
-	case 3460:
-		return OpcuaNodeIdServicesVariableAudit_AuditAddNodesEventType_ClientAuditEntryId, true
-	case 3461:
-		return OpcuaNodeIdServicesVariableAudit_AuditAddNodesEventType_ClientUserId, true
-	case 3462:
-		return OpcuaNodeIdServicesVariableAudit_AuditDeleteNodesEventType_EventId, true
-	case 3463:
-		return OpcuaNodeIdServicesVariableAudit_AuditDeleteNodesEventType_EventType, true
-	case 3464:
-		return OpcuaNodeIdServicesVariableAudit_AuditDeleteNodesEventType_SourceNode, true
-	case 3465:
-		return OpcuaNodeIdServicesVariableAudit_AuditDeleteNodesEventType_SourceName, true
-	case 3466:
-		return OpcuaNodeIdServicesVariableAudit_AuditDeleteNodesEventType_Time, true
-	case 3467:
-		return OpcuaNodeIdServicesVariableAudit_AuditDeleteNodesEventType_ReceiveTime, true
-	case 3468:
-		return OpcuaNodeIdServicesVariableAudit_AuditDeleteNodesEventType_LocalTime, true
-	case 3469:
-		return OpcuaNodeIdServicesVariableAudit_AuditDeleteNodesEventType_Message, true
-	case 3470:
-		return OpcuaNodeIdServicesVariableAudit_AuditDeleteNodesEventType_Severity, true
-	case 3471:
-		return OpcuaNodeIdServicesVariableAudit_AuditDeleteNodesEventType_ActionTimeStamp, true
-	case 3472:
-		return OpcuaNodeIdServicesVariableAudit_AuditDeleteNodesEventType_Status, true
-	case 3473:
-		return OpcuaNodeIdServicesVariableAudit_AuditDeleteNodesEventType_ServerId, true
-	case 3474:
-		return OpcuaNodeIdServicesVariableAudit_AuditDeleteNodesEventType_ClientAuditEntryId, true
-	case 3475:
-		return OpcuaNodeIdServicesVariableAudit_AuditDeleteNodesEventType_ClientUserId, true
-	case 3476:
-		return OpcuaNodeIdServicesVariableAudit_AuditAddReferencesEventType_EventId, true
-	case 3477:
-		return OpcuaNodeIdServicesVariableAudit_AuditAddReferencesEventType_EventType, true
-	case 3478:
-		return OpcuaNodeIdServicesVariableAudit_AuditAddReferencesEventType_SourceNode, true
-	case 3479:
-		return OpcuaNodeIdServicesVariableAudit_AuditAddReferencesEventType_SourceName, true
-	case 3480:
-		return OpcuaNodeIdServicesVariableAudit_AuditAddReferencesEventType_Time, true
-	case 3481:
-		return OpcuaNodeIdServicesVariableAudit_AuditAddReferencesEventType_ReceiveTime, true
-	case 3482:
-		return OpcuaNodeIdServicesVariableAudit_AuditAddReferencesEventType_LocalTime, true
-	case 3483:
-		return OpcuaNodeIdServicesVariableAudit_AuditAddReferencesEventType_Message, true
-	case 3484:
-		return OpcuaNodeIdServicesVariableAudit_AuditAddReferencesEventType_Severity, true
-	case 3485:
-		return OpcuaNodeIdServicesVariableAudit_AuditAddReferencesEventType_ActionTimeStamp, true
-	case 3486:
-		return OpcuaNodeIdServicesVariableAudit_AuditAddReferencesEventType_Status, true
-	case 3487:
-		return OpcuaNodeIdServicesVariableAudit_AuditAddReferencesEventType_ServerId, true
-	case 3488:
-		return OpcuaNodeIdServicesVariableAudit_AuditAddReferencesEventType_ClientAuditEntryId, true
-	case 3489:
-		return OpcuaNodeIdServicesVariableAudit_AuditAddReferencesEventType_ClientUserId, true
-	case 3490:
-		return OpcuaNodeIdServicesVariableAudit_AuditDeleteReferencesEventType_EventId, true
-	case 3491:
-		return OpcuaNodeIdServicesVariableAudit_AuditDeleteReferencesEventType_EventType, true
-	case 3492:
-		return OpcuaNodeIdServicesVariableAudit_AuditDeleteReferencesEventType_SourceNode, true
-	case 3493:
-		return OpcuaNodeIdServicesVariableAudit_AuditDeleteReferencesEventType_SourceName, true
-	case 3494:
-		return OpcuaNodeIdServicesVariableAudit_AuditDeleteReferencesEventType_Time, true
-	case 3495:
-		return OpcuaNodeIdServicesVariableAudit_AuditDeleteReferencesEventType_ReceiveTime, true
-	case 3496:
-		return OpcuaNodeIdServicesVariableAudit_AuditDeleteReferencesEventType_LocalTime, true
-	case 3497:
-		return OpcuaNodeIdServicesVariableAudit_AuditDeleteReferencesEventType_Message, true
-	case 3498:
-		return OpcuaNodeIdServicesVariableAudit_AuditDeleteReferencesEventType_Severity, true
-	case 3499:
-		return OpcuaNodeIdServicesVariableAudit_AuditDeleteReferencesEventType_ActionTimeStamp, true
-	case 3500:
-		return OpcuaNodeIdServicesVariableAudit_AuditDeleteReferencesEventType_Status, true
-	case 3501:
-		return OpcuaNodeIdServicesVariableAudit_AuditDeleteReferencesEventType_ServerId, true
-	case 3502:
-		return OpcuaNodeIdServicesVariableAudit_AuditDeleteReferencesEventType_ClientAuditEntryId, true
-	case 3503:
-		return OpcuaNodeIdServicesVariableAudit_AuditDeleteReferencesEventType_ClientUserId, true
-	case 3504:
-		return OpcuaNodeIdServicesVariableAudit_AuditUpdateEventType_EventId, true
-	case 3505:
-		return OpcuaNodeIdServicesVariableAudit_AuditUpdateEventType_EventType, true
-	case 3506:
-		return OpcuaNodeIdServicesVariableAudit_AuditUpdateEventType_SourceNode, true
-	case 3507:
-		return OpcuaNodeIdServicesVariableAudit_AuditUpdateEventType_SourceName, true
-	case 3508:
-		return OpcuaNodeIdServicesVariableAudit_AuditUpdateEventType_Time, true
-	case 3509:
-		return OpcuaNodeIdServicesVariableAudit_AuditUpdateEventType_ReceiveTime, true
-	case 3510:
-		return OpcuaNodeIdServicesVariableAudit_AuditUpdateEventType_LocalTime, true
-	case 3511:
-		return OpcuaNodeIdServicesVariableAudit_AuditUpdateEventType_Message, true
-	case 3512:
-		return OpcuaNodeIdServicesVariableAudit_AuditUpdateEventType_Severity, true
-	case 3513:
-		return OpcuaNodeIdServicesVariableAudit_AuditUpdateEventType_ActionTimeStamp, true
-	case 3514:
-		return OpcuaNodeIdServicesVariableAudit_AuditUpdateEventType_Status, true
-	case 3515:
-		return OpcuaNodeIdServicesVariableAudit_AuditUpdateEventType_ServerId, true
-	case 3516:
-		return OpcuaNodeIdServicesVariableAudit_AuditUpdateEventType_ClientAuditEntryId, true
-	case 3517:
-		return OpcuaNodeIdServicesVariableAudit_AuditUpdateEventType_ClientUserId, true
-	case 3518:
-		return OpcuaNodeIdServicesVariableAudit_AuditWriteUpdateEventType_EventId, true
-	case 3519:
-		return OpcuaNodeIdServicesVariableAudit_AuditWriteUpdateEventType_EventType, true
-	case 3520:
-		return OpcuaNodeIdServicesVariableAudit_AuditWriteUpdateEventType_SourceNode, true
-	case 3521:
-		return OpcuaNodeIdServicesVariableAudit_AuditWriteUpdateEventType_SourceName, true
-	case 3522:
-		return OpcuaNodeIdServicesVariableAudit_AuditWriteUpdateEventType_Time, true
-	case 3523:
-		return OpcuaNodeIdServicesVariableAudit_AuditWriteUpdateEventType_ReceiveTime, true
-	case 3524:
-		return OpcuaNodeIdServicesVariableAudit_AuditWriteUpdateEventType_LocalTime, true
-	case 3525:
-		return OpcuaNodeIdServicesVariableAudit_AuditWriteUpdateEventType_Message, true
-	case 3526:
-		return OpcuaNodeIdServicesVariableAudit_AuditWriteUpdateEventType_Severity, true
-	case 3527:
-		return OpcuaNodeIdServicesVariableAudit_AuditWriteUpdateEventType_ActionTimeStamp, true
-	case 3528:
-		return OpcuaNodeIdServicesVariableAudit_AuditWriteUpdateEventType_Status, true
-	case 3529:
-		return OpcuaNodeIdServicesVariableAudit_AuditWriteUpdateEventType_ServerId, true
-	case 3530:
-		return OpcuaNodeIdServicesVariableAudit_AuditWriteUpdateEventType_ClientAuditEntryId, true
-	case 3531:
-		return OpcuaNodeIdServicesVariableAudit_AuditWriteUpdateEventType_ClientUserId, true
-	case 3532:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryUpdateEventType_EventId, true
-	case 3533:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryUpdateEventType_EventType, true
-	case 3534:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryUpdateEventType_SourceNode, true
-	case 3535:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryUpdateEventType_SourceName, true
-	case 3536:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryUpdateEventType_Time, true
-	case 3537:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryUpdateEventType_ReceiveTime, true
-	case 3538:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryUpdateEventType_LocalTime, true
-	case 3539:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryUpdateEventType_Message, true
-	case 3540:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryUpdateEventType_Severity, true
-	case 3541:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryUpdateEventType_ActionTimeStamp, true
-	case 3542:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryUpdateEventType_Status, true
-	case 3543:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryUpdateEventType_ServerId, true
-	case 3544:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryUpdateEventType_ClientAuditEntryId, true
-	case 3545:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryUpdateEventType_ClientUserId, true
-	case 3546:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_EventId, true
-	case 3547:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_EventType, true
-	case 3548:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_SourceNode, true
-	case 3549:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_SourceName, true
-	case 3550:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_Time, true
-	case 3551:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_ReceiveTime, true
-	case 3552:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_LocalTime, true
-	case 3553:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_Message, true
-	case 3554:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_Severity, true
-	case 3555:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_ActionTimeStamp, true
-	case 3556:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_Status, true
-	case 3557:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_ServerId, true
-	case 3558:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_ClientAuditEntryId, true
-	case 3559:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_ClientUserId, true
-	case 3560:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_ParameterDataTypeId, true
-	case 3561:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_EventId, true
-	case 3562:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_EventType, true
-	case 3563:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_SourceNode, true
-	case 3564:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_SourceName, true
-	case 3565:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_Time, true
-	case 3566:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_ReceiveTime, true
-	case 3567:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_LocalTime, true
-	case 3568:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_Message, true
-	case 3569:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_Severity, true
-	case 3570:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_ActionTimeStamp, true
-	case 3571:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_Status, true
-	case 3572:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_ServerId, true
-	case 3573:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_ClientAuditEntryId, true
-	case 3574:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_ClientUserId, true
-	case 3575:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_ParameterDataTypeId, true
-	case 3576:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryDeleteEventType_EventId, true
-	case 3577:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryDeleteEventType_EventType, true
-	case 3578:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryDeleteEventType_SourceNode, true
-	case 3579:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryDeleteEventType_SourceName, true
-	case 3580:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryDeleteEventType_Time, true
-	case 3581:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryDeleteEventType_ReceiveTime, true
-	case 3582:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryDeleteEventType_LocalTime, true
-	case 3583:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryDeleteEventType_Message, true
-	case 3584:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryDeleteEventType_Severity, true
-	case 3585:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryDeleteEventType_ActionTimeStamp, true
-	case 3586:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryDeleteEventType_Status, true
-	case 3587:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryDeleteEventType_ServerId, true
-	case 3588:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryDeleteEventType_ClientAuditEntryId, true
-	case 3589:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryDeleteEventType_ClientUserId, true
-	case 3590:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryDeleteEventType_ParameterDataTypeId, true
-	case 3591:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_EventId, true
-	case 3592:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_EventType, true
-	case 3593:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_SourceNode, true
-	case 3594:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_SourceName, true
-	case 3595:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_Time, true
-	case 3596:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_ReceiveTime, true
-	case 3597:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_LocalTime, true
-	case 3598:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_Message, true
-	case 3599:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_Severity, true
-	case 3600:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_ActionTimeStamp, true
-	case 3601:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_Status, true
-	case 3602:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_ServerId, true
-	case 3603:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_ClientAuditEntryId, true
-	case 3604:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_ClientUserId, true
-	case 3605:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_ParameterDataTypeId, true
-	case 3606:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_UpdatedNode, true
-	case 3607:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryAtTimeDeleteEventType_EventId, true
-	case 3608:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryAtTimeDeleteEventType_EventType, true
-	case 3609:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryAtTimeDeleteEventType_SourceNode, true
-	case 3610:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryAtTimeDeleteEventType_SourceName, true
-	case 3611:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryAtTimeDeleteEventType_Time, true
-	case 3612:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryAtTimeDeleteEventType_ReceiveTime, true
-	case 3613:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryAtTimeDeleteEventType_LocalTime, true
-	case 3614:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryAtTimeDeleteEventType_Message, true
-	case 3615:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryAtTimeDeleteEventType_Severity, true
-	case 3616:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryAtTimeDeleteEventType_ActionTimeStamp, true
-	case 3617:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryAtTimeDeleteEventType_Status, true
-	case 3618:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryAtTimeDeleteEventType_ServerId, true
-	case 3619:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryAtTimeDeleteEventType_ClientAuditEntryId, true
-	case 3620:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryAtTimeDeleteEventType_ClientUserId, true
-	case 3621:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryAtTimeDeleteEventType_ParameterDataTypeId, true
-	case 3622:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryAtTimeDeleteEventType_UpdatedNode, true
-	case 3623:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventDeleteEventType_EventId, true
-	case 3624:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventDeleteEventType_EventType, true
-	case 3625:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventDeleteEventType_SourceNode, true
-	case 3626:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventDeleteEventType_SourceName, true
-	case 3627:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventDeleteEventType_Time, true
-	case 3628:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventDeleteEventType_ReceiveTime, true
-	case 3629:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventDeleteEventType_LocalTime, true
-	case 3630:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventDeleteEventType_Message, true
-	case 3631:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventDeleteEventType_Severity, true
-	case 3632:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventDeleteEventType_ActionTimeStamp, true
-	case 3633:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventDeleteEventType_Status, true
-	case 3634:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventDeleteEventType_ServerId, true
-	case 3635:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventDeleteEventType_ClientAuditEntryId, true
-	case 3636:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventDeleteEventType_ClientUserId, true
-	case 3637:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventDeleteEventType_ParameterDataTypeId, true
-	case 3638:
-		return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventDeleteEventType_UpdatedNode, true
-	case 3639:
-		return OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_EventId, true
-	case 3640:
-		return OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_EventType, true
-	case 3641:
-		return OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_SourceNode, true
-	case 3642:
-		return OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_SourceName, true
-	case 3643:
-		return OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_Time, true
-	case 3644:
-		return OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_ReceiveTime, true
-	case 3645:
-		return OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_LocalTime, true
-	case 3646:
-		return OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_Message, true
-	case 3647:
-		return OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_Severity, true
-	case 3648:
-		return OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_ActionTimeStamp, true
-	case 3649:
-		return OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_Status, true
-	case 3650:
-		return OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_ServerId, true
-	case 3651:
-		return OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_ClientAuditEntryId, true
-	case 3652:
-		return OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_ClientUserId, true
-	case 3758:
-		return OpcuaNodeIdServicesVariableAudit_AuditUpdateStateEventType_EventId, true
-	case 3759:
-		return OpcuaNodeIdServicesVariableAudit_AuditUpdateStateEventType_EventType, true
-	case 3760:
-		return OpcuaNodeIdServicesVariableAudit_AuditUpdateStateEventType_SourceNode, true
-	case 3761:
-		return OpcuaNodeIdServicesVariableAudit_AuditUpdateStateEventType_SourceName, true
-	case 3762:
-		return OpcuaNodeIdServicesVariableAudit_AuditUpdateStateEventType_Time, true
-	case 3763:
-		return OpcuaNodeIdServicesVariableAudit_AuditUpdateStateEventType_ReceiveTime, true
-	case 3764:
-		return OpcuaNodeIdServicesVariableAudit_AuditUpdateStateEventType_LocalTime, true
-	case 3765:
-		return OpcuaNodeIdServicesVariableAudit_AuditUpdateStateEventType_Message, true
-	case 3766:
-		return OpcuaNodeIdServicesVariableAudit_AuditUpdateStateEventType_Severity, true
-	case 3767:
-		return OpcuaNodeIdServicesVariableAudit_AuditUpdateStateEventType_ActionTimeStamp, true
-	case 3768:
-		return OpcuaNodeIdServicesVariableAudit_AuditUpdateStateEventType_Status, true
-	case 3769:
-		return OpcuaNodeIdServicesVariableAudit_AuditUpdateStateEventType_ServerId, true
-	case 3770:
-		return OpcuaNodeIdServicesVariableAudit_AuditUpdateStateEventType_ClientAuditEntryId, true
-	case 3771:
-		return OpcuaNodeIdServicesVariableAudit_AuditUpdateStateEventType_ClientUserId, true
-	case 3772:
-		return OpcuaNodeIdServicesVariableAudit_AuditUpdateStateEventType_MethodId, true
-	case 3773:
-		return OpcuaNodeIdServicesVariableAudit_AuditUpdateStateEventType_InputArguments, true
-	case 3996:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionEventType_EventId, true
-	case 3997:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionEventType_EventType, true
-	case 3998:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionEventType_SourceNode, true
-	case 3999:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionEventType_SourceName, true
-	case 4000:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionEventType_Time, true
-	case 4001:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionEventType_ReceiveTime, true
-	case 4002:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionEventType_LocalTime, true
-	case 4003:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionEventType_Message, true
-	case 4004:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionEventType_Severity, true
-	case 4005:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionEventType_ActionTimeStamp, true
-	case 4006:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionEventType_Status, true
-	case 4007:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionEventType_ServerId, true
-	case 4008:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionEventType_ClientAuditEntryId, true
-	case 4009:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionEventType_ClientUserId, true
-	case 4010:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionEventType_MethodId, true
-	case 4011:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionEventType_InputArguments, true
-	case 4106:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionEnableEventType_EventId, true
-	case 4107:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionEnableEventType_EventType, true
-	case 4108:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionEnableEventType_SourceNode, true
-	case 4109:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionEnableEventType_SourceName, true
-	case 4110:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionEnableEventType_Time, true
-	case 4111:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionEnableEventType_ReceiveTime, true
-	case 4112:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionEnableEventType_LocalTime, true
-	case 4113:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionEnableEventType_Message, true
-	case 4114:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionEnableEventType_Severity, true
-	case 4115:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionEnableEventType_ActionTimeStamp, true
-	case 4116:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionEnableEventType_Status, true
-	case 4117:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionEnableEventType_ServerId, true
-	case 4118:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionEnableEventType_ClientAuditEntryId, true
-	case 4119:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionEnableEventType_ClientUserId, true
-	case 4120:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionEnableEventType_MethodId, true
-	case 4121:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionEnableEventType_InputArguments, true
-	case 4170:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionCommentEventType_EventId, true
-	case 4171:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionCommentEventType_EventType, true
-	case 4172:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionCommentEventType_SourceNode, true
-	case 4173:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionCommentEventType_SourceName, true
-	case 4174:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionCommentEventType_Time, true
-	case 4175:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionCommentEventType_ReceiveTime, true
-	case 4176:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionCommentEventType_LocalTime, true
-	case 4177:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionCommentEventType_Message, true
-	case 4178:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionCommentEventType_Severity, true
-	case 4179:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionCommentEventType_ActionTimeStamp, true
-	case 4180:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionCommentEventType_Status, true
-	case 4181:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionCommentEventType_ServerId, true
-	case 4182:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionCommentEventType_ClientAuditEntryId, true
-	case 4183:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionCommentEventType_ClientUserId, true
-	case 4184:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionCommentEventType_MethodId, true
-	case 4185:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionCommentEventType_InputArguments, true
-	case 8928:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionRespondEventType_EventId, true
-	case 8929:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionRespondEventType_EventType, true
-	case 8930:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionRespondEventType_SourceNode, true
-	case 8931:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionRespondEventType_SourceName, true
-	case 8932:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionRespondEventType_Time, true
-	case 8933:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionRespondEventType_ReceiveTime, true
-	case 8934:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionRespondEventType_LocalTime, true
-	case 8935:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionRespondEventType_Message, true
-	case 8936:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionRespondEventType_Severity, true
-	case 8937:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionRespondEventType_ActionTimeStamp, true
-	case 8938:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionRespondEventType_Status, true
-	case 8939:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionRespondEventType_ServerId, true
-	case 8940:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionRespondEventType_ClientAuditEntryId, true
-	case 8941:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionRespondEventType_ClientUserId, true
-	case 8942:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionRespondEventType_MethodId, true
-	case 8943:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionRespondEventType_InputArguments, true
-	case 8945:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionAcknowledgeEventType_EventId, true
-	case 8946:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionAcknowledgeEventType_EventType, true
-	case 8947:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionAcknowledgeEventType_SourceNode, true
-	case 8948:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionAcknowledgeEventType_SourceName, true
-	case 8949:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionAcknowledgeEventType_Time, true
-	case 8950:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionAcknowledgeEventType_ReceiveTime, true
-	case 8951:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionAcknowledgeEventType_LocalTime, true
-	case 8952:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionAcknowledgeEventType_Message, true
-	case 8953:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionAcknowledgeEventType_Severity, true
-	case 8954:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionAcknowledgeEventType_ActionTimeStamp, true
-	case 8955:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionAcknowledgeEventType_Status, true
-	case 8956:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionAcknowledgeEventType_ServerId, true
-	case 8957:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionAcknowledgeEventType_ClientAuditEntryId, true
-	case 8958:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionAcknowledgeEventType_ClientUserId, true
-	case 8959:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionAcknowledgeEventType_MethodId, true
-	case 8960:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionAcknowledgeEventType_InputArguments, true
-	case 8962:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionConfirmEventType_EventId, true
-	case 8963:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionConfirmEventType_EventType, true
-	case 8964:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionConfirmEventType_SourceNode, true
-	case 8965:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionConfirmEventType_SourceName, true
-	case 8966:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionConfirmEventType_Time, true
-	case 8967:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionConfirmEventType_ReceiveTime, true
-	case 8968:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionConfirmEventType_LocalTime, true
-	case 8969:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionConfirmEventType_Message, true
-	case 8970:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionConfirmEventType_Severity, true
-	case 8971:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionConfirmEventType_ActionTimeStamp, true
-	case 8972:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionConfirmEventType_Status, true
-	case 8973:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionConfirmEventType_ServerId, true
-	case 8974:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionConfirmEventType_ClientAuditEntryId, true
-	case 8975:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionConfirmEventType_ClientUserId, true
-	case 8976:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionConfirmEventType_MethodId, true
-	case 8977:
-		return OpcuaNodeIdServicesVariableAudit_AuditConditionConfirmEventType_InputArguments, true
+		case 11094:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionShelvingEventType_EventId, true
+		case 11095:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionShelvingEventType_EventType, true
+		case 11096:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionShelvingEventType_SourceNode, true
+		case 11097:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionShelvingEventType_SourceName, true
+		case 11098:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionShelvingEventType_Time, true
+		case 11099:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionShelvingEventType_ReceiveTime, true
+		case 11100:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionShelvingEventType_LocalTime, true
+		case 11101:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionShelvingEventType_Message, true
+		case 11102:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionShelvingEventType_Severity, true
+		case 11103:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionShelvingEventType_ActionTimeStamp, true
+		case 11104:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionShelvingEventType_Status, true
+		case 11105:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionShelvingEventType_ServerId, true
+		case 11106:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionShelvingEventType_ClientAuditEntryId, true
+		case 11107:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionShelvingEventType_ClientUserId, true
+		case 11108:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionShelvingEventType_MethodId, true
+		case 11109:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionShelvingEventType_InputArguments, true
+		case 11485:
+			return OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_SecureChannelId, true
+		case 11851:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionCommentEventType_Comment, true
+		case 11852:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionRespondEventType_SelectedResponse, true
+		case 11853:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionAcknowledgeEventType_Comment, true
+		case 11854:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionConfirmEventType_Comment, true
+		case 11855:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionShelvingEventType_ShelvingTime, true
+		case 11857:
+			return OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_EventId, true
+		case 11858:
+			return OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_EventType, true
+		case 11859:
+			return OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_SourceNode, true
+		case 11860:
+			return OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_SourceName, true
+		case 11861:
+			return OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_Time, true
+		case 11862:
+			return OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_ReceiveTime, true
+		case 11863:
+			return OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_LocalTime, true
+		case 11864:
+			return OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_Message, true
+		case 11865:
+			return OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_Severity, true
+		case 11866:
+			return OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_ActionTimeStamp, true
+		case 11867:
+			return OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_Status, true
+		case 11868:
+			return OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_ServerId, true
+		case 11869:
+			return OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_ClientAuditEntryId, true
+		case 11870:
+			return OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_ClientUserId, true
+		case 11871:
+			return OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_MethodId, true
+		case 11872:
+			return OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_InputArguments, true
+		case 11873:
+			return OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_OldStateId, true
+		case 11874:
+			return OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_NewStateId, true
+		case 11875:
+			return OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_TransitionNumber, true
+		case 14413:
+			return OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_SessionId, true
+		case 14414:
+			return OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_SessionId, true
+		case 15014:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionResetEventType_EventId, true
+		case 15015:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionResetEventType_EventType, true
+		case 15016:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionResetEventType_SourceNode, true
+		case 15017:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionResetEventType_SourceName, true
+		case 15018:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionResetEventType_Time, true
+		case 15019:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionResetEventType_ReceiveTime, true
+		case 15020:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionResetEventType_LocalTime, true
+		case 15021:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionResetEventType_Message, true
+		case 15022:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionResetEventType_Severity, true
+		case 15023:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionResetEventType_ActionTimeStamp, true
+		case 15024:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionResetEventType_Status, true
+		case 15025:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionResetEventType_ServerId, true
+		case 15026:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionResetEventType_ClientAuditEntryId, true
+		case 15027:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionResetEventType_ClientUserId, true
+		case 15028:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionResetEventType_MethodId, true
+		case 15029:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionResetEventType_InputArguments, true
+		case 17222:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionCommentEventType_ConditionEventId, true
+		case 17223:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionAcknowledgeEventType_ConditionEventId, true
+		case 17224:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionConfirmEventType_ConditionEventId, true
+		case 17226:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionSuppressionEventType_EventId, true
+		case 17227:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionSuppressionEventType_EventType, true
+		case 17228:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionSuppressionEventType_SourceNode, true
+		case 17229:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionSuppressionEventType_SourceName, true
+		case 17230:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionSuppressionEventType_Time, true
+		case 17231:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionSuppressionEventType_ReceiveTime, true
+		case 17232:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionSuppressionEventType_LocalTime, true
+		case 17233:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionSuppressionEventType_Message, true
+		case 17234:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionSuppressionEventType_Severity, true
+		case 17235:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionSuppressionEventType_ActionTimeStamp, true
+		case 17236:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionSuppressionEventType_Status, true
+		case 17237:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionSuppressionEventType_ServerId, true
+		case 17238:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionSuppressionEventType_ClientAuditEntryId, true
+		case 17239:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionSuppressionEventType_ClientUserId, true
+		case 17240:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionSuppressionEventType_MethodId, true
+		case 17241:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionSuppressionEventType_InputArguments, true
+		case 17243:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionSilenceEventType_EventId, true
+		case 17244:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionSilenceEventType_EventType, true
+		case 17245:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionSilenceEventType_SourceNode, true
+		case 17246:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionSilenceEventType_SourceName, true
+		case 17247:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionSilenceEventType_Time, true
+		case 17248:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionSilenceEventType_ReceiveTime, true
+		case 17249:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionSilenceEventType_LocalTime, true
+		case 17250:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionSilenceEventType_Message, true
+		case 17251:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionSilenceEventType_Severity, true
+		case 17252:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionSilenceEventType_ActionTimeStamp, true
+		case 17253:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionSilenceEventType_Status, true
+		case 17254:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionSilenceEventType_ServerId, true
+		case 17255:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionSilenceEventType_ClientAuditEntryId, true
+		case 17256:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionSilenceEventType_ClientUserId, true
+		case 17257:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionSilenceEventType_MethodId, true
+		case 17258:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionSilenceEventType_InputArguments, true
+		case 17260:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionOutOfServiceEventType_EventId, true
+		case 17261:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionOutOfServiceEventType_EventType, true
+		case 17262:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionOutOfServiceEventType_SourceNode, true
+		case 17263:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionOutOfServiceEventType_SourceName, true
+		case 17264:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionOutOfServiceEventType_Time, true
+		case 17265:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionOutOfServiceEventType_ReceiveTime, true
+		case 17266:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionOutOfServiceEventType_LocalTime, true
+		case 17267:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionOutOfServiceEventType_Message, true
+		case 17268:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionOutOfServiceEventType_Severity, true
+		case 17269:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionOutOfServiceEventType_ActionTimeStamp, true
+		case 17270:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionOutOfServiceEventType_Status, true
+		case 17271:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionOutOfServiceEventType_ServerId, true
+		case 17272:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionOutOfServiceEventType_ClientAuditEntryId, true
+		case 17273:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionOutOfServiceEventType_ClientUserId, true
+		case 17274:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionOutOfServiceEventType_MethodId, true
+		case 17275:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionOutOfServiceEventType_InputArguments, true
+		case 17615:
+			return OpcuaNodeIdServicesVariableAudit_AuditSecurityEventType_StatusCodeId, true
+		case 17616:
+			return OpcuaNodeIdServicesVariableAudit_AuditChannelEventType_StatusCodeId, true
+		case 17617:
+			return OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_StatusCodeId, true
+		case 17618:
+			return OpcuaNodeIdServicesVariableAudit_AuditSessionEventType_StatusCodeId, true
+		case 17619:
+			return OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_StatusCodeId, true
+		case 17620:
+			return OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_StatusCodeId, true
+		case 17621:
+			return OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_StatusCodeId, true
+		case 17622:
+			return OpcuaNodeIdServicesVariableAudit_AuditCancelEventType_StatusCodeId, true
+		case 17623:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateEventType_StatusCodeId, true
+		case 17624:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateDataMismatchEventType_StatusCodeId, true
+		case 17625:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateExpiredEventType_StatusCodeId, true
+		case 17626:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateInvalidEventType_StatusCodeId, true
+		case 17627:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateUntrustedEventType_StatusCodeId, true
+		case 17628:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateRevokedEventType_StatusCodeId, true
+		case 17629:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateMismatchEventType_StatusCodeId, true
+		case 19096:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_EventId, true
+		case 19097:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_EventType, true
+		case 19098:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_SourceNode, true
+		case 19099:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_SourceName, true
+		case 19100:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_Time, true
+		case 19101:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_ReceiveTime, true
+		case 19102:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_LocalTime, true
+		case 19103:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_Message, true
+		case 19104:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_Severity, true
+		case 19105:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_ActionTimeStamp, true
+		case 19106:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_Status, true
+		case 19289:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_ServerId, true
+		case 19290:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_ClientAuditEntryId, true
+		case 19291:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_ClientUserId, true
+		case 19292:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_ParameterDataTypeId, true
+		case 19293:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_PerformInsertReplace, true
+		case 19294:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_NewValues, true
+		case 19295:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_OldValues, true
+		case 2053:
+			return OpcuaNodeIdServicesVariableAudit_AuditEventType_ActionTimeStamp, true
+		case 2054:
+			return OpcuaNodeIdServicesVariableAudit_AuditEventType_Status, true
+		case 2055:
+			return OpcuaNodeIdServicesVariableAudit_AuditEventType_ServerId, true
+		case 2056:
+			return OpcuaNodeIdServicesVariableAudit_AuditEventType_ClientAuditEntryId, true
+		case 2057:
+			return OpcuaNodeIdServicesVariableAudit_AuditEventType_ClientUserId, true
+		case 2061:
+			return OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_ClientCertificate, true
+		case 2062:
+			return OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_RequestType, true
+		case 2063:
+			return OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_SecurityPolicyUri, true
+		case 2065:
+			return OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_SecurityMode, true
+		case 2066:
+			return OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_RequestedLifetime, true
+		case 2070:
+			return OpcuaNodeIdServicesVariableAudit_AuditSessionEventType_SessionId, true
+		case 2072:
+			return OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_SecureChannelId, true
+		case 2073:
+			return OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_ClientCertificate, true
+		case 2074:
+			return OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_RevisedSessionTimeout, true
+		case 2076:
+			return OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_ClientSoftwareCertificates, true
+		case 2077:
+			return OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_UserIdentityToken, true
+		case 2079:
+			return OpcuaNodeIdServicesVariableAudit_AuditCancelEventType_RequestHandle, true
+		case 2081:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateEventType_Certificate, true
+		case 2083:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateDataMismatchEventType_InvalidHostname, true
+		case 2084:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateDataMismatchEventType_InvalidUri, true
+		case 2092:
+			return OpcuaNodeIdServicesVariableAudit_AuditAddNodesEventType_NodesToAdd, true
+		case 2094:
+			return OpcuaNodeIdServicesVariableAudit_AuditDeleteNodesEventType_NodesToDelete, true
+		case 2096:
+			return OpcuaNodeIdServicesVariableAudit_AuditAddReferencesEventType_ReferencesToAdd, true
+		case 2098:
+			return OpcuaNodeIdServicesVariableAudit_AuditDeleteReferencesEventType_ReferencesToDelete, true
+		case 2101:
+			return OpcuaNodeIdServicesVariableAudit_AuditWriteUpdateEventType_IndexRange, true
+		case 2102:
+			return OpcuaNodeIdServicesVariableAudit_AuditWriteUpdateEventType_OldValue, true
+		case 2103:
+			return OpcuaNodeIdServicesVariableAudit_AuditWriteUpdateEventType_NewValue, true
+		case 2128:
+			return OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_MethodId, true
+		case 2129:
+			return OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_InputArguments, true
+		case 23607:
+			return OpcuaNodeIdServicesVariableAudit_AuditClientEventType_EventId, true
+		case 23610:
+			return OpcuaNodeIdServicesVariableAudit_AuditClientEventType_EventType, true
+		case 23611:
+			return OpcuaNodeIdServicesVariableAudit_AuditClientEventType_SourceNode, true
+		case 23891:
+			return OpcuaNodeIdServicesVariableAudit_AuditClientEventType_SourceName, true
+		case 23892:
+			return OpcuaNodeIdServicesVariableAudit_AuditClientEventType_Time, true
+		case 23893:
+			return OpcuaNodeIdServicesVariableAudit_AuditClientEventType_ReceiveTime, true
+		case 23894:
+			return OpcuaNodeIdServicesVariableAudit_AuditClientEventType_LocalTime, true
+		case 23895:
+			return OpcuaNodeIdServicesVariableAudit_AuditClientEventType_Message, true
+		case 23896:
+			return OpcuaNodeIdServicesVariableAudit_AuditClientEventType_Severity, true
+		case 23903:
+			return OpcuaNodeIdServicesVariableAudit_AuditClientEventType_ActionTimeStamp, true
+		case 23904:
+			return OpcuaNodeIdServicesVariableAudit_AuditClientEventType_Status, true
+		case 23905:
+			return OpcuaNodeIdServicesVariableAudit_AuditClientEventType_ServerId, true
+		case 23906:
+			return OpcuaNodeIdServicesVariableAudit_AuditClientEventType_ClientAuditEntryId, true
+		case 23907:
+			return OpcuaNodeIdServicesVariableAudit_AuditClientEventType_ClientUserId, true
+		case 23908:
+			return OpcuaNodeIdServicesVariableAudit_AuditClientEventType_ServerUri, true
+		case 23927:
+			return OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_EventId, true
+		case 23930:
+			return OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_EventType, true
+		case 23931:
+			return OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_SourceNode, true
+		case 23959:
+			return OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_SourceName, true
+		case 23960:
+			return OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_Time, true
+		case 23961:
+			return OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_ReceiveTime, true
+		case 23962:
+			return OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_LocalTime, true
+		case 23963:
+			return OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_Message, true
+		case 23964:
+			return OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_Severity, true
+		case 23971:
+			return OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_ActionTimeStamp, true
+		case 23972:
+			return OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_Status, true
+		case 23973:
+			return OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_ServerId, true
+		case 23974:
+			return OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_ClientAuditEntryId, true
+		case 23975:
+			return OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_ClientUserId, true
+		case 23976:
+			return OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_ServerUri, true
+		case 23994:
+			return OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_ObjectId, true
+		case 23995:
+			return OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_MethodId, true
+		case 23998:
+			return OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_StatusCodeId, true
+		case 23999:
+			return OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_InputArguments, true
+		case 24135:
+			return OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_CertificateErrorEventId, true
+		case 25684:
+			return OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_OutputArguments, true
+		case 2745:
+			return OpcuaNodeIdServicesVariableAudit_AuditChannelEventType_SecureChannelId, true
+		case 2746:
+			return OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_ClientCertificateThumbprint, true
+		case 2747:
+			return OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_ClientCertificateThumbprint, true
+		case 2749:
+			return OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_EndpointUrl, true
+		case 2750:
+			return OpcuaNodeIdServicesVariableAudit_AuditWriteUpdateEventType_AttributeId, true
+		case 2751:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryUpdateEventType_ParameterDataTypeId, true
+		case 2777:
+			return OpcuaNodeIdServicesVariableAudit_AuditUpdateStateEventType_OldStateId, true
+		case 2778:
+			return OpcuaNodeIdServicesVariableAudit_AuditUpdateStateEventType_NewStateId, true
+		case 3003:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_Filter, true
+		case 3015:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_IsDeleteModified, true
+		case 3016:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_StartTime, true
+		case 3017:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_EndTime, true
+		case 3020:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryAtTimeDeleteEventType_ReqTimes, true
+		case 3021:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryAtTimeDeleteEventType_OldValues, true
+		case 3023:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventDeleteEventType_EventIds, true
+		case 3024:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventDeleteEventType_OldValues, true
+		case 3025:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_UpdatedNode, true
+		case 3026:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_UpdatedNode, true
+		case 3027:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryDeleteEventType_UpdatedNode, true
+		case 3028:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_PerformInsertReplace, true
+		case 3029:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_NewValues, true
+		case 3030:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_OldValues, true
+		case 3031:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_PerformInsertReplace, true
+		case 3032:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_NewValues, true
+		case 3033:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_OldValues, true
+		case 3034:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_OldValues, true
+		case 31775:
+			return OpcuaNodeIdServicesVariableAudit_AuditEventType_ConditionClassId, true
+		case 31776:
+			return OpcuaNodeIdServicesVariableAudit_AuditEventType_ConditionClassName, true
+		case 31777:
+			return OpcuaNodeIdServicesVariableAudit_AuditEventType_ConditionSubClassId, true
+		case 31778:
+			return OpcuaNodeIdServicesVariableAudit_AuditEventType_ConditionSubClassName, true
+		case 31779:
+			return OpcuaNodeIdServicesVariableAudit_AuditSecurityEventType_ConditionClassId, true
+		case 31780:
+			return OpcuaNodeIdServicesVariableAudit_AuditSecurityEventType_ConditionClassName, true
+		case 31781:
+			return OpcuaNodeIdServicesVariableAudit_AuditSecurityEventType_ConditionSubClassId, true
+		case 31782:
+			return OpcuaNodeIdServicesVariableAudit_AuditSecurityEventType_ConditionSubClassName, true
+		case 31783:
+			return OpcuaNodeIdServicesVariableAudit_AuditChannelEventType_ConditionClassId, true
+		case 31784:
+			return OpcuaNodeIdServicesVariableAudit_AuditChannelEventType_ConditionClassName, true
+		case 31785:
+			return OpcuaNodeIdServicesVariableAudit_AuditChannelEventType_ConditionSubClassId, true
+		case 31786:
+			return OpcuaNodeIdServicesVariableAudit_AuditChannelEventType_ConditionSubClassName, true
+		case 31787:
+			return OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_ConditionClassId, true
+		case 31788:
+			return OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_ConditionClassName, true
+		case 31789:
+			return OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_ConditionSubClassId, true
+		case 31790:
+			return OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_ConditionSubClassName, true
+		case 31791:
+			return OpcuaNodeIdServicesVariableAudit_AuditSessionEventType_ConditionClassId, true
+		case 31792:
+			return OpcuaNodeIdServicesVariableAudit_AuditSessionEventType_ConditionClassName, true
+		case 31793:
+			return OpcuaNodeIdServicesVariableAudit_AuditSessionEventType_ConditionSubClassId, true
+		case 31794:
+			return OpcuaNodeIdServicesVariableAudit_AuditSessionEventType_ConditionSubClassName, true
+		case 31795:
+			return OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_ConditionClassId, true
+		case 31796:
+			return OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_ConditionClassName, true
+		case 31797:
+			return OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_ConditionSubClassId, true
+		case 31798:
+			return OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_ConditionSubClassName, true
+		case 31799:
+			return OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_ConditionClassId, true
+		case 31800:
+			return OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_ConditionClassName, true
+		case 31801:
+			return OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_ConditionSubClassId, true
+		case 31802:
+			return OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_ConditionSubClassName, true
+		case 31803:
+			return OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_ConditionClassId, true
+		case 31804:
+			return OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_ConditionClassName, true
+		case 31805:
+			return OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_ConditionSubClassId, true
+		case 31806:
+			return OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_ConditionSubClassName, true
+		case 31807:
+			return OpcuaNodeIdServicesVariableAudit_AuditCancelEventType_ConditionClassId, true
+		case 31808:
+			return OpcuaNodeIdServicesVariableAudit_AuditCancelEventType_ConditionClassName, true
+		case 31809:
+			return OpcuaNodeIdServicesVariableAudit_AuditCancelEventType_ConditionSubClassId, true
+		case 31810:
+			return OpcuaNodeIdServicesVariableAudit_AuditCancelEventType_ConditionSubClassName, true
+		case 31811:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateEventType_ConditionClassId, true
+		case 31812:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateEventType_ConditionClassName, true
+		case 31813:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateEventType_ConditionSubClassId, true
+		case 31814:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateEventType_ConditionSubClassName, true
+		case 31815:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateDataMismatchEventType_ConditionClassId, true
+		case 31816:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateDataMismatchEventType_ConditionClassName, true
+		case 31817:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateDataMismatchEventType_ConditionSubClassId, true
+		case 31818:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateDataMismatchEventType_ConditionSubClassName, true
+		case 31819:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateExpiredEventType_ConditionClassId, true
+		case 31820:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateExpiredEventType_ConditionClassName, true
+		case 31821:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateExpiredEventType_ConditionSubClassId, true
+		case 31822:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateExpiredEventType_ConditionSubClassName, true
+		case 31823:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateInvalidEventType_ConditionClassId, true
+		case 31824:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateInvalidEventType_ConditionClassName, true
+		case 31825:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateInvalidEventType_ConditionSubClassId, true
+		case 31826:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateInvalidEventType_ConditionSubClassName, true
+		case 31827:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateUntrustedEventType_ConditionClassId, true
+		case 31828:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateUntrustedEventType_ConditionClassName, true
+		case 31829:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateUntrustedEventType_ConditionSubClassId, true
+		case 31830:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateUntrustedEventType_ConditionSubClassName, true
+		case 31831:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateRevokedEventType_ConditionClassId, true
+		case 31832:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateRevokedEventType_ConditionClassName, true
+		case 31833:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateRevokedEventType_ConditionSubClassId, true
+		case 31834:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateRevokedEventType_ConditionSubClassName, true
+		case 31835:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateMismatchEventType_ConditionClassId, true
+		case 31836:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateMismatchEventType_ConditionClassName, true
+		case 31837:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateMismatchEventType_ConditionSubClassId, true
+		case 31838:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateMismatchEventType_ConditionSubClassName, true
+		case 31839:
+			return OpcuaNodeIdServicesVariableAudit_AuditNodeManagementEventType_ConditionClassId, true
+		case 31840:
+			return OpcuaNodeIdServicesVariableAudit_AuditNodeManagementEventType_ConditionClassName, true
+		case 31841:
+			return OpcuaNodeIdServicesVariableAudit_AuditNodeManagementEventType_ConditionSubClassId, true
+		case 31842:
+			return OpcuaNodeIdServicesVariableAudit_AuditNodeManagementEventType_ConditionSubClassName, true
+		case 31843:
+			return OpcuaNodeIdServicesVariableAudit_AuditAddNodesEventType_ConditionClassId, true
+		case 31844:
+			return OpcuaNodeIdServicesVariableAudit_AuditAddNodesEventType_ConditionClassName, true
+		case 31845:
+			return OpcuaNodeIdServicesVariableAudit_AuditAddNodesEventType_ConditionSubClassId, true
+		case 31846:
+			return OpcuaNodeIdServicesVariableAudit_AuditAddNodesEventType_ConditionSubClassName, true
+		case 31847:
+			return OpcuaNodeIdServicesVariableAudit_AuditDeleteNodesEventType_ConditionClassId, true
+		case 31848:
+			return OpcuaNodeIdServicesVariableAudit_AuditDeleteNodesEventType_ConditionClassName, true
+		case 31849:
+			return OpcuaNodeIdServicesVariableAudit_AuditDeleteNodesEventType_ConditionSubClassId, true
+		case 31850:
+			return OpcuaNodeIdServicesVariableAudit_AuditDeleteNodesEventType_ConditionSubClassName, true
+		case 31851:
+			return OpcuaNodeIdServicesVariableAudit_AuditAddReferencesEventType_ConditionClassId, true
+		case 31852:
+			return OpcuaNodeIdServicesVariableAudit_AuditAddReferencesEventType_ConditionClassName, true
+		case 31853:
+			return OpcuaNodeIdServicesVariableAudit_AuditAddReferencesEventType_ConditionSubClassId, true
+		case 31854:
+			return OpcuaNodeIdServicesVariableAudit_AuditAddReferencesEventType_ConditionSubClassName, true
+		case 31855:
+			return OpcuaNodeIdServicesVariableAudit_AuditDeleteReferencesEventType_ConditionClassId, true
+		case 31856:
+			return OpcuaNodeIdServicesVariableAudit_AuditDeleteReferencesEventType_ConditionClassName, true
+		case 31857:
+			return OpcuaNodeIdServicesVariableAudit_AuditDeleteReferencesEventType_ConditionSubClassId, true
+		case 31858:
+			return OpcuaNodeIdServicesVariableAudit_AuditDeleteReferencesEventType_ConditionSubClassName, true
+		case 31859:
+			return OpcuaNodeIdServicesVariableAudit_AuditUpdateEventType_ConditionClassId, true
+		case 31860:
+			return OpcuaNodeIdServicesVariableAudit_AuditUpdateEventType_ConditionClassName, true
+		case 31861:
+			return OpcuaNodeIdServicesVariableAudit_AuditUpdateEventType_ConditionSubClassId, true
+		case 31862:
+			return OpcuaNodeIdServicesVariableAudit_AuditUpdateEventType_ConditionSubClassName, true
+		case 31863:
+			return OpcuaNodeIdServicesVariableAudit_AuditWriteUpdateEventType_ConditionClassId, true
+		case 31864:
+			return OpcuaNodeIdServicesVariableAudit_AuditWriteUpdateEventType_ConditionClassName, true
+		case 31865:
+			return OpcuaNodeIdServicesVariableAudit_AuditWriteUpdateEventType_ConditionSubClassId, true
+		case 31866:
+			return OpcuaNodeIdServicesVariableAudit_AuditWriteUpdateEventType_ConditionSubClassName, true
+		case 31867:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryUpdateEventType_ConditionClassId, true
+		case 31868:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryUpdateEventType_ConditionClassName, true
+		case 31869:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryUpdateEventType_ConditionSubClassId, true
+		case 31870:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryUpdateEventType_ConditionSubClassName, true
+		case 31871:
+			return OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_ConditionClassId, true
+		case 31872:
+			return OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_ConditionClassName, true
+		case 31873:
+			return OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_ConditionSubClassId, true
+		case 31874:
+			return OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_ConditionSubClassName, true
+		case 31907:
+			return OpcuaNodeIdServicesVariableAudit_AuditClientEventType_ConditionClassId, true
+		case 31908:
+			return OpcuaNodeIdServicesVariableAudit_AuditClientEventType_ConditionClassName, true
+		case 31909:
+			return OpcuaNodeIdServicesVariableAudit_AuditClientEventType_ConditionSubClassId, true
+		case 31910:
+			return OpcuaNodeIdServicesVariableAudit_AuditClientEventType_ConditionSubClassName, true
+		case 31911:
+			return OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_ConditionClassId, true
+		case 31912:
+			return OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_ConditionClassName, true
+		case 31913:
+			return OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_ConditionSubClassId, true
+		case 31914:
+			return OpcuaNodeIdServicesVariableAudit_AuditClientUpdateMethodResultEventType_ConditionSubClassName, true
+		case 31923:
+			return OpcuaNodeIdServicesVariableAudit_AuditUpdateStateEventType_ConditionClassId, true
+		case 31924:
+			return OpcuaNodeIdServicesVariableAudit_AuditUpdateStateEventType_ConditionClassName, true
+		case 31925:
+			return OpcuaNodeIdServicesVariableAudit_AuditUpdateStateEventType_ConditionSubClassId, true
+		case 31926:
+			return OpcuaNodeIdServicesVariableAudit_AuditUpdateStateEventType_ConditionSubClassName, true
+		case 31931:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionEventType_ConditionClassId, true
+		case 31932:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionEventType_ConditionClassName, true
+		case 31933:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionEventType_ConditionSubClassId, true
+		case 31934:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionEventType_ConditionSubClassName, true
+		case 31935:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionEnableEventType_ConditionClassId, true
+		case 31936:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionEnableEventType_ConditionClassName, true
+		case 31937:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionEnableEventType_ConditionSubClassId, true
+		case 31938:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionEnableEventType_ConditionSubClassName, true
+		case 31939:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionCommentEventType_ConditionClassId, true
+		case 31940:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionCommentEventType_ConditionClassName, true
+		case 31941:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionCommentEventType_ConditionSubClassId, true
+		case 31942:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionCommentEventType_ConditionSubClassName, true
+		case 31943:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionRespondEventType_ConditionClassId, true
+		case 31944:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionRespondEventType_ConditionClassName, true
+		case 31945:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionRespondEventType_ConditionSubClassId, true
+		case 31946:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionRespondEventType_ConditionSubClassName, true
+		case 31947:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionAcknowledgeEventType_ConditionClassId, true
+		case 31948:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionAcknowledgeEventType_ConditionClassName, true
+		case 31949:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionAcknowledgeEventType_ConditionSubClassId, true
+		case 31950:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionAcknowledgeEventType_ConditionSubClassName, true
+		case 31951:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionConfirmEventType_ConditionClassId, true
+		case 31952:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionConfirmEventType_ConditionClassName, true
+		case 31953:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionConfirmEventType_ConditionSubClassId, true
+		case 31954:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionConfirmEventType_ConditionSubClassName, true
+		case 31955:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionShelvingEventType_ConditionClassId, true
+		case 31956:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionShelvingEventType_ConditionClassName, true
+		case 31957:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionShelvingEventType_ConditionSubClassId, true
+		case 31958:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionShelvingEventType_ConditionSubClassName, true
+		case 31959:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionSuppressionEventType_ConditionClassId, true
+		case 31960:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionSuppressionEventType_ConditionClassName, true
+		case 31961:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionSuppressionEventType_ConditionSubClassId, true
+		case 31962:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionSuppressionEventType_ConditionSubClassName, true
+		case 31963:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionSilenceEventType_ConditionClassId, true
+		case 31964:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionSilenceEventType_ConditionClassName, true
+		case 31965:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionSilenceEventType_ConditionSubClassId, true
+		case 31966:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionSilenceEventType_ConditionSubClassName, true
+		case 31967:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionResetEventType_ConditionClassId, true
+		case 31968:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionResetEventType_ConditionClassName, true
+		case 31969:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionResetEventType_ConditionSubClassId, true
+		case 31970:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionResetEventType_ConditionSubClassName, true
+		case 31971:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionOutOfServiceEventType_ConditionClassId, true
+		case 31972:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionOutOfServiceEventType_ConditionClassName, true
+		case 31973:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionOutOfServiceEventType_ConditionSubClassId, true
+		case 31974:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionOutOfServiceEventType_ConditionSubClassName, true
+		case 31991:
+			return OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_ConditionClassId, true
+		case 31992:
+			return OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_ConditionClassName, true
+		case 31993:
+			return OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_ConditionSubClassId, true
+		case 31994:
+			return OpcuaNodeIdServicesVariableAudit_AuditProgramTransitionEventType_ConditionSubClassName, true
+		case 31999:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_ConditionClassId, true
+		case 3200:
+			return OpcuaNodeIdServicesVariableAudit_AuditEventType_EventId, true
+		case 32000:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_ConditionClassName, true
+		case 32001:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_ConditionSubClassId, true
+		case 32002:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_ConditionSubClassName, true
+		case 32003:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_ConditionClassId, true
+		case 32004:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_ConditionClassName, true
+		case 32005:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_ConditionSubClassId, true
+		case 32006:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_ConditionSubClassName, true
+		case 32007:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_ConditionClassId, true
+		case 32008:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_ConditionClassName, true
+		case 32009:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_ConditionSubClassId, true
+		case 3201:
+			return OpcuaNodeIdServicesVariableAudit_AuditEventType_EventType, true
+		case 32010:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryAnnotationUpdateEventType_ConditionSubClassName, true
+		case 32011:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryDeleteEventType_ConditionClassId, true
+		case 32012:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryDeleteEventType_ConditionClassName, true
+		case 32013:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryDeleteEventType_ConditionSubClassId, true
+		case 32014:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryDeleteEventType_ConditionSubClassName, true
+		case 32015:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_ConditionClassId, true
+		case 32016:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_ConditionClassName, true
+		case 32017:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_ConditionSubClassId, true
+		case 32018:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_ConditionSubClassName, true
+		case 32019:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryAtTimeDeleteEventType_ConditionClassId, true
+		case 3202:
+			return OpcuaNodeIdServicesVariableAudit_AuditEventType_SourceNode, true
+		case 32020:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryAtTimeDeleteEventType_ConditionClassName, true
+		case 32021:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryAtTimeDeleteEventType_ConditionSubClassId, true
+		case 32022:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryAtTimeDeleteEventType_ConditionSubClassName, true
+		case 32023:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventDeleteEventType_ConditionClassId, true
+		case 32024:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventDeleteEventType_ConditionClassName, true
+		case 32025:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventDeleteEventType_ConditionSubClassId, true
+		case 32026:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventDeleteEventType_ConditionSubClassName, true
+		case 3203:
+			return OpcuaNodeIdServicesVariableAudit_AuditEventType_SourceName, true
+		case 3204:
+			return OpcuaNodeIdServicesVariableAudit_AuditEventType_Time, true
+		case 3205:
+			return OpcuaNodeIdServicesVariableAudit_AuditEventType_ReceiveTime, true
+		case 3206:
+			return OpcuaNodeIdServicesVariableAudit_AuditEventType_LocalTime, true
+		case 3207:
+			return OpcuaNodeIdServicesVariableAudit_AuditEventType_Message, true
+		case 3208:
+			return OpcuaNodeIdServicesVariableAudit_AuditEventType_Severity, true
+		case 3209:
+			return OpcuaNodeIdServicesVariableAudit_AuditSecurityEventType_EventId, true
+		case 3210:
+			return OpcuaNodeIdServicesVariableAudit_AuditSecurityEventType_EventType, true
+		case 3211:
+			return OpcuaNodeIdServicesVariableAudit_AuditSecurityEventType_SourceNode, true
+		case 3212:
+			return OpcuaNodeIdServicesVariableAudit_AuditSecurityEventType_SourceName, true
+		case 3213:
+			return OpcuaNodeIdServicesVariableAudit_AuditSecurityEventType_Time, true
+		case 3214:
+			return OpcuaNodeIdServicesVariableAudit_AuditSecurityEventType_ReceiveTime, true
+		case 3215:
+			return OpcuaNodeIdServicesVariableAudit_AuditSecurityEventType_LocalTime, true
+		case 3216:
+			return OpcuaNodeIdServicesVariableAudit_AuditSecurityEventType_Message, true
+		case 3217:
+			return OpcuaNodeIdServicesVariableAudit_AuditSecurityEventType_Severity, true
+		case 3218:
+			return OpcuaNodeIdServicesVariableAudit_AuditSecurityEventType_ActionTimeStamp, true
+		case 3219:
+			return OpcuaNodeIdServicesVariableAudit_AuditSecurityEventType_Status, true
+		case 3220:
+			return OpcuaNodeIdServicesVariableAudit_AuditSecurityEventType_ServerId, true
+		case 3221:
+			return OpcuaNodeIdServicesVariableAudit_AuditSecurityEventType_ClientAuditEntryId, true
+		case 3222:
+			return OpcuaNodeIdServicesVariableAudit_AuditSecurityEventType_ClientUserId, true
+		case 3223:
+			return OpcuaNodeIdServicesVariableAudit_AuditChannelEventType_EventId, true
+		case 3224:
+			return OpcuaNodeIdServicesVariableAudit_AuditChannelEventType_EventType, true
+		case 3225:
+			return OpcuaNodeIdServicesVariableAudit_AuditChannelEventType_SourceNode, true
+		case 3226:
+			return OpcuaNodeIdServicesVariableAudit_AuditChannelEventType_SourceName, true
+		case 3227:
+			return OpcuaNodeIdServicesVariableAudit_AuditChannelEventType_Time, true
+		case 3228:
+			return OpcuaNodeIdServicesVariableAudit_AuditChannelEventType_ReceiveTime, true
+		case 3229:
+			return OpcuaNodeIdServicesVariableAudit_AuditChannelEventType_LocalTime, true
+		case 3230:
+			return OpcuaNodeIdServicesVariableAudit_AuditChannelEventType_Message, true
+		case 3231:
+			return OpcuaNodeIdServicesVariableAudit_AuditChannelEventType_Severity, true
+		case 3232:
+			return OpcuaNodeIdServicesVariableAudit_AuditChannelEventType_ActionTimeStamp, true
+		case 3233:
+			return OpcuaNodeIdServicesVariableAudit_AuditChannelEventType_Status, true
+		case 3234:
+			return OpcuaNodeIdServicesVariableAudit_AuditChannelEventType_ServerId, true
+		case 3235:
+			return OpcuaNodeIdServicesVariableAudit_AuditChannelEventType_ClientAuditEntryId, true
+		case 3236:
+			return OpcuaNodeIdServicesVariableAudit_AuditChannelEventType_ClientUserId, true
+		case 3237:
+			return OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_EventId, true
+		case 3238:
+			return OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_EventType, true
+		case 3239:
+			return OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_SourceNode, true
+		case 3240:
+			return OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_SourceName, true
+		case 3241:
+			return OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_Time, true
+		case 3242:
+			return OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_ReceiveTime, true
+		case 3243:
+			return OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_LocalTime, true
+		case 3244:
+			return OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_Message, true
+		case 3245:
+			return OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_Severity, true
+		case 3246:
+			return OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_ActionTimeStamp, true
+		case 3247:
+			return OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_Status, true
+		case 3248:
+			return OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_ServerId, true
+		case 3249:
+			return OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_ClientAuditEntryId, true
+		case 3250:
+			return OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_ClientUserId, true
+		case 3251:
+			return OpcuaNodeIdServicesVariableAudit_AuditOpenSecureChannelEventType_SecureChannelId, true
+		case 3252:
+			return OpcuaNodeIdServicesVariableAudit_AuditSessionEventType_EventId, true
+		case 3253:
+			return OpcuaNodeIdServicesVariableAudit_AuditSessionEventType_EventType, true
+		case 3254:
+			return OpcuaNodeIdServicesVariableAudit_AuditSessionEventType_SourceNode, true
+		case 3255:
+			return OpcuaNodeIdServicesVariableAudit_AuditSessionEventType_SourceName, true
+		case 3256:
+			return OpcuaNodeIdServicesVariableAudit_AuditSessionEventType_Time, true
+		case 3257:
+			return OpcuaNodeIdServicesVariableAudit_AuditSessionEventType_ReceiveTime, true
+		case 3258:
+			return OpcuaNodeIdServicesVariableAudit_AuditSessionEventType_LocalTime, true
+		case 3259:
+			return OpcuaNodeIdServicesVariableAudit_AuditSessionEventType_Message, true
+		case 3260:
+			return OpcuaNodeIdServicesVariableAudit_AuditSessionEventType_Severity, true
+		case 3261:
+			return OpcuaNodeIdServicesVariableAudit_AuditSessionEventType_ActionTimeStamp, true
+		case 3262:
+			return OpcuaNodeIdServicesVariableAudit_AuditSessionEventType_Status, true
+		case 3263:
+			return OpcuaNodeIdServicesVariableAudit_AuditSessionEventType_ServerId, true
+		case 3264:
+			return OpcuaNodeIdServicesVariableAudit_AuditSessionEventType_ClientAuditEntryId, true
+		case 3265:
+			return OpcuaNodeIdServicesVariableAudit_AuditSessionEventType_ClientUserId, true
+		case 3266:
+			return OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_EventId, true
+		case 3267:
+			return OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_EventType, true
+		case 3268:
+			return OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_SourceNode, true
+		case 3269:
+			return OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_SourceName, true
+		case 3270:
+			return OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_Time, true
+		case 3271:
+			return OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_ReceiveTime, true
+		case 3272:
+			return OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_LocalTime, true
+		case 3273:
+			return OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_Message, true
+		case 3274:
+			return OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_Severity, true
+		case 3275:
+			return OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_ActionTimeStamp, true
+		case 3276:
+			return OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_Status, true
+		case 3277:
+			return OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_ServerId, true
+		case 3278:
+			return OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_ClientAuditEntryId, true
+		case 3279:
+			return OpcuaNodeIdServicesVariableAudit_AuditCreateSessionEventType_ClientUserId, true
+		case 3281:
+			return OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_EventId, true
+		case 3282:
+			return OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_EventType, true
+		case 3283:
+			return OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_SourceNode, true
+		case 3284:
+			return OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_SourceName, true
+		case 3285:
+			return OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_Time, true
+		case 3286:
+			return OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_ReceiveTime, true
+		case 3287:
+			return OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_LocalTime, true
+		case 3288:
+			return OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_Message, true
+		case 3289:
+			return OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_Severity, true
+		case 3290:
+			return OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_ActionTimeStamp, true
+		case 3291:
+			return OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_Status, true
+		case 3292:
+			return OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_ServerId, true
+		case 3293:
+			return OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_ClientAuditEntryId, true
+		case 3294:
+			return OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_ClientUserId, true
+		case 3296:
+			return OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_SecureChannelId, true
+		case 3297:
+			return OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_ClientCertificate, true
+		case 3298:
+			return OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_ClientCertificateThumbprint, true
+		case 3299:
+			return OpcuaNodeIdServicesVariableAudit_AuditUrlMismatchEventType_RevisedSessionTimeout, true
+		case 3300:
+			return OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_EventId, true
+		case 3301:
+			return OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_EventType, true
+		case 3302:
+			return OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_SourceNode, true
+		case 3303:
+			return OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_SourceName, true
+		case 3304:
+			return OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_Time, true
+		case 3305:
+			return OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_ReceiveTime, true
+		case 3306:
+			return OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_LocalTime, true
+		case 3307:
+			return OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_Message, true
+		case 3308:
+			return OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_Severity, true
+		case 3309:
+			return OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_ActionTimeStamp, true
+		case 3310:
+			return OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_Status, true
+		case 3311:
+			return OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_ServerId, true
+		case 3312:
+			return OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_ClientAuditEntryId, true
+		case 3313:
+			return OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_ClientUserId, true
+		case 3314:
+			return OpcuaNodeIdServicesVariableAudit_AuditActivateSessionEventType_SessionId, true
+		case 3315:
+			return OpcuaNodeIdServicesVariableAudit_AuditCancelEventType_EventId, true
+		case 3316:
+			return OpcuaNodeIdServicesVariableAudit_AuditCancelEventType_EventType, true
+		case 3317:
+			return OpcuaNodeIdServicesVariableAudit_AuditCancelEventType_SourceNode, true
+		case 3318:
+			return OpcuaNodeIdServicesVariableAudit_AuditCancelEventType_SourceName, true
+		case 3319:
+			return OpcuaNodeIdServicesVariableAudit_AuditCancelEventType_Time, true
+		case 3320:
+			return OpcuaNodeIdServicesVariableAudit_AuditCancelEventType_ReceiveTime, true
+		case 3321:
+			return OpcuaNodeIdServicesVariableAudit_AuditCancelEventType_LocalTime, true
+		case 3322:
+			return OpcuaNodeIdServicesVariableAudit_AuditCancelEventType_Message, true
+		case 3323:
+			return OpcuaNodeIdServicesVariableAudit_AuditCancelEventType_Severity, true
+		case 3324:
+			return OpcuaNodeIdServicesVariableAudit_AuditCancelEventType_ActionTimeStamp, true
+		case 3325:
+			return OpcuaNodeIdServicesVariableAudit_AuditCancelEventType_Status, true
+		case 3326:
+			return OpcuaNodeIdServicesVariableAudit_AuditCancelEventType_ServerId, true
+		case 3327:
+			return OpcuaNodeIdServicesVariableAudit_AuditCancelEventType_ClientAuditEntryId, true
+		case 3328:
+			return OpcuaNodeIdServicesVariableAudit_AuditCancelEventType_ClientUserId, true
+		case 3329:
+			return OpcuaNodeIdServicesVariableAudit_AuditCancelEventType_SessionId, true
+		case 3330:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateEventType_EventId, true
+		case 3331:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateEventType_EventType, true
+		case 3332:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateEventType_SourceNode, true
+		case 3333:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateEventType_SourceName, true
+		case 3334:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateEventType_Time, true
+		case 3335:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateEventType_ReceiveTime, true
+		case 3336:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateEventType_LocalTime, true
+		case 3337:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateEventType_Message, true
+		case 3338:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateEventType_Severity, true
+		case 3339:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateEventType_ActionTimeStamp, true
+		case 3340:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateEventType_Status, true
+		case 3341:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateEventType_ServerId, true
+		case 3342:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateEventType_ClientAuditEntryId, true
+		case 3343:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateEventType_ClientUserId, true
+		case 3344:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateDataMismatchEventType_EventId, true
+		case 3345:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateDataMismatchEventType_EventType, true
+		case 3346:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateDataMismatchEventType_SourceNode, true
+		case 3347:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateDataMismatchEventType_SourceName, true
+		case 3348:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateDataMismatchEventType_Time, true
+		case 3349:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateDataMismatchEventType_ReceiveTime, true
+		case 3350:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateDataMismatchEventType_LocalTime, true
+		case 3351:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateDataMismatchEventType_Message, true
+		case 3352:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateDataMismatchEventType_Severity, true
+		case 3353:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateDataMismatchEventType_ActionTimeStamp, true
+		case 3354:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateDataMismatchEventType_Status, true
+		case 3355:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateDataMismatchEventType_ServerId, true
+		case 3356:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateDataMismatchEventType_ClientAuditEntryId, true
+		case 3357:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateDataMismatchEventType_ClientUserId, true
+		case 3358:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateDataMismatchEventType_Certificate, true
+		case 3359:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateExpiredEventType_EventId, true
+		case 3360:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateExpiredEventType_EventType, true
+		case 3361:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateExpiredEventType_SourceNode, true
+		case 3362:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateExpiredEventType_SourceName, true
+		case 3363:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateExpiredEventType_Time, true
+		case 3364:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateExpiredEventType_ReceiveTime, true
+		case 3365:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateExpiredEventType_LocalTime, true
+		case 3366:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateExpiredEventType_Message, true
+		case 3367:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateExpiredEventType_Severity, true
+		case 3368:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateExpiredEventType_ActionTimeStamp, true
+		case 3369:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateExpiredEventType_Status, true
+		case 3370:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateExpiredEventType_ServerId, true
+		case 3371:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateExpiredEventType_ClientAuditEntryId, true
+		case 3372:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateExpiredEventType_ClientUserId, true
+		case 3373:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateExpiredEventType_Certificate, true
+		case 3374:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateInvalidEventType_EventId, true
+		case 3375:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateInvalidEventType_EventType, true
+		case 3376:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateInvalidEventType_SourceNode, true
+		case 3377:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateInvalidEventType_SourceName, true
+		case 3378:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateInvalidEventType_Time, true
+		case 3379:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateInvalidEventType_ReceiveTime, true
+		case 3380:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateInvalidEventType_LocalTime, true
+		case 3381:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateInvalidEventType_Message, true
+		case 3382:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateInvalidEventType_Severity, true
+		case 3383:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateInvalidEventType_ActionTimeStamp, true
+		case 3384:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateInvalidEventType_Status, true
+		case 3385:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateInvalidEventType_ServerId, true
+		case 3386:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateInvalidEventType_ClientAuditEntryId, true
+		case 3387:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateInvalidEventType_ClientUserId, true
+		case 3388:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateInvalidEventType_Certificate, true
+		case 3389:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateUntrustedEventType_EventId, true
+		case 3390:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateUntrustedEventType_EventType, true
+		case 3391:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateUntrustedEventType_SourceNode, true
+		case 3392:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateUntrustedEventType_SourceName, true
+		case 3393:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateUntrustedEventType_Time, true
+		case 3394:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateUntrustedEventType_ReceiveTime, true
+		case 3395:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateUntrustedEventType_LocalTime, true
+		case 3396:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateUntrustedEventType_Message, true
+		case 3397:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateUntrustedEventType_Severity, true
+		case 3398:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateUntrustedEventType_ActionTimeStamp, true
+		case 3399:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateUntrustedEventType_Status, true
+		case 3400:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateUntrustedEventType_ServerId, true
+		case 3401:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateUntrustedEventType_ClientAuditEntryId, true
+		case 3402:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateUntrustedEventType_ClientUserId, true
+		case 3403:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateUntrustedEventType_Certificate, true
+		case 3404:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateRevokedEventType_EventId, true
+		case 3405:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateRevokedEventType_EventType, true
+		case 3406:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateRevokedEventType_SourceNode, true
+		case 3407:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateRevokedEventType_SourceName, true
+		case 3408:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateRevokedEventType_Time, true
+		case 3409:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateRevokedEventType_ReceiveTime, true
+		case 3410:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateRevokedEventType_LocalTime, true
+		case 3411:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateRevokedEventType_Message, true
+		case 3412:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateRevokedEventType_Severity, true
+		case 3413:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateRevokedEventType_ActionTimeStamp, true
+		case 3414:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateRevokedEventType_Status, true
+		case 3415:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateRevokedEventType_ServerId, true
+		case 3416:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateRevokedEventType_ClientAuditEntryId, true
+		case 3417:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateRevokedEventType_ClientUserId, true
+		case 3418:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateRevokedEventType_Certificate, true
+		case 3419:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateMismatchEventType_EventId, true
+		case 3420:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateMismatchEventType_EventType, true
+		case 3421:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateMismatchEventType_SourceNode, true
+		case 3422:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateMismatchEventType_SourceName, true
+		case 3423:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateMismatchEventType_Time, true
+		case 3424:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateMismatchEventType_ReceiveTime, true
+		case 3425:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateMismatchEventType_LocalTime, true
+		case 3426:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateMismatchEventType_Message, true
+		case 3427:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateMismatchEventType_Severity, true
+		case 3428:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateMismatchEventType_ActionTimeStamp, true
+		case 3429:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateMismatchEventType_Status, true
+		case 3430:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateMismatchEventType_ServerId, true
+		case 3431:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateMismatchEventType_ClientAuditEntryId, true
+		case 3432:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateMismatchEventType_ClientUserId, true
+		case 3433:
+			return OpcuaNodeIdServicesVariableAudit_AuditCertificateMismatchEventType_Certificate, true
+		case 3434:
+			return OpcuaNodeIdServicesVariableAudit_AuditNodeManagementEventType_EventId, true
+		case 3435:
+			return OpcuaNodeIdServicesVariableAudit_AuditNodeManagementEventType_EventType, true
+		case 3436:
+			return OpcuaNodeIdServicesVariableAudit_AuditNodeManagementEventType_SourceNode, true
+		case 3437:
+			return OpcuaNodeIdServicesVariableAudit_AuditNodeManagementEventType_SourceName, true
+		case 3438:
+			return OpcuaNodeIdServicesVariableAudit_AuditNodeManagementEventType_Time, true
+		case 3439:
+			return OpcuaNodeIdServicesVariableAudit_AuditNodeManagementEventType_ReceiveTime, true
+		case 3440:
+			return OpcuaNodeIdServicesVariableAudit_AuditNodeManagementEventType_LocalTime, true
+		case 3441:
+			return OpcuaNodeIdServicesVariableAudit_AuditNodeManagementEventType_Message, true
+		case 3442:
+			return OpcuaNodeIdServicesVariableAudit_AuditNodeManagementEventType_Severity, true
+		case 3443:
+			return OpcuaNodeIdServicesVariableAudit_AuditNodeManagementEventType_ActionTimeStamp, true
+		case 3444:
+			return OpcuaNodeIdServicesVariableAudit_AuditNodeManagementEventType_Status, true
+		case 3445:
+			return OpcuaNodeIdServicesVariableAudit_AuditNodeManagementEventType_ServerId, true
+		case 3446:
+			return OpcuaNodeIdServicesVariableAudit_AuditNodeManagementEventType_ClientAuditEntryId, true
+		case 3447:
+			return OpcuaNodeIdServicesVariableAudit_AuditNodeManagementEventType_ClientUserId, true
+		case 3448:
+			return OpcuaNodeIdServicesVariableAudit_AuditAddNodesEventType_EventId, true
+		case 3449:
+			return OpcuaNodeIdServicesVariableAudit_AuditAddNodesEventType_EventType, true
+		case 3450:
+			return OpcuaNodeIdServicesVariableAudit_AuditAddNodesEventType_SourceNode, true
+		case 3451:
+			return OpcuaNodeIdServicesVariableAudit_AuditAddNodesEventType_SourceName, true
+		case 3452:
+			return OpcuaNodeIdServicesVariableAudit_AuditAddNodesEventType_Time, true
+		case 3453:
+			return OpcuaNodeIdServicesVariableAudit_AuditAddNodesEventType_ReceiveTime, true
+		case 3454:
+			return OpcuaNodeIdServicesVariableAudit_AuditAddNodesEventType_LocalTime, true
+		case 3455:
+			return OpcuaNodeIdServicesVariableAudit_AuditAddNodesEventType_Message, true
+		case 3456:
+			return OpcuaNodeIdServicesVariableAudit_AuditAddNodesEventType_Severity, true
+		case 3457:
+			return OpcuaNodeIdServicesVariableAudit_AuditAddNodesEventType_ActionTimeStamp, true
+		case 3458:
+			return OpcuaNodeIdServicesVariableAudit_AuditAddNodesEventType_Status, true
+		case 3459:
+			return OpcuaNodeIdServicesVariableAudit_AuditAddNodesEventType_ServerId, true
+		case 3460:
+			return OpcuaNodeIdServicesVariableAudit_AuditAddNodesEventType_ClientAuditEntryId, true
+		case 3461:
+			return OpcuaNodeIdServicesVariableAudit_AuditAddNodesEventType_ClientUserId, true
+		case 3462:
+			return OpcuaNodeIdServicesVariableAudit_AuditDeleteNodesEventType_EventId, true
+		case 3463:
+			return OpcuaNodeIdServicesVariableAudit_AuditDeleteNodesEventType_EventType, true
+		case 3464:
+			return OpcuaNodeIdServicesVariableAudit_AuditDeleteNodesEventType_SourceNode, true
+		case 3465:
+			return OpcuaNodeIdServicesVariableAudit_AuditDeleteNodesEventType_SourceName, true
+		case 3466:
+			return OpcuaNodeIdServicesVariableAudit_AuditDeleteNodesEventType_Time, true
+		case 3467:
+			return OpcuaNodeIdServicesVariableAudit_AuditDeleteNodesEventType_ReceiveTime, true
+		case 3468:
+			return OpcuaNodeIdServicesVariableAudit_AuditDeleteNodesEventType_LocalTime, true
+		case 3469:
+			return OpcuaNodeIdServicesVariableAudit_AuditDeleteNodesEventType_Message, true
+		case 3470:
+			return OpcuaNodeIdServicesVariableAudit_AuditDeleteNodesEventType_Severity, true
+		case 3471:
+			return OpcuaNodeIdServicesVariableAudit_AuditDeleteNodesEventType_ActionTimeStamp, true
+		case 3472:
+			return OpcuaNodeIdServicesVariableAudit_AuditDeleteNodesEventType_Status, true
+		case 3473:
+			return OpcuaNodeIdServicesVariableAudit_AuditDeleteNodesEventType_ServerId, true
+		case 3474:
+			return OpcuaNodeIdServicesVariableAudit_AuditDeleteNodesEventType_ClientAuditEntryId, true
+		case 3475:
+			return OpcuaNodeIdServicesVariableAudit_AuditDeleteNodesEventType_ClientUserId, true
+		case 3476:
+			return OpcuaNodeIdServicesVariableAudit_AuditAddReferencesEventType_EventId, true
+		case 3477:
+			return OpcuaNodeIdServicesVariableAudit_AuditAddReferencesEventType_EventType, true
+		case 3478:
+			return OpcuaNodeIdServicesVariableAudit_AuditAddReferencesEventType_SourceNode, true
+		case 3479:
+			return OpcuaNodeIdServicesVariableAudit_AuditAddReferencesEventType_SourceName, true
+		case 3480:
+			return OpcuaNodeIdServicesVariableAudit_AuditAddReferencesEventType_Time, true
+		case 3481:
+			return OpcuaNodeIdServicesVariableAudit_AuditAddReferencesEventType_ReceiveTime, true
+		case 3482:
+			return OpcuaNodeIdServicesVariableAudit_AuditAddReferencesEventType_LocalTime, true
+		case 3483:
+			return OpcuaNodeIdServicesVariableAudit_AuditAddReferencesEventType_Message, true
+		case 3484:
+			return OpcuaNodeIdServicesVariableAudit_AuditAddReferencesEventType_Severity, true
+		case 3485:
+			return OpcuaNodeIdServicesVariableAudit_AuditAddReferencesEventType_ActionTimeStamp, true
+		case 3486:
+			return OpcuaNodeIdServicesVariableAudit_AuditAddReferencesEventType_Status, true
+		case 3487:
+			return OpcuaNodeIdServicesVariableAudit_AuditAddReferencesEventType_ServerId, true
+		case 3488:
+			return OpcuaNodeIdServicesVariableAudit_AuditAddReferencesEventType_ClientAuditEntryId, true
+		case 3489:
+			return OpcuaNodeIdServicesVariableAudit_AuditAddReferencesEventType_ClientUserId, true
+		case 3490:
+			return OpcuaNodeIdServicesVariableAudit_AuditDeleteReferencesEventType_EventId, true
+		case 3491:
+			return OpcuaNodeIdServicesVariableAudit_AuditDeleteReferencesEventType_EventType, true
+		case 3492:
+			return OpcuaNodeIdServicesVariableAudit_AuditDeleteReferencesEventType_SourceNode, true
+		case 3493:
+			return OpcuaNodeIdServicesVariableAudit_AuditDeleteReferencesEventType_SourceName, true
+		case 3494:
+			return OpcuaNodeIdServicesVariableAudit_AuditDeleteReferencesEventType_Time, true
+		case 3495:
+			return OpcuaNodeIdServicesVariableAudit_AuditDeleteReferencesEventType_ReceiveTime, true
+		case 3496:
+			return OpcuaNodeIdServicesVariableAudit_AuditDeleteReferencesEventType_LocalTime, true
+		case 3497:
+			return OpcuaNodeIdServicesVariableAudit_AuditDeleteReferencesEventType_Message, true
+		case 3498:
+			return OpcuaNodeIdServicesVariableAudit_AuditDeleteReferencesEventType_Severity, true
+		case 3499:
+			return OpcuaNodeIdServicesVariableAudit_AuditDeleteReferencesEventType_ActionTimeStamp, true
+		case 3500:
+			return OpcuaNodeIdServicesVariableAudit_AuditDeleteReferencesEventType_Status, true
+		case 3501:
+			return OpcuaNodeIdServicesVariableAudit_AuditDeleteReferencesEventType_ServerId, true
+		case 3502:
+			return OpcuaNodeIdServicesVariableAudit_AuditDeleteReferencesEventType_ClientAuditEntryId, true
+		case 3503:
+			return OpcuaNodeIdServicesVariableAudit_AuditDeleteReferencesEventType_ClientUserId, true
+		case 3504:
+			return OpcuaNodeIdServicesVariableAudit_AuditUpdateEventType_EventId, true
+		case 3505:
+			return OpcuaNodeIdServicesVariableAudit_AuditUpdateEventType_EventType, true
+		case 3506:
+			return OpcuaNodeIdServicesVariableAudit_AuditUpdateEventType_SourceNode, true
+		case 3507:
+			return OpcuaNodeIdServicesVariableAudit_AuditUpdateEventType_SourceName, true
+		case 3508:
+			return OpcuaNodeIdServicesVariableAudit_AuditUpdateEventType_Time, true
+		case 3509:
+			return OpcuaNodeIdServicesVariableAudit_AuditUpdateEventType_ReceiveTime, true
+		case 3510:
+			return OpcuaNodeIdServicesVariableAudit_AuditUpdateEventType_LocalTime, true
+		case 3511:
+			return OpcuaNodeIdServicesVariableAudit_AuditUpdateEventType_Message, true
+		case 3512:
+			return OpcuaNodeIdServicesVariableAudit_AuditUpdateEventType_Severity, true
+		case 3513:
+			return OpcuaNodeIdServicesVariableAudit_AuditUpdateEventType_ActionTimeStamp, true
+		case 3514:
+			return OpcuaNodeIdServicesVariableAudit_AuditUpdateEventType_Status, true
+		case 3515:
+			return OpcuaNodeIdServicesVariableAudit_AuditUpdateEventType_ServerId, true
+		case 3516:
+			return OpcuaNodeIdServicesVariableAudit_AuditUpdateEventType_ClientAuditEntryId, true
+		case 3517:
+			return OpcuaNodeIdServicesVariableAudit_AuditUpdateEventType_ClientUserId, true
+		case 3518:
+			return OpcuaNodeIdServicesVariableAudit_AuditWriteUpdateEventType_EventId, true
+		case 3519:
+			return OpcuaNodeIdServicesVariableAudit_AuditWriteUpdateEventType_EventType, true
+		case 3520:
+			return OpcuaNodeIdServicesVariableAudit_AuditWriteUpdateEventType_SourceNode, true
+		case 3521:
+			return OpcuaNodeIdServicesVariableAudit_AuditWriteUpdateEventType_SourceName, true
+		case 3522:
+			return OpcuaNodeIdServicesVariableAudit_AuditWriteUpdateEventType_Time, true
+		case 3523:
+			return OpcuaNodeIdServicesVariableAudit_AuditWriteUpdateEventType_ReceiveTime, true
+		case 3524:
+			return OpcuaNodeIdServicesVariableAudit_AuditWriteUpdateEventType_LocalTime, true
+		case 3525:
+			return OpcuaNodeIdServicesVariableAudit_AuditWriteUpdateEventType_Message, true
+		case 3526:
+			return OpcuaNodeIdServicesVariableAudit_AuditWriteUpdateEventType_Severity, true
+		case 3527:
+			return OpcuaNodeIdServicesVariableAudit_AuditWriteUpdateEventType_ActionTimeStamp, true
+		case 3528:
+			return OpcuaNodeIdServicesVariableAudit_AuditWriteUpdateEventType_Status, true
+		case 3529:
+			return OpcuaNodeIdServicesVariableAudit_AuditWriteUpdateEventType_ServerId, true
+		case 3530:
+			return OpcuaNodeIdServicesVariableAudit_AuditWriteUpdateEventType_ClientAuditEntryId, true
+		case 3531:
+			return OpcuaNodeIdServicesVariableAudit_AuditWriteUpdateEventType_ClientUserId, true
+		case 3532:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryUpdateEventType_EventId, true
+		case 3533:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryUpdateEventType_EventType, true
+		case 3534:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryUpdateEventType_SourceNode, true
+		case 3535:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryUpdateEventType_SourceName, true
+		case 3536:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryUpdateEventType_Time, true
+		case 3537:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryUpdateEventType_ReceiveTime, true
+		case 3538:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryUpdateEventType_LocalTime, true
+		case 3539:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryUpdateEventType_Message, true
+		case 3540:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryUpdateEventType_Severity, true
+		case 3541:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryUpdateEventType_ActionTimeStamp, true
+		case 3542:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryUpdateEventType_Status, true
+		case 3543:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryUpdateEventType_ServerId, true
+		case 3544:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryUpdateEventType_ClientAuditEntryId, true
+		case 3545:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryUpdateEventType_ClientUserId, true
+		case 3546:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_EventId, true
+		case 3547:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_EventType, true
+		case 3548:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_SourceNode, true
+		case 3549:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_SourceName, true
+		case 3550:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_Time, true
+		case 3551:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_ReceiveTime, true
+		case 3552:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_LocalTime, true
+		case 3553:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_Message, true
+		case 3554:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_Severity, true
+		case 3555:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_ActionTimeStamp, true
+		case 3556:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_Status, true
+		case 3557:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_ServerId, true
+		case 3558:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_ClientAuditEntryId, true
+		case 3559:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_ClientUserId, true
+		case 3560:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventUpdateEventType_ParameterDataTypeId, true
+		case 3561:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_EventId, true
+		case 3562:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_EventType, true
+		case 3563:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_SourceNode, true
+		case 3564:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_SourceName, true
+		case 3565:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_Time, true
+		case 3566:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_ReceiveTime, true
+		case 3567:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_LocalTime, true
+		case 3568:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_Message, true
+		case 3569:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_Severity, true
+		case 3570:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_ActionTimeStamp, true
+		case 3571:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_Status, true
+		case 3572:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_ServerId, true
+		case 3573:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_ClientAuditEntryId, true
+		case 3574:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_ClientUserId, true
+		case 3575:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryValueUpdateEventType_ParameterDataTypeId, true
+		case 3576:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryDeleteEventType_EventId, true
+		case 3577:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryDeleteEventType_EventType, true
+		case 3578:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryDeleteEventType_SourceNode, true
+		case 3579:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryDeleteEventType_SourceName, true
+		case 3580:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryDeleteEventType_Time, true
+		case 3581:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryDeleteEventType_ReceiveTime, true
+		case 3582:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryDeleteEventType_LocalTime, true
+		case 3583:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryDeleteEventType_Message, true
+		case 3584:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryDeleteEventType_Severity, true
+		case 3585:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryDeleteEventType_ActionTimeStamp, true
+		case 3586:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryDeleteEventType_Status, true
+		case 3587:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryDeleteEventType_ServerId, true
+		case 3588:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryDeleteEventType_ClientAuditEntryId, true
+		case 3589:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryDeleteEventType_ClientUserId, true
+		case 3590:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryDeleteEventType_ParameterDataTypeId, true
+		case 3591:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_EventId, true
+		case 3592:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_EventType, true
+		case 3593:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_SourceNode, true
+		case 3594:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_SourceName, true
+		case 3595:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_Time, true
+		case 3596:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_ReceiveTime, true
+		case 3597:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_LocalTime, true
+		case 3598:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_Message, true
+		case 3599:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_Severity, true
+		case 3600:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_ActionTimeStamp, true
+		case 3601:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_Status, true
+		case 3602:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_ServerId, true
+		case 3603:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_ClientAuditEntryId, true
+		case 3604:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_ClientUserId, true
+		case 3605:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_ParameterDataTypeId, true
+		case 3606:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryRawModifyDeleteEventType_UpdatedNode, true
+		case 3607:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryAtTimeDeleteEventType_EventId, true
+		case 3608:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryAtTimeDeleteEventType_EventType, true
+		case 3609:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryAtTimeDeleteEventType_SourceNode, true
+		case 3610:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryAtTimeDeleteEventType_SourceName, true
+		case 3611:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryAtTimeDeleteEventType_Time, true
+		case 3612:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryAtTimeDeleteEventType_ReceiveTime, true
+		case 3613:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryAtTimeDeleteEventType_LocalTime, true
+		case 3614:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryAtTimeDeleteEventType_Message, true
+		case 3615:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryAtTimeDeleteEventType_Severity, true
+		case 3616:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryAtTimeDeleteEventType_ActionTimeStamp, true
+		case 3617:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryAtTimeDeleteEventType_Status, true
+		case 3618:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryAtTimeDeleteEventType_ServerId, true
+		case 3619:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryAtTimeDeleteEventType_ClientAuditEntryId, true
+		case 3620:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryAtTimeDeleteEventType_ClientUserId, true
+		case 3621:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryAtTimeDeleteEventType_ParameterDataTypeId, true
+		case 3622:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryAtTimeDeleteEventType_UpdatedNode, true
+		case 3623:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventDeleteEventType_EventId, true
+		case 3624:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventDeleteEventType_EventType, true
+		case 3625:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventDeleteEventType_SourceNode, true
+		case 3626:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventDeleteEventType_SourceName, true
+		case 3627:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventDeleteEventType_Time, true
+		case 3628:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventDeleteEventType_ReceiveTime, true
+		case 3629:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventDeleteEventType_LocalTime, true
+		case 3630:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventDeleteEventType_Message, true
+		case 3631:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventDeleteEventType_Severity, true
+		case 3632:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventDeleteEventType_ActionTimeStamp, true
+		case 3633:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventDeleteEventType_Status, true
+		case 3634:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventDeleteEventType_ServerId, true
+		case 3635:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventDeleteEventType_ClientAuditEntryId, true
+		case 3636:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventDeleteEventType_ClientUserId, true
+		case 3637:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventDeleteEventType_ParameterDataTypeId, true
+		case 3638:
+			return OpcuaNodeIdServicesVariableAudit_AuditHistoryEventDeleteEventType_UpdatedNode, true
+		case 3639:
+			return OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_EventId, true
+		case 3640:
+			return OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_EventType, true
+		case 3641:
+			return OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_SourceNode, true
+		case 3642:
+			return OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_SourceName, true
+		case 3643:
+			return OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_Time, true
+		case 3644:
+			return OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_ReceiveTime, true
+		case 3645:
+			return OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_LocalTime, true
+		case 3646:
+			return OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_Message, true
+		case 3647:
+			return OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_Severity, true
+		case 3648:
+			return OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_ActionTimeStamp, true
+		case 3649:
+			return OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_Status, true
+		case 3650:
+			return OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_ServerId, true
+		case 3651:
+			return OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_ClientAuditEntryId, true
+		case 3652:
+			return OpcuaNodeIdServicesVariableAudit_AuditUpdateMethodEventType_ClientUserId, true
+		case 3758:
+			return OpcuaNodeIdServicesVariableAudit_AuditUpdateStateEventType_EventId, true
+		case 3759:
+			return OpcuaNodeIdServicesVariableAudit_AuditUpdateStateEventType_EventType, true
+		case 3760:
+			return OpcuaNodeIdServicesVariableAudit_AuditUpdateStateEventType_SourceNode, true
+		case 3761:
+			return OpcuaNodeIdServicesVariableAudit_AuditUpdateStateEventType_SourceName, true
+		case 3762:
+			return OpcuaNodeIdServicesVariableAudit_AuditUpdateStateEventType_Time, true
+		case 3763:
+			return OpcuaNodeIdServicesVariableAudit_AuditUpdateStateEventType_ReceiveTime, true
+		case 3764:
+			return OpcuaNodeIdServicesVariableAudit_AuditUpdateStateEventType_LocalTime, true
+		case 3765:
+			return OpcuaNodeIdServicesVariableAudit_AuditUpdateStateEventType_Message, true
+		case 3766:
+			return OpcuaNodeIdServicesVariableAudit_AuditUpdateStateEventType_Severity, true
+		case 3767:
+			return OpcuaNodeIdServicesVariableAudit_AuditUpdateStateEventType_ActionTimeStamp, true
+		case 3768:
+			return OpcuaNodeIdServicesVariableAudit_AuditUpdateStateEventType_Status, true
+		case 3769:
+			return OpcuaNodeIdServicesVariableAudit_AuditUpdateStateEventType_ServerId, true
+		case 3770:
+			return OpcuaNodeIdServicesVariableAudit_AuditUpdateStateEventType_ClientAuditEntryId, true
+		case 3771:
+			return OpcuaNodeIdServicesVariableAudit_AuditUpdateStateEventType_ClientUserId, true
+		case 3772:
+			return OpcuaNodeIdServicesVariableAudit_AuditUpdateStateEventType_MethodId, true
+		case 3773:
+			return OpcuaNodeIdServicesVariableAudit_AuditUpdateStateEventType_InputArguments, true
+		case 3996:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionEventType_EventId, true
+		case 3997:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionEventType_EventType, true
+		case 3998:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionEventType_SourceNode, true
+		case 3999:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionEventType_SourceName, true
+		case 4000:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionEventType_Time, true
+		case 4001:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionEventType_ReceiveTime, true
+		case 4002:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionEventType_LocalTime, true
+		case 4003:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionEventType_Message, true
+		case 4004:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionEventType_Severity, true
+		case 4005:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionEventType_ActionTimeStamp, true
+		case 4006:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionEventType_Status, true
+		case 4007:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionEventType_ServerId, true
+		case 4008:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionEventType_ClientAuditEntryId, true
+		case 4009:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionEventType_ClientUserId, true
+		case 4010:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionEventType_MethodId, true
+		case 4011:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionEventType_InputArguments, true
+		case 4106:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionEnableEventType_EventId, true
+		case 4107:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionEnableEventType_EventType, true
+		case 4108:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionEnableEventType_SourceNode, true
+		case 4109:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionEnableEventType_SourceName, true
+		case 4110:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionEnableEventType_Time, true
+		case 4111:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionEnableEventType_ReceiveTime, true
+		case 4112:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionEnableEventType_LocalTime, true
+		case 4113:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionEnableEventType_Message, true
+		case 4114:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionEnableEventType_Severity, true
+		case 4115:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionEnableEventType_ActionTimeStamp, true
+		case 4116:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionEnableEventType_Status, true
+		case 4117:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionEnableEventType_ServerId, true
+		case 4118:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionEnableEventType_ClientAuditEntryId, true
+		case 4119:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionEnableEventType_ClientUserId, true
+		case 4120:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionEnableEventType_MethodId, true
+		case 4121:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionEnableEventType_InputArguments, true
+		case 4170:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionCommentEventType_EventId, true
+		case 4171:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionCommentEventType_EventType, true
+		case 4172:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionCommentEventType_SourceNode, true
+		case 4173:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionCommentEventType_SourceName, true
+		case 4174:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionCommentEventType_Time, true
+		case 4175:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionCommentEventType_ReceiveTime, true
+		case 4176:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionCommentEventType_LocalTime, true
+		case 4177:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionCommentEventType_Message, true
+		case 4178:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionCommentEventType_Severity, true
+		case 4179:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionCommentEventType_ActionTimeStamp, true
+		case 4180:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionCommentEventType_Status, true
+		case 4181:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionCommentEventType_ServerId, true
+		case 4182:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionCommentEventType_ClientAuditEntryId, true
+		case 4183:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionCommentEventType_ClientUserId, true
+		case 4184:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionCommentEventType_MethodId, true
+		case 4185:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionCommentEventType_InputArguments, true
+		case 8928:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionRespondEventType_EventId, true
+		case 8929:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionRespondEventType_EventType, true
+		case 8930:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionRespondEventType_SourceNode, true
+		case 8931:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionRespondEventType_SourceName, true
+		case 8932:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionRespondEventType_Time, true
+		case 8933:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionRespondEventType_ReceiveTime, true
+		case 8934:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionRespondEventType_LocalTime, true
+		case 8935:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionRespondEventType_Message, true
+		case 8936:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionRespondEventType_Severity, true
+		case 8937:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionRespondEventType_ActionTimeStamp, true
+		case 8938:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionRespondEventType_Status, true
+		case 8939:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionRespondEventType_ServerId, true
+		case 8940:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionRespondEventType_ClientAuditEntryId, true
+		case 8941:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionRespondEventType_ClientUserId, true
+		case 8942:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionRespondEventType_MethodId, true
+		case 8943:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionRespondEventType_InputArguments, true
+		case 8945:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionAcknowledgeEventType_EventId, true
+		case 8946:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionAcknowledgeEventType_EventType, true
+		case 8947:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionAcknowledgeEventType_SourceNode, true
+		case 8948:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionAcknowledgeEventType_SourceName, true
+		case 8949:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionAcknowledgeEventType_Time, true
+		case 8950:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionAcknowledgeEventType_ReceiveTime, true
+		case 8951:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionAcknowledgeEventType_LocalTime, true
+		case 8952:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionAcknowledgeEventType_Message, true
+		case 8953:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionAcknowledgeEventType_Severity, true
+		case 8954:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionAcknowledgeEventType_ActionTimeStamp, true
+		case 8955:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionAcknowledgeEventType_Status, true
+		case 8956:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionAcknowledgeEventType_ServerId, true
+		case 8957:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionAcknowledgeEventType_ClientAuditEntryId, true
+		case 8958:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionAcknowledgeEventType_ClientUserId, true
+		case 8959:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionAcknowledgeEventType_MethodId, true
+		case 8960:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionAcknowledgeEventType_InputArguments, true
+		case 8962:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionConfirmEventType_EventId, true
+		case 8963:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionConfirmEventType_EventType, true
+		case 8964:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionConfirmEventType_SourceNode, true
+		case 8965:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionConfirmEventType_SourceName, true
+		case 8966:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionConfirmEventType_Time, true
+		case 8967:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionConfirmEventType_ReceiveTime, true
+		case 8968:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionConfirmEventType_LocalTime, true
+		case 8969:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionConfirmEventType_Message, true
+		case 8970:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionConfirmEventType_Severity, true
+		case 8971:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionConfirmEventType_ActionTimeStamp, true
+		case 8972:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionConfirmEventType_Status, true
+		case 8973:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionConfirmEventType_ServerId, true
+		case 8974:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionConfirmEventType_ClientAuditEntryId, true
+		case 8975:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionConfirmEventType_ClientUserId, true
+		case 8976:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionConfirmEventType_MethodId, true
+		case 8977:
+			return OpcuaNodeIdServicesVariableAudit_AuditConditionConfirmEventType_InputArguments, true
 	}
 	return 0, false
 }
@@ -5973,13 +5973,13 @@ func OpcuaNodeIdServicesVariableAuditByName(value string) (enum OpcuaNodeIdServi
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariableAuditKnows(value int32) bool {
+func OpcuaNodeIdServicesVariableAuditKnows(value int32)  bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariableAuditValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastOpcuaNodeIdServicesVariableAudit(structType any) OpcuaNodeIdServicesVariableAudit {
@@ -8013,3 +8013,4 @@ func (e OpcuaNodeIdServicesVariableAudit) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariableAudit) String() string {
 	return e.PLC4XEnumName()
 }
+

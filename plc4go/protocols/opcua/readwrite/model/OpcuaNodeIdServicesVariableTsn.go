@@ -40,10 +40,10 @@ type IOpcuaNodeIdServicesVariableTsn interface {
 	utils.Serializable
 }
 
-const (
-	OpcuaNodeIdServicesVariableTsn_TsnFailureCode_EnumValues    OpcuaNodeIdServicesVariableTsn = 24239
-	OpcuaNodeIdServicesVariableTsn_TsnStreamState_EnumValues    OpcuaNodeIdServicesVariableTsn = 24240
-	OpcuaNodeIdServicesVariableTsn_TsnTalkerStatus_EnumValues   OpcuaNodeIdServicesVariableTsn = 24241
+const(
+	OpcuaNodeIdServicesVariableTsn_TsnFailureCode_EnumValues OpcuaNodeIdServicesVariableTsn = 24239
+	OpcuaNodeIdServicesVariableTsn_TsnStreamState_EnumValues OpcuaNodeIdServicesVariableTsn = 24240
+	OpcuaNodeIdServicesVariableTsn_TsnTalkerStatus_EnumValues OpcuaNodeIdServicesVariableTsn = 24241
 	OpcuaNodeIdServicesVariableTsn_TsnListenerStatus_EnumValues OpcuaNodeIdServicesVariableTsn = 24242
 )
 
@@ -51,7 +51,7 @@ var OpcuaNodeIdServicesVariableTsnValues []OpcuaNodeIdServicesVariableTsn
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariableTsnValues = []OpcuaNodeIdServicesVariableTsn{
+	OpcuaNodeIdServicesVariableTsnValues = []OpcuaNodeIdServicesVariableTsn {
 		OpcuaNodeIdServicesVariableTsn_TsnFailureCode_EnumValues,
 		OpcuaNodeIdServicesVariableTsn_TsnStreamState_EnumValues,
 		OpcuaNodeIdServicesVariableTsn_TsnTalkerStatus_EnumValues,
@@ -61,14 +61,14 @@ func init() {
 
 func OpcuaNodeIdServicesVariableTsnByValue(value int32) (enum OpcuaNodeIdServicesVariableTsn, ok bool) {
 	switch value {
-	case 24239:
-		return OpcuaNodeIdServicesVariableTsn_TsnFailureCode_EnumValues, true
-	case 24240:
-		return OpcuaNodeIdServicesVariableTsn_TsnStreamState_EnumValues, true
-	case 24241:
-		return OpcuaNodeIdServicesVariableTsn_TsnTalkerStatus_EnumValues, true
-	case 24242:
-		return OpcuaNodeIdServicesVariableTsn_TsnListenerStatus_EnumValues, true
+		case 24239:
+			return OpcuaNodeIdServicesVariableTsn_TsnFailureCode_EnumValues, true
+		case 24240:
+			return OpcuaNodeIdServicesVariableTsn_TsnStreamState_EnumValues, true
+		case 24241:
+			return OpcuaNodeIdServicesVariableTsn_TsnTalkerStatus_EnumValues, true
+		case 24242:
+			return OpcuaNodeIdServicesVariableTsn_TsnListenerStatus_EnumValues, true
 	}
 	return 0, false
 }
@@ -87,13 +87,13 @@ func OpcuaNodeIdServicesVariableTsnByName(value string) (enum OpcuaNodeIdService
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariableTsnKnows(value int32) bool {
+func OpcuaNodeIdServicesVariableTsnKnows(value int32)  bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariableTsnValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastOpcuaNodeIdServicesVariableTsn(structType any) OpcuaNodeIdServicesVariableTsn {
@@ -165,3 +165,4 @@ func (e OpcuaNodeIdServicesVariableTsn) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariableTsn) String() string {
 	return e.PLC4XEnumName()
 }
+

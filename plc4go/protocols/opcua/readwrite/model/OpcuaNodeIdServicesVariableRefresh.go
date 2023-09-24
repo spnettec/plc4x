@@ -40,45 +40,45 @@ type IOpcuaNodeIdServicesVariableRefresh interface {
 	utils.Serializable
 }
 
-const (
-	OpcuaNodeIdServicesVariableRefresh_RefreshStartEventType_EventId                  OpcuaNodeIdServicesVariableRefresh = 3969
-	OpcuaNodeIdServicesVariableRefresh_RefreshStartEventType_EventType                OpcuaNodeIdServicesVariableRefresh = 3970
-	OpcuaNodeIdServicesVariableRefresh_RefreshStartEventType_SourceNode               OpcuaNodeIdServicesVariableRefresh = 3971
-	OpcuaNodeIdServicesVariableRefresh_RefreshStartEventType_SourceName               OpcuaNodeIdServicesVariableRefresh = 3972
-	OpcuaNodeIdServicesVariableRefresh_RefreshStartEventType_Time                     OpcuaNodeIdServicesVariableRefresh = 3973
-	OpcuaNodeIdServicesVariableRefresh_RefreshStartEventType_ReceiveTime              OpcuaNodeIdServicesVariableRefresh = 3974
-	OpcuaNodeIdServicesVariableRefresh_RefreshStartEventType_LocalTime                OpcuaNodeIdServicesVariableRefresh = 3975
-	OpcuaNodeIdServicesVariableRefresh_RefreshStartEventType_Message                  OpcuaNodeIdServicesVariableRefresh = 3976
-	OpcuaNodeIdServicesVariableRefresh_RefreshStartEventType_Severity                 OpcuaNodeIdServicesVariableRefresh = 3977
-	OpcuaNodeIdServicesVariableRefresh_RefreshEndEventType_EventId                    OpcuaNodeIdServicesVariableRefresh = 3978
-	OpcuaNodeIdServicesVariableRefresh_RefreshEndEventType_EventType                  OpcuaNodeIdServicesVariableRefresh = 3979
-	OpcuaNodeIdServicesVariableRefresh_RefreshEndEventType_SourceNode                 OpcuaNodeIdServicesVariableRefresh = 3980
-	OpcuaNodeIdServicesVariableRefresh_RefreshEndEventType_SourceName                 OpcuaNodeIdServicesVariableRefresh = 3981
-	OpcuaNodeIdServicesVariableRefresh_RefreshEndEventType_Time                       OpcuaNodeIdServicesVariableRefresh = 3982
-	OpcuaNodeIdServicesVariableRefresh_RefreshEndEventType_ReceiveTime                OpcuaNodeIdServicesVariableRefresh = 3983
-	OpcuaNodeIdServicesVariableRefresh_RefreshEndEventType_LocalTime                  OpcuaNodeIdServicesVariableRefresh = 3984
-	OpcuaNodeIdServicesVariableRefresh_RefreshEndEventType_Message                    OpcuaNodeIdServicesVariableRefresh = 3985
-	OpcuaNodeIdServicesVariableRefresh_RefreshEndEventType_Severity                   OpcuaNodeIdServicesVariableRefresh = 3986
-	OpcuaNodeIdServicesVariableRefresh_RefreshRequiredEventType_EventId               OpcuaNodeIdServicesVariableRefresh = 3987
-	OpcuaNodeIdServicesVariableRefresh_RefreshRequiredEventType_EventType             OpcuaNodeIdServicesVariableRefresh = 3988
-	OpcuaNodeIdServicesVariableRefresh_RefreshRequiredEventType_SourceNode            OpcuaNodeIdServicesVariableRefresh = 3989
-	OpcuaNodeIdServicesVariableRefresh_RefreshRequiredEventType_SourceName            OpcuaNodeIdServicesVariableRefresh = 3990
-	OpcuaNodeIdServicesVariableRefresh_RefreshRequiredEventType_Time                  OpcuaNodeIdServicesVariableRefresh = 3991
-	OpcuaNodeIdServicesVariableRefresh_RefreshRequiredEventType_ReceiveTime           OpcuaNodeIdServicesVariableRefresh = 3992
-	OpcuaNodeIdServicesVariableRefresh_RefreshRequiredEventType_LocalTime             OpcuaNodeIdServicesVariableRefresh = 3993
-	OpcuaNodeIdServicesVariableRefresh_RefreshRequiredEventType_Message               OpcuaNodeIdServicesVariableRefresh = 3994
-	OpcuaNodeIdServicesVariableRefresh_RefreshRequiredEventType_Severity              OpcuaNodeIdServicesVariableRefresh = 3995
-	OpcuaNodeIdServicesVariableRefresh_RefreshStartEventType_ConditionClassId         OpcuaNodeIdServicesVariableRefresh = 31975
-	OpcuaNodeIdServicesVariableRefresh_RefreshStartEventType_ConditionClassName       OpcuaNodeIdServicesVariableRefresh = 31976
-	OpcuaNodeIdServicesVariableRefresh_RefreshStartEventType_ConditionSubClassId      OpcuaNodeIdServicesVariableRefresh = 31977
-	OpcuaNodeIdServicesVariableRefresh_RefreshStartEventType_ConditionSubClassName    OpcuaNodeIdServicesVariableRefresh = 31978
-	OpcuaNodeIdServicesVariableRefresh_RefreshEndEventType_ConditionClassId           OpcuaNodeIdServicesVariableRefresh = 31979
-	OpcuaNodeIdServicesVariableRefresh_RefreshEndEventType_ConditionClassName         OpcuaNodeIdServicesVariableRefresh = 31980
-	OpcuaNodeIdServicesVariableRefresh_RefreshEndEventType_ConditionSubClassId        OpcuaNodeIdServicesVariableRefresh = 31981
-	OpcuaNodeIdServicesVariableRefresh_RefreshEndEventType_ConditionSubClassName      OpcuaNodeIdServicesVariableRefresh = 31982
-	OpcuaNodeIdServicesVariableRefresh_RefreshRequiredEventType_ConditionClassId      OpcuaNodeIdServicesVariableRefresh = 31983
-	OpcuaNodeIdServicesVariableRefresh_RefreshRequiredEventType_ConditionClassName    OpcuaNodeIdServicesVariableRefresh = 31984
-	OpcuaNodeIdServicesVariableRefresh_RefreshRequiredEventType_ConditionSubClassId   OpcuaNodeIdServicesVariableRefresh = 31985
+const(
+	OpcuaNodeIdServicesVariableRefresh_RefreshStartEventType_EventId OpcuaNodeIdServicesVariableRefresh = 3969
+	OpcuaNodeIdServicesVariableRefresh_RefreshStartEventType_EventType OpcuaNodeIdServicesVariableRefresh = 3970
+	OpcuaNodeIdServicesVariableRefresh_RefreshStartEventType_SourceNode OpcuaNodeIdServicesVariableRefresh = 3971
+	OpcuaNodeIdServicesVariableRefresh_RefreshStartEventType_SourceName OpcuaNodeIdServicesVariableRefresh = 3972
+	OpcuaNodeIdServicesVariableRefresh_RefreshStartEventType_Time OpcuaNodeIdServicesVariableRefresh = 3973
+	OpcuaNodeIdServicesVariableRefresh_RefreshStartEventType_ReceiveTime OpcuaNodeIdServicesVariableRefresh = 3974
+	OpcuaNodeIdServicesVariableRefresh_RefreshStartEventType_LocalTime OpcuaNodeIdServicesVariableRefresh = 3975
+	OpcuaNodeIdServicesVariableRefresh_RefreshStartEventType_Message OpcuaNodeIdServicesVariableRefresh = 3976
+	OpcuaNodeIdServicesVariableRefresh_RefreshStartEventType_Severity OpcuaNodeIdServicesVariableRefresh = 3977
+	OpcuaNodeIdServicesVariableRefresh_RefreshEndEventType_EventId OpcuaNodeIdServicesVariableRefresh = 3978
+	OpcuaNodeIdServicesVariableRefresh_RefreshEndEventType_EventType OpcuaNodeIdServicesVariableRefresh = 3979
+	OpcuaNodeIdServicesVariableRefresh_RefreshEndEventType_SourceNode OpcuaNodeIdServicesVariableRefresh = 3980
+	OpcuaNodeIdServicesVariableRefresh_RefreshEndEventType_SourceName OpcuaNodeIdServicesVariableRefresh = 3981
+	OpcuaNodeIdServicesVariableRefresh_RefreshEndEventType_Time OpcuaNodeIdServicesVariableRefresh = 3982
+	OpcuaNodeIdServicesVariableRefresh_RefreshEndEventType_ReceiveTime OpcuaNodeIdServicesVariableRefresh = 3983
+	OpcuaNodeIdServicesVariableRefresh_RefreshEndEventType_LocalTime OpcuaNodeIdServicesVariableRefresh = 3984
+	OpcuaNodeIdServicesVariableRefresh_RefreshEndEventType_Message OpcuaNodeIdServicesVariableRefresh = 3985
+	OpcuaNodeIdServicesVariableRefresh_RefreshEndEventType_Severity OpcuaNodeIdServicesVariableRefresh = 3986
+	OpcuaNodeIdServicesVariableRefresh_RefreshRequiredEventType_EventId OpcuaNodeIdServicesVariableRefresh = 3987
+	OpcuaNodeIdServicesVariableRefresh_RefreshRequiredEventType_EventType OpcuaNodeIdServicesVariableRefresh = 3988
+	OpcuaNodeIdServicesVariableRefresh_RefreshRequiredEventType_SourceNode OpcuaNodeIdServicesVariableRefresh = 3989
+	OpcuaNodeIdServicesVariableRefresh_RefreshRequiredEventType_SourceName OpcuaNodeIdServicesVariableRefresh = 3990
+	OpcuaNodeIdServicesVariableRefresh_RefreshRequiredEventType_Time OpcuaNodeIdServicesVariableRefresh = 3991
+	OpcuaNodeIdServicesVariableRefresh_RefreshRequiredEventType_ReceiveTime OpcuaNodeIdServicesVariableRefresh = 3992
+	OpcuaNodeIdServicesVariableRefresh_RefreshRequiredEventType_LocalTime OpcuaNodeIdServicesVariableRefresh = 3993
+	OpcuaNodeIdServicesVariableRefresh_RefreshRequiredEventType_Message OpcuaNodeIdServicesVariableRefresh = 3994
+	OpcuaNodeIdServicesVariableRefresh_RefreshRequiredEventType_Severity OpcuaNodeIdServicesVariableRefresh = 3995
+	OpcuaNodeIdServicesVariableRefresh_RefreshStartEventType_ConditionClassId OpcuaNodeIdServicesVariableRefresh = 31975
+	OpcuaNodeIdServicesVariableRefresh_RefreshStartEventType_ConditionClassName OpcuaNodeIdServicesVariableRefresh = 31976
+	OpcuaNodeIdServicesVariableRefresh_RefreshStartEventType_ConditionSubClassId OpcuaNodeIdServicesVariableRefresh = 31977
+	OpcuaNodeIdServicesVariableRefresh_RefreshStartEventType_ConditionSubClassName OpcuaNodeIdServicesVariableRefresh = 31978
+	OpcuaNodeIdServicesVariableRefresh_RefreshEndEventType_ConditionClassId OpcuaNodeIdServicesVariableRefresh = 31979
+	OpcuaNodeIdServicesVariableRefresh_RefreshEndEventType_ConditionClassName OpcuaNodeIdServicesVariableRefresh = 31980
+	OpcuaNodeIdServicesVariableRefresh_RefreshEndEventType_ConditionSubClassId OpcuaNodeIdServicesVariableRefresh = 31981
+	OpcuaNodeIdServicesVariableRefresh_RefreshEndEventType_ConditionSubClassName OpcuaNodeIdServicesVariableRefresh = 31982
+	OpcuaNodeIdServicesVariableRefresh_RefreshRequiredEventType_ConditionClassId OpcuaNodeIdServicesVariableRefresh = 31983
+	OpcuaNodeIdServicesVariableRefresh_RefreshRequiredEventType_ConditionClassName OpcuaNodeIdServicesVariableRefresh = 31984
+	OpcuaNodeIdServicesVariableRefresh_RefreshRequiredEventType_ConditionSubClassId OpcuaNodeIdServicesVariableRefresh = 31985
 	OpcuaNodeIdServicesVariableRefresh_RefreshRequiredEventType_ConditionSubClassName OpcuaNodeIdServicesVariableRefresh = 31986
 )
 
@@ -86,7 +86,7 @@ var OpcuaNodeIdServicesVariableRefreshValues []OpcuaNodeIdServicesVariableRefres
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariableRefreshValues = []OpcuaNodeIdServicesVariableRefresh{
+	OpcuaNodeIdServicesVariableRefreshValues = []OpcuaNodeIdServicesVariableRefresh {
 		OpcuaNodeIdServicesVariableRefresh_RefreshStartEventType_EventId,
 		OpcuaNodeIdServicesVariableRefresh_RefreshStartEventType_EventType,
 		OpcuaNodeIdServicesVariableRefresh_RefreshStartEventType_SourceNode,
@@ -131,84 +131,84 @@ func init() {
 
 func OpcuaNodeIdServicesVariableRefreshByValue(value int32) (enum OpcuaNodeIdServicesVariableRefresh, ok bool) {
 	switch value {
-	case 31975:
-		return OpcuaNodeIdServicesVariableRefresh_RefreshStartEventType_ConditionClassId, true
-	case 31976:
-		return OpcuaNodeIdServicesVariableRefresh_RefreshStartEventType_ConditionClassName, true
-	case 31977:
-		return OpcuaNodeIdServicesVariableRefresh_RefreshStartEventType_ConditionSubClassId, true
-	case 31978:
-		return OpcuaNodeIdServicesVariableRefresh_RefreshStartEventType_ConditionSubClassName, true
-	case 31979:
-		return OpcuaNodeIdServicesVariableRefresh_RefreshEndEventType_ConditionClassId, true
-	case 31980:
-		return OpcuaNodeIdServicesVariableRefresh_RefreshEndEventType_ConditionClassName, true
-	case 31981:
-		return OpcuaNodeIdServicesVariableRefresh_RefreshEndEventType_ConditionSubClassId, true
-	case 31982:
-		return OpcuaNodeIdServicesVariableRefresh_RefreshEndEventType_ConditionSubClassName, true
-	case 31983:
-		return OpcuaNodeIdServicesVariableRefresh_RefreshRequiredEventType_ConditionClassId, true
-	case 31984:
-		return OpcuaNodeIdServicesVariableRefresh_RefreshRequiredEventType_ConditionClassName, true
-	case 31985:
-		return OpcuaNodeIdServicesVariableRefresh_RefreshRequiredEventType_ConditionSubClassId, true
-	case 31986:
-		return OpcuaNodeIdServicesVariableRefresh_RefreshRequiredEventType_ConditionSubClassName, true
-	case 3969:
-		return OpcuaNodeIdServicesVariableRefresh_RefreshStartEventType_EventId, true
-	case 3970:
-		return OpcuaNodeIdServicesVariableRefresh_RefreshStartEventType_EventType, true
-	case 3971:
-		return OpcuaNodeIdServicesVariableRefresh_RefreshStartEventType_SourceNode, true
-	case 3972:
-		return OpcuaNodeIdServicesVariableRefresh_RefreshStartEventType_SourceName, true
-	case 3973:
-		return OpcuaNodeIdServicesVariableRefresh_RefreshStartEventType_Time, true
-	case 3974:
-		return OpcuaNodeIdServicesVariableRefresh_RefreshStartEventType_ReceiveTime, true
-	case 3975:
-		return OpcuaNodeIdServicesVariableRefresh_RefreshStartEventType_LocalTime, true
-	case 3976:
-		return OpcuaNodeIdServicesVariableRefresh_RefreshStartEventType_Message, true
-	case 3977:
-		return OpcuaNodeIdServicesVariableRefresh_RefreshStartEventType_Severity, true
-	case 3978:
-		return OpcuaNodeIdServicesVariableRefresh_RefreshEndEventType_EventId, true
-	case 3979:
-		return OpcuaNodeIdServicesVariableRefresh_RefreshEndEventType_EventType, true
-	case 3980:
-		return OpcuaNodeIdServicesVariableRefresh_RefreshEndEventType_SourceNode, true
-	case 3981:
-		return OpcuaNodeIdServicesVariableRefresh_RefreshEndEventType_SourceName, true
-	case 3982:
-		return OpcuaNodeIdServicesVariableRefresh_RefreshEndEventType_Time, true
-	case 3983:
-		return OpcuaNodeIdServicesVariableRefresh_RefreshEndEventType_ReceiveTime, true
-	case 3984:
-		return OpcuaNodeIdServicesVariableRefresh_RefreshEndEventType_LocalTime, true
-	case 3985:
-		return OpcuaNodeIdServicesVariableRefresh_RefreshEndEventType_Message, true
-	case 3986:
-		return OpcuaNodeIdServicesVariableRefresh_RefreshEndEventType_Severity, true
-	case 3987:
-		return OpcuaNodeIdServicesVariableRefresh_RefreshRequiredEventType_EventId, true
-	case 3988:
-		return OpcuaNodeIdServicesVariableRefresh_RefreshRequiredEventType_EventType, true
-	case 3989:
-		return OpcuaNodeIdServicesVariableRefresh_RefreshRequiredEventType_SourceNode, true
-	case 3990:
-		return OpcuaNodeIdServicesVariableRefresh_RefreshRequiredEventType_SourceName, true
-	case 3991:
-		return OpcuaNodeIdServicesVariableRefresh_RefreshRequiredEventType_Time, true
-	case 3992:
-		return OpcuaNodeIdServicesVariableRefresh_RefreshRequiredEventType_ReceiveTime, true
-	case 3993:
-		return OpcuaNodeIdServicesVariableRefresh_RefreshRequiredEventType_LocalTime, true
-	case 3994:
-		return OpcuaNodeIdServicesVariableRefresh_RefreshRequiredEventType_Message, true
-	case 3995:
-		return OpcuaNodeIdServicesVariableRefresh_RefreshRequiredEventType_Severity, true
+		case 31975:
+			return OpcuaNodeIdServicesVariableRefresh_RefreshStartEventType_ConditionClassId, true
+		case 31976:
+			return OpcuaNodeIdServicesVariableRefresh_RefreshStartEventType_ConditionClassName, true
+		case 31977:
+			return OpcuaNodeIdServicesVariableRefresh_RefreshStartEventType_ConditionSubClassId, true
+		case 31978:
+			return OpcuaNodeIdServicesVariableRefresh_RefreshStartEventType_ConditionSubClassName, true
+		case 31979:
+			return OpcuaNodeIdServicesVariableRefresh_RefreshEndEventType_ConditionClassId, true
+		case 31980:
+			return OpcuaNodeIdServicesVariableRefresh_RefreshEndEventType_ConditionClassName, true
+		case 31981:
+			return OpcuaNodeIdServicesVariableRefresh_RefreshEndEventType_ConditionSubClassId, true
+		case 31982:
+			return OpcuaNodeIdServicesVariableRefresh_RefreshEndEventType_ConditionSubClassName, true
+		case 31983:
+			return OpcuaNodeIdServicesVariableRefresh_RefreshRequiredEventType_ConditionClassId, true
+		case 31984:
+			return OpcuaNodeIdServicesVariableRefresh_RefreshRequiredEventType_ConditionClassName, true
+		case 31985:
+			return OpcuaNodeIdServicesVariableRefresh_RefreshRequiredEventType_ConditionSubClassId, true
+		case 31986:
+			return OpcuaNodeIdServicesVariableRefresh_RefreshRequiredEventType_ConditionSubClassName, true
+		case 3969:
+			return OpcuaNodeIdServicesVariableRefresh_RefreshStartEventType_EventId, true
+		case 3970:
+			return OpcuaNodeIdServicesVariableRefresh_RefreshStartEventType_EventType, true
+		case 3971:
+			return OpcuaNodeIdServicesVariableRefresh_RefreshStartEventType_SourceNode, true
+		case 3972:
+			return OpcuaNodeIdServicesVariableRefresh_RefreshStartEventType_SourceName, true
+		case 3973:
+			return OpcuaNodeIdServicesVariableRefresh_RefreshStartEventType_Time, true
+		case 3974:
+			return OpcuaNodeIdServicesVariableRefresh_RefreshStartEventType_ReceiveTime, true
+		case 3975:
+			return OpcuaNodeIdServicesVariableRefresh_RefreshStartEventType_LocalTime, true
+		case 3976:
+			return OpcuaNodeIdServicesVariableRefresh_RefreshStartEventType_Message, true
+		case 3977:
+			return OpcuaNodeIdServicesVariableRefresh_RefreshStartEventType_Severity, true
+		case 3978:
+			return OpcuaNodeIdServicesVariableRefresh_RefreshEndEventType_EventId, true
+		case 3979:
+			return OpcuaNodeIdServicesVariableRefresh_RefreshEndEventType_EventType, true
+		case 3980:
+			return OpcuaNodeIdServicesVariableRefresh_RefreshEndEventType_SourceNode, true
+		case 3981:
+			return OpcuaNodeIdServicesVariableRefresh_RefreshEndEventType_SourceName, true
+		case 3982:
+			return OpcuaNodeIdServicesVariableRefresh_RefreshEndEventType_Time, true
+		case 3983:
+			return OpcuaNodeIdServicesVariableRefresh_RefreshEndEventType_ReceiveTime, true
+		case 3984:
+			return OpcuaNodeIdServicesVariableRefresh_RefreshEndEventType_LocalTime, true
+		case 3985:
+			return OpcuaNodeIdServicesVariableRefresh_RefreshEndEventType_Message, true
+		case 3986:
+			return OpcuaNodeIdServicesVariableRefresh_RefreshEndEventType_Severity, true
+		case 3987:
+			return OpcuaNodeIdServicesVariableRefresh_RefreshRequiredEventType_EventId, true
+		case 3988:
+			return OpcuaNodeIdServicesVariableRefresh_RefreshRequiredEventType_EventType, true
+		case 3989:
+			return OpcuaNodeIdServicesVariableRefresh_RefreshRequiredEventType_SourceNode, true
+		case 3990:
+			return OpcuaNodeIdServicesVariableRefresh_RefreshRequiredEventType_SourceName, true
+		case 3991:
+			return OpcuaNodeIdServicesVariableRefresh_RefreshRequiredEventType_Time, true
+		case 3992:
+			return OpcuaNodeIdServicesVariableRefresh_RefreshRequiredEventType_ReceiveTime, true
+		case 3993:
+			return OpcuaNodeIdServicesVariableRefresh_RefreshRequiredEventType_LocalTime, true
+		case 3994:
+			return OpcuaNodeIdServicesVariableRefresh_RefreshRequiredEventType_Message, true
+		case 3995:
+			return OpcuaNodeIdServicesVariableRefresh_RefreshRequiredEventType_Severity, true
 	}
 	return 0, false
 }
@@ -297,13 +297,13 @@ func OpcuaNodeIdServicesVariableRefreshByName(value string) (enum OpcuaNodeIdSer
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariableRefreshKnows(value int32) bool {
+func OpcuaNodeIdServicesVariableRefreshKnows(value int32)  bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariableRefreshValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastOpcuaNodeIdServicesVariableRefresh(structType any) OpcuaNodeIdServicesVariableRefresh {
@@ -445,3 +445,4 @@ func (e OpcuaNodeIdServicesVariableRefresh) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariableRefresh) String() string {
 	return e.PLC4XEnumName()
 }
+

@@ -40,12 +40,12 @@ type IRedundancySupport interface {
 	utils.Serializable
 }
 
-const (
-	RedundancySupport_redundancySupportNone           RedundancySupport = 0
-	RedundancySupport_redundancySupportCold           RedundancySupport = 1
-	RedundancySupport_redundancySupportWarm           RedundancySupport = 2
-	RedundancySupport_redundancySupportHot            RedundancySupport = 3
-	RedundancySupport_redundancySupportTransparent    RedundancySupport = 4
+const(
+	RedundancySupport_redundancySupportNone RedundancySupport = 0
+	RedundancySupport_redundancySupportCold RedundancySupport = 1
+	RedundancySupport_redundancySupportWarm RedundancySupport = 2
+	RedundancySupport_redundancySupportHot RedundancySupport = 3
+	RedundancySupport_redundancySupportTransparent RedundancySupport = 4
 	RedundancySupport_redundancySupportHotAndMirrored RedundancySupport = 5
 )
 
@@ -53,7 +53,7 @@ var RedundancySupportValues []RedundancySupport
 
 func init() {
 	_ = errors.New
-	RedundancySupportValues = []RedundancySupport{
+	RedundancySupportValues = []RedundancySupport {
 		RedundancySupport_redundancySupportNone,
 		RedundancySupport_redundancySupportCold,
 		RedundancySupport_redundancySupportWarm,
@@ -65,18 +65,18 @@ func init() {
 
 func RedundancySupportByValue(value uint32) (enum RedundancySupport, ok bool) {
 	switch value {
-	case 0:
-		return RedundancySupport_redundancySupportNone, true
-	case 1:
-		return RedundancySupport_redundancySupportCold, true
-	case 2:
-		return RedundancySupport_redundancySupportWarm, true
-	case 3:
-		return RedundancySupport_redundancySupportHot, true
-	case 4:
-		return RedundancySupport_redundancySupportTransparent, true
-	case 5:
-		return RedundancySupport_redundancySupportHotAndMirrored, true
+		case 0:
+			return RedundancySupport_redundancySupportNone, true
+		case 1:
+			return RedundancySupport_redundancySupportCold, true
+		case 2:
+			return RedundancySupport_redundancySupportWarm, true
+		case 3:
+			return RedundancySupport_redundancySupportHot, true
+		case 4:
+			return RedundancySupport_redundancySupportTransparent, true
+		case 5:
+			return RedundancySupport_redundancySupportHotAndMirrored, true
 	}
 	return 0, false
 }
@@ -99,13 +99,13 @@ func RedundancySupportByName(value string) (enum RedundancySupport, ok bool) {
 	return 0, false
 }
 
-func RedundancySupportKnows(value uint32) bool {
+func RedundancySupportKnows(value uint32)  bool {
 	for _, typeValue := range RedundancySupportValues {
 		if uint32(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastRedundancySupport(structType any) RedundancySupport {
@@ -181,3 +181,4 @@ func (e RedundancySupport) PLC4XEnumName() string {
 func (e RedundancySupport) String() string {
 	return e.PLC4XEnumName()
 }
+

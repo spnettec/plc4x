@@ -40,21 +40,21 @@ type IOpcuaNodeIdServicesVariableFrame interface {
 	utils.Serializable
 }
 
-const (
-	OpcuaNodeIdServicesVariableFrame_FrameType_Orientation                     OpcuaNodeIdServicesVariableFrame = 18787
-	OpcuaNodeIdServicesVariableFrame_FrameType_Constant                        OpcuaNodeIdServicesVariableFrame = 18788
-	OpcuaNodeIdServicesVariableFrame_FrameType_BaseFrame                       OpcuaNodeIdServicesVariableFrame = 18789
-	OpcuaNodeIdServicesVariableFrame_FrameType_FixedBase                       OpcuaNodeIdServicesVariableFrame = 18790
-	OpcuaNodeIdServicesVariableFrame_FrameType_CartesianCoordinates            OpcuaNodeIdServicesVariableFrame = 18801
+const(
+	OpcuaNodeIdServicesVariableFrame_FrameType_Orientation OpcuaNodeIdServicesVariableFrame = 18787
+	OpcuaNodeIdServicesVariableFrame_FrameType_Constant OpcuaNodeIdServicesVariableFrame = 18788
+	OpcuaNodeIdServicesVariableFrame_FrameType_BaseFrame OpcuaNodeIdServicesVariableFrame = 18789
+	OpcuaNodeIdServicesVariableFrame_FrameType_FixedBase OpcuaNodeIdServicesVariableFrame = 18790
+	OpcuaNodeIdServicesVariableFrame_FrameType_CartesianCoordinates OpcuaNodeIdServicesVariableFrame = 18801
 	OpcuaNodeIdServicesVariableFrame_FrameType_CartesianCoordinates_LengthUnit OpcuaNodeIdServicesVariableFrame = 18802
-	OpcuaNodeIdServicesVariableFrame_FrameType_Orientation_AngleUnit           OpcuaNodeIdServicesVariableFrame = 18803
+	OpcuaNodeIdServicesVariableFrame_FrameType_Orientation_AngleUnit OpcuaNodeIdServicesVariableFrame = 18803
 )
 
 var OpcuaNodeIdServicesVariableFrameValues []OpcuaNodeIdServicesVariableFrame
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariableFrameValues = []OpcuaNodeIdServicesVariableFrame{
+	OpcuaNodeIdServicesVariableFrameValues = []OpcuaNodeIdServicesVariableFrame {
 		OpcuaNodeIdServicesVariableFrame_FrameType_Orientation,
 		OpcuaNodeIdServicesVariableFrame_FrameType_Constant,
 		OpcuaNodeIdServicesVariableFrame_FrameType_BaseFrame,
@@ -67,20 +67,20 @@ func init() {
 
 func OpcuaNodeIdServicesVariableFrameByValue(value int32) (enum OpcuaNodeIdServicesVariableFrame, ok bool) {
 	switch value {
-	case 18787:
-		return OpcuaNodeIdServicesVariableFrame_FrameType_Orientation, true
-	case 18788:
-		return OpcuaNodeIdServicesVariableFrame_FrameType_Constant, true
-	case 18789:
-		return OpcuaNodeIdServicesVariableFrame_FrameType_BaseFrame, true
-	case 18790:
-		return OpcuaNodeIdServicesVariableFrame_FrameType_FixedBase, true
-	case 18801:
-		return OpcuaNodeIdServicesVariableFrame_FrameType_CartesianCoordinates, true
-	case 18802:
-		return OpcuaNodeIdServicesVariableFrame_FrameType_CartesianCoordinates_LengthUnit, true
-	case 18803:
-		return OpcuaNodeIdServicesVariableFrame_FrameType_Orientation_AngleUnit, true
+		case 18787:
+			return OpcuaNodeIdServicesVariableFrame_FrameType_Orientation, true
+		case 18788:
+			return OpcuaNodeIdServicesVariableFrame_FrameType_Constant, true
+		case 18789:
+			return OpcuaNodeIdServicesVariableFrame_FrameType_BaseFrame, true
+		case 18790:
+			return OpcuaNodeIdServicesVariableFrame_FrameType_FixedBase, true
+		case 18801:
+			return OpcuaNodeIdServicesVariableFrame_FrameType_CartesianCoordinates, true
+		case 18802:
+			return OpcuaNodeIdServicesVariableFrame_FrameType_CartesianCoordinates_LengthUnit, true
+		case 18803:
+			return OpcuaNodeIdServicesVariableFrame_FrameType_Orientation_AngleUnit, true
 	}
 	return 0, false
 }
@@ -105,13 +105,13 @@ func OpcuaNodeIdServicesVariableFrameByName(value string) (enum OpcuaNodeIdServi
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariableFrameKnows(value int32) bool {
+func OpcuaNodeIdServicesVariableFrameKnows(value int32)  bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariableFrameValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastOpcuaNodeIdServicesVariableFrame(structType any) OpcuaNodeIdServicesVariableFrame {
@@ -189,3 +189,4 @@ func (e OpcuaNodeIdServicesVariableFrame) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariableFrame) String() string {
 	return e.PLC4XEnumName()
 }
+

@@ -40,26 +40,26 @@ type IOpcuaNodeIdServicesVariableOperation interface {
 	utils.Serializable
 }
 
-const (
-	OpcuaNodeIdServicesVariableOperation_OperationLimitsType_MaxNodesPerRead                          OpcuaNodeIdServicesVariableOperation = 11565
-	OpcuaNodeIdServicesVariableOperation_OperationLimitsType_MaxNodesPerWrite                         OpcuaNodeIdServicesVariableOperation = 11567
-	OpcuaNodeIdServicesVariableOperation_OperationLimitsType_MaxNodesPerMethodCall                    OpcuaNodeIdServicesVariableOperation = 11569
-	OpcuaNodeIdServicesVariableOperation_OperationLimitsType_MaxNodesPerBrowse                        OpcuaNodeIdServicesVariableOperation = 11570
-	OpcuaNodeIdServicesVariableOperation_OperationLimitsType_MaxNodesPerRegisterNodes                 OpcuaNodeIdServicesVariableOperation = 11571
+const(
+	OpcuaNodeIdServicesVariableOperation_OperationLimitsType_MaxNodesPerRead OpcuaNodeIdServicesVariableOperation = 11565
+	OpcuaNodeIdServicesVariableOperation_OperationLimitsType_MaxNodesPerWrite OpcuaNodeIdServicesVariableOperation = 11567
+	OpcuaNodeIdServicesVariableOperation_OperationLimitsType_MaxNodesPerMethodCall OpcuaNodeIdServicesVariableOperation = 11569
+	OpcuaNodeIdServicesVariableOperation_OperationLimitsType_MaxNodesPerBrowse OpcuaNodeIdServicesVariableOperation = 11570
+	OpcuaNodeIdServicesVariableOperation_OperationLimitsType_MaxNodesPerRegisterNodes OpcuaNodeIdServicesVariableOperation = 11571
 	OpcuaNodeIdServicesVariableOperation_OperationLimitsType_MaxNodesPerTranslateBrowsePathsToNodeIds OpcuaNodeIdServicesVariableOperation = 11572
-	OpcuaNodeIdServicesVariableOperation_OperationLimitsType_MaxNodesPerNodeManagement                OpcuaNodeIdServicesVariableOperation = 11573
-	OpcuaNodeIdServicesVariableOperation_OperationLimitsType_MaxMonitoredItemsPerCall                 OpcuaNodeIdServicesVariableOperation = 11574
-	OpcuaNodeIdServicesVariableOperation_OperationLimitsType_MaxNodesPerHistoryReadData               OpcuaNodeIdServicesVariableOperation = 12161
-	OpcuaNodeIdServicesVariableOperation_OperationLimitsType_MaxNodesPerHistoryReadEvents             OpcuaNodeIdServicesVariableOperation = 12162
-	OpcuaNodeIdServicesVariableOperation_OperationLimitsType_MaxNodesPerHistoryUpdateData             OpcuaNodeIdServicesVariableOperation = 12163
-	OpcuaNodeIdServicesVariableOperation_OperationLimitsType_MaxNodesPerHistoryUpdateEvents           OpcuaNodeIdServicesVariableOperation = 12164
+	OpcuaNodeIdServicesVariableOperation_OperationLimitsType_MaxNodesPerNodeManagement OpcuaNodeIdServicesVariableOperation = 11573
+	OpcuaNodeIdServicesVariableOperation_OperationLimitsType_MaxMonitoredItemsPerCall OpcuaNodeIdServicesVariableOperation = 11574
+	OpcuaNodeIdServicesVariableOperation_OperationLimitsType_MaxNodesPerHistoryReadData OpcuaNodeIdServicesVariableOperation = 12161
+	OpcuaNodeIdServicesVariableOperation_OperationLimitsType_MaxNodesPerHistoryReadEvents OpcuaNodeIdServicesVariableOperation = 12162
+	OpcuaNodeIdServicesVariableOperation_OperationLimitsType_MaxNodesPerHistoryUpdateData OpcuaNodeIdServicesVariableOperation = 12163
+	OpcuaNodeIdServicesVariableOperation_OperationLimitsType_MaxNodesPerHistoryUpdateEvents OpcuaNodeIdServicesVariableOperation = 12164
 )
 
 var OpcuaNodeIdServicesVariableOperationValues []OpcuaNodeIdServicesVariableOperation
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariableOperationValues = []OpcuaNodeIdServicesVariableOperation{
+	OpcuaNodeIdServicesVariableOperationValues = []OpcuaNodeIdServicesVariableOperation {
 		OpcuaNodeIdServicesVariableOperation_OperationLimitsType_MaxNodesPerRead,
 		OpcuaNodeIdServicesVariableOperation_OperationLimitsType_MaxNodesPerWrite,
 		OpcuaNodeIdServicesVariableOperation_OperationLimitsType_MaxNodesPerMethodCall,
@@ -77,30 +77,30 @@ func init() {
 
 func OpcuaNodeIdServicesVariableOperationByValue(value int32) (enum OpcuaNodeIdServicesVariableOperation, ok bool) {
 	switch value {
-	case 11565:
-		return OpcuaNodeIdServicesVariableOperation_OperationLimitsType_MaxNodesPerRead, true
-	case 11567:
-		return OpcuaNodeIdServicesVariableOperation_OperationLimitsType_MaxNodesPerWrite, true
-	case 11569:
-		return OpcuaNodeIdServicesVariableOperation_OperationLimitsType_MaxNodesPerMethodCall, true
-	case 11570:
-		return OpcuaNodeIdServicesVariableOperation_OperationLimitsType_MaxNodesPerBrowse, true
-	case 11571:
-		return OpcuaNodeIdServicesVariableOperation_OperationLimitsType_MaxNodesPerRegisterNodes, true
-	case 11572:
-		return OpcuaNodeIdServicesVariableOperation_OperationLimitsType_MaxNodesPerTranslateBrowsePathsToNodeIds, true
-	case 11573:
-		return OpcuaNodeIdServicesVariableOperation_OperationLimitsType_MaxNodesPerNodeManagement, true
-	case 11574:
-		return OpcuaNodeIdServicesVariableOperation_OperationLimitsType_MaxMonitoredItemsPerCall, true
-	case 12161:
-		return OpcuaNodeIdServicesVariableOperation_OperationLimitsType_MaxNodesPerHistoryReadData, true
-	case 12162:
-		return OpcuaNodeIdServicesVariableOperation_OperationLimitsType_MaxNodesPerHistoryReadEvents, true
-	case 12163:
-		return OpcuaNodeIdServicesVariableOperation_OperationLimitsType_MaxNodesPerHistoryUpdateData, true
-	case 12164:
-		return OpcuaNodeIdServicesVariableOperation_OperationLimitsType_MaxNodesPerHistoryUpdateEvents, true
+		case 11565:
+			return OpcuaNodeIdServicesVariableOperation_OperationLimitsType_MaxNodesPerRead, true
+		case 11567:
+			return OpcuaNodeIdServicesVariableOperation_OperationLimitsType_MaxNodesPerWrite, true
+		case 11569:
+			return OpcuaNodeIdServicesVariableOperation_OperationLimitsType_MaxNodesPerMethodCall, true
+		case 11570:
+			return OpcuaNodeIdServicesVariableOperation_OperationLimitsType_MaxNodesPerBrowse, true
+		case 11571:
+			return OpcuaNodeIdServicesVariableOperation_OperationLimitsType_MaxNodesPerRegisterNodes, true
+		case 11572:
+			return OpcuaNodeIdServicesVariableOperation_OperationLimitsType_MaxNodesPerTranslateBrowsePathsToNodeIds, true
+		case 11573:
+			return OpcuaNodeIdServicesVariableOperation_OperationLimitsType_MaxNodesPerNodeManagement, true
+		case 11574:
+			return OpcuaNodeIdServicesVariableOperation_OperationLimitsType_MaxMonitoredItemsPerCall, true
+		case 12161:
+			return OpcuaNodeIdServicesVariableOperation_OperationLimitsType_MaxNodesPerHistoryReadData, true
+		case 12162:
+			return OpcuaNodeIdServicesVariableOperation_OperationLimitsType_MaxNodesPerHistoryReadEvents, true
+		case 12163:
+			return OpcuaNodeIdServicesVariableOperation_OperationLimitsType_MaxNodesPerHistoryUpdateData, true
+		case 12164:
+			return OpcuaNodeIdServicesVariableOperation_OperationLimitsType_MaxNodesPerHistoryUpdateEvents, true
 	}
 	return 0, false
 }
@@ -135,13 +135,13 @@ func OpcuaNodeIdServicesVariableOperationByName(value string) (enum OpcuaNodeIdS
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariableOperationKnows(value int32) bool {
+func OpcuaNodeIdServicesVariableOperationKnows(value int32)  bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariableOperationValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastOpcuaNodeIdServicesVariableOperation(structType any) OpcuaNodeIdServicesVariableOperation {
@@ -229,3 +229,4 @@ func (e OpcuaNodeIdServicesVariableOperation) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariableOperation) String() string {
 	return e.PLC4XEnumName()
 }
+

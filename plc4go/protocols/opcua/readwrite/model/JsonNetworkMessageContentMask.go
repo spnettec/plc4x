@@ -40,21 +40,21 @@ type IJsonNetworkMessageContentMask interface {
 	utils.Serializable
 }
 
-const (
-	JsonNetworkMessageContentMask_jsonNetworkMessageContentMaskNone                 JsonNetworkMessageContentMask = 0
+const(
+	JsonNetworkMessageContentMask_jsonNetworkMessageContentMaskNone JsonNetworkMessageContentMask = 0
 	JsonNetworkMessageContentMask_jsonNetworkMessageContentMaskNetworkMessageHeader JsonNetworkMessageContentMask = 1
 	JsonNetworkMessageContentMask_jsonNetworkMessageContentMaskDataSetMessageHeader JsonNetworkMessageContentMask = 2
 	JsonNetworkMessageContentMask_jsonNetworkMessageContentMaskSingleDataSetMessage JsonNetworkMessageContentMask = 4
-	JsonNetworkMessageContentMask_jsonNetworkMessageContentMaskPublisherId          JsonNetworkMessageContentMask = 8
-	JsonNetworkMessageContentMask_jsonNetworkMessageContentMaskDataSetClassId       JsonNetworkMessageContentMask = 16
-	JsonNetworkMessageContentMask_jsonNetworkMessageContentMaskReplyTo              JsonNetworkMessageContentMask = 32
+	JsonNetworkMessageContentMask_jsonNetworkMessageContentMaskPublisherId JsonNetworkMessageContentMask = 8
+	JsonNetworkMessageContentMask_jsonNetworkMessageContentMaskDataSetClassId JsonNetworkMessageContentMask = 16
+	JsonNetworkMessageContentMask_jsonNetworkMessageContentMaskReplyTo JsonNetworkMessageContentMask = 32
 )
 
 var JsonNetworkMessageContentMaskValues []JsonNetworkMessageContentMask
 
 func init() {
 	_ = errors.New
-	JsonNetworkMessageContentMaskValues = []JsonNetworkMessageContentMask{
+	JsonNetworkMessageContentMaskValues = []JsonNetworkMessageContentMask {
 		JsonNetworkMessageContentMask_jsonNetworkMessageContentMaskNone,
 		JsonNetworkMessageContentMask_jsonNetworkMessageContentMaskNetworkMessageHeader,
 		JsonNetworkMessageContentMask_jsonNetworkMessageContentMaskDataSetMessageHeader,
@@ -67,20 +67,20 @@ func init() {
 
 func JsonNetworkMessageContentMaskByValue(value uint32) (enum JsonNetworkMessageContentMask, ok bool) {
 	switch value {
-	case 0:
-		return JsonNetworkMessageContentMask_jsonNetworkMessageContentMaskNone, true
-	case 1:
-		return JsonNetworkMessageContentMask_jsonNetworkMessageContentMaskNetworkMessageHeader, true
-	case 16:
-		return JsonNetworkMessageContentMask_jsonNetworkMessageContentMaskDataSetClassId, true
-	case 2:
-		return JsonNetworkMessageContentMask_jsonNetworkMessageContentMaskDataSetMessageHeader, true
-	case 32:
-		return JsonNetworkMessageContentMask_jsonNetworkMessageContentMaskReplyTo, true
-	case 4:
-		return JsonNetworkMessageContentMask_jsonNetworkMessageContentMaskSingleDataSetMessage, true
-	case 8:
-		return JsonNetworkMessageContentMask_jsonNetworkMessageContentMaskPublisherId, true
+		case 0:
+			return JsonNetworkMessageContentMask_jsonNetworkMessageContentMaskNone, true
+		case 1:
+			return JsonNetworkMessageContentMask_jsonNetworkMessageContentMaskNetworkMessageHeader, true
+		case 16:
+			return JsonNetworkMessageContentMask_jsonNetworkMessageContentMaskDataSetClassId, true
+		case 2:
+			return JsonNetworkMessageContentMask_jsonNetworkMessageContentMaskDataSetMessageHeader, true
+		case 32:
+			return JsonNetworkMessageContentMask_jsonNetworkMessageContentMaskReplyTo, true
+		case 4:
+			return JsonNetworkMessageContentMask_jsonNetworkMessageContentMaskSingleDataSetMessage, true
+		case 8:
+			return JsonNetworkMessageContentMask_jsonNetworkMessageContentMaskPublisherId, true
 	}
 	return 0, false
 }
@@ -105,13 +105,13 @@ func JsonNetworkMessageContentMaskByName(value string) (enum JsonNetworkMessageC
 	return 0, false
 }
 
-func JsonNetworkMessageContentMaskKnows(value uint32) bool {
+func JsonNetworkMessageContentMaskKnows(value uint32)  bool {
 	for _, typeValue := range JsonNetworkMessageContentMaskValues {
 		if uint32(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastJsonNetworkMessageContentMask(structType any) JsonNetworkMessageContentMask {
@@ -189,3 +189,4 @@ func (e JsonNetworkMessageContentMask) PLC4XEnumName() string {
 func (e JsonNetworkMessageContentMask) String() string {
 	return e.PLC4XEnumName()
 }
+

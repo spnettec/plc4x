@@ -40,153 +40,153 @@ type IOpcuaNodeIdServicesVariableInstrument interface {
 	utils.Serializable
 }
 
-const (
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_EventId                                              OpcuaNodeIdServicesVariableInstrument = 18348
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_EventType                                            OpcuaNodeIdServicesVariableInstrument = 18349
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_SourceNode                                           OpcuaNodeIdServicesVariableInstrument = 18350
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_SourceName                                           OpcuaNodeIdServicesVariableInstrument = 18351
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_Time                                                 OpcuaNodeIdServicesVariableInstrument = 18352
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ReceiveTime                                          OpcuaNodeIdServicesVariableInstrument = 18353
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_LocalTime                                            OpcuaNodeIdServicesVariableInstrument = 18354
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_Message                                              OpcuaNodeIdServicesVariableInstrument = 18355
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_Severity                                             OpcuaNodeIdServicesVariableInstrument = 18356
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ConditionClassId                                     OpcuaNodeIdServicesVariableInstrument = 18357
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ConditionClassName                                   OpcuaNodeIdServicesVariableInstrument = 18358
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ConditionSubClassId                                  OpcuaNodeIdServicesVariableInstrument = 18359
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ConditionSubClassName                                OpcuaNodeIdServicesVariableInstrument = 18360
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ConditionName                                        OpcuaNodeIdServicesVariableInstrument = 18361
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_BranchId                                             OpcuaNodeIdServicesVariableInstrument = 18362
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_Retain                                               OpcuaNodeIdServicesVariableInstrument = 18363
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_EnabledState                                         OpcuaNodeIdServicesVariableInstrument = 18364
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_EnabledState_Id                                      OpcuaNodeIdServicesVariableInstrument = 18365
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_EnabledState_Name                                    OpcuaNodeIdServicesVariableInstrument = 18366
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_EnabledState_Number                                  OpcuaNodeIdServicesVariableInstrument = 18367
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_EnabledState_EffectiveDisplayName                    OpcuaNodeIdServicesVariableInstrument = 18368
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_EnabledState_TransitionTime                          OpcuaNodeIdServicesVariableInstrument = 18369
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_EnabledState_EffectiveTransitionTime                 OpcuaNodeIdServicesVariableInstrument = 18370
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_EnabledState_TrueState                               OpcuaNodeIdServicesVariableInstrument = 18371
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_EnabledState_FalseState                              OpcuaNodeIdServicesVariableInstrument = 18372
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_Quality                                              OpcuaNodeIdServicesVariableInstrument = 18373
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_Quality_SourceTimestamp                              OpcuaNodeIdServicesVariableInstrument = 18374
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_LastSeverity                                         OpcuaNodeIdServicesVariableInstrument = 18375
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_LastSeverity_SourceTimestamp                         OpcuaNodeIdServicesVariableInstrument = 18376
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_Comment                                              OpcuaNodeIdServicesVariableInstrument = 18377
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_Comment_SourceTimestamp                              OpcuaNodeIdServicesVariableInstrument = 18378
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ClientUserId                                         OpcuaNodeIdServicesVariableInstrument = 18379
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_AddComment_InputArguments                            OpcuaNodeIdServicesVariableInstrument = 18383
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ConditionRefresh_InputArguments                      OpcuaNodeIdServicesVariableInstrument = 18385
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ConditionRefresh2_InputArguments                     OpcuaNodeIdServicesVariableInstrument = 18387
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_AckedState                                           OpcuaNodeIdServicesVariableInstrument = 18388
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_AckedState_Id                                        OpcuaNodeIdServicesVariableInstrument = 18389
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_AckedState_Name                                      OpcuaNodeIdServicesVariableInstrument = 18390
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_AckedState_Number                                    OpcuaNodeIdServicesVariableInstrument = 18391
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_AckedState_EffectiveDisplayName                      OpcuaNodeIdServicesVariableInstrument = 18392
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_AckedState_TransitionTime                            OpcuaNodeIdServicesVariableInstrument = 18393
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_AckedState_EffectiveTransitionTime                   OpcuaNodeIdServicesVariableInstrument = 18394
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_AckedState_TrueState                                 OpcuaNodeIdServicesVariableInstrument = 18395
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_AckedState_FalseState                                OpcuaNodeIdServicesVariableInstrument = 18396
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ConfirmedState                                       OpcuaNodeIdServicesVariableInstrument = 18397
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ConfirmedState_Id                                    OpcuaNodeIdServicesVariableInstrument = 18398
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ConfirmedState_Name                                  OpcuaNodeIdServicesVariableInstrument = 18399
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ConfirmedState_Number                                OpcuaNodeIdServicesVariableInstrument = 18400
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ConfirmedState_EffectiveDisplayName                  OpcuaNodeIdServicesVariableInstrument = 18401
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ConfirmedState_TransitionTime                        OpcuaNodeIdServicesVariableInstrument = 18402
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ConfirmedState_EffectiveTransitionTime               OpcuaNodeIdServicesVariableInstrument = 18403
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ConfirmedState_TrueState                             OpcuaNodeIdServicesVariableInstrument = 18404
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ConfirmedState_FalseState                            OpcuaNodeIdServicesVariableInstrument = 18405
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_Acknowledge_InputArguments                           OpcuaNodeIdServicesVariableInstrument = 18407
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_Confirm_InputArguments                               OpcuaNodeIdServicesVariableInstrument = 18409
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ActiveState                                          OpcuaNodeIdServicesVariableInstrument = 18410
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ActiveState_Id                                       OpcuaNodeIdServicesVariableInstrument = 18411
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ActiveState_Name                                     OpcuaNodeIdServicesVariableInstrument = 18412
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ActiveState_Number                                   OpcuaNodeIdServicesVariableInstrument = 18413
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ActiveState_EffectiveDisplayName                     OpcuaNodeIdServicesVariableInstrument = 18414
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ActiveState_TransitionTime                           OpcuaNodeIdServicesVariableInstrument = 18415
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ActiveState_EffectiveTransitionTime                  OpcuaNodeIdServicesVariableInstrument = 18416
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ActiveState_TrueState                                OpcuaNodeIdServicesVariableInstrument = 18417
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ActiveState_FalseState                               OpcuaNodeIdServicesVariableInstrument = 18418
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_InputNode                                            OpcuaNodeIdServicesVariableInstrument = 18419
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_SuppressedState                                      OpcuaNodeIdServicesVariableInstrument = 18420
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_SuppressedState_Id                                   OpcuaNodeIdServicesVariableInstrument = 18421
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_SuppressedState_Name                                 OpcuaNodeIdServicesVariableInstrument = 18422
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_SuppressedState_Number                               OpcuaNodeIdServicesVariableInstrument = 18423
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_SuppressedState_EffectiveDisplayName                 OpcuaNodeIdServicesVariableInstrument = 18424
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_SuppressedState_TransitionTime                       OpcuaNodeIdServicesVariableInstrument = 18425
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_SuppressedState_EffectiveTransitionTime              OpcuaNodeIdServicesVariableInstrument = 18426
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_SuppressedState_TrueState                            OpcuaNodeIdServicesVariableInstrument = 18427
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_SuppressedState_FalseState                           OpcuaNodeIdServicesVariableInstrument = 18428
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_OutOfServiceState                                    OpcuaNodeIdServicesVariableInstrument = 18429
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_OutOfServiceState_Id                                 OpcuaNodeIdServicesVariableInstrument = 18430
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_OutOfServiceState_Name                               OpcuaNodeIdServicesVariableInstrument = 18431
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_OutOfServiceState_Number                             OpcuaNodeIdServicesVariableInstrument = 18432
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_OutOfServiceState_EffectiveDisplayName               OpcuaNodeIdServicesVariableInstrument = 18433
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_OutOfServiceState_TransitionTime                     OpcuaNodeIdServicesVariableInstrument = 18434
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_OutOfServiceState_EffectiveTransitionTime            OpcuaNodeIdServicesVariableInstrument = 18435
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_OutOfServiceState_TrueState                          OpcuaNodeIdServicesVariableInstrument = 18436
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_OutOfServiceState_FalseState                         OpcuaNodeIdServicesVariableInstrument = 18437
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ShelvingState_CurrentState                           OpcuaNodeIdServicesVariableInstrument = 18439
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ShelvingState_CurrentState_Id                        OpcuaNodeIdServicesVariableInstrument = 18440
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ShelvingState_CurrentState_Name                      OpcuaNodeIdServicesVariableInstrument = 18441
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ShelvingState_CurrentState_Number                    OpcuaNodeIdServicesVariableInstrument = 18442
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ShelvingState_CurrentState_EffectiveDisplayName      OpcuaNodeIdServicesVariableInstrument = 18443
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ShelvingState_LastTransition                         OpcuaNodeIdServicesVariableInstrument = 18444
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ShelvingState_LastTransition_Id                      OpcuaNodeIdServicesVariableInstrument = 18445
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ShelvingState_LastTransition_Name                    OpcuaNodeIdServicesVariableInstrument = 18446
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ShelvingState_LastTransition_Number                  OpcuaNodeIdServicesVariableInstrument = 18447
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ShelvingState_LastTransition_TransitionTime          OpcuaNodeIdServicesVariableInstrument = 18448
+const(
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_EventId OpcuaNodeIdServicesVariableInstrument = 18348
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_EventType OpcuaNodeIdServicesVariableInstrument = 18349
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_SourceNode OpcuaNodeIdServicesVariableInstrument = 18350
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_SourceName OpcuaNodeIdServicesVariableInstrument = 18351
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_Time OpcuaNodeIdServicesVariableInstrument = 18352
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ReceiveTime OpcuaNodeIdServicesVariableInstrument = 18353
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_LocalTime OpcuaNodeIdServicesVariableInstrument = 18354
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_Message OpcuaNodeIdServicesVariableInstrument = 18355
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_Severity OpcuaNodeIdServicesVariableInstrument = 18356
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ConditionClassId OpcuaNodeIdServicesVariableInstrument = 18357
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ConditionClassName OpcuaNodeIdServicesVariableInstrument = 18358
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ConditionSubClassId OpcuaNodeIdServicesVariableInstrument = 18359
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ConditionSubClassName OpcuaNodeIdServicesVariableInstrument = 18360
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ConditionName OpcuaNodeIdServicesVariableInstrument = 18361
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_BranchId OpcuaNodeIdServicesVariableInstrument = 18362
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_Retain OpcuaNodeIdServicesVariableInstrument = 18363
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_EnabledState OpcuaNodeIdServicesVariableInstrument = 18364
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_EnabledState_Id OpcuaNodeIdServicesVariableInstrument = 18365
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_EnabledState_Name OpcuaNodeIdServicesVariableInstrument = 18366
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_EnabledState_Number OpcuaNodeIdServicesVariableInstrument = 18367
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_EnabledState_EffectiveDisplayName OpcuaNodeIdServicesVariableInstrument = 18368
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_EnabledState_TransitionTime OpcuaNodeIdServicesVariableInstrument = 18369
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_EnabledState_EffectiveTransitionTime OpcuaNodeIdServicesVariableInstrument = 18370
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_EnabledState_TrueState OpcuaNodeIdServicesVariableInstrument = 18371
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_EnabledState_FalseState OpcuaNodeIdServicesVariableInstrument = 18372
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_Quality OpcuaNodeIdServicesVariableInstrument = 18373
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_Quality_SourceTimestamp OpcuaNodeIdServicesVariableInstrument = 18374
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_LastSeverity OpcuaNodeIdServicesVariableInstrument = 18375
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_LastSeverity_SourceTimestamp OpcuaNodeIdServicesVariableInstrument = 18376
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_Comment OpcuaNodeIdServicesVariableInstrument = 18377
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_Comment_SourceTimestamp OpcuaNodeIdServicesVariableInstrument = 18378
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ClientUserId OpcuaNodeIdServicesVariableInstrument = 18379
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_AddComment_InputArguments OpcuaNodeIdServicesVariableInstrument = 18383
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ConditionRefresh_InputArguments OpcuaNodeIdServicesVariableInstrument = 18385
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ConditionRefresh2_InputArguments OpcuaNodeIdServicesVariableInstrument = 18387
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_AckedState OpcuaNodeIdServicesVariableInstrument = 18388
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_AckedState_Id OpcuaNodeIdServicesVariableInstrument = 18389
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_AckedState_Name OpcuaNodeIdServicesVariableInstrument = 18390
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_AckedState_Number OpcuaNodeIdServicesVariableInstrument = 18391
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_AckedState_EffectiveDisplayName OpcuaNodeIdServicesVariableInstrument = 18392
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_AckedState_TransitionTime OpcuaNodeIdServicesVariableInstrument = 18393
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_AckedState_EffectiveTransitionTime OpcuaNodeIdServicesVariableInstrument = 18394
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_AckedState_TrueState OpcuaNodeIdServicesVariableInstrument = 18395
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_AckedState_FalseState OpcuaNodeIdServicesVariableInstrument = 18396
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ConfirmedState OpcuaNodeIdServicesVariableInstrument = 18397
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ConfirmedState_Id OpcuaNodeIdServicesVariableInstrument = 18398
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ConfirmedState_Name OpcuaNodeIdServicesVariableInstrument = 18399
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ConfirmedState_Number OpcuaNodeIdServicesVariableInstrument = 18400
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ConfirmedState_EffectiveDisplayName OpcuaNodeIdServicesVariableInstrument = 18401
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ConfirmedState_TransitionTime OpcuaNodeIdServicesVariableInstrument = 18402
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ConfirmedState_EffectiveTransitionTime OpcuaNodeIdServicesVariableInstrument = 18403
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ConfirmedState_TrueState OpcuaNodeIdServicesVariableInstrument = 18404
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ConfirmedState_FalseState OpcuaNodeIdServicesVariableInstrument = 18405
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_Acknowledge_InputArguments OpcuaNodeIdServicesVariableInstrument = 18407
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_Confirm_InputArguments OpcuaNodeIdServicesVariableInstrument = 18409
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ActiveState OpcuaNodeIdServicesVariableInstrument = 18410
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ActiveState_Id OpcuaNodeIdServicesVariableInstrument = 18411
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ActiveState_Name OpcuaNodeIdServicesVariableInstrument = 18412
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ActiveState_Number OpcuaNodeIdServicesVariableInstrument = 18413
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ActiveState_EffectiveDisplayName OpcuaNodeIdServicesVariableInstrument = 18414
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ActiveState_TransitionTime OpcuaNodeIdServicesVariableInstrument = 18415
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ActiveState_EffectiveTransitionTime OpcuaNodeIdServicesVariableInstrument = 18416
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ActiveState_TrueState OpcuaNodeIdServicesVariableInstrument = 18417
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ActiveState_FalseState OpcuaNodeIdServicesVariableInstrument = 18418
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_InputNode OpcuaNodeIdServicesVariableInstrument = 18419
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_SuppressedState OpcuaNodeIdServicesVariableInstrument = 18420
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_SuppressedState_Id OpcuaNodeIdServicesVariableInstrument = 18421
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_SuppressedState_Name OpcuaNodeIdServicesVariableInstrument = 18422
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_SuppressedState_Number OpcuaNodeIdServicesVariableInstrument = 18423
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_SuppressedState_EffectiveDisplayName OpcuaNodeIdServicesVariableInstrument = 18424
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_SuppressedState_TransitionTime OpcuaNodeIdServicesVariableInstrument = 18425
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_SuppressedState_EffectiveTransitionTime OpcuaNodeIdServicesVariableInstrument = 18426
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_SuppressedState_TrueState OpcuaNodeIdServicesVariableInstrument = 18427
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_SuppressedState_FalseState OpcuaNodeIdServicesVariableInstrument = 18428
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_OutOfServiceState OpcuaNodeIdServicesVariableInstrument = 18429
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_OutOfServiceState_Id OpcuaNodeIdServicesVariableInstrument = 18430
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_OutOfServiceState_Name OpcuaNodeIdServicesVariableInstrument = 18431
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_OutOfServiceState_Number OpcuaNodeIdServicesVariableInstrument = 18432
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_OutOfServiceState_EffectiveDisplayName OpcuaNodeIdServicesVariableInstrument = 18433
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_OutOfServiceState_TransitionTime OpcuaNodeIdServicesVariableInstrument = 18434
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_OutOfServiceState_EffectiveTransitionTime OpcuaNodeIdServicesVariableInstrument = 18435
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_OutOfServiceState_TrueState OpcuaNodeIdServicesVariableInstrument = 18436
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_OutOfServiceState_FalseState OpcuaNodeIdServicesVariableInstrument = 18437
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ShelvingState_CurrentState OpcuaNodeIdServicesVariableInstrument = 18439
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ShelvingState_CurrentState_Id OpcuaNodeIdServicesVariableInstrument = 18440
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ShelvingState_CurrentState_Name OpcuaNodeIdServicesVariableInstrument = 18441
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ShelvingState_CurrentState_Number OpcuaNodeIdServicesVariableInstrument = 18442
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ShelvingState_CurrentState_EffectiveDisplayName OpcuaNodeIdServicesVariableInstrument = 18443
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ShelvingState_LastTransition OpcuaNodeIdServicesVariableInstrument = 18444
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ShelvingState_LastTransition_Id OpcuaNodeIdServicesVariableInstrument = 18445
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ShelvingState_LastTransition_Name OpcuaNodeIdServicesVariableInstrument = 18446
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ShelvingState_LastTransition_Number OpcuaNodeIdServicesVariableInstrument = 18447
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ShelvingState_LastTransition_TransitionTime OpcuaNodeIdServicesVariableInstrument = 18448
 	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ShelvingState_LastTransition_EffectiveTransitionTime OpcuaNodeIdServicesVariableInstrument = 18449
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ShelvingState_AvailableStates                        OpcuaNodeIdServicesVariableInstrument = 18450
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ShelvingState_AvailableTransitions                   OpcuaNodeIdServicesVariableInstrument = 18451
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ShelvingState_UnshelveTime                           OpcuaNodeIdServicesVariableInstrument = 18452
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ShelvingState_TimedShelve_InputArguments             OpcuaNodeIdServicesVariableInstrument = 18454
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_SuppressedOrShelved                                  OpcuaNodeIdServicesVariableInstrument = 18457
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_MaxTimeShelved                                       OpcuaNodeIdServicesVariableInstrument = 18458
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_AudibleEnabled                                       OpcuaNodeIdServicesVariableInstrument = 18459
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_AudibleSound                                         OpcuaNodeIdServicesVariableInstrument = 18460
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_AudibleSound_ListId                                  OpcuaNodeIdServicesVariableInstrument = 18461
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_AudibleSound_AgencyId                                OpcuaNodeIdServicesVariableInstrument = 18462
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_AudibleSound_VersionId                               OpcuaNodeIdServicesVariableInstrument = 18463
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_SilenceState                                         OpcuaNodeIdServicesVariableInstrument = 18464
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_SilenceState_Id                                      OpcuaNodeIdServicesVariableInstrument = 18465
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_SilenceState_Name                                    OpcuaNodeIdServicesVariableInstrument = 18466
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_SilenceState_Number                                  OpcuaNodeIdServicesVariableInstrument = 18467
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_SilenceState_EffectiveDisplayName                    OpcuaNodeIdServicesVariableInstrument = 18468
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_SilenceState_TransitionTime                          OpcuaNodeIdServicesVariableInstrument = 18469
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_SilenceState_EffectiveTransitionTime                 OpcuaNodeIdServicesVariableInstrument = 18470
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_SilenceState_TrueState                               OpcuaNodeIdServicesVariableInstrument = 18471
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_SilenceState_FalseState                              OpcuaNodeIdServicesVariableInstrument = 18472
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_OnDelay                                              OpcuaNodeIdServicesVariableInstrument = 18473
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_OffDelay                                             OpcuaNodeIdServicesVariableInstrument = 18474
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_FirstInGroupFlag                                     OpcuaNodeIdServicesVariableInstrument = 18475
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_LatchedState                                         OpcuaNodeIdServicesVariableInstrument = 18477
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_LatchedState_Id                                      OpcuaNodeIdServicesVariableInstrument = 18478
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_LatchedState_Name                                    OpcuaNodeIdServicesVariableInstrument = 18479
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_LatchedState_Number                                  OpcuaNodeIdServicesVariableInstrument = 18480
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_LatchedState_EffectiveDisplayName                    OpcuaNodeIdServicesVariableInstrument = 18481
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_LatchedState_TransitionTime                          OpcuaNodeIdServicesVariableInstrument = 18482
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_LatchedState_EffectiveTransitionTime                 OpcuaNodeIdServicesVariableInstrument = 18483
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_LatchedState_TrueState                               OpcuaNodeIdServicesVariableInstrument = 18484
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_LatchedState_FalseState                              OpcuaNodeIdServicesVariableInstrument = 18485
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ReAlarmTime                                          OpcuaNodeIdServicesVariableInstrument = 18487
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ReAlarmRepeatCount                                   OpcuaNodeIdServicesVariableInstrument = 18488
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_NormalState                                          OpcuaNodeIdServicesVariableInstrument = 18495
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_Suppress2_InputArguments                             OpcuaNodeIdServicesVariableInstrument = 24469
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_Unsuppress2_InputArguments                           OpcuaNodeIdServicesVariableInstrument = 24471
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_RemoveFromService2_InputArguments                    OpcuaNodeIdServicesVariableInstrument = 24473
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_PlaceInService2_InputArguments                       OpcuaNodeIdServicesVariableInstrument = 24475
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_Reset2_InputArguments                                OpcuaNodeIdServicesVariableInstrument = 24477
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ShelvingState_TimedShelve2_InputArguments            OpcuaNodeIdServicesVariableInstrument = 24939
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ShelvingState_Unshelve2_InputArguments               OpcuaNodeIdServicesVariableInstrument = 24941
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ShelvingState_OneShotShelve2_InputArguments          OpcuaNodeIdServicesVariableInstrument = 24943
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_GetGroupMemberships_OutputArguments                  OpcuaNodeIdServicesVariableInstrument = 25172
-	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_SupportsFilteredRetain                               OpcuaNodeIdServicesVariableInstrument = 32240
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ShelvingState_AvailableStates OpcuaNodeIdServicesVariableInstrument = 18450
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ShelvingState_AvailableTransitions OpcuaNodeIdServicesVariableInstrument = 18451
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ShelvingState_UnshelveTime OpcuaNodeIdServicesVariableInstrument = 18452
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ShelvingState_TimedShelve_InputArguments OpcuaNodeIdServicesVariableInstrument = 18454
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_SuppressedOrShelved OpcuaNodeIdServicesVariableInstrument = 18457
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_MaxTimeShelved OpcuaNodeIdServicesVariableInstrument = 18458
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_AudibleEnabled OpcuaNodeIdServicesVariableInstrument = 18459
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_AudibleSound OpcuaNodeIdServicesVariableInstrument = 18460
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_AudibleSound_ListId OpcuaNodeIdServicesVariableInstrument = 18461
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_AudibleSound_AgencyId OpcuaNodeIdServicesVariableInstrument = 18462
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_AudibleSound_VersionId OpcuaNodeIdServicesVariableInstrument = 18463
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_SilenceState OpcuaNodeIdServicesVariableInstrument = 18464
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_SilenceState_Id OpcuaNodeIdServicesVariableInstrument = 18465
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_SilenceState_Name OpcuaNodeIdServicesVariableInstrument = 18466
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_SilenceState_Number OpcuaNodeIdServicesVariableInstrument = 18467
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_SilenceState_EffectiveDisplayName OpcuaNodeIdServicesVariableInstrument = 18468
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_SilenceState_TransitionTime OpcuaNodeIdServicesVariableInstrument = 18469
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_SilenceState_EffectiveTransitionTime OpcuaNodeIdServicesVariableInstrument = 18470
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_SilenceState_TrueState OpcuaNodeIdServicesVariableInstrument = 18471
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_SilenceState_FalseState OpcuaNodeIdServicesVariableInstrument = 18472
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_OnDelay OpcuaNodeIdServicesVariableInstrument = 18473
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_OffDelay OpcuaNodeIdServicesVariableInstrument = 18474
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_FirstInGroupFlag OpcuaNodeIdServicesVariableInstrument = 18475
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_LatchedState OpcuaNodeIdServicesVariableInstrument = 18477
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_LatchedState_Id OpcuaNodeIdServicesVariableInstrument = 18478
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_LatchedState_Name OpcuaNodeIdServicesVariableInstrument = 18479
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_LatchedState_Number OpcuaNodeIdServicesVariableInstrument = 18480
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_LatchedState_EffectiveDisplayName OpcuaNodeIdServicesVariableInstrument = 18481
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_LatchedState_TransitionTime OpcuaNodeIdServicesVariableInstrument = 18482
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_LatchedState_EffectiveTransitionTime OpcuaNodeIdServicesVariableInstrument = 18483
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_LatchedState_TrueState OpcuaNodeIdServicesVariableInstrument = 18484
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_LatchedState_FalseState OpcuaNodeIdServicesVariableInstrument = 18485
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ReAlarmTime OpcuaNodeIdServicesVariableInstrument = 18487
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ReAlarmRepeatCount OpcuaNodeIdServicesVariableInstrument = 18488
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_NormalState OpcuaNodeIdServicesVariableInstrument = 18495
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_Suppress2_InputArguments OpcuaNodeIdServicesVariableInstrument = 24469
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_Unsuppress2_InputArguments OpcuaNodeIdServicesVariableInstrument = 24471
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_RemoveFromService2_InputArguments OpcuaNodeIdServicesVariableInstrument = 24473
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_PlaceInService2_InputArguments OpcuaNodeIdServicesVariableInstrument = 24475
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_Reset2_InputArguments OpcuaNodeIdServicesVariableInstrument = 24477
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ShelvingState_TimedShelve2_InputArguments OpcuaNodeIdServicesVariableInstrument = 24939
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ShelvingState_Unshelve2_InputArguments OpcuaNodeIdServicesVariableInstrument = 24941
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ShelvingState_OneShotShelve2_InputArguments OpcuaNodeIdServicesVariableInstrument = 24943
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_GetGroupMemberships_OutputArguments OpcuaNodeIdServicesVariableInstrument = 25172
+	OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_SupportsFilteredRetain OpcuaNodeIdServicesVariableInstrument = 32240
 )
 
 var OpcuaNodeIdServicesVariableInstrumentValues []OpcuaNodeIdServicesVariableInstrument
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariableInstrumentValues = []OpcuaNodeIdServicesVariableInstrument{
+	OpcuaNodeIdServicesVariableInstrumentValues = []OpcuaNodeIdServicesVariableInstrument {
 		OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_EventId,
 		OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_EventType,
 		OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_SourceNode,
@@ -331,284 +331,284 @@ func init() {
 
 func OpcuaNodeIdServicesVariableInstrumentByValue(value int32) (enum OpcuaNodeIdServicesVariableInstrument, ok bool) {
 	switch value {
-	case 18348:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_EventId, true
-	case 18349:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_EventType, true
-	case 18350:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_SourceNode, true
-	case 18351:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_SourceName, true
-	case 18352:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_Time, true
-	case 18353:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ReceiveTime, true
-	case 18354:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_LocalTime, true
-	case 18355:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_Message, true
-	case 18356:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_Severity, true
-	case 18357:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ConditionClassId, true
-	case 18358:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ConditionClassName, true
-	case 18359:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ConditionSubClassId, true
-	case 18360:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ConditionSubClassName, true
-	case 18361:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ConditionName, true
-	case 18362:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_BranchId, true
-	case 18363:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_Retain, true
-	case 18364:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_EnabledState, true
-	case 18365:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_EnabledState_Id, true
-	case 18366:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_EnabledState_Name, true
-	case 18367:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_EnabledState_Number, true
-	case 18368:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_EnabledState_EffectiveDisplayName, true
-	case 18369:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_EnabledState_TransitionTime, true
-	case 18370:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_EnabledState_EffectiveTransitionTime, true
-	case 18371:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_EnabledState_TrueState, true
-	case 18372:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_EnabledState_FalseState, true
-	case 18373:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_Quality, true
-	case 18374:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_Quality_SourceTimestamp, true
-	case 18375:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_LastSeverity, true
-	case 18376:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_LastSeverity_SourceTimestamp, true
-	case 18377:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_Comment, true
-	case 18378:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_Comment_SourceTimestamp, true
-	case 18379:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ClientUserId, true
-	case 18383:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_AddComment_InputArguments, true
-	case 18385:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ConditionRefresh_InputArguments, true
-	case 18387:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ConditionRefresh2_InputArguments, true
-	case 18388:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_AckedState, true
-	case 18389:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_AckedState_Id, true
-	case 18390:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_AckedState_Name, true
-	case 18391:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_AckedState_Number, true
-	case 18392:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_AckedState_EffectiveDisplayName, true
-	case 18393:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_AckedState_TransitionTime, true
-	case 18394:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_AckedState_EffectiveTransitionTime, true
-	case 18395:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_AckedState_TrueState, true
-	case 18396:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_AckedState_FalseState, true
-	case 18397:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ConfirmedState, true
-	case 18398:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ConfirmedState_Id, true
-	case 18399:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ConfirmedState_Name, true
-	case 18400:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ConfirmedState_Number, true
-	case 18401:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ConfirmedState_EffectiveDisplayName, true
-	case 18402:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ConfirmedState_TransitionTime, true
-	case 18403:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ConfirmedState_EffectiveTransitionTime, true
-	case 18404:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ConfirmedState_TrueState, true
-	case 18405:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ConfirmedState_FalseState, true
-	case 18407:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_Acknowledge_InputArguments, true
-	case 18409:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_Confirm_InputArguments, true
-	case 18410:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ActiveState, true
-	case 18411:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ActiveState_Id, true
-	case 18412:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ActiveState_Name, true
-	case 18413:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ActiveState_Number, true
-	case 18414:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ActiveState_EffectiveDisplayName, true
-	case 18415:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ActiveState_TransitionTime, true
-	case 18416:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ActiveState_EffectiveTransitionTime, true
-	case 18417:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ActiveState_TrueState, true
-	case 18418:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ActiveState_FalseState, true
-	case 18419:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_InputNode, true
-	case 18420:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_SuppressedState, true
-	case 18421:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_SuppressedState_Id, true
-	case 18422:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_SuppressedState_Name, true
-	case 18423:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_SuppressedState_Number, true
-	case 18424:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_SuppressedState_EffectiveDisplayName, true
-	case 18425:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_SuppressedState_TransitionTime, true
-	case 18426:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_SuppressedState_EffectiveTransitionTime, true
-	case 18427:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_SuppressedState_TrueState, true
-	case 18428:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_SuppressedState_FalseState, true
-	case 18429:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_OutOfServiceState, true
-	case 18430:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_OutOfServiceState_Id, true
-	case 18431:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_OutOfServiceState_Name, true
-	case 18432:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_OutOfServiceState_Number, true
-	case 18433:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_OutOfServiceState_EffectiveDisplayName, true
-	case 18434:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_OutOfServiceState_TransitionTime, true
-	case 18435:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_OutOfServiceState_EffectiveTransitionTime, true
-	case 18436:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_OutOfServiceState_TrueState, true
-	case 18437:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_OutOfServiceState_FalseState, true
-	case 18439:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ShelvingState_CurrentState, true
-	case 18440:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ShelvingState_CurrentState_Id, true
-	case 18441:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ShelvingState_CurrentState_Name, true
-	case 18442:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ShelvingState_CurrentState_Number, true
-	case 18443:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ShelvingState_CurrentState_EffectiveDisplayName, true
-	case 18444:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ShelvingState_LastTransition, true
-	case 18445:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ShelvingState_LastTransition_Id, true
-	case 18446:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ShelvingState_LastTransition_Name, true
-	case 18447:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ShelvingState_LastTransition_Number, true
-	case 18448:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ShelvingState_LastTransition_TransitionTime, true
-	case 18449:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ShelvingState_LastTransition_EffectiveTransitionTime, true
-	case 18450:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ShelvingState_AvailableStates, true
-	case 18451:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ShelvingState_AvailableTransitions, true
-	case 18452:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ShelvingState_UnshelveTime, true
-	case 18454:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ShelvingState_TimedShelve_InputArguments, true
-	case 18457:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_SuppressedOrShelved, true
-	case 18458:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_MaxTimeShelved, true
-	case 18459:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_AudibleEnabled, true
-	case 18460:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_AudibleSound, true
-	case 18461:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_AudibleSound_ListId, true
-	case 18462:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_AudibleSound_AgencyId, true
-	case 18463:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_AudibleSound_VersionId, true
-	case 18464:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_SilenceState, true
-	case 18465:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_SilenceState_Id, true
-	case 18466:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_SilenceState_Name, true
-	case 18467:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_SilenceState_Number, true
-	case 18468:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_SilenceState_EffectiveDisplayName, true
-	case 18469:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_SilenceState_TransitionTime, true
-	case 18470:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_SilenceState_EffectiveTransitionTime, true
-	case 18471:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_SilenceState_TrueState, true
-	case 18472:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_SilenceState_FalseState, true
-	case 18473:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_OnDelay, true
-	case 18474:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_OffDelay, true
-	case 18475:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_FirstInGroupFlag, true
-	case 18477:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_LatchedState, true
-	case 18478:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_LatchedState_Id, true
-	case 18479:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_LatchedState_Name, true
-	case 18480:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_LatchedState_Number, true
-	case 18481:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_LatchedState_EffectiveDisplayName, true
-	case 18482:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_LatchedState_TransitionTime, true
-	case 18483:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_LatchedState_EffectiveTransitionTime, true
-	case 18484:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_LatchedState_TrueState, true
-	case 18485:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_LatchedState_FalseState, true
-	case 18487:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ReAlarmTime, true
-	case 18488:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ReAlarmRepeatCount, true
-	case 18495:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_NormalState, true
-	case 24469:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_Suppress2_InputArguments, true
-	case 24471:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_Unsuppress2_InputArguments, true
-	case 24473:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_RemoveFromService2_InputArguments, true
-	case 24475:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_PlaceInService2_InputArguments, true
-	case 24477:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_Reset2_InputArguments, true
-	case 24939:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ShelvingState_TimedShelve2_InputArguments, true
-	case 24941:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ShelvingState_Unshelve2_InputArguments, true
-	case 24943:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ShelvingState_OneShotShelve2_InputArguments, true
-	case 25172:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_GetGroupMemberships_OutputArguments, true
-	case 32240:
-		return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_SupportsFilteredRetain, true
+		case 18348:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_EventId, true
+		case 18349:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_EventType, true
+		case 18350:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_SourceNode, true
+		case 18351:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_SourceName, true
+		case 18352:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_Time, true
+		case 18353:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ReceiveTime, true
+		case 18354:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_LocalTime, true
+		case 18355:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_Message, true
+		case 18356:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_Severity, true
+		case 18357:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ConditionClassId, true
+		case 18358:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ConditionClassName, true
+		case 18359:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ConditionSubClassId, true
+		case 18360:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ConditionSubClassName, true
+		case 18361:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ConditionName, true
+		case 18362:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_BranchId, true
+		case 18363:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_Retain, true
+		case 18364:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_EnabledState, true
+		case 18365:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_EnabledState_Id, true
+		case 18366:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_EnabledState_Name, true
+		case 18367:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_EnabledState_Number, true
+		case 18368:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_EnabledState_EffectiveDisplayName, true
+		case 18369:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_EnabledState_TransitionTime, true
+		case 18370:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_EnabledState_EffectiveTransitionTime, true
+		case 18371:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_EnabledState_TrueState, true
+		case 18372:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_EnabledState_FalseState, true
+		case 18373:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_Quality, true
+		case 18374:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_Quality_SourceTimestamp, true
+		case 18375:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_LastSeverity, true
+		case 18376:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_LastSeverity_SourceTimestamp, true
+		case 18377:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_Comment, true
+		case 18378:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_Comment_SourceTimestamp, true
+		case 18379:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ClientUserId, true
+		case 18383:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_AddComment_InputArguments, true
+		case 18385:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ConditionRefresh_InputArguments, true
+		case 18387:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ConditionRefresh2_InputArguments, true
+		case 18388:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_AckedState, true
+		case 18389:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_AckedState_Id, true
+		case 18390:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_AckedState_Name, true
+		case 18391:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_AckedState_Number, true
+		case 18392:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_AckedState_EffectiveDisplayName, true
+		case 18393:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_AckedState_TransitionTime, true
+		case 18394:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_AckedState_EffectiveTransitionTime, true
+		case 18395:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_AckedState_TrueState, true
+		case 18396:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_AckedState_FalseState, true
+		case 18397:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ConfirmedState, true
+		case 18398:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ConfirmedState_Id, true
+		case 18399:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ConfirmedState_Name, true
+		case 18400:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ConfirmedState_Number, true
+		case 18401:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ConfirmedState_EffectiveDisplayName, true
+		case 18402:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ConfirmedState_TransitionTime, true
+		case 18403:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ConfirmedState_EffectiveTransitionTime, true
+		case 18404:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ConfirmedState_TrueState, true
+		case 18405:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ConfirmedState_FalseState, true
+		case 18407:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_Acknowledge_InputArguments, true
+		case 18409:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_Confirm_InputArguments, true
+		case 18410:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ActiveState, true
+		case 18411:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ActiveState_Id, true
+		case 18412:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ActiveState_Name, true
+		case 18413:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ActiveState_Number, true
+		case 18414:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ActiveState_EffectiveDisplayName, true
+		case 18415:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ActiveState_TransitionTime, true
+		case 18416:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ActiveState_EffectiveTransitionTime, true
+		case 18417:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ActiveState_TrueState, true
+		case 18418:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ActiveState_FalseState, true
+		case 18419:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_InputNode, true
+		case 18420:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_SuppressedState, true
+		case 18421:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_SuppressedState_Id, true
+		case 18422:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_SuppressedState_Name, true
+		case 18423:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_SuppressedState_Number, true
+		case 18424:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_SuppressedState_EffectiveDisplayName, true
+		case 18425:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_SuppressedState_TransitionTime, true
+		case 18426:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_SuppressedState_EffectiveTransitionTime, true
+		case 18427:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_SuppressedState_TrueState, true
+		case 18428:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_SuppressedState_FalseState, true
+		case 18429:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_OutOfServiceState, true
+		case 18430:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_OutOfServiceState_Id, true
+		case 18431:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_OutOfServiceState_Name, true
+		case 18432:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_OutOfServiceState_Number, true
+		case 18433:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_OutOfServiceState_EffectiveDisplayName, true
+		case 18434:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_OutOfServiceState_TransitionTime, true
+		case 18435:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_OutOfServiceState_EffectiveTransitionTime, true
+		case 18436:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_OutOfServiceState_TrueState, true
+		case 18437:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_OutOfServiceState_FalseState, true
+		case 18439:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ShelvingState_CurrentState, true
+		case 18440:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ShelvingState_CurrentState_Id, true
+		case 18441:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ShelvingState_CurrentState_Name, true
+		case 18442:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ShelvingState_CurrentState_Number, true
+		case 18443:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ShelvingState_CurrentState_EffectiveDisplayName, true
+		case 18444:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ShelvingState_LastTransition, true
+		case 18445:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ShelvingState_LastTransition_Id, true
+		case 18446:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ShelvingState_LastTransition_Name, true
+		case 18447:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ShelvingState_LastTransition_Number, true
+		case 18448:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ShelvingState_LastTransition_TransitionTime, true
+		case 18449:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ShelvingState_LastTransition_EffectiveTransitionTime, true
+		case 18450:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ShelvingState_AvailableStates, true
+		case 18451:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ShelvingState_AvailableTransitions, true
+		case 18452:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ShelvingState_UnshelveTime, true
+		case 18454:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ShelvingState_TimedShelve_InputArguments, true
+		case 18457:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_SuppressedOrShelved, true
+		case 18458:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_MaxTimeShelved, true
+		case 18459:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_AudibleEnabled, true
+		case 18460:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_AudibleSound, true
+		case 18461:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_AudibleSound_ListId, true
+		case 18462:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_AudibleSound_AgencyId, true
+		case 18463:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_AudibleSound_VersionId, true
+		case 18464:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_SilenceState, true
+		case 18465:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_SilenceState_Id, true
+		case 18466:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_SilenceState_Name, true
+		case 18467:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_SilenceState_Number, true
+		case 18468:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_SilenceState_EffectiveDisplayName, true
+		case 18469:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_SilenceState_TransitionTime, true
+		case 18470:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_SilenceState_EffectiveTransitionTime, true
+		case 18471:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_SilenceState_TrueState, true
+		case 18472:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_SilenceState_FalseState, true
+		case 18473:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_OnDelay, true
+		case 18474:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_OffDelay, true
+		case 18475:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_FirstInGroupFlag, true
+		case 18477:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_LatchedState, true
+		case 18478:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_LatchedState_Id, true
+		case 18479:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_LatchedState_Name, true
+		case 18480:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_LatchedState_Number, true
+		case 18481:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_LatchedState_EffectiveDisplayName, true
+		case 18482:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_LatchedState_TransitionTime, true
+		case 18483:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_LatchedState_EffectiveTransitionTime, true
+		case 18484:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_LatchedState_TrueState, true
+		case 18485:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_LatchedState_FalseState, true
+		case 18487:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ReAlarmTime, true
+		case 18488:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ReAlarmRepeatCount, true
+		case 18495:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_NormalState, true
+		case 24469:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_Suppress2_InputArguments, true
+		case 24471:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_Unsuppress2_InputArguments, true
+		case 24473:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_RemoveFromService2_InputArguments, true
+		case 24475:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_PlaceInService2_InputArguments, true
+		case 24477:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_Reset2_InputArguments, true
+		case 24939:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ShelvingState_TimedShelve2_InputArguments, true
+		case 24941:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ShelvingState_Unshelve2_InputArguments, true
+		case 24943:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_ShelvingState_OneShotShelve2_InputArguments, true
+		case 25172:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_GetGroupMemberships_OutputArguments, true
+		case 32240:
+			return OpcuaNodeIdServicesVariableInstrument_InstrumentDiagnosticAlarmType_SupportsFilteredRetain, true
 	}
 	return 0, false
 }
@@ -897,13 +897,13 @@ func OpcuaNodeIdServicesVariableInstrumentByName(value string) (enum OpcuaNodeId
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariableInstrumentKnows(value int32) bool {
+func OpcuaNodeIdServicesVariableInstrumentKnows(value int32)  bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariableInstrumentValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastOpcuaNodeIdServicesVariableInstrument(structType any) OpcuaNodeIdServicesVariableInstrument {
@@ -1245,3 +1245,4 @@ func (e OpcuaNodeIdServicesVariableInstrument) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariableInstrument) String() string {
 	return e.PLC4XEnumName()
 }
+

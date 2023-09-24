@@ -40,7 +40,7 @@ type IOpcuaNodeIdServicesVariableModel interface {
 	utils.Serializable
 }
 
-const (
+const(
 	OpcuaNodeIdServicesVariableModel_ModelChangeStructureVerbMask_EnumValues OpcuaNodeIdServicesVariableModel = 11942
 )
 
@@ -48,15 +48,15 @@ var OpcuaNodeIdServicesVariableModelValues []OpcuaNodeIdServicesVariableModel
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariableModelValues = []OpcuaNodeIdServicesVariableModel{
+	OpcuaNodeIdServicesVariableModelValues = []OpcuaNodeIdServicesVariableModel {
 		OpcuaNodeIdServicesVariableModel_ModelChangeStructureVerbMask_EnumValues,
 	}
 }
 
 func OpcuaNodeIdServicesVariableModelByValue(value int32) (enum OpcuaNodeIdServicesVariableModel, ok bool) {
 	switch value {
-	case 11942:
-		return OpcuaNodeIdServicesVariableModel_ModelChangeStructureVerbMask_EnumValues, true
+		case 11942:
+			return OpcuaNodeIdServicesVariableModel_ModelChangeStructureVerbMask_EnumValues, true
 	}
 	return 0, false
 }
@@ -69,13 +69,13 @@ func OpcuaNodeIdServicesVariableModelByName(value string) (enum OpcuaNodeIdServi
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariableModelKnows(value int32) bool {
+func OpcuaNodeIdServicesVariableModelKnows(value int32)  bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariableModelValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastOpcuaNodeIdServicesVariableModel(structType any) OpcuaNodeIdServicesVariableModel {
@@ -141,3 +141,4 @@ func (e OpcuaNodeIdServicesVariableModel) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariableModel) String() string {
 	return e.PLC4XEnumName()
 }
+

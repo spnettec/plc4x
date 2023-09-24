@@ -40,9 +40,9 @@ type IBACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable inter
 	utils.Serializable
 }
 
-const (
-	BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable_ENABLE             BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable = 0
-	BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable_DISABLE            BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable = 1
+const(
+	BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable_ENABLE BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable = 0
+	BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable_DISABLE BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable = 1
 	BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable_DISABLE_INITIATION BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable = 2
 )
 
@@ -50,7 +50,7 @@ var BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableValues [
 
 func init() {
 	_ = errors.New
-	BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableValues = []BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable{
+	BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableValues = []BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable {
 		BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable_ENABLE,
 		BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable_DISABLE,
 		BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable_DISABLE_INITIATION,
@@ -59,12 +59,12 @@ func init() {
 
 func BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableByValue(value uint8) (enum BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable, ok bool) {
 	switch value {
-	case 0:
-		return BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable_ENABLE, true
-	case 1:
-		return BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable_DISABLE, true
-	case 2:
-		return BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable_DISABLE_INITIATION, true
+		case 0:
+			return BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable_ENABLE, true
+		case 1:
+			return BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable_DISABLE, true
+		case 2:
+			return BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable_DISABLE_INITIATION, true
 	}
 	return 0, false
 }
@@ -81,13 +81,13 @@ func BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableByName(
 	return 0, false
 }
 
-func BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableKnows(value uint8) bool {
+func BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableKnows(value uint8)  bool {
 	for _, typeValue := range BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastBACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable(structType any) BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable {
@@ -157,3 +157,4 @@ func (e BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable) PL
 func (e BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable) String() string {
 	return e.PLC4XEnumName()
 }
+

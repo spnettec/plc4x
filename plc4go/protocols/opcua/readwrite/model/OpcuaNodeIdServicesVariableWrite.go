@@ -40,7 +40,7 @@ type IOpcuaNodeIdServicesVariableWrite interface {
 	utils.Serializable
 }
 
-const (
+const(
 	OpcuaNodeIdServicesVariableWrite_WriteMethodType_InputArguments OpcuaNodeIdServicesVariableWrite = 11747
 )
 
@@ -48,15 +48,15 @@ var OpcuaNodeIdServicesVariableWriteValues []OpcuaNodeIdServicesVariableWrite
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariableWriteValues = []OpcuaNodeIdServicesVariableWrite{
+	OpcuaNodeIdServicesVariableWriteValues = []OpcuaNodeIdServicesVariableWrite {
 		OpcuaNodeIdServicesVariableWrite_WriteMethodType_InputArguments,
 	}
 }
 
 func OpcuaNodeIdServicesVariableWriteByValue(value int32) (enum OpcuaNodeIdServicesVariableWrite, ok bool) {
 	switch value {
-	case 11747:
-		return OpcuaNodeIdServicesVariableWrite_WriteMethodType_InputArguments, true
+		case 11747:
+			return OpcuaNodeIdServicesVariableWrite_WriteMethodType_InputArguments, true
 	}
 	return 0, false
 }
@@ -69,13 +69,13 @@ func OpcuaNodeIdServicesVariableWriteByName(value string) (enum OpcuaNodeIdServi
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariableWriteKnows(value int32) bool {
+func OpcuaNodeIdServicesVariableWriteKnows(value int32)  bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariableWriteValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastOpcuaNodeIdServicesVariableWrite(structType any) OpcuaNodeIdServicesVariableWrite {
@@ -141,3 +141,4 @@ func (e OpcuaNodeIdServicesVariableWrite) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariableWrite) String() string {
 	return e.PLC4XEnumName()
 }
+

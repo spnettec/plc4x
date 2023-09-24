@@ -40,23 +40,23 @@ type IOpcuaNodeIdServicesVariableImage interface {
 	utils.Serializable
 }
 
-const (
-	OpcuaNodeIdServicesVariableImage_ImageItemType_Definition       OpcuaNodeIdServicesVariableImage = 12048
-	OpcuaNodeIdServicesVariableImage_ImageItemType_ValuePrecision   OpcuaNodeIdServicesVariableImage = 12049
-	OpcuaNodeIdServicesVariableImage_ImageItemType_InstrumentRange  OpcuaNodeIdServicesVariableImage = 12050
-	OpcuaNodeIdServicesVariableImage_ImageItemType_EURange          OpcuaNodeIdServicesVariableImage = 12051
+const(
+	OpcuaNodeIdServicesVariableImage_ImageItemType_Definition OpcuaNodeIdServicesVariableImage = 12048
+	OpcuaNodeIdServicesVariableImage_ImageItemType_ValuePrecision OpcuaNodeIdServicesVariableImage = 12049
+	OpcuaNodeIdServicesVariableImage_ImageItemType_InstrumentRange OpcuaNodeIdServicesVariableImage = 12050
+	OpcuaNodeIdServicesVariableImage_ImageItemType_EURange OpcuaNodeIdServicesVariableImage = 12051
 	OpcuaNodeIdServicesVariableImage_ImageItemType_EngineeringUnits OpcuaNodeIdServicesVariableImage = 12052
-	OpcuaNodeIdServicesVariableImage_ImageItemType_Title            OpcuaNodeIdServicesVariableImage = 12053
-	OpcuaNodeIdServicesVariableImage_ImageItemType_AxisScaleType    OpcuaNodeIdServicesVariableImage = 12054
-	OpcuaNodeIdServicesVariableImage_ImageItemType_XAxisDefinition  OpcuaNodeIdServicesVariableImage = 12055
-	OpcuaNodeIdServicesVariableImage_ImageItemType_YAxisDefinition  OpcuaNodeIdServicesVariableImage = 12056
+	OpcuaNodeIdServicesVariableImage_ImageItemType_Title OpcuaNodeIdServicesVariableImage = 12053
+	OpcuaNodeIdServicesVariableImage_ImageItemType_AxisScaleType OpcuaNodeIdServicesVariableImage = 12054
+	OpcuaNodeIdServicesVariableImage_ImageItemType_XAxisDefinition OpcuaNodeIdServicesVariableImage = 12055
+	OpcuaNodeIdServicesVariableImage_ImageItemType_YAxisDefinition OpcuaNodeIdServicesVariableImage = 12056
 )
 
 var OpcuaNodeIdServicesVariableImageValues []OpcuaNodeIdServicesVariableImage
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariableImageValues = []OpcuaNodeIdServicesVariableImage{
+	OpcuaNodeIdServicesVariableImageValues = []OpcuaNodeIdServicesVariableImage {
 		OpcuaNodeIdServicesVariableImage_ImageItemType_Definition,
 		OpcuaNodeIdServicesVariableImage_ImageItemType_ValuePrecision,
 		OpcuaNodeIdServicesVariableImage_ImageItemType_InstrumentRange,
@@ -71,24 +71,24 @@ func init() {
 
 func OpcuaNodeIdServicesVariableImageByValue(value int32) (enum OpcuaNodeIdServicesVariableImage, ok bool) {
 	switch value {
-	case 12048:
-		return OpcuaNodeIdServicesVariableImage_ImageItemType_Definition, true
-	case 12049:
-		return OpcuaNodeIdServicesVariableImage_ImageItemType_ValuePrecision, true
-	case 12050:
-		return OpcuaNodeIdServicesVariableImage_ImageItemType_InstrumentRange, true
-	case 12051:
-		return OpcuaNodeIdServicesVariableImage_ImageItemType_EURange, true
-	case 12052:
-		return OpcuaNodeIdServicesVariableImage_ImageItemType_EngineeringUnits, true
-	case 12053:
-		return OpcuaNodeIdServicesVariableImage_ImageItemType_Title, true
-	case 12054:
-		return OpcuaNodeIdServicesVariableImage_ImageItemType_AxisScaleType, true
-	case 12055:
-		return OpcuaNodeIdServicesVariableImage_ImageItemType_XAxisDefinition, true
-	case 12056:
-		return OpcuaNodeIdServicesVariableImage_ImageItemType_YAxisDefinition, true
+		case 12048:
+			return OpcuaNodeIdServicesVariableImage_ImageItemType_Definition, true
+		case 12049:
+			return OpcuaNodeIdServicesVariableImage_ImageItemType_ValuePrecision, true
+		case 12050:
+			return OpcuaNodeIdServicesVariableImage_ImageItemType_InstrumentRange, true
+		case 12051:
+			return OpcuaNodeIdServicesVariableImage_ImageItemType_EURange, true
+		case 12052:
+			return OpcuaNodeIdServicesVariableImage_ImageItemType_EngineeringUnits, true
+		case 12053:
+			return OpcuaNodeIdServicesVariableImage_ImageItemType_Title, true
+		case 12054:
+			return OpcuaNodeIdServicesVariableImage_ImageItemType_AxisScaleType, true
+		case 12055:
+			return OpcuaNodeIdServicesVariableImage_ImageItemType_XAxisDefinition, true
+		case 12056:
+			return OpcuaNodeIdServicesVariableImage_ImageItemType_YAxisDefinition, true
 	}
 	return 0, false
 }
@@ -117,13 +117,13 @@ func OpcuaNodeIdServicesVariableImageByName(value string) (enum OpcuaNodeIdServi
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariableImageKnows(value int32) bool {
+func OpcuaNodeIdServicesVariableImageKnows(value int32)  bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariableImageValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastOpcuaNodeIdServicesVariableImage(structType any) OpcuaNodeIdServicesVariableImage {
@@ -205,3 +205,4 @@ func (e OpcuaNodeIdServicesVariableImage) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariableImage) String() string {
 	return e.PLC4XEnumName()
 }
+

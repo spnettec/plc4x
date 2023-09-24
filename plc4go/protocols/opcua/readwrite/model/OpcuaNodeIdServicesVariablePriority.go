@@ -40,9 +40,9 @@ type IOpcuaNodeIdServicesVariablePriority interface {
 	utils.Serializable
 }
 
-const (
-	OpcuaNodeIdServicesVariablePriority_PriorityMappingTableType_PriorityMapppingEntries                   OpcuaNodeIdServicesVariablePriority = 25228
-	OpcuaNodeIdServicesVariablePriority_PriorityMappingTableType_AddPriorityMappingEntry_InputArguments    OpcuaNodeIdServicesVariablePriority = 25230
+const(
+	OpcuaNodeIdServicesVariablePriority_PriorityMappingTableType_PriorityMapppingEntries OpcuaNodeIdServicesVariablePriority = 25228
+	OpcuaNodeIdServicesVariablePriority_PriorityMappingTableType_AddPriorityMappingEntry_InputArguments OpcuaNodeIdServicesVariablePriority = 25230
 	OpcuaNodeIdServicesVariablePriority_PriorityMappingTableType_DeletePriorityMappingEntry_InputArguments OpcuaNodeIdServicesVariablePriority = 25232
 )
 
@@ -50,7 +50,7 @@ var OpcuaNodeIdServicesVariablePriorityValues []OpcuaNodeIdServicesVariablePrior
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariablePriorityValues = []OpcuaNodeIdServicesVariablePriority{
+	OpcuaNodeIdServicesVariablePriorityValues = []OpcuaNodeIdServicesVariablePriority {
 		OpcuaNodeIdServicesVariablePriority_PriorityMappingTableType_PriorityMapppingEntries,
 		OpcuaNodeIdServicesVariablePriority_PriorityMappingTableType_AddPriorityMappingEntry_InputArguments,
 		OpcuaNodeIdServicesVariablePriority_PriorityMappingTableType_DeletePriorityMappingEntry_InputArguments,
@@ -59,12 +59,12 @@ func init() {
 
 func OpcuaNodeIdServicesVariablePriorityByValue(value int32) (enum OpcuaNodeIdServicesVariablePriority, ok bool) {
 	switch value {
-	case 25228:
-		return OpcuaNodeIdServicesVariablePriority_PriorityMappingTableType_PriorityMapppingEntries, true
-	case 25230:
-		return OpcuaNodeIdServicesVariablePriority_PriorityMappingTableType_AddPriorityMappingEntry_InputArguments, true
-	case 25232:
-		return OpcuaNodeIdServicesVariablePriority_PriorityMappingTableType_DeletePriorityMappingEntry_InputArguments, true
+		case 25228:
+			return OpcuaNodeIdServicesVariablePriority_PriorityMappingTableType_PriorityMapppingEntries, true
+		case 25230:
+			return OpcuaNodeIdServicesVariablePriority_PriorityMappingTableType_AddPriorityMappingEntry_InputArguments, true
+		case 25232:
+			return OpcuaNodeIdServicesVariablePriority_PriorityMappingTableType_DeletePriorityMappingEntry_InputArguments, true
 	}
 	return 0, false
 }
@@ -81,13 +81,13 @@ func OpcuaNodeIdServicesVariablePriorityByName(value string) (enum OpcuaNodeIdSe
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariablePriorityKnows(value int32) bool {
+func OpcuaNodeIdServicesVariablePriorityKnows(value int32)  bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariablePriorityValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastOpcuaNodeIdServicesVariablePriority(structType any) OpcuaNodeIdServicesVariablePriority {
@@ -157,3 +157,4 @@ func (e OpcuaNodeIdServicesVariablePriority) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariablePriority) String() string {
 	return e.PLC4XEnumName()
 }
+

@@ -40,24 +40,24 @@ type IPasswordOptionsMask interface {
 	utils.Serializable
 }
 
-const (
-	PasswordOptionsMask_passwordOptionsMaskNone                         PasswordOptionsMask = 0
+const(
+	PasswordOptionsMask_passwordOptionsMaskNone PasswordOptionsMask = 0
 	PasswordOptionsMask_passwordOptionsMaskSupportInitialPasswordChange PasswordOptionsMask = 1
-	PasswordOptionsMask_passwordOptionsMaskSupportDisableUser           PasswordOptionsMask = 2
-	PasswordOptionsMask_passwordOptionsMaskSupportDisableDeleteForUser  PasswordOptionsMask = 4
-	PasswordOptionsMask_passwordOptionsMaskSupportNoChangeForUser       PasswordOptionsMask = 8
-	PasswordOptionsMask_passwordOptionsMaskSupportDescriptionForUser    PasswordOptionsMask = 16
-	PasswordOptionsMask_passwordOptionsMaskRequiresUpperCaseCharacters  PasswordOptionsMask = 32
-	PasswordOptionsMask_passwordOptionsMaskRequiresLowerCaseCharacters  PasswordOptionsMask = 64
-	PasswordOptionsMask_passwordOptionsMaskRequiresDigitCharacters      PasswordOptionsMask = 128
-	PasswordOptionsMask_passwordOptionsMaskRequiresSpecialCharacters    PasswordOptionsMask = 256
+	PasswordOptionsMask_passwordOptionsMaskSupportDisableUser PasswordOptionsMask = 2
+	PasswordOptionsMask_passwordOptionsMaskSupportDisableDeleteForUser PasswordOptionsMask = 4
+	PasswordOptionsMask_passwordOptionsMaskSupportNoChangeForUser PasswordOptionsMask = 8
+	PasswordOptionsMask_passwordOptionsMaskSupportDescriptionForUser PasswordOptionsMask = 16
+	PasswordOptionsMask_passwordOptionsMaskRequiresUpperCaseCharacters PasswordOptionsMask = 32
+	PasswordOptionsMask_passwordOptionsMaskRequiresLowerCaseCharacters PasswordOptionsMask = 64
+	PasswordOptionsMask_passwordOptionsMaskRequiresDigitCharacters PasswordOptionsMask = 128
+	PasswordOptionsMask_passwordOptionsMaskRequiresSpecialCharacters PasswordOptionsMask = 256
 )
 
 var PasswordOptionsMaskValues []PasswordOptionsMask
 
 func init() {
 	_ = errors.New
-	PasswordOptionsMaskValues = []PasswordOptionsMask{
+	PasswordOptionsMaskValues = []PasswordOptionsMask {
 		PasswordOptionsMask_passwordOptionsMaskNone,
 		PasswordOptionsMask_passwordOptionsMaskSupportInitialPasswordChange,
 		PasswordOptionsMask_passwordOptionsMaskSupportDisableUser,
@@ -73,26 +73,26 @@ func init() {
 
 func PasswordOptionsMaskByValue(value uint32) (enum PasswordOptionsMask, ok bool) {
 	switch value {
-	case 0:
-		return PasswordOptionsMask_passwordOptionsMaskNone, true
-	case 1:
-		return PasswordOptionsMask_passwordOptionsMaskSupportInitialPasswordChange, true
-	case 128:
-		return PasswordOptionsMask_passwordOptionsMaskRequiresDigitCharacters, true
-	case 16:
-		return PasswordOptionsMask_passwordOptionsMaskSupportDescriptionForUser, true
-	case 2:
-		return PasswordOptionsMask_passwordOptionsMaskSupportDisableUser, true
-	case 256:
-		return PasswordOptionsMask_passwordOptionsMaskRequiresSpecialCharacters, true
-	case 32:
-		return PasswordOptionsMask_passwordOptionsMaskRequiresUpperCaseCharacters, true
-	case 4:
-		return PasswordOptionsMask_passwordOptionsMaskSupportDisableDeleteForUser, true
-	case 64:
-		return PasswordOptionsMask_passwordOptionsMaskRequiresLowerCaseCharacters, true
-	case 8:
-		return PasswordOptionsMask_passwordOptionsMaskSupportNoChangeForUser, true
+		case 0:
+			return PasswordOptionsMask_passwordOptionsMaskNone, true
+		case 1:
+			return PasswordOptionsMask_passwordOptionsMaskSupportInitialPasswordChange, true
+		case 128:
+			return PasswordOptionsMask_passwordOptionsMaskRequiresDigitCharacters, true
+		case 16:
+			return PasswordOptionsMask_passwordOptionsMaskSupportDescriptionForUser, true
+		case 2:
+			return PasswordOptionsMask_passwordOptionsMaskSupportDisableUser, true
+		case 256:
+			return PasswordOptionsMask_passwordOptionsMaskRequiresSpecialCharacters, true
+		case 32:
+			return PasswordOptionsMask_passwordOptionsMaskRequiresUpperCaseCharacters, true
+		case 4:
+			return PasswordOptionsMask_passwordOptionsMaskSupportDisableDeleteForUser, true
+		case 64:
+			return PasswordOptionsMask_passwordOptionsMaskRequiresLowerCaseCharacters, true
+		case 8:
+			return PasswordOptionsMask_passwordOptionsMaskSupportNoChangeForUser, true
 	}
 	return 0, false
 }
@@ -123,13 +123,13 @@ func PasswordOptionsMaskByName(value string) (enum PasswordOptionsMask, ok bool)
 	return 0, false
 }
 
-func PasswordOptionsMaskKnows(value uint32) bool {
+func PasswordOptionsMaskKnows(value uint32)  bool {
 	for _, typeValue := range PasswordOptionsMaskValues {
 		if uint32(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastPasswordOptionsMask(structType any) PasswordOptionsMask {
@@ -213,3 +213,4 @@ func (e PasswordOptionsMask) PLC4XEnumName() string {
 func (e PasswordOptionsMask) String() string {
 	return e.PLC4XEnumName()
 }
+

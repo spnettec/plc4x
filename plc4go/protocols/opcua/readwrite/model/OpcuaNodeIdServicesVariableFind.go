@@ -40,8 +40,8 @@ type IOpcuaNodeIdServicesVariableFind interface {
 	utils.Serializable
 }
 
-const (
-	OpcuaNodeIdServicesVariableFind_FindAliasMethodType_InputArguments  OpcuaNodeIdServicesVariableFind = 23466
+const(
+	OpcuaNodeIdServicesVariableFind_FindAliasMethodType_InputArguments OpcuaNodeIdServicesVariableFind = 23466
 	OpcuaNodeIdServicesVariableFind_FindAliasMethodType_OutputArguments OpcuaNodeIdServicesVariableFind = 23467
 )
 
@@ -49,7 +49,7 @@ var OpcuaNodeIdServicesVariableFindValues []OpcuaNodeIdServicesVariableFind
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariableFindValues = []OpcuaNodeIdServicesVariableFind{
+	OpcuaNodeIdServicesVariableFindValues = []OpcuaNodeIdServicesVariableFind {
 		OpcuaNodeIdServicesVariableFind_FindAliasMethodType_InputArguments,
 		OpcuaNodeIdServicesVariableFind_FindAliasMethodType_OutputArguments,
 	}
@@ -57,10 +57,10 @@ func init() {
 
 func OpcuaNodeIdServicesVariableFindByValue(value int32) (enum OpcuaNodeIdServicesVariableFind, ok bool) {
 	switch value {
-	case 23466:
-		return OpcuaNodeIdServicesVariableFind_FindAliasMethodType_InputArguments, true
-	case 23467:
-		return OpcuaNodeIdServicesVariableFind_FindAliasMethodType_OutputArguments, true
+		case 23466:
+			return OpcuaNodeIdServicesVariableFind_FindAliasMethodType_InputArguments, true
+		case 23467:
+			return OpcuaNodeIdServicesVariableFind_FindAliasMethodType_OutputArguments, true
 	}
 	return 0, false
 }
@@ -75,13 +75,13 @@ func OpcuaNodeIdServicesVariableFindByName(value string) (enum OpcuaNodeIdServic
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariableFindKnows(value int32) bool {
+func OpcuaNodeIdServicesVariableFindKnows(value int32)  bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariableFindValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastOpcuaNodeIdServicesVariableFind(structType any) OpcuaNodeIdServicesVariableFind {
@@ -149,3 +149,4 @@ func (e OpcuaNodeIdServicesVariableFind) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariableFind) String() string {
 	return e.PLC4XEnumName()
 }
+

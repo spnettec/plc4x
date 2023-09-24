@@ -40,7 +40,7 @@ type IOpcuaNodeIdServicesVariableRedundancy interface {
 	utils.Serializable
 }
 
-const (
+const(
 	OpcuaNodeIdServicesVariableRedundancy_RedundancySupport_EnumStrings OpcuaNodeIdServicesVariableRedundancy = 7611
 )
 
@@ -48,15 +48,15 @@ var OpcuaNodeIdServicesVariableRedundancyValues []OpcuaNodeIdServicesVariableRed
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariableRedundancyValues = []OpcuaNodeIdServicesVariableRedundancy{
+	OpcuaNodeIdServicesVariableRedundancyValues = []OpcuaNodeIdServicesVariableRedundancy {
 		OpcuaNodeIdServicesVariableRedundancy_RedundancySupport_EnumStrings,
 	}
 }
 
 func OpcuaNodeIdServicesVariableRedundancyByValue(value int32) (enum OpcuaNodeIdServicesVariableRedundancy, ok bool) {
 	switch value {
-	case 7611:
-		return OpcuaNodeIdServicesVariableRedundancy_RedundancySupport_EnumStrings, true
+		case 7611:
+			return OpcuaNodeIdServicesVariableRedundancy_RedundancySupport_EnumStrings, true
 	}
 	return 0, false
 }
@@ -69,13 +69,13 @@ func OpcuaNodeIdServicesVariableRedundancyByName(value string) (enum OpcuaNodeId
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariableRedundancyKnows(value int32) bool {
+func OpcuaNodeIdServicesVariableRedundancyKnows(value int32)  bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariableRedundancyValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastOpcuaNodeIdServicesVariableRedundancy(structType any) OpcuaNodeIdServicesVariableRedundancy {
@@ -141,3 +141,4 @@ func (e OpcuaNodeIdServicesVariableRedundancy) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariableRedundancy) String() string {
 	return e.PLC4XEnumName()
 }
+

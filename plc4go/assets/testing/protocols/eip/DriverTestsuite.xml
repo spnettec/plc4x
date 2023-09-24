@@ -256,7 +256,7 @@
         </parser-arguments>
         <EipPacket>
           <command dataType="uint" bitLength="16">111</command>
-          <packetLength dataType="uint" bitLength="16">50</packetLength>
+          <packetLength dataType="uint" bitLength="16">46</packetLength>
           <sessionHandle dataType="uint" bitLength="32">1074224669</sessionHandle>
           <status dataType="uint" bitLength="32">0</status>
           <senderContext dataType="byte" bitLength="64">0x504c433458202020</senderContext>
@@ -264,14 +264,8 @@
           <CipRRData>
             <interfaceHandle dataType="uint" bitLength="32">0</interfaceHandle>
             <timeout dataType="uint" bitLength="16">0</timeout>
-            <typeIdCount dataType="uint" bitLength="16">2</typeIdCount>
+            <typeIdCount dataType="uint" bitLength="16">1</typeIdCount>
             <typeIds isList="true">
-              <TypeId>
-                <id dataType="uint" bitLength="16">0</id>
-                <NullAddressItem>
-                  <reserved dataType="uint" bitLength="16">0</reserved>
-                </NullAddressItem>
-              </TypeId>
               <TypeId>
                 <id dataType="uint" bitLength="16">178</id>
                 <UnConnectedDataItem>

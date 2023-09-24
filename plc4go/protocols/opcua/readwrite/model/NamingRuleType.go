@@ -40,9 +40,9 @@ type INamingRuleType interface {
 	utils.Serializable
 }
 
-const (
-	NamingRuleType_namingRuleTypeMandatory  NamingRuleType = 1
-	NamingRuleType_namingRuleTypeOptional   NamingRuleType = 2
+const(
+	NamingRuleType_namingRuleTypeMandatory NamingRuleType = 1
+	NamingRuleType_namingRuleTypeOptional NamingRuleType = 2
 	NamingRuleType_namingRuleTypeConstraint NamingRuleType = 3
 )
 
@@ -50,7 +50,7 @@ var NamingRuleTypeValues []NamingRuleType
 
 func init() {
 	_ = errors.New
-	NamingRuleTypeValues = []NamingRuleType{
+	NamingRuleTypeValues = []NamingRuleType {
 		NamingRuleType_namingRuleTypeMandatory,
 		NamingRuleType_namingRuleTypeOptional,
 		NamingRuleType_namingRuleTypeConstraint,
@@ -59,12 +59,12 @@ func init() {
 
 func NamingRuleTypeByValue(value uint32) (enum NamingRuleType, ok bool) {
 	switch value {
-	case 1:
-		return NamingRuleType_namingRuleTypeMandatory, true
-	case 2:
-		return NamingRuleType_namingRuleTypeOptional, true
-	case 3:
-		return NamingRuleType_namingRuleTypeConstraint, true
+		case 1:
+			return NamingRuleType_namingRuleTypeMandatory, true
+		case 2:
+			return NamingRuleType_namingRuleTypeOptional, true
+		case 3:
+			return NamingRuleType_namingRuleTypeConstraint, true
 	}
 	return 0, false
 }
@@ -81,13 +81,13 @@ func NamingRuleTypeByName(value string) (enum NamingRuleType, ok bool) {
 	return 0, false
 }
 
-func NamingRuleTypeKnows(value uint32) bool {
+func NamingRuleTypeKnows(value uint32)  bool {
 	for _, typeValue := range NamingRuleTypeValues {
 		if uint32(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastNamingRuleType(structType any) NamingRuleType {
@@ -157,3 +157,4 @@ func (e NamingRuleType) PLC4XEnumName() string {
 func (e NamingRuleType) String() string {
 	return e.PLC4XEnumName()
 }
+
