@@ -18,13 +18,7 @@
  */
 package org.apache.plc4x.java.spi.connection;
 
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Stream;
-
+import io.netty.channel.*;
 import org.apache.plc4x.java.api.EventPlcConnection;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
@@ -217,8 +211,14 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
                         } else if (evt instanceof ConnectEvent) {
                             if (!sessionSetupCompleteFuture.isCompletedExceptionally()) {
                                 if (awaitSessionSetupComplete) {
-                                    setProtocol(stackConfigurer.configurePipeline(configuration, pipeline,  getAuthentication(),
-                                        channelFactory.isPassive()));
+                                    setProtocol(
+                                            stackConfigurer.configurePipeline(
+                                                    configuration,
+                                                    pipeline,
+                                                    getAuthentication(),
+                                                    channelFactory.isPassive()
+                                            )
+                                    );
                                 }
                                 super.userEventTriggered(ctx, evt);
                             }
@@ -227,20 +227,23 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
                         }
                     }
                 });
-                pipeline.addLast(new ChannelInboundHandlerAdapter() {
-                                     @Override
-                                     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws PlcConnectionException {
-                                         logger.error("unknown error, close the connection", cause);
-                                         close();
-                                     }
-                                 }
+                // If any exception goes through the pipeline unhandled, close the connection.
+                pipeline.addLast(
+                        new ChannelInboundHandlerAdapter() {
+                            @Override
+                            public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws PlcConnectionException {
+                                logger.error("unknown error, close the connection", cause);
+                                close();
+                            }
+                        }
                 );
                 // Initialize via Transport Layer
                 channelFactory.initializePipeline(pipeline);
                 // Initialize Protocol Layer
+                // Fix for https://github.com/apache/plc4x/issues/801
                 if (!awaitSessionSetupComplete) {
                     setProtocol(stackConfigurer.configurePipeline(configuration, pipeline, getAuthentication(),
-                        channelFactory.isPassive()));
+                            channelFactory.isPassive()));
                 }
             }
         };
