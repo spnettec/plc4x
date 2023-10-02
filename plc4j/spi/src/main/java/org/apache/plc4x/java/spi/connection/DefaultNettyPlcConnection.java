@@ -18,28 +18,29 @@
  */
 package org.apache.plc4x.java.spi.connection;
 
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Stream;
-
+import io.netty.channel.*;
 import org.apache.plc4x.java.api.EventPlcConnection;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcIoException;
 import org.apache.plc4x.java.api.listener.ConnectionStateListener;
 import org.apache.plc4x.java.api.listener.EventListener;
+import org.apache.plc4x.java.api.messages.PlcPingResponse;
 import org.apache.plc4x.java.api.value.PlcValueHandler;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.ConfigurationFactory;
 import org.apache.plc4x.java.spi.events.*;
+import org.apache.plc4x.java.spi.messages.DefaultPlcPingRequest;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.netty.channel.*;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
 
 public class DefaultNettyPlcConnection extends AbstractPlcConnection implements ChannelExposingConnection, EventPlcConnection {
 
@@ -59,7 +60,8 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
     protected Channel channel;
     protected boolean connected;
 
-    public DefaultNettyPlcConnection(boolean canRead,
+    public DefaultNettyPlcConnection(boolean canPing,
+                                     boolean canRead,
                                      boolean canWrite,
                                      boolean canSubscribe,
                                      boolean canBrowse,
@@ -74,7 +76,7 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
                                      ProtocolStackConfigurer<?> stackConfigurer,
                                      BaseOptimizer optimizer,
                                      PlcAuthentication authentication) {
-        super(canRead, canWrite, canSubscribe, canBrowse, tagHandler, valueHandler, optimizer, authentication);
+        super(canPing, canRead, canWrite, canSubscribe, canBrowse, tagHandler, valueHandler, optimizer, authentication);
         this.configuration = configuration;
         this.channelFactory = channelFactory;
         this.fireDiscoverEvent = fireDiscoverEvent;
@@ -174,6 +176,11 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
         channel = null;
     }
 
+    @Override
+    public CompletableFuture<? extends PlcPingResponse> ping() {
+        return new DefaultPlcPingRequest(this).execute();
+    }
+
     /**
      * Check if the communication channel is active (channel.isActive()) and the driver for a given protocol
      * has finished establishing the connection.
@@ -192,9 +199,6 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
         if (stackConfigurer == null) {
             throw new IllegalStateException("No Protocol Stack Configurer is given!");
         }
-        /*if (factory == null) {
-            throw new IllegalStateException("No Instance Factory is Present!");
-        }*/
         return new ChannelInitializer<>() {
             @Override
             protected void initChannel(Channel channel) {

@@ -146,7 +146,7 @@ public class S7HGeneratedDriverBase extends GeneratedDriverBase<TPKTPacket> {
         }
         if (hmatcher.matches()){
             return new S7HDefaultNettyPlcConnection(
-                canRead(), canWrite(), canSubscribe(), canBrowse(),
+                canPing(), canRead(), canWrite(), canSubscribe(), canBrowse(),
                 getTagHandler(),
                 getValueHandler(),
                 configuration,
@@ -161,7 +161,7 @@ public class S7HGeneratedDriverBase extends GeneratedDriverBase<TPKTPacket> {
                 getAuthentication());
         }
         return new DefaultNettyPlcConnection(
-            canRead(), canWrite(), canSubscribe(), canBrowse(),
+            canPing(), canRead(), canWrite(), canSubscribe(), canBrowse(),
             getTagHandler(),
             getValueHandler(),
             configuration,

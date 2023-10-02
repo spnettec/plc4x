@@ -29,7 +29,7 @@
 
   <groupId>org.apache.plc4x</groupId>
   <artifactId>plc4x-parent</artifactId>
-  <version>0.11.0-SNAPSHOT</version>
+  <version>0.12.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>PLC4X</name>
@@ -91,7 +91,7 @@
     <project.reporting.outputencoding>UTF-8</project.reporting.outputencoding>
 
     <!-- Timestamp for the reproducible builds -->
-    <project.build.outputTimestamp>1664467011</project.build.outputTimestamp>
+    <project.build.outputTimestamp>1696231389</project.build.outputTimestamp>
 
     <!-- Exclude all generated code -->
     <sonar.exclusions>**/generated-sources</sonar.exclusions>
@@ -111,7 +111,7 @@
     <cmake-version>3.22.1</cmake-version>
     <commons-beanutils.version>1.9.4</commons-beanutils.version>
     <commons-cli.version>1.5.0</commons-cli.version>
-    <commons-codec.version>1.15</commons-codec.version>
+    <commons-codec.version>1.16.0</commons-codec.version>
     <commons-collections4.version>4.4</commons-collections4.version>
     <commons-compress.version>1.23.0</commons-compress.version>
     <commons-configuration2.version>2.9.0</commons-configuration2.version>
@@ -1736,7 +1736,7 @@
       <properties>
         <skip-code-generation-tests>false</skip-code-generation-tests>
         <enable-all-tests>true</enable-all-tests>
-        <excluded-test-groups/>
+        <excluded-test-groups />
       </properties>
     </profile>
 
@@ -1745,7 +1745,7 @@
       <properties>
         <skip-code-generation-tests>false</skip-code-generation-tests>
         <enable-all-tests>true</enable-all-tests>
-        <excluded-test-groups/>
+        <excluded-test-groups />
       </properties>
     </profile>
 

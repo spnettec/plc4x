@@ -24,6 +24,7 @@ import io.netty.channel.ChannelPipeline;
 import io.netty.channel.ChannelPromise;
 import io.netty.handler.codec.MessageToMessageCodec;
 import io.vavr.control.Either;
+
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicReference;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
@@ -131,15 +132,6 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
 
     @Override
     protected void encode(ChannelHandlerContext channelHandlerContext, Object msg, List<Object> list) throws Exception {
-//        logger.trace("Encoding {}", plcRequestContainer);
-//        protocolBase.encode(new DefaultConversationContext<T>(channelHandlerContext) {
-//            @Override
-//            public void sendToWire(T msg) {
-//                logger.trace("Sending to wire {}", msg);
-//                list.add(msg);
-//            }
-//        }, plcRequestContainer);
-        // NOOP
         logger.debug("Forwarding request to plc {}", msg);
         list.add(msg);
     }

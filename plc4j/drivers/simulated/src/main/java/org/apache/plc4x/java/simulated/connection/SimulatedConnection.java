@@ -58,7 +58,7 @@ public class SimulatedConnection extends AbstractPlcConnection {
     private final Map<Integer, Consumer<PlcSubscriptionEvent>> consumerIdMap = new ConcurrentHashMap<>();
 
     public SimulatedConnection(SimulatedDevice device) {
-        super(true, true, true, false,
+        super(true, true, true, true, false,
             new SimulatedTagHandler(), new PlcValueHandler(), null, null);
         this.device = device;
     }
@@ -76,6 +76,12 @@ public class SimulatedConnection extends AbstractPlcConnection {
     @Override
     public void close() {
         connected = false;
+    }
+
+    @Override
+    public CompletableFuture<? extends PlcPingResponse> ping() {
+        return CompletableFuture.completedFuture(
+            new DefaultPlcPingResponse(new DefaultPlcPingRequest(this), PlcResponseCode.OK));
     }
 
     @Override
