@@ -297,8 +297,8 @@ class PooledPlcConnectionManagerTest implements WithAssertions {
         }
 
         @Override
-        public CompletableFuture<Void> ping() {
-            CompletableFuture<Void> future = new CompletableFuture<>();
+        public CompletableFuture<? extends PlcPingResponse> ping() {
+            CompletableFuture<PlcPingResponse> future = new CompletableFuture<>();
             future.completeExceptionally(new UnsupportedOperationException());
             return future;
         }

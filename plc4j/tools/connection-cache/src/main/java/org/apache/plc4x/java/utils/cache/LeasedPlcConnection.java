@@ -94,8 +94,8 @@ public class LeasedPlcConnection implements PlcConnection {
     }
 
     @Override
-    public CompletableFuture<Void> ping() {
-        if (connection == null) {
+    public CompletableFuture<? extends PlcPingResponse> ping() {
+        if(connection == null) {
             throw new PlcRuntimeException("Error using leased connection after returning it to the cache.");
         }
         return connection.ping();

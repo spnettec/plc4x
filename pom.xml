@@ -162,7 +162,7 @@
     <enable-all-tests>false</enable-all-tests>
     <excluded-test-groups>require-all-tests</excluded-test-groups>
     <reflow.skin.version>2.3.3</reflow.skin.version>
-    <h2.version>2.1.214</h2.version>
+    <h2.version>2.2.224</h2.version>
   </properties>
 
   <modules>
