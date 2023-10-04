@@ -40,18 +40,18 @@ type IOpcuaNodeIdServicesVariableGenerate interface {
 	utils.Serializable
 }
 
-const(
-	OpcuaNodeIdServicesVariableGenerate_GenerateFileForReadMethodType_InputArguments OpcuaNodeIdServicesVariableGenerate = 15796
-	OpcuaNodeIdServicesVariableGenerate_GenerateFileForReadMethodType_OutputArguments OpcuaNodeIdServicesVariableGenerate = 15797
+const (
+	OpcuaNodeIdServicesVariableGenerate_GenerateFileForReadMethodType_InputArguments   OpcuaNodeIdServicesVariableGenerate = 15796
+	OpcuaNodeIdServicesVariableGenerate_GenerateFileForReadMethodType_OutputArguments  OpcuaNodeIdServicesVariableGenerate = 15797
 	OpcuaNodeIdServicesVariableGenerate_GenerateFileForWriteMethodType_OutputArguments OpcuaNodeIdServicesVariableGenerate = 15799
-	OpcuaNodeIdServicesVariableGenerate_GenerateFileForWriteMethodType_InputArguments OpcuaNodeIdServicesVariableGenerate = 16360
+	OpcuaNodeIdServicesVariableGenerate_GenerateFileForWriteMethodType_InputArguments  OpcuaNodeIdServicesVariableGenerate = 16360
 )
 
 var OpcuaNodeIdServicesVariableGenerateValues []OpcuaNodeIdServicesVariableGenerate
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariableGenerateValues = []OpcuaNodeIdServicesVariableGenerate {
+	OpcuaNodeIdServicesVariableGenerateValues = []OpcuaNodeIdServicesVariableGenerate{
 		OpcuaNodeIdServicesVariableGenerate_GenerateFileForReadMethodType_InputArguments,
 		OpcuaNodeIdServicesVariableGenerate_GenerateFileForReadMethodType_OutputArguments,
 		OpcuaNodeIdServicesVariableGenerate_GenerateFileForWriteMethodType_OutputArguments,
@@ -61,14 +61,14 @@ func init() {
 
 func OpcuaNodeIdServicesVariableGenerateByValue(value int32) (enum OpcuaNodeIdServicesVariableGenerate, ok bool) {
 	switch value {
-		case 15796:
-			return OpcuaNodeIdServicesVariableGenerate_GenerateFileForReadMethodType_InputArguments, true
-		case 15797:
-			return OpcuaNodeIdServicesVariableGenerate_GenerateFileForReadMethodType_OutputArguments, true
-		case 15799:
-			return OpcuaNodeIdServicesVariableGenerate_GenerateFileForWriteMethodType_OutputArguments, true
-		case 16360:
-			return OpcuaNodeIdServicesVariableGenerate_GenerateFileForWriteMethodType_InputArguments, true
+	case 15796:
+		return OpcuaNodeIdServicesVariableGenerate_GenerateFileForReadMethodType_InputArguments, true
+	case 15797:
+		return OpcuaNodeIdServicesVariableGenerate_GenerateFileForReadMethodType_OutputArguments, true
+	case 15799:
+		return OpcuaNodeIdServicesVariableGenerate_GenerateFileForWriteMethodType_OutputArguments, true
+	case 16360:
+		return OpcuaNodeIdServicesVariableGenerate_GenerateFileForWriteMethodType_InputArguments, true
 	}
 	return 0, false
 }
@@ -87,13 +87,13 @@ func OpcuaNodeIdServicesVariableGenerateByName(value string) (enum OpcuaNodeIdSe
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariableGenerateKnows(value int32)  bool {
+func OpcuaNodeIdServicesVariableGenerateKnows(value int32) bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariableGenerateValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastOpcuaNodeIdServicesVariableGenerate(structType any) OpcuaNodeIdServicesVariableGenerate {
@@ -165,4 +165,3 @@ func (e OpcuaNodeIdServicesVariableGenerate) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariableGenerate) String() string {
 	return e.PLC4XEnumName()
 }
-

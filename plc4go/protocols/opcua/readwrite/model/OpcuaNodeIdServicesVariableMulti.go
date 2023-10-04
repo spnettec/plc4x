@@ -40,33 +40,33 @@ type IOpcuaNodeIdServicesVariableMulti interface {
 	utils.Serializable
 }
 
-const(
-	OpcuaNodeIdServicesVariableMulti_MultiStateDiscreteType_EnumStrings OpcuaNodeIdServicesVariableMulti = 2377
-	OpcuaNodeIdServicesVariableMulti_MultiStateDiscreteType_Definition OpcuaNodeIdServicesVariableMulti = 3780
-	OpcuaNodeIdServicesVariableMulti_MultiStateDiscreteType_ValuePrecision OpcuaNodeIdServicesVariableMulti = 3781
-	OpcuaNodeIdServicesVariableMulti_MultiStateValueDiscreteType_Definition OpcuaNodeIdServicesVariableMulti = 11239
-	OpcuaNodeIdServicesVariableMulti_MultiStateValueDiscreteType_ValuePrecision OpcuaNodeIdServicesVariableMulti = 11240
-	OpcuaNodeIdServicesVariableMulti_MultiStateValueDiscreteType_EnumValues OpcuaNodeIdServicesVariableMulti = 11241
-	OpcuaNodeIdServicesVariableMulti_MultiStateValueDiscreteType_ValueAsText OpcuaNodeIdServicesVariableMulti = 11461
-	OpcuaNodeIdServicesVariableMulti_MultiStateDictionaryEntryDiscreteBaseType_Definition OpcuaNodeIdServicesVariableMulti = 19078
-	OpcuaNodeIdServicesVariableMulti_MultiStateDictionaryEntryDiscreteBaseType_ValuePrecision OpcuaNodeIdServicesVariableMulti = 19079
-	OpcuaNodeIdServicesVariableMulti_MultiStateDictionaryEntryDiscreteBaseType_EnumValues OpcuaNodeIdServicesVariableMulti = 19080
-	OpcuaNodeIdServicesVariableMulti_MultiStateDictionaryEntryDiscreteBaseType_ValueAsText OpcuaNodeIdServicesVariableMulti = 19081
-	OpcuaNodeIdServicesVariableMulti_MultiStateDictionaryEntryDiscreteBaseType_EnumDictionaryEntries OpcuaNodeIdServicesVariableMulti = 19082
+const (
+	OpcuaNodeIdServicesVariableMulti_MultiStateDiscreteType_EnumStrings                                 OpcuaNodeIdServicesVariableMulti = 2377
+	OpcuaNodeIdServicesVariableMulti_MultiStateDiscreteType_Definition                                  OpcuaNodeIdServicesVariableMulti = 3780
+	OpcuaNodeIdServicesVariableMulti_MultiStateDiscreteType_ValuePrecision                              OpcuaNodeIdServicesVariableMulti = 3781
+	OpcuaNodeIdServicesVariableMulti_MultiStateValueDiscreteType_Definition                             OpcuaNodeIdServicesVariableMulti = 11239
+	OpcuaNodeIdServicesVariableMulti_MultiStateValueDiscreteType_ValuePrecision                         OpcuaNodeIdServicesVariableMulti = 11240
+	OpcuaNodeIdServicesVariableMulti_MultiStateValueDiscreteType_EnumValues                             OpcuaNodeIdServicesVariableMulti = 11241
+	OpcuaNodeIdServicesVariableMulti_MultiStateValueDiscreteType_ValueAsText                            OpcuaNodeIdServicesVariableMulti = 11461
+	OpcuaNodeIdServicesVariableMulti_MultiStateDictionaryEntryDiscreteBaseType_Definition               OpcuaNodeIdServicesVariableMulti = 19078
+	OpcuaNodeIdServicesVariableMulti_MultiStateDictionaryEntryDiscreteBaseType_ValuePrecision           OpcuaNodeIdServicesVariableMulti = 19079
+	OpcuaNodeIdServicesVariableMulti_MultiStateDictionaryEntryDiscreteBaseType_EnumValues               OpcuaNodeIdServicesVariableMulti = 19080
+	OpcuaNodeIdServicesVariableMulti_MultiStateDictionaryEntryDiscreteBaseType_ValueAsText              OpcuaNodeIdServicesVariableMulti = 19081
+	OpcuaNodeIdServicesVariableMulti_MultiStateDictionaryEntryDiscreteBaseType_EnumDictionaryEntries    OpcuaNodeIdServicesVariableMulti = 19082
 	OpcuaNodeIdServicesVariableMulti_MultiStateDictionaryEntryDiscreteBaseType_ValueAsDictionaryEntries OpcuaNodeIdServicesVariableMulti = 19083
-	OpcuaNodeIdServicesVariableMulti_MultiStateDictionaryEntryDiscreteType_Definition OpcuaNodeIdServicesVariableMulti = 19085
-	OpcuaNodeIdServicesVariableMulti_MultiStateDictionaryEntryDiscreteType_ValuePrecision OpcuaNodeIdServicesVariableMulti = 19086
-	OpcuaNodeIdServicesVariableMulti_MultiStateDictionaryEntryDiscreteType_EnumValues OpcuaNodeIdServicesVariableMulti = 19087
-	OpcuaNodeIdServicesVariableMulti_MultiStateDictionaryEntryDiscreteType_ValueAsText OpcuaNodeIdServicesVariableMulti = 19088
-	OpcuaNodeIdServicesVariableMulti_MultiStateDictionaryEntryDiscreteType_EnumDictionaryEntries OpcuaNodeIdServicesVariableMulti = 19089
-	OpcuaNodeIdServicesVariableMulti_MultiStateDictionaryEntryDiscreteType_ValueAsDictionaryEntries OpcuaNodeIdServicesVariableMulti = 19090
+	OpcuaNodeIdServicesVariableMulti_MultiStateDictionaryEntryDiscreteType_Definition                   OpcuaNodeIdServicesVariableMulti = 19085
+	OpcuaNodeIdServicesVariableMulti_MultiStateDictionaryEntryDiscreteType_ValuePrecision               OpcuaNodeIdServicesVariableMulti = 19086
+	OpcuaNodeIdServicesVariableMulti_MultiStateDictionaryEntryDiscreteType_EnumValues                   OpcuaNodeIdServicesVariableMulti = 19087
+	OpcuaNodeIdServicesVariableMulti_MultiStateDictionaryEntryDiscreteType_ValueAsText                  OpcuaNodeIdServicesVariableMulti = 19088
+	OpcuaNodeIdServicesVariableMulti_MultiStateDictionaryEntryDiscreteType_EnumDictionaryEntries        OpcuaNodeIdServicesVariableMulti = 19089
+	OpcuaNodeIdServicesVariableMulti_MultiStateDictionaryEntryDiscreteType_ValueAsDictionaryEntries     OpcuaNodeIdServicesVariableMulti = 19090
 )
 
 var OpcuaNodeIdServicesVariableMultiValues []OpcuaNodeIdServicesVariableMulti
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariableMultiValues = []OpcuaNodeIdServicesVariableMulti {
+	OpcuaNodeIdServicesVariableMultiValues = []OpcuaNodeIdServicesVariableMulti{
 		OpcuaNodeIdServicesVariableMulti_MultiStateDiscreteType_EnumStrings,
 		OpcuaNodeIdServicesVariableMulti_MultiStateDiscreteType_Definition,
 		OpcuaNodeIdServicesVariableMulti_MultiStateDiscreteType_ValuePrecision,
@@ -91,44 +91,44 @@ func init() {
 
 func OpcuaNodeIdServicesVariableMultiByValue(value int32) (enum OpcuaNodeIdServicesVariableMulti, ok bool) {
 	switch value {
-		case 11239:
-			return OpcuaNodeIdServicesVariableMulti_MultiStateValueDiscreteType_Definition, true
-		case 11240:
-			return OpcuaNodeIdServicesVariableMulti_MultiStateValueDiscreteType_ValuePrecision, true
-		case 11241:
-			return OpcuaNodeIdServicesVariableMulti_MultiStateValueDiscreteType_EnumValues, true
-		case 11461:
-			return OpcuaNodeIdServicesVariableMulti_MultiStateValueDiscreteType_ValueAsText, true
-		case 19078:
-			return OpcuaNodeIdServicesVariableMulti_MultiStateDictionaryEntryDiscreteBaseType_Definition, true
-		case 19079:
-			return OpcuaNodeIdServicesVariableMulti_MultiStateDictionaryEntryDiscreteBaseType_ValuePrecision, true
-		case 19080:
-			return OpcuaNodeIdServicesVariableMulti_MultiStateDictionaryEntryDiscreteBaseType_EnumValues, true
-		case 19081:
-			return OpcuaNodeIdServicesVariableMulti_MultiStateDictionaryEntryDiscreteBaseType_ValueAsText, true
-		case 19082:
-			return OpcuaNodeIdServicesVariableMulti_MultiStateDictionaryEntryDiscreteBaseType_EnumDictionaryEntries, true
-		case 19083:
-			return OpcuaNodeIdServicesVariableMulti_MultiStateDictionaryEntryDiscreteBaseType_ValueAsDictionaryEntries, true
-		case 19085:
-			return OpcuaNodeIdServicesVariableMulti_MultiStateDictionaryEntryDiscreteType_Definition, true
-		case 19086:
-			return OpcuaNodeIdServicesVariableMulti_MultiStateDictionaryEntryDiscreteType_ValuePrecision, true
-		case 19087:
-			return OpcuaNodeIdServicesVariableMulti_MultiStateDictionaryEntryDiscreteType_EnumValues, true
-		case 19088:
-			return OpcuaNodeIdServicesVariableMulti_MultiStateDictionaryEntryDiscreteType_ValueAsText, true
-		case 19089:
-			return OpcuaNodeIdServicesVariableMulti_MultiStateDictionaryEntryDiscreteType_EnumDictionaryEntries, true
-		case 19090:
-			return OpcuaNodeIdServicesVariableMulti_MultiStateDictionaryEntryDiscreteType_ValueAsDictionaryEntries, true
-		case 2377:
-			return OpcuaNodeIdServicesVariableMulti_MultiStateDiscreteType_EnumStrings, true
-		case 3780:
-			return OpcuaNodeIdServicesVariableMulti_MultiStateDiscreteType_Definition, true
-		case 3781:
-			return OpcuaNodeIdServicesVariableMulti_MultiStateDiscreteType_ValuePrecision, true
+	case 11239:
+		return OpcuaNodeIdServicesVariableMulti_MultiStateValueDiscreteType_Definition, true
+	case 11240:
+		return OpcuaNodeIdServicesVariableMulti_MultiStateValueDiscreteType_ValuePrecision, true
+	case 11241:
+		return OpcuaNodeIdServicesVariableMulti_MultiStateValueDiscreteType_EnumValues, true
+	case 11461:
+		return OpcuaNodeIdServicesVariableMulti_MultiStateValueDiscreteType_ValueAsText, true
+	case 19078:
+		return OpcuaNodeIdServicesVariableMulti_MultiStateDictionaryEntryDiscreteBaseType_Definition, true
+	case 19079:
+		return OpcuaNodeIdServicesVariableMulti_MultiStateDictionaryEntryDiscreteBaseType_ValuePrecision, true
+	case 19080:
+		return OpcuaNodeIdServicesVariableMulti_MultiStateDictionaryEntryDiscreteBaseType_EnumValues, true
+	case 19081:
+		return OpcuaNodeIdServicesVariableMulti_MultiStateDictionaryEntryDiscreteBaseType_ValueAsText, true
+	case 19082:
+		return OpcuaNodeIdServicesVariableMulti_MultiStateDictionaryEntryDiscreteBaseType_EnumDictionaryEntries, true
+	case 19083:
+		return OpcuaNodeIdServicesVariableMulti_MultiStateDictionaryEntryDiscreteBaseType_ValueAsDictionaryEntries, true
+	case 19085:
+		return OpcuaNodeIdServicesVariableMulti_MultiStateDictionaryEntryDiscreteType_Definition, true
+	case 19086:
+		return OpcuaNodeIdServicesVariableMulti_MultiStateDictionaryEntryDiscreteType_ValuePrecision, true
+	case 19087:
+		return OpcuaNodeIdServicesVariableMulti_MultiStateDictionaryEntryDiscreteType_EnumValues, true
+	case 19088:
+		return OpcuaNodeIdServicesVariableMulti_MultiStateDictionaryEntryDiscreteType_ValueAsText, true
+	case 19089:
+		return OpcuaNodeIdServicesVariableMulti_MultiStateDictionaryEntryDiscreteType_EnumDictionaryEntries, true
+	case 19090:
+		return OpcuaNodeIdServicesVariableMulti_MultiStateDictionaryEntryDiscreteType_ValueAsDictionaryEntries, true
+	case 2377:
+		return OpcuaNodeIdServicesVariableMulti_MultiStateDiscreteType_EnumStrings, true
+	case 3780:
+		return OpcuaNodeIdServicesVariableMulti_MultiStateDiscreteType_Definition, true
+	case 3781:
+		return OpcuaNodeIdServicesVariableMulti_MultiStateDiscreteType_ValuePrecision, true
 	}
 	return 0, false
 }
@@ -177,13 +177,13 @@ func OpcuaNodeIdServicesVariableMultiByName(value string) (enum OpcuaNodeIdServi
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariableMultiKnows(value int32)  bool {
+func OpcuaNodeIdServicesVariableMultiKnows(value int32) bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariableMultiValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastOpcuaNodeIdServicesVariableMulti(structType any) OpcuaNodeIdServicesVariableMulti {
@@ -285,4 +285,3 @@ func (e OpcuaNodeIdServicesVariableMulti) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariableMulti) String() string {
 	return e.PLC4XEnumName()
 }
-

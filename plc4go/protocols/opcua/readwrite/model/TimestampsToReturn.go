@@ -40,10 +40,10 @@ type ITimestampsToReturn interface {
 	utils.Serializable
 }
 
-const(
-	TimestampsToReturn_timestampsToReturnSource TimestampsToReturn = 0
-	TimestampsToReturn_timestampsToReturnServer TimestampsToReturn = 1
-	TimestampsToReturn_timestampsToReturnBoth TimestampsToReturn = 2
+const (
+	TimestampsToReturn_timestampsToReturnSource  TimestampsToReturn = 0
+	TimestampsToReturn_timestampsToReturnServer  TimestampsToReturn = 1
+	TimestampsToReturn_timestampsToReturnBoth    TimestampsToReturn = 2
 	TimestampsToReturn_timestampsToReturnNeither TimestampsToReturn = 3
 	TimestampsToReturn_timestampsToReturnInvalid TimestampsToReturn = 4
 )
@@ -52,7 +52,7 @@ var TimestampsToReturnValues []TimestampsToReturn
 
 func init() {
 	_ = errors.New
-	TimestampsToReturnValues = []TimestampsToReturn {
+	TimestampsToReturnValues = []TimestampsToReturn{
 		TimestampsToReturn_timestampsToReturnSource,
 		TimestampsToReturn_timestampsToReturnServer,
 		TimestampsToReturn_timestampsToReturnBoth,
@@ -63,16 +63,16 @@ func init() {
 
 func TimestampsToReturnByValue(value uint32) (enum TimestampsToReturn, ok bool) {
 	switch value {
-		case 0:
-			return TimestampsToReturn_timestampsToReturnSource, true
-		case 1:
-			return TimestampsToReturn_timestampsToReturnServer, true
-		case 2:
-			return TimestampsToReturn_timestampsToReturnBoth, true
-		case 3:
-			return TimestampsToReturn_timestampsToReturnNeither, true
-		case 4:
-			return TimestampsToReturn_timestampsToReturnInvalid, true
+	case 0:
+		return TimestampsToReturn_timestampsToReturnSource, true
+	case 1:
+		return TimestampsToReturn_timestampsToReturnServer, true
+	case 2:
+		return TimestampsToReturn_timestampsToReturnBoth, true
+	case 3:
+		return TimestampsToReturn_timestampsToReturnNeither, true
+	case 4:
+		return TimestampsToReturn_timestampsToReturnInvalid, true
 	}
 	return 0, false
 }
@@ -93,13 +93,13 @@ func TimestampsToReturnByName(value string) (enum TimestampsToReturn, ok bool) {
 	return 0, false
 }
 
-func TimestampsToReturnKnows(value uint32)  bool {
+func TimestampsToReturnKnows(value uint32) bool {
 	for _, typeValue := range TimestampsToReturnValues {
 		if uint32(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastTimestampsToReturn(structType any) TimestampsToReturn {
@@ -173,4 +173,3 @@ func (e TimestampsToReturn) PLC4XEnumName() string {
 func (e TimestampsToReturn) String() string {
 	return e.PLC4XEnumName()
 }
-

@@ -40,8 +40,8 @@ type IOpcuaNodeIdServicesVariableTimed interface {
 	utils.Serializable
 }
 
-const(
-	OpcuaNodeIdServicesVariableTimed_TimedShelveMethodType_InputArguments OpcuaNodeIdServicesVariableTimed = 6103
+const (
+	OpcuaNodeIdServicesVariableTimed_TimedShelveMethodType_InputArguments  OpcuaNodeIdServicesVariableTimed = 6103
 	OpcuaNodeIdServicesVariableTimed_TimedShelve2MethodType_InputArguments OpcuaNodeIdServicesVariableTimed = 25158
 )
 
@@ -49,7 +49,7 @@ var OpcuaNodeIdServicesVariableTimedValues []OpcuaNodeIdServicesVariableTimed
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariableTimedValues = []OpcuaNodeIdServicesVariableTimed {
+	OpcuaNodeIdServicesVariableTimedValues = []OpcuaNodeIdServicesVariableTimed{
 		OpcuaNodeIdServicesVariableTimed_TimedShelveMethodType_InputArguments,
 		OpcuaNodeIdServicesVariableTimed_TimedShelve2MethodType_InputArguments,
 	}
@@ -57,10 +57,10 @@ func init() {
 
 func OpcuaNodeIdServicesVariableTimedByValue(value int32) (enum OpcuaNodeIdServicesVariableTimed, ok bool) {
 	switch value {
-		case 25158:
-			return OpcuaNodeIdServicesVariableTimed_TimedShelve2MethodType_InputArguments, true
-		case 6103:
-			return OpcuaNodeIdServicesVariableTimed_TimedShelveMethodType_InputArguments, true
+	case 25158:
+		return OpcuaNodeIdServicesVariableTimed_TimedShelve2MethodType_InputArguments, true
+	case 6103:
+		return OpcuaNodeIdServicesVariableTimed_TimedShelveMethodType_InputArguments, true
 	}
 	return 0, false
 }
@@ -75,13 +75,13 @@ func OpcuaNodeIdServicesVariableTimedByName(value string) (enum OpcuaNodeIdServi
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariableTimedKnows(value int32)  bool {
+func OpcuaNodeIdServicesVariableTimedKnows(value int32) bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariableTimedValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastOpcuaNodeIdServicesVariableTimed(structType any) OpcuaNodeIdServicesVariableTimed {
@@ -149,4 +149,3 @@ func (e OpcuaNodeIdServicesVariableTimed) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariableTimed) String() string {
 	return e.PLC4XEnumName()
 }
-

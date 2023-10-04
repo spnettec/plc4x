@@ -40,8 +40,8 @@ type IOpcuaNodeIdServicesVariableRead interface {
 	utils.Serializable
 }
 
-const(
-	OpcuaNodeIdServicesVariableRead_ReadMethodType_InputArguments OpcuaNodeIdServicesVariableRead = 11744
+const (
+	OpcuaNodeIdServicesVariableRead_ReadMethodType_InputArguments  OpcuaNodeIdServicesVariableRead = 11744
 	OpcuaNodeIdServicesVariableRead_ReadMethodType_OutputArguments OpcuaNodeIdServicesVariableRead = 11745
 )
 
@@ -49,7 +49,7 @@ var OpcuaNodeIdServicesVariableReadValues []OpcuaNodeIdServicesVariableRead
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariableReadValues = []OpcuaNodeIdServicesVariableRead {
+	OpcuaNodeIdServicesVariableReadValues = []OpcuaNodeIdServicesVariableRead{
 		OpcuaNodeIdServicesVariableRead_ReadMethodType_InputArguments,
 		OpcuaNodeIdServicesVariableRead_ReadMethodType_OutputArguments,
 	}
@@ -57,10 +57,10 @@ func init() {
 
 func OpcuaNodeIdServicesVariableReadByValue(value int32) (enum OpcuaNodeIdServicesVariableRead, ok bool) {
 	switch value {
-		case 11744:
-			return OpcuaNodeIdServicesVariableRead_ReadMethodType_InputArguments, true
-		case 11745:
-			return OpcuaNodeIdServicesVariableRead_ReadMethodType_OutputArguments, true
+	case 11744:
+		return OpcuaNodeIdServicesVariableRead_ReadMethodType_InputArguments, true
+	case 11745:
+		return OpcuaNodeIdServicesVariableRead_ReadMethodType_OutputArguments, true
 	}
 	return 0, false
 }
@@ -75,13 +75,13 @@ func OpcuaNodeIdServicesVariableReadByName(value string) (enum OpcuaNodeIdServic
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariableReadKnows(value int32)  bool {
+func OpcuaNodeIdServicesVariableReadKnows(value int32) bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariableReadValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastOpcuaNodeIdServicesVariableRead(structType any) OpcuaNodeIdServicesVariableRead {
@@ -149,4 +149,3 @@ func (e OpcuaNodeIdServicesVariableRead) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariableRead) String() string {
 	return e.PLC4XEnumName()
 }
-

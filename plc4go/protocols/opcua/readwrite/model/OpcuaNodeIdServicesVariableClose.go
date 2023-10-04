@@ -40,11 +40,11 @@ type IOpcuaNodeIdServicesVariableClose interface {
 	utils.Serializable
 }
 
-const(
-	OpcuaNodeIdServicesVariableClose_CloseMethodType_InputArguments OpcuaNodeIdServicesVariableClose = 11742
+const (
+	OpcuaNodeIdServicesVariableClose_CloseMethodType_InputArguments           OpcuaNodeIdServicesVariableClose = 11742
 	OpcuaNodeIdServicesVariableClose_CloseAndUpdateMethodType_OutputArguments OpcuaNodeIdServicesVariableClose = 12517
-	OpcuaNodeIdServicesVariableClose_CloseAndUpdateMethodType_InputArguments OpcuaNodeIdServicesVariableClose = 12704
-	OpcuaNodeIdServicesVariableClose_CloseAndCommitMethodType_InputArguments OpcuaNodeIdServicesVariableClose = 15801
+	OpcuaNodeIdServicesVariableClose_CloseAndUpdateMethodType_InputArguments  OpcuaNodeIdServicesVariableClose = 12704
+	OpcuaNodeIdServicesVariableClose_CloseAndCommitMethodType_InputArguments  OpcuaNodeIdServicesVariableClose = 15801
 	OpcuaNodeIdServicesVariableClose_CloseAndCommitMethodType_OutputArguments OpcuaNodeIdServicesVariableClose = 15802
 )
 
@@ -52,7 +52,7 @@ var OpcuaNodeIdServicesVariableCloseValues []OpcuaNodeIdServicesVariableClose
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariableCloseValues = []OpcuaNodeIdServicesVariableClose {
+	OpcuaNodeIdServicesVariableCloseValues = []OpcuaNodeIdServicesVariableClose{
 		OpcuaNodeIdServicesVariableClose_CloseMethodType_InputArguments,
 		OpcuaNodeIdServicesVariableClose_CloseAndUpdateMethodType_OutputArguments,
 		OpcuaNodeIdServicesVariableClose_CloseAndUpdateMethodType_InputArguments,
@@ -63,16 +63,16 @@ func init() {
 
 func OpcuaNodeIdServicesVariableCloseByValue(value int32) (enum OpcuaNodeIdServicesVariableClose, ok bool) {
 	switch value {
-		case 11742:
-			return OpcuaNodeIdServicesVariableClose_CloseMethodType_InputArguments, true
-		case 12517:
-			return OpcuaNodeIdServicesVariableClose_CloseAndUpdateMethodType_OutputArguments, true
-		case 12704:
-			return OpcuaNodeIdServicesVariableClose_CloseAndUpdateMethodType_InputArguments, true
-		case 15801:
-			return OpcuaNodeIdServicesVariableClose_CloseAndCommitMethodType_InputArguments, true
-		case 15802:
-			return OpcuaNodeIdServicesVariableClose_CloseAndCommitMethodType_OutputArguments, true
+	case 11742:
+		return OpcuaNodeIdServicesVariableClose_CloseMethodType_InputArguments, true
+	case 12517:
+		return OpcuaNodeIdServicesVariableClose_CloseAndUpdateMethodType_OutputArguments, true
+	case 12704:
+		return OpcuaNodeIdServicesVariableClose_CloseAndUpdateMethodType_InputArguments, true
+	case 15801:
+		return OpcuaNodeIdServicesVariableClose_CloseAndCommitMethodType_InputArguments, true
+	case 15802:
+		return OpcuaNodeIdServicesVariableClose_CloseAndCommitMethodType_OutputArguments, true
 	}
 	return 0, false
 }
@@ -93,13 +93,13 @@ func OpcuaNodeIdServicesVariableCloseByName(value string) (enum OpcuaNodeIdServi
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariableCloseKnows(value int32)  bool {
+func OpcuaNodeIdServicesVariableCloseKnows(value int32) bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariableCloseValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastOpcuaNodeIdServicesVariableClose(structType any) OpcuaNodeIdServicesVariableClose {
@@ -173,4 +173,3 @@ func (e OpcuaNodeIdServicesVariableClose) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariableClose) String() string {
 	return e.PLC4XEnumName()
 }
-

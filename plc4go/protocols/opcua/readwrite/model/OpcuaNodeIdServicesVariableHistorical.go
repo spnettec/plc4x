@@ -40,28 +40,28 @@ type IOpcuaNodeIdServicesVariableHistorical interface {
 	utils.Serializable
 }
 
-const(
-	OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_Stepped OpcuaNodeIdServicesVariableHistorical = 2323
-	OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_Definition OpcuaNodeIdServicesVariableHistorical = 2324
-	OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_MaxTimeInterval OpcuaNodeIdServicesVariableHistorical = 2325
-	OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_MinTimeInterval OpcuaNodeIdServicesVariableHistorical = 2326
-	OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_ExceptionDeviation OpcuaNodeIdServicesVariableHistorical = 2327
-	OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_ExceptionDeviationFormat OpcuaNodeIdServicesVariableHistorical = 2328
-	OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_AggregateConfiguration_TreatUncertainAsBad OpcuaNodeIdServicesVariableHistorical = 11168
-	OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_AggregateConfiguration_PercentDataBad OpcuaNodeIdServicesVariableHistorical = 11169
-	OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_AggregateConfiguration_PercentDataGood OpcuaNodeIdServicesVariableHistorical = 11170
+const (
+	OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_Stepped                                       OpcuaNodeIdServicesVariableHistorical = 2323
+	OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_Definition                                    OpcuaNodeIdServicesVariableHistorical = 2324
+	OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_MaxTimeInterval                               OpcuaNodeIdServicesVariableHistorical = 2325
+	OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_MinTimeInterval                               OpcuaNodeIdServicesVariableHistorical = 2326
+	OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_ExceptionDeviation                            OpcuaNodeIdServicesVariableHistorical = 2327
+	OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_ExceptionDeviationFormat                      OpcuaNodeIdServicesVariableHistorical = 2328
+	OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_AggregateConfiguration_TreatUncertainAsBad    OpcuaNodeIdServicesVariableHistorical = 11168
+	OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_AggregateConfiguration_PercentDataBad         OpcuaNodeIdServicesVariableHistorical = 11169
+	OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_AggregateConfiguration_PercentDataGood        OpcuaNodeIdServicesVariableHistorical = 11170
 	OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_AggregateConfiguration_UseSlopedExtrapolation OpcuaNodeIdServicesVariableHistorical = 11171
-	OpcuaNodeIdServicesVariableHistorical_HistoricalEventFilter OpcuaNodeIdServicesVariableHistorical = 11215
-	OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_StartOfArchive OpcuaNodeIdServicesVariableHistorical = 11499
-	OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_StartOfOnlineArchive OpcuaNodeIdServicesVariableHistorical = 11500
-	OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_ServerTimestampSupported OpcuaNodeIdServicesVariableHistorical = 19092
+	OpcuaNodeIdServicesVariableHistorical_HistoricalEventFilter                                                         OpcuaNodeIdServicesVariableHistorical = 11215
+	OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_StartOfArchive                                OpcuaNodeIdServicesVariableHistorical = 11499
+	OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_StartOfOnlineArchive                          OpcuaNodeIdServicesVariableHistorical = 11500
+	OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_ServerTimestampSupported                      OpcuaNodeIdServicesVariableHistorical = 19092
 )
 
 var OpcuaNodeIdServicesVariableHistoricalValues []OpcuaNodeIdServicesVariableHistorical
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariableHistoricalValues = []OpcuaNodeIdServicesVariableHistorical {
+	OpcuaNodeIdServicesVariableHistoricalValues = []OpcuaNodeIdServicesVariableHistorical{
 		OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_Stepped,
 		OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_Definition,
 		OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_MaxTimeInterval,
@@ -81,34 +81,34 @@ func init() {
 
 func OpcuaNodeIdServicesVariableHistoricalByValue(value int32) (enum OpcuaNodeIdServicesVariableHistorical, ok bool) {
 	switch value {
-		case 11168:
-			return OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_AggregateConfiguration_TreatUncertainAsBad, true
-		case 11169:
-			return OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_AggregateConfiguration_PercentDataBad, true
-		case 11170:
-			return OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_AggregateConfiguration_PercentDataGood, true
-		case 11171:
-			return OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_AggregateConfiguration_UseSlopedExtrapolation, true
-		case 11215:
-			return OpcuaNodeIdServicesVariableHistorical_HistoricalEventFilter, true
-		case 11499:
-			return OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_StartOfArchive, true
-		case 11500:
-			return OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_StartOfOnlineArchive, true
-		case 19092:
-			return OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_ServerTimestampSupported, true
-		case 2323:
-			return OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_Stepped, true
-		case 2324:
-			return OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_Definition, true
-		case 2325:
-			return OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_MaxTimeInterval, true
-		case 2326:
-			return OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_MinTimeInterval, true
-		case 2327:
-			return OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_ExceptionDeviation, true
-		case 2328:
-			return OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_ExceptionDeviationFormat, true
+	case 11168:
+		return OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_AggregateConfiguration_TreatUncertainAsBad, true
+	case 11169:
+		return OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_AggregateConfiguration_PercentDataBad, true
+	case 11170:
+		return OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_AggregateConfiguration_PercentDataGood, true
+	case 11171:
+		return OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_AggregateConfiguration_UseSlopedExtrapolation, true
+	case 11215:
+		return OpcuaNodeIdServicesVariableHistorical_HistoricalEventFilter, true
+	case 11499:
+		return OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_StartOfArchive, true
+	case 11500:
+		return OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_StartOfOnlineArchive, true
+	case 19092:
+		return OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_ServerTimestampSupported, true
+	case 2323:
+		return OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_Stepped, true
+	case 2324:
+		return OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_Definition, true
+	case 2325:
+		return OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_MaxTimeInterval, true
+	case 2326:
+		return OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_MinTimeInterval, true
+	case 2327:
+		return OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_ExceptionDeviation, true
+	case 2328:
+		return OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_ExceptionDeviationFormat, true
 	}
 	return 0, false
 }
@@ -147,13 +147,13 @@ func OpcuaNodeIdServicesVariableHistoricalByName(value string) (enum OpcuaNodeId
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariableHistoricalKnows(value int32)  bool {
+func OpcuaNodeIdServicesVariableHistoricalKnows(value int32) bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariableHistoricalValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastOpcuaNodeIdServicesVariableHistorical(structType any) OpcuaNodeIdServicesVariableHistorical {
@@ -245,4 +245,3 @@ func (e OpcuaNodeIdServicesVariableHistorical) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariableHistorical) String() string {
 	return e.PLC4XEnumName()
 }
-

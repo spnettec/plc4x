@@ -40,19 +40,19 @@ type IBrokerTransportQualityOfService interface {
 	utils.Serializable
 }
 
-const(
+const (
 	BrokerTransportQualityOfService_brokerTransportQualityOfServiceNotSpecified BrokerTransportQualityOfService = 0
-	BrokerTransportQualityOfService_brokerTransportQualityOfServiceBestEffort BrokerTransportQualityOfService = 1
-	BrokerTransportQualityOfService_brokerTransportQualityOfServiceAtLeastOnce BrokerTransportQualityOfService = 2
-	BrokerTransportQualityOfService_brokerTransportQualityOfServiceAtMostOnce BrokerTransportQualityOfService = 3
-	BrokerTransportQualityOfService_brokerTransportQualityOfServiceExactlyOnce BrokerTransportQualityOfService = 4
+	BrokerTransportQualityOfService_brokerTransportQualityOfServiceBestEffort   BrokerTransportQualityOfService = 1
+	BrokerTransportQualityOfService_brokerTransportQualityOfServiceAtLeastOnce  BrokerTransportQualityOfService = 2
+	BrokerTransportQualityOfService_brokerTransportQualityOfServiceAtMostOnce   BrokerTransportQualityOfService = 3
+	BrokerTransportQualityOfService_brokerTransportQualityOfServiceExactlyOnce  BrokerTransportQualityOfService = 4
 )
 
 var BrokerTransportQualityOfServiceValues []BrokerTransportQualityOfService
 
 func init() {
 	_ = errors.New
-	BrokerTransportQualityOfServiceValues = []BrokerTransportQualityOfService {
+	BrokerTransportQualityOfServiceValues = []BrokerTransportQualityOfService{
 		BrokerTransportQualityOfService_brokerTransportQualityOfServiceNotSpecified,
 		BrokerTransportQualityOfService_brokerTransportQualityOfServiceBestEffort,
 		BrokerTransportQualityOfService_brokerTransportQualityOfServiceAtLeastOnce,
@@ -63,16 +63,16 @@ func init() {
 
 func BrokerTransportQualityOfServiceByValue(value uint32) (enum BrokerTransportQualityOfService, ok bool) {
 	switch value {
-		case 0:
-			return BrokerTransportQualityOfService_brokerTransportQualityOfServiceNotSpecified, true
-		case 1:
-			return BrokerTransportQualityOfService_brokerTransportQualityOfServiceBestEffort, true
-		case 2:
-			return BrokerTransportQualityOfService_brokerTransportQualityOfServiceAtLeastOnce, true
-		case 3:
-			return BrokerTransportQualityOfService_brokerTransportQualityOfServiceAtMostOnce, true
-		case 4:
-			return BrokerTransportQualityOfService_brokerTransportQualityOfServiceExactlyOnce, true
+	case 0:
+		return BrokerTransportQualityOfService_brokerTransportQualityOfServiceNotSpecified, true
+	case 1:
+		return BrokerTransportQualityOfService_brokerTransportQualityOfServiceBestEffort, true
+	case 2:
+		return BrokerTransportQualityOfService_brokerTransportQualityOfServiceAtLeastOnce, true
+	case 3:
+		return BrokerTransportQualityOfService_brokerTransportQualityOfServiceAtMostOnce, true
+	case 4:
+		return BrokerTransportQualityOfService_brokerTransportQualityOfServiceExactlyOnce, true
 	}
 	return 0, false
 }
@@ -93,13 +93,13 @@ func BrokerTransportQualityOfServiceByName(value string) (enum BrokerTransportQu
 	return 0, false
 }
 
-func BrokerTransportQualityOfServiceKnows(value uint32)  bool {
+func BrokerTransportQualityOfServiceKnows(value uint32) bool {
 	for _, typeValue := range BrokerTransportQualityOfServiceValues {
 		if uint32(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastBrokerTransportQualityOfService(structType any) BrokerTransportQualityOfService {
@@ -173,4 +173,3 @@ func (e BrokerTransportQualityOfService) PLC4XEnumName() string {
 func (e BrokerTransportQualityOfService) String() string {
 	return e.PLC4XEnumName()
 }
-

@@ -40,22 +40,22 @@ type ITrustListValidationOptions interface {
 	utils.Serializable
 }
 
-const(
-	TrustListValidationOptions_trustListValidationOptionsNone TrustListValidationOptions = 0
-	TrustListValidationOptions_trustListValidationOptionsSuppressCertificateExpired TrustListValidationOptions = 1
-	TrustListValidationOptions_trustListValidationOptionsSuppressHostNameInvalid TrustListValidationOptions = 2
-	TrustListValidationOptions_trustListValidationOptionsSuppressRevocationStatusUnknown TrustListValidationOptions = 4
-	TrustListValidationOptions_trustListValidationOptionsSuppressIssuerCertificateExpired TrustListValidationOptions = 8
+const (
+	TrustListValidationOptions_trustListValidationOptionsNone                                  TrustListValidationOptions = 0
+	TrustListValidationOptions_trustListValidationOptionsSuppressCertificateExpired            TrustListValidationOptions = 1
+	TrustListValidationOptions_trustListValidationOptionsSuppressHostNameInvalid               TrustListValidationOptions = 2
+	TrustListValidationOptions_trustListValidationOptionsSuppressRevocationStatusUnknown       TrustListValidationOptions = 4
+	TrustListValidationOptions_trustListValidationOptionsSuppressIssuerCertificateExpired      TrustListValidationOptions = 8
 	TrustListValidationOptions_trustListValidationOptionsSuppressIssuerRevocationStatusUnknown TrustListValidationOptions = 16
-	TrustListValidationOptions_trustListValidationOptionsCheckRevocationStatusOnline TrustListValidationOptions = 32
-	TrustListValidationOptions_trustListValidationOptionsCheckRevocationStatusOffline TrustListValidationOptions = 64
+	TrustListValidationOptions_trustListValidationOptionsCheckRevocationStatusOnline           TrustListValidationOptions = 32
+	TrustListValidationOptions_trustListValidationOptionsCheckRevocationStatusOffline          TrustListValidationOptions = 64
 )
 
 var TrustListValidationOptionsValues []TrustListValidationOptions
 
 func init() {
 	_ = errors.New
-	TrustListValidationOptionsValues = []TrustListValidationOptions {
+	TrustListValidationOptionsValues = []TrustListValidationOptions{
 		TrustListValidationOptions_trustListValidationOptionsNone,
 		TrustListValidationOptions_trustListValidationOptionsSuppressCertificateExpired,
 		TrustListValidationOptions_trustListValidationOptionsSuppressHostNameInvalid,
@@ -69,22 +69,22 @@ func init() {
 
 func TrustListValidationOptionsByValue(value uint32) (enum TrustListValidationOptions, ok bool) {
 	switch value {
-		case 0:
-			return TrustListValidationOptions_trustListValidationOptionsNone, true
-		case 1:
-			return TrustListValidationOptions_trustListValidationOptionsSuppressCertificateExpired, true
-		case 16:
-			return TrustListValidationOptions_trustListValidationOptionsSuppressIssuerRevocationStatusUnknown, true
-		case 2:
-			return TrustListValidationOptions_trustListValidationOptionsSuppressHostNameInvalid, true
-		case 32:
-			return TrustListValidationOptions_trustListValidationOptionsCheckRevocationStatusOnline, true
-		case 4:
-			return TrustListValidationOptions_trustListValidationOptionsSuppressRevocationStatusUnknown, true
-		case 64:
-			return TrustListValidationOptions_trustListValidationOptionsCheckRevocationStatusOffline, true
-		case 8:
-			return TrustListValidationOptions_trustListValidationOptionsSuppressIssuerCertificateExpired, true
+	case 0:
+		return TrustListValidationOptions_trustListValidationOptionsNone, true
+	case 1:
+		return TrustListValidationOptions_trustListValidationOptionsSuppressCertificateExpired, true
+	case 16:
+		return TrustListValidationOptions_trustListValidationOptionsSuppressIssuerRevocationStatusUnknown, true
+	case 2:
+		return TrustListValidationOptions_trustListValidationOptionsSuppressHostNameInvalid, true
+	case 32:
+		return TrustListValidationOptions_trustListValidationOptionsCheckRevocationStatusOnline, true
+	case 4:
+		return TrustListValidationOptions_trustListValidationOptionsSuppressRevocationStatusUnknown, true
+	case 64:
+		return TrustListValidationOptions_trustListValidationOptionsCheckRevocationStatusOffline, true
+	case 8:
+		return TrustListValidationOptions_trustListValidationOptionsSuppressIssuerCertificateExpired, true
 	}
 	return 0, false
 }
@@ -111,13 +111,13 @@ func TrustListValidationOptionsByName(value string) (enum TrustListValidationOpt
 	return 0, false
 }
 
-func TrustListValidationOptionsKnows(value uint32)  bool {
+func TrustListValidationOptionsKnows(value uint32) bool {
 	for _, typeValue := range TrustListValidationOptionsValues {
 		if uint32(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastTrustListValidationOptions(structType any) TrustListValidationOptions {
@@ -197,4 +197,3 @@ func (e TrustListValidationOptions) PLC4XEnumName() string {
 func (e TrustListValidationOptions) String() string {
 	return e.PLC4XEnumName()
 }
-

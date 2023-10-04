@@ -40,15 +40,15 @@ type IOpcuaNodeIdServicesVariableSampling interface {
 	utils.Serializable
 }
 
-const(
-	OpcuaNodeIdServicesVariableSampling_SamplingIntervalDiagnosticsType_SamplingInterval OpcuaNodeIdServicesVariableSampling = 2166
-	OpcuaNodeIdServicesVariableSampling_SamplingIntervalDiagnosticsType_SampledMonitoredItemsCount OpcuaNodeIdServicesVariableSampling = 11697
-	OpcuaNodeIdServicesVariableSampling_SamplingIntervalDiagnosticsType_MaxSampledMonitoredItemsCount OpcuaNodeIdServicesVariableSampling = 11698
-	OpcuaNodeIdServicesVariableSampling_SamplingIntervalDiagnosticsType_DisabledMonitoredItemsSamplingCount OpcuaNodeIdServicesVariableSampling = 11699
-	OpcuaNodeIdServicesVariableSampling_SamplingIntervalDiagnosticsArrayType_SamplingIntervalDiagnostics OpcuaNodeIdServicesVariableSampling = 12779
-	OpcuaNodeIdServicesVariableSampling_SamplingIntervalDiagnosticsArrayType_SamplingIntervalDiagnostics_SamplingInterval OpcuaNodeIdServicesVariableSampling = 12780
-	OpcuaNodeIdServicesVariableSampling_SamplingIntervalDiagnosticsArrayType_SamplingIntervalDiagnostics_SampledMonitoredItemsCount OpcuaNodeIdServicesVariableSampling = 12781
-	OpcuaNodeIdServicesVariableSampling_SamplingIntervalDiagnosticsArrayType_SamplingIntervalDiagnostics_MaxSampledMonitoredItemsCount OpcuaNodeIdServicesVariableSampling = 12782
+const (
+	OpcuaNodeIdServicesVariableSampling_SamplingIntervalDiagnosticsType_SamplingInterval                                                     OpcuaNodeIdServicesVariableSampling = 2166
+	OpcuaNodeIdServicesVariableSampling_SamplingIntervalDiagnosticsType_SampledMonitoredItemsCount                                           OpcuaNodeIdServicesVariableSampling = 11697
+	OpcuaNodeIdServicesVariableSampling_SamplingIntervalDiagnosticsType_MaxSampledMonitoredItemsCount                                        OpcuaNodeIdServicesVariableSampling = 11698
+	OpcuaNodeIdServicesVariableSampling_SamplingIntervalDiagnosticsType_DisabledMonitoredItemsSamplingCount                                  OpcuaNodeIdServicesVariableSampling = 11699
+	OpcuaNodeIdServicesVariableSampling_SamplingIntervalDiagnosticsArrayType_SamplingIntervalDiagnostics                                     OpcuaNodeIdServicesVariableSampling = 12779
+	OpcuaNodeIdServicesVariableSampling_SamplingIntervalDiagnosticsArrayType_SamplingIntervalDiagnostics_SamplingInterval                    OpcuaNodeIdServicesVariableSampling = 12780
+	OpcuaNodeIdServicesVariableSampling_SamplingIntervalDiagnosticsArrayType_SamplingIntervalDiagnostics_SampledMonitoredItemsCount          OpcuaNodeIdServicesVariableSampling = 12781
+	OpcuaNodeIdServicesVariableSampling_SamplingIntervalDiagnosticsArrayType_SamplingIntervalDiagnostics_MaxSampledMonitoredItemsCount       OpcuaNodeIdServicesVariableSampling = 12782
 	OpcuaNodeIdServicesVariableSampling_SamplingIntervalDiagnosticsArrayType_SamplingIntervalDiagnostics_DisabledMonitoredItemsSamplingCount OpcuaNodeIdServicesVariableSampling = 12783
 )
 
@@ -56,7 +56,7 @@ var OpcuaNodeIdServicesVariableSamplingValues []OpcuaNodeIdServicesVariableSampl
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariableSamplingValues = []OpcuaNodeIdServicesVariableSampling {
+	OpcuaNodeIdServicesVariableSamplingValues = []OpcuaNodeIdServicesVariableSampling{
 		OpcuaNodeIdServicesVariableSampling_SamplingIntervalDiagnosticsType_SamplingInterval,
 		OpcuaNodeIdServicesVariableSampling_SamplingIntervalDiagnosticsType_SampledMonitoredItemsCount,
 		OpcuaNodeIdServicesVariableSampling_SamplingIntervalDiagnosticsType_MaxSampledMonitoredItemsCount,
@@ -71,24 +71,24 @@ func init() {
 
 func OpcuaNodeIdServicesVariableSamplingByValue(value int32) (enum OpcuaNodeIdServicesVariableSampling, ok bool) {
 	switch value {
-		case 11697:
-			return OpcuaNodeIdServicesVariableSampling_SamplingIntervalDiagnosticsType_SampledMonitoredItemsCount, true
-		case 11698:
-			return OpcuaNodeIdServicesVariableSampling_SamplingIntervalDiagnosticsType_MaxSampledMonitoredItemsCount, true
-		case 11699:
-			return OpcuaNodeIdServicesVariableSampling_SamplingIntervalDiagnosticsType_DisabledMonitoredItemsSamplingCount, true
-		case 12779:
-			return OpcuaNodeIdServicesVariableSampling_SamplingIntervalDiagnosticsArrayType_SamplingIntervalDiagnostics, true
-		case 12780:
-			return OpcuaNodeIdServicesVariableSampling_SamplingIntervalDiagnosticsArrayType_SamplingIntervalDiagnostics_SamplingInterval, true
-		case 12781:
-			return OpcuaNodeIdServicesVariableSampling_SamplingIntervalDiagnosticsArrayType_SamplingIntervalDiagnostics_SampledMonitoredItemsCount, true
-		case 12782:
-			return OpcuaNodeIdServicesVariableSampling_SamplingIntervalDiagnosticsArrayType_SamplingIntervalDiagnostics_MaxSampledMonitoredItemsCount, true
-		case 12783:
-			return OpcuaNodeIdServicesVariableSampling_SamplingIntervalDiagnosticsArrayType_SamplingIntervalDiagnostics_DisabledMonitoredItemsSamplingCount, true
-		case 2166:
-			return OpcuaNodeIdServicesVariableSampling_SamplingIntervalDiagnosticsType_SamplingInterval, true
+	case 11697:
+		return OpcuaNodeIdServicesVariableSampling_SamplingIntervalDiagnosticsType_SampledMonitoredItemsCount, true
+	case 11698:
+		return OpcuaNodeIdServicesVariableSampling_SamplingIntervalDiagnosticsType_MaxSampledMonitoredItemsCount, true
+	case 11699:
+		return OpcuaNodeIdServicesVariableSampling_SamplingIntervalDiagnosticsType_DisabledMonitoredItemsSamplingCount, true
+	case 12779:
+		return OpcuaNodeIdServicesVariableSampling_SamplingIntervalDiagnosticsArrayType_SamplingIntervalDiagnostics, true
+	case 12780:
+		return OpcuaNodeIdServicesVariableSampling_SamplingIntervalDiagnosticsArrayType_SamplingIntervalDiagnostics_SamplingInterval, true
+	case 12781:
+		return OpcuaNodeIdServicesVariableSampling_SamplingIntervalDiagnosticsArrayType_SamplingIntervalDiagnostics_SampledMonitoredItemsCount, true
+	case 12782:
+		return OpcuaNodeIdServicesVariableSampling_SamplingIntervalDiagnosticsArrayType_SamplingIntervalDiagnostics_MaxSampledMonitoredItemsCount, true
+	case 12783:
+		return OpcuaNodeIdServicesVariableSampling_SamplingIntervalDiagnosticsArrayType_SamplingIntervalDiagnostics_DisabledMonitoredItemsSamplingCount, true
+	case 2166:
+		return OpcuaNodeIdServicesVariableSampling_SamplingIntervalDiagnosticsType_SamplingInterval, true
 	}
 	return 0, false
 }
@@ -117,13 +117,13 @@ func OpcuaNodeIdServicesVariableSamplingByName(value string) (enum OpcuaNodeIdSe
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariableSamplingKnows(value int32)  bool {
+func OpcuaNodeIdServicesVariableSamplingKnows(value int32) bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariableSamplingValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastOpcuaNodeIdServicesVariableSampling(structType any) OpcuaNodeIdServicesVariableSampling {
@@ -205,4 +205,3 @@ func (e OpcuaNodeIdServicesVariableSampling) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariableSampling) String() string {
 	return e.PLC4XEnumName()
 }
-

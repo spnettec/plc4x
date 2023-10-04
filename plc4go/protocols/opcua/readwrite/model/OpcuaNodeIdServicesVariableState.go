@@ -40,22 +40,22 @@ type IOpcuaNodeIdServicesVariableState interface {
 	utils.Serializable
 }
 
-const(
-	OpcuaNodeIdServicesVariableState_StateType_StateNumber OpcuaNodeIdServicesVariableState = 2308
-	OpcuaNodeIdServicesVariableState_StateVariableType_Id OpcuaNodeIdServicesVariableState = 2756
-	OpcuaNodeIdServicesVariableState_StateVariableType_Name OpcuaNodeIdServicesVariableState = 2757
-	OpcuaNodeIdServicesVariableState_StateVariableType_Number OpcuaNodeIdServicesVariableState = 2758
-	OpcuaNodeIdServicesVariableState_StateVariableType_EffectiveDisplayName OpcuaNodeIdServicesVariableState = 2759
-	OpcuaNodeIdServicesVariableState_StateMachineType_CurrentState OpcuaNodeIdServicesVariableState = 2769
-	OpcuaNodeIdServicesVariableState_StateMachineType_LastTransition OpcuaNodeIdServicesVariableState = 2770
-	OpcuaNodeIdServicesVariableState_StateMachineType_CurrentState_Id OpcuaNodeIdServicesVariableState = 3720
-	OpcuaNodeIdServicesVariableState_StateMachineType_CurrentState_Name OpcuaNodeIdServicesVariableState = 3721
-	OpcuaNodeIdServicesVariableState_StateMachineType_CurrentState_Number OpcuaNodeIdServicesVariableState = 3722
-	OpcuaNodeIdServicesVariableState_StateMachineType_CurrentState_EffectiveDisplayName OpcuaNodeIdServicesVariableState = 3723
-	OpcuaNodeIdServicesVariableState_StateMachineType_LastTransition_Id OpcuaNodeIdServicesVariableState = 3724
-	OpcuaNodeIdServicesVariableState_StateMachineType_LastTransition_Name OpcuaNodeIdServicesVariableState = 3725
-	OpcuaNodeIdServicesVariableState_StateMachineType_LastTransition_Number OpcuaNodeIdServicesVariableState = 3726
-	OpcuaNodeIdServicesVariableState_StateMachineType_LastTransition_TransitionTime OpcuaNodeIdServicesVariableState = 3727
+const (
+	OpcuaNodeIdServicesVariableState_StateType_StateNumber                                   OpcuaNodeIdServicesVariableState = 2308
+	OpcuaNodeIdServicesVariableState_StateVariableType_Id                                    OpcuaNodeIdServicesVariableState = 2756
+	OpcuaNodeIdServicesVariableState_StateVariableType_Name                                  OpcuaNodeIdServicesVariableState = 2757
+	OpcuaNodeIdServicesVariableState_StateVariableType_Number                                OpcuaNodeIdServicesVariableState = 2758
+	OpcuaNodeIdServicesVariableState_StateVariableType_EffectiveDisplayName                  OpcuaNodeIdServicesVariableState = 2759
+	OpcuaNodeIdServicesVariableState_StateMachineType_CurrentState                           OpcuaNodeIdServicesVariableState = 2769
+	OpcuaNodeIdServicesVariableState_StateMachineType_LastTransition                         OpcuaNodeIdServicesVariableState = 2770
+	OpcuaNodeIdServicesVariableState_StateMachineType_CurrentState_Id                        OpcuaNodeIdServicesVariableState = 3720
+	OpcuaNodeIdServicesVariableState_StateMachineType_CurrentState_Name                      OpcuaNodeIdServicesVariableState = 3721
+	OpcuaNodeIdServicesVariableState_StateMachineType_CurrentState_Number                    OpcuaNodeIdServicesVariableState = 3722
+	OpcuaNodeIdServicesVariableState_StateMachineType_CurrentState_EffectiveDisplayName      OpcuaNodeIdServicesVariableState = 3723
+	OpcuaNodeIdServicesVariableState_StateMachineType_LastTransition_Id                      OpcuaNodeIdServicesVariableState = 3724
+	OpcuaNodeIdServicesVariableState_StateMachineType_LastTransition_Name                    OpcuaNodeIdServicesVariableState = 3725
+	OpcuaNodeIdServicesVariableState_StateMachineType_LastTransition_Number                  OpcuaNodeIdServicesVariableState = 3726
+	OpcuaNodeIdServicesVariableState_StateMachineType_LastTransition_TransitionTime          OpcuaNodeIdServicesVariableState = 3727
 	OpcuaNodeIdServicesVariableState_StateMachineType_LastTransition_EffectiveTransitionTime OpcuaNodeIdServicesVariableState = 11458
 )
 
@@ -63,7 +63,7 @@ var OpcuaNodeIdServicesVariableStateValues []OpcuaNodeIdServicesVariableState
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariableStateValues = []OpcuaNodeIdServicesVariableState {
+	OpcuaNodeIdServicesVariableStateValues = []OpcuaNodeIdServicesVariableState{
 		OpcuaNodeIdServicesVariableState_StateType_StateNumber,
 		OpcuaNodeIdServicesVariableState_StateVariableType_Id,
 		OpcuaNodeIdServicesVariableState_StateVariableType_Name,
@@ -85,38 +85,38 @@ func init() {
 
 func OpcuaNodeIdServicesVariableStateByValue(value int32) (enum OpcuaNodeIdServicesVariableState, ok bool) {
 	switch value {
-		case 11458:
-			return OpcuaNodeIdServicesVariableState_StateMachineType_LastTransition_EffectiveTransitionTime, true
-		case 2308:
-			return OpcuaNodeIdServicesVariableState_StateType_StateNumber, true
-		case 2756:
-			return OpcuaNodeIdServicesVariableState_StateVariableType_Id, true
-		case 2757:
-			return OpcuaNodeIdServicesVariableState_StateVariableType_Name, true
-		case 2758:
-			return OpcuaNodeIdServicesVariableState_StateVariableType_Number, true
-		case 2759:
-			return OpcuaNodeIdServicesVariableState_StateVariableType_EffectiveDisplayName, true
-		case 2769:
-			return OpcuaNodeIdServicesVariableState_StateMachineType_CurrentState, true
-		case 2770:
-			return OpcuaNodeIdServicesVariableState_StateMachineType_LastTransition, true
-		case 3720:
-			return OpcuaNodeIdServicesVariableState_StateMachineType_CurrentState_Id, true
-		case 3721:
-			return OpcuaNodeIdServicesVariableState_StateMachineType_CurrentState_Name, true
-		case 3722:
-			return OpcuaNodeIdServicesVariableState_StateMachineType_CurrentState_Number, true
-		case 3723:
-			return OpcuaNodeIdServicesVariableState_StateMachineType_CurrentState_EffectiveDisplayName, true
-		case 3724:
-			return OpcuaNodeIdServicesVariableState_StateMachineType_LastTransition_Id, true
-		case 3725:
-			return OpcuaNodeIdServicesVariableState_StateMachineType_LastTransition_Name, true
-		case 3726:
-			return OpcuaNodeIdServicesVariableState_StateMachineType_LastTransition_Number, true
-		case 3727:
-			return OpcuaNodeIdServicesVariableState_StateMachineType_LastTransition_TransitionTime, true
+	case 11458:
+		return OpcuaNodeIdServicesVariableState_StateMachineType_LastTransition_EffectiveTransitionTime, true
+	case 2308:
+		return OpcuaNodeIdServicesVariableState_StateType_StateNumber, true
+	case 2756:
+		return OpcuaNodeIdServicesVariableState_StateVariableType_Id, true
+	case 2757:
+		return OpcuaNodeIdServicesVariableState_StateVariableType_Name, true
+	case 2758:
+		return OpcuaNodeIdServicesVariableState_StateVariableType_Number, true
+	case 2759:
+		return OpcuaNodeIdServicesVariableState_StateVariableType_EffectiveDisplayName, true
+	case 2769:
+		return OpcuaNodeIdServicesVariableState_StateMachineType_CurrentState, true
+	case 2770:
+		return OpcuaNodeIdServicesVariableState_StateMachineType_LastTransition, true
+	case 3720:
+		return OpcuaNodeIdServicesVariableState_StateMachineType_CurrentState_Id, true
+	case 3721:
+		return OpcuaNodeIdServicesVariableState_StateMachineType_CurrentState_Name, true
+	case 3722:
+		return OpcuaNodeIdServicesVariableState_StateMachineType_CurrentState_Number, true
+	case 3723:
+		return OpcuaNodeIdServicesVariableState_StateMachineType_CurrentState_EffectiveDisplayName, true
+	case 3724:
+		return OpcuaNodeIdServicesVariableState_StateMachineType_LastTransition_Id, true
+	case 3725:
+		return OpcuaNodeIdServicesVariableState_StateMachineType_LastTransition_Name, true
+	case 3726:
+		return OpcuaNodeIdServicesVariableState_StateMachineType_LastTransition_Number, true
+	case 3727:
+		return OpcuaNodeIdServicesVariableState_StateMachineType_LastTransition_TransitionTime, true
 	}
 	return 0, false
 }
@@ -159,13 +159,13 @@ func OpcuaNodeIdServicesVariableStateByName(value string) (enum OpcuaNodeIdServi
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariableStateKnows(value int32)  bool {
+func OpcuaNodeIdServicesVariableStateKnows(value int32) bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariableStateValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastOpcuaNodeIdServicesVariableState(structType any) OpcuaNodeIdServicesVariableState {
@@ -261,4 +261,3 @@ func (e OpcuaNodeIdServicesVariableState) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariableState) String() string {
 	return e.PLC4XEnumName()
 }
-

@@ -40,17 +40,17 @@ type IOpcuaNodeIdServicesVariableAccess interface {
 	utils.Serializable
 }
 
-const(
-	OpcuaNodeIdServicesVariableAccess_AccessLevelType_OptionSetValues OpcuaNodeIdServicesVariableAccess = 15032
+const (
+	OpcuaNodeIdServicesVariableAccess_AccessLevelType_OptionSetValues       OpcuaNodeIdServicesVariableAccess = 15032
 	OpcuaNodeIdServicesVariableAccess_AccessRestrictionType_OptionSetValues OpcuaNodeIdServicesVariableAccess = 15035
-	OpcuaNodeIdServicesVariableAccess_AccessLevelExType_OptionSetValues OpcuaNodeIdServicesVariableAccess = 15407
+	OpcuaNodeIdServicesVariableAccess_AccessLevelExType_OptionSetValues     OpcuaNodeIdServicesVariableAccess = 15407
 )
 
 var OpcuaNodeIdServicesVariableAccessValues []OpcuaNodeIdServicesVariableAccess
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariableAccessValues = []OpcuaNodeIdServicesVariableAccess {
+	OpcuaNodeIdServicesVariableAccessValues = []OpcuaNodeIdServicesVariableAccess{
 		OpcuaNodeIdServicesVariableAccess_AccessLevelType_OptionSetValues,
 		OpcuaNodeIdServicesVariableAccess_AccessRestrictionType_OptionSetValues,
 		OpcuaNodeIdServicesVariableAccess_AccessLevelExType_OptionSetValues,
@@ -59,12 +59,12 @@ func init() {
 
 func OpcuaNodeIdServicesVariableAccessByValue(value int32) (enum OpcuaNodeIdServicesVariableAccess, ok bool) {
 	switch value {
-		case 15032:
-			return OpcuaNodeIdServicesVariableAccess_AccessLevelType_OptionSetValues, true
-		case 15035:
-			return OpcuaNodeIdServicesVariableAccess_AccessRestrictionType_OptionSetValues, true
-		case 15407:
-			return OpcuaNodeIdServicesVariableAccess_AccessLevelExType_OptionSetValues, true
+	case 15032:
+		return OpcuaNodeIdServicesVariableAccess_AccessLevelType_OptionSetValues, true
+	case 15035:
+		return OpcuaNodeIdServicesVariableAccess_AccessRestrictionType_OptionSetValues, true
+	case 15407:
+		return OpcuaNodeIdServicesVariableAccess_AccessLevelExType_OptionSetValues, true
 	}
 	return 0, false
 }
@@ -81,13 +81,13 @@ func OpcuaNodeIdServicesVariableAccessByName(value string) (enum OpcuaNodeIdServ
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariableAccessKnows(value int32)  bool {
+func OpcuaNodeIdServicesVariableAccessKnows(value int32) bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariableAccessValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastOpcuaNodeIdServicesVariableAccess(structType any) OpcuaNodeIdServicesVariableAccess {
@@ -157,4 +157,3 @@ func (e OpcuaNodeIdServicesVariableAccess) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariableAccess) String() string {
 	return e.PLC4XEnumName()
 }
-

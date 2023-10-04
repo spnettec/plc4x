@@ -40,7 +40,7 @@ type IOpcuaNodeIdServicesVariableView interface {
 	utils.Serializable
 }
 
-const(
+const (
 	OpcuaNodeIdServicesVariableView_ViewVersion OpcuaNodeIdServicesVariableView = 12170
 )
 
@@ -48,15 +48,15 @@ var OpcuaNodeIdServicesVariableViewValues []OpcuaNodeIdServicesVariableView
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariableViewValues = []OpcuaNodeIdServicesVariableView {
+	OpcuaNodeIdServicesVariableViewValues = []OpcuaNodeIdServicesVariableView{
 		OpcuaNodeIdServicesVariableView_ViewVersion,
 	}
 }
 
 func OpcuaNodeIdServicesVariableViewByValue(value int32) (enum OpcuaNodeIdServicesVariableView, ok bool) {
 	switch value {
-		case 12170:
-			return OpcuaNodeIdServicesVariableView_ViewVersion, true
+	case 12170:
+		return OpcuaNodeIdServicesVariableView_ViewVersion, true
 	}
 	return 0, false
 }
@@ -69,13 +69,13 @@ func OpcuaNodeIdServicesVariableViewByName(value string) (enum OpcuaNodeIdServic
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariableViewKnows(value int32)  bool {
+func OpcuaNodeIdServicesVariableViewKnows(value int32) bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariableViewValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastOpcuaNodeIdServicesVariableView(structType any) OpcuaNodeIdServicesVariableView {
@@ -141,4 +141,3 @@ func (e OpcuaNodeIdServicesVariableView) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariableView) String() string {
 	return e.PLC4XEnumName()
 }
-

@@ -40,7 +40,7 @@ type IOpcuaNodeIdServicesVariableAxis interface {
 	utils.Serializable
 }
 
-const(
+const (
 	OpcuaNodeIdServicesVariableAxis_AxisScaleEnumeration_EnumStrings OpcuaNodeIdServicesVariableAxis = 12078
 )
 
@@ -48,15 +48,15 @@ var OpcuaNodeIdServicesVariableAxisValues []OpcuaNodeIdServicesVariableAxis
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariableAxisValues = []OpcuaNodeIdServicesVariableAxis {
+	OpcuaNodeIdServicesVariableAxisValues = []OpcuaNodeIdServicesVariableAxis{
 		OpcuaNodeIdServicesVariableAxis_AxisScaleEnumeration_EnumStrings,
 	}
 }
 
 func OpcuaNodeIdServicesVariableAxisByValue(value int32) (enum OpcuaNodeIdServicesVariableAxis, ok bool) {
 	switch value {
-		case 12078:
-			return OpcuaNodeIdServicesVariableAxis_AxisScaleEnumeration_EnumStrings, true
+	case 12078:
+		return OpcuaNodeIdServicesVariableAxis_AxisScaleEnumeration_EnumStrings, true
 	}
 	return 0, false
 }
@@ -69,13 +69,13 @@ func OpcuaNodeIdServicesVariableAxisByName(value string) (enum OpcuaNodeIdServic
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariableAxisKnows(value int32)  bool {
+func OpcuaNodeIdServicesVariableAxisKnows(value int32) bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariableAxisValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastOpcuaNodeIdServicesVariableAxis(structType any) OpcuaNodeIdServicesVariableAxis {
@@ -141,4 +141,3 @@ func (e OpcuaNodeIdServicesVariableAxis) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariableAxis) String() string {
 	return e.PLC4XEnumName()
 }
-

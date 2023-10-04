@@ -40,7 +40,7 @@ type IOpcuaNodeIdServicesVariableNegotiation interface {
 	utils.Serializable
 }
 
-const(
+const (
 	OpcuaNodeIdServicesVariableNegotiation_NegotiationStatus_EnumValues OpcuaNodeIdServicesVariableNegotiation = 24238
 )
 
@@ -48,15 +48,15 @@ var OpcuaNodeIdServicesVariableNegotiationValues []OpcuaNodeIdServicesVariableNe
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariableNegotiationValues = []OpcuaNodeIdServicesVariableNegotiation {
+	OpcuaNodeIdServicesVariableNegotiationValues = []OpcuaNodeIdServicesVariableNegotiation{
 		OpcuaNodeIdServicesVariableNegotiation_NegotiationStatus_EnumValues,
 	}
 }
 
 func OpcuaNodeIdServicesVariableNegotiationByValue(value int32) (enum OpcuaNodeIdServicesVariableNegotiation, ok bool) {
 	switch value {
-		case 24238:
-			return OpcuaNodeIdServicesVariableNegotiation_NegotiationStatus_EnumValues, true
+	case 24238:
+		return OpcuaNodeIdServicesVariableNegotiation_NegotiationStatus_EnumValues, true
 	}
 	return 0, false
 }
@@ -69,13 +69,13 @@ func OpcuaNodeIdServicesVariableNegotiationByName(value string) (enum OpcuaNodeI
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariableNegotiationKnows(value int32)  bool {
+func OpcuaNodeIdServicesVariableNegotiationKnows(value int32) bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariableNegotiationValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastOpcuaNodeIdServicesVariableNegotiation(structType any) OpcuaNodeIdServicesVariableNegotiation {
@@ -141,4 +141,3 @@ func (e OpcuaNodeIdServicesVariableNegotiation) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariableNegotiation) String() string {
 	return e.PLC4XEnumName()
 }
-

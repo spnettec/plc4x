@@ -40,18 +40,18 @@ type IIdType interface {
 	utils.Serializable
 }
 
-const(
+const (
 	IdType_idTypeNumeric IdType = 0
-	IdType_idTypeString IdType = 1
-	IdType_idTypeGuid IdType = 2
-	IdType_idTypeOpaque IdType = 3
+	IdType_idTypeString  IdType = 1
+	IdType_idTypeGuid    IdType = 2
+	IdType_idTypeOpaque  IdType = 3
 )
 
 var IdTypeValues []IdType
 
 func init() {
 	_ = errors.New
-	IdTypeValues = []IdType {
+	IdTypeValues = []IdType{
 		IdType_idTypeNumeric,
 		IdType_idTypeString,
 		IdType_idTypeGuid,
@@ -61,14 +61,14 @@ func init() {
 
 func IdTypeByValue(value uint32) (enum IdType, ok bool) {
 	switch value {
-		case 0:
-			return IdType_idTypeNumeric, true
-		case 1:
-			return IdType_idTypeString, true
-		case 2:
-			return IdType_idTypeGuid, true
-		case 3:
-			return IdType_idTypeOpaque, true
+	case 0:
+		return IdType_idTypeNumeric, true
+	case 1:
+		return IdType_idTypeString, true
+	case 2:
+		return IdType_idTypeGuid, true
+	case 3:
+		return IdType_idTypeOpaque, true
 	}
 	return 0, false
 }
@@ -87,13 +87,13 @@ func IdTypeByName(value string) (enum IdType, ok bool) {
 	return 0, false
 }
 
-func IdTypeKnows(value uint32)  bool {
+func IdTypeKnows(value uint32) bool {
 	for _, typeValue := range IdTypeValues {
 		if uint32(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastIdType(structType any) IdType {
@@ -165,4 +165,3 @@ func (e IdType) PLC4XEnumName() string {
 func (e IdType) String() string {
 	return e.PLC4XEnumName()
 }
-

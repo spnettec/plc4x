@@ -40,153 +40,153 @@ type IOpcuaNodeIdServicesVariableOff interface {
 	utils.Serializable
 }
 
-const(
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_EventId OpcuaNodeIdServicesVariableOff = 10638
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_EventType OpcuaNodeIdServicesVariableOff = 10639
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_SourceNode OpcuaNodeIdServicesVariableOff = 10640
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_SourceName OpcuaNodeIdServicesVariableOff = 10641
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_Time OpcuaNodeIdServicesVariableOff = 10642
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ReceiveTime OpcuaNodeIdServicesVariableOff = 10643
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_LocalTime OpcuaNodeIdServicesVariableOff = 10644
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_Message OpcuaNodeIdServicesVariableOff = 10645
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_Severity OpcuaNodeIdServicesVariableOff = 10646
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ConditionName OpcuaNodeIdServicesVariableOff = 10647
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_BranchId OpcuaNodeIdServicesVariableOff = 10648
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_Retain OpcuaNodeIdServicesVariableOff = 10649
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_EnabledState OpcuaNodeIdServicesVariableOff = 10650
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_EnabledState_Id OpcuaNodeIdServicesVariableOff = 10651
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_EnabledState_Name OpcuaNodeIdServicesVariableOff = 10652
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_EnabledState_Number OpcuaNodeIdServicesVariableOff = 10653
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_EnabledState_EffectiveDisplayName OpcuaNodeIdServicesVariableOff = 10654
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_EnabledState_TransitionTime OpcuaNodeIdServicesVariableOff = 10655
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_EnabledState_EffectiveTransitionTime OpcuaNodeIdServicesVariableOff = 10656
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_EnabledState_TrueState OpcuaNodeIdServicesVariableOff = 10657
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_EnabledState_FalseState OpcuaNodeIdServicesVariableOff = 10658
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_Quality OpcuaNodeIdServicesVariableOff = 10659
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_Quality_SourceTimestamp OpcuaNodeIdServicesVariableOff = 10660
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_LastSeverity OpcuaNodeIdServicesVariableOff = 10661
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_LastSeverity_SourceTimestamp OpcuaNodeIdServicesVariableOff = 10662
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_Comment OpcuaNodeIdServicesVariableOff = 10663
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_Comment_SourceTimestamp OpcuaNodeIdServicesVariableOff = 10664
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ClientUserId OpcuaNodeIdServicesVariableOff = 10665
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_AddComment_InputArguments OpcuaNodeIdServicesVariableOff = 10669
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ConditionRefresh_InputArguments OpcuaNodeIdServicesVariableOff = 10671
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_AckedState OpcuaNodeIdServicesVariableOff = 10672
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_AckedState_Id OpcuaNodeIdServicesVariableOff = 10673
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_AckedState_Name OpcuaNodeIdServicesVariableOff = 10674
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_AckedState_Number OpcuaNodeIdServicesVariableOff = 10675
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_AckedState_EffectiveDisplayName OpcuaNodeIdServicesVariableOff = 10676
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_AckedState_TransitionTime OpcuaNodeIdServicesVariableOff = 10677
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_AckedState_EffectiveTransitionTime OpcuaNodeIdServicesVariableOff = 10678
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_AckedState_TrueState OpcuaNodeIdServicesVariableOff = 10679
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_AckedState_FalseState OpcuaNodeIdServicesVariableOff = 10680
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ConfirmedState OpcuaNodeIdServicesVariableOff = 10681
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ConfirmedState_Id OpcuaNodeIdServicesVariableOff = 10682
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ConfirmedState_Name OpcuaNodeIdServicesVariableOff = 10683
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ConfirmedState_Number OpcuaNodeIdServicesVariableOff = 10684
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ConfirmedState_EffectiveDisplayName OpcuaNodeIdServicesVariableOff = 10685
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ConfirmedState_TransitionTime OpcuaNodeIdServicesVariableOff = 10686
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ConfirmedState_EffectiveTransitionTime OpcuaNodeIdServicesVariableOff = 10687
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ConfirmedState_TrueState OpcuaNodeIdServicesVariableOff = 10688
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ConfirmedState_FalseState OpcuaNodeIdServicesVariableOff = 10689
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_Acknowledge_InputArguments OpcuaNodeIdServicesVariableOff = 10691
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_Confirm_InputArguments OpcuaNodeIdServicesVariableOff = 10693
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ActiveState OpcuaNodeIdServicesVariableOff = 10694
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ActiveState_Id OpcuaNodeIdServicesVariableOff = 10695
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ActiveState_Name OpcuaNodeIdServicesVariableOff = 10696
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ActiveState_Number OpcuaNodeIdServicesVariableOff = 10697
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ActiveState_EffectiveDisplayName OpcuaNodeIdServicesVariableOff = 10698
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ActiveState_TransitionTime OpcuaNodeIdServicesVariableOff = 10699
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ActiveState_EffectiveTransitionTime OpcuaNodeIdServicesVariableOff = 10700
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ActiveState_TrueState OpcuaNodeIdServicesVariableOff = 10701
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ActiveState_FalseState OpcuaNodeIdServicesVariableOff = 10702
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_SuppressedState OpcuaNodeIdServicesVariableOff = 10703
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_SuppressedState_Id OpcuaNodeIdServicesVariableOff = 10704
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_SuppressedState_Name OpcuaNodeIdServicesVariableOff = 10705
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_SuppressedState_Number OpcuaNodeIdServicesVariableOff = 10706
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_SuppressedState_EffectiveDisplayName OpcuaNodeIdServicesVariableOff = 10707
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_SuppressedState_TransitionTime OpcuaNodeIdServicesVariableOff = 10708
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_SuppressedState_EffectiveTransitionTime OpcuaNodeIdServicesVariableOff = 10709
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_SuppressedState_TrueState OpcuaNodeIdServicesVariableOff = 10710
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_SuppressedState_FalseState OpcuaNodeIdServicesVariableOff = 10711
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ShelvingState_CurrentState OpcuaNodeIdServicesVariableOff = 10713
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ShelvingState_CurrentState_Id OpcuaNodeIdServicesVariableOff = 10714
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ShelvingState_CurrentState_Name OpcuaNodeIdServicesVariableOff = 10715
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ShelvingState_CurrentState_Number OpcuaNodeIdServicesVariableOff = 10716
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ShelvingState_CurrentState_EffectiveDisplayName OpcuaNodeIdServicesVariableOff = 10717
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ShelvingState_LastTransition OpcuaNodeIdServicesVariableOff = 10718
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ShelvingState_LastTransition_Id OpcuaNodeIdServicesVariableOff = 10719
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ShelvingState_LastTransition_Name OpcuaNodeIdServicesVariableOff = 10720
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ShelvingState_LastTransition_Number OpcuaNodeIdServicesVariableOff = 10721
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ShelvingState_LastTransition_TransitionTime OpcuaNodeIdServicesVariableOff = 10722
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ShelvingState_UnshelveTime OpcuaNodeIdServicesVariableOff = 10723
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ShelvingState_TimedShelve_InputArguments OpcuaNodeIdServicesVariableOff = 10748
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_SuppressedOrShelved OpcuaNodeIdServicesVariableOff = 10749
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_MaxTimeShelved OpcuaNodeIdServicesVariableOff = 10750
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ConditionClassId OpcuaNodeIdServicesVariableOff = 11155
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ConditionClassName OpcuaNodeIdServicesVariableOff = 11156
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_InputNode OpcuaNodeIdServicesVariableOff = 11157
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_NormalState OpcuaNodeIdServicesVariableOff = 11158
+const (
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_EventId                                              OpcuaNodeIdServicesVariableOff = 10638
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_EventType                                            OpcuaNodeIdServicesVariableOff = 10639
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_SourceNode                                           OpcuaNodeIdServicesVariableOff = 10640
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_SourceName                                           OpcuaNodeIdServicesVariableOff = 10641
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_Time                                                 OpcuaNodeIdServicesVariableOff = 10642
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ReceiveTime                                          OpcuaNodeIdServicesVariableOff = 10643
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_LocalTime                                            OpcuaNodeIdServicesVariableOff = 10644
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_Message                                              OpcuaNodeIdServicesVariableOff = 10645
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_Severity                                             OpcuaNodeIdServicesVariableOff = 10646
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ConditionName                                        OpcuaNodeIdServicesVariableOff = 10647
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_BranchId                                             OpcuaNodeIdServicesVariableOff = 10648
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_Retain                                               OpcuaNodeIdServicesVariableOff = 10649
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_EnabledState                                         OpcuaNodeIdServicesVariableOff = 10650
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_EnabledState_Id                                      OpcuaNodeIdServicesVariableOff = 10651
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_EnabledState_Name                                    OpcuaNodeIdServicesVariableOff = 10652
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_EnabledState_Number                                  OpcuaNodeIdServicesVariableOff = 10653
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_EnabledState_EffectiveDisplayName                    OpcuaNodeIdServicesVariableOff = 10654
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_EnabledState_TransitionTime                          OpcuaNodeIdServicesVariableOff = 10655
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_EnabledState_EffectiveTransitionTime                 OpcuaNodeIdServicesVariableOff = 10656
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_EnabledState_TrueState                               OpcuaNodeIdServicesVariableOff = 10657
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_EnabledState_FalseState                              OpcuaNodeIdServicesVariableOff = 10658
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_Quality                                              OpcuaNodeIdServicesVariableOff = 10659
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_Quality_SourceTimestamp                              OpcuaNodeIdServicesVariableOff = 10660
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_LastSeverity                                         OpcuaNodeIdServicesVariableOff = 10661
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_LastSeverity_SourceTimestamp                         OpcuaNodeIdServicesVariableOff = 10662
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_Comment                                              OpcuaNodeIdServicesVariableOff = 10663
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_Comment_SourceTimestamp                              OpcuaNodeIdServicesVariableOff = 10664
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ClientUserId                                         OpcuaNodeIdServicesVariableOff = 10665
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_AddComment_InputArguments                            OpcuaNodeIdServicesVariableOff = 10669
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ConditionRefresh_InputArguments                      OpcuaNodeIdServicesVariableOff = 10671
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_AckedState                                           OpcuaNodeIdServicesVariableOff = 10672
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_AckedState_Id                                        OpcuaNodeIdServicesVariableOff = 10673
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_AckedState_Name                                      OpcuaNodeIdServicesVariableOff = 10674
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_AckedState_Number                                    OpcuaNodeIdServicesVariableOff = 10675
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_AckedState_EffectiveDisplayName                      OpcuaNodeIdServicesVariableOff = 10676
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_AckedState_TransitionTime                            OpcuaNodeIdServicesVariableOff = 10677
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_AckedState_EffectiveTransitionTime                   OpcuaNodeIdServicesVariableOff = 10678
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_AckedState_TrueState                                 OpcuaNodeIdServicesVariableOff = 10679
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_AckedState_FalseState                                OpcuaNodeIdServicesVariableOff = 10680
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ConfirmedState                                       OpcuaNodeIdServicesVariableOff = 10681
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ConfirmedState_Id                                    OpcuaNodeIdServicesVariableOff = 10682
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ConfirmedState_Name                                  OpcuaNodeIdServicesVariableOff = 10683
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ConfirmedState_Number                                OpcuaNodeIdServicesVariableOff = 10684
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ConfirmedState_EffectiveDisplayName                  OpcuaNodeIdServicesVariableOff = 10685
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ConfirmedState_TransitionTime                        OpcuaNodeIdServicesVariableOff = 10686
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ConfirmedState_EffectiveTransitionTime               OpcuaNodeIdServicesVariableOff = 10687
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ConfirmedState_TrueState                             OpcuaNodeIdServicesVariableOff = 10688
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ConfirmedState_FalseState                            OpcuaNodeIdServicesVariableOff = 10689
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_Acknowledge_InputArguments                           OpcuaNodeIdServicesVariableOff = 10691
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_Confirm_InputArguments                               OpcuaNodeIdServicesVariableOff = 10693
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ActiveState                                          OpcuaNodeIdServicesVariableOff = 10694
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ActiveState_Id                                       OpcuaNodeIdServicesVariableOff = 10695
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ActiveState_Name                                     OpcuaNodeIdServicesVariableOff = 10696
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ActiveState_Number                                   OpcuaNodeIdServicesVariableOff = 10697
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ActiveState_EffectiveDisplayName                     OpcuaNodeIdServicesVariableOff = 10698
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ActiveState_TransitionTime                           OpcuaNodeIdServicesVariableOff = 10699
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ActiveState_EffectiveTransitionTime                  OpcuaNodeIdServicesVariableOff = 10700
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ActiveState_TrueState                                OpcuaNodeIdServicesVariableOff = 10701
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ActiveState_FalseState                               OpcuaNodeIdServicesVariableOff = 10702
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_SuppressedState                                      OpcuaNodeIdServicesVariableOff = 10703
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_SuppressedState_Id                                   OpcuaNodeIdServicesVariableOff = 10704
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_SuppressedState_Name                                 OpcuaNodeIdServicesVariableOff = 10705
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_SuppressedState_Number                               OpcuaNodeIdServicesVariableOff = 10706
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_SuppressedState_EffectiveDisplayName                 OpcuaNodeIdServicesVariableOff = 10707
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_SuppressedState_TransitionTime                       OpcuaNodeIdServicesVariableOff = 10708
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_SuppressedState_EffectiveTransitionTime              OpcuaNodeIdServicesVariableOff = 10709
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_SuppressedState_TrueState                            OpcuaNodeIdServicesVariableOff = 10710
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_SuppressedState_FalseState                           OpcuaNodeIdServicesVariableOff = 10711
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ShelvingState_CurrentState                           OpcuaNodeIdServicesVariableOff = 10713
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ShelvingState_CurrentState_Id                        OpcuaNodeIdServicesVariableOff = 10714
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ShelvingState_CurrentState_Name                      OpcuaNodeIdServicesVariableOff = 10715
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ShelvingState_CurrentState_Number                    OpcuaNodeIdServicesVariableOff = 10716
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ShelvingState_CurrentState_EffectiveDisplayName      OpcuaNodeIdServicesVariableOff = 10717
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ShelvingState_LastTransition                         OpcuaNodeIdServicesVariableOff = 10718
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ShelvingState_LastTransition_Id                      OpcuaNodeIdServicesVariableOff = 10719
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ShelvingState_LastTransition_Name                    OpcuaNodeIdServicesVariableOff = 10720
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ShelvingState_LastTransition_Number                  OpcuaNodeIdServicesVariableOff = 10721
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ShelvingState_LastTransition_TransitionTime          OpcuaNodeIdServicesVariableOff = 10722
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ShelvingState_UnshelveTime                           OpcuaNodeIdServicesVariableOff = 10723
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ShelvingState_TimedShelve_InputArguments             OpcuaNodeIdServicesVariableOff = 10748
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_SuppressedOrShelved                                  OpcuaNodeIdServicesVariableOff = 10749
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_MaxTimeShelved                                       OpcuaNodeIdServicesVariableOff = 10750
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ConditionClassId                                     OpcuaNodeIdServicesVariableOff = 11155
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ConditionClassName                                   OpcuaNodeIdServicesVariableOff = 11156
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_InputNode                                            OpcuaNodeIdServicesVariableOff = 11157
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_NormalState                                          OpcuaNodeIdServicesVariableOff = 11158
 	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ShelvingState_LastTransition_EffectiveTransitionTime OpcuaNodeIdServicesVariableOff = 11482
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ConditionRefresh2_InputArguments OpcuaNodeIdServicesVariableOff = 13007
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ConditionSubClassId OpcuaNodeIdServicesVariableOff = 16936
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ConditionSubClassName OpcuaNodeIdServicesVariableOff = 16937
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_OutOfServiceState OpcuaNodeIdServicesVariableOff = 16938
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_OutOfServiceState_Id OpcuaNodeIdServicesVariableOff = 16939
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_OutOfServiceState_Name OpcuaNodeIdServicesVariableOff = 16940
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_OutOfServiceState_Number OpcuaNodeIdServicesVariableOff = 16941
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_OutOfServiceState_EffectiveDisplayName OpcuaNodeIdServicesVariableOff = 16942
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_OutOfServiceState_TransitionTime OpcuaNodeIdServicesVariableOff = 16943
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_OutOfServiceState_EffectiveTransitionTime OpcuaNodeIdServicesVariableOff = 16944
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_OutOfServiceState_TrueState OpcuaNodeIdServicesVariableOff = 16945
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_OutOfServiceState_FalseState OpcuaNodeIdServicesVariableOff = 16946
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_SilenceState OpcuaNodeIdServicesVariableOff = 16947
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_SilenceState_Id OpcuaNodeIdServicesVariableOff = 16948
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_SilenceState_Name OpcuaNodeIdServicesVariableOff = 16949
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_SilenceState_Number OpcuaNodeIdServicesVariableOff = 16950
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_SilenceState_EffectiveDisplayName OpcuaNodeIdServicesVariableOff = 16951
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_SilenceState_TransitionTime OpcuaNodeIdServicesVariableOff = 16952
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_SilenceState_EffectiveTransitionTime OpcuaNodeIdServicesVariableOff = 16953
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_SilenceState_TrueState OpcuaNodeIdServicesVariableOff = 16954
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_SilenceState_FalseState OpcuaNodeIdServicesVariableOff = 16955
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_AudibleEnabled OpcuaNodeIdServicesVariableOff = 16956
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_AudibleSound OpcuaNodeIdServicesVariableOff = 16957
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_OnDelay OpcuaNodeIdServicesVariableOff = 16962
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_OffDelay OpcuaNodeIdServicesVariableOff = 16963
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_FirstInGroupFlag OpcuaNodeIdServicesVariableOff = 16964
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ReAlarmTime OpcuaNodeIdServicesVariableOff = 16967
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ReAlarmRepeatCount OpcuaNodeIdServicesVariableOff = 16968
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ShelvingState_AvailableStates OpcuaNodeIdServicesVariableOff = 17694
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ShelvingState_AvailableTransitions OpcuaNodeIdServicesVariableOff = 17695
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_AudibleSound_ListId OpcuaNodeIdServicesVariableOff = 17949
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_AudibleSound_AgencyId OpcuaNodeIdServicesVariableOff = 17950
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_AudibleSound_VersionId OpcuaNodeIdServicesVariableOff = 17951
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_LatchedState OpcuaNodeIdServicesVariableOff = 18317
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_LatchedState_Id OpcuaNodeIdServicesVariableOff = 18318
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_LatchedState_Name OpcuaNodeIdServicesVariableOff = 18319
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_LatchedState_Number OpcuaNodeIdServicesVariableOff = 18320
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_LatchedState_EffectiveDisplayName OpcuaNodeIdServicesVariableOff = 18321
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_LatchedState_TransitionTime OpcuaNodeIdServicesVariableOff = 18322
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_LatchedState_EffectiveTransitionTime OpcuaNodeIdServicesVariableOff = 18323
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_LatchedState_TrueState OpcuaNodeIdServicesVariableOff = 18324
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_LatchedState_FalseState OpcuaNodeIdServicesVariableOff = 18325
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_Suppress2_InputArguments OpcuaNodeIdServicesVariableOff = 24439
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_Unsuppress2_InputArguments OpcuaNodeIdServicesVariableOff = 24441
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_RemoveFromService2_InputArguments OpcuaNodeIdServicesVariableOff = 24443
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_PlaceInService2_InputArguments OpcuaNodeIdServicesVariableOff = 24445
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_Reset2_InputArguments OpcuaNodeIdServicesVariableOff = 24447
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ShelvingState_TimedShelve2_InputArguments OpcuaNodeIdServicesVariableOff = 24915
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ShelvingState_Unshelve2_InputArguments OpcuaNodeIdServicesVariableOff = 24917
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ShelvingState_OneShotShelve2_InputArguments OpcuaNodeIdServicesVariableOff = 24919
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_GetGroupMemberships_OutputArguments OpcuaNodeIdServicesVariableOff = 25169
-	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_SupportsFilteredRetain OpcuaNodeIdServicesVariableOff = 32237
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ConditionRefresh2_InputArguments                     OpcuaNodeIdServicesVariableOff = 13007
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ConditionSubClassId                                  OpcuaNodeIdServicesVariableOff = 16936
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ConditionSubClassName                                OpcuaNodeIdServicesVariableOff = 16937
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_OutOfServiceState                                    OpcuaNodeIdServicesVariableOff = 16938
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_OutOfServiceState_Id                                 OpcuaNodeIdServicesVariableOff = 16939
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_OutOfServiceState_Name                               OpcuaNodeIdServicesVariableOff = 16940
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_OutOfServiceState_Number                             OpcuaNodeIdServicesVariableOff = 16941
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_OutOfServiceState_EffectiveDisplayName               OpcuaNodeIdServicesVariableOff = 16942
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_OutOfServiceState_TransitionTime                     OpcuaNodeIdServicesVariableOff = 16943
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_OutOfServiceState_EffectiveTransitionTime            OpcuaNodeIdServicesVariableOff = 16944
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_OutOfServiceState_TrueState                          OpcuaNodeIdServicesVariableOff = 16945
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_OutOfServiceState_FalseState                         OpcuaNodeIdServicesVariableOff = 16946
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_SilenceState                                         OpcuaNodeIdServicesVariableOff = 16947
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_SilenceState_Id                                      OpcuaNodeIdServicesVariableOff = 16948
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_SilenceState_Name                                    OpcuaNodeIdServicesVariableOff = 16949
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_SilenceState_Number                                  OpcuaNodeIdServicesVariableOff = 16950
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_SilenceState_EffectiveDisplayName                    OpcuaNodeIdServicesVariableOff = 16951
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_SilenceState_TransitionTime                          OpcuaNodeIdServicesVariableOff = 16952
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_SilenceState_EffectiveTransitionTime                 OpcuaNodeIdServicesVariableOff = 16953
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_SilenceState_TrueState                               OpcuaNodeIdServicesVariableOff = 16954
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_SilenceState_FalseState                              OpcuaNodeIdServicesVariableOff = 16955
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_AudibleEnabled                                       OpcuaNodeIdServicesVariableOff = 16956
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_AudibleSound                                         OpcuaNodeIdServicesVariableOff = 16957
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_OnDelay                                              OpcuaNodeIdServicesVariableOff = 16962
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_OffDelay                                             OpcuaNodeIdServicesVariableOff = 16963
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_FirstInGroupFlag                                     OpcuaNodeIdServicesVariableOff = 16964
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ReAlarmTime                                          OpcuaNodeIdServicesVariableOff = 16967
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ReAlarmRepeatCount                                   OpcuaNodeIdServicesVariableOff = 16968
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ShelvingState_AvailableStates                        OpcuaNodeIdServicesVariableOff = 17694
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ShelvingState_AvailableTransitions                   OpcuaNodeIdServicesVariableOff = 17695
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_AudibleSound_ListId                                  OpcuaNodeIdServicesVariableOff = 17949
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_AudibleSound_AgencyId                                OpcuaNodeIdServicesVariableOff = 17950
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_AudibleSound_VersionId                               OpcuaNodeIdServicesVariableOff = 17951
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_LatchedState                                         OpcuaNodeIdServicesVariableOff = 18317
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_LatchedState_Id                                      OpcuaNodeIdServicesVariableOff = 18318
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_LatchedState_Name                                    OpcuaNodeIdServicesVariableOff = 18319
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_LatchedState_Number                                  OpcuaNodeIdServicesVariableOff = 18320
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_LatchedState_EffectiveDisplayName                    OpcuaNodeIdServicesVariableOff = 18321
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_LatchedState_TransitionTime                          OpcuaNodeIdServicesVariableOff = 18322
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_LatchedState_EffectiveTransitionTime                 OpcuaNodeIdServicesVariableOff = 18323
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_LatchedState_TrueState                               OpcuaNodeIdServicesVariableOff = 18324
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_LatchedState_FalseState                              OpcuaNodeIdServicesVariableOff = 18325
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_Suppress2_InputArguments                             OpcuaNodeIdServicesVariableOff = 24439
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_Unsuppress2_InputArguments                           OpcuaNodeIdServicesVariableOff = 24441
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_RemoveFromService2_InputArguments                    OpcuaNodeIdServicesVariableOff = 24443
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_PlaceInService2_InputArguments                       OpcuaNodeIdServicesVariableOff = 24445
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_Reset2_InputArguments                                OpcuaNodeIdServicesVariableOff = 24447
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ShelvingState_TimedShelve2_InputArguments            OpcuaNodeIdServicesVariableOff = 24915
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ShelvingState_Unshelve2_InputArguments               OpcuaNodeIdServicesVariableOff = 24917
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ShelvingState_OneShotShelve2_InputArguments          OpcuaNodeIdServicesVariableOff = 24919
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_GetGroupMemberships_OutputArguments                  OpcuaNodeIdServicesVariableOff = 25169
+	OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_SupportsFilteredRetain                               OpcuaNodeIdServicesVariableOff = 32237
 )
 
 var OpcuaNodeIdServicesVariableOffValues []OpcuaNodeIdServicesVariableOff
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariableOffValues = []OpcuaNodeIdServicesVariableOff {
+	OpcuaNodeIdServicesVariableOffValues = []OpcuaNodeIdServicesVariableOff{
 		OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_EventId,
 		OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_EventType,
 		OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_SourceNode,
@@ -331,284 +331,284 @@ func init() {
 
 func OpcuaNodeIdServicesVariableOffByValue(value int32) (enum OpcuaNodeIdServicesVariableOff, ok bool) {
 	switch value {
-		case 10638:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_EventId, true
-		case 10639:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_EventType, true
-		case 10640:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_SourceNode, true
-		case 10641:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_SourceName, true
-		case 10642:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_Time, true
-		case 10643:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ReceiveTime, true
-		case 10644:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_LocalTime, true
-		case 10645:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_Message, true
-		case 10646:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_Severity, true
-		case 10647:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ConditionName, true
-		case 10648:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_BranchId, true
-		case 10649:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_Retain, true
-		case 10650:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_EnabledState, true
-		case 10651:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_EnabledState_Id, true
-		case 10652:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_EnabledState_Name, true
-		case 10653:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_EnabledState_Number, true
-		case 10654:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_EnabledState_EffectiveDisplayName, true
-		case 10655:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_EnabledState_TransitionTime, true
-		case 10656:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_EnabledState_EffectiveTransitionTime, true
-		case 10657:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_EnabledState_TrueState, true
-		case 10658:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_EnabledState_FalseState, true
-		case 10659:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_Quality, true
-		case 10660:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_Quality_SourceTimestamp, true
-		case 10661:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_LastSeverity, true
-		case 10662:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_LastSeverity_SourceTimestamp, true
-		case 10663:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_Comment, true
-		case 10664:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_Comment_SourceTimestamp, true
-		case 10665:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ClientUserId, true
-		case 10669:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_AddComment_InputArguments, true
-		case 10671:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ConditionRefresh_InputArguments, true
-		case 10672:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_AckedState, true
-		case 10673:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_AckedState_Id, true
-		case 10674:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_AckedState_Name, true
-		case 10675:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_AckedState_Number, true
-		case 10676:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_AckedState_EffectiveDisplayName, true
-		case 10677:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_AckedState_TransitionTime, true
-		case 10678:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_AckedState_EffectiveTransitionTime, true
-		case 10679:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_AckedState_TrueState, true
-		case 10680:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_AckedState_FalseState, true
-		case 10681:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ConfirmedState, true
-		case 10682:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ConfirmedState_Id, true
-		case 10683:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ConfirmedState_Name, true
-		case 10684:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ConfirmedState_Number, true
-		case 10685:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ConfirmedState_EffectiveDisplayName, true
-		case 10686:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ConfirmedState_TransitionTime, true
-		case 10687:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ConfirmedState_EffectiveTransitionTime, true
-		case 10688:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ConfirmedState_TrueState, true
-		case 10689:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ConfirmedState_FalseState, true
-		case 10691:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_Acknowledge_InputArguments, true
-		case 10693:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_Confirm_InputArguments, true
-		case 10694:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ActiveState, true
-		case 10695:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ActiveState_Id, true
-		case 10696:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ActiveState_Name, true
-		case 10697:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ActiveState_Number, true
-		case 10698:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ActiveState_EffectiveDisplayName, true
-		case 10699:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ActiveState_TransitionTime, true
-		case 10700:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ActiveState_EffectiveTransitionTime, true
-		case 10701:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ActiveState_TrueState, true
-		case 10702:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ActiveState_FalseState, true
-		case 10703:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_SuppressedState, true
-		case 10704:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_SuppressedState_Id, true
-		case 10705:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_SuppressedState_Name, true
-		case 10706:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_SuppressedState_Number, true
-		case 10707:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_SuppressedState_EffectiveDisplayName, true
-		case 10708:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_SuppressedState_TransitionTime, true
-		case 10709:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_SuppressedState_EffectiveTransitionTime, true
-		case 10710:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_SuppressedState_TrueState, true
-		case 10711:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_SuppressedState_FalseState, true
-		case 10713:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ShelvingState_CurrentState, true
-		case 10714:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ShelvingState_CurrentState_Id, true
-		case 10715:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ShelvingState_CurrentState_Name, true
-		case 10716:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ShelvingState_CurrentState_Number, true
-		case 10717:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ShelvingState_CurrentState_EffectiveDisplayName, true
-		case 10718:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ShelvingState_LastTransition, true
-		case 10719:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ShelvingState_LastTransition_Id, true
-		case 10720:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ShelvingState_LastTransition_Name, true
-		case 10721:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ShelvingState_LastTransition_Number, true
-		case 10722:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ShelvingState_LastTransition_TransitionTime, true
-		case 10723:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ShelvingState_UnshelveTime, true
-		case 10748:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ShelvingState_TimedShelve_InputArguments, true
-		case 10749:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_SuppressedOrShelved, true
-		case 10750:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_MaxTimeShelved, true
-		case 11155:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ConditionClassId, true
-		case 11156:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ConditionClassName, true
-		case 11157:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_InputNode, true
-		case 11158:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_NormalState, true
-		case 11482:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ShelvingState_LastTransition_EffectiveTransitionTime, true
-		case 13007:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ConditionRefresh2_InputArguments, true
-		case 16936:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ConditionSubClassId, true
-		case 16937:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ConditionSubClassName, true
-		case 16938:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_OutOfServiceState, true
-		case 16939:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_OutOfServiceState_Id, true
-		case 16940:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_OutOfServiceState_Name, true
-		case 16941:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_OutOfServiceState_Number, true
-		case 16942:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_OutOfServiceState_EffectiveDisplayName, true
-		case 16943:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_OutOfServiceState_TransitionTime, true
-		case 16944:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_OutOfServiceState_EffectiveTransitionTime, true
-		case 16945:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_OutOfServiceState_TrueState, true
-		case 16946:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_OutOfServiceState_FalseState, true
-		case 16947:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_SilenceState, true
-		case 16948:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_SilenceState_Id, true
-		case 16949:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_SilenceState_Name, true
-		case 16950:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_SilenceState_Number, true
-		case 16951:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_SilenceState_EffectiveDisplayName, true
-		case 16952:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_SilenceState_TransitionTime, true
-		case 16953:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_SilenceState_EffectiveTransitionTime, true
-		case 16954:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_SilenceState_TrueState, true
-		case 16955:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_SilenceState_FalseState, true
-		case 16956:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_AudibleEnabled, true
-		case 16957:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_AudibleSound, true
-		case 16962:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_OnDelay, true
-		case 16963:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_OffDelay, true
-		case 16964:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_FirstInGroupFlag, true
-		case 16967:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ReAlarmTime, true
-		case 16968:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ReAlarmRepeatCount, true
-		case 17694:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ShelvingState_AvailableStates, true
-		case 17695:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ShelvingState_AvailableTransitions, true
-		case 17949:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_AudibleSound_ListId, true
-		case 17950:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_AudibleSound_AgencyId, true
-		case 17951:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_AudibleSound_VersionId, true
-		case 18317:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_LatchedState, true
-		case 18318:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_LatchedState_Id, true
-		case 18319:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_LatchedState_Name, true
-		case 18320:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_LatchedState_Number, true
-		case 18321:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_LatchedState_EffectiveDisplayName, true
-		case 18322:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_LatchedState_TransitionTime, true
-		case 18323:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_LatchedState_EffectiveTransitionTime, true
-		case 18324:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_LatchedState_TrueState, true
-		case 18325:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_LatchedState_FalseState, true
-		case 24439:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_Suppress2_InputArguments, true
-		case 24441:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_Unsuppress2_InputArguments, true
-		case 24443:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_RemoveFromService2_InputArguments, true
-		case 24445:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_PlaceInService2_InputArguments, true
-		case 24447:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_Reset2_InputArguments, true
-		case 24915:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ShelvingState_TimedShelve2_InputArguments, true
-		case 24917:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ShelvingState_Unshelve2_InputArguments, true
-		case 24919:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ShelvingState_OneShotShelve2_InputArguments, true
-		case 25169:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_GetGroupMemberships_OutputArguments, true
-		case 32237:
-			return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_SupportsFilteredRetain, true
+	case 10638:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_EventId, true
+	case 10639:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_EventType, true
+	case 10640:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_SourceNode, true
+	case 10641:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_SourceName, true
+	case 10642:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_Time, true
+	case 10643:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ReceiveTime, true
+	case 10644:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_LocalTime, true
+	case 10645:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_Message, true
+	case 10646:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_Severity, true
+	case 10647:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ConditionName, true
+	case 10648:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_BranchId, true
+	case 10649:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_Retain, true
+	case 10650:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_EnabledState, true
+	case 10651:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_EnabledState_Id, true
+	case 10652:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_EnabledState_Name, true
+	case 10653:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_EnabledState_Number, true
+	case 10654:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_EnabledState_EffectiveDisplayName, true
+	case 10655:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_EnabledState_TransitionTime, true
+	case 10656:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_EnabledState_EffectiveTransitionTime, true
+	case 10657:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_EnabledState_TrueState, true
+	case 10658:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_EnabledState_FalseState, true
+	case 10659:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_Quality, true
+	case 10660:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_Quality_SourceTimestamp, true
+	case 10661:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_LastSeverity, true
+	case 10662:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_LastSeverity_SourceTimestamp, true
+	case 10663:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_Comment, true
+	case 10664:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_Comment_SourceTimestamp, true
+	case 10665:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ClientUserId, true
+	case 10669:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_AddComment_InputArguments, true
+	case 10671:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ConditionRefresh_InputArguments, true
+	case 10672:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_AckedState, true
+	case 10673:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_AckedState_Id, true
+	case 10674:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_AckedState_Name, true
+	case 10675:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_AckedState_Number, true
+	case 10676:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_AckedState_EffectiveDisplayName, true
+	case 10677:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_AckedState_TransitionTime, true
+	case 10678:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_AckedState_EffectiveTransitionTime, true
+	case 10679:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_AckedState_TrueState, true
+	case 10680:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_AckedState_FalseState, true
+	case 10681:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ConfirmedState, true
+	case 10682:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ConfirmedState_Id, true
+	case 10683:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ConfirmedState_Name, true
+	case 10684:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ConfirmedState_Number, true
+	case 10685:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ConfirmedState_EffectiveDisplayName, true
+	case 10686:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ConfirmedState_TransitionTime, true
+	case 10687:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ConfirmedState_EffectiveTransitionTime, true
+	case 10688:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ConfirmedState_TrueState, true
+	case 10689:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ConfirmedState_FalseState, true
+	case 10691:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_Acknowledge_InputArguments, true
+	case 10693:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_Confirm_InputArguments, true
+	case 10694:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ActiveState, true
+	case 10695:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ActiveState_Id, true
+	case 10696:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ActiveState_Name, true
+	case 10697:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ActiveState_Number, true
+	case 10698:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ActiveState_EffectiveDisplayName, true
+	case 10699:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ActiveState_TransitionTime, true
+	case 10700:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ActiveState_EffectiveTransitionTime, true
+	case 10701:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ActiveState_TrueState, true
+	case 10702:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ActiveState_FalseState, true
+	case 10703:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_SuppressedState, true
+	case 10704:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_SuppressedState_Id, true
+	case 10705:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_SuppressedState_Name, true
+	case 10706:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_SuppressedState_Number, true
+	case 10707:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_SuppressedState_EffectiveDisplayName, true
+	case 10708:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_SuppressedState_TransitionTime, true
+	case 10709:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_SuppressedState_EffectiveTransitionTime, true
+	case 10710:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_SuppressedState_TrueState, true
+	case 10711:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_SuppressedState_FalseState, true
+	case 10713:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ShelvingState_CurrentState, true
+	case 10714:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ShelvingState_CurrentState_Id, true
+	case 10715:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ShelvingState_CurrentState_Name, true
+	case 10716:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ShelvingState_CurrentState_Number, true
+	case 10717:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ShelvingState_CurrentState_EffectiveDisplayName, true
+	case 10718:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ShelvingState_LastTransition, true
+	case 10719:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ShelvingState_LastTransition_Id, true
+	case 10720:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ShelvingState_LastTransition_Name, true
+	case 10721:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ShelvingState_LastTransition_Number, true
+	case 10722:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ShelvingState_LastTransition_TransitionTime, true
+	case 10723:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ShelvingState_UnshelveTime, true
+	case 10748:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ShelvingState_TimedShelve_InputArguments, true
+	case 10749:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_SuppressedOrShelved, true
+	case 10750:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_MaxTimeShelved, true
+	case 11155:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ConditionClassId, true
+	case 11156:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ConditionClassName, true
+	case 11157:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_InputNode, true
+	case 11158:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_NormalState, true
+	case 11482:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ShelvingState_LastTransition_EffectiveTransitionTime, true
+	case 13007:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ConditionRefresh2_InputArguments, true
+	case 16936:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ConditionSubClassId, true
+	case 16937:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ConditionSubClassName, true
+	case 16938:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_OutOfServiceState, true
+	case 16939:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_OutOfServiceState_Id, true
+	case 16940:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_OutOfServiceState_Name, true
+	case 16941:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_OutOfServiceState_Number, true
+	case 16942:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_OutOfServiceState_EffectiveDisplayName, true
+	case 16943:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_OutOfServiceState_TransitionTime, true
+	case 16944:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_OutOfServiceState_EffectiveTransitionTime, true
+	case 16945:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_OutOfServiceState_TrueState, true
+	case 16946:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_OutOfServiceState_FalseState, true
+	case 16947:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_SilenceState, true
+	case 16948:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_SilenceState_Id, true
+	case 16949:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_SilenceState_Name, true
+	case 16950:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_SilenceState_Number, true
+	case 16951:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_SilenceState_EffectiveDisplayName, true
+	case 16952:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_SilenceState_TransitionTime, true
+	case 16953:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_SilenceState_EffectiveTransitionTime, true
+	case 16954:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_SilenceState_TrueState, true
+	case 16955:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_SilenceState_FalseState, true
+	case 16956:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_AudibleEnabled, true
+	case 16957:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_AudibleSound, true
+	case 16962:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_OnDelay, true
+	case 16963:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_OffDelay, true
+	case 16964:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_FirstInGroupFlag, true
+	case 16967:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ReAlarmTime, true
+	case 16968:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ReAlarmRepeatCount, true
+	case 17694:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ShelvingState_AvailableStates, true
+	case 17695:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ShelvingState_AvailableTransitions, true
+	case 17949:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_AudibleSound_ListId, true
+	case 17950:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_AudibleSound_AgencyId, true
+	case 17951:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_AudibleSound_VersionId, true
+	case 18317:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_LatchedState, true
+	case 18318:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_LatchedState_Id, true
+	case 18319:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_LatchedState_Name, true
+	case 18320:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_LatchedState_Number, true
+	case 18321:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_LatchedState_EffectiveDisplayName, true
+	case 18322:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_LatchedState_TransitionTime, true
+	case 18323:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_LatchedState_EffectiveTransitionTime, true
+	case 18324:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_LatchedState_TrueState, true
+	case 18325:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_LatchedState_FalseState, true
+	case 24439:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_Suppress2_InputArguments, true
+	case 24441:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_Unsuppress2_InputArguments, true
+	case 24443:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_RemoveFromService2_InputArguments, true
+	case 24445:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_PlaceInService2_InputArguments, true
+	case 24447:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_Reset2_InputArguments, true
+	case 24915:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ShelvingState_TimedShelve2_InputArguments, true
+	case 24917:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ShelvingState_Unshelve2_InputArguments, true
+	case 24919:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_ShelvingState_OneShotShelve2_InputArguments, true
+	case 25169:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_GetGroupMemberships_OutputArguments, true
+	case 32237:
+		return OpcuaNodeIdServicesVariableOff_OffNormalAlarmType_SupportsFilteredRetain, true
 	}
 	return 0, false
 }
@@ -897,13 +897,13 @@ func OpcuaNodeIdServicesVariableOffByName(value string) (enum OpcuaNodeIdService
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariableOffKnows(value int32)  bool {
+func OpcuaNodeIdServicesVariableOffKnows(value int32) bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariableOffValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastOpcuaNodeIdServicesVariableOff(structType any) OpcuaNodeIdServicesVariableOff {
@@ -1245,4 +1245,3 @@ func (e OpcuaNodeIdServicesVariableOff) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariableOff) String() string {
 	return e.PLC4XEnumName()
 }
-

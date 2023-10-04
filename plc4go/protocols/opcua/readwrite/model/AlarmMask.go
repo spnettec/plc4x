@@ -40,18 +40,18 @@ type IAlarmMask interface {
 	utils.Serializable
 }
 
-const(
-	AlarmMask_alarmMaskNone AlarmMask = 0
-	AlarmMask_alarmMaskActive AlarmMask = 1
+const (
+	AlarmMask_alarmMaskNone           AlarmMask = 0
+	AlarmMask_alarmMaskActive         AlarmMask = 1
 	AlarmMask_alarmMaskUnacknowledged AlarmMask = 2
-	AlarmMask_alarmMaskUnconfirmed AlarmMask = 4
+	AlarmMask_alarmMaskUnconfirmed    AlarmMask = 4
 )
 
 var AlarmMaskValues []AlarmMask
 
 func init() {
 	_ = errors.New
-	AlarmMaskValues = []AlarmMask {
+	AlarmMaskValues = []AlarmMask{
 		AlarmMask_alarmMaskNone,
 		AlarmMask_alarmMaskActive,
 		AlarmMask_alarmMaskUnacknowledged,
@@ -61,14 +61,14 @@ func init() {
 
 func AlarmMaskByValue(value uint16) (enum AlarmMask, ok bool) {
 	switch value {
-		case 0:
-			return AlarmMask_alarmMaskNone, true
-		case 1:
-			return AlarmMask_alarmMaskActive, true
-		case 2:
-			return AlarmMask_alarmMaskUnacknowledged, true
-		case 4:
-			return AlarmMask_alarmMaskUnconfirmed, true
+	case 0:
+		return AlarmMask_alarmMaskNone, true
+	case 1:
+		return AlarmMask_alarmMaskActive, true
+	case 2:
+		return AlarmMask_alarmMaskUnacknowledged, true
+	case 4:
+		return AlarmMask_alarmMaskUnconfirmed, true
 	}
 	return 0, false
 }
@@ -87,13 +87,13 @@ func AlarmMaskByName(value string) (enum AlarmMask, ok bool) {
 	return 0, false
 }
 
-func AlarmMaskKnows(value uint16)  bool {
+func AlarmMaskKnows(value uint16) bool {
 	for _, typeValue := range AlarmMaskValues {
 		if uint16(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastAlarmMask(structType any) AlarmMask {
@@ -165,4 +165,3 @@ func (e AlarmMask) PLC4XEnumName() string {
 func (e AlarmMask) String() string {
 	return e.PLC4XEnumName()
 }
-

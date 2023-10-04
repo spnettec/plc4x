@@ -40,24 +40,24 @@ type IBrowseResultMask interface {
 	utils.Serializable
 }
 
-const(
-	BrowseResultMask_browseResultMaskNone BrowseResultMask = 0
-	BrowseResultMask_browseResultMaskReferenceTypeId BrowseResultMask = 1
-	BrowseResultMask_browseResultMaskIsForward BrowseResultMask = 2
-	BrowseResultMask_browseResultMaskNodeClass BrowseResultMask = 4
-	BrowseResultMask_browseResultMaskBrowseName BrowseResultMask = 8
-	BrowseResultMask_browseResultMaskDisplayName BrowseResultMask = 16
-	BrowseResultMask_browseResultMaskTypeDefinition BrowseResultMask = 32
-	BrowseResultMask_browseResultMaskAll BrowseResultMask = 63
+const (
+	BrowseResultMask_browseResultMaskNone              BrowseResultMask = 0
+	BrowseResultMask_browseResultMaskReferenceTypeId   BrowseResultMask = 1
+	BrowseResultMask_browseResultMaskIsForward         BrowseResultMask = 2
+	BrowseResultMask_browseResultMaskNodeClass         BrowseResultMask = 4
+	BrowseResultMask_browseResultMaskBrowseName        BrowseResultMask = 8
+	BrowseResultMask_browseResultMaskDisplayName       BrowseResultMask = 16
+	BrowseResultMask_browseResultMaskTypeDefinition    BrowseResultMask = 32
+	BrowseResultMask_browseResultMaskAll               BrowseResultMask = 63
 	BrowseResultMask_browseResultMaskReferenceTypeInfo BrowseResultMask = 3
-	BrowseResultMask_browseResultMaskTargetInfo BrowseResultMask = 60
+	BrowseResultMask_browseResultMaskTargetInfo        BrowseResultMask = 60
 )
 
 var BrowseResultMaskValues []BrowseResultMask
 
 func init() {
 	_ = errors.New
-	BrowseResultMaskValues = []BrowseResultMask {
+	BrowseResultMaskValues = []BrowseResultMask{
 		BrowseResultMask_browseResultMaskNone,
 		BrowseResultMask_browseResultMaskReferenceTypeId,
 		BrowseResultMask_browseResultMaskIsForward,
@@ -73,26 +73,26 @@ func init() {
 
 func BrowseResultMaskByValue(value uint32) (enum BrowseResultMask, ok bool) {
 	switch value {
-		case 0:
-			return BrowseResultMask_browseResultMaskNone, true
-		case 1:
-			return BrowseResultMask_browseResultMaskReferenceTypeId, true
-		case 16:
-			return BrowseResultMask_browseResultMaskDisplayName, true
-		case 2:
-			return BrowseResultMask_browseResultMaskIsForward, true
-		case 3:
-			return BrowseResultMask_browseResultMaskReferenceTypeInfo, true
-		case 32:
-			return BrowseResultMask_browseResultMaskTypeDefinition, true
-		case 4:
-			return BrowseResultMask_browseResultMaskNodeClass, true
-		case 60:
-			return BrowseResultMask_browseResultMaskTargetInfo, true
-		case 63:
-			return BrowseResultMask_browseResultMaskAll, true
-		case 8:
-			return BrowseResultMask_browseResultMaskBrowseName, true
+	case 0:
+		return BrowseResultMask_browseResultMaskNone, true
+	case 1:
+		return BrowseResultMask_browseResultMaskReferenceTypeId, true
+	case 16:
+		return BrowseResultMask_browseResultMaskDisplayName, true
+	case 2:
+		return BrowseResultMask_browseResultMaskIsForward, true
+	case 3:
+		return BrowseResultMask_browseResultMaskReferenceTypeInfo, true
+	case 32:
+		return BrowseResultMask_browseResultMaskTypeDefinition, true
+	case 4:
+		return BrowseResultMask_browseResultMaskNodeClass, true
+	case 60:
+		return BrowseResultMask_browseResultMaskTargetInfo, true
+	case 63:
+		return BrowseResultMask_browseResultMaskAll, true
+	case 8:
+		return BrowseResultMask_browseResultMaskBrowseName, true
 	}
 	return 0, false
 }
@@ -123,13 +123,13 @@ func BrowseResultMaskByName(value string) (enum BrowseResultMask, ok bool) {
 	return 0, false
 }
 
-func BrowseResultMaskKnows(value uint32)  bool {
+func BrowseResultMaskKnows(value uint32) bool {
 	for _, typeValue := range BrowseResultMaskValues {
 		if uint32(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastBrowseResultMask(structType any) BrowseResultMask {
@@ -213,4 +213,3 @@ func (e BrowseResultMask) PLC4XEnumName() string {
 func (e BrowseResultMask) String() string {
 	return e.PLC4XEnumName()
 }
-

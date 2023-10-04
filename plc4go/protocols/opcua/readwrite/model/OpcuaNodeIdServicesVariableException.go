@@ -40,7 +40,7 @@ type IOpcuaNodeIdServicesVariableException interface {
 	utils.Serializable
 }
 
-const(
+const (
 	OpcuaNodeIdServicesVariableException_ExceptionDeviationFormat_EnumStrings OpcuaNodeIdServicesVariableException = 7614
 )
 
@@ -48,15 +48,15 @@ var OpcuaNodeIdServicesVariableExceptionValues []OpcuaNodeIdServicesVariableExce
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariableExceptionValues = []OpcuaNodeIdServicesVariableException {
+	OpcuaNodeIdServicesVariableExceptionValues = []OpcuaNodeIdServicesVariableException{
 		OpcuaNodeIdServicesVariableException_ExceptionDeviationFormat_EnumStrings,
 	}
 }
 
 func OpcuaNodeIdServicesVariableExceptionByValue(value int32) (enum OpcuaNodeIdServicesVariableException, ok bool) {
 	switch value {
-		case 7614:
-			return OpcuaNodeIdServicesVariableException_ExceptionDeviationFormat_EnumStrings, true
+	case 7614:
+		return OpcuaNodeIdServicesVariableException_ExceptionDeviationFormat_EnumStrings, true
 	}
 	return 0, false
 }
@@ -69,13 +69,13 @@ func OpcuaNodeIdServicesVariableExceptionByName(value string) (enum OpcuaNodeIdS
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariableExceptionKnows(value int32)  bool {
+func OpcuaNodeIdServicesVariableExceptionKnows(value int32) bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariableExceptionValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastOpcuaNodeIdServicesVariableException(structType any) OpcuaNodeIdServicesVariableException {
@@ -141,4 +141,3 @@ func (e OpcuaNodeIdServicesVariableException) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariableException) String() string {
 	return e.PLC4XEnumName()
 }
-

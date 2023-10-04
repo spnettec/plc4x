@@ -40,7 +40,7 @@ type IOpcuaNodeIdServicesVariableDuplex interface {
 	utils.Serializable
 }
 
-const(
+const (
 	OpcuaNodeIdServicesVariableDuplex_Duplex_EnumValues OpcuaNodeIdServicesVariableDuplex = 24235
 )
 
@@ -48,15 +48,15 @@ var OpcuaNodeIdServicesVariableDuplexValues []OpcuaNodeIdServicesVariableDuplex
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariableDuplexValues = []OpcuaNodeIdServicesVariableDuplex {
+	OpcuaNodeIdServicesVariableDuplexValues = []OpcuaNodeIdServicesVariableDuplex{
 		OpcuaNodeIdServicesVariableDuplex_Duplex_EnumValues,
 	}
 }
 
 func OpcuaNodeIdServicesVariableDuplexByValue(value int32) (enum OpcuaNodeIdServicesVariableDuplex, ok bool) {
 	switch value {
-		case 24235:
-			return OpcuaNodeIdServicesVariableDuplex_Duplex_EnumValues, true
+	case 24235:
+		return OpcuaNodeIdServicesVariableDuplex_Duplex_EnumValues, true
 	}
 	return 0, false
 }
@@ -69,13 +69,13 @@ func OpcuaNodeIdServicesVariableDuplexByName(value string) (enum OpcuaNodeIdServ
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariableDuplexKnows(value int32)  bool {
+func OpcuaNodeIdServicesVariableDuplexKnows(value int32) bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariableDuplexValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastOpcuaNodeIdServicesVariableDuplex(structType any) OpcuaNodeIdServicesVariableDuplex {
@@ -141,4 +141,3 @@ func (e OpcuaNodeIdServicesVariableDuplex) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariableDuplex) String() string {
 	return e.PLC4XEnumName()
 }
-

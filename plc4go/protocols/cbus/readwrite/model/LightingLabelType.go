@@ -40,10 +40,10 @@ type ILightingLabelType interface {
 	utils.Serializable
 }
 
-const(
-	LightingLabelType_TEXT_LABEL LightingLabelType = 0
-	LightingLabelType_PREDEFINED_ICON LightingLabelType = 1
-	LightingLabelType_LOAD_DYNAMIC_ICON LightingLabelType = 2
+const (
+	LightingLabelType_TEXT_LABEL             LightingLabelType = 0
+	LightingLabelType_PREDEFINED_ICON        LightingLabelType = 1
+	LightingLabelType_LOAD_DYNAMIC_ICON      LightingLabelType = 2
 	LightingLabelType_SET_PREFERRED_LANGUAGE LightingLabelType = 3
 )
 
@@ -51,7 +51,7 @@ var LightingLabelTypeValues []LightingLabelType
 
 func init() {
 	_ = errors.New
-	LightingLabelTypeValues = []LightingLabelType {
+	LightingLabelTypeValues = []LightingLabelType{
 		LightingLabelType_TEXT_LABEL,
 		LightingLabelType_PREDEFINED_ICON,
 		LightingLabelType_LOAD_DYNAMIC_ICON,
@@ -61,14 +61,14 @@ func init() {
 
 func LightingLabelTypeByValue(value uint8) (enum LightingLabelType, ok bool) {
 	switch value {
-		case 0:
-			return LightingLabelType_TEXT_LABEL, true
-		case 1:
-			return LightingLabelType_PREDEFINED_ICON, true
-		case 2:
-			return LightingLabelType_LOAD_DYNAMIC_ICON, true
-		case 3:
-			return LightingLabelType_SET_PREFERRED_LANGUAGE, true
+	case 0:
+		return LightingLabelType_TEXT_LABEL, true
+	case 1:
+		return LightingLabelType_PREDEFINED_ICON, true
+	case 2:
+		return LightingLabelType_LOAD_DYNAMIC_ICON, true
+	case 3:
+		return LightingLabelType_SET_PREFERRED_LANGUAGE, true
 	}
 	return 0, false
 }
@@ -87,13 +87,13 @@ func LightingLabelTypeByName(value string) (enum LightingLabelType, ok bool) {
 	return 0, false
 }
 
-func LightingLabelTypeKnows(value uint8)  bool {
+func LightingLabelTypeKnows(value uint8) bool {
 	for _, typeValue := range LightingLabelTypeValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastLightingLabelType(structType any) LightingLabelType {
@@ -165,4 +165,3 @@ func (e LightingLabelType) PLC4XEnumName() string {
 func (e LightingLabelType) String() string {
 	return e.PLC4XEnumName()
 }
-

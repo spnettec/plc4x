@@ -40,20 +40,20 @@ type IOpcuaNodeIdServicesVariableBuild interface {
 	utils.Serializable
 }
 
-const(
-	OpcuaNodeIdServicesVariableBuild_BuildInfoType_ProductUri OpcuaNodeIdServicesVariableBuild = 3052
+const (
+	OpcuaNodeIdServicesVariableBuild_BuildInfoType_ProductUri       OpcuaNodeIdServicesVariableBuild = 3052
 	OpcuaNodeIdServicesVariableBuild_BuildInfoType_ManufacturerName OpcuaNodeIdServicesVariableBuild = 3053
-	OpcuaNodeIdServicesVariableBuild_BuildInfoType_ProductName OpcuaNodeIdServicesVariableBuild = 3054
-	OpcuaNodeIdServicesVariableBuild_BuildInfoType_SoftwareVersion OpcuaNodeIdServicesVariableBuild = 3055
-	OpcuaNodeIdServicesVariableBuild_BuildInfoType_BuildNumber OpcuaNodeIdServicesVariableBuild = 3056
-	OpcuaNodeIdServicesVariableBuild_BuildInfoType_BuildDate OpcuaNodeIdServicesVariableBuild = 3057
+	OpcuaNodeIdServicesVariableBuild_BuildInfoType_ProductName      OpcuaNodeIdServicesVariableBuild = 3054
+	OpcuaNodeIdServicesVariableBuild_BuildInfoType_SoftwareVersion  OpcuaNodeIdServicesVariableBuild = 3055
+	OpcuaNodeIdServicesVariableBuild_BuildInfoType_BuildNumber      OpcuaNodeIdServicesVariableBuild = 3056
+	OpcuaNodeIdServicesVariableBuild_BuildInfoType_BuildDate        OpcuaNodeIdServicesVariableBuild = 3057
 )
 
 var OpcuaNodeIdServicesVariableBuildValues []OpcuaNodeIdServicesVariableBuild
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariableBuildValues = []OpcuaNodeIdServicesVariableBuild {
+	OpcuaNodeIdServicesVariableBuildValues = []OpcuaNodeIdServicesVariableBuild{
 		OpcuaNodeIdServicesVariableBuild_BuildInfoType_ProductUri,
 		OpcuaNodeIdServicesVariableBuild_BuildInfoType_ManufacturerName,
 		OpcuaNodeIdServicesVariableBuild_BuildInfoType_ProductName,
@@ -65,18 +65,18 @@ func init() {
 
 func OpcuaNodeIdServicesVariableBuildByValue(value int32) (enum OpcuaNodeIdServicesVariableBuild, ok bool) {
 	switch value {
-		case 3052:
-			return OpcuaNodeIdServicesVariableBuild_BuildInfoType_ProductUri, true
-		case 3053:
-			return OpcuaNodeIdServicesVariableBuild_BuildInfoType_ManufacturerName, true
-		case 3054:
-			return OpcuaNodeIdServicesVariableBuild_BuildInfoType_ProductName, true
-		case 3055:
-			return OpcuaNodeIdServicesVariableBuild_BuildInfoType_SoftwareVersion, true
-		case 3056:
-			return OpcuaNodeIdServicesVariableBuild_BuildInfoType_BuildNumber, true
-		case 3057:
-			return OpcuaNodeIdServicesVariableBuild_BuildInfoType_BuildDate, true
+	case 3052:
+		return OpcuaNodeIdServicesVariableBuild_BuildInfoType_ProductUri, true
+	case 3053:
+		return OpcuaNodeIdServicesVariableBuild_BuildInfoType_ManufacturerName, true
+	case 3054:
+		return OpcuaNodeIdServicesVariableBuild_BuildInfoType_ProductName, true
+	case 3055:
+		return OpcuaNodeIdServicesVariableBuild_BuildInfoType_SoftwareVersion, true
+	case 3056:
+		return OpcuaNodeIdServicesVariableBuild_BuildInfoType_BuildNumber, true
+	case 3057:
+		return OpcuaNodeIdServicesVariableBuild_BuildInfoType_BuildDate, true
 	}
 	return 0, false
 }
@@ -99,13 +99,13 @@ func OpcuaNodeIdServicesVariableBuildByName(value string) (enum OpcuaNodeIdServi
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariableBuildKnows(value int32)  bool {
+func OpcuaNodeIdServicesVariableBuildKnows(value int32) bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariableBuildValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastOpcuaNodeIdServicesVariableBuild(structType any) OpcuaNodeIdServicesVariableBuild {
@@ -181,4 +181,3 @@ func (e OpcuaNodeIdServicesVariableBuild) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariableBuild) String() string {
 	return e.PLC4XEnumName()
 }
-
