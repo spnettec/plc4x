@@ -5,6 +5,19 @@
 New Features
 ------------
 
+Incompatible changes
+--------------------
+
+Bug Fixes
+---------
+
+==============================================================
+Apache PLC4X 0.11.0
+==============================================================
+
+New Features
+------------
+
 - IEC-60870-5-104 driver
 - Completely rewritten EIP driver that should now support
   Allen-Bradley controllers

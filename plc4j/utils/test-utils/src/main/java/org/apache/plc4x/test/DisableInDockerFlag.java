@@ -16,20 +16,22 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.plc4x.java.utils.pcap.netty.exception;
+package org.apache.plc4x.test;
 
-public class PcapException extends Exception {
+import org.junit.jupiter.api.extension.ExtendWith;
 
-    public PcapException() {
-        super();
-    }
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-    public PcapException(String message) {
-        super(message);
-    }
-
-    public PcapException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
+/**
+ * Some tests seem to only fail or block when run in Docker.
+ * Instead of trying to fix this problem, we'll try this for the
+ * time till someone finds the problem.
+ */
+@Target({ElementType.TYPE, ElementType.METHOD})
+@Retention(RetentionPolicy.RUNTIME)
+@ExtendWith(DisableInDockerFlagCondition.class)
+public @interface DisableInDockerFlag {
 }
