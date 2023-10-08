@@ -75,7 +75,7 @@ public class S7Optimizer extends BaseOptimizer {
             int length = 1;
             if(tag instanceof S7StringTag)
             {
-                length = (((S7StringTag)tag).getStringLength() +2) * 8;
+                length = ((S7StringTag)tag).getStringLength() + 2 ;
             }
             int readResponseItemSize = 4 + (tag.getNumberOfElements() * tag.getDataType().getSizeInBytes() * length);
             // If it's an odd number of bytes, add one to make it even
@@ -106,7 +106,7 @@ public class S7Optimizer extends BaseOptimizer {
                 curTags = new LinkedHashMap<>();
 
                 // Splitting of huge tags not yet implemented, throw an exception instead.
-                if (((curRequestSize + readRequestItemSize) > s7DriverContext.getPduSize()) &&
+                if (((curRequestSize + readRequestItemSize) > s7DriverContext.getPduSize()) ||
                     ((curResponseSize + readResponseItemSize) > s7DriverContext.getPduSize())) {
                     throw new PlcRuntimeException("Tag size exceeds maximum payload for one item.");
                 }
@@ -147,7 +147,7 @@ public class S7Optimizer extends BaseOptimizer {
                 int length = 1;
                 if(tag instanceof S7StringTag)
                 {
-                    length = (((S7StringTag)tag).getStringLength() + 2) * 8;
+                    length = ((S7StringTag)tag).getStringLength() + 2;
                 }
                 writeRequestItemSize += (tag.getNumberOfElements() * tag.getDataType().getSizeInBytes() * length);
             }
@@ -180,7 +180,7 @@ public class S7Optimizer extends BaseOptimizer {
                 curTags = new LinkedHashMap<>();
 
                 // Splitting of huge tags not yet implemented, throw an exception instead.
-                if (((curRequestSize + writeRequestItemSize) > s7DriverContext.getPduSize()) &&
+                if (((curRequestSize + writeRequestItemSize) > s7DriverContext.getPduSize()) ||
                     ((curResponseSize + writeResponseItemSize) > s7DriverContext.getPduSize())) {
                     throw new PlcRuntimeException("Tag size exceeds maximum payload for one item.");
                 }
