@@ -40,27 +40,27 @@ type IOpcuaNodeIdServicesVariableH interface {
 	utils.Serializable
 }
 
-const (
-	OpcuaNodeIdServicesVariableH_HAConfiguration_AggregateConfiguration_TreatUncertainAsBad    OpcuaNodeIdServicesVariableH = 11204
-	OpcuaNodeIdServicesVariableH_HAConfiguration_AggregateConfiguration_PercentDataBad         OpcuaNodeIdServicesVariableH = 11205
-	OpcuaNodeIdServicesVariableH_HAConfiguration_AggregateConfiguration_PercentDataGood        OpcuaNodeIdServicesVariableH = 11206
+const(
+	OpcuaNodeIdServicesVariableH_HAConfiguration_AggregateConfiguration_TreatUncertainAsBad OpcuaNodeIdServicesVariableH = 11204
+	OpcuaNodeIdServicesVariableH_HAConfiguration_AggregateConfiguration_PercentDataBad OpcuaNodeIdServicesVariableH = 11205
+	OpcuaNodeIdServicesVariableH_HAConfiguration_AggregateConfiguration_PercentDataGood OpcuaNodeIdServicesVariableH = 11206
 	OpcuaNodeIdServicesVariableH_HAConfiguration_AggregateConfiguration_UseSlopedExtrapolation OpcuaNodeIdServicesVariableH = 11207
-	OpcuaNodeIdServicesVariableH_HAConfiguration_Stepped                                       OpcuaNodeIdServicesVariableH = 11208
-	OpcuaNodeIdServicesVariableH_HAConfiguration_Definition                                    OpcuaNodeIdServicesVariableH = 11209
-	OpcuaNodeIdServicesVariableH_HAConfiguration_MaxTimeInterval                               OpcuaNodeIdServicesVariableH = 11210
-	OpcuaNodeIdServicesVariableH_HAConfiguration_MinTimeInterval                               OpcuaNodeIdServicesVariableH = 11211
-	OpcuaNodeIdServicesVariableH_HAConfiguration_ExceptionDeviation                            OpcuaNodeIdServicesVariableH = 11212
-	OpcuaNodeIdServicesVariableH_HAConfiguration_ExceptionDeviationFormat                      OpcuaNodeIdServicesVariableH = 11213
-	OpcuaNodeIdServicesVariableH_HAConfiguration_StartOfArchive                                OpcuaNodeIdServicesVariableH = 11503
-	OpcuaNodeIdServicesVariableH_HAConfiguration_StartOfOnlineArchive                          OpcuaNodeIdServicesVariableH = 11504
-	OpcuaNodeIdServicesVariableH_HAConfiguration_ServerTimestampSupported                      OpcuaNodeIdServicesVariableH = 19093
+	OpcuaNodeIdServicesVariableH_HAConfiguration_Stepped OpcuaNodeIdServicesVariableH = 11208
+	OpcuaNodeIdServicesVariableH_HAConfiguration_Definition OpcuaNodeIdServicesVariableH = 11209
+	OpcuaNodeIdServicesVariableH_HAConfiguration_MaxTimeInterval OpcuaNodeIdServicesVariableH = 11210
+	OpcuaNodeIdServicesVariableH_HAConfiguration_MinTimeInterval OpcuaNodeIdServicesVariableH = 11211
+	OpcuaNodeIdServicesVariableH_HAConfiguration_ExceptionDeviation OpcuaNodeIdServicesVariableH = 11212
+	OpcuaNodeIdServicesVariableH_HAConfiguration_ExceptionDeviationFormat OpcuaNodeIdServicesVariableH = 11213
+	OpcuaNodeIdServicesVariableH_HAConfiguration_StartOfArchive OpcuaNodeIdServicesVariableH = 11503
+	OpcuaNodeIdServicesVariableH_HAConfiguration_StartOfOnlineArchive OpcuaNodeIdServicesVariableH = 11504
+	OpcuaNodeIdServicesVariableH_HAConfiguration_ServerTimestampSupported OpcuaNodeIdServicesVariableH = 19093
 )
 
 var OpcuaNodeIdServicesVariableHValues []OpcuaNodeIdServicesVariableH
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariableHValues = []OpcuaNodeIdServicesVariableH{
+	OpcuaNodeIdServicesVariableHValues = []OpcuaNodeIdServicesVariableH {
 		OpcuaNodeIdServicesVariableH_HAConfiguration_AggregateConfiguration_TreatUncertainAsBad,
 		OpcuaNodeIdServicesVariableH_HAConfiguration_AggregateConfiguration_PercentDataBad,
 		OpcuaNodeIdServicesVariableH_HAConfiguration_AggregateConfiguration_PercentDataGood,
@@ -79,32 +79,32 @@ func init() {
 
 func OpcuaNodeIdServicesVariableHByValue(value int32) (enum OpcuaNodeIdServicesVariableH, ok bool) {
 	switch value {
-	case 11204:
-		return OpcuaNodeIdServicesVariableH_HAConfiguration_AggregateConfiguration_TreatUncertainAsBad, true
-	case 11205:
-		return OpcuaNodeIdServicesVariableH_HAConfiguration_AggregateConfiguration_PercentDataBad, true
-	case 11206:
-		return OpcuaNodeIdServicesVariableH_HAConfiguration_AggregateConfiguration_PercentDataGood, true
-	case 11207:
-		return OpcuaNodeIdServicesVariableH_HAConfiguration_AggregateConfiguration_UseSlopedExtrapolation, true
-	case 11208:
-		return OpcuaNodeIdServicesVariableH_HAConfiguration_Stepped, true
-	case 11209:
-		return OpcuaNodeIdServicesVariableH_HAConfiguration_Definition, true
-	case 11210:
-		return OpcuaNodeIdServicesVariableH_HAConfiguration_MaxTimeInterval, true
-	case 11211:
-		return OpcuaNodeIdServicesVariableH_HAConfiguration_MinTimeInterval, true
-	case 11212:
-		return OpcuaNodeIdServicesVariableH_HAConfiguration_ExceptionDeviation, true
-	case 11213:
-		return OpcuaNodeIdServicesVariableH_HAConfiguration_ExceptionDeviationFormat, true
-	case 11503:
-		return OpcuaNodeIdServicesVariableH_HAConfiguration_StartOfArchive, true
-	case 11504:
-		return OpcuaNodeIdServicesVariableH_HAConfiguration_StartOfOnlineArchive, true
-	case 19093:
-		return OpcuaNodeIdServicesVariableH_HAConfiguration_ServerTimestampSupported, true
+		case 11204:
+			return OpcuaNodeIdServicesVariableH_HAConfiguration_AggregateConfiguration_TreatUncertainAsBad, true
+		case 11205:
+			return OpcuaNodeIdServicesVariableH_HAConfiguration_AggregateConfiguration_PercentDataBad, true
+		case 11206:
+			return OpcuaNodeIdServicesVariableH_HAConfiguration_AggregateConfiguration_PercentDataGood, true
+		case 11207:
+			return OpcuaNodeIdServicesVariableH_HAConfiguration_AggregateConfiguration_UseSlopedExtrapolation, true
+		case 11208:
+			return OpcuaNodeIdServicesVariableH_HAConfiguration_Stepped, true
+		case 11209:
+			return OpcuaNodeIdServicesVariableH_HAConfiguration_Definition, true
+		case 11210:
+			return OpcuaNodeIdServicesVariableH_HAConfiguration_MaxTimeInterval, true
+		case 11211:
+			return OpcuaNodeIdServicesVariableH_HAConfiguration_MinTimeInterval, true
+		case 11212:
+			return OpcuaNodeIdServicesVariableH_HAConfiguration_ExceptionDeviation, true
+		case 11213:
+			return OpcuaNodeIdServicesVariableH_HAConfiguration_ExceptionDeviationFormat, true
+		case 11503:
+			return OpcuaNodeIdServicesVariableH_HAConfiguration_StartOfArchive, true
+		case 11504:
+			return OpcuaNodeIdServicesVariableH_HAConfiguration_StartOfOnlineArchive, true
+		case 19093:
+			return OpcuaNodeIdServicesVariableH_HAConfiguration_ServerTimestampSupported, true
 	}
 	return 0, false
 }
@@ -141,13 +141,13 @@ func OpcuaNodeIdServicesVariableHByName(value string) (enum OpcuaNodeIdServicesV
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariableHKnows(value int32) bool {
+func OpcuaNodeIdServicesVariableHKnows(value int32)  bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariableHValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastOpcuaNodeIdServicesVariableH(structType any) OpcuaNodeIdServicesVariableH {
@@ -237,3 +237,4 @@ func (e OpcuaNodeIdServicesVariableH) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariableH) String() string {
 	return e.PLC4XEnumName()
 }
+

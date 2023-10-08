@@ -40,61 +40,61 @@ type IOpcuaNodeIdServicesVariableRole interface {
 	utils.Serializable
 }
 
-const (
-	OpcuaNodeIdServicesVariableRole_RoleSetType_RoleName_Placeholder_ApplicationsExclude              OpcuaNodeIdServicesVariableRole = 15408
-	OpcuaNodeIdServicesVariableRole_RoleSetType_RoleName_Placeholder_EndpointsExclude                 OpcuaNodeIdServicesVariableRole = 15409
-	OpcuaNodeIdServicesVariableRole_RoleType_ApplicationsExclude                                      OpcuaNodeIdServicesVariableRole = 15410
-	OpcuaNodeIdServicesVariableRole_RoleType_EndpointsExclude                                         OpcuaNodeIdServicesVariableRole = 15411
-	OpcuaNodeIdServicesVariableRole_RoleSetType_RoleName_Placeholder_AddIdentity_InputArguments       OpcuaNodeIdServicesVariableRole = 15613
-	OpcuaNodeIdServicesVariableRole_RoleSetType_RoleName_Placeholder_RemoveIdentity_InputArguments    OpcuaNodeIdServicesVariableRole = 15615
-	OpcuaNodeIdServicesVariableRole_RoleType_AddIdentity_InputArguments                               OpcuaNodeIdServicesVariableRole = 15625
-	OpcuaNodeIdServicesVariableRole_RoleType_RemoveIdentity_InputArguments                            OpcuaNodeIdServicesVariableRole = 15627
-	OpcuaNodeIdServicesVariableRole_RoleSetType_AddRole_InputArguments                                OpcuaNodeIdServicesVariableRole = 15998
-	OpcuaNodeIdServicesVariableRole_RoleSetType_AddRole_OutputArguments                               OpcuaNodeIdServicesVariableRole = 15999
-	OpcuaNodeIdServicesVariableRole_RoleSetType_RemoveRole_InputArguments                             OpcuaNodeIdServicesVariableRole = 16001
-	OpcuaNodeIdServicesVariableRole_RoleSetType_RoleName_Placeholder_Identities                       OpcuaNodeIdServicesVariableRole = 16162
-	OpcuaNodeIdServicesVariableRole_RoleSetType_RoleName_Placeholder_Applications                     OpcuaNodeIdServicesVariableRole = 16163
-	OpcuaNodeIdServicesVariableRole_RoleSetType_RoleName_Placeholder_Endpoints                        OpcuaNodeIdServicesVariableRole = 16164
-	OpcuaNodeIdServicesVariableRole_RoleSetType_RoleName_Placeholder_AddApplication_InputArguments    OpcuaNodeIdServicesVariableRole = 16166
+const(
+	OpcuaNodeIdServicesVariableRole_RoleSetType_RoleName_Placeholder_ApplicationsExclude OpcuaNodeIdServicesVariableRole = 15408
+	OpcuaNodeIdServicesVariableRole_RoleSetType_RoleName_Placeholder_EndpointsExclude OpcuaNodeIdServicesVariableRole = 15409
+	OpcuaNodeIdServicesVariableRole_RoleType_ApplicationsExclude OpcuaNodeIdServicesVariableRole = 15410
+	OpcuaNodeIdServicesVariableRole_RoleType_EndpointsExclude OpcuaNodeIdServicesVariableRole = 15411
+	OpcuaNodeIdServicesVariableRole_RoleSetType_RoleName_Placeholder_AddIdentity_InputArguments OpcuaNodeIdServicesVariableRole = 15613
+	OpcuaNodeIdServicesVariableRole_RoleSetType_RoleName_Placeholder_RemoveIdentity_InputArguments OpcuaNodeIdServicesVariableRole = 15615
+	OpcuaNodeIdServicesVariableRole_RoleType_AddIdentity_InputArguments OpcuaNodeIdServicesVariableRole = 15625
+	OpcuaNodeIdServicesVariableRole_RoleType_RemoveIdentity_InputArguments OpcuaNodeIdServicesVariableRole = 15627
+	OpcuaNodeIdServicesVariableRole_RoleSetType_AddRole_InputArguments OpcuaNodeIdServicesVariableRole = 15998
+	OpcuaNodeIdServicesVariableRole_RoleSetType_AddRole_OutputArguments OpcuaNodeIdServicesVariableRole = 15999
+	OpcuaNodeIdServicesVariableRole_RoleSetType_RemoveRole_InputArguments OpcuaNodeIdServicesVariableRole = 16001
+	OpcuaNodeIdServicesVariableRole_RoleSetType_RoleName_Placeholder_Identities OpcuaNodeIdServicesVariableRole = 16162
+	OpcuaNodeIdServicesVariableRole_RoleSetType_RoleName_Placeholder_Applications OpcuaNodeIdServicesVariableRole = 16163
+	OpcuaNodeIdServicesVariableRole_RoleSetType_RoleName_Placeholder_Endpoints OpcuaNodeIdServicesVariableRole = 16164
+	OpcuaNodeIdServicesVariableRole_RoleSetType_RoleName_Placeholder_AddApplication_InputArguments OpcuaNodeIdServicesVariableRole = 16166
 	OpcuaNodeIdServicesVariableRole_RoleSetType_RoleName_Placeholder_RemoveApplication_InputArguments OpcuaNodeIdServicesVariableRole = 16168
-	OpcuaNodeIdServicesVariableRole_RoleSetType_RoleName_Placeholder_AddEndpoint_InputArguments       OpcuaNodeIdServicesVariableRole = 16170
-	OpcuaNodeIdServicesVariableRole_RoleSetType_RoleName_Placeholder_RemoveEndpoint_InputArguments    OpcuaNodeIdServicesVariableRole = 16172
-	OpcuaNodeIdServicesVariableRole_RoleType_Identities                                               OpcuaNodeIdServicesVariableRole = 16173
-	OpcuaNodeIdServicesVariableRole_RoleType_Applications                                             OpcuaNodeIdServicesVariableRole = 16174
-	OpcuaNodeIdServicesVariableRole_RoleType_Endpoints                                                OpcuaNodeIdServicesVariableRole = 16175
-	OpcuaNodeIdServicesVariableRole_RoleType_AddApplication_InputArguments                            OpcuaNodeIdServicesVariableRole = 16177
-	OpcuaNodeIdServicesVariableRole_RoleType_RemoveApplication_InputArguments                         OpcuaNodeIdServicesVariableRole = 16179
-	OpcuaNodeIdServicesVariableRole_RoleType_AddEndpoint_InputArguments                               OpcuaNodeIdServicesVariableRole = 16181
-	OpcuaNodeIdServicesVariableRole_RoleType_RemoveEndpoint_InputArguments                            OpcuaNodeIdServicesVariableRole = 16183
-	OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_EventId                      OpcuaNodeIdServicesVariableRole = 17642
-	OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_EventType                    OpcuaNodeIdServicesVariableRole = 17643
-	OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_SourceNode                   OpcuaNodeIdServicesVariableRole = 17644
-	OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_SourceName                   OpcuaNodeIdServicesVariableRole = 17645
-	OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_Time                         OpcuaNodeIdServicesVariableRole = 17646
-	OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_ReceiveTime                  OpcuaNodeIdServicesVariableRole = 17647
-	OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_LocalTime                    OpcuaNodeIdServicesVariableRole = 17648
-	OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_Message                      OpcuaNodeIdServicesVariableRole = 17649
-	OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_Severity                     OpcuaNodeIdServicesVariableRole = 17650
-	OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_ActionTimeStamp              OpcuaNodeIdServicesVariableRole = 17651
-	OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_Status                       OpcuaNodeIdServicesVariableRole = 17652
-	OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_ServerId                     OpcuaNodeIdServicesVariableRole = 17653
-	OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_ClientAuditEntryId           OpcuaNodeIdServicesVariableRole = 17654
-	OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_ClientUserId                 OpcuaNodeIdServicesVariableRole = 17655
-	OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_MethodId                     OpcuaNodeIdServicesVariableRole = 17656
-	OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_InputArguments               OpcuaNodeIdServicesVariableRole = 17657
-	OpcuaNodeIdServicesVariableRole_RoleSetType_RoleName_Placeholder_CustomConfiguration              OpcuaNodeIdServicesVariableRole = 24138
-	OpcuaNodeIdServicesVariableRole_RoleType_CustomConfiguration                                      OpcuaNodeIdServicesVariableRole = 24139
-	OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_ConditionClassId             OpcuaNodeIdServicesVariableRole = 31927
-	OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_ConditionClassName           OpcuaNodeIdServicesVariableRole = 31928
-	OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_ConditionSubClassId          OpcuaNodeIdServicesVariableRole = 31929
-	OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_ConditionSubClassName        OpcuaNodeIdServicesVariableRole = 31930
+	OpcuaNodeIdServicesVariableRole_RoleSetType_RoleName_Placeholder_AddEndpoint_InputArguments OpcuaNodeIdServicesVariableRole = 16170
+	OpcuaNodeIdServicesVariableRole_RoleSetType_RoleName_Placeholder_RemoveEndpoint_InputArguments OpcuaNodeIdServicesVariableRole = 16172
+	OpcuaNodeIdServicesVariableRole_RoleType_Identities OpcuaNodeIdServicesVariableRole = 16173
+	OpcuaNodeIdServicesVariableRole_RoleType_Applications OpcuaNodeIdServicesVariableRole = 16174
+	OpcuaNodeIdServicesVariableRole_RoleType_Endpoints OpcuaNodeIdServicesVariableRole = 16175
+	OpcuaNodeIdServicesVariableRole_RoleType_AddApplication_InputArguments OpcuaNodeIdServicesVariableRole = 16177
+	OpcuaNodeIdServicesVariableRole_RoleType_RemoveApplication_InputArguments OpcuaNodeIdServicesVariableRole = 16179
+	OpcuaNodeIdServicesVariableRole_RoleType_AddEndpoint_InputArguments OpcuaNodeIdServicesVariableRole = 16181
+	OpcuaNodeIdServicesVariableRole_RoleType_RemoveEndpoint_InputArguments OpcuaNodeIdServicesVariableRole = 16183
+	OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_EventId OpcuaNodeIdServicesVariableRole = 17642
+	OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_EventType OpcuaNodeIdServicesVariableRole = 17643
+	OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_SourceNode OpcuaNodeIdServicesVariableRole = 17644
+	OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_SourceName OpcuaNodeIdServicesVariableRole = 17645
+	OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_Time OpcuaNodeIdServicesVariableRole = 17646
+	OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_ReceiveTime OpcuaNodeIdServicesVariableRole = 17647
+	OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_LocalTime OpcuaNodeIdServicesVariableRole = 17648
+	OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_Message OpcuaNodeIdServicesVariableRole = 17649
+	OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_Severity OpcuaNodeIdServicesVariableRole = 17650
+	OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_ActionTimeStamp OpcuaNodeIdServicesVariableRole = 17651
+	OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_Status OpcuaNodeIdServicesVariableRole = 17652
+	OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_ServerId OpcuaNodeIdServicesVariableRole = 17653
+	OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_ClientAuditEntryId OpcuaNodeIdServicesVariableRole = 17654
+	OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_ClientUserId OpcuaNodeIdServicesVariableRole = 17655
+	OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_MethodId OpcuaNodeIdServicesVariableRole = 17656
+	OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_InputArguments OpcuaNodeIdServicesVariableRole = 17657
+	OpcuaNodeIdServicesVariableRole_RoleSetType_RoleName_Placeholder_CustomConfiguration OpcuaNodeIdServicesVariableRole = 24138
+	OpcuaNodeIdServicesVariableRole_RoleType_CustomConfiguration OpcuaNodeIdServicesVariableRole = 24139
+	OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_ConditionClassId OpcuaNodeIdServicesVariableRole = 31927
+	OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_ConditionClassName OpcuaNodeIdServicesVariableRole = 31928
+	OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_ConditionSubClassId OpcuaNodeIdServicesVariableRole = 31929
+	OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_ConditionSubClassName OpcuaNodeIdServicesVariableRole = 31930
 )
 
 var OpcuaNodeIdServicesVariableRoleValues []OpcuaNodeIdServicesVariableRole
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariableRoleValues = []OpcuaNodeIdServicesVariableRole{
+	OpcuaNodeIdServicesVariableRoleValues = []OpcuaNodeIdServicesVariableRole {
 		OpcuaNodeIdServicesVariableRole_RoleSetType_RoleName_Placeholder_ApplicationsExclude,
 		OpcuaNodeIdServicesVariableRole_RoleSetType_RoleName_Placeholder_EndpointsExclude,
 		OpcuaNodeIdServicesVariableRole_RoleType_ApplicationsExclude,
@@ -147,100 +147,100 @@ func init() {
 
 func OpcuaNodeIdServicesVariableRoleByValue(value int32) (enum OpcuaNodeIdServicesVariableRole, ok bool) {
 	switch value {
-	case 15408:
-		return OpcuaNodeIdServicesVariableRole_RoleSetType_RoleName_Placeholder_ApplicationsExclude, true
-	case 15409:
-		return OpcuaNodeIdServicesVariableRole_RoleSetType_RoleName_Placeholder_EndpointsExclude, true
-	case 15410:
-		return OpcuaNodeIdServicesVariableRole_RoleType_ApplicationsExclude, true
-	case 15411:
-		return OpcuaNodeIdServicesVariableRole_RoleType_EndpointsExclude, true
-	case 15613:
-		return OpcuaNodeIdServicesVariableRole_RoleSetType_RoleName_Placeholder_AddIdentity_InputArguments, true
-	case 15615:
-		return OpcuaNodeIdServicesVariableRole_RoleSetType_RoleName_Placeholder_RemoveIdentity_InputArguments, true
-	case 15625:
-		return OpcuaNodeIdServicesVariableRole_RoleType_AddIdentity_InputArguments, true
-	case 15627:
-		return OpcuaNodeIdServicesVariableRole_RoleType_RemoveIdentity_InputArguments, true
-	case 15998:
-		return OpcuaNodeIdServicesVariableRole_RoleSetType_AddRole_InputArguments, true
-	case 15999:
-		return OpcuaNodeIdServicesVariableRole_RoleSetType_AddRole_OutputArguments, true
-	case 16001:
-		return OpcuaNodeIdServicesVariableRole_RoleSetType_RemoveRole_InputArguments, true
-	case 16162:
-		return OpcuaNodeIdServicesVariableRole_RoleSetType_RoleName_Placeholder_Identities, true
-	case 16163:
-		return OpcuaNodeIdServicesVariableRole_RoleSetType_RoleName_Placeholder_Applications, true
-	case 16164:
-		return OpcuaNodeIdServicesVariableRole_RoleSetType_RoleName_Placeholder_Endpoints, true
-	case 16166:
-		return OpcuaNodeIdServicesVariableRole_RoleSetType_RoleName_Placeholder_AddApplication_InputArguments, true
-	case 16168:
-		return OpcuaNodeIdServicesVariableRole_RoleSetType_RoleName_Placeholder_RemoveApplication_InputArguments, true
-	case 16170:
-		return OpcuaNodeIdServicesVariableRole_RoleSetType_RoleName_Placeholder_AddEndpoint_InputArguments, true
-	case 16172:
-		return OpcuaNodeIdServicesVariableRole_RoleSetType_RoleName_Placeholder_RemoveEndpoint_InputArguments, true
-	case 16173:
-		return OpcuaNodeIdServicesVariableRole_RoleType_Identities, true
-	case 16174:
-		return OpcuaNodeIdServicesVariableRole_RoleType_Applications, true
-	case 16175:
-		return OpcuaNodeIdServicesVariableRole_RoleType_Endpoints, true
-	case 16177:
-		return OpcuaNodeIdServicesVariableRole_RoleType_AddApplication_InputArguments, true
-	case 16179:
-		return OpcuaNodeIdServicesVariableRole_RoleType_RemoveApplication_InputArguments, true
-	case 16181:
-		return OpcuaNodeIdServicesVariableRole_RoleType_AddEndpoint_InputArguments, true
-	case 16183:
-		return OpcuaNodeIdServicesVariableRole_RoleType_RemoveEndpoint_InputArguments, true
-	case 17642:
-		return OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_EventId, true
-	case 17643:
-		return OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_EventType, true
-	case 17644:
-		return OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_SourceNode, true
-	case 17645:
-		return OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_SourceName, true
-	case 17646:
-		return OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_Time, true
-	case 17647:
-		return OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_ReceiveTime, true
-	case 17648:
-		return OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_LocalTime, true
-	case 17649:
-		return OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_Message, true
-	case 17650:
-		return OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_Severity, true
-	case 17651:
-		return OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_ActionTimeStamp, true
-	case 17652:
-		return OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_Status, true
-	case 17653:
-		return OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_ServerId, true
-	case 17654:
-		return OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_ClientAuditEntryId, true
-	case 17655:
-		return OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_ClientUserId, true
-	case 17656:
-		return OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_MethodId, true
-	case 17657:
-		return OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_InputArguments, true
-	case 24138:
-		return OpcuaNodeIdServicesVariableRole_RoleSetType_RoleName_Placeholder_CustomConfiguration, true
-	case 24139:
-		return OpcuaNodeIdServicesVariableRole_RoleType_CustomConfiguration, true
-	case 31927:
-		return OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_ConditionClassId, true
-	case 31928:
-		return OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_ConditionClassName, true
-	case 31929:
-		return OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_ConditionSubClassId, true
-	case 31930:
-		return OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_ConditionSubClassName, true
+		case 15408:
+			return OpcuaNodeIdServicesVariableRole_RoleSetType_RoleName_Placeholder_ApplicationsExclude, true
+		case 15409:
+			return OpcuaNodeIdServicesVariableRole_RoleSetType_RoleName_Placeholder_EndpointsExclude, true
+		case 15410:
+			return OpcuaNodeIdServicesVariableRole_RoleType_ApplicationsExclude, true
+		case 15411:
+			return OpcuaNodeIdServicesVariableRole_RoleType_EndpointsExclude, true
+		case 15613:
+			return OpcuaNodeIdServicesVariableRole_RoleSetType_RoleName_Placeholder_AddIdentity_InputArguments, true
+		case 15615:
+			return OpcuaNodeIdServicesVariableRole_RoleSetType_RoleName_Placeholder_RemoveIdentity_InputArguments, true
+		case 15625:
+			return OpcuaNodeIdServicesVariableRole_RoleType_AddIdentity_InputArguments, true
+		case 15627:
+			return OpcuaNodeIdServicesVariableRole_RoleType_RemoveIdentity_InputArguments, true
+		case 15998:
+			return OpcuaNodeIdServicesVariableRole_RoleSetType_AddRole_InputArguments, true
+		case 15999:
+			return OpcuaNodeIdServicesVariableRole_RoleSetType_AddRole_OutputArguments, true
+		case 16001:
+			return OpcuaNodeIdServicesVariableRole_RoleSetType_RemoveRole_InputArguments, true
+		case 16162:
+			return OpcuaNodeIdServicesVariableRole_RoleSetType_RoleName_Placeholder_Identities, true
+		case 16163:
+			return OpcuaNodeIdServicesVariableRole_RoleSetType_RoleName_Placeholder_Applications, true
+		case 16164:
+			return OpcuaNodeIdServicesVariableRole_RoleSetType_RoleName_Placeholder_Endpoints, true
+		case 16166:
+			return OpcuaNodeIdServicesVariableRole_RoleSetType_RoleName_Placeholder_AddApplication_InputArguments, true
+		case 16168:
+			return OpcuaNodeIdServicesVariableRole_RoleSetType_RoleName_Placeholder_RemoveApplication_InputArguments, true
+		case 16170:
+			return OpcuaNodeIdServicesVariableRole_RoleSetType_RoleName_Placeholder_AddEndpoint_InputArguments, true
+		case 16172:
+			return OpcuaNodeIdServicesVariableRole_RoleSetType_RoleName_Placeholder_RemoveEndpoint_InputArguments, true
+		case 16173:
+			return OpcuaNodeIdServicesVariableRole_RoleType_Identities, true
+		case 16174:
+			return OpcuaNodeIdServicesVariableRole_RoleType_Applications, true
+		case 16175:
+			return OpcuaNodeIdServicesVariableRole_RoleType_Endpoints, true
+		case 16177:
+			return OpcuaNodeIdServicesVariableRole_RoleType_AddApplication_InputArguments, true
+		case 16179:
+			return OpcuaNodeIdServicesVariableRole_RoleType_RemoveApplication_InputArguments, true
+		case 16181:
+			return OpcuaNodeIdServicesVariableRole_RoleType_AddEndpoint_InputArguments, true
+		case 16183:
+			return OpcuaNodeIdServicesVariableRole_RoleType_RemoveEndpoint_InputArguments, true
+		case 17642:
+			return OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_EventId, true
+		case 17643:
+			return OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_EventType, true
+		case 17644:
+			return OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_SourceNode, true
+		case 17645:
+			return OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_SourceName, true
+		case 17646:
+			return OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_Time, true
+		case 17647:
+			return OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_ReceiveTime, true
+		case 17648:
+			return OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_LocalTime, true
+		case 17649:
+			return OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_Message, true
+		case 17650:
+			return OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_Severity, true
+		case 17651:
+			return OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_ActionTimeStamp, true
+		case 17652:
+			return OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_Status, true
+		case 17653:
+			return OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_ServerId, true
+		case 17654:
+			return OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_ClientAuditEntryId, true
+		case 17655:
+			return OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_ClientUserId, true
+		case 17656:
+			return OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_MethodId, true
+		case 17657:
+			return OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_InputArguments, true
+		case 24138:
+			return OpcuaNodeIdServicesVariableRole_RoleSetType_RoleName_Placeholder_CustomConfiguration, true
+		case 24139:
+			return OpcuaNodeIdServicesVariableRole_RoleType_CustomConfiguration, true
+		case 31927:
+			return OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_ConditionClassId, true
+		case 31928:
+			return OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_ConditionClassName, true
+		case 31929:
+			return OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_ConditionSubClassId, true
+		case 31930:
+			return OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_ConditionSubClassName, true
 	}
 	return 0, false
 }
@@ -345,13 +345,13 @@ func OpcuaNodeIdServicesVariableRoleByName(value string) (enum OpcuaNodeIdServic
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariableRoleKnows(value int32) bool {
+func OpcuaNodeIdServicesVariableRoleKnows(value int32)  bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariableRoleValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastOpcuaNodeIdServicesVariableRole(structType any) OpcuaNodeIdServicesVariableRole {
@@ -509,3 +509,4 @@ func (e OpcuaNodeIdServicesVariableRole) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariableRole) String() string {
 	return e.PLC4XEnumName()
 }
+

@@ -40,7 +40,7 @@ type IOpcuaNodeIdServicesVariableChoice interface {
 	utils.Serializable
 }
 
-const (
+const(
 	OpcuaNodeIdServicesVariableChoice_ChoiceStateType_StateNumber OpcuaNodeIdServicesVariableChoice = 15110
 )
 
@@ -48,15 +48,15 @@ var OpcuaNodeIdServicesVariableChoiceValues []OpcuaNodeIdServicesVariableChoice
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariableChoiceValues = []OpcuaNodeIdServicesVariableChoice{
+	OpcuaNodeIdServicesVariableChoiceValues = []OpcuaNodeIdServicesVariableChoice {
 		OpcuaNodeIdServicesVariableChoice_ChoiceStateType_StateNumber,
 	}
 }
 
 func OpcuaNodeIdServicesVariableChoiceByValue(value int32) (enum OpcuaNodeIdServicesVariableChoice, ok bool) {
 	switch value {
-	case 15110:
-		return OpcuaNodeIdServicesVariableChoice_ChoiceStateType_StateNumber, true
+		case 15110:
+			return OpcuaNodeIdServicesVariableChoice_ChoiceStateType_StateNumber, true
 	}
 	return 0, false
 }
@@ -69,13 +69,13 @@ func OpcuaNodeIdServicesVariableChoiceByName(value string) (enum OpcuaNodeIdServ
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariableChoiceKnows(value int32) bool {
+func OpcuaNodeIdServicesVariableChoiceKnows(value int32)  bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariableChoiceValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastOpcuaNodeIdServicesVariableChoice(structType any) OpcuaNodeIdServicesVariableChoice {
@@ -141,3 +141,4 @@ func (e OpcuaNodeIdServicesVariableChoice) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariableChoice) String() string {
 	return e.PLC4XEnumName()
 }
+

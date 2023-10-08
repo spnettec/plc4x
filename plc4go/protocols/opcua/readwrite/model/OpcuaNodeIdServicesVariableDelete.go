@@ -40,8 +40,8 @@ type IOpcuaNodeIdServicesVariableDelete interface {
 	utils.Serializable
 }
 
-const (
-	OpcuaNodeIdServicesVariableDelete_DeleteFileMethodType_InputArguments                 OpcuaNodeIdServicesVariableDelete = 13349
+const(
+	OpcuaNodeIdServicesVariableDelete_DeleteFileMethodType_InputArguments OpcuaNodeIdServicesVariableDelete = 13349
 	OpcuaNodeIdServicesVariableDelete_DeletePriorityMappingEntryMethodType_InputArguments OpcuaNodeIdServicesVariableDelete = 25236
 )
 
@@ -49,7 +49,7 @@ var OpcuaNodeIdServicesVariableDeleteValues []OpcuaNodeIdServicesVariableDelete
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariableDeleteValues = []OpcuaNodeIdServicesVariableDelete{
+	OpcuaNodeIdServicesVariableDeleteValues = []OpcuaNodeIdServicesVariableDelete {
 		OpcuaNodeIdServicesVariableDelete_DeleteFileMethodType_InputArguments,
 		OpcuaNodeIdServicesVariableDelete_DeletePriorityMappingEntryMethodType_InputArguments,
 	}
@@ -57,10 +57,10 @@ func init() {
 
 func OpcuaNodeIdServicesVariableDeleteByValue(value int32) (enum OpcuaNodeIdServicesVariableDelete, ok bool) {
 	switch value {
-	case 13349:
-		return OpcuaNodeIdServicesVariableDelete_DeleteFileMethodType_InputArguments, true
-	case 25236:
-		return OpcuaNodeIdServicesVariableDelete_DeletePriorityMappingEntryMethodType_InputArguments, true
+		case 13349:
+			return OpcuaNodeIdServicesVariableDelete_DeleteFileMethodType_InputArguments, true
+		case 25236:
+			return OpcuaNodeIdServicesVariableDelete_DeletePriorityMappingEntryMethodType_InputArguments, true
 	}
 	return 0, false
 }
@@ -75,13 +75,13 @@ func OpcuaNodeIdServicesVariableDeleteByName(value string) (enum OpcuaNodeIdServ
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariableDeleteKnows(value int32) bool {
+func OpcuaNodeIdServicesVariableDeleteKnows(value int32)  bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariableDeleteValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastOpcuaNodeIdServicesVariableDelete(structType any) OpcuaNodeIdServicesVariableDelete {
@@ -149,3 +149,4 @@ func (e OpcuaNodeIdServicesVariableDelete) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariableDelete) String() string {
 	return e.PLC4XEnumName()
 }
+

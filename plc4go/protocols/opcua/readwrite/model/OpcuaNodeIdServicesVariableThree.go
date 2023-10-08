@@ -40,39 +40,39 @@ type IOpcuaNodeIdServicesVariableThree interface {
 	utils.Serializable
 }
 
-const (
-	OpcuaNodeIdServicesVariableThree_ThreeDVectorType_VectorUnit                     OpcuaNodeIdServicesVariableThree = 17717
-	OpcuaNodeIdServicesVariableThree_ThreeDVectorType_X                              OpcuaNodeIdServicesVariableThree = 18769
-	OpcuaNodeIdServicesVariableThree_ThreeDVectorType_Y                              OpcuaNodeIdServicesVariableThree = 18770
-	OpcuaNodeIdServicesVariableThree_ThreeDVectorType_Z                              OpcuaNodeIdServicesVariableThree = 18771
-	OpcuaNodeIdServicesVariableThree_ThreeDCartesianCoordinatesType_LengthUnit       OpcuaNodeIdServicesVariableThree = 18775
-	OpcuaNodeIdServicesVariableThree_ThreeDCartesianCoordinatesType_X                OpcuaNodeIdServicesVariableThree = 18776
-	OpcuaNodeIdServicesVariableThree_ThreeDCartesianCoordinatesType_Y                OpcuaNodeIdServicesVariableThree = 18777
-	OpcuaNodeIdServicesVariableThree_ThreeDCartesianCoordinatesType_Z                OpcuaNodeIdServicesVariableThree = 18778
-	OpcuaNodeIdServicesVariableThree_ThreeDOrientationType_AngleUnit                 OpcuaNodeIdServicesVariableThree = 18782
-	OpcuaNodeIdServicesVariableThree_ThreeDOrientationType_A                         OpcuaNodeIdServicesVariableThree = 18783
-	OpcuaNodeIdServicesVariableThree_ThreeDOrientationType_B                         OpcuaNodeIdServicesVariableThree = 18784
-	OpcuaNodeIdServicesVariableThree_ThreeDOrientationType_C                         OpcuaNodeIdServicesVariableThree = 18785
-	OpcuaNodeIdServicesVariableThree_ThreeDFrameType_Orientation                     OpcuaNodeIdServicesVariableThree = 18792
-	OpcuaNodeIdServicesVariableThree_ThreeDFrameType_Constant                        OpcuaNodeIdServicesVariableThree = 18793
-	OpcuaNodeIdServicesVariableThree_ThreeDFrameType_BaseFrame                       OpcuaNodeIdServicesVariableThree = 18794
-	OpcuaNodeIdServicesVariableThree_ThreeDFrameType_FixedBase                       OpcuaNodeIdServicesVariableThree = 18795
-	OpcuaNodeIdServicesVariableThree_ThreeDFrameType_CartesianCoordinates            OpcuaNodeIdServicesVariableThree = 18796
+const(
+	OpcuaNodeIdServicesVariableThree_ThreeDVectorType_VectorUnit OpcuaNodeIdServicesVariableThree = 17717
+	OpcuaNodeIdServicesVariableThree_ThreeDVectorType_X OpcuaNodeIdServicesVariableThree = 18769
+	OpcuaNodeIdServicesVariableThree_ThreeDVectorType_Y OpcuaNodeIdServicesVariableThree = 18770
+	OpcuaNodeIdServicesVariableThree_ThreeDVectorType_Z OpcuaNodeIdServicesVariableThree = 18771
+	OpcuaNodeIdServicesVariableThree_ThreeDCartesianCoordinatesType_LengthUnit OpcuaNodeIdServicesVariableThree = 18775
+	OpcuaNodeIdServicesVariableThree_ThreeDCartesianCoordinatesType_X OpcuaNodeIdServicesVariableThree = 18776
+	OpcuaNodeIdServicesVariableThree_ThreeDCartesianCoordinatesType_Y OpcuaNodeIdServicesVariableThree = 18777
+	OpcuaNodeIdServicesVariableThree_ThreeDCartesianCoordinatesType_Z OpcuaNodeIdServicesVariableThree = 18778
+	OpcuaNodeIdServicesVariableThree_ThreeDOrientationType_AngleUnit OpcuaNodeIdServicesVariableThree = 18782
+	OpcuaNodeIdServicesVariableThree_ThreeDOrientationType_A OpcuaNodeIdServicesVariableThree = 18783
+	OpcuaNodeIdServicesVariableThree_ThreeDOrientationType_B OpcuaNodeIdServicesVariableThree = 18784
+	OpcuaNodeIdServicesVariableThree_ThreeDOrientationType_C OpcuaNodeIdServicesVariableThree = 18785
+	OpcuaNodeIdServicesVariableThree_ThreeDFrameType_Orientation OpcuaNodeIdServicesVariableThree = 18792
+	OpcuaNodeIdServicesVariableThree_ThreeDFrameType_Constant OpcuaNodeIdServicesVariableThree = 18793
+	OpcuaNodeIdServicesVariableThree_ThreeDFrameType_BaseFrame OpcuaNodeIdServicesVariableThree = 18794
+	OpcuaNodeIdServicesVariableThree_ThreeDFrameType_FixedBase OpcuaNodeIdServicesVariableThree = 18795
+	OpcuaNodeIdServicesVariableThree_ThreeDFrameType_CartesianCoordinates OpcuaNodeIdServicesVariableThree = 18796
 	OpcuaNodeIdServicesVariableThree_ThreeDFrameType_CartesianCoordinates_LengthUnit OpcuaNodeIdServicesVariableThree = 18797
-	OpcuaNodeIdServicesVariableThree_ThreeDFrameType_CartesianCoordinates_X          OpcuaNodeIdServicesVariableThree = 18798
-	OpcuaNodeIdServicesVariableThree_ThreeDFrameType_CartesianCoordinates_Y          OpcuaNodeIdServicesVariableThree = 18799
-	OpcuaNodeIdServicesVariableThree_ThreeDFrameType_CartesianCoordinates_Z          OpcuaNodeIdServicesVariableThree = 18800
-	OpcuaNodeIdServicesVariableThree_ThreeDFrameType_Orientation_AngleUnit           OpcuaNodeIdServicesVariableThree = 19073
-	OpcuaNodeIdServicesVariableThree_ThreeDFrameType_Orientation_A                   OpcuaNodeIdServicesVariableThree = 19074
-	OpcuaNodeIdServicesVariableThree_ThreeDFrameType_Orientation_B                   OpcuaNodeIdServicesVariableThree = 19075
-	OpcuaNodeIdServicesVariableThree_ThreeDFrameType_Orientation_C                   OpcuaNodeIdServicesVariableThree = 19076
+	OpcuaNodeIdServicesVariableThree_ThreeDFrameType_CartesianCoordinates_X OpcuaNodeIdServicesVariableThree = 18798
+	OpcuaNodeIdServicesVariableThree_ThreeDFrameType_CartesianCoordinates_Y OpcuaNodeIdServicesVariableThree = 18799
+	OpcuaNodeIdServicesVariableThree_ThreeDFrameType_CartesianCoordinates_Z OpcuaNodeIdServicesVariableThree = 18800
+	OpcuaNodeIdServicesVariableThree_ThreeDFrameType_Orientation_AngleUnit OpcuaNodeIdServicesVariableThree = 19073
+	OpcuaNodeIdServicesVariableThree_ThreeDFrameType_Orientation_A OpcuaNodeIdServicesVariableThree = 19074
+	OpcuaNodeIdServicesVariableThree_ThreeDFrameType_Orientation_B OpcuaNodeIdServicesVariableThree = 19075
+	OpcuaNodeIdServicesVariableThree_ThreeDFrameType_Orientation_C OpcuaNodeIdServicesVariableThree = 19076
 )
 
 var OpcuaNodeIdServicesVariableThreeValues []OpcuaNodeIdServicesVariableThree
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariableThreeValues = []OpcuaNodeIdServicesVariableThree{
+	OpcuaNodeIdServicesVariableThreeValues = []OpcuaNodeIdServicesVariableThree {
 		OpcuaNodeIdServicesVariableThree_ThreeDVectorType_VectorUnit,
 		OpcuaNodeIdServicesVariableThree_ThreeDVectorType_X,
 		OpcuaNodeIdServicesVariableThree_ThreeDVectorType_Y,
@@ -103,56 +103,56 @@ func init() {
 
 func OpcuaNodeIdServicesVariableThreeByValue(value int32) (enum OpcuaNodeIdServicesVariableThree, ok bool) {
 	switch value {
-	case 17717:
-		return OpcuaNodeIdServicesVariableThree_ThreeDVectorType_VectorUnit, true
-	case 18769:
-		return OpcuaNodeIdServicesVariableThree_ThreeDVectorType_X, true
-	case 18770:
-		return OpcuaNodeIdServicesVariableThree_ThreeDVectorType_Y, true
-	case 18771:
-		return OpcuaNodeIdServicesVariableThree_ThreeDVectorType_Z, true
-	case 18775:
-		return OpcuaNodeIdServicesVariableThree_ThreeDCartesianCoordinatesType_LengthUnit, true
-	case 18776:
-		return OpcuaNodeIdServicesVariableThree_ThreeDCartesianCoordinatesType_X, true
-	case 18777:
-		return OpcuaNodeIdServicesVariableThree_ThreeDCartesianCoordinatesType_Y, true
-	case 18778:
-		return OpcuaNodeIdServicesVariableThree_ThreeDCartesianCoordinatesType_Z, true
-	case 18782:
-		return OpcuaNodeIdServicesVariableThree_ThreeDOrientationType_AngleUnit, true
-	case 18783:
-		return OpcuaNodeIdServicesVariableThree_ThreeDOrientationType_A, true
-	case 18784:
-		return OpcuaNodeIdServicesVariableThree_ThreeDOrientationType_B, true
-	case 18785:
-		return OpcuaNodeIdServicesVariableThree_ThreeDOrientationType_C, true
-	case 18792:
-		return OpcuaNodeIdServicesVariableThree_ThreeDFrameType_Orientation, true
-	case 18793:
-		return OpcuaNodeIdServicesVariableThree_ThreeDFrameType_Constant, true
-	case 18794:
-		return OpcuaNodeIdServicesVariableThree_ThreeDFrameType_BaseFrame, true
-	case 18795:
-		return OpcuaNodeIdServicesVariableThree_ThreeDFrameType_FixedBase, true
-	case 18796:
-		return OpcuaNodeIdServicesVariableThree_ThreeDFrameType_CartesianCoordinates, true
-	case 18797:
-		return OpcuaNodeIdServicesVariableThree_ThreeDFrameType_CartesianCoordinates_LengthUnit, true
-	case 18798:
-		return OpcuaNodeIdServicesVariableThree_ThreeDFrameType_CartesianCoordinates_X, true
-	case 18799:
-		return OpcuaNodeIdServicesVariableThree_ThreeDFrameType_CartesianCoordinates_Y, true
-	case 18800:
-		return OpcuaNodeIdServicesVariableThree_ThreeDFrameType_CartesianCoordinates_Z, true
-	case 19073:
-		return OpcuaNodeIdServicesVariableThree_ThreeDFrameType_Orientation_AngleUnit, true
-	case 19074:
-		return OpcuaNodeIdServicesVariableThree_ThreeDFrameType_Orientation_A, true
-	case 19075:
-		return OpcuaNodeIdServicesVariableThree_ThreeDFrameType_Orientation_B, true
-	case 19076:
-		return OpcuaNodeIdServicesVariableThree_ThreeDFrameType_Orientation_C, true
+		case 17717:
+			return OpcuaNodeIdServicesVariableThree_ThreeDVectorType_VectorUnit, true
+		case 18769:
+			return OpcuaNodeIdServicesVariableThree_ThreeDVectorType_X, true
+		case 18770:
+			return OpcuaNodeIdServicesVariableThree_ThreeDVectorType_Y, true
+		case 18771:
+			return OpcuaNodeIdServicesVariableThree_ThreeDVectorType_Z, true
+		case 18775:
+			return OpcuaNodeIdServicesVariableThree_ThreeDCartesianCoordinatesType_LengthUnit, true
+		case 18776:
+			return OpcuaNodeIdServicesVariableThree_ThreeDCartesianCoordinatesType_X, true
+		case 18777:
+			return OpcuaNodeIdServicesVariableThree_ThreeDCartesianCoordinatesType_Y, true
+		case 18778:
+			return OpcuaNodeIdServicesVariableThree_ThreeDCartesianCoordinatesType_Z, true
+		case 18782:
+			return OpcuaNodeIdServicesVariableThree_ThreeDOrientationType_AngleUnit, true
+		case 18783:
+			return OpcuaNodeIdServicesVariableThree_ThreeDOrientationType_A, true
+		case 18784:
+			return OpcuaNodeIdServicesVariableThree_ThreeDOrientationType_B, true
+		case 18785:
+			return OpcuaNodeIdServicesVariableThree_ThreeDOrientationType_C, true
+		case 18792:
+			return OpcuaNodeIdServicesVariableThree_ThreeDFrameType_Orientation, true
+		case 18793:
+			return OpcuaNodeIdServicesVariableThree_ThreeDFrameType_Constant, true
+		case 18794:
+			return OpcuaNodeIdServicesVariableThree_ThreeDFrameType_BaseFrame, true
+		case 18795:
+			return OpcuaNodeIdServicesVariableThree_ThreeDFrameType_FixedBase, true
+		case 18796:
+			return OpcuaNodeIdServicesVariableThree_ThreeDFrameType_CartesianCoordinates, true
+		case 18797:
+			return OpcuaNodeIdServicesVariableThree_ThreeDFrameType_CartesianCoordinates_LengthUnit, true
+		case 18798:
+			return OpcuaNodeIdServicesVariableThree_ThreeDFrameType_CartesianCoordinates_X, true
+		case 18799:
+			return OpcuaNodeIdServicesVariableThree_ThreeDFrameType_CartesianCoordinates_Y, true
+		case 18800:
+			return OpcuaNodeIdServicesVariableThree_ThreeDFrameType_CartesianCoordinates_Z, true
+		case 19073:
+			return OpcuaNodeIdServicesVariableThree_ThreeDFrameType_Orientation_AngleUnit, true
+		case 19074:
+			return OpcuaNodeIdServicesVariableThree_ThreeDFrameType_Orientation_A, true
+		case 19075:
+			return OpcuaNodeIdServicesVariableThree_ThreeDFrameType_Orientation_B, true
+		case 19076:
+			return OpcuaNodeIdServicesVariableThree_ThreeDFrameType_Orientation_C, true
 	}
 	return 0, false
 }
@@ -213,13 +213,13 @@ func OpcuaNodeIdServicesVariableThreeByName(value string) (enum OpcuaNodeIdServi
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariableThreeKnows(value int32) bool {
+func OpcuaNodeIdServicesVariableThreeKnows(value int32)  bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariableThreeValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastOpcuaNodeIdServicesVariableThree(structType any) OpcuaNodeIdServicesVariableThree {
@@ -333,3 +333,4 @@ func (e OpcuaNodeIdServicesVariableThree) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariableThree) String() string {
 	return e.PLC4XEnumName()
 }
+

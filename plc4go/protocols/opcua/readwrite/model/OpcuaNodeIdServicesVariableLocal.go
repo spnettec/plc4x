@@ -40,7 +40,7 @@ type IOpcuaNodeIdServicesVariableLocal interface {
 	utils.Serializable
 }
 
-const (
+const(
 	OpcuaNodeIdServicesVariableLocal_LocalTime OpcuaNodeIdServicesVariableLocal = 3069
 )
 
@@ -48,15 +48,15 @@ var OpcuaNodeIdServicesVariableLocalValues []OpcuaNodeIdServicesVariableLocal
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariableLocalValues = []OpcuaNodeIdServicesVariableLocal{
+	OpcuaNodeIdServicesVariableLocalValues = []OpcuaNodeIdServicesVariableLocal {
 		OpcuaNodeIdServicesVariableLocal_LocalTime,
 	}
 }
 
 func OpcuaNodeIdServicesVariableLocalByValue(value int32) (enum OpcuaNodeIdServicesVariableLocal, ok bool) {
 	switch value {
-	case 3069:
-		return OpcuaNodeIdServicesVariableLocal_LocalTime, true
+		case 3069:
+			return OpcuaNodeIdServicesVariableLocal_LocalTime, true
 	}
 	return 0, false
 }
@@ -69,13 +69,13 @@ func OpcuaNodeIdServicesVariableLocalByName(value string) (enum OpcuaNodeIdServi
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariableLocalKnows(value int32) bool {
+func OpcuaNodeIdServicesVariableLocalKnows(value int32)  bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariableLocalValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastOpcuaNodeIdServicesVariableLocal(structType any) OpcuaNodeIdServicesVariableLocal {
@@ -141,3 +141,4 @@ func (e OpcuaNodeIdServicesVariableLocal) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariableLocal) String() string {
 	return e.PLC4XEnumName()
 }
+

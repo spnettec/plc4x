@@ -40,9 +40,9 @@ type IDataSetOrderingType interface {
 	utils.Serializable
 }
 
-const (
-	DataSetOrderingType_dataSetOrderingTypeUndefined               DataSetOrderingType = 0
-	DataSetOrderingType_dataSetOrderingTypeAscendingWriterId       DataSetOrderingType = 1
+const(
+	DataSetOrderingType_dataSetOrderingTypeUndefined DataSetOrderingType = 0
+	DataSetOrderingType_dataSetOrderingTypeAscendingWriterId DataSetOrderingType = 1
 	DataSetOrderingType_dataSetOrderingTypeAscendingWriterIdSingle DataSetOrderingType = 2
 )
 
@@ -50,7 +50,7 @@ var DataSetOrderingTypeValues []DataSetOrderingType
 
 func init() {
 	_ = errors.New
-	DataSetOrderingTypeValues = []DataSetOrderingType{
+	DataSetOrderingTypeValues = []DataSetOrderingType {
 		DataSetOrderingType_dataSetOrderingTypeUndefined,
 		DataSetOrderingType_dataSetOrderingTypeAscendingWriterId,
 		DataSetOrderingType_dataSetOrderingTypeAscendingWriterIdSingle,
@@ -59,12 +59,12 @@ func init() {
 
 func DataSetOrderingTypeByValue(value uint32) (enum DataSetOrderingType, ok bool) {
 	switch value {
-	case 0:
-		return DataSetOrderingType_dataSetOrderingTypeUndefined, true
-	case 1:
-		return DataSetOrderingType_dataSetOrderingTypeAscendingWriterId, true
-	case 2:
-		return DataSetOrderingType_dataSetOrderingTypeAscendingWriterIdSingle, true
+		case 0:
+			return DataSetOrderingType_dataSetOrderingTypeUndefined, true
+		case 1:
+			return DataSetOrderingType_dataSetOrderingTypeAscendingWriterId, true
+		case 2:
+			return DataSetOrderingType_dataSetOrderingTypeAscendingWriterIdSingle, true
 	}
 	return 0, false
 }
@@ -81,13 +81,13 @@ func DataSetOrderingTypeByName(value string) (enum DataSetOrderingType, ok bool)
 	return 0, false
 }
 
-func DataSetOrderingTypeKnows(value uint32) bool {
+func DataSetOrderingTypeKnows(value uint32)  bool {
 	for _, typeValue := range DataSetOrderingTypeValues {
 		if uint32(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastDataSetOrderingType(structType any) DataSetOrderingType {
@@ -157,3 +157,4 @@ func (e DataSetOrderingType) PLC4XEnumName() string {
 func (e DataSetOrderingType) String() string {
 	return e.PLC4XEnumName()
 }
+

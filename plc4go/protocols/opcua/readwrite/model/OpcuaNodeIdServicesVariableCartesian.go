@@ -40,7 +40,7 @@ type IOpcuaNodeIdServicesVariableCartesian interface {
 	utils.Serializable
 }
 
-const (
+const(
 	OpcuaNodeIdServicesVariableCartesian_CartesianCoordinatesType_LengthUnit OpcuaNodeIdServicesVariableCartesian = 18773
 )
 
@@ -48,15 +48,15 @@ var OpcuaNodeIdServicesVariableCartesianValues []OpcuaNodeIdServicesVariableCart
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariableCartesianValues = []OpcuaNodeIdServicesVariableCartesian{
+	OpcuaNodeIdServicesVariableCartesianValues = []OpcuaNodeIdServicesVariableCartesian {
 		OpcuaNodeIdServicesVariableCartesian_CartesianCoordinatesType_LengthUnit,
 	}
 }
 
 func OpcuaNodeIdServicesVariableCartesianByValue(value int32) (enum OpcuaNodeIdServicesVariableCartesian, ok bool) {
 	switch value {
-	case 18773:
-		return OpcuaNodeIdServicesVariableCartesian_CartesianCoordinatesType_LengthUnit, true
+		case 18773:
+			return OpcuaNodeIdServicesVariableCartesian_CartesianCoordinatesType_LengthUnit, true
 	}
 	return 0, false
 }
@@ -69,13 +69,13 @@ func OpcuaNodeIdServicesVariableCartesianByName(value string) (enum OpcuaNodeIdS
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariableCartesianKnows(value int32) bool {
+func OpcuaNodeIdServicesVariableCartesianKnows(value int32)  bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariableCartesianValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastOpcuaNodeIdServicesVariableCartesian(structType any) OpcuaNodeIdServicesVariableCartesian {
@@ -141,3 +141,4 @@ func (e OpcuaNodeIdServicesVariableCartesian) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariableCartesian) String() string {
 	return e.PLC4XEnumName()
 }
+

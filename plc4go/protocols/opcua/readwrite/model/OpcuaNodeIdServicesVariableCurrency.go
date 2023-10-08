@@ -40,7 +40,7 @@ type IOpcuaNodeIdServicesVariableCurrency interface {
 	utils.Serializable
 }
 
-const (
+const(
 	OpcuaNodeIdServicesVariableCurrency_CurrencyUnit OpcuaNodeIdServicesVariableCurrency = 23501
 )
 
@@ -48,15 +48,15 @@ var OpcuaNodeIdServicesVariableCurrencyValues []OpcuaNodeIdServicesVariableCurre
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariableCurrencyValues = []OpcuaNodeIdServicesVariableCurrency{
+	OpcuaNodeIdServicesVariableCurrencyValues = []OpcuaNodeIdServicesVariableCurrency {
 		OpcuaNodeIdServicesVariableCurrency_CurrencyUnit,
 	}
 }
 
 func OpcuaNodeIdServicesVariableCurrencyByValue(value int32) (enum OpcuaNodeIdServicesVariableCurrency, ok bool) {
 	switch value {
-	case 23501:
-		return OpcuaNodeIdServicesVariableCurrency_CurrencyUnit, true
+		case 23501:
+			return OpcuaNodeIdServicesVariableCurrency_CurrencyUnit, true
 	}
 	return 0, false
 }
@@ -69,13 +69,13 @@ func OpcuaNodeIdServicesVariableCurrencyByName(value string) (enum OpcuaNodeIdSe
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariableCurrencyKnows(value int32) bool {
+func OpcuaNodeIdServicesVariableCurrencyKnows(value int32)  bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariableCurrencyValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastOpcuaNodeIdServicesVariableCurrency(structType any) OpcuaNodeIdServicesVariableCurrency {
@@ -141,3 +141,4 @@ func (e OpcuaNodeIdServicesVariableCurrency) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariableCurrency) String() string {
 	return e.PLC4XEnumName()
 }
+

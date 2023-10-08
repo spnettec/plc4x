@@ -40,21 +40,21 @@ type IOpcuaNodeIdServicesVariableProgress interface {
 	utils.Serializable
 }
 
-const (
-	OpcuaNodeIdServicesVariableProgress_ProgressEventType_EventId               OpcuaNodeIdServicesVariableProgress = 11437
-	OpcuaNodeIdServicesVariableProgress_ProgressEventType_EventType             OpcuaNodeIdServicesVariableProgress = 11438
-	OpcuaNodeIdServicesVariableProgress_ProgressEventType_SourceNode            OpcuaNodeIdServicesVariableProgress = 11439
-	OpcuaNodeIdServicesVariableProgress_ProgressEventType_SourceName            OpcuaNodeIdServicesVariableProgress = 11440
-	OpcuaNodeIdServicesVariableProgress_ProgressEventType_Time                  OpcuaNodeIdServicesVariableProgress = 11441
-	OpcuaNodeIdServicesVariableProgress_ProgressEventType_ReceiveTime           OpcuaNodeIdServicesVariableProgress = 11442
-	OpcuaNodeIdServicesVariableProgress_ProgressEventType_LocalTime             OpcuaNodeIdServicesVariableProgress = 11443
-	OpcuaNodeIdServicesVariableProgress_ProgressEventType_Message               OpcuaNodeIdServicesVariableProgress = 11444
-	OpcuaNodeIdServicesVariableProgress_ProgressEventType_Severity              OpcuaNodeIdServicesVariableProgress = 11445
-	OpcuaNodeIdServicesVariableProgress_ProgressEventType_Context               OpcuaNodeIdServicesVariableProgress = 12502
-	OpcuaNodeIdServicesVariableProgress_ProgressEventType_Progress              OpcuaNodeIdServicesVariableProgress = 12503
-	OpcuaNodeIdServicesVariableProgress_ProgressEventType_ConditionClassId      OpcuaNodeIdServicesVariableProgress = 31903
-	OpcuaNodeIdServicesVariableProgress_ProgressEventType_ConditionClassName    OpcuaNodeIdServicesVariableProgress = 31904
-	OpcuaNodeIdServicesVariableProgress_ProgressEventType_ConditionSubClassId   OpcuaNodeIdServicesVariableProgress = 31905
+const(
+	OpcuaNodeIdServicesVariableProgress_ProgressEventType_EventId OpcuaNodeIdServicesVariableProgress = 11437
+	OpcuaNodeIdServicesVariableProgress_ProgressEventType_EventType OpcuaNodeIdServicesVariableProgress = 11438
+	OpcuaNodeIdServicesVariableProgress_ProgressEventType_SourceNode OpcuaNodeIdServicesVariableProgress = 11439
+	OpcuaNodeIdServicesVariableProgress_ProgressEventType_SourceName OpcuaNodeIdServicesVariableProgress = 11440
+	OpcuaNodeIdServicesVariableProgress_ProgressEventType_Time OpcuaNodeIdServicesVariableProgress = 11441
+	OpcuaNodeIdServicesVariableProgress_ProgressEventType_ReceiveTime OpcuaNodeIdServicesVariableProgress = 11442
+	OpcuaNodeIdServicesVariableProgress_ProgressEventType_LocalTime OpcuaNodeIdServicesVariableProgress = 11443
+	OpcuaNodeIdServicesVariableProgress_ProgressEventType_Message OpcuaNodeIdServicesVariableProgress = 11444
+	OpcuaNodeIdServicesVariableProgress_ProgressEventType_Severity OpcuaNodeIdServicesVariableProgress = 11445
+	OpcuaNodeIdServicesVariableProgress_ProgressEventType_Context OpcuaNodeIdServicesVariableProgress = 12502
+	OpcuaNodeIdServicesVariableProgress_ProgressEventType_Progress OpcuaNodeIdServicesVariableProgress = 12503
+	OpcuaNodeIdServicesVariableProgress_ProgressEventType_ConditionClassId OpcuaNodeIdServicesVariableProgress = 31903
+	OpcuaNodeIdServicesVariableProgress_ProgressEventType_ConditionClassName OpcuaNodeIdServicesVariableProgress = 31904
+	OpcuaNodeIdServicesVariableProgress_ProgressEventType_ConditionSubClassId OpcuaNodeIdServicesVariableProgress = 31905
 	OpcuaNodeIdServicesVariableProgress_ProgressEventType_ConditionSubClassName OpcuaNodeIdServicesVariableProgress = 31906
 )
 
@@ -62,7 +62,7 @@ var OpcuaNodeIdServicesVariableProgressValues []OpcuaNodeIdServicesVariableProgr
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariableProgressValues = []OpcuaNodeIdServicesVariableProgress{
+	OpcuaNodeIdServicesVariableProgressValues = []OpcuaNodeIdServicesVariableProgress {
 		OpcuaNodeIdServicesVariableProgress_ProgressEventType_EventId,
 		OpcuaNodeIdServicesVariableProgress_ProgressEventType_EventType,
 		OpcuaNodeIdServicesVariableProgress_ProgressEventType_SourceNode,
@@ -83,36 +83,36 @@ func init() {
 
 func OpcuaNodeIdServicesVariableProgressByValue(value int32) (enum OpcuaNodeIdServicesVariableProgress, ok bool) {
 	switch value {
-	case 11437:
-		return OpcuaNodeIdServicesVariableProgress_ProgressEventType_EventId, true
-	case 11438:
-		return OpcuaNodeIdServicesVariableProgress_ProgressEventType_EventType, true
-	case 11439:
-		return OpcuaNodeIdServicesVariableProgress_ProgressEventType_SourceNode, true
-	case 11440:
-		return OpcuaNodeIdServicesVariableProgress_ProgressEventType_SourceName, true
-	case 11441:
-		return OpcuaNodeIdServicesVariableProgress_ProgressEventType_Time, true
-	case 11442:
-		return OpcuaNodeIdServicesVariableProgress_ProgressEventType_ReceiveTime, true
-	case 11443:
-		return OpcuaNodeIdServicesVariableProgress_ProgressEventType_LocalTime, true
-	case 11444:
-		return OpcuaNodeIdServicesVariableProgress_ProgressEventType_Message, true
-	case 11445:
-		return OpcuaNodeIdServicesVariableProgress_ProgressEventType_Severity, true
-	case 12502:
-		return OpcuaNodeIdServicesVariableProgress_ProgressEventType_Context, true
-	case 12503:
-		return OpcuaNodeIdServicesVariableProgress_ProgressEventType_Progress, true
-	case 31903:
-		return OpcuaNodeIdServicesVariableProgress_ProgressEventType_ConditionClassId, true
-	case 31904:
-		return OpcuaNodeIdServicesVariableProgress_ProgressEventType_ConditionClassName, true
-	case 31905:
-		return OpcuaNodeIdServicesVariableProgress_ProgressEventType_ConditionSubClassId, true
-	case 31906:
-		return OpcuaNodeIdServicesVariableProgress_ProgressEventType_ConditionSubClassName, true
+		case 11437:
+			return OpcuaNodeIdServicesVariableProgress_ProgressEventType_EventId, true
+		case 11438:
+			return OpcuaNodeIdServicesVariableProgress_ProgressEventType_EventType, true
+		case 11439:
+			return OpcuaNodeIdServicesVariableProgress_ProgressEventType_SourceNode, true
+		case 11440:
+			return OpcuaNodeIdServicesVariableProgress_ProgressEventType_SourceName, true
+		case 11441:
+			return OpcuaNodeIdServicesVariableProgress_ProgressEventType_Time, true
+		case 11442:
+			return OpcuaNodeIdServicesVariableProgress_ProgressEventType_ReceiveTime, true
+		case 11443:
+			return OpcuaNodeIdServicesVariableProgress_ProgressEventType_LocalTime, true
+		case 11444:
+			return OpcuaNodeIdServicesVariableProgress_ProgressEventType_Message, true
+		case 11445:
+			return OpcuaNodeIdServicesVariableProgress_ProgressEventType_Severity, true
+		case 12502:
+			return OpcuaNodeIdServicesVariableProgress_ProgressEventType_Context, true
+		case 12503:
+			return OpcuaNodeIdServicesVariableProgress_ProgressEventType_Progress, true
+		case 31903:
+			return OpcuaNodeIdServicesVariableProgress_ProgressEventType_ConditionClassId, true
+		case 31904:
+			return OpcuaNodeIdServicesVariableProgress_ProgressEventType_ConditionClassName, true
+		case 31905:
+			return OpcuaNodeIdServicesVariableProgress_ProgressEventType_ConditionSubClassId, true
+		case 31906:
+			return OpcuaNodeIdServicesVariableProgress_ProgressEventType_ConditionSubClassName, true
 	}
 	return 0, false
 }
@@ -153,13 +153,13 @@ func OpcuaNodeIdServicesVariableProgressByName(value string) (enum OpcuaNodeIdSe
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariableProgressKnows(value int32) bool {
+func OpcuaNodeIdServicesVariableProgressKnows(value int32)  bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariableProgressValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastOpcuaNodeIdServicesVariableProgress(structType any) OpcuaNodeIdServicesVariableProgress {
@@ -253,3 +253,4 @@ func (e OpcuaNodeIdServicesVariableProgress) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariableProgress) String() string {
 	return e.PLC4XEnumName()
 }
+

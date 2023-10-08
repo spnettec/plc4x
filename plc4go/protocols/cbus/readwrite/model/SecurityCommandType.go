@@ -41,9 +41,9 @@ type ISecurityCommandType interface {
 	NumberOfArguments() uint8
 }
 
-const (
-	SecurityCommandType_OFF   SecurityCommandType = 0x00
-	SecurityCommandType_ON    SecurityCommandType = 0x01
+const(
+	SecurityCommandType_OFF SecurityCommandType = 0x00
+	SecurityCommandType_ON SecurityCommandType = 0x01
 	SecurityCommandType_EVENT SecurityCommandType = 0x02
 )
 
@@ -51,29 +51,26 @@ var SecurityCommandTypeValues []SecurityCommandType
 
 func init() {
 	_ = errors.New
-	SecurityCommandTypeValues = []SecurityCommandType{
+	SecurityCommandTypeValues = []SecurityCommandType {
 		SecurityCommandType_OFF,
 		SecurityCommandType_ON,
 		SecurityCommandType_EVENT,
 	}
 }
 
+
 func (e SecurityCommandType) NumberOfArguments() uint8 {
-	switch e {
-	case 0x00:
-		{ /* '0x00' */
-			return 0
+	switch e  {
+		case 0x00: { /* '0x00' */
+            return 0
 		}
-	case 0x01:
-		{ /* '0x01' */
-			return 1
+		case 0x01: { /* '0x01' */
+            return 1
 		}
-	case 0x02:
-		{ /* '0x02' */
-			return 0xFF
+		case 0x02: { /* '0x02' */
+            return 0xFF
 		}
-	default:
-		{
+		default: {
 			return 0
 		}
 	}
@@ -89,12 +86,12 @@ func SecurityCommandTypeFirstEnumForFieldNumberOfArguments(value uint8) (Securit
 }
 func SecurityCommandTypeByValue(value uint8) (enum SecurityCommandType, ok bool) {
 	switch value {
-	case 0x00:
-		return SecurityCommandType_OFF, true
-	case 0x01:
-		return SecurityCommandType_ON, true
-	case 0x02:
-		return SecurityCommandType_EVENT, true
+		case 0x00:
+			return SecurityCommandType_OFF, true
+		case 0x01:
+			return SecurityCommandType_ON, true
+		case 0x02:
+			return SecurityCommandType_EVENT, true
 	}
 	return 0, false
 }
@@ -111,13 +108,13 @@ func SecurityCommandTypeByName(value string) (enum SecurityCommandType, ok bool)
 	return 0, false
 }
 
-func SecurityCommandTypeKnows(value uint8) bool {
+func SecurityCommandTypeKnows(value uint8)  bool {
 	for _, typeValue := range SecurityCommandTypeValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastSecurityCommandType(structType any) SecurityCommandType {
@@ -187,3 +184,4 @@ func (e SecurityCommandType) PLC4XEnumName() string {
 func (e SecurityCommandType) String() string {
 	return e.PLC4XEnumName()
 }
+

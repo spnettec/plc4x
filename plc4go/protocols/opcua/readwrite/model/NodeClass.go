@@ -40,23 +40,23 @@ type INodeClass interface {
 	utils.Serializable
 }
 
-const (
-	NodeClass_nodeClassUnspecified   NodeClass = 0
-	NodeClass_nodeClassObject        NodeClass = 1
-	NodeClass_nodeClassVariable      NodeClass = 2
-	NodeClass_nodeClassMethod        NodeClass = 4
-	NodeClass_nodeClassObjectType    NodeClass = 8
-	NodeClass_nodeClassVariableType  NodeClass = 16
+const(
+	NodeClass_nodeClassUnspecified NodeClass = 0
+	NodeClass_nodeClassObject NodeClass = 1
+	NodeClass_nodeClassVariable NodeClass = 2
+	NodeClass_nodeClassMethod NodeClass = 4
+	NodeClass_nodeClassObjectType NodeClass = 8
+	NodeClass_nodeClassVariableType NodeClass = 16
 	NodeClass_nodeClassReferenceType NodeClass = 32
-	NodeClass_nodeClassDataType      NodeClass = 64
-	NodeClass_nodeClassView          NodeClass = 128
+	NodeClass_nodeClassDataType NodeClass = 64
+	NodeClass_nodeClassView NodeClass = 128
 )
 
 var NodeClassValues []NodeClass
 
 func init() {
 	_ = errors.New
-	NodeClassValues = []NodeClass{
+	NodeClassValues = []NodeClass {
 		NodeClass_nodeClassUnspecified,
 		NodeClass_nodeClassObject,
 		NodeClass_nodeClassVariable,
@@ -71,24 +71,24 @@ func init() {
 
 func NodeClassByValue(value uint32) (enum NodeClass, ok bool) {
 	switch value {
-	case 0:
-		return NodeClass_nodeClassUnspecified, true
-	case 1:
-		return NodeClass_nodeClassObject, true
-	case 128:
-		return NodeClass_nodeClassView, true
-	case 16:
-		return NodeClass_nodeClassVariableType, true
-	case 2:
-		return NodeClass_nodeClassVariable, true
-	case 32:
-		return NodeClass_nodeClassReferenceType, true
-	case 4:
-		return NodeClass_nodeClassMethod, true
-	case 64:
-		return NodeClass_nodeClassDataType, true
-	case 8:
-		return NodeClass_nodeClassObjectType, true
+		case 0:
+			return NodeClass_nodeClassUnspecified, true
+		case 1:
+			return NodeClass_nodeClassObject, true
+		case 128:
+			return NodeClass_nodeClassView, true
+		case 16:
+			return NodeClass_nodeClassVariableType, true
+		case 2:
+			return NodeClass_nodeClassVariable, true
+		case 32:
+			return NodeClass_nodeClassReferenceType, true
+		case 4:
+			return NodeClass_nodeClassMethod, true
+		case 64:
+			return NodeClass_nodeClassDataType, true
+		case 8:
+			return NodeClass_nodeClassObjectType, true
 	}
 	return 0, false
 }
@@ -117,13 +117,13 @@ func NodeClassByName(value string) (enum NodeClass, ok bool) {
 	return 0, false
 }
 
-func NodeClassKnows(value uint32) bool {
+func NodeClassKnows(value uint32)  bool {
 	for _, typeValue := range NodeClassValues {
 		if uint32(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastNodeClass(structType any) NodeClass {
@@ -205,3 +205,4 @@ func (e NodeClass) PLC4XEnumName() string {
 func (e NodeClass) String() string {
 	return e.PLC4XEnumName()
 }
+

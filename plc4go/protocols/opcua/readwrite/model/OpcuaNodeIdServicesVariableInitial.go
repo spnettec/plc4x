@@ -40,7 +40,7 @@ type IOpcuaNodeIdServicesVariableInitial interface {
 	utils.Serializable
 }
 
-const (
+const(
 	OpcuaNodeIdServicesVariableInitial_InitialStateType_StateNumber OpcuaNodeIdServicesVariableInitial = 3736
 )
 
@@ -48,15 +48,15 @@ var OpcuaNodeIdServicesVariableInitialValues []OpcuaNodeIdServicesVariableInitia
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariableInitialValues = []OpcuaNodeIdServicesVariableInitial{
+	OpcuaNodeIdServicesVariableInitialValues = []OpcuaNodeIdServicesVariableInitial {
 		OpcuaNodeIdServicesVariableInitial_InitialStateType_StateNumber,
 	}
 }
 
 func OpcuaNodeIdServicesVariableInitialByValue(value int32) (enum OpcuaNodeIdServicesVariableInitial, ok bool) {
 	switch value {
-	case 3736:
-		return OpcuaNodeIdServicesVariableInitial_InitialStateType_StateNumber, true
+		case 3736:
+			return OpcuaNodeIdServicesVariableInitial_InitialStateType_StateNumber, true
 	}
 	return 0, false
 }
@@ -69,13 +69,13 @@ func OpcuaNodeIdServicesVariableInitialByName(value string) (enum OpcuaNodeIdSer
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariableInitialKnows(value int32) bool {
+func OpcuaNodeIdServicesVariableInitialKnows(value int32)  bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariableInitialValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastOpcuaNodeIdServicesVariableInitial(structType any) OpcuaNodeIdServicesVariableInitial {
@@ -141,3 +141,4 @@ func (e OpcuaNodeIdServicesVariableInitial) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariableInitial) String() string {
 	return e.PLC4XEnumName()
 }
+

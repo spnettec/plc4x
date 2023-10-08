@@ -40,18 +40,18 @@ type IOpcuaNodeIdServicesVariableAlias interface {
 	utils.Serializable
 }
 
-const (
-	OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_SubAliasNameCategories_Placeholder_FindAlias_InputArguments  OpcuaNodeIdServicesVariableAlias = 23460
+const(
+	OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_SubAliasNameCategories_Placeholder_FindAlias_InputArguments OpcuaNodeIdServicesVariableAlias = 23460
 	OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_SubAliasNameCategories_Placeholder_FindAlias_OutputArguments OpcuaNodeIdServicesVariableAlias = 23461
-	OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_FindAlias_InputArguments                                     OpcuaNodeIdServicesVariableAlias = 23463
-	OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_FindAlias_OutputArguments                                    OpcuaNodeIdServicesVariableAlias = 23464
+	OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_FindAlias_InputArguments OpcuaNodeIdServicesVariableAlias = 23463
+	OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_FindAlias_OutputArguments OpcuaNodeIdServicesVariableAlias = 23464
 )
 
 var OpcuaNodeIdServicesVariableAliasValues []OpcuaNodeIdServicesVariableAlias
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariableAliasValues = []OpcuaNodeIdServicesVariableAlias{
+	OpcuaNodeIdServicesVariableAliasValues = []OpcuaNodeIdServicesVariableAlias {
 		OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_SubAliasNameCategories_Placeholder_FindAlias_InputArguments,
 		OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_SubAliasNameCategories_Placeholder_FindAlias_OutputArguments,
 		OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_FindAlias_InputArguments,
@@ -61,14 +61,14 @@ func init() {
 
 func OpcuaNodeIdServicesVariableAliasByValue(value int32) (enum OpcuaNodeIdServicesVariableAlias, ok bool) {
 	switch value {
-	case 23460:
-		return OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_SubAliasNameCategories_Placeholder_FindAlias_InputArguments, true
-	case 23461:
-		return OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_SubAliasNameCategories_Placeholder_FindAlias_OutputArguments, true
-	case 23463:
-		return OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_FindAlias_InputArguments, true
-	case 23464:
-		return OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_FindAlias_OutputArguments, true
+		case 23460:
+			return OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_SubAliasNameCategories_Placeholder_FindAlias_InputArguments, true
+		case 23461:
+			return OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_SubAliasNameCategories_Placeholder_FindAlias_OutputArguments, true
+		case 23463:
+			return OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_FindAlias_InputArguments, true
+		case 23464:
+			return OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_FindAlias_OutputArguments, true
 	}
 	return 0, false
 }
@@ -87,13 +87,13 @@ func OpcuaNodeIdServicesVariableAliasByName(value string) (enum OpcuaNodeIdServi
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariableAliasKnows(value int32) bool {
+func OpcuaNodeIdServicesVariableAliasKnows(value int32)  bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariableAliasValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastOpcuaNodeIdServicesVariableAlias(structType any) OpcuaNodeIdServicesVariableAlias {
@@ -165,3 +165,4 @@ func (e OpcuaNodeIdServicesVariableAlias) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariableAlias) String() string {
 	return e.PLC4XEnumName()
 }
+

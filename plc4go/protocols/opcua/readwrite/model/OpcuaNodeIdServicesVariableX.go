@@ -40,22 +40,22 @@ type IOpcuaNodeIdServicesVariableX interface {
 	utils.Serializable
 }
 
-const (
-	OpcuaNodeIdServicesVariableX_XYArrayItemType_Definition       OpcuaNodeIdServicesVariableX = 12039
-	OpcuaNodeIdServicesVariableX_XYArrayItemType_ValuePrecision   OpcuaNodeIdServicesVariableX = 12040
-	OpcuaNodeIdServicesVariableX_XYArrayItemType_InstrumentRange  OpcuaNodeIdServicesVariableX = 12041
-	OpcuaNodeIdServicesVariableX_XYArrayItemType_EURange          OpcuaNodeIdServicesVariableX = 12042
+const(
+	OpcuaNodeIdServicesVariableX_XYArrayItemType_Definition OpcuaNodeIdServicesVariableX = 12039
+	OpcuaNodeIdServicesVariableX_XYArrayItemType_ValuePrecision OpcuaNodeIdServicesVariableX = 12040
+	OpcuaNodeIdServicesVariableX_XYArrayItemType_InstrumentRange OpcuaNodeIdServicesVariableX = 12041
+	OpcuaNodeIdServicesVariableX_XYArrayItemType_EURange OpcuaNodeIdServicesVariableX = 12042
 	OpcuaNodeIdServicesVariableX_XYArrayItemType_EngineeringUnits OpcuaNodeIdServicesVariableX = 12043
-	OpcuaNodeIdServicesVariableX_XYArrayItemType_Title            OpcuaNodeIdServicesVariableX = 12044
-	OpcuaNodeIdServicesVariableX_XYArrayItemType_AxisScaleType    OpcuaNodeIdServicesVariableX = 12045
-	OpcuaNodeIdServicesVariableX_XYArrayItemType_XAxisDefinition  OpcuaNodeIdServicesVariableX = 12046
+	OpcuaNodeIdServicesVariableX_XYArrayItemType_Title OpcuaNodeIdServicesVariableX = 12044
+	OpcuaNodeIdServicesVariableX_XYArrayItemType_AxisScaleType OpcuaNodeIdServicesVariableX = 12045
+	OpcuaNodeIdServicesVariableX_XYArrayItemType_XAxisDefinition OpcuaNodeIdServicesVariableX = 12046
 )
 
 var OpcuaNodeIdServicesVariableXValues []OpcuaNodeIdServicesVariableX
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariableXValues = []OpcuaNodeIdServicesVariableX{
+	OpcuaNodeIdServicesVariableXValues = []OpcuaNodeIdServicesVariableX {
 		OpcuaNodeIdServicesVariableX_XYArrayItemType_Definition,
 		OpcuaNodeIdServicesVariableX_XYArrayItemType_ValuePrecision,
 		OpcuaNodeIdServicesVariableX_XYArrayItemType_InstrumentRange,
@@ -69,22 +69,22 @@ func init() {
 
 func OpcuaNodeIdServicesVariableXByValue(value int32) (enum OpcuaNodeIdServicesVariableX, ok bool) {
 	switch value {
-	case 12039:
-		return OpcuaNodeIdServicesVariableX_XYArrayItemType_Definition, true
-	case 12040:
-		return OpcuaNodeIdServicesVariableX_XYArrayItemType_ValuePrecision, true
-	case 12041:
-		return OpcuaNodeIdServicesVariableX_XYArrayItemType_InstrumentRange, true
-	case 12042:
-		return OpcuaNodeIdServicesVariableX_XYArrayItemType_EURange, true
-	case 12043:
-		return OpcuaNodeIdServicesVariableX_XYArrayItemType_EngineeringUnits, true
-	case 12044:
-		return OpcuaNodeIdServicesVariableX_XYArrayItemType_Title, true
-	case 12045:
-		return OpcuaNodeIdServicesVariableX_XYArrayItemType_AxisScaleType, true
-	case 12046:
-		return OpcuaNodeIdServicesVariableX_XYArrayItemType_XAxisDefinition, true
+		case 12039:
+			return OpcuaNodeIdServicesVariableX_XYArrayItemType_Definition, true
+		case 12040:
+			return OpcuaNodeIdServicesVariableX_XYArrayItemType_ValuePrecision, true
+		case 12041:
+			return OpcuaNodeIdServicesVariableX_XYArrayItemType_InstrumentRange, true
+		case 12042:
+			return OpcuaNodeIdServicesVariableX_XYArrayItemType_EURange, true
+		case 12043:
+			return OpcuaNodeIdServicesVariableX_XYArrayItemType_EngineeringUnits, true
+		case 12044:
+			return OpcuaNodeIdServicesVariableX_XYArrayItemType_Title, true
+		case 12045:
+			return OpcuaNodeIdServicesVariableX_XYArrayItemType_AxisScaleType, true
+		case 12046:
+			return OpcuaNodeIdServicesVariableX_XYArrayItemType_XAxisDefinition, true
 	}
 	return 0, false
 }
@@ -111,13 +111,13 @@ func OpcuaNodeIdServicesVariableXByName(value string) (enum OpcuaNodeIdServicesV
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariableXKnows(value int32) bool {
+func OpcuaNodeIdServicesVariableXKnows(value int32)  bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariableXValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastOpcuaNodeIdServicesVariableX(structType any) OpcuaNodeIdServicesVariableX {
@@ -197,3 +197,4 @@ func (e OpcuaNodeIdServicesVariableX) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariableX) String() string {
 	return e.PLC4XEnumName()
 }
+

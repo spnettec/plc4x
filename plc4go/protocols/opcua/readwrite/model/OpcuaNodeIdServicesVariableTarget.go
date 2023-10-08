@@ -40,15 +40,15 @@ type IOpcuaNodeIdServicesVariableTarget interface {
 	utils.Serializable
 }
 
-const (
-	OpcuaNodeIdServicesVariableTarget_TargetVariablesType_TargetVariables                                OpcuaNodeIdServicesVariableTarget = 15114
-	OpcuaNodeIdServicesVariableTarget_TargetVariablesType_AddTargetVariables_InputArguments              OpcuaNodeIdServicesVariableTarget = 15116
-	OpcuaNodeIdServicesVariableTarget_TargetVariablesType_AddTargetVariables_OutputArguments             OpcuaNodeIdServicesVariableTarget = 15117
-	OpcuaNodeIdServicesVariableTarget_TargetVariablesType_RemoveTargetVariables_InputArguments           OpcuaNodeIdServicesVariableTarget = 15119
-	OpcuaNodeIdServicesVariableTarget_TargetVariablesType_RemoveTargetVariables_OutputArguments          OpcuaNodeIdServicesVariableTarget = 15120
-	OpcuaNodeIdServicesVariableTarget_TargetVariablesTypeAddTargetVariablesMethodType_InputArguments     OpcuaNodeIdServicesVariableTarget = 15122
-	OpcuaNodeIdServicesVariableTarget_TargetVariablesTypeAddTargetVariablesMethodType_OutputArguments    OpcuaNodeIdServicesVariableTarget = 15123
-	OpcuaNodeIdServicesVariableTarget_TargetVariablesTypeRemoveTargetVariablesMethodType_InputArguments  OpcuaNodeIdServicesVariableTarget = 15125
+const(
+	OpcuaNodeIdServicesVariableTarget_TargetVariablesType_TargetVariables OpcuaNodeIdServicesVariableTarget = 15114
+	OpcuaNodeIdServicesVariableTarget_TargetVariablesType_AddTargetVariables_InputArguments OpcuaNodeIdServicesVariableTarget = 15116
+	OpcuaNodeIdServicesVariableTarget_TargetVariablesType_AddTargetVariables_OutputArguments OpcuaNodeIdServicesVariableTarget = 15117
+	OpcuaNodeIdServicesVariableTarget_TargetVariablesType_RemoveTargetVariables_InputArguments OpcuaNodeIdServicesVariableTarget = 15119
+	OpcuaNodeIdServicesVariableTarget_TargetVariablesType_RemoveTargetVariables_OutputArguments OpcuaNodeIdServicesVariableTarget = 15120
+	OpcuaNodeIdServicesVariableTarget_TargetVariablesTypeAddTargetVariablesMethodType_InputArguments OpcuaNodeIdServicesVariableTarget = 15122
+	OpcuaNodeIdServicesVariableTarget_TargetVariablesTypeAddTargetVariablesMethodType_OutputArguments OpcuaNodeIdServicesVariableTarget = 15123
+	OpcuaNodeIdServicesVariableTarget_TargetVariablesTypeRemoveTargetVariablesMethodType_InputArguments OpcuaNodeIdServicesVariableTarget = 15125
 	OpcuaNodeIdServicesVariableTarget_TargetVariablesTypeRemoveTargetVariablesMethodType_OutputArguments OpcuaNodeIdServicesVariableTarget = 15126
 )
 
@@ -56,7 +56,7 @@ var OpcuaNodeIdServicesVariableTargetValues []OpcuaNodeIdServicesVariableTarget
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariableTargetValues = []OpcuaNodeIdServicesVariableTarget{
+	OpcuaNodeIdServicesVariableTargetValues = []OpcuaNodeIdServicesVariableTarget {
 		OpcuaNodeIdServicesVariableTarget_TargetVariablesType_TargetVariables,
 		OpcuaNodeIdServicesVariableTarget_TargetVariablesType_AddTargetVariables_InputArguments,
 		OpcuaNodeIdServicesVariableTarget_TargetVariablesType_AddTargetVariables_OutputArguments,
@@ -71,24 +71,24 @@ func init() {
 
 func OpcuaNodeIdServicesVariableTargetByValue(value int32) (enum OpcuaNodeIdServicesVariableTarget, ok bool) {
 	switch value {
-	case 15114:
-		return OpcuaNodeIdServicesVariableTarget_TargetVariablesType_TargetVariables, true
-	case 15116:
-		return OpcuaNodeIdServicesVariableTarget_TargetVariablesType_AddTargetVariables_InputArguments, true
-	case 15117:
-		return OpcuaNodeIdServicesVariableTarget_TargetVariablesType_AddTargetVariables_OutputArguments, true
-	case 15119:
-		return OpcuaNodeIdServicesVariableTarget_TargetVariablesType_RemoveTargetVariables_InputArguments, true
-	case 15120:
-		return OpcuaNodeIdServicesVariableTarget_TargetVariablesType_RemoveTargetVariables_OutputArguments, true
-	case 15122:
-		return OpcuaNodeIdServicesVariableTarget_TargetVariablesTypeAddTargetVariablesMethodType_InputArguments, true
-	case 15123:
-		return OpcuaNodeIdServicesVariableTarget_TargetVariablesTypeAddTargetVariablesMethodType_OutputArguments, true
-	case 15125:
-		return OpcuaNodeIdServicesVariableTarget_TargetVariablesTypeRemoveTargetVariablesMethodType_InputArguments, true
-	case 15126:
-		return OpcuaNodeIdServicesVariableTarget_TargetVariablesTypeRemoveTargetVariablesMethodType_OutputArguments, true
+		case 15114:
+			return OpcuaNodeIdServicesVariableTarget_TargetVariablesType_TargetVariables, true
+		case 15116:
+			return OpcuaNodeIdServicesVariableTarget_TargetVariablesType_AddTargetVariables_InputArguments, true
+		case 15117:
+			return OpcuaNodeIdServicesVariableTarget_TargetVariablesType_AddTargetVariables_OutputArguments, true
+		case 15119:
+			return OpcuaNodeIdServicesVariableTarget_TargetVariablesType_RemoveTargetVariables_InputArguments, true
+		case 15120:
+			return OpcuaNodeIdServicesVariableTarget_TargetVariablesType_RemoveTargetVariables_OutputArguments, true
+		case 15122:
+			return OpcuaNodeIdServicesVariableTarget_TargetVariablesTypeAddTargetVariablesMethodType_InputArguments, true
+		case 15123:
+			return OpcuaNodeIdServicesVariableTarget_TargetVariablesTypeAddTargetVariablesMethodType_OutputArguments, true
+		case 15125:
+			return OpcuaNodeIdServicesVariableTarget_TargetVariablesTypeRemoveTargetVariablesMethodType_InputArguments, true
+		case 15126:
+			return OpcuaNodeIdServicesVariableTarget_TargetVariablesTypeRemoveTargetVariablesMethodType_OutputArguments, true
 	}
 	return 0, false
 }
@@ -117,13 +117,13 @@ func OpcuaNodeIdServicesVariableTargetByName(value string) (enum OpcuaNodeIdServ
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariableTargetKnows(value int32) bool {
+func OpcuaNodeIdServicesVariableTargetKnows(value int32)  bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariableTargetValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastOpcuaNodeIdServicesVariableTarget(structType any) OpcuaNodeIdServicesVariableTarget {
@@ -205,3 +205,4 @@ func (e OpcuaNodeIdServicesVariableTarget) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariableTarget) String() string {
 	return e.PLC4XEnumName()
 }
+

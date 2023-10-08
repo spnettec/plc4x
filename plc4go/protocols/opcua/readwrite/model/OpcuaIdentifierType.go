@@ -40,10 +40,10 @@ type IOpcuaIdentifierType interface {
 	utils.Serializable
 }
 
-const (
+const(
 	OpcuaIdentifierType_STRING_IDENTIFIER OpcuaIdentifierType = "s"
 	OpcuaIdentifierType_NUMBER_IDENTIFIER OpcuaIdentifierType = "i"
-	OpcuaIdentifierType_GUID_IDENTIFIER   OpcuaIdentifierType = "g"
+	OpcuaIdentifierType_GUID_IDENTIFIER OpcuaIdentifierType = "g"
 	OpcuaIdentifierType_BINARY_IDENTIFIER OpcuaIdentifierType = "b"
 )
 
@@ -51,7 +51,7 @@ var OpcuaIdentifierTypeValues []OpcuaIdentifierType
 
 func init() {
 	_ = errors.New
-	OpcuaIdentifierTypeValues = []OpcuaIdentifierType{
+	OpcuaIdentifierTypeValues = []OpcuaIdentifierType {
 		OpcuaIdentifierType_STRING_IDENTIFIER,
 		OpcuaIdentifierType_NUMBER_IDENTIFIER,
 		OpcuaIdentifierType_GUID_IDENTIFIER,
@@ -61,14 +61,14 @@ func init() {
 
 func OpcuaIdentifierTypeByValue(value string) (enum OpcuaIdentifierType, ok bool) {
 	switch value {
-	case "b":
-		return OpcuaIdentifierType_BINARY_IDENTIFIER, true
-	case "g":
-		return OpcuaIdentifierType_GUID_IDENTIFIER, true
-	case "i":
-		return OpcuaIdentifierType_NUMBER_IDENTIFIER, true
-	case "s":
-		return OpcuaIdentifierType_STRING_IDENTIFIER, true
+		case "b":
+			return OpcuaIdentifierType_BINARY_IDENTIFIER, true
+		case "g":
+			return OpcuaIdentifierType_GUID_IDENTIFIER, true
+		case "i":
+			return OpcuaIdentifierType_NUMBER_IDENTIFIER, true
+		case "s":
+			return OpcuaIdentifierType_STRING_IDENTIFIER, true
 	}
 	return "", false
 }
@@ -87,13 +87,13 @@ func OpcuaIdentifierTypeByName(value string) (enum OpcuaIdentifierType, ok bool)
 	return "", false
 }
 
-func OpcuaIdentifierTypeKnows(value string) bool {
+func OpcuaIdentifierTypeKnows(value string)  bool {
 	for _, typeValue := range OpcuaIdentifierTypeValues {
 		if string(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastOpcuaIdentifierType(structType any) OpcuaIdentifierType {
@@ -165,3 +165,4 @@ func (e OpcuaIdentifierType) PLC4XEnumName() string {
 func (e OpcuaIdentifierType) String() string {
 	return e.PLC4XEnumName()
 }
+

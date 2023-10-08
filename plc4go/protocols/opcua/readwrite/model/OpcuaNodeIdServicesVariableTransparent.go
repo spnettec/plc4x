@@ -40,17 +40,17 @@ type IOpcuaNodeIdServicesVariableTransparent interface {
 	utils.Serializable
 }
 
-const (
-	OpcuaNodeIdServicesVariableTransparent_TransparentRedundancyType_CurrentServerId      OpcuaNodeIdServicesVariableTransparent = 2037
+const(
+	OpcuaNodeIdServicesVariableTransparent_TransparentRedundancyType_CurrentServerId OpcuaNodeIdServicesVariableTransparent = 2037
 	OpcuaNodeIdServicesVariableTransparent_TransparentRedundancyType_RedundantServerArray OpcuaNodeIdServicesVariableTransparent = 2038
-	OpcuaNodeIdServicesVariableTransparent_TransparentRedundancyType_RedundancySupport    OpcuaNodeIdServicesVariableTransparent = 3188
+	OpcuaNodeIdServicesVariableTransparent_TransparentRedundancyType_RedundancySupport OpcuaNodeIdServicesVariableTransparent = 3188
 )
 
 var OpcuaNodeIdServicesVariableTransparentValues []OpcuaNodeIdServicesVariableTransparent
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariableTransparentValues = []OpcuaNodeIdServicesVariableTransparent{
+	OpcuaNodeIdServicesVariableTransparentValues = []OpcuaNodeIdServicesVariableTransparent {
 		OpcuaNodeIdServicesVariableTransparent_TransparentRedundancyType_CurrentServerId,
 		OpcuaNodeIdServicesVariableTransparent_TransparentRedundancyType_RedundantServerArray,
 		OpcuaNodeIdServicesVariableTransparent_TransparentRedundancyType_RedundancySupport,
@@ -59,12 +59,12 @@ func init() {
 
 func OpcuaNodeIdServicesVariableTransparentByValue(value int32) (enum OpcuaNodeIdServicesVariableTransparent, ok bool) {
 	switch value {
-	case 2037:
-		return OpcuaNodeIdServicesVariableTransparent_TransparentRedundancyType_CurrentServerId, true
-	case 2038:
-		return OpcuaNodeIdServicesVariableTransparent_TransparentRedundancyType_RedundantServerArray, true
-	case 3188:
-		return OpcuaNodeIdServicesVariableTransparent_TransparentRedundancyType_RedundancySupport, true
+		case 2037:
+			return OpcuaNodeIdServicesVariableTransparent_TransparentRedundancyType_CurrentServerId, true
+		case 2038:
+			return OpcuaNodeIdServicesVariableTransparent_TransparentRedundancyType_RedundantServerArray, true
+		case 3188:
+			return OpcuaNodeIdServicesVariableTransparent_TransparentRedundancyType_RedundancySupport, true
 	}
 	return 0, false
 }
@@ -81,13 +81,13 @@ func OpcuaNodeIdServicesVariableTransparentByName(value string) (enum OpcuaNodeI
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariableTransparentKnows(value int32) bool {
+func OpcuaNodeIdServicesVariableTransparentKnows(value int32)  bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariableTransparentValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastOpcuaNodeIdServicesVariableTransparent(structType any) OpcuaNodeIdServicesVariableTransparent {
@@ -157,3 +157,4 @@ func (e OpcuaNodeIdServicesVariableTransparent) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariableTransparent) String() string {
 	return e.PLC4XEnumName()
 }
+

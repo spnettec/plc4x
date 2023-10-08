@@ -40,30 +40,30 @@ type IOpcuaNodeIdServicesVariableAddress interface {
 	utils.Serializable
 }
 
-const (
-	OpcuaNodeIdServicesVariableAddress_AddressSpaceFileType_Size                        OpcuaNodeIdServicesVariableAddress = 11596
-	OpcuaNodeIdServicesVariableAddress_AddressSpaceFileType_OpenCount                   OpcuaNodeIdServicesVariableAddress = 11599
-	OpcuaNodeIdServicesVariableAddress_AddressSpaceFileType_Open_InputArguments         OpcuaNodeIdServicesVariableAddress = 11601
-	OpcuaNodeIdServicesVariableAddress_AddressSpaceFileType_Open_OutputArguments        OpcuaNodeIdServicesVariableAddress = 11602
-	OpcuaNodeIdServicesVariableAddress_AddressSpaceFileType_Close_InputArguments        OpcuaNodeIdServicesVariableAddress = 11604
-	OpcuaNodeIdServicesVariableAddress_AddressSpaceFileType_Read_InputArguments         OpcuaNodeIdServicesVariableAddress = 11606
-	OpcuaNodeIdServicesVariableAddress_AddressSpaceFileType_Read_OutputArguments        OpcuaNodeIdServicesVariableAddress = 11607
-	OpcuaNodeIdServicesVariableAddress_AddressSpaceFileType_Write_InputArguments        OpcuaNodeIdServicesVariableAddress = 11609
-	OpcuaNodeIdServicesVariableAddress_AddressSpaceFileType_GetPosition_InputArguments  OpcuaNodeIdServicesVariableAddress = 11611
+const(
+	OpcuaNodeIdServicesVariableAddress_AddressSpaceFileType_Size OpcuaNodeIdServicesVariableAddress = 11596
+	OpcuaNodeIdServicesVariableAddress_AddressSpaceFileType_OpenCount OpcuaNodeIdServicesVariableAddress = 11599
+	OpcuaNodeIdServicesVariableAddress_AddressSpaceFileType_Open_InputArguments OpcuaNodeIdServicesVariableAddress = 11601
+	OpcuaNodeIdServicesVariableAddress_AddressSpaceFileType_Open_OutputArguments OpcuaNodeIdServicesVariableAddress = 11602
+	OpcuaNodeIdServicesVariableAddress_AddressSpaceFileType_Close_InputArguments OpcuaNodeIdServicesVariableAddress = 11604
+	OpcuaNodeIdServicesVariableAddress_AddressSpaceFileType_Read_InputArguments OpcuaNodeIdServicesVariableAddress = 11606
+	OpcuaNodeIdServicesVariableAddress_AddressSpaceFileType_Read_OutputArguments OpcuaNodeIdServicesVariableAddress = 11607
+	OpcuaNodeIdServicesVariableAddress_AddressSpaceFileType_Write_InputArguments OpcuaNodeIdServicesVariableAddress = 11609
+	OpcuaNodeIdServicesVariableAddress_AddressSpaceFileType_GetPosition_InputArguments OpcuaNodeIdServicesVariableAddress = 11611
 	OpcuaNodeIdServicesVariableAddress_AddressSpaceFileType_GetPosition_OutputArguments OpcuaNodeIdServicesVariableAddress = 11612
-	OpcuaNodeIdServicesVariableAddress_AddressSpaceFileType_SetPosition_InputArguments  OpcuaNodeIdServicesVariableAddress = 11614
-	OpcuaNodeIdServicesVariableAddress_AddressSpaceFileType_Writable                    OpcuaNodeIdServicesVariableAddress = 12688
-	OpcuaNodeIdServicesVariableAddress_AddressSpaceFileType_UserWritable                OpcuaNodeIdServicesVariableAddress = 12689
-	OpcuaNodeIdServicesVariableAddress_AddressSpaceFileType_MimeType                    OpcuaNodeIdServicesVariableAddress = 13398
-	OpcuaNodeIdServicesVariableAddress_AddressSpaceFileType_MaxByteStringLength         OpcuaNodeIdServicesVariableAddress = 24245
-	OpcuaNodeIdServicesVariableAddress_AddressSpaceFileType_LastModifiedTime            OpcuaNodeIdServicesVariableAddress = 25201
+	OpcuaNodeIdServicesVariableAddress_AddressSpaceFileType_SetPosition_InputArguments OpcuaNodeIdServicesVariableAddress = 11614
+	OpcuaNodeIdServicesVariableAddress_AddressSpaceFileType_Writable OpcuaNodeIdServicesVariableAddress = 12688
+	OpcuaNodeIdServicesVariableAddress_AddressSpaceFileType_UserWritable OpcuaNodeIdServicesVariableAddress = 12689
+	OpcuaNodeIdServicesVariableAddress_AddressSpaceFileType_MimeType OpcuaNodeIdServicesVariableAddress = 13398
+	OpcuaNodeIdServicesVariableAddress_AddressSpaceFileType_MaxByteStringLength OpcuaNodeIdServicesVariableAddress = 24245
+	OpcuaNodeIdServicesVariableAddress_AddressSpaceFileType_LastModifiedTime OpcuaNodeIdServicesVariableAddress = 25201
 )
 
 var OpcuaNodeIdServicesVariableAddressValues []OpcuaNodeIdServicesVariableAddress
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariableAddressValues = []OpcuaNodeIdServicesVariableAddress{
+	OpcuaNodeIdServicesVariableAddressValues = []OpcuaNodeIdServicesVariableAddress {
 		OpcuaNodeIdServicesVariableAddress_AddressSpaceFileType_Size,
 		OpcuaNodeIdServicesVariableAddress_AddressSpaceFileType_OpenCount,
 		OpcuaNodeIdServicesVariableAddress_AddressSpaceFileType_Open_InputArguments,
@@ -85,38 +85,38 @@ func init() {
 
 func OpcuaNodeIdServicesVariableAddressByValue(value int32) (enum OpcuaNodeIdServicesVariableAddress, ok bool) {
 	switch value {
-	case 11596:
-		return OpcuaNodeIdServicesVariableAddress_AddressSpaceFileType_Size, true
-	case 11599:
-		return OpcuaNodeIdServicesVariableAddress_AddressSpaceFileType_OpenCount, true
-	case 11601:
-		return OpcuaNodeIdServicesVariableAddress_AddressSpaceFileType_Open_InputArguments, true
-	case 11602:
-		return OpcuaNodeIdServicesVariableAddress_AddressSpaceFileType_Open_OutputArguments, true
-	case 11604:
-		return OpcuaNodeIdServicesVariableAddress_AddressSpaceFileType_Close_InputArguments, true
-	case 11606:
-		return OpcuaNodeIdServicesVariableAddress_AddressSpaceFileType_Read_InputArguments, true
-	case 11607:
-		return OpcuaNodeIdServicesVariableAddress_AddressSpaceFileType_Read_OutputArguments, true
-	case 11609:
-		return OpcuaNodeIdServicesVariableAddress_AddressSpaceFileType_Write_InputArguments, true
-	case 11611:
-		return OpcuaNodeIdServicesVariableAddress_AddressSpaceFileType_GetPosition_InputArguments, true
-	case 11612:
-		return OpcuaNodeIdServicesVariableAddress_AddressSpaceFileType_GetPosition_OutputArguments, true
-	case 11614:
-		return OpcuaNodeIdServicesVariableAddress_AddressSpaceFileType_SetPosition_InputArguments, true
-	case 12688:
-		return OpcuaNodeIdServicesVariableAddress_AddressSpaceFileType_Writable, true
-	case 12689:
-		return OpcuaNodeIdServicesVariableAddress_AddressSpaceFileType_UserWritable, true
-	case 13398:
-		return OpcuaNodeIdServicesVariableAddress_AddressSpaceFileType_MimeType, true
-	case 24245:
-		return OpcuaNodeIdServicesVariableAddress_AddressSpaceFileType_MaxByteStringLength, true
-	case 25201:
-		return OpcuaNodeIdServicesVariableAddress_AddressSpaceFileType_LastModifiedTime, true
+		case 11596:
+			return OpcuaNodeIdServicesVariableAddress_AddressSpaceFileType_Size, true
+		case 11599:
+			return OpcuaNodeIdServicesVariableAddress_AddressSpaceFileType_OpenCount, true
+		case 11601:
+			return OpcuaNodeIdServicesVariableAddress_AddressSpaceFileType_Open_InputArguments, true
+		case 11602:
+			return OpcuaNodeIdServicesVariableAddress_AddressSpaceFileType_Open_OutputArguments, true
+		case 11604:
+			return OpcuaNodeIdServicesVariableAddress_AddressSpaceFileType_Close_InputArguments, true
+		case 11606:
+			return OpcuaNodeIdServicesVariableAddress_AddressSpaceFileType_Read_InputArguments, true
+		case 11607:
+			return OpcuaNodeIdServicesVariableAddress_AddressSpaceFileType_Read_OutputArguments, true
+		case 11609:
+			return OpcuaNodeIdServicesVariableAddress_AddressSpaceFileType_Write_InputArguments, true
+		case 11611:
+			return OpcuaNodeIdServicesVariableAddress_AddressSpaceFileType_GetPosition_InputArguments, true
+		case 11612:
+			return OpcuaNodeIdServicesVariableAddress_AddressSpaceFileType_GetPosition_OutputArguments, true
+		case 11614:
+			return OpcuaNodeIdServicesVariableAddress_AddressSpaceFileType_SetPosition_InputArguments, true
+		case 12688:
+			return OpcuaNodeIdServicesVariableAddress_AddressSpaceFileType_Writable, true
+		case 12689:
+			return OpcuaNodeIdServicesVariableAddress_AddressSpaceFileType_UserWritable, true
+		case 13398:
+			return OpcuaNodeIdServicesVariableAddress_AddressSpaceFileType_MimeType, true
+		case 24245:
+			return OpcuaNodeIdServicesVariableAddress_AddressSpaceFileType_MaxByteStringLength, true
+		case 25201:
+			return OpcuaNodeIdServicesVariableAddress_AddressSpaceFileType_LastModifiedTime, true
 	}
 	return 0, false
 }
@@ -159,13 +159,13 @@ func OpcuaNodeIdServicesVariableAddressByName(value string) (enum OpcuaNodeIdSer
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariableAddressKnows(value int32) bool {
+func OpcuaNodeIdServicesVariableAddressKnows(value int32)  bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariableAddressValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastOpcuaNodeIdServicesVariableAddress(structType any) OpcuaNodeIdServicesVariableAddress {
@@ -261,3 +261,4 @@ func (e OpcuaNodeIdServicesVariableAddress) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariableAddress) String() string {
 	return e.PLC4XEnumName()
 }
+

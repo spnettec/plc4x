@@ -40,7 +40,7 @@ type IOpcuaNodeIdServicesVariablePassword interface {
 	utils.Serializable
 }
 
-const (
+const(
 	OpcuaNodeIdServicesVariablePassword_PasswordOptionsMask_OptionSetValues OpcuaNodeIdServicesVariablePassword = 24278
 )
 
@@ -48,15 +48,15 @@ var OpcuaNodeIdServicesVariablePasswordValues []OpcuaNodeIdServicesVariablePassw
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariablePasswordValues = []OpcuaNodeIdServicesVariablePassword{
+	OpcuaNodeIdServicesVariablePasswordValues = []OpcuaNodeIdServicesVariablePassword {
 		OpcuaNodeIdServicesVariablePassword_PasswordOptionsMask_OptionSetValues,
 	}
 }
 
 func OpcuaNodeIdServicesVariablePasswordByValue(value int32) (enum OpcuaNodeIdServicesVariablePassword, ok bool) {
 	switch value {
-	case 24278:
-		return OpcuaNodeIdServicesVariablePassword_PasswordOptionsMask_OptionSetValues, true
+		case 24278:
+			return OpcuaNodeIdServicesVariablePassword_PasswordOptionsMask_OptionSetValues, true
 	}
 	return 0, false
 }
@@ -69,13 +69,13 @@ func OpcuaNodeIdServicesVariablePasswordByName(value string) (enum OpcuaNodeIdSe
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariablePasswordKnows(value int32) bool {
+func OpcuaNodeIdServicesVariablePasswordKnows(value int32)  bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariablePasswordValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastOpcuaNodeIdServicesVariablePassword(structType any) OpcuaNodeIdServicesVariablePassword {
@@ -141,3 +141,4 @@ func (e OpcuaNodeIdServicesVariablePassword) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariablePassword) String() string {
 	return e.PLC4XEnumName()
 }
+

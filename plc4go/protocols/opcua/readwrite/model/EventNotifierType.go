@@ -40,18 +40,18 @@ type IEventNotifierType interface {
 	utils.Serializable
 }
 
-const (
-	EventNotifierType_eventNotifierTypeNone              EventNotifierType = 0
+const(
+	EventNotifierType_eventNotifierTypeNone EventNotifierType = 0
 	EventNotifierType_eventNotifierTypeSubscribeToEvents EventNotifierType = 1
-	EventNotifierType_eventNotifierTypeHistoryRead       EventNotifierType = 4
-	EventNotifierType_eventNotifierTypeHistoryWrite      EventNotifierType = 8
+	EventNotifierType_eventNotifierTypeHistoryRead EventNotifierType = 4
+	EventNotifierType_eventNotifierTypeHistoryWrite EventNotifierType = 8
 )
 
 var EventNotifierTypeValues []EventNotifierType
 
 func init() {
 	_ = errors.New
-	EventNotifierTypeValues = []EventNotifierType{
+	EventNotifierTypeValues = []EventNotifierType {
 		EventNotifierType_eventNotifierTypeNone,
 		EventNotifierType_eventNotifierTypeSubscribeToEvents,
 		EventNotifierType_eventNotifierTypeHistoryRead,
@@ -61,14 +61,14 @@ func init() {
 
 func EventNotifierTypeByValue(value uint8) (enum EventNotifierType, ok bool) {
 	switch value {
-	case 0:
-		return EventNotifierType_eventNotifierTypeNone, true
-	case 1:
-		return EventNotifierType_eventNotifierTypeSubscribeToEvents, true
-	case 4:
-		return EventNotifierType_eventNotifierTypeHistoryRead, true
-	case 8:
-		return EventNotifierType_eventNotifierTypeHistoryWrite, true
+		case 0:
+			return EventNotifierType_eventNotifierTypeNone, true
+		case 1:
+			return EventNotifierType_eventNotifierTypeSubscribeToEvents, true
+		case 4:
+			return EventNotifierType_eventNotifierTypeHistoryRead, true
+		case 8:
+			return EventNotifierType_eventNotifierTypeHistoryWrite, true
 	}
 	return 0, false
 }
@@ -87,13 +87,13 @@ func EventNotifierTypeByName(value string) (enum EventNotifierType, ok bool) {
 	return 0, false
 }
 
-func EventNotifierTypeKnows(value uint8) bool {
+func EventNotifierTypeKnows(value uint8)  bool {
 	for _, typeValue := range EventNotifierTypeValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastEventNotifierType(structType any) EventNotifierType {
@@ -165,3 +165,4 @@ func (e EventNotifierType) PLC4XEnumName() string {
 func (e EventNotifierType) String() string {
 	return e.PLC4XEnumName()
 }
+

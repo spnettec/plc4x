@@ -40,22 +40,22 @@ type IOpcuaNodeIdServicesVariableY interface {
 	utils.Serializable
 }
 
-const (
-	OpcuaNodeIdServicesVariableY_YArrayItemType_Definition       OpcuaNodeIdServicesVariableY = 12030
-	OpcuaNodeIdServicesVariableY_YArrayItemType_ValuePrecision   OpcuaNodeIdServicesVariableY = 12031
-	OpcuaNodeIdServicesVariableY_YArrayItemType_InstrumentRange  OpcuaNodeIdServicesVariableY = 12032
-	OpcuaNodeIdServicesVariableY_YArrayItemType_EURange          OpcuaNodeIdServicesVariableY = 12033
+const(
+	OpcuaNodeIdServicesVariableY_YArrayItemType_Definition OpcuaNodeIdServicesVariableY = 12030
+	OpcuaNodeIdServicesVariableY_YArrayItemType_ValuePrecision OpcuaNodeIdServicesVariableY = 12031
+	OpcuaNodeIdServicesVariableY_YArrayItemType_InstrumentRange OpcuaNodeIdServicesVariableY = 12032
+	OpcuaNodeIdServicesVariableY_YArrayItemType_EURange OpcuaNodeIdServicesVariableY = 12033
 	OpcuaNodeIdServicesVariableY_YArrayItemType_EngineeringUnits OpcuaNodeIdServicesVariableY = 12034
-	OpcuaNodeIdServicesVariableY_YArrayItemType_Title            OpcuaNodeIdServicesVariableY = 12035
-	OpcuaNodeIdServicesVariableY_YArrayItemType_AxisScaleType    OpcuaNodeIdServicesVariableY = 12036
-	OpcuaNodeIdServicesVariableY_YArrayItemType_XAxisDefinition  OpcuaNodeIdServicesVariableY = 12037
+	OpcuaNodeIdServicesVariableY_YArrayItemType_Title OpcuaNodeIdServicesVariableY = 12035
+	OpcuaNodeIdServicesVariableY_YArrayItemType_AxisScaleType OpcuaNodeIdServicesVariableY = 12036
+	OpcuaNodeIdServicesVariableY_YArrayItemType_XAxisDefinition OpcuaNodeIdServicesVariableY = 12037
 )
 
 var OpcuaNodeIdServicesVariableYValues []OpcuaNodeIdServicesVariableY
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariableYValues = []OpcuaNodeIdServicesVariableY{
+	OpcuaNodeIdServicesVariableYValues = []OpcuaNodeIdServicesVariableY {
 		OpcuaNodeIdServicesVariableY_YArrayItemType_Definition,
 		OpcuaNodeIdServicesVariableY_YArrayItemType_ValuePrecision,
 		OpcuaNodeIdServicesVariableY_YArrayItemType_InstrumentRange,
@@ -69,22 +69,22 @@ func init() {
 
 func OpcuaNodeIdServicesVariableYByValue(value int32) (enum OpcuaNodeIdServicesVariableY, ok bool) {
 	switch value {
-	case 12030:
-		return OpcuaNodeIdServicesVariableY_YArrayItemType_Definition, true
-	case 12031:
-		return OpcuaNodeIdServicesVariableY_YArrayItemType_ValuePrecision, true
-	case 12032:
-		return OpcuaNodeIdServicesVariableY_YArrayItemType_InstrumentRange, true
-	case 12033:
-		return OpcuaNodeIdServicesVariableY_YArrayItemType_EURange, true
-	case 12034:
-		return OpcuaNodeIdServicesVariableY_YArrayItemType_EngineeringUnits, true
-	case 12035:
-		return OpcuaNodeIdServicesVariableY_YArrayItemType_Title, true
-	case 12036:
-		return OpcuaNodeIdServicesVariableY_YArrayItemType_AxisScaleType, true
-	case 12037:
-		return OpcuaNodeIdServicesVariableY_YArrayItemType_XAxisDefinition, true
+		case 12030:
+			return OpcuaNodeIdServicesVariableY_YArrayItemType_Definition, true
+		case 12031:
+			return OpcuaNodeIdServicesVariableY_YArrayItemType_ValuePrecision, true
+		case 12032:
+			return OpcuaNodeIdServicesVariableY_YArrayItemType_InstrumentRange, true
+		case 12033:
+			return OpcuaNodeIdServicesVariableY_YArrayItemType_EURange, true
+		case 12034:
+			return OpcuaNodeIdServicesVariableY_YArrayItemType_EngineeringUnits, true
+		case 12035:
+			return OpcuaNodeIdServicesVariableY_YArrayItemType_Title, true
+		case 12036:
+			return OpcuaNodeIdServicesVariableY_YArrayItemType_AxisScaleType, true
+		case 12037:
+			return OpcuaNodeIdServicesVariableY_YArrayItemType_XAxisDefinition, true
 	}
 	return 0, false
 }
@@ -111,13 +111,13 @@ func OpcuaNodeIdServicesVariableYByName(value string) (enum OpcuaNodeIdServicesV
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariableYKnows(value int32) bool {
+func OpcuaNodeIdServicesVariableYKnows(value int32)  bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariableYValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastOpcuaNodeIdServicesVariableY(structType any) OpcuaNodeIdServicesVariableY {
@@ -197,3 +197,4 @@ func (e OpcuaNodeIdServicesVariableY) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariableY) String() string {
 	return e.PLC4XEnumName()
 }
+

@@ -40,32 +40,32 @@ type IOpcuaNodeIdServicesVariableUser interface {
 	utils.Serializable
 }
 
-const (
-	OpcuaNodeIdServicesVariableUser_UserTokenType_EnumStrings                        OpcuaNodeIdServicesVariableUser = 7596
-	OpcuaNodeIdServicesVariableUser_UserManagementType_Users                         OpcuaNodeIdServicesVariableUser = 24265
-	OpcuaNodeIdServicesVariableUser_UserManagementType_PasswordLength                OpcuaNodeIdServicesVariableUser = 24266
-	OpcuaNodeIdServicesVariableUser_UserManagementType_PasswordOptions               OpcuaNodeIdServicesVariableUser = 24267
-	OpcuaNodeIdServicesVariableUser_UserManagementType_PasswordRestrictions          OpcuaNodeIdServicesVariableUser = 24268
-	OpcuaNodeIdServicesVariableUser_UserManagementType_AddUser_InputArguments        OpcuaNodeIdServicesVariableUser = 24270
-	OpcuaNodeIdServicesVariableUser_UserManagementType_ModifyUser_InputArguments     OpcuaNodeIdServicesVariableUser = 24272
-	OpcuaNodeIdServicesVariableUser_UserManagementType_RemoveUser_InputArguments     OpcuaNodeIdServicesVariableUser = 24274
+const(
+	OpcuaNodeIdServicesVariableUser_UserTokenType_EnumStrings OpcuaNodeIdServicesVariableUser = 7596
+	OpcuaNodeIdServicesVariableUser_UserManagementType_Users OpcuaNodeIdServicesVariableUser = 24265
+	OpcuaNodeIdServicesVariableUser_UserManagementType_PasswordLength OpcuaNodeIdServicesVariableUser = 24266
+	OpcuaNodeIdServicesVariableUser_UserManagementType_PasswordOptions OpcuaNodeIdServicesVariableUser = 24267
+	OpcuaNodeIdServicesVariableUser_UserManagementType_PasswordRestrictions OpcuaNodeIdServicesVariableUser = 24268
+	OpcuaNodeIdServicesVariableUser_UserManagementType_AddUser_InputArguments OpcuaNodeIdServicesVariableUser = 24270
+	OpcuaNodeIdServicesVariableUser_UserManagementType_ModifyUser_InputArguments OpcuaNodeIdServicesVariableUser = 24272
+	OpcuaNodeIdServicesVariableUser_UserManagementType_RemoveUser_InputArguments OpcuaNodeIdServicesVariableUser = 24274
 	OpcuaNodeIdServicesVariableUser_UserManagementType_ChangePassword_InputArguments OpcuaNodeIdServicesVariableUser = 24276
-	OpcuaNodeIdServicesVariableUser_UserConfigurationMask_OptionSetValues            OpcuaNodeIdServicesVariableUser = 24280
-	OpcuaNodeIdServicesVariableUser_UserManagement_PasswordRestrictions              OpcuaNodeIdServicesVariableUser = 24291
-	OpcuaNodeIdServicesVariableUser_UserManagement_Users                             OpcuaNodeIdServicesVariableUser = 24301
-	OpcuaNodeIdServicesVariableUser_UserManagement_PasswordLength                    OpcuaNodeIdServicesVariableUser = 24302
-	OpcuaNodeIdServicesVariableUser_UserManagement_PasswordOptions                   OpcuaNodeIdServicesVariableUser = 24303
-	OpcuaNodeIdServicesVariableUser_UserManagement_AddUser_InputArguments            OpcuaNodeIdServicesVariableUser = 24305
-	OpcuaNodeIdServicesVariableUser_UserManagement_ModifyUser_InputArguments         OpcuaNodeIdServicesVariableUser = 24307
-	OpcuaNodeIdServicesVariableUser_UserManagement_RemoveUser_InputArguments         OpcuaNodeIdServicesVariableUser = 24309
-	OpcuaNodeIdServicesVariableUser_UserManagement_ChangePassword_InputArguments     OpcuaNodeIdServicesVariableUser = 24311
+	OpcuaNodeIdServicesVariableUser_UserConfigurationMask_OptionSetValues OpcuaNodeIdServicesVariableUser = 24280
+	OpcuaNodeIdServicesVariableUser_UserManagement_PasswordRestrictions OpcuaNodeIdServicesVariableUser = 24291
+	OpcuaNodeIdServicesVariableUser_UserManagement_Users OpcuaNodeIdServicesVariableUser = 24301
+	OpcuaNodeIdServicesVariableUser_UserManagement_PasswordLength OpcuaNodeIdServicesVariableUser = 24302
+	OpcuaNodeIdServicesVariableUser_UserManagement_PasswordOptions OpcuaNodeIdServicesVariableUser = 24303
+	OpcuaNodeIdServicesVariableUser_UserManagement_AddUser_InputArguments OpcuaNodeIdServicesVariableUser = 24305
+	OpcuaNodeIdServicesVariableUser_UserManagement_ModifyUser_InputArguments OpcuaNodeIdServicesVariableUser = 24307
+	OpcuaNodeIdServicesVariableUser_UserManagement_RemoveUser_InputArguments OpcuaNodeIdServicesVariableUser = 24309
+	OpcuaNodeIdServicesVariableUser_UserManagement_ChangePassword_InputArguments OpcuaNodeIdServicesVariableUser = 24311
 )
 
 var OpcuaNodeIdServicesVariableUserValues []OpcuaNodeIdServicesVariableUser
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariableUserValues = []OpcuaNodeIdServicesVariableUser{
+	OpcuaNodeIdServicesVariableUserValues = []OpcuaNodeIdServicesVariableUser {
 		OpcuaNodeIdServicesVariableUser_UserTokenType_EnumStrings,
 		OpcuaNodeIdServicesVariableUser_UserManagementType_Users,
 		OpcuaNodeIdServicesVariableUser_UserManagementType_PasswordLength,
@@ -89,42 +89,42 @@ func init() {
 
 func OpcuaNodeIdServicesVariableUserByValue(value int32) (enum OpcuaNodeIdServicesVariableUser, ok bool) {
 	switch value {
-	case 24265:
-		return OpcuaNodeIdServicesVariableUser_UserManagementType_Users, true
-	case 24266:
-		return OpcuaNodeIdServicesVariableUser_UserManagementType_PasswordLength, true
-	case 24267:
-		return OpcuaNodeIdServicesVariableUser_UserManagementType_PasswordOptions, true
-	case 24268:
-		return OpcuaNodeIdServicesVariableUser_UserManagementType_PasswordRestrictions, true
-	case 24270:
-		return OpcuaNodeIdServicesVariableUser_UserManagementType_AddUser_InputArguments, true
-	case 24272:
-		return OpcuaNodeIdServicesVariableUser_UserManagementType_ModifyUser_InputArguments, true
-	case 24274:
-		return OpcuaNodeIdServicesVariableUser_UserManagementType_RemoveUser_InputArguments, true
-	case 24276:
-		return OpcuaNodeIdServicesVariableUser_UserManagementType_ChangePassword_InputArguments, true
-	case 24280:
-		return OpcuaNodeIdServicesVariableUser_UserConfigurationMask_OptionSetValues, true
-	case 24291:
-		return OpcuaNodeIdServicesVariableUser_UserManagement_PasswordRestrictions, true
-	case 24301:
-		return OpcuaNodeIdServicesVariableUser_UserManagement_Users, true
-	case 24302:
-		return OpcuaNodeIdServicesVariableUser_UserManagement_PasswordLength, true
-	case 24303:
-		return OpcuaNodeIdServicesVariableUser_UserManagement_PasswordOptions, true
-	case 24305:
-		return OpcuaNodeIdServicesVariableUser_UserManagement_AddUser_InputArguments, true
-	case 24307:
-		return OpcuaNodeIdServicesVariableUser_UserManagement_ModifyUser_InputArguments, true
-	case 24309:
-		return OpcuaNodeIdServicesVariableUser_UserManagement_RemoveUser_InputArguments, true
-	case 24311:
-		return OpcuaNodeIdServicesVariableUser_UserManagement_ChangePassword_InputArguments, true
-	case 7596:
-		return OpcuaNodeIdServicesVariableUser_UserTokenType_EnumStrings, true
+		case 24265:
+			return OpcuaNodeIdServicesVariableUser_UserManagementType_Users, true
+		case 24266:
+			return OpcuaNodeIdServicesVariableUser_UserManagementType_PasswordLength, true
+		case 24267:
+			return OpcuaNodeIdServicesVariableUser_UserManagementType_PasswordOptions, true
+		case 24268:
+			return OpcuaNodeIdServicesVariableUser_UserManagementType_PasswordRestrictions, true
+		case 24270:
+			return OpcuaNodeIdServicesVariableUser_UserManagementType_AddUser_InputArguments, true
+		case 24272:
+			return OpcuaNodeIdServicesVariableUser_UserManagementType_ModifyUser_InputArguments, true
+		case 24274:
+			return OpcuaNodeIdServicesVariableUser_UserManagementType_RemoveUser_InputArguments, true
+		case 24276:
+			return OpcuaNodeIdServicesVariableUser_UserManagementType_ChangePassword_InputArguments, true
+		case 24280:
+			return OpcuaNodeIdServicesVariableUser_UserConfigurationMask_OptionSetValues, true
+		case 24291:
+			return OpcuaNodeIdServicesVariableUser_UserManagement_PasswordRestrictions, true
+		case 24301:
+			return OpcuaNodeIdServicesVariableUser_UserManagement_Users, true
+		case 24302:
+			return OpcuaNodeIdServicesVariableUser_UserManagement_PasswordLength, true
+		case 24303:
+			return OpcuaNodeIdServicesVariableUser_UserManagement_PasswordOptions, true
+		case 24305:
+			return OpcuaNodeIdServicesVariableUser_UserManagement_AddUser_InputArguments, true
+		case 24307:
+			return OpcuaNodeIdServicesVariableUser_UserManagement_ModifyUser_InputArguments, true
+		case 24309:
+			return OpcuaNodeIdServicesVariableUser_UserManagement_RemoveUser_InputArguments, true
+		case 24311:
+			return OpcuaNodeIdServicesVariableUser_UserManagement_ChangePassword_InputArguments, true
+		case 7596:
+			return OpcuaNodeIdServicesVariableUser_UserTokenType_EnumStrings, true
 	}
 	return 0, false
 }
@@ -171,13 +171,13 @@ func OpcuaNodeIdServicesVariableUserByName(value string) (enum OpcuaNodeIdServic
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariableUserKnows(value int32) bool {
+func OpcuaNodeIdServicesVariableUserKnows(value int32)  bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariableUserValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastOpcuaNodeIdServicesVariableUser(structType any) OpcuaNodeIdServicesVariableUser {
@@ -277,3 +277,4 @@ func (e OpcuaNodeIdServicesVariableUser) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariableUser) String() string {
 	return e.PLC4XEnumName()
 }
+

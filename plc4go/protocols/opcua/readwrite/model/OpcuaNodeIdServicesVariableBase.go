@@ -40,37 +40,37 @@ type IOpcuaNodeIdServicesVariableBase interface {
 	utils.Serializable
 }
 
-const (
-	OpcuaNodeIdServicesVariableBase_BaseEventType_EventId                          OpcuaNodeIdServicesVariableBase = 2042
-	OpcuaNodeIdServicesVariableBase_BaseEventType_EventType                        OpcuaNodeIdServicesVariableBase = 2043
-	OpcuaNodeIdServicesVariableBase_BaseEventType_SourceNode                       OpcuaNodeIdServicesVariableBase = 2044
-	OpcuaNodeIdServicesVariableBase_BaseEventType_SourceName                       OpcuaNodeIdServicesVariableBase = 2045
-	OpcuaNodeIdServicesVariableBase_BaseEventType_Time                             OpcuaNodeIdServicesVariableBase = 2046
-	OpcuaNodeIdServicesVariableBase_BaseEventType_ReceiveTime                      OpcuaNodeIdServicesVariableBase = 2047
-	OpcuaNodeIdServicesVariableBase_BaseEventType_Message                          OpcuaNodeIdServicesVariableBase = 2050
-	OpcuaNodeIdServicesVariableBase_BaseEventType_Severity                         OpcuaNodeIdServicesVariableBase = 2051
-	OpcuaNodeIdServicesVariableBase_BaseEventType_LocalTime                        OpcuaNodeIdServicesVariableBase = 3190
-	OpcuaNodeIdServicesVariableBase_BaseModelChangeEventType_EventId               OpcuaNodeIdServicesVariableBase = 3671
-	OpcuaNodeIdServicesVariableBase_BaseModelChangeEventType_EventType             OpcuaNodeIdServicesVariableBase = 3672
-	OpcuaNodeIdServicesVariableBase_BaseModelChangeEventType_SourceNode            OpcuaNodeIdServicesVariableBase = 3673
-	OpcuaNodeIdServicesVariableBase_BaseModelChangeEventType_SourceName            OpcuaNodeIdServicesVariableBase = 3674
-	OpcuaNodeIdServicesVariableBase_BaseModelChangeEventType_Time                  OpcuaNodeIdServicesVariableBase = 3675
-	OpcuaNodeIdServicesVariableBase_BaseModelChangeEventType_ReceiveTime           OpcuaNodeIdServicesVariableBase = 3676
-	OpcuaNodeIdServicesVariableBase_BaseModelChangeEventType_LocalTime             OpcuaNodeIdServicesVariableBase = 3677
-	OpcuaNodeIdServicesVariableBase_BaseModelChangeEventType_Message               OpcuaNodeIdServicesVariableBase = 3678
-	OpcuaNodeIdServicesVariableBase_BaseModelChangeEventType_Severity              OpcuaNodeIdServicesVariableBase = 3679
-	OpcuaNodeIdServicesVariableBase_BaseAnalogType_Definition                      OpcuaNodeIdServicesVariableBase = 17565
-	OpcuaNodeIdServicesVariableBase_BaseAnalogType_ValuePrecision                  OpcuaNodeIdServicesVariableBase = 17566
-	OpcuaNodeIdServicesVariableBase_BaseAnalogType_InstrumentRange                 OpcuaNodeIdServicesVariableBase = 17567
-	OpcuaNodeIdServicesVariableBase_BaseAnalogType_EURange                         OpcuaNodeIdServicesVariableBase = 17568
-	OpcuaNodeIdServicesVariableBase_BaseAnalogType_EngineeringUnits                OpcuaNodeIdServicesVariableBase = 17569
-	OpcuaNodeIdServicesVariableBase_BaseEventType_ConditionClassId                 OpcuaNodeIdServicesVariableBase = 31771
-	OpcuaNodeIdServicesVariableBase_BaseEventType_ConditionClassName               OpcuaNodeIdServicesVariableBase = 31772
-	OpcuaNodeIdServicesVariableBase_BaseEventType_ConditionSubClassId              OpcuaNodeIdServicesVariableBase = 31773
-	OpcuaNodeIdServicesVariableBase_BaseEventType_ConditionSubClassName            OpcuaNodeIdServicesVariableBase = 31774
-	OpcuaNodeIdServicesVariableBase_BaseModelChangeEventType_ConditionClassId      OpcuaNodeIdServicesVariableBase = 31887
-	OpcuaNodeIdServicesVariableBase_BaseModelChangeEventType_ConditionClassName    OpcuaNodeIdServicesVariableBase = 31888
-	OpcuaNodeIdServicesVariableBase_BaseModelChangeEventType_ConditionSubClassId   OpcuaNodeIdServicesVariableBase = 31889
+const(
+	OpcuaNodeIdServicesVariableBase_BaseEventType_EventId OpcuaNodeIdServicesVariableBase = 2042
+	OpcuaNodeIdServicesVariableBase_BaseEventType_EventType OpcuaNodeIdServicesVariableBase = 2043
+	OpcuaNodeIdServicesVariableBase_BaseEventType_SourceNode OpcuaNodeIdServicesVariableBase = 2044
+	OpcuaNodeIdServicesVariableBase_BaseEventType_SourceName OpcuaNodeIdServicesVariableBase = 2045
+	OpcuaNodeIdServicesVariableBase_BaseEventType_Time OpcuaNodeIdServicesVariableBase = 2046
+	OpcuaNodeIdServicesVariableBase_BaseEventType_ReceiveTime OpcuaNodeIdServicesVariableBase = 2047
+	OpcuaNodeIdServicesVariableBase_BaseEventType_Message OpcuaNodeIdServicesVariableBase = 2050
+	OpcuaNodeIdServicesVariableBase_BaseEventType_Severity OpcuaNodeIdServicesVariableBase = 2051
+	OpcuaNodeIdServicesVariableBase_BaseEventType_LocalTime OpcuaNodeIdServicesVariableBase = 3190
+	OpcuaNodeIdServicesVariableBase_BaseModelChangeEventType_EventId OpcuaNodeIdServicesVariableBase = 3671
+	OpcuaNodeIdServicesVariableBase_BaseModelChangeEventType_EventType OpcuaNodeIdServicesVariableBase = 3672
+	OpcuaNodeIdServicesVariableBase_BaseModelChangeEventType_SourceNode OpcuaNodeIdServicesVariableBase = 3673
+	OpcuaNodeIdServicesVariableBase_BaseModelChangeEventType_SourceName OpcuaNodeIdServicesVariableBase = 3674
+	OpcuaNodeIdServicesVariableBase_BaseModelChangeEventType_Time OpcuaNodeIdServicesVariableBase = 3675
+	OpcuaNodeIdServicesVariableBase_BaseModelChangeEventType_ReceiveTime OpcuaNodeIdServicesVariableBase = 3676
+	OpcuaNodeIdServicesVariableBase_BaseModelChangeEventType_LocalTime OpcuaNodeIdServicesVariableBase = 3677
+	OpcuaNodeIdServicesVariableBase_BaseModelChangeEventType_Message OpcuaNodeIdServicesVariableBase = 3678
+	OpcuaNodeIdServicesVariableBase_BaseModelChangeEventType_Severity OpcuaNodeIdServicesVariableBase = 3679
+	OpcuaNodeIdServicesVariableBase_BaseAnalogType_Definition OpcuaNodeIdServicesVariableBase = 17565
+	OpcuaNodeIdServicesVariableBase_BaseAnalogType_ValuePrecision OpcuaNodeIdServicesVariableBase = 17566
+	OpcuaNodeIdServicesVariableBase_BaseAnalogType_InstrumentRange OpcuaNodeIdServicesVariableBase = 17567
+	OpcuaNodeIdServicesVariableBase_BaseAnalogType_EURange OpcuaNodeIdServicesVariableBase = 17568
+	OpcuaNodeIdServicesVariableBase_BaseAnalogType_EngineeringUnits OpcuaNodeIdServicesVariableBase = 17569
+	OpcuaNodeIdServicesVariableBase_BaseEventType_ConditionClassId OpcuaNodeIdServicesVariableBase = 31771
+	OpcuaNodeIdServicesVariableBase_BaseEventType_ConditionClassName OpcuaNodeIdServicesVariableBase = 31772
+	OpcuaNodeIdServicesVariableBase_BaseEventType_ConditionSubClassId OpcuaNodeIdServicesVariableBase = 31773
+	OpcuaNodeIdServicesVariableBase_BaseEventType_ConditionSubClassName OpcuaNodeIdServicesVariableBase = 31774
+	OpcuaNodeIdServicesVariableBase_BaseModelChangeEventType_ConditionClassId OpcuaNodeIdServicesVariableBase = 31887
+	OpcuaNodeIdServicesVariableBase_BaseModelChangeEventType_ConditionClassName OpcuaNodeIdServicesVariableBase = 31888
+	OpcuaNodeIdServicesVariableBase_BaseModelChangeEventType_ConditionSubClassId OpcuaNodeIdServicesVariableBase = 31889
 	OpcuaNodeIdServicesVariableBase_BaseModelChangeEventType_ConditionSubClassName OpcuaNodeIdServicesVariableBase = 31890
 )
 
@@ -78,7 +78,7 @@ var OpcuaNodeIdServicesVariableBaseValues []OpcuaNodeIdServicesVariableBase
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariableBaseValues = []OpcuaNodeIdServicesVariableBase{
+	OpcuaNodeIdServicesVariableBaseValues = []OpcuaNodeIdServicesVariableBase {
 		OpcuaNodeIdServicesVariableBase_BaseEventType_EventId,
 		OpcuaNodeIdServicesVariableBase_BaseEventType_EventType,
 		OpcuaNodeIdServicesVariableBase_BaseEventType_SourceNode,
@@ -115,68 +115,68 @@ func init() {
 
 func OpcuaNodeIdServicesVariableBaseByValue(value int32) (enum OpcuaNodeIdServicesVariableBase, ok bool) {
 	switch value {
-	case 17565:
-		return OpcuaNodeIdServicesVariableBase_BaseAnalogType_Definition, true
-	case 17566:
-		return OpcuaNodeIdServicesVariableBase_BaseAnalogType_ValuePrecision, true
-	case 17567:
-		return OpcuaNodeIdServicesVariableBase_BaseAnalogType_InstrumentRange, true
-	case 17568:
-		return OpcuaNodeIdServicesVariableBase_BaseAnalogType_EURange, true
-	case 17569:
-		return OpcuaNodeIdServicesVariableBase_BaseAnalogType_EngineeringUnits, true
-	case 2042:
-		return OpcuaNodeIdServicesVariableBase_BaseEventType_EventId, true
-	case 2043:
-		return OpcuaNodeIdServicesVariableBase_BaseEventType_EventType, true
-	case 2044:
-		return OpcuaNodeIdServicesVariableBase_BaseEventType_SourceNode, true
-	case 2045:
-		return OpcuaNodeIdServicesVariableBase_BaseEventType_SourceName, true
-	case 2046:
-		return OpcuaNodeIdServicesVariableBase_BaseEventType_Time, true
-	case 2047:
-		return OpcuaNodeIdServicesVariableBase_BaseEventType_ReceiveTime, true
-	case 2050:
-		return OpcuaNodeIdServicesVariableBase_BaseEventType_Message, true
-	case 2051:
-		return OpcuaNodeIdServicesVariableBase_BaseEventType_Severity, true
-	case 31771:
-		return OpcuaNodeIdServicesVariableBase_BaseEventType_ConditionClassId, true
-	case 31772:
-		return OpcuaNodeIdServicesVariableBase_BaseEventType_ConditionClassName, true
-	case 31773:
-		return OpcuaNodeIdServicesVariableBase_BaseEventType_ConditionSubClassId, true
-	case 31774:
-		return OpcuaNodeIdServicesVariableBase_BaseEventType_ConditionSubClassName, true
-	case 31887:
-		return OpcuaNodeIdServicesVariableBase_BaseModelChangeEventType_ConditionClassId, true
-	case 31888:
-		return OpcuaNodeIdServicesVariableBase_BaseModelChangeEventType_ConditionClassName, true
-	case 31889:
-		return OpcuaNodeIdServicesVariableBase_BaseModelChangeEventType_ConditionSubClassId, true
-	case 31890:
-		return OpcuaNodeIdServicesVariableBase_BaseModelChangeEventType_ConditionSubClassName, true
-	case 3190:
-		return OpcuaNodeIdServicesVariableBase_BaseEventType_LocalTime, true
-	case 3671:
-		return OpcuaNodeIdServicesVariableBase_BaseModelChangeEventType_EventId, true
-	case 3672:
-		return OpcuaNodeIdServicesVariableBase_BaseModelChangeEventType_EventType, true
-	case 3673:
-		return OpcuaNodeIdServicesVariableBase_BaseModelChangeEventType_SourceNode, true
-	case 3674:
-		return OpcuaNodeIdServicesVariableBase_BaseModelChangeEventType_SourceName, true
-	case 3675:
-		return OpcuaNodeIdServicesVariableBase_BaseModelChangeEventType_Time, true
-	case 3676:
-		return OpcuaNodeIdServicesVariableBase_BaseModelChangeEventType_ReceiveTime, true
-	case 3677:
-		return OpcuaNodeIdServicesVariableBase_BaseModelChangeEventType_LocalTime, true
-	case 3678:
-		return OpcuaNodeIdServicesVariableBase_BaseModelChangeEventType_Message, true
-	case 3679:
-		return OpcuaNodeIdServicesVariableBase_BaseModelChangeEventType_Severity, true
+		case 17565:
+			return OpcuaNodeIdServicesVariableBase_BaseAnalogType_Definition, true
+		case 17566:
+			return OpcuaNodeIdServicesVariableBase_BaseAnalogType_ValuePrecision, true
+		case 17567:
+			return OpcuaNodeIdServicesVariableBase_BaseAnalogType_InstrumentRange, true
+		case 17568:
+			return OpcuaNodeIdServicesVariableBase_BaseAnalogType_EURange, true
+		case 17569:
+			return OpcuaNodeIdServicesVariableBase_BaseAnalogType_EngineeringUnits, true
+		case 2042:
+			return OpcuaNodeIdServicesVariableBase_BaseEventType_EventId, true
+		case 2043:
+			return OpcuaNodeIdServicesVariableBase_BaseEventType_EventType, true
+		case 2044:
+			return OpcuaNodeIdServicesVariableBase_BaseEventType_SourceNode, true
+		case 2045:
+			return OpcuaNodeIdServicesVariableBase_BaseEventType_SourceName, true
+		case 2046:
+			return OpcuaNodeIdServicesVariableBase_BaseEventType_Time, true
+		case 2047:
+			return OpcuaNodeIdServicesVariableBase_BaseEventType_ReceiveTime, true
+		case 2050:
+			return OpcuaNodeIdServicesVariableBase_BaseEventType_Message, true
+		case 2051:
+			return OpcuaNodeIdServicesVariableBase_BaseEventType_Severity, true
+		case 31771:
+			return OpcuaNodeIdServicesVariableBase_BaseEventType_ConditionClassId, true
+		case 31772:
+			return OpcuaNodeIdServicesVariableBase_BaseEventType_ConditionClassName, true
+		case 31773:
+			return OpcuaNodeIdServicesVariableBase_BaseEventType_ConditionSubClassId, true
+		case 31774:
+			return OpcuaNodeIdServicesVariableBase_BaseEventType_ConditionSubClassName, true
+		case 31887:
+			return OpcuaNodeIdServicesVariableBase_BaseModelChangeEventType_ConditionClassId, true
+		case 31888:
+			return OpcuaNodeIdServicesVariableBase_BaseModelChangeEventType_ConditionClassName, true
+		case 31889:
+			return OpcuaNodeIdServicesVariableBase_BaseModelChangeEventType_ConditionSubClassId, true
+		case 31890:
+			return OpcuaNodeIdServicesVariableBase_BaseModelChangeEventType_ConditionSubClassName, true
+		case 3190:
+			return OpcuaNodeIdServicesVariableBase_BaseEventType_LocalTime, true
+		case 3671:
+			return OpcuaNodeIdServicesVariableBase_BaseModelChangeEventType_EventId, true
+		case 3672:
+			return OpcuaNodeIdServicesVariableBase_BaseModelChangeEventType_EventType, true
+		case 3673:
+			return OpcuaNodeIdServicesVariableBase_BaseModelChangeEventType_SourceNode, true
+		case 3674:
+			return OpcuaNodeIdServicesVariableBase_BaseModelChangeEventType_SourceName, true
+		case 3675:
+			return OpcuaNodeIdServicesVariableBase_BaseModelChangeEventType_Time, true
+		case 3676:
+			return OpcuaNodeIdServicesVariableBase_BaseModelChangeEventType_ReceiveTime, true
+		case 3677:
+			return OpcuaNodeIdServicesVariableBase_BaseModelChangeEventType_LocalTime, true
+		case 3678:
+			return OpcuaNodeIdServicesVariableBase_BaseModelChangeEventType_Message, true
+		case 3679:
+			return OpcuaNodeIdServicesVariableBase_BaseModelChangeEventType_Severity, true
 	}
 	return 0, false
 }
@@ -249,13 +249,13 @@ func OpcuaNodeIdServicesVariableBaseByName(value string) (enum OpcuaNodeIdServic
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariableBaseKnows(value int32) bool {
+func OpcuaNodeIdServicesVariableBaseKnows(value int32)  bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariableBaseValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastOpcuaNodeIdServicesVariableBase(structType any) OpcuaNodeIdServicesVariableBase {
@@ -381,3 +381,4 @@ func (e OpcuaNodeIdServicesVariableBase) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariableBase) String() string {
 	return e.PLC4XEnumName()
 }
+

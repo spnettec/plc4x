@@ -40,117 +40,117 @@ type IOpcuaNodeIdServicesVariableFile interface {
 	utils.Serializable
 }
 
-const (
-	OpcuaNodeIdServicesVariableFile_FileType_Size                                                                         OpcuaNodeIdServicesVariableFile = 11576
-	OpcuaNodeIdServicesVariableFile_FileType_OpenCount                                                                    OpcuaNodeIdServicesVariableFile = 11579
-	OpcuaNodeIdServicesVariableFile_FileType_Open_InputArguments                                                          OpcuaNodeIdServicesVariableFile = 11581
-	OpcuaNodeIdServicesVariableFile_FileType_Open_OutputArguments                                                         OpcuaNodeIdServicesVariableFile = 11582
-	OpcuaNodeIdServicesVariableFile_FileType_Close_InputArguments                                                         OpcuaNodeIdServicesVariableFile = 11584
-	OpcuaNodeIdServicesVariableFile_FileType_Read_InputArguments                                                          OpcuaNodeIdServicesVariableFile = 11586
-	OpcuaNodeIdServicesVariableFile_FileType_Read_OutputArguments                                                         OpcuaNodeIdServicesVariableFile = 11587
-	OpcuaNodeIdServicesVariableFile_FileType_Write_InputArguments                                                         OpcuaNodeIdServicesVariableFile = 11589
-	OpcuaNodeIdServicesVariableFile_FileType_GetPosition_InputArguments                                                   OpcuaNodeIdServicesVariableFile = 11591
-	OpcuaNodeIdServicesVariableFile_FileType_GetPosition_OutputArguments                                                  OpcuaNodeIdServicesVariableFile = 11592
-	OpcuaNodeIdServicesVariableFile_FileType_SetPosition_InputArguments                                                   OpcuaNodeIdServicesVariableFile = 11594
-	OpcuaNodeIdServicesVariableFile_FileType_Writable                                                                     OpcuaNodeIdServicesVariableFile = 12686
-	OpcuaNodeIdServicesVariableFile_FileType_UserWritable                                                                 OpcuaNodeIdServicesVariableFile = 12687
-	OpcuaNodeIdServicesVariableFile_FileType_MimeType                                                                     OpcuaNodeIdServicesVariableFile = 13341
-	OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileDirectoryName_Placeholder_CreateDirectory_InputArguments        OpcuaNodeIdServicesVariableFile = 13356
-	OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileDirectoryName_Placeholder_CreateDirectory_OutputArguments       OpcuaNodeIdServicesVariableFile = 13357
-	OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileDirectoryName_Placeholder_CreateFile_InputArguments             OpcuaNodeIdServicesVariableFile = 13359
-	OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileDirectoryName_Placeholder_CreateFile_OutputArguments            OpcuaNodeIdServicesVariableFile = 13360
-	OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileDirectoryName_Placeholder_MoveOrCopy_InputArguments             OpcuaNodeIdServicesVariableFile = 13364
-	OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileDirectoryName_Placeholder_MoveOrCopy_OutputArguments            OpcuaNodeIdServicesVariableFile = 13365
-	OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileName_Placeholder_Size                                           OpcuaNodeIdServicesVariableFile = 13367
-	OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileName_Placeholder_Writable                                       OpcuaNodeIdServicesVariableFile = 13368
-	OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileName_Placeholder_UserWritable                                   OpcuaNodeIdServicesVariableFile = 13369
-	OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileName_Placeholder_OpenCount                                      OpcuaNodeIdServicesVariableFile = 13370
-	OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileName_Placeholder_MimeType                                       OpcuaNodeIdServicesVariableFile = 13371
-	OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileName_Placeholder_Open_InputArguments                            OpcuaNodeIdServicesVariableFile = 13373
-	OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileName_Placeholder_Open_OutputArguments                           OpcuaNodeIdServicesVariableFile = 13374
-	OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileName_Placeholder_Close_InputArguments                           OpcuaNodeIdServicesVariableFile = 13376
-	OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileName_Placeholder_Read_InputArguments                            OpcuaNodeIdServicesVariableFile = 13378
-	OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileName_Placeholder_Read_OutputArguments                           OpcuaNodeIdServicesVariableFile = 13379
-	OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileName_Placeholder_Write_InputArguments                           OpcuaNodeIdServicesVariableFile = 13381
-	OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileName_Placeholder_GetPosition_InputArguments                     OpcuaNodeIdServicesVariableFile = 13383
-	OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileName_Placeholder_GetPosition_OutputArguments                    OpcuaNodeIdServicesVariableFile = 13384
-	OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileName_Placeholder_SetPosition_InputArguments                     OpcuaNodeIdServicesVariableFile = 13386
-	OpcuaNodeIdServicesVariableFile_FileDirectoryType_CreateDirectory_InputArguments                                      OpcuaNodeIdServicesVariableFile = 13388
-	OpcuaNodeIdServicesVariableFile_FileDirectoryType_CreateDirectory_OutputArguments                                     OpcuaNodeIdServicesVariableFile = 13389
-	OpcuaNodeIdServicesVariableFile_FileDirectoryType_CreateFile_InputArguments                                           OpcuaNodeIdServicesVariableFile = 13391
-	OpcuaNodeIdServicesVariableFile_FileDirectoryType_CreateFile_OutputArguments                                          OpcuaNodeIdServicesVariableFile = 13392
-	OpcuaNodeIdServicesVariableFile_FileDirectoryType_DeleteFileSystemObject_InputArguments                               OpcuaNodeIdServicesVariableFile = 13394
-	OpcuaNodeIdServicesVariableFile_FileDirectoryType_MoveOrCopy_InputArguments                                           OpcuaNodeIdServicesVariableFile = 13396
-	OpcuaNodeIdServicesVariableFile_FileDirectoryType_MoveOrCopy_OutputArguments                                          OpcuaNodeIdServicesVariableFile = 13397
-	OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_CurrentState                                             OpcuaNodeIdServicesVariableFile = 15804
-	OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_CurrentState_Id                                          OpcuaNodeIdServicesVariableFile = 15805
-	OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_CurrentState_Name                                        OpcuaNodeIdServicesVariableFile = 15806
-	OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_CurrentState_Number                                      OpcuaNodeIdServicesVariableFile = 15807
-	OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_CurrentState_EffectiveDisplayName                        OpcuaNodeIdServicesVariableFile = 15808
-	OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_LastTransition                                           OpcuaNodeIdServicesVariableFile = 15809
-	OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_LastTransition_Id                                        OpcuaNodeIdServicesVariableFile = 15810
-	OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_LastTransition_Name                                      OpcuaNodeIdServicesVariableFile = 15811
-	OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_LastTransition_Number                                    OpcuaNodeIdServicesVariableFile = 15812
-	OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_LastTransition_TransitionTime                            OpcuaNodeIdServicesVariableFile = 15813
-	OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_LastTransition_EffectiveTransitionTime                   OpcuaNodeIdServicesVariableFile = 15814
-	OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_Idle_StateNumber                                         OpcuaNodeIdServicesVariableFile = 15816
-	OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_ReadPrepare_StateNumber                                  OpcuaNodeIdServicesVariableFile = 15818
-	OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_ReadTransfer_StateNumber                                 OpcuaNodeIdServicesVariableFile = 15820
-	OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_ApplyWrite_StateNumber                                   OpcuaNodeIdServicesVariableFile = 15822
-	OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_Error_StateNumber                                        OpcuaNodeIdServicesVariableFile = 15824
-	OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_IdleToReadPrepare_TransitionNumber                       OpcuaNodeIdServicesVariableFile = 15826
-	OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_ReadPrepareToReadTransfer_TransitionNumber               OpcuaNodeIdServicesVariableFile = 15828
-	OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_ReadTransferToIdle_TransitionNumber                      OpcuaNodeIdServicesVariableFile = 15830
-	OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_IdleToApplyWrite_TransitionNumber                        OpcuaNodeIdServicesVariableFile = 15832
-	OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_ApplyWriteToIdle_TransitionNumber                        OpcuaNodeIdServicesVariableFile = 15834
-	OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_ReadPrepareToError_TransitionNumber                      OpcuaNodeIdServicesVariableFile = 15836
-	OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_ReadTransferToError_TransitionNumber                     OpcuaNodeIdServicesVariableFile = 15838
-	OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_ApplyWriteToError_TransitionNumber                       OpcuaNodeIdServicesVariableFile = 15840
-	OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_ErrorToIdle_TransitionNumber                             OpcuaNodeIdServicesVariableFile = 15842
-	OpcuaNodeIdServicesVariableFile_FileSystem_FileDirectoryName_Placeholder_CreateDirectory_InputArguments               OpcuaNodeIdServicesVariableFile = 16317
-	OpcuaNodeIdServicesVariableFile_FileSystem_FileDirectoryName_Placeholder_CreateDirectory_OutputArguments              OpcuaNodeIdServicesVariableFile = 16318
-	OpcuaNodeIdServicesVariableFile_FileSystem_FileDirectoryName_Placeholder_CreateFile_InputArguments                    OpcuaNodeIdServicesVariableFile = 16320
-	OpcuaNodeIdServicesVariableFile_FileSystem_FileDirectoryName_Placeholder_CreateFile_OutputArguments                   OpcuaNodeIdServicesVariableFile = 16321
-	OpcuaNodeIdServicesVariableFile_FileSystem_FileDirectoryName_Placeholder_MoveOrCopy_InputArguments                    OpcuaNodeIdServicesVariableFile = 16325
-	OpcuaNodeIdServicesVariableFile_FileSystem_FileDirectoryName_Placeholder_MoveOrCopy_OutputArguments                   OpcuaNodeIdServicesVariableFile = 16326
-	OpcuaNodeIdServicesVariableFile_FileSystem_FileName_Placeholder_Size                                                  OpcuaNodeIdServicesVariableFile = 16328
-	OpcuaNodeIdServicesVariableFile_FileSystem_FileName_Placeholder_Writable                                              OpcuaNodeIdServicesVariableFile = 16329
-	OpcuaNodeIdServicesVariableFile_FileSystem_FileName_Placeholder_UserWritable                                          OpcuaNodeIdServicesVariableFile = 16330
-	OpcuaNodeIdServicesVariableFile_FileSystem_FileName_Placeholder_OpenCount                                             OpcuaNodeIdServicesVariableFile = 16331
-	OpcuaNodeIdServicesVariableFile_FileSystem_FileName_Placeholder_MimeType                                              OpcuaNodeIdServicesVariableFile = 16332
-	OpcuaNodeIdServicesVariableFile_FileSystem_FileName_Placeholder_Open_InputArguments                                   OpcuaNodeIdServicesVariableFile = 16334
-	OpcuaNodeIdServicesVariableFile_FileSystem_FileName_Placeholder_Open_OutputArguments                                  OpcuaNodeIdServicesVariableFile = 16335
-	OpcuaNodeIdServicesVariableFile_FileSystem_FileName_Placeholder_Close_InputArguments                                  OpcuaNodeIdServicesVariableFile = 16337
-	OpcuaNodeIdServicesVariableFile_FileSystem_FileName_Placeholder_Read_InputArguments                                   OpcuaNodeIdServicesVariableFile = 16339
-	OpcuaNodeIdServicesVariableFile_FileSystem_FileName_Placeholder_Read_OutputArguments                                  OpcuaNodeIdServicesVariableFile = 16340
-	OpcuaNodeIdServicesVariableFile_FileSystem_FileName_Placeholder_Write_InputArguments                                  OpcuaNodeIdServicesVariableFile = 16342
-	OpcuaNodeIdServicesVariableFile_FileSystem_FileName_Placeholder_GetPosition_InputArguments                            OpcuaNodeIdServicesVariableFile = 16344
-	OpcuaNodeIdServicesVariableFile_FileSystem_FileName_Placeholder_GetPosition_OutputArguments                           OpcuaNodeIdServicesVariableFile = 16345
-	OpcuaNodeIdServicesVariableFile_FileSystem_FileName_Placeholder_SetPosition_InputArguments                            OpcuaNodeIdServicesVariableFile = 16347
-	OpcuaNodeIdServicesVariableFile_FileSystem_CreateDirectory_InputArguments                                             OpcuaNodeIdServicesVariableFile = 16349
-	OpcuaNodeIdServicesVariableFile_FileSystem_CreateDirectory_OutputArguments                                            OpcuaNodeIdServicesVariableFile = 16350
-	OpcuaNodeIdServicesVariableFile_FileSystem_CreateFile_InputArguments                                                  OpcuaNodeIdServicesVariableFile = 16352
-	OpcuaNodeIdServicesVariableFile_FileSystem_CreateFile_OutputArguments                                                 OpcuaNodeIdServicesVariableFile = 16353
-	OpcuaNodeIdServicesVariableFile_FileSystem_DeleteFileSystemObject_InputArguments                                      OpcuaNodeIdServicesVariableFile = 16355
-	OpcuaNodeIdServicesVariableFile_FileSystem_MoveOrCopy_InputArguments                                                  OpcuaNodeIdServicesVariableFile = 16357
-	OpcuaNodeIdServicesVariableFile_FileSystem_MoveOrCopy_OutputArguments                                                 OpcuaNodeIdServicesVariableFile = 16358
-	OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_AvailableStates                                          OpcuaNodeIdServicesVariableFile = 17639
-	OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_AvailableTransitions                                     OpcuaNodeIdServicesVariableFile = 17640
+const(
+	OpcuaNodeIdServicesVariableFile_FileType_Size OpcuaNodeIdServicesVariableFile = 11576
+	OpcuaNodeIdServicesVariableFile_FileType_OpenCount OpcuaNodeIdServicesVariableFile = 11579
+	OpcuaNodeIdServicesVariableFile_FileType_Open_InputArguments OpcuaNodeIdServicesVariableFile = 11581
+	OpcuaNodeIdServicesVariableFile_FileType_Open_OutputArguments OpcuaNodeIdServicesVariableFile = 11582
+	OpcuaNodeIdServicesVariableFile_FileType_Close_InputArguments OpcuaNodeIdServicesVariableFile = 11584
+	OpcuaNodeIdServicesVariableFile_FileType_Read_InputArguments OpcuaNodeIdServicesVariableFile = 11586
+	OpcuaNodeIdServicesVariableFile_FileType_Read_OutputArguments OpcuaNodeIdServicesVariableFile = 11587
+	OpcuaNodeIdServicesVariableFile_FileType_Write_InputArguments OpcuaNodeIdServicesVariableFile = 11589
+	OpcuaNodeIdServicesVariableFile_FileType_GetPosition_InputArguments OpcuaNodeIdServicesVariableFile = 11591
+	OpcuaNodeIdServicesVariableFile_FileType_GetPosition_OutputArguments OpcuaNodeIdServicesVariableFile = 11592
+	OpcuaNodeIdServicesVariableFile_FileType_SetPosition_InputArguments OpcuaNodeIdServicesVariableFile = 11594
+	OpcuaNodeIdServicesVariableFile_FileType_Writable OpcuaNodeIdServicesVariableFile = 12686
+	OpcuaNodeIdServicesVariableFile_FileType_UserWritable OpcuaNodeIdServicesVariableFile = 12687
+	OpcuaNodeIdServicesVariableFile_FileType_MimeType OpcuaNodeIdServicesVariableFile = 13341
+	OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileDirectoryName_Placeholder_CreateDirectory_InputArguments OpcuaNodeIdServicesVariableFile = 13356
+	OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileDirectoryName_Placeholder_CreateDirectory_OutputArguments OpcuaNodeIdServicesVariableFile = 13357
+	OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileDirectoryName_Placeholder_CreateFile_InputArguments OpcuaNodeIdServicesVariableFile = 13359
+	OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileDirectoryName_Placeholder_CreateFile_OutputArguments OpcuaNodeIdServicesVariableFile = 13360
+	OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileDirectoryName_Placeholder_MoveOrCopy_InputArguments OpcuaNodeIdServicesVariableFile = 13364
+	OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileDirectoryName_Placeholder_MoveOrCopy_OutputArguments OpcuaNodeIdServicesVariableFile = 13365
+	OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileName_Placeholder_Size OpcuaNodeIdServicesVariableFile = 13367
+	OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileName_Placeholder_Writable OpcuaNodeIdServicesVariableFile = 13368
+	OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileName_Placeholder_UserWritable OpcuaNodeIdServicesVariableFile = 13369
+	OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileName_Placeholder_OpenCount OpcuaNodeIdServicesVariableFile = 13370
+	OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileName_Placeholder_MimeType OpcuaNodeIdServicesVariableFile = 13371
+	OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileName_Placeholder_Open_InputArguments OpcuaNodeIdServicesVariableFile = 13373
+	OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileName_Placeholder_Open_OutputArguments OpcuaNodeIdServicesVariableFile = 13374
+	OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileName_Placeholder_Close_InputArguments OpcuaNodeIdServicesVariableFile = 13376
+	OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileName_Placeholder_Read_InputArguments OpcuaNodeIdServicesVariableFile = 13378
+	OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileName_Placeholder_Read_OutputArguments OpcuaNodeIdServicesVariableFile = 13379
+	OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileName_Placeholder_Write_InputArguments OpcuaNodeIdServicesVariableFile = 13381
+	OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileName_Placeholder_GetPosition_InputArguments OpcuaNodeIdServicesVariableFile = 13383
+	OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileName_Placeholder_GetPosition_OutputArguments OpcuaNodeIdServicesVariableFile = 13384
+	OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileName_Placeholder_SetPosition_InputArguments OpcuaNodeIdServicesVariableFile = 13386
+	OpcuaNodeIdServicesVariableFile_FileDirectoryType_CreateDirectory_InputArguments OpcuaNodeIdServicesVariableFile = 13388
+	OpcuaNodeIdServicesVariableFile_FileDirectoryType_CreateDirectory_OutputArguments OpcuaNodeIdServicesVariableFile = 13389
+	OpcuaNodeIdServicesVariableFile_FileDirectoryType_CreateFile_InputArguments OpcuaNodeIdServicesVariableFile = 13391
+	OpcuaNodeIdServicesVariableFile_FileDirectoryType_CreateFile_OutputArguments OpcuaNodeIdServicesVariableFile = 13392
+	OpcuaNodeIdServicesVariableFile_FileDirectoryType_DeleteFileSystemObject_InputArguments OpcuaNodeIdServicesVariableFile = 13394
+	OpcuaNodeIdServicesVariableFile_FileDirectoryType_MoveOrCopy_InputArguments OpcuaNodeIdServicesVariableFile = 13396
+	OpcuaNodeIdServicesVariableFile_FileDirectoryType_MoveOrCopy_OutputArguments OpcuaNodeIdServicesVariableFile = 13397
+	OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_CurrentState OpcuaNodeIdServicesVariableFile = 15804
+	OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_CurrentState_Id OpcuaNodeIdServicesVariableFile = 15805
+	OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_CurrentState_Name OpcuaNodeIdServicesVariableFile = 15806
+	OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_CurrentState_Number OpcuaNodeIdServicesVariableFile = 15807
+	OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_CurrentState_EffectiveDisplayName OpcuaNodeIdServicesVariableFile = 15808
+	OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_LastTransition OpcuaNodeIdServicesVariableFile = 15809
+	OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_LastTransition_Id OpcuaNodeIdServicesVariableFile = 15810
+	OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_LastTransition_Name OpcuaNodeIdServicesVariableFile = 15811
+	OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_LastTransition_Number OpcuaNodeIdServicesVariableFile = 15812
+	OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_LastTransition_TransitionTime OpcuaNodeIdServicesVariableFile = 15813
+	OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_LastTransition_EffectiveTransitionTime OpcuaNodeIdServicesVariableFile = 15814
+	OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_Idle_StateNumber OpcuaNodeIdServicesVariableFile = 15816
+	OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_ReadPrepare_StateNumber OpcuaNodeIdServicesVariableFile = 15818
+	OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_ReadTransfer_StateNumber OpcuaNodeIdServicesVariableFile = 15820
+	OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_ApplyWrite_StateNumber OpcuaNodeIdServicesVariableFile = 15822
+	OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_Error_StateNumber OpcuaNodeIdServicesVariableFile = 15824
+	OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_IdleToReadPrepare_TransitionNumber OpcuaNodeIdServicesVariableFile = 15826
+	OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_ReadPrepareToReadTransfer_TransitionNumber OpcuaNodeIdServicesVariableFile = 15828
+	OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_ReadTransferToIdle_TransitionNumber OpcuaNodeIdServicesVariableFile = 15830
+	OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_IdleToApplyWrite_TransitionNumber OpcuaNodeIdServicesVariableFile = 15832
+	OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_ApplyWriteToIdle_TransitionNumber OpcuaNodeIdServicesVariableFile = 15834
+	OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_ReadPrepareToError_TransitionNumber OpcuaNodeIdServicesVariableFile = 15836
+	OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_ReadTransferToError_TransitionNumber OpcuaNodeIdServicesVariableFile = 15838
+	OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_ApplyWriteToError_TransitionNumber OpcuaNodeIdServicesVariableFile = 15840
+	OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_ErrorToIdle_TransitionNumber OpcuaNodeIdServicesVariableFile = 15842
+	OpcuaNodeIdServicesVariableFile_FileSystem_FileDirectoryName_Placeholder_CreateDirectory_InputArguments OpcuaNodeIdServicesVariableFile = 16317
+	OpcuaNodeIdServicesVariableFile_FileSystem_FileDirectoryName_Placeholder_CreateDirectory_OutputArguments OpcuaNodeIdServicesVariableFile = 16318
+	OpcuaNodeIdServicesVariableFile_FileSystem_FileDirectoryName_Placeholder_CreateFile_InputArguments OpcuaNodeIdServicesVariableFile = 16320
+	OpcuaNodeIdServicesVariableFile_FileSystem_FileDirectoryName_Placeholder_CreateFile_OutputArguments OpcuaNodeIdServicesVariableFile = 16321
+	OpcuaNodeIdServicesVariableFile_FileSystem_FileDirectoryName_Placeholder_MoveOrCopy_InputArguments OpcuaNodeIdServicesVariableFile = 16325
+	OpcuaNodeIdServicesVariableFile_FileSystem_FileDirectoryName_Placeholder_MoveOrCopy_OutputArguments OpcuaNodeIdServicesVariableFile = 16326
+	OpcuaNodeIdServicesVariableFile_FileSystem_FileName_Placeholder_Size OpcuaNodeIdServicesVariableFile = 16328
+	OpcuaNodeIdServicesVariableFile_FileSystem_FileName_Placeholder_Writable OpcuaNodeIdServicesVariableFile = 16329
+	OpcuaNodeIdServicesVariableFile_FileSystem_FileName_Placeholder_UserWritable OpcuaNodeIdServicesVariableFile = 16330
+	OpcuaNodeIdServicesVariableFile_FileSystem_FileName_Placeholder_OpenCount OpcuaNodeIdServicesVariableFile = 16331
+	OpcuaNodeIdServicesVariableFile_FileSystem_FileName_Placeholder_MimeType OpcuaNodeIdServicesVariableFile = 16332
+	OpcuaNodeIdServicesVariableFile_FileSystem_FileName_Placeholder_Open_InputArguments OpcuaNodeIdServicesVariableFile = 16334
+	OpcuaNodeIdServicesVariableFile_FileSystem_FileName_Placeholder_Open_OutputArguments OpcuaNodeIdServicesVariableFile = 16335
+	OpcuaNodeIdServicesVariableFile_FileSystem_FileName_Placeholder_Close_InputArguments OpcuaNodeIdServicesVariableFile = 16337
+	OpcuaNodeIdServicesVariableFile_FileSystem_FileName_Placeholder_Read_InputArguments OpcuaNodeIdServicesVariableFile = 16339
+	OpcuaNodeIdServicesVariableFile_FileSystem_FileName_Placeholder_Read_OutputArguments OpcuaNodeIdServicesVariableFile = 16340
+	OpcuaNodeIdServicesVariableFile_FileSystem_FileName_Placeholder_Write_InputArguments OpcuaNodeIdServicesVariableFile = 16342
+	OpcuaNodeIdServicesVariableFile_FileSystem_FileName_Placeholder_GetPosition_InputArguments OpcuaNodeIdServicesVariableFile = 16344
+	OpcuaNodeIdServicesVariableFile_FileSystem_FileName_Placeholder_GetPosition_OutputArguments OpcuaNodeIdServicesVariableFile = 16345
+	OpcuaNodeIdServicesVariableFile_FileSystem_FileName_Placeholder_SetPosition_InputArguments OpcuaNodeIdServicesVariableFile = 16347
+	OpcuaNodeIdServicesVariableFile_FileSystem_CreateDirectory_InputArguments OpcuaNodeIdServicesVariableFile = 16349
+	OpcuaNodeIdServicesVariableFile_FileSystem_CreateDirectory_OutputArguments OpcuaNodeIdServicesVariableFile = 16350
+	OpcuaNodeIdServicesVariableFile_FileSystem_CreateFile_InputArguments OpcuaNodeIdServicesVariableFile = 16352
+	OpcuaNodeIdServicesVariableFile_FileSystem_CreateFile_OutputArguments OpcuaNodeIdServicesVariableFile = 16353
+	OpcuaNodeIdServicesVariableFile_FileSystem_DeleteFileSystemObject_InputArguments OpcuaNodeIdServicesVariableFile = 16355
+	OpcuaNodeIdServicesVariableFile_FileSystem_MoveOrCopy_InputArguments OpcuaNodeIdServicesVariableFile = 16357
+	OpcuaNodeIdServicesVariableFile_FileSystem_MoveOrCopy_OutputArguments OpcuaNodeIdServicesVariableFile = 16358
+	OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_AvailableStates OpcuaNodeIdServicesVariableFile = 17639
+	OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_AvailableTransitions OpcuaNodeIdServicesVariableFile = 17640
 	OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileDirectoryName_Placeholder_DeleteFileSystemObject_InputArguments OpcuaNodeIdServicesVariableFile = 17719
-	OpcuaNodeIdServicesVariableFile_FileSystem_FileDirectoryName_Placeholder_DeleteFileSystemObject_InputArguments        OpcuaNodeIdServicesVariableFile = 17723
-	OpcuaNodeIdServicesVariableFile_FileType_MaxByteStringLength                                                          OpcuaNodeIdServicesVariableFile = 24244
-	OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileName_Placeholder_MaxByteStringLength                            OpcuaNodeIdServicesVariableFile = 24248
-	OpcuaNodeIdServicesVariableFile_FileSystem_FileName_Placeholder_MaxByteStringLength                                   OpcuaNodeIdServicesVariableFile = 24249
-	OpcuaNodeIdServicesVariableFile_FileType_LastModifiedTime                                                             OpcuaNodeIdServicesVariableFile = 25200
-	OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileName_Placeholder_LastModifiedTime                               OpcuaNodeIdServicesVariableFile = 25204
-	OpcuaNodeIdServicesVariableFile_FileSystem_FileName_Placeholder_LastModifiedTime                                      OpcuaNodeIdServicesVariableFile = 25205
+	OpcuaNodeIdServicesVariableFile_FileSystem_FileDirectoryName_Placeholder_DeleteFileSystemObject_InputArguments OpcuaNodeIdServicesVariableFile = 17723
+	OpcuaNodeIdServicesVariableFile_FileType_MaxByteStringLength OpcuaNodeIdServicesVariableFile = 24244
+	OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileName_Placeholder_MaxByteStringLength OpcuaNodeIdServicesVariableFile = 24248
+	OpcuaNodeIdServicesVariableFile_FileSystem_FileName_Placeholder_MaxByteStringLength OpcuaNodeIdServicesVariableFile = 24249
+	OpcuaNodeIdServicesVariableFile_FileType_LastModifiedTime OpcuaNodeIdServicesVariableFile = 25200
+	OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileName_Placeholder_LastModifiedTime OpcuaNodeIdServicesVariableFile = 25204
+	OpcuaNodeIdServicesVariableFile_FileSystem_FileName_Placeholder_LastModifiedTime OpcuaNodeIdServicesVariableFile = 25205
 )
 
 var OpcuaNodeIdServicesVariableFileValues []OpcuaNodeIdServicesVariableFile
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariableFileValues = []OpcuaNodeIdServicesVariableFile{
+	OpcuaNodeIdServicesVariableFileValues = []OpcuaNodeIdServicesVariableFile {
 		OpcuaNodeIdServicesVariableFile_FileType_Size,
 		OpcuaNodeIdServicesVariableFile_FileType_OpenCount,
 		OpcuaNodeIdServicesVariableFile_FileType_Open_InputArguments,
@@ -259,212 +259,212 @@ func init() {
 
 func OpcuaNodeIdServicesVariableFileByValue(value int32) (enum OpcuaNodeIdServicesVariableFile, ok bool) {
 	switch value {
-	case 11576:
-		return OpcuaNodeIdServicesVariableFile_FileType_Size, true
-	case 11579:
-		return OpcuaNodeIdServicesVariableFile_FileType_OpenCount, true
-	case 11581:
-		return OpcuaNodeIdServicesVariableFile_FileType_Open_InputArguments, true
-	case 11582:
-		return OpcuaNodeIdServicesVariableFile_FileType_Open_OutputArguments, true
-	case 11584:
-		return OpcuaNodeIdServicesVariableFile_FileType_Close_InputArguments, true
-	case 11586:
-		return OpcuaNodeIdServicesVariableFile_FileType_Read_InputArguments, true
-	case 11587:
-		return OpcuaNodeIdServicesVariableFile_FileType_Read_OutputArguments, true
-	case 11589:
-		return OpcuaNodeIdServicesVariableFile_FileType_Write_InputArguments, true
-	case 11591:
-		return OpcuaNodeIdServicesVariableFile_FileType_GetPosition_InputArguments, true
-	case 11592:
-		return OpcuaNodeIdServicesVariableFile_FileType_GetPosition_OutputArguments, true
-	case 11594:
-		return OpcuaNodeIdServicesVariableFile_FileType_SetPosition_InputArguments, true
-	case 12686:
-		return OpcuaNodeIdServicesVariableFile_FileType_Writable, true
-	case 12687:
-		return OpcuaNodeIdServicesVariableFile_FileType_UserWritable, true
-	case 13341:
-		return OpcuaNodeIdServicesVariableFile_FileType_MimeType, true
-	case 13356:
-		return OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileDirectoryName_Placeholder_CreateDirectory_InputArguments, true
-	case 13357:
-		return OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileDirectoryName_Placeholder_CreateDirectory_OutputArguments, true
-	case 13359:
-		return OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileDirectoryName_Placeholder_CreateFile_InputArguments, true
-	case 13360:
-		return OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileDirectoryName_Placeholder_CreateFile_OutputArguments, true
-	case 13364:
-		return OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileDirectoryName_Placeholder_MoveOrCopy_InputArguments, true
-	case 13365:
-		return OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileDirectoryName_Placeholder_MoveOrCopy_OutputArguments, true
-	case 13367:
-		return OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileName_Placeholder_Size, true
-	case 13368:
-		return OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileName_Placeholder_Writable, true
-	case 13369:
-		return OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileName_Placeholder_UserWritable, true
-	case 13370:
-		return OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileName_Placeholder_OpenCount, true
-	case 13371:
-		return OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileName_Placeholder_MimeType, true
-	case 13373:
-		return OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileName_Placeholder_Open_InputArguments, true
-	case 13374:
-		return OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileName_Placeholder_Open_OutputArguments, true
-	case 13376:
-		return OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileName_Placeholder_Close_InputArguments, true
-	case 13378:
-		return OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileName_Placeholder_Read_InputArguments, true
-	case 13379:
-		return OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileName_Placeholder_Read_OutputArguments, true
-	case 13381:
-		return OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileName_Placeholder_Write_InputArguments, true
-	case 13383:
-		return OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileName_Placeholder_GetPosition_InputArguments, true
-	case 13384:
-		return OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileName_Placeholder_GetPosition_OutputArguments, true
-	case 13386:
-		return OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileName_Placeholder_SetPosition_InputArguments, true
-	case 13388:
-		return OpcuaNodeIdServicesVariableFile_FileDirectoryType_CreateDirectory_InputArguments, true
-	case 13389:
-		return OpcuaNodeIdServicesVariableFile_FileDirectoryType_CreateDirectory_OutputArguments, true
-	case 13391:
-		return OpcuaNodeIdServicesVariableFile_FileDirectoryType_CreateFile_InputArguments, true
-	case 13392:
-		return OpcuaNodeIdServicesVariableFile_FileDirectoryType_CreateFile_OutputArguments, true
-	case 13394:
-		return OpcuaNodeIdServicesVariableFile_FileDirectoryType_DeleteFileSystemObject_InputArguments, true
-	case 13396:
-		return OpcuaNodeIdServicesVariableFile_FileDirectoryType_MoveOrCopy_InputArguments, true
-	case 13397:
-		return OpcuaNodeIdServicesVariableFile_FileDirectoryType_MoveOrCopy_OutputArguments, true
-	case 15804:
-		return OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_CurrentState, true
-	case 15805:
-		return OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_CurrentState_Id, true
-	case 15806:
-		return OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_CurrentState_Name, true
-	case 15807:
-		return OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_CurrentState_Number, true
-	case 15808:
-		return OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_CurrentState_EffectiveDisplayName, true
-	case 15809:
-		return OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_LastTransition, true
-	case 15810:
-		return OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_LastTransition_Id, true
-	case 15811:
-		return OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_LastTransition_Name, true
-	case 15812:
-		return OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_LastTransition_Number, true
-	case 15813:
-		return OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_LastTransition_TransitionTime, true
-	case 15814:
-		return OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_LastTransition_EffectiveTransitionTime, true
-	case 15816:
-		return OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_Idle_StateNumber, true
-	case 15818:
-		return OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_ReadPrepare_StateNumber, true
-	case 15820:
-		return OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_ReadTransfer_StateNumber, true
-	case 15822:
-		return OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_ApplyWrite_StateNumber, true
-	case 15824:
-		return OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_Error_StateNumber, true
-	case 15826:
-		return OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_IdleToReadPrepare_TransitionNumber, true
-	case 15828:
-		return OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_ReadPrepareToReadTransfer_TransitionNumber, true
-	case 15830:
-		return OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_ReadTransferToIdle_TransitionNumber, true
-	case 15832:
-		return OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_IdleToApplyWrite_TransitionNumber, true
-	case 15834:
-		return OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_ApplyWriteToIdle_TransitionNumber, true
-	case 15836:
-		return OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_ReadPrepareToError_TransitionNumber, true
-	case 15838:
-		return OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_ReadTransferToError_TransitionNumber, true
-	case 15840:
-		return OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_ApplyWriteToError_TransitionNumber, true
-	case 15842:
-		return OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_ErrorToIdle_TransitionNumber, true
-	case 16317:
-		return OpcuaNodeIdServicesVariableFile_FileSystem_FileDirectoryName_Placeholder_CreateDirectory_InputArguments, true
-	case 16318:
-		return OpcuaNodeIdServicesVariableFile_FileSystem_FileDirectoryName_Placeholder_CreateDirectory_OutputArguments, true
-	case 16320:
-		return OpcuaNodeIdServicesVariableFile_FileSystem_FileDirectoryName_Placeholder_CreateFile_InputArguments, true
-	case 16321:
-		return OpcuaNodeIdServicesVariableFile_FileSystem_FileDirectoryName_Placeholder_CreateFile_OutputArguments, true
-	case 16325:
-		return OpcuaNodeIdServicesVariableFile_FileSystem_FileDirectoryName_Placeholder_MoveOrCopy_InputArguments, true
-	case 16326:
-		return OpcuaNodeIdServicesVariableFile_FileSystem_FileDirectoryName_Placeholder_MoveOrCopy_OutputArguments, true
-	case 16328:
-		return OpcuaNodeIdServicesVariableFile_FileSystem_FileName_Placeholder_Size, true
-	case 16329:
-		return OpcuaNodeIdServicesVariableFile_FileSystem_FileName_Placeholder_Writable, true
-	case 16330:
-		return OpcuaNodeIdServicesVariableFile_FileSystem_FileName_Placeholder_UserWritable, true
-	case 16331:
-		return OpcuaNodeIdServicesVariableFile_FileSystem_FileName_Placeholder_OpenCount, true
-	case 16332:
-		return OpcuaNodeIdServicesVariableFile_FileSystem_FileName_Placeholder_MimeType, true
-	case 16334:
-		return OpcuaNodeIdServicesVariableFile_FileSystem_FileName_Placeholder_Open_InputArguments, true
-	case 16335:
-		return OpcuaNodeIdServicesVariableFile_FileSystem_FileName_Placeholder_Open_OutputArguments, true
-	case 16337:
-		return OpcuaNodeIdServicesVariableFile_FileSystem_FileName_Placeholder_Close_InputArguments, true
-	case 16339:
-		return OpcuaNodeIdServicesVariableFile_FileSystem_FileName_Placeholder_Read_InputArguments, true
-	case 16340:
-		return OpcuaNodeIdServicesVariableFile_FileSystem_FileName_Placeholder_Read_OutputArguments, true
-	case 16342:
-		return OpcuaNodeIdServicesVariableFile_FileSystem_FileName_Placeholder_Write_InputArguments, true
-	case 16344:
-		return OpcuaNodeIdServicesVariableFile_FileSystem_FileName_Placeholder_GetPosition_InputArguments, true
-	case 16345:
-		return OpcuaNodeIdServicesVariableFile_FileSystem_FileName_Placeholder_GetPosition_OutputArguments, true
-	case 16347:
-		return OpcuaNodeIdServicesVariableFile_FileSystem_FileName_Placeholder_SetPosition_InputArguments, true
-	case 16349:
-		return OpcuaNodeIdServicesVariableFile_FileSystem_CreateDirectory_InputArguments, true
-	case 16350:
-		return OpcuaNodeIdServicesVariableFile_FileSystem_CreateDirectory_OutputArguments, true
-	case 16352:
-		return OpcuaNodeIdServicesVariableFile_FileSystem_CreateFile_InputArguments, true
-	case 16353:
-		return OpcuaNodeIdServicesVariableFile_FileSystem_CreateFile_OutputArguments, true
-	case 16355:
-		return OpcuaNodeIdServicesVariableFile_FileSystem_DeleteFileSystemObject_InputArguments, true
-	case 16357:
-		return OpcuaNodeIdServicesVariableFile_FileSystem_MoveOrCopy_InputArguments, true
-	case 16358:
-		return OpcuaNodeIdServicesVariableFile_FileSystem_MoveOrCopy_OutputArguments, true
-	case 17639:
-		return OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_AvailableStates, true
-	case 17640:
-		return OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_AvailableTransitions, true
-	case 17719:
-		return OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileDirectoryName_Placeholder_DeleteFileSystemObject_InputArguments, true
-	case 17723:
-		return OpcuaNodeIdServicesVariableFile_FileSystem_FileDirectoryName_Placeholder_DeleteFileSystemObject_InputArguments, true
-	case 24244:
-		return OpcuaNodeIdServicesVariableFile_FileType_MaxByteStringLength, true
-	case 24248:
-		return OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileName_Placeholder_MaxByteStringLength, true
-	case 24249:
-		return OpcuaNodeIdServicesVariableFile_FileSystem_FileName_Placeholder_MaxByteStringLength, true
-	case 25200:
-		return OpcuaNodeIdServicesVariableFile_FileType_LastModifiedTime, true
-	case 25204:
-		return OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileName_Placeholder_LastModifiedTime, true
-	case 25205:
-		return OpcuaNodeIdServicesVariableFile_FileSystem_FileName_Placeholder_LastModifiedTime, true
+		case 11576:
+			return OpcuaNodeIdServicesVariableFile_FileType_Size, true
+		case 11579:
+			return OpcuaNodeIdServicesVariableFile_FileType_OpenCount, true
+		case 11581:
+			return OpcuaNodeIdServicesVariableFile_FileType_Open_InputArguments, true
+		case 11582:
+			return OpcuaNodeIdServicesVariableFile_FileType_Open_OutputArguments, true
+		case 11584:
+			return OpcuaNodeIdServicesVariableFile_FileType_Close_InputArguments, true
+		case 11586:
+			return OpcuaNodeIdServicesVariableFile_FileType_Read_InputArguments, true
+		case 11587:
+			return OpcuaNodeIdServicesVariableFile_FileType_Read_OutputArguments, true
+		case 11589:
+			return OpcuaNodeIdServicesVariableFile_FileType_Write_InputArguments, true
+		case 11591:
+			return OpcuaNodeIdServicesVariableFile_FileType_GetPosition_InputArguments, true
+		case 11592:
+			return OpcuaNodeIdServicesVariableFile_FileType_GetPosition_OutputArguments, true
+		case 11594:
+			return OpcuaNodeIdServicesVariableFile_FileType_SetPosition_InputArguments, true
+		case 12686:
+			return OpcuaNodeIdServicesVariableFile_FileType_Writable, true
+		case 12687:
+			return OpcuaNodeIdServicesVariableFile_FileType_UserWritable, true
+		case 13341:
+			return OpcuaNodeIdServicesVariableFile_FileType_MimeType, true
+		case 13356:
+			return OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileDirectoryName_Placeholder_CreateDirectory_InputArguments, true
+		case 13357:
+			return OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileDirectoryName_Placeholder_CreateDirectory_OutputArguments, true
+		case 13359:
+			return OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileDirectoryName_Placeholder_CreateFile_InputArguments, true
+		case 13360:
+			return OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileDirectoryName_Placeholder_CreateFile_OutputArguments, true
+		case 13364:
+			return OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileDirectoryName_Placeholder_MoveOrCopy_InputArguments, true
+		case 13365:
+			return OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileDirectoryName_Placeholder_MoveOrCopy_OutputArguments, true
+		case 13367:
+			return OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileName_Placeholder_Size, true
+		case 13368:
+			return OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileName_Placeholder_Writable, true
+		case 13369:
+			return OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileName_Placeholder_UserWritable, true
+		case 13370:
+			return OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileName_Placeholder_OpenCount, true
+		case 13371:
+			return OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileName_Placeholder_MimeType, true
+		case 13373:
+			return OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileName_Placeholder_Open_InputArguments, true
+		case 13374:
+			return OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileName_Placeholder_Open_OutputArguments, true
+		case 13376:
+			return OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileName_Placeholder_Close_InputArguments, true
+		case 13378:
+			return OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileName_Placeholder_Read_InputArguments, true
+		case 13379:
+			return OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileName_Placeholder_Read_OutputArguments, true
+		case 13381:
+			return OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileName_Placeholder_Write_InputArguments, true
+		case 13383:
+			return OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileName_Placeholder_GetPosition_InputArguments, true
+		case 13384:
+			return OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileName_Placeholder_GetPosition_OutputArguments, true
+		case 13386:
+			return OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileName_Placeholder_SetPosition_InputArguments, true
+		case 13388:
+			return OpcuaNodeIdServicesVariableFile_FileDirectoryType_CreateDirectory_InputArguments, true
+		case 13389:
+			return OpcuaNodeIdServicesVariableFile_FileDirectoryType_CreateDirectory_OutputArguments, true
+		case 13391:
+			return OpcuaNodeIdServicesVariableFile_FileDirectoryType_CreateFile_InputArguments, true
+		case 13392:
+			return OpcuaNodeIdServicesVariableFile_FileDirectoryType_CreateFile_OutputArguments, true
+		case 13394:
+			return OpcuaNodeIdServicesVariableFile_FileDirectoryType_DeleteFileSystemObject_InputArguments, true
+		case 13396:
+			return OpcuaNodeIdServicesVariableFile_FileDirectoryType_MoveOrCopy_InputArguments, true
+		case 13397:
+			return OpcuaNodeIdServicesVariableFile_FileDirectoryType_MoveOrCopy_OutputArguments, true
+		case 15804:
+			return OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_CurrentState, true
+		case 15805:
+			return OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_CurrentState_Id, true
+		case 15806:
+			return OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_CurrentState_Name, true
+		case 15807:
+			return OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_CurrentState_Number, true
+		case 15808:
+			return OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_CurrentState_EffectiveDisplayName, true
+		case 15809:
+			return OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_LastTransition, true
+		case 15810:
+			return OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_LastTransition_Id, true
+		case 15811:
+			return OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_LastTransition_Name, true
+		case 15812:
+			return OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_LastTransition_Number, true
+		case 15813:
+			return OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_LastTransition_TransitionTime, true
+		case 15814:
+			return OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_LastTransition_EffectiveTransitionTime, true
+		case 15816:
+			return OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_Idle_StateNumber, true
+		case 15818:
+			return OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_ReadPrepare_StateNumber, true
+		case 15820:
+			return OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_ReadTransfer_StateNumber, true
+		case 15822:
+			return OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_ApplyWrite_StateNumber, true
+		case 15824:
+			return OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_Error_StateNumber, true
+		case 15826:
+			return OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_IdleToReadPrepare_TransitionNumber, true
+		case 15828:
+			return OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_ReadPrepareToReadTransfer_TransitionNumber, true
+		case 15830:
+			return OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_ReadTransferToIdle_TransitionNumber, true
+		case 15832:
+			return OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_IdleToApplyWrite_TransitionNumber, true
+		case 15834:
+			return OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_ApplyWriteToIdle_TransitionNumber, true
+		case 15836:
+			return OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_ReadPrepareToError_TransitionNumber, true
+		case 15838:
+			return OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_ReadTransferToError_TransitionNumber, true
+		case 15840:
+			return OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_ApplyWriteToError_TransitionNumber, true
+		case 15842:
+			return OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_ErrorToIdle_TransitionNumber, true
+		case 16317:
+			return OpcuaNodeIdServicesVariableFile_FileSystem_FileDirectoryName_Placeholder_CreateDirectory_InputArguments, true
+		case 16318:
+			return OpcuaNodeIdServicesVariableFile_FileSystem_FileDirectoryName_Placeholder_CreateDirectory_OutputArguments, true
+		case 16320:
+			return OpcuaNodeIdServicesVariableFile_FileSystem_FileDirectoryName_Placeholder_CreateFile_InputArguments, true
+		case 16321:
+			return OpcuaNodeIdServicesVariableFile_FileSystem_FileDirectoryName_Placeholder_CreateFile_OutputArguments, true
+		case 16325:
+			return OpcuaNodeIdServicesVariableFile_FileSystem_FileDirectoryName_Placeholder_MoveOrCopy_InputArguments, true
+		case 16326:
+			return OpcuaNodeIdServicesVariableFile_FileSystem_FileDirectoryName_Placeholder_MoveOrCopy_OutputArguments, true
+		case 16328:
+			return OpcuaNodeIdServicesVariableFile_FileSystem_FileName_Placeholder_Size, true
+		case 16329:
+			return OpcuaNodeIdServicesVariableFile_FileSystem_FileName_Placeholder_Writable, true
+		case 16330:
+			return OpcuaNodeIdServicesVariableFile_FileSystem_FileName_Placeholder_UserWritable, true
+		case 16331:
+			return OpcuaNodeIdServicesVariableFile_FileSystem_FileName_Placeholder_OpenCount, true
+		case 16332:
+			return OpcuaNodeIdServicesVariableFile_FileSystem_FileName_Placeholder_MimeType, true
+		case 16334:
+			return OpcuaNodeIdServicesVariableFile_FileSystem_FileName_Placeholder_Open_InputArguments, true
+		case 16335:
+			return OpcuaNodeIdServicesVariableFile_FileSystem_FileName_Placeholder_Open_OutputArguments, true
+		case 16337:
+			return OpcuaNodeIdServicesVariableFile_FileSystem_FileName_Placeholder_Close_InputArguments, true
+		case 16339:
+			return OpcuaNodeIdServicesVariableFile_FileSystem_FileName_Placeholder_Read_InputArguments, true
+		case 16340:
+			return OpcuaNodeIdServicesVariableFile_FileSystem_FileName_Placeholder_Read_OutputArguments, true
+		case 16342:
+			return OpcuaNodeIdServicesVariableFile_FileSystem_FileName_Placeholder_Write_InputArguments, true
+		case 16344:
+			return OpcuaNodeIdServicesVariableFile_FileSystem_FileName_Placeholder_GetPosition_InputArguments, true
+		case 16345:
+			return OpcuaNodeIdServicesVariableFile_FileSystem_FileName_Placeholder_GetPosition_OutputArguments, true
+		case 16347:
+			return OpcuaNodeIdServicesVariableFile_FileSystem_FileName_Placeholder_SetPosition_InputArguments, true
+		case 16349:
+			return OpcuaNodeIdServicesVariableFile_FileSystem_CreateDirectory_InputArguments, true
+		case 16350:
+			return OpcuaNodeIdServicesVariableFile_FileSystem_CreateDirectory_OutputArguments, true
+		case 16352:
+			return OpcuaNodeIdServicesVariableFile_FileSystem_CreateFile_InputArguments, true
+		case 16353:
+			return OpcuaNodeIdServicesVariableFile_FileSystem_CreateFile_OutputArguments, true
+		case 16355:
+			return OpcuaNodeIdServicesVariableFile_FileSystem_DeleteFileSystemObject_InputArguments, true
+		case 16357:
+			return OpcuaNodeIdServicesVariableFile_FileSystem_MoveOrCopy_InputArguments, true
+		case 16358:
+			return OpcuaNodeIdServicesVariableFile_FileSystem_MoveOrCopy_OutputArguments, true
+		case 17639:
+			return OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_AvailableStates, true
+		case 17640:
+			return OpcuaNodeIdServicesVariableFile_FileTransferStateMachineType_AvailableTransitions, true
+		case 17719:
+			return OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileDirectoryName_Placeholder_DeleteFileSystemObject_InputArguments, true
+		case 17723:
+			return OpcuaNodeIdServicesVariableFile_FileSystem_FileDirectoryName_Placeholder_DeleteFileSystemObject_InputArguments, true
+		case 24244:
+			return OpcuaNodeIdServicesVariableFile_FileType_MaxByteStringLength, true
+		case 24248:
+			return OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileName_Placeholder_MaxByteStringLength, true
+		case 24249:
+			return OpcuaNodeIdServicesVariableFile_FileSystem_FileName_Placeholder_MaxByteStringLength, true
+		case 25200:
+			return OpcuaNodeIdServicesVariableFile_FileType_LastModifiedTime, true
+		case 25204:
+			return OpcuaNodeIdServicesVariableFile_FileDirectoryType_FileName_Placeholder_LastModifiedTime, true
+		case 25205:
+			return OpcuaNodeIdServicesVariableFile_FileSystem_FileName_Placeholder_LastModifiedTime, true
 	}
 	return 0, false
 }
@@ -681,13 +681,13 @@ func OpcuaNodeIdServicesVariableFileByName(value string) (enum OpcuaNodeIdServic
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariableFileKnows(value int32) bool {
+func OpcuaNodeIdServicesVariableFileKnows(value int32)  bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariableFileValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastOpcuaNodeIdServicesVariableFile(structType any) OpcuaNodeIdServicesVariableFile {
@@ -957,3 +957,4 @@ func (e OpcuaNodeIdServicesVariableFile) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariableFile) String() string {
 	return e.PLC4XEnumName()
 }
+
