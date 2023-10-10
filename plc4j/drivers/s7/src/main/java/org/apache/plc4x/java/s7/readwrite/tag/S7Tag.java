@@ -230,7 +230,7 @@ public class S7Tag implements PlcTag, Serializable {
                     "' doesn't match specified data type '" + dataType.name() + "'");
             }
             String stringEncoding = matcher.group(STRING_ENCODING);
-            if (stringEncoding==null || "".equals(stringEncoding))
+            if (stringEncoding==null || stringEncoding.isEmpty())
             {
                 stringEncoding = "UTF-8";
                 if (dataType == TransportSize.WSTRING || dataType == TransportSize.WCHAR)

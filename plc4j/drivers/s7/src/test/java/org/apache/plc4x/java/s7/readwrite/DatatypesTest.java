@@ -27,6 +27,7 @@ public class DatatypesTest {
 
     public static void main(String[] args) throws Exception {
         CachedPlcConnectionManager plcConnectionManager = CachedPlcConnectionManager.getBuilder().build();
+        /*
         while(true) {
             try (PlcConnection connection = plcConnectionManager.getConnection("s7://10.166.11.19")) {
                 final PlcReadRequest.Builder builder = connection.readRequestBuilder();
@@ -73,6 +74,17 @@ public class DatatypesTest {
                 System.out.println("sleep:"+e.getMessage());
             }
 
+        }
+         */
+        try (PlcConnection connection = plcConnectionManager.getConnection("s7://192.168.0.188")) {
+            final PlcReadRequest.Builder builder = connection.readRequestBuilder();
+            builder.addTagAddress("string", "%DB4:340:BYTE[256]"); // true
+
+            final PlcReadRequest readRequest = builder.build();
+
+            final PlcReadResponse readResponse = readRequest.execute().get();
+
+            System.out.println(readResponse.getAsPlcValue());
         }
     }
 
