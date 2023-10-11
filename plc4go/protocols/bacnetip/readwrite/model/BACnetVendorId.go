@@ -1484,6 +1484,7 @@ const(
 	BACnetVendorId_AMERICAN_GAS_SAFETYLLC BACnetVendorId = 1447
 	BACnetVendorId_SS_NORTHERN_LTD BACnetVendorId = 1448
 	BACnetVendorId_ULBIOS_TECHSENS BACnetVendorId = 1449
+	BACnetVendorId_BOWERY_FARMING_INC BACnetVendorId = 1450
 	BACnetVendorId_UNKNOWN_VENDOR BACnetVendorId = 0xFFFF
 )
 
@@ -2933,6 +2934,7 @@ func init() {
 		BACnetVendorId_AMERICAN_GAS_SAFETYLLC,
 		BACnetVendorId_SS_NORTHERN_LTD,
 		BACnetVendorId_ULBIOS_TECHSENS,
+		BACnetVendorId_BOWERY_FARMING_INC,
 		BACnetVendorId_UNKNOWN_VENDOR,
 	}
 }
@@ -4442,6 +4444,9 @@ func (e BACnetVendorId) VendorId() uint16 {
 		}
 		case 145: { /* '145' */
             return 145
+		}
+		case 1450: { /* '1450' */
+            return 1450
 		}
 		case 146: { /* '146' */
             return 146
@@ -8786,6 +8791,9 @@ func (e BACnetVendorId) VendorName() string {
 		case 145: { /* '145' */
             return "Project Engineering S.r.l."
 		}
+		case 1450: { /* '1450' */
+            return "Bowery Farming, Inc."
+		}
 		case 146: { /* '146' */
             return "Sanyo Electric Co., Ltd."
 		}
@@ -12627,6 +12635,8 @@ func BACnetVendorIdByValue(value uint16) (enum BACnetVendorId, ok bool) {
 			return BACnetVendorId_ULBIOS_TECHSENS, true
 		case 145:
 			return BACnetVendorId_PROJECT_ENGINEERING_SRL, true
+		case 1450:
+			return BACnetVendorId_BOWERY_FARMING_INC, true
 		case 146:
 			return BACnetVendorId_SANYO_ELECTRIC_CO_LTD, true
 		case 147:
@@ -15517,6 +15527,8 @@ func BACnetVendorIdByName(value string) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_ULBIOS_TECHSENS, true
 	case "PROJECT_ENGINEERING_SRL":
 		return BACnetVendorId_PROJECT_ENGINEERING_SRL, true
+	case "BOWERY_FARMING_INC":
+		return BACnetVendorId_BOWERY_FARMING_INC, true
 	case "SANYO_ELECTRIC_CO_LTD":
 		return BACnetVendorId_SANYO_ELECTRIC_CO_LTD, true
 	case "INTEGRATED_INFORMATION_SYSTEMS_INC":
@@ -18468,6 +18480,8 @@ func (e BACnetVendorId) PLC4XEnumName() string {
 		return "ULBIOS_TECHSENS"
 	case BACnetVendorId_PROJECT_ENGINEERING_SRL:
 		return "PROJECT_ENGINEERING_SRL"
+	case BACnetVendorId_BOWERY_FARMING_INC:
+		return "BOWERY_FARMING_INC"
 	case BACnetVendorId_SANYO_ELECTRIC_CO_LTD:
 		return "SANYO_ELECTRIC_CO_LTD"
 	case BACnetVendorId_INTEGRATED_INFORMATION_SYSTEMS_INC:
