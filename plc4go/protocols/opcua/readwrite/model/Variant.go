@@ -206,6 +206,8 @@ _arrayDimensionsSpecified, _arrayDimensionsSpecifiedErr := readBuffer.ReadBit("a
 	var _child VariantChildSerializeRequirement
 	var typeSwitchError error
 	switch {
+case VariantType == uint8(0) : // VariantNull
+		_childTemp, typeSwitchError = VariantNullParseWithBuffer(ctx, readBuffer, )
 case VariantType == uint8(1) : // VariantBoolean
 		_childTemp, typeSwitchError = VariantBooleanParseWithBuffer(ctx, readBuffer, arrayLengthSpecified)
 case VariantType == uint8(2) : // VariantSByte
