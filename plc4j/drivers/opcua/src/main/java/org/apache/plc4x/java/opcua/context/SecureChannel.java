@@ -996,8 +996,10 @@ public class SecureChannel {
     private void keepAlive() {
         keepAlive = CompletableFuture.supplyAsync(() -> {
                 while (enableKeepalive.get()) {
+
                     final Instant sendNextKeepaliveAt = Instant.now()
-                        .plus(Duration.ofMillis((long) Math.ceil(this.lifetime * 0.75f)));
+                            .plus(Duration.ofMillis((long) Math.ceil(this.lifetime * 0.75f)));
+
                     while (Instant.now().isBefore(sendNextKeepaliveAt)) {
                         try {
                             Thread.sleep(1000);
@@ -1011,6 +1013,7 @@ public class SecureChannel {
                             return null; // exit from keepalive loop
                         }
                     }
+
                     int transactionId = channelTransactionManager.getTransactionIdentifier();
 
                     RequestHeader requestHeader = new RequestHeader(new NodeId(authenticationToken),
