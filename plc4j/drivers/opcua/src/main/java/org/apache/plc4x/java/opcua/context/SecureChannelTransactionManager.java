@@ -22,8 +22,8 @@ import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
@@ -32,25 +32,26 @@ public class SecureChannelTransactionManager {
     private static final Logger LOGGER = LoggerFactory.getLogger(SecureChannel.class);
     public static final int DEFAULT_MAX_REQUEST_ID = 0xFFFFFFFF;
     private final AtomicInteger transactionIdentifierGenerator = new AtomicInteger(0);
-    private final AtomicInteger requestIdentifierGenerator = new AtomicInteger(0);
     private final AtomicInteger activeTransactionId = new AtomicInteger(0);
-    private final Map<Integer, Transaction> queue = new HashMap<>();
+    private final Map<Integer, Transaction> queue = new ConcurrentHashMap<>();
 
     public synchronized void submit(Consumer<Integer> onSend, int transactionId) {
         LOGGER.info("Active transaction Number {}", activeTransactionId.get());
         if (activeTransactionId.get() == transactionId) {
-            onSend.accept(transactionId);
-            int newTransactionId = getActiveTransactionIdentifier();
-            if (!queue.isEmpty()) {
-                Transaction t = queue.remove(newTransactionId);
-                if (t == null) {
-                    LOGGER.info("Length of Queue is {}", queue.size());
-                    LOGGER.info("Transaction ID is {}", newTransactionId);
-                    LOGGER.info("Map  is {}", queue);
-                    throw new PlcRuntimeException("Transaction Id not found in queued messages {}");
+            Consumer<Integer> nextSend = transId ->{
+                int newTransactionId = getActiveTransactionIdentifier();
+                if (!queue.isEmpty()) {
+                    Transaction t = queue.remove(newTransactionId);
+                    if (t == null) {
+                        LOGGER.info("Length of Queue is {}", queue.size());
+                        LOGGER.info("Transaction ID is {}", newTransactionId);
+                        LOGGER.info("Map  is {}", queue);
+                        throw new PlcRuntimeException("Transaction Id not found in queued messages {}");
+                    }
+                    submit(t.getConsumer(), t.getTransactionId());
                 }
-                submit(t.getConsumer(), t.getTransactionId());
-            }
+            };
+            onSend.andThen(nextSend).accept(transactionId);
         } else {
             LOGGER.info("Storing out of order transaction {}", transactionId);
             queue.put(transactionId, new Transaction(onSend, transactionId));
@@ -64,19 +65,18 @@ public class SecureChannelTransactionManager {
      */
     public int getTransactionIdentifier() {
         int transactionId = transactionIdentifierGenerator.getAndIncrement();
-        transactionIdentifierGenerator.compareAndSet(DEFAULT_MAX_REQUEST_ID,1);
+        if(transactionIdentifierGenerator.get() == DEFAULT_MAX_REQUEST_ID) {
+            transactionIdentifierGenerator.set(1);
+            transactionId = 1;
+        }
         return transactionId;
     }
 
-    /**
-     * Returns the next transaction identifier.
-     *
-     * @return the next sequential transaction identifier
-     */
     private int getActiveTransactionIdentifier() {
         int transactionId = activeTransactionId.incrementAndGet();
         if(activeTransactionId.get() == DEFAULT_MAX_REQUEST_ID) {
             activeTransactionId.set(1);
+            transactionId = 1;
         }
         return transactionId;
     }
