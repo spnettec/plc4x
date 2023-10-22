@@ -24,6 +24,7 @@ import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 
 import java.time.Duration;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -92,6 +93,7 @@ public interface ConversationContext<T> {
 
         void cancel();
 
+        void awaitResponse() throws InterruptedException, ExecutionException;
     }
 
 }

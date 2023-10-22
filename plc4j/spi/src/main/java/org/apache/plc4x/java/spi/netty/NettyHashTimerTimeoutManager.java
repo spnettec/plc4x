@@ -52,7 +52,7 @@ public class NettyHashTimerTimeoutManager implements TimeoutManager {
                 if (timeout.isCancelled()) {
                     return;
                 }
-                TimeoutException exception = new TimeoutException();
+                TimeoutException exception = new TimeoutException("wait response timeout");
                 operation.getOnTimeoutConsumer().accept(exception);
             }, operation.getTimeout().toMillis(), TimeUnit.MILLISECONDS);
             return new TimeoutCompletionCallback<>(newTimeout);
