@@ -60,12 +60,12 @@ def download(String url, String localFileName) {
     def update = true
     if (file.exists()) {
         // If the last update was less than 24h before, don't update it again.
-        if (file.lastModified() > (new Date().getTime() - 86400000)) {
+        if (file.lastModified() > (new Date().getTime() - 259200000)) {
             update = false
         }
     }
     // TODO: temp
-    update = true
+    // update = true
 
     if (update) {
         try {
