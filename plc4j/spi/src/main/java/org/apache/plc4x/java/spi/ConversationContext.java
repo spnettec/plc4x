@@ -19,12 +19,12 @@
 package org.apache.plc4x.java.spi;
 
 import io.netty.channel.Channel;
+import java.util.concurrent.ExecutionException;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 
 import java.time.Duration;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -94,6 +94,7 @@ public interface ConversationContext<T> {
         void cancel();
 
         void awaitResponse() throws InterruptedException, ExecutionException;
+
     }
 
 }

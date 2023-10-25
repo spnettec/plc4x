@@ -18,11 +18,9 @@
  */
 package org.apache.plc4x.java.spi.internal;
 
-import org.apache.plc4x.java.spi.ConversationContext;
-
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import java.util.function.BooleanSupplier;
+import org.apache.plc4x.java.spi.ConversationContext;
 
 class DefaultContextHandler implements ConversationContext.ContextHandler {
 
