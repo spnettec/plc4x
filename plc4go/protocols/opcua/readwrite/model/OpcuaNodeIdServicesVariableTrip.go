@@ -40,153 +40,153 @@ type IOpcuaNodeIdServicesVariableTrip interface {
 	utils.Serializable
 }
 
-const(
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_EventId OpcuaNodeIdServicesVariableTrip = 10752
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_EventType OpcuaNodeIdServicesVariableTrip = 10753
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_SourceNode OpcuaNodeIdServicesVariableTrip = 10754
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_SourceName OpcuaNodeIdServicesVariableTrip = 10755
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_Time OpcuaNodeIdServicesVariableTrip = 10756
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ReceiveTime OpcuaNodeIdServicesVariableTrip = 10757
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_LocalTime OpcuaNodeIdServicesVariableTrip = 10758
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_Message OpcuaNodeIdServicesVariableTrip = 10759
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_Severity OpcuaNodeIdServicesVariableTrip = 10760
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ConditionName OpcuaNodeIdServicesVariableTrip = 10761
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_BranchId OpcuaNodeIdServicesVariableTrip = 10762
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_Retain OpcuaNodeIdServicesVariableTrip = 10763
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_EnabledState OpcuaNodeIdServicesVariableTrip = 10764
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_EnabledState_Id OpcuaNodeIdServicesVariableTrip = 10765
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_EnabledState_Name OpcuaNodeIdServicesVariableTrip = 10766
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_EnabledState_Number OpcuaNodeIdServicesVariableTrip = 10767
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_EnabledState_EffectiveDisplayName OpcuaNodeIdServicesVariableTrip = 10768
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_EnabledState_TransitionTime OpcuaNodeIdServicesVariableTrip = 10769
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_EnabledState_EffectiveTransitionTime OpcuaNodeIdServicesVariableTrip = 10770
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_EnabledState_TrueState OpcuaNodeIdServicesVariableTrip = 10771
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_EnabledState_FalseState OpcuaNodeIdServicesVariableTrip = 10772
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_Quality OpcuaNodeIdServicesVariableTrip = 10773
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_Quality_SourceTimestamp OpcuaNodeIdServicesVariableTrip = 10774
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_LastSeverity OpcuaNodeIdServicesVariableTrip = 10775
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_LastSeverity_SourceTimestamp OpcuaNodeIdServicesVariableTrip = 10776
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_Comment OpcuaNodeIdServicesVariableTrip = 10777
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_Comment_SourceTimestamp OpcuaNodeIdServicesVariableTrip = 10778
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ClientUserId OpcuaNodeIdServicesVariableTrip = 10779
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_AddComment_InputArguments OpcuaNodeIdServicesVariableTrip = 10783
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ConditionRefresh_InputArguments OpcuaNodeIdServicesVariableTrip = 10785
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_AckedState OpcuaNodeIdServicesVariableTrip = 10786
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_AckedState_Id OpcuaNodeIdServicesVariableTrip = 10787
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_AckedState_Name OpcuaNodeIdServicesVariableTrip = 10788
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_AckedState_Number OpcuaNodeIdServicesVariableTrip = 10789
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_AckedState_EffectiveDisplayName OpcuaNodeIdServicesVariableTrip = 10790
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_AckedState_TransitionTime OpcuaNodeIdServicesVariableTrip = 10791
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_AckedState_EffectiveTransitionTime OpcuaNodeIdServicesVariableTrip = 10792
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_AckedState_TrueState OpcuaNodeIdServicesVariableTrip = 10793
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_AckedState_FalseState OpcuaNodeIdServicesVariableTrip = 10794
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ConfirmedState OpcuaNodeIdServicesVariableTrip = 10795
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ConfirmedState_Id OpcuaNodeIdServicesVariableTrip = 10796
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ConfirmedState_Name OpcuaNodeIdServicesVariableTrip = 10797
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ConfirmedState_Number OpcuaNodeIdServicesVariableTrip = 10798
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ConfirmedState_EffectiveDisplayName OpcuaNodeIdServicesVariableTrip = 10799
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ConfirmedState_TransitionTime OpcuaNodeIdServicesVariableTrip = 10800
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ConfirmedState_EffectiveTransitionTime OpcuaNodeIdServicesVariableTrip = 10801
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ConfirmedState_TrueState OpcuaNodeIdServicesVariableTrip = 10802
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ConfirmedState_FalseState OpcuaNodeIdServicesVariableTrip = 10803
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_Acknowledge_InputArguments OpcuaNodeIdServicesVariableTrip = 10805
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_Confirm_InputArguments OpcuaNodeIdServicesVariableTrip = 10807
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ActiveState OpcuaNodeIdServicesVariableTrip = 10808
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ActiveState_Id OpcuaNodeIdServicesVariableTrip = 10809
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ActiveState_Name OpcuaNodeIdServicesVariableTrip = 10810
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ActiveState_Number OpcuaNodeIdServicesVariableTrip = 10811
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ActiveState_EffectiveDisplayName OpcuaNodeIdServicesVariableTrip = 10812
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ActiveState_TransitionTime OpcuaNodeIdServicesVariableTrip = 10813
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ActiveState_EffectiveTransitionTime OpcuaNodeIdServicesVariableTrip = 10814
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ActiveState_TrueState OpcuaNodeIdServicesVariableTrip = 10815
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ActiveState_FalseState OpcuaNodeIdServicesVariableTrip = 10816
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_SuppressedState OpcuaNodeIdServicesVariableTrip = 10817
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_SuppressedState_Id OpcuaNodeIdServicesVariableTrip = 10818
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_SuppressedState_Name OpcuaNodeIdServicesVariableTrip = 10819
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_SuppressedState_Number OpcuaNodeIdServicesVariableTrip = 10820
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_SuppressedState_EffectiveDisplayName OpcuaNodeIdServicesVariableTrip = 10821
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_SuppressedState_TransitionTime OpcuaNodeIdServicesVariableTrip = 10822
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_SuppressedState_EffectiveTransitionTime OpcuaNodeIdServicesVariableTrip = 10823
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_SuppressedState_TrueState OpcuaNodeIdServicesVariableTrip = 10824
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_SuppressedState_FalseState OpcuaNodeIdServicesVariableTrip = 10825
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ShelvingState_CurrentState OpcuaNodeIdServicesVariableTrip = 10827
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ShelvingState_CurrentState_Id OpcuaNodeIdServicesVariableTrip = 10828
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ShelvingState_CurrentState_Name OpcuaNodeIdServicesVariableTrip = 10829
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ShelvingState_CurrentState_Number OpcuaNodeIdServicesVariableTrip = 10830
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ShelvingState_CurrentState_EffectiveDisplayName OpcuaNodeIdServicesVariableTrip = 10831
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ShelvingState_LastTransition OpcuaNodeIdServicesVariableTrip = 10832
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ShelvingState_LastTransition_Id OpcuaNodeIdServicesVariableTrip = 10833
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ShelvingState_LastTransition_Name OpcuaNodeIdServicesVariableTrip = 10834
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ShelvingState_LastTransition_Number OpcuaNodeIdServicesVariableTrip = 10835
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ShelvingState_LastTransition_TransitionTime OpcuaNodeIdServicesVariableTrip = 10836
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ShelvingState_UnshelveTime OpcuaNodeIdServicesVariableTrip = 10837
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ShelvingState_TimedShelve_InputArguments OpcuaNodeIdServicesVariableTrip = 10862
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_SuppressedOrShelved OpcuaNodeIdServicesVariableTrip = 10863
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_MaxTimeShelved OpcuaNodeIdServicesVariableTrip = 10864
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ConditionClassId OpcuaNodeIdServicesVariableTrip = 11159
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ConditionClassName OpcuaNodeIdServicesVariableTrip = 11160
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_InputNode OpcuaNodeIdServicesVariableTrip = 11161
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_NormalState OpcuaNodeIdServicesVariableTrip = 11162
+const (
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_EventId                                              OpcuaNodeIdServicesVariableTrip = 10752
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_EventType                                            OpcuaNodeIdServicesVariableTrip = 10753
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_SourceNode                                           OpcuaNodeIdServicesVariableTrip = 10754
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_SourceName                                           OpcuaNodeIdServicesVariableTrip = 10755
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_Time                                                 OpcuaNodeIdServicesVariableTrip = 10756
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ReceiveTime                                          OpcuaNodeIdServicesVariableTrip = 10757
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_LocalTime                                            OpcuaNodeIdServicesVariableTrip = 10758
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_Message                                              OpcuaNodeIdServicesVariableTrip = 10759
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_Severity                                             OpcuaNodeIdServicesVariableTrip = 10760
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ConditionName                                        OpcuaNodeIdServicesVariableTrip = 10761
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_BranchId                                             OpcuaNodeIdServicesVariableTrip = 10762
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_Retain                                               OpcuaNodeIdServicesVariableTrip = 10763
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_EnabledState                                         OpcuaNodeIdServicesVariableTrip = 10764
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_EnabledState_Id                                      OpcuaNodeIdServicesVariableTrip = 10765
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_EnabledState_Name                                    OpcuaNodeIdServicesVariableTrip = 10766
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_EnabledState_Number                                  OpcuaNodeIdServicesVariableTrip = 10767
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_EnabledState_EffectiveDisplayName                    OpcuaNodeIdServicesVariableTrip = 10768
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_EnabledState_TransitionTime                          OpcuaNodeIdServicesVariableTrip = 10769
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_EnabledState_EffectiveTransitionTime                 OpcuaNodeIdServicesVariableTrip = 10770
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_EnabledState_TrueState                               OpcuaNodeIdServicesVariableTrip = 10771
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_EnabledState_FalseState                              OpcuaNodeIdServicesVariableTrip = 10772
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_Quality                                              OpcuaNodeIdServicesVariableTrip = 10773
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_Quality_SourceTimestamp                              OpcuaNodeIdServicesVariableTrip = 10774
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_LastSeverity                                         OpcuaNodeIdServicesVariableTrip = 10775
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_LastSeverity_SourceTimestamp                         OpcuaNodeIdServicesVariableTrip = 10776
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_Comment                                              OpcuaNodeIdServicesVariableTrip = 10777
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_Comment_SourceTimestamp                              OpcuaNodeIdServicesVariableTrip = 10778
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ClientUserId                                         OpcuaNodeIdServicesVariableTrip = 10779
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_AddComment_InputArguments                            OpcuaNodeIdServicesVariableTrip = 10783
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ConditionRefresh_InputArguments                      OpcuaNodeIdServicesVariableTrip = 10785
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_AckedState                                           OpcuaNodeIdServicesVariableTrip = 10786
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_AckedState_Id                                        OpcuaNodeIdServicesVariableTrip = 10787
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_AckedState_Name                                      OpcuaNodeIdServicesVariableTrip = 10788
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_AckedState_Number                                    OpcuaNodeIdServicesVariableTrip = 10789
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_AckedState_EffectiveDisplayName                      OpcuaNodeIdServicesVariableTrip = 10790
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_AckedState_TransitionTime                            OpcuaNodeIdServicesVariableTrip = 10791
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_AckedState_EffectiveTransitionTime                   OpcuaNodeIdServicesVariableTrip = 10792
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_AckedState_TrueState                                 OpcuaNodeIdServicesVariableTrip = 10793
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_AckedState_FalseState                                OpcuaNodeIdServicesVariableTrip = 10794
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ConfirmedState                                       OpcuaNodeIdServicesVariableTrip = 10795
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ConfirmedState_Id                                    OpcuaNodeIdServicesVariableTrip = 10796
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ConfirmedState_Name                                  OpcuaNodeIdServicesVariableTrip = 10797
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ConfirmedState_Number                                OpcuaNodeIdServicesVariableTrip = 10798
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ConfirmedState_EffectiveDisplayName                  OpcuaNodeIdServicesVariableTrip = 10799
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ConfirmedState_TransitionTime                        OpcuaNodeIdServicesVariableTrip = 10800
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ConfirmedState_EffectiveTransitionTime               OpcuaNodeIdServicesVariableTrip = 10801
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ConfirmedState_TrueState                             OpcuaNodeIdServicesVariableTrip = 10802
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ConfirmedState_FalseState                            OpcuaNodeIdServicesVariableTrip = 10803
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_Acknowledge_InputArguments                           OpcuaNodeIdServicesVariableTrip = 10805
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_Confirm_InputArguments                               OpcuaNodeIdServicesVariableTrip = 10807
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ActiveState                                          OpcuaNodeIdServicesVariableTrip = 10808
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ActiveState_Id                                       OpcuaNodeIdServicesVariableTrip = 10809
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ActiveState_Name                                     OpcuaNodeIdServicesVariableTrip = 10810
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ActiveState_Number                                   OpcuaNodeIdServicesVariableTrip = 10811
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ActiveState_EffectiveDisplayName                     OpcuaNodeIdServicesVariableTrip = 10812
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ActiveState_TransitionTime                           OpcuaNodeIdServicesVariableTrip = 10813
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ActiveState_EffectiveTransitionTime                  OpcuaNodeIdServicesVariableTrip = 10814
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ActiveState_TrueState                                OpcuaNodeIdServicesVariableTrip = 10815
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ActiveState_FalseState                               OpcuaNodeIdServicesVariableTrip = 10816
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_SuppressedState                                      OpcuaNodeIdServicesVariableTrip = 10817
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_SuppressedState_Id                                   OpcuaNodeIdServicesVariableTrip = 10818
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_SuppressedState_Name                                 OpcuaNodeIdServicesVariableTrip = 10819
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_SuppressedState_Number                               OpcuaNodeIdServicesVariableTrip = 10820
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_SuppressedState_EffectiveDisplayName                 OpcuaNodeIdServicesVariableTrip = 10821
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_SuppressedState_TransitionTime                       OpcuaNodeIdServicesVariableTrip = 10822
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_SuppressedState_EffectiveTransitionTime              OpcuaNodeIdServicesVariableTrip = 10823
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_SuppressedState_TrueState                            OpcuaNodeIdServicesVariableTrip = 10824
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_SuppressedState_FalseState                           OpcuaNodeIdServicesVariableTrip = 10825
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ShelvingState_CurrentState                           OpcuaNodeIdServicesVariableTrip = 10827
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ShelvingState_CurrentState_Id                        OpcuaNodeIdServicesVariableTrip = 10828
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ShelvingState_CurrentState_Name                      OpcuaNodeIdServicesVariableTrip = 10829
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ShelvingState_CurrentState_Number                    OpcuaNodeIdServicesVariableTrip = 10830
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ShelvingState_CurrentState_EffectiveDisplayName      OpcuaNodeIdServicesVariableTrip = 10831
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ShelvingState_LastTransition                         OpcuaNodeIdServicesVariableTrip = 10832
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ShelvingState_LastTransition_Id                      OpcuaNodeIdServicesVariableTrip = 10833
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ShelvingState_LastTransition_Name                    OpcuaNodeIdServicesVariableTrip = 10834
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ShelvingState_LastTransition_Number                  OpcuaNodeIdServicesVariableTrip = 10835
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ShelvingState_LastTransition_TransitionTime          OpcuaNodeIdServicesVariableTrip = 10836
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ShelvingState_UnshelveTime                           OpcuaNodeIdServicesVariableTrip = 10837
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ShelvingState_TimedShelve_InputArguments             OpcuaNodeIdServicesVariableTrip = 10862
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_SuppressedOrShelved                                  OpcuaNodeIdServicesVariableTrip = 10863
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_MaxTimeShelved                                       OpcuaNodeIdServicesVariableTrip = 10864
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ConditionClassId                                     OpcuaNodeIdServicesVariableTrip = 11159
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ConditionClassName                                   OpcuaNodeIdServicesVariableTrip = 11160
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_InputNode                                            OpcuaNodeIdServicesVariableTrip = 11161
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_NormalState                                          OpcuaNodeIdServicesVariableTrip = 11162
 	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ShelvingState_LastTransition_EffectiveTransitionTime OpcuaNodeIdServicesVariableTrip = 11483
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ConditionRefresh2_InputArguments OpcuaNodeIdServicesVariableTrip = 13011
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ConditionSubClassId OpcuaNodeIdServicesVariableTrip = 17008
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ConditionSubClassName OpcuaNodeIdServicesVariableTrip = 17009
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_OutOfServiceState OpcuaNodeIdServicesVariableTrip = 17010
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_OutOfServiceState_Id OpcuaNodeIdServicesVariableTrip = 17011
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_OutOfServiceState_Name OpcuaNodeIdServicesVariableTrip = 17012
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_OutOfServiceState_Number OpcuaNodeIdServicesVariableTrip = 17013
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_OutOfServiceState_EffectiveDisplayName OpcuaNodeIdServicesVariableTrip = 17014
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_OutOfServiceState_TransitionTime OpcuaNodeIdServicesVariableTrip = 17015
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_OutOfServiceState_EffectiveTransitionTime OpcuaNodeIdServicesVariableTrip = 17016
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_OutOfServiceState_TrueState OpcuaNodeIdServicesVariableTrip = 17017
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_OutOfServiceState_FalseState OpcuaNodeIdServicesVariableTrip = 17018
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_SilenceState OpcuaNodeIdServicesVariableTrip = 17019
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_SilenceState_Id OpcuaNodeIdServicesVariableTrip = 17020
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_SilenceState_Name OpcuaNodeIdServicesVariableTrip = 17021
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_SilenceState_Number OpcuaNodeIdServicesVariableTrip = 17022
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_SilenceState_EffectiveDisplayName OpcuaNodeIdServicesVariableTrip = 17023
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_SilenceState_TransitionTime OpcuaNodeIdServicesVariableTrip = 17024
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_SilenceState_EffectiveTransitionTime OpcuaNodeIdServicesVariableTrip = 17025
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_SilenceState_TrueState OpcuaNodeIdServicesVariableTrip = 17026
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_SilenceState_FalseState OpcuaNodeIdServicesVariableTrip = 17027
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_AudibleEnabled OpcuaNodeIdServicesVariableTrip = 17028
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_AudibleSound OpcuaNodeIdServicesVariableTrip = 17029
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_OnDelay OpcuaNodeIdServicesVariableTrip = 17034
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_OffDelay OpcuaNodeIdServicesVariableTrip = 17035
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_FirstInGroupFlag OpcuaNodeIdServicesVariableTrip = 17036
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ReAlarmTime OpcuaNodeIdServicesVariableTrip = 17039
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ReAlarmRepeatCount OpcuaNodeIdServicesVariableTrip = 17040
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ShelvingState_AvailableStates OpcuaNodeIdServicesVariableTrip = 17698
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ShelvingState_AvailableTransitions OpcuaNodeIdServicesVariableTrip = 17699
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_AudibleSound_ListId OpcuaNodeIdServicesVariableTrip = 17963
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_AudibleSound_AgencyId OpcuaNodeIdServicesVariableTrip = 17964
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_AudibleSound_VersionId OpcuaNodeIdServicesVariableTrip = 17965
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_LatchedState OpcuaNodeIdServicesVariableTrip = 18337
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_LatchedState_Id OpcuaNodeIdServicesVariableTrip = 18338
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_LatchedState_Name OpcuaNodeIdServicesVariableTrip = 18339
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_LatchedState_Number OpcuaNodeIdServicesVariableTrip = 18340
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_LatchedState_EffectiveDisplayName OpcuaNodeIdServicesVariableTrip = 18341
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_LatchedState_TransitionTime OpcuaNodeIdServicesVariableTrip = 18342
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_LatchedState_EffectiveTransitionTime OpcuaNodeIdServicesVariableTrip = 18343
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_LatchedState_TrueState OpcuaNodeIdServicesVariableTrip = 18344
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_LatchedState_FalseState OpcuaNodeIdServicesVariableTrip = 18345
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_Suppress2_InputArguments OpcuaNodeIdServicesVariableTrip = 24459
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_Unsuppress2_InputArguments OpcuaNodeIdServicesVariableTrip = 24461
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_RemoveFromService2_InputArguments OpcuaNodeIdServicesVariableTrip = 24463
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_PlaceInService2_InputArguments OpcuaNodeIdServicesVariableTrip = 24465
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_Reset2_InputArguments OpcuaNodeIdServicesVariableTrip = 24467
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ShelvingState_TimedShelve2_InputArguments OpcuaNodeIdServicesVariableTrip = 24931
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ShelvingState_Unshelve2_InputArguments OpcuaNodeIdServicesVariableTrip = 24933
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ShelvingState_OneShotShelve2_InputArguments OpcuaNodeIdServicesVariableTrip = 24935
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_GetGroupMemberships_OutputArguments OpcuaNodeIdServicesVariableTrip = 25171
-	OpcuaNodeIdServicesVariableTrip_TripAlarmType_SupportsFilteredRetain OpcuaNodeIdServicesVariableTrip = 32239
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ConditionRefresh2_InputArguments                     OpcuaNodeIdServicesVariableTrip = 13011
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ConditionSubClassId                                  OpcuaNodeIdServicesVariableTrip = 17008
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ConditionSubClassName                                OpcuaNodeIdServicesVariableTrip = 17009
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_OutOfServiceState                                    OpcuaNodeIdServicesVariableTrip = 17010
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_OutOfServiceState_Id                                 OpcuaNodeIdServicesVariableTrip = 17011
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_OutOfServiceState_Name                               OpcuaNodeIdServicesVariableTrip = 17012
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_OutOfServiceState_Number                             OpcuaNodeIdServicesVariableTrip = 17013
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_OutOfServiceState_EffectiveDisplayName               OpcuaNodeIdServicesVariableTrip = 17014
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_OutOfServiceState_TransitionTime                     OpcuaNodeIdServicesVariableTrip = 17015
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_OutOfServiceState_EffectiveTransitionTime            OpcuaNodeIdServicesVariableTrip = 17016
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_OutOfServiceState_TrueState                          OpcuaNodeIdServicesVariableTrip = 17017
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_OutOfServiceState_FalseState                         OpcuaNodeIdServicesVariableTrip = 17018
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_SilenceState                                         OpcuaNodeIdServicesVariableTrip = 17019
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_SilenceState_Id                                      OpcuaNodeIdServicesVariableTrip = 17020
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_SilenceState_Name                                    OpcuaNodeIdServicesVariableTrip = 17021
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_SilenceState_Number                                  OpcuaNodeIdServicesVariableTrip = 17022
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_SilenceState_EffectiveDisplayName                    OpcuaNodeIdServicesVariableTrip = 17023
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_SilenceState_TransitionTime                          OpcuaNodeIdServicesVariableTrip = 17024
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_SilenceState_EffectiveTransitionTime                 OpcuaNodeIdServicesVariableTrip = 17025
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_SilenceState_TrueState                               OpcuaNodeIdServicesVariableTrip = 17026
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_SilenceState_FalseState                              OpcuaNodeIdServicesVariableTrip = 17027
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_AudibleEnabled                                       OpcuaNodeIdServicesVariableTrip = 17028
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_AudibleSound                                         OpcuaNodeIdServicesVariableTrip = 17029
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_OnDelay                                              OpcuaNodeIdServicesVariableTrip = 17034
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_OffDelay                                             OpcuaNodeIdServicesVariableTrip = 17035
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_FirstInGroupFlag                                     OpcuaNodeIdServicesVariableTrip = 17036
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ReAlarmTime                                          OpcuaNodeIdServicesVariableTrip = 17039
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ReAlarmRepeatCount                                   OpcuaNodeIdServicesVariableTrip = 17040
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ShelvingState_AvailableStates                        OpcuaNodeIdServicesVariableTrip = 17698
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ShelvingState_AvailableTransitions                   OpcuaNodeIdServicesVariableTrip = 17699
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_AudibleSound_ListId                                  OpcuaNodeIdServicesVariableTrip = 17963
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_AudibleSound_AgencyId                                OpcuaNodeIdServicesVariableTrip = 17964
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_AudibleSound_VersionId                               OpcuaNodeIdServicesVariableTrip = 17965
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_LatchedState                                         OpcuaNodeIdServicesVariableTrip = 18337
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_LatchedState_Id                                      OpcuaNodeIdServicesVariableTrip = 18338
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_LatchedState_Name                                    OpcuaNodeIdServicesVariableTrip = 18339
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_LatchedState_Number                                  OpcuaNodeIdServicesVariableTrip = 18340
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_LatchedState_EffectiveDisplayName                    OpcuaNodeIdServicesVariableTrip = 18341
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_LatchedState_TransitionTime                          OpcuaNodeIdServicesVariableTrip = 18342
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_LatchedState_EffectiveTransitionTime                 OpcuaNodeIdServicesVariableTrip = 18343
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_LatchedState_TrueState                               OpcuaNodeIdServicesVariableTrip = 18344
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_LatchedState_FalseState                              OpcuaNodeIdServicesVariableTrip = 18345
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_Suppress2_InputArguments                             OpcuaNodeIdServicesVariableTrip = 24459
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_Unsuppress2_InputArguments                           OpcuaNodeIdServicesVariableTrip = 24461
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_RemoveFromService2_InputArguments                    OpcuaNodeIdServicesVariableTrip = 24463
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_PlaceInService2_InputArguments                       OpcuaNodeIdServicesVariableTrip = 24465
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_Reset2_InputArguments                                OpcuaNodeIdServicesVariableTrip = 24467
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ShelvingState_TimedShelve2_InputArguments            OpcuaNodeIdServicesVariableTrip = 24931
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ShelvingState_Unshelve2_InputArguments               OpcuaNodeIdServicesVariableTrip = 24933
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_ShelvingState_OneShotShelve2_InputArguments          OpcuaNodeIdServicesVariableTrip = 24935
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_GetGroupMemberships_OutputArguments                  OpcuaNodeIdServicesVariableTrip = 25171
+	OpcuaNodeIdServicesVariableTrip_TripAlarmType_SupportsFilteredRetain                               OpcuaNodeIdServicesVariableTrip = 32239
 )
 
 var OpcuaNodeIdServicesVariableTripValues []OpcuaNodeIdServicesVariableTrip
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariableTripValues = []OpcuaNodeIdServicesVariableTrip {
+	OpcuaNodeIdServicesVariableTripValues = []OpcuaNodeIdServicesVariableTrip{
 		OpcuaNodeIdServicesVariableTrip_TripAlarmType_EventId,
 		OpcuaNodeIdServicesVariableTrip_TripAlarmType_EventType,
 		OpcuaNodeIdServicesVariableTrip_TripAlarmType_SourceNode,
@@ -331,284 +331,284 @@ func init() {
 
 func OpcuaNodeIdServicesVariableTripByValue(value int32) (enum OpcuaNodeIdServicesVariableTrip, ok bool) {
 	switch value {
-		case 10752:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_EventId, true
-		case 10753:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_EventType, true
-		case 10754:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_SourceNode, true
-		case 10755:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_SourceName, true
-		case 10756:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_Time, true
-		case 10757:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ReceiveTime, true
-		case 10758:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_LocalTime, true
-		case 10759:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_Message, true
-		case 10760:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_Severity, true
-		case 10761:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ConditionName, true
-		case 10762:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_BranchId, true
-		case 10763:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_Retain, true
-		case 10764:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_EnabledState, true
-		case 10765:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_EnabledState_Id, true
-		case 10766:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_EnabledState_Name, true
-		case 10767:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_EnabledState_Number, true
-		case 10768:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_EnabledState_EffectiveDisplayName, true
-		case 10769:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_EnabledState_TransitionTime, true
-		case 10770:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_EnabledState_EffectiveTransitionTime, true
-		case 10771:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_EnabledState_TrueState, true
-		case 10772:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_EnabledState_FalseState, true
-		case 10773:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_Quality, true
-		case 10774:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_Quality_SourceTimestamp, true
-		case 10775:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_LastSeverity, true
-		case 10776:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_LastSeverity_SourceTimestamp, true
-		case 10777:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_Comment, true
-		case 10778:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_Comment_SourceTimestamp, true
-		case 10779:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ClientUserId, true
-		case 10783:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_AddComment_InputArguments, true
-		case 10785:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ConditionRefresh_InputArguments, true
-		case 10786:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_AckedState, true
-		case 10787:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_AckedState_Id, true
-		case 10788:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_AckedState_Name, true
-		case 10789:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_AckedState_Number, true
-		case 10790:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_AckedState_EffectiveDisplayName, true
-		case 10791:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_AckedState_TransitionTime, true
-		case 10792:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_AckedState_EffectiveTransitionTime, true
-		case 10793:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_AckedState_TrueState, true
-		case 10794:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_AckedState_FalseState, true
-		case 10795:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ConfirmedState, true
-		case 10796:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ConfirmedState_Id, true
-		case 10797:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ConfirmedState_Name, true
-		case 10798:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ConfirmedState_Number, true
-		case 10799:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ConfirmedState_EffectiveDisplayName, true
-		case 10800:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ConfirmedState_TransitionTime, true
-		case 10801:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ConfirmedState_EffectiveTransitionTime, true
-		case 10802:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ConfirmedState_TrueState, true
-		case 10803:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ConfirmedState_FalseState, true
-		case 10805:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_Acknowledge_InputArguments, true
-		case 10807:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_Confirm_InputArguments, true
-		case 10808:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ActiveState, true
-		case 10809:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ActiveState_Id, true
-		case 10810:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ActiveState_Name, true
-		case 10811:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ActiveState_Number, true
-		case 10812:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ActiveState_EffectiveDisplayName, true
-		case 10813:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ActiveState_TransitionTime, true
-		case 10814:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ActiveState_EffectiveTransitionTime, true
-		case 10815:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ActiveState_TrueState, true
-		case 10816:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ActiveState_FalseState, true
-		case 10817:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_SuppressedState, true
-		case 10818:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_SuppressedState_Id, true
-		case 10819:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_SuppressedState_Name, true
-		case 10820:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_SuppressedState_Number, true
-		case 10821:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_SuppressedState_EffectiveDisplayName, true
-		case 10822:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_SuppressedState_TransitionTime, true
-		case 10823:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_SuppressedState_EffectiveTransitionTime, true
-		case 10824:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_SuppressedState_TrueState, true
-		case 10825:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_SuppressedState_FalseState, true
-		case 10827:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ShelvingState_CurrentState, true
-		case 10828:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ShelvingState_CurrentState_Id, true
-		case 10829:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ShelvingState_CurrentState_Name, true
-		case 10830:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ShelvingState_CurrentState_Number, true
-		case 10831:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ShelvingState_CurrentState_EffectiveDisplayName, true
-		case 10832:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ShelvingState_LastTransition, true
-		case 10833:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ShelvingState_LastTransition_Id, true
-		case 10834:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ShelvingState_LastTransition_Name, true
-		case 10835:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ShelvingState_LastTransition_Number, true
-		case 10836:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ShelvingState_LastTransition_TransitionTime, true
-		case 10837:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ShelvingState_UnshelveTime, true
-		case 10862:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ShelvingState_TimedShelve_InputArguments, true
-		case 10863:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_SuppressedOrShelved, true
-		case 10864:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_MaxTimeShelved, true
-		case 11159:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ConditionClassId, true
-		case 11160:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ConditionClassName, true
-		case 11161:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_InputNode, true
-		case 11162:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_NormalState, true
-		case 11483:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ShelvingState_LastTransition_EffectiveTransitionTime, true
-		case 13011:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ConditionRefresh2_InputArguments, true
-		case 17008:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ConditionSubClassId, true
-		case 17009:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ConditionSubClassName, true
-		case 17010:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_OutOfServiceState, true
-		case 17011:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_OutOfServiceState_Id, true
-		case 17012:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_OutOfServiceState_Name, true
-		case 17013:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_OutOfServiceState_Number, true
-		case 17014:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_OutOfServiceState_EffectiveDisplayName, true
-		case 17015:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_OutOfServiceState_TransitionTime, true
-		case 17016:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_OutOfServiceState_EffectiveTransitionTime, true
-		case 17017:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_OutOfServiceState_TrueState, true
-		case 17018:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_OutOfServiceState_FalseState, true
-		case 17019:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_SilenceState, true
-		case 17020:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_SilenceState_Id, true
-		case 17021:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_SilenceState_Name, true
-		case 17022:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_SilenceState_Number, true
-		case 17023:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_SilenceState_EffectiveDisplayName, true
-		case 17024:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_SilenceState_TransitionTime, true
-		case 17025:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_SilenceState_EffectiveTransitionTime, true
-		case 17026:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_SilenceState_TrueState, true
-		case 17027:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_SilenceState_FalseState, true
-		case 17028:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_AudibleEnabled, true
-		case 17029:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_AudibleSound, true
-		case 17034:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_OnDelay, true
-		case 17035:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_OffDelay, true
-		case 17036:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_FirstInGroupFlag, true
-		case 17039:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ReAlarmTime, true
-		case 17040:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ReAlarmRepeatCount, true
-		case 17698:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ShelvingState_AvailableStates, true
-		case 17699:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ShelvingState_AvailableTransitions, true
-		case 17963:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_AudibleSound_ListId, true
-		case 17964:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_AudibleSound_AgencyId, true
-		case 17965:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_AudibleSound_VersionId, true
-		case 18337:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_LatchedState, true
-		case 18338:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_LatchedState_Id, true
-		case 18339:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_LatchedState_Name, true
-		case 18340:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_LatchedState_Number, true
-		case 18341:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_LatchedState_EffectiveDisplayName, true
-		case 18342:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_LatchedState_TransitionTime, true
-		case 18343:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_LatchedState_EffectiveTransitionTime, true
-		case 18344:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_LatchedState_TrueState, true
-		case 18345:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_LatchedState_FalseState, true
-		case 24459:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_Suppress2_InputArguments, true
-		case 24461:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_Unsuppress2_InputArguments, true
-		case 24463:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_RemoveFromService2_InputArguments, true
-		case 24465:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_PlaceInService2_InputArguments, true
-		case 24467:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_Reset2_InputArguments, true
-		case 24931:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ShelvingState_TimedShelve2_InputArguments, true
-		case 24933:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ShelvingState_Unshelve2_InputArguments, true
-		case 24935:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ShelvingState_OneShotShelve2_InputArguments, true
-		case 25171:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_GetGroupMemberships_OutputArguments, true
-		case 32239:
-			return OpcuaNodeIdServicesVariableTrip_TripAlarmType_SupportsFilteredRetain, true
+	case 10752:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_EventId, true
+	case 10753:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_EventType, true
+	case 10754:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_SourceNode, true
+	case 10755:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_SourceName, true
+	case 10756:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_Time, true
+	case 10757:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ReceiveTime, true
+	case 10758:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_LocalTime, true
+	case 10759:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_Message, true
+	case 10760:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_Severity, true
+	case 10761:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ConditionName, true
+	case 10762:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_BranchId, true
+	case 10763:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_Retain, true
+	case 10764:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_EnabledState, true
+	case 10765:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_EnabledState_Id, true
+	case 10766:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_EnabledState_Name, true
+	case 10767:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_EnabledState_Number, true
+	case 10768:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_EnabledState_EffectiveDisplayName, true
+	case 10769:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_EnabledState_TransitionTime, true
+	case 10770:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_EnabledState_EffectiveTransitionTime, true
+	case 10771:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_EnabledState_TrueState, true
+	case 10772:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_EnabledState_FalseState, true
+	case 10773:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_Quality, true
+	case 10774:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_Quality_SourceTimestamp, true
+	case 10775:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_LastSeverity, true
+	case 10776:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_LastSeverity_SourceTimestamp, true
+	case 10777:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_Comment, true
+	case 10778:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_Comment_SourceTimestamp, true
+	case 10779:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ClientUserId, true
+	case 10783:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_AddComment_InputArguments, true
+	case 10785:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ConditionRefresh_InputArguments, true
+	case 10786:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_AckedState, true
+	case 10787:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_AckedState_Id, true
+	case 10788:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_AckedState_Name, true
+	case 10789:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_AckedState_Number, true
+	case 10790:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_AckedState_EffectiveDisplayName, true
+	case 10791:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_AckedState_TransitionTime, true
+	case 10792:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_AckedState_EffectiveTransitionTime, true
+	case 10793:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_AckedState_TrueState, true
+	case 10794:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_AckedState_FalseState, true
+	case 10795:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ConfirmedState, true
+	case 10796:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ConfirmedState_Id, true
+	case 10797:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ConfirmedState_Name, true
+	case 10798:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ConfirmedState_Number, true
+	case 10799:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ConfirmedState_EffectiveDisplayName, true
+	case 10800:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ConfirmedState_TransitionTime, true
+	case 10801:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ConfirmedState_EffectiveTransitionTime, true
+	case 10802:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ConfirmedState_TrueState, true
+	case 10803:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ConfirmedState_FalseState, true
+	case 10805:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_Acknowledge_InputArguments, true
+	case 10807:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_Confirm_InputArguments, true
+	case 10808:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ActiveState, true
+	case 10809:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ActiveState_Id, true
+	case 10810:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ActiveState_Name, true
+	case 10811:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ActiveState_Number, true
+	case 10812:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ActiveState_EffectiveDisplayName, true
+	case 10813:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ActiveState_TransitionTime, true
+	case 10814:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ActiveState_EffectiveTransitionTime, true
+	case 10815:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ActiveState_TrueState, true
+	case 10816:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ActiveState_FalseState, true
+	case 10817:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_SuppressedState, true
+	case 10818:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_SuppressedState_Id, true
+	case 10819:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_SuppressedState_Name, true
+	case 10820:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_SuppressedState_Number, true
+	case 10821:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_SuppressedState_EffectiveDisplayName, true
+	case 10822:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_SuppressedState_TransitionTime, true
+	case 10823:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_SuppressedState_EffectiveTransitionTime, true
+	case 10824:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_SuppressedState_TrueState, true
+	case 10825:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_SuppressedState_FalseState, true
+	case 10827:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ShelvingState_CurrentState, true
+	case 10828:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ShelvingState_CurrentState_Id, true
+	case 10829:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ShelvingState_CurrentState_Name, true
+	case 10830:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ShelvingState_CurrentState_Number, true
+	case 10831:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ShelvingState_CurrentState_EffectiveDisplayName, true
+	case 10832:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ShelvingState_LastTransition, true
+	case 10833:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ShelvingState_LastTransition_Id, true
+	case 10834:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ShelvingState_LastTransition_Name, true
+	case 10835:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ShelvingState_LastTransition_Number, true
+	case 10836:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ShelvingState_LastTransition_TransitionTime, true
+	case 10837:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ShelvingState_UnshelveTime, true
+	case 10862:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ShelvingState_TimedShelve_InputArguments, true
+	case 10863:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_SuppressedOrShelved, true
+	case 10864:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_MaxTimeShelved, true
+	case 11159:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ConditionClassId, true
+	case 11160:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ConditionClassName, true
+	case 11161:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_InputNode, true
+	case 11162:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_NormalState, true
+	case 11483:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ShelvingState_LastTransition_EffectiveTransitionTime, true
+	case 13011:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ConditionRefresh2_InputArguments, true
+	case 17008:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ConditionSubClassId, true
+	case 17009:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ConditionSubClassName, true
+	case 17010:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_OutOfServiceState, true
+	case 17011:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_OutOfServiceState_Id, true
+	case 17012:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_OutOfServiceState_Name, true
+	case 17013:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_OutOfServiceState_Number, true
+	case 17014:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_OutOfServiceState_EffectiveDisplayName, true
+	case 17015:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_OutOfServiceState_TransitionTime, true
+	case 17016:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_OutOfServiceState_EffectiveTransitionTime, true
+	case 17017:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_OutOfServiceState_TrueState, true
+	case 17018:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_OutOfServiceState_FalseState, true
+	case 17019:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_SilenceState, true
+	case 17020:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_SilenceState_Id, true
+	case 17021:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_SilenceState_Name, true
+	case 17022:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_SilenceState_Number, true
+	case 17023:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_SilenceState_EffectiveDisplayName, true
+	case 17024:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_SilenceState_TransitionTime, true
+	case 17025:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_SilenceState_EffectiveTransitionTime, true
+	case 17026:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_SilenceState_TrueState, true
+	case 17027:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_SilenceState_FalseState, true
+	case 17028:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_AudibleEnabled, true
+	case 17029:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_AudibleSound, true
+	case 17034:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_OnDelay, true
+	case 17035:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_OffDelay, true
+	case 17036:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_FirstInGroupFlag, true
+	case 17039:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ReAlarmTime, true
+	case 17040:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ReAlarmRepeatCount, true
+	case 17698:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ShelvingState_AvailableStates, true
+	case 17699:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ShelvingState_AvailableTransitions, true
+	case 17963:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_AudibleSound_ListId, true
+	case 17964:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_AudibleSound_AgencyId, true
+	case 17965:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_AudibleSound_VersionId, true
+	case 18337:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_LatchedState, true
+	case 18338:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_LatchedState_Id, true
+	case 18339:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_LatchedState_Name, true
+	case 18340:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_LatchedState_Number, true
+	case 18341:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_LatchedState_EffectiveDisplayName, true
+	case 18342:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_LatchedState_TransitionTime, true
+	case 18343:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_LatchedState_EffectiveTransitionTime, true
+	case 18344:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_LatchedState_TrueState, true
+	case 18345:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_LatchedState_FalseState, true
+	case 24459:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_Suppress2_InputArguments, true
+	case 24461:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_Unsuppress2_InputArguments, true
+	case 24463:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_RemoveFromService2_InputArguments, true
+	case 24465:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_PlaceInService2_InputArguments, true
+	case 24467:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_Reset2_InputArguments, true
+	case 24931:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ShelvingState_TimedShelve2_InputArguments, true
+	case 24933:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ShelvingState_Unshelve2_InputArguments, true
+	case 24935:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_ShelvingState_OneShotShelve2_InputArguments, true
+	case 25171:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_GetGroupMemberships_OutputArguments, true
+	case 32239:
+		return OpcuaNodeIdServicesVariableTrip_TripAlarmType_SupportsFilteredRetain, true
 	}
 	return 0, false
 }
@@ -897,13 +897,13 @@ func OpcuaNodeIdServicesVariableTripByName(value string) (enum OpcuaNodeIdServic
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariableTripKnows(value int32)  bool {
+func OpcuaNodeIdServicesVariableTripKnows(value int32) bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariableTripValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastOpcuaNodeIdServicesVariableTrip(structType any) OpcuaNodeIdServicesVariableTrip {
@@ -1245,4 +1245,3 @@ func (e OpcuaNodeIdServicesVariableTrip) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariableTrip) String() string {
 	return e.PLC4XEnumName()
 }
-

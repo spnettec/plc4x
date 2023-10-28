@@ -40,36 +40,36 @@ type IOpcuaNodeIdServicesVariableFinite interface {
 	utils.Serializable
 }
 
-const(
-	OpcuaNodeIdServicesVariableFinite_FiniteStateVariableType_Id OpcuaNodeIdServicesVariableFinite = 2761
-	OpcuaNodeIdServicesVariableFinite_FiniteTransitionVariableType_Id OpcuaNodeIdServicesVariableFinite = 2768
-	OpcuaNodeIdServicesVariableFinite_FiniteStateMachineType_CurrentState OpcuaNodeIdServicesVariableFinite = 2772
-	OpcuaNodeIdServicesVariableFinite_FiniteStateMachineType_LastTransition OpcuaNodeIdServicesVariableFinite = 2773
-	OpcuaNodeIdServicesVariableFinite_FiniteStateVariableType_Name OpcuaNodeIdServicesVariableFinite = 3714
-	OpcuaNodeIdServicesVariableFinite_FiniteStateVariableType_Number OpcuaNodeIdServicesVariableFinite = 3715
-	OpcuaNodeIdServicesVariableFinite_FiniteStateVariableType_EffectiveDisplayName OpcuaNodeIdServicesVariableFinite = 3716
-	OpcuaNodeIdServicesVariableFinite_FiniteTransitionVariableType_Name OpcuaNodeIdServicesVariableFinite = 3717
-	OpcuaNodeIdServicesVariableFinite_FiniteTransitionVariableType_Number OpcuaNodeIdServicesVariableFinite = 3718
-	OpcuaNodeIdServicesVariableFinite_FiniteTransitionVariableType_TransitionTime OpcuaNodeIdServicesVariableFinite = 3719
-	OpcuaNodeIdServicesVariableFinite_FiniteStateMachineType_CurrentState_Id OpcuaNodeIdServicesVariableFinite = 3728
-	OpcuaNodeIdServicesVariableFinite_FiniteStateMachineType_CurrentState_Name OpcuaNodeIdServicesVariableFinite = 3729
-	OpcuaNodeIdServicesVariableFinite_FiniteStateMachineType_CurrentState_Number OpcuaNodeIdServicesVariableFinite = 3730
-	OpcuaNodeIdServicesVariableFinite_FiniteStateMachineType_CurrentState_EffectiveDisplayName OpcuaNodeIdServicesVariableFinite = 3731
-	OpcuaNodeIdServicesVariableFinite_FiniteStateMachineType_LastTransition_Id OpcuaNodeIdServicesVariableFinite = 3732
-	OpcuaNodeIdServicesVariableFinite_FiniteStateMachineType_LastTransition_Name OpcuaNodeIdServicesVariableFinite = 3733
-	OpcuaNodeIdServicesVariableFinite_FiniteStateMachineType_LastTransition_Number OpcuaNodeIdServicesVariableFinite = 3734
-	OpcuaNodeIdServicesVariableFinite_FiniteStateMachineType_LastTransition_TransitionTime OpcuaNodeIdServicesVariableFinite = 3735
-	OpcuaNodeIdServicesVariableFinite_FiniteTransitionVariableType_EffectiveTransitionTime OpcuaNodeIdServicesVariableFinite = 11457
+const (
+	OpcuaNodeIdServicesVariableFinite_FiniteStateVariableType_Id                                    OpcuaNodeIdServicesVariableFinite = 2761
+	OpcuaNodeIdServicesVariableFinite_FiniteTransitionVariableType_Id                               OpcuaNodeIdServicesVariableFinite = 2768
+	OpcuaNodeIdServicesVariableFinite_FiniteStateMachineType_CurrentState                           OpcuaNodeIdServicesVariableFinite = 2772
+	OpcuaNodeIdServicesVariableFinite_FiniteStateMachineType_LastTransition                         OpcuaNodeIdServicesVariableFinite = 2773
+	OpcuaNodeIdServicesVariableFinite_FiniteStateVariableType_Name                                  OpcuaNodeIdServicesVariableFinite = 3714
+	OpcuaNodeIdServicesVariableFinite_FiniteStateVariableType_Number                                OpcuaNodeIdServicesVariableFinite = 3715
+	OpcuaNodeIdServicesVariableFinite_FiniteStateVariableType_EffectiveDisplayName                  OpcuaNodeIdServicesVariableFinite = 3716
+	OpcuaNodeIdServicesVariableFinite_FiniteTransitionVariableType_Name                             OpcuaNodeIdServicesVariableFinite = 3717
+	OpcuaNodeIdServicesVariableFinite_FiniteTransitionVariableType_Number                           OpcuaNodeIdServicesVariableFinite = 3718
+	OpcuaNodeIdServicesVariableFinite_FiniteTransitionVariableType_TransitionTime                   OpcuaNodeIdServicesVariableFinite = 3719
+	OpcuaNodeIdServicesVariableFinite_FiniteStateMachineType_CurrentState_Id                        OpcuaNodeIdServicesVariableFinite = 3728
+	OpcuaNodeIdServicesVariableFinite_FiniteStateMachineType_CurrentState_Name                      OpcuaNodeIdServicesVariableFinite = 3729
+	OpcuaNodeIdServicesVariableFinite_FiniteStateMachineType_CurrentState_Number                    OpcuaNodeIdServicesVariableFinite = 3730
+	OpcuaNodeIdServicesVariableFinite_FiniteStateMachineType_CurrentState_EffectiveDisplayName      OpcuaNodeIdServicesVariableFinite = 3731
+	OpcuaNodeIdServicesVariableFinite_FiniteStateMachineType_LastTransition_Id                      OpcuaNodeIdServicesVariableFinite = 3732
+	OpcuaNodeIdServicesVariableFinite_FiniteStateMachineType_LastTransition_Name                    OpcuaNodeIdServicesVariableFinite = 3733
+	OpcuaNodeIdServicesVariableFinite_FiniteStateMachineType_LastTransition_Number                  OpcuaNodeIdServicesVariableFinite = 3734
+	OpcuaNodeIdServicesVariableFinite_FiniteStateMachineType_LastTransition_TransitionTime          OpcuaNodeIdServicesVariableFinite = 3735
+	OpcuaNodeIdServicesVariableFinite_FiniteTransitionVariableType_EffectiveTransitionTime          OpcuaNodeIdServicesVariableFinite = 11457
 	OpcuaNodeIdServicesVariableFinite_FiniteStateMachineType_LastTransition_EffectiveTransitionTime OpcuaNodeIdServicesVariableFinite = 11459
-	OpcuaNodeIdServicesVariableFinite_FiniteStateMachineType_AvailableStates OpcuaNodeIdServicesVariableFinite = 17635
-	OpcuaNodeIdServicesVariableFinite_FiniteStateMachineType_AvailableTransitions OpcuaNodeIdServicesVariableFinite = 17636
+	OpcuaNodeIdServicesVariableFinite_FiniteStateMachineType_AvailableStates                        OpcuaNodeIdServicesVariableFinite = 17635
+	OpcuaNodeIdServicesVariableFinite_FiniteStateMachineType_AvailableTransitions                   OpcuaNodeIdServicesVariableFinite = 17636
 )
 
 var OpcuaNodeIdServicesVariableFiniteValues []OpcuaNodeIdServicesVariableFinite
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariableFiniteValues = []OpcuaNodeIdServicesVariableFinite {
+	OpcuaNodeIdServicesVariableFiniteValues = []OpcuaNodeIdServicesVariableFinite{
 		OpcuaNodeIdServicesVariableFinite_FiniteStateVariableType_Id,
 		OpcuaNodeIdServicesVariableFinite_FiniteTransitionVariableType_Id,
 		OpcuaNodeIdServicesVariableFinite_FiniteStateMachineType_CurrentState,
@@ -97,50 +97,50 @@ func init() {
 
 func OpcuaNodeIdServicesVariableFiniteByValue(value int32) (enum OpcuaNodeIdServicesVariableFinite, ok bool) {
 	switch value {
-		case 11457:
-			return OpcuaNodeIdServicesVariableFinite_FiniteTransitionVariableType_EffectiveTransitionTime, true
-		case 11459:
-			return OpcuaNodeIdServicesVariableFinite_FiniteStateMachineType_LastTransition_EffectiveTransitionTime, true
-		case 17635:
-			return OpcuaNodeIdServicesVariableFinite_FiniteStateMachineType_AvailableStates, true
-		case 17636:
-			return OpcuaNodeIdServicesVariableFinite_FiniteStateMachineType_AvailableTransitions, true
-		case 2761:
-			return OpcuaNodeIdServicesVariableFinite_FiniteStateVariableType_Id, true
-		case 2768:
-			return OpcuaNodeIdServicesVariableFinite_FiniteTransitionVariableType_Id, true
-		case 2772:
-			return OpcuaNodeIdServicesVariableFinite_FiniteStateMachineType_CurrentState, true
-		case 2773:
-			return OpcuaNodeIdServicesVariableFinite_FiniteStateMachineType_LastTransition, true
-		case 3714:
-			return OpcuaNodeIdServicesVariableFinite_FiniteStateVariableType_Name, true
-		case 3715:
-			return OpcuaNodeIdServicesVariableFinite_FiniteStateVariableType_Number, true
-		case 3716:
-			return OpcuaNodeIdServicesVariableFinite_FiniteStateVariableType_EffectiveDisplayName, true
-		case 3717:
-			return OpcuaNodeIdServicesVariableFinite_FiniteTransitionVariableType_Name, true
-		case 3718:
-			return OpcuaNodeIdServicesVariableFinite_FiniteTransitionVariableType_Number, true
-		case 3719:
-			return OpcuaNodeIdServicesVariableFinite_FiniteTransitionVariableType_TransitionTime, true
-		case 3728:
-			return OpcuaNodeIdServicesVariableFinite_FiniteStateMachineType_CurrentState_Id, true
-		case 3729:
-			return OpcuaNodeIdServicesVariableFinite_FiniteStateMachineType_CurrentState_Name, true
-		case 3730:
-			return OpcuaNodeIdServicesVariableFinite_FiniteStateMachineType_CurrentState_Number, true
-		case 3731:
-			return OpcuaNodeIdServicesVariableFinite_FiniteStateMachineType_CurrentState_EffectiveDisplayName, true
-		case 3732:
-			return OpcuaNodeIdServicesVariableFinite_FiniteStateMachineType_LastTransition_Id, true
-		case 3733:
-			return OpcuaNodeIdServicesVariableFinite_FiniteStateMachineType_LastTransition_Name, true
-		case 3734:
-			return OpcuaNodeIdServicesVariableFinite_FiniteStateMachineType_LastTransition_Number, true
-		case 3735:
-			return OpcuaNodeIdServicesVariableFinite_FiniteStateMachineType_LastTransition_TransitionTime, true
+	case 11457:
+		return OpcuaNodeIdServicesVariableFinite_FiniteTransitionVariableType_EffectiveTransitionTime, true
+	case 11459:
+		return OpcuaNodeIdServicesVariableFinite_FiniteStateMachineType_LastTransition_EffectiveTransitionTime, true
+	case 17635:
+		return OpcuaNodeIdServicesVariableFinite_FiniteStateMachineType_AvailableStates, true
+	case 17636:
+		return OpcuaNodeIdServicesVariableFinite_FiniteStateMachineType_AvailableTransitions, true
+	case 2761:
+		return OpcuaNodeIdServicesVariableFinite_FiniteStateVariableType_Id, true
+	case 2768:
+		return OpcuaNodeIdServicesVariableFinite_FiniteTransitionVariableType_Id, true
+	case 2772:
+		return OpcuaNodeIdServicesVariableFinite_FiniteStateMachineType_CurrentState, true
+	case 2773:
+		return OpcuaNodeIdServicesVariableFinite_FiniteStateMachineType_LastTransition, true
+	case 3714:
+		return OpcuaNodeIdServicesVariableFinite_FiniteStateVariableType_Name, true
+	case 3715:
+		return OpcuaNodeIdServicesVariableFinite_FiniteStateVariableType_Number, true
+	case 3716:
+		return OpcuaNodeIdServicesVariableFinite_FiniteStateVariableType_EffectiveDisplayName, true
+	case 3717:
+		return OpcuaNodeIdServicesVariableFinite_FiniteTransitionVariableType_Name, true
+	case 3718:
+		return OpcuaNodeIdServicesVariableFinite_FiniteTransitionVariableType_Number, true
+	case 3719:
+		return OpcuaNodeIdServicesVariableFinite_FiniteTransitionVariableType_TransitionTime, true
+	case 3728:
+		return OpcuaNodeIdServicesVariableFinite_FiniteStateMachineType_CurrentState_Id, true
+	case 3729:
+		return OpcuaNodeIdServicesVariableFinite_FiniteStateMachineType_CurrentState_Name, true
+	case 3730:
+		return OpcuaNodeIdServicesVariableFinite_FiniteStateMachineType_CurrentState_Number, true
+	case 3731:
+		return OpcuaNodeIdServicesVariableFinite_FiniteStateMachineType_CurrentState_EffectiveDisplayName, true
+	case 3732:
+		return OpcuaNodeIdServicesVariableFinite_FiniteStateMachineType_LastTransition_Id, true
+	case 3733:
+		return OpcuaNodeIdServicesVariableFinite_FiniteStateMachineType_LastTransition_Name, true
+	case 3734:
+		return OpcuaNodeIdServicesVariableFinite_FiniteStateMachineType_LastTransition_Number, true
+	case 3735:
+		return OpcuaNodeIdServicesVariableFinite_FiniteStateMachineType_LastTransition_TransitionTime, true
 	}
 	return 0, false
 }
@@ -195,13 +195,13 @@ func OpcuaNodeIdServicesVariableFiniteByName(value string) (enum OpcuaNodeIdServ
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariableFiniteKnows(value int32)  bool {
+func OpcuaNodeIdServicesVariableFiniteKnows(value int32) bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariableFiniteValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastOpcuaNodeIdServicesVariableFinite(structType any) OpcuaNodeIdServicesVariableFinite {
@@ -309,4 +309,3 @@ func (e OpcuaNodeIdServicesVariableFinite) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariableFinite) String() string {
 	return e.PLC4XEnumName()
 }
-

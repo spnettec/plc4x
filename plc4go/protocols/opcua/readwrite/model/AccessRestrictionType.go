@@ -40,11 +40,11 @@ type IAccessRestrictionType interface {
 	utils.Serializable
 }
 
-const(
-	AccessRestrictionType_accessRestrictionTypeNone AccessRestrictionType = 0
-	AccessRestrictionType_accessRestrictionTypeSigningRequired AccessRestrictionType = 1
-	AccessRestrictionType_accessRestrictionTypeEncryptionRequired AccessRestrictionType = 2
-	AccessRestrictionType_accessRestrictionTypeSessionRequired AccessRestrictionType = 4
+const (
+	AccessRestrictionType_accessRestrictionTypeNone                      AccessRestrictionType = 0
+	AccessRestrictionType_accessRestrictionTypeSigningRequired           AccessRestrictionType = 1
+	AccessRestrictionType_accessRestrictionTypeEncryptionRequired        AccessRestrictionType = 2
+	AccessRestrictionType_accessRestrictionTypeSessionRequired           AccessRestrictionType = 4
 	AccessRestrictionType_accessRestrictionTypeApplyRestrictionsToBrowse AccessRestrictionType = 8
 )
 
@@ -52,7 +52,7 @@ var AccessRestrictionTypeValues []AccessRestrictionType
 
 func init() {
 	_ = errors.New
-	AccessRestrictionTypeValues = []AccessRestrictionType {
+	AccessRestrictionTypeValues = []AccessRestrictionType{
 		AccessRestrictionType_accessRestrictionTypeNone,
 		AccessRestrictionType_accessRestrictionTypeSigningRequired,
 		AccessRestrictionType_accessRestrictionTypeEncryptionRequired,
@@ -63,16 +63,16 @@ func init() {
 
 func AccessRestrictionTypeByValue(value uint16) (enum AccessRestrictionType, ok bool) {
 	switch value {
-		case 0:
-			return AccessRestrictionType_accessRestrictionTypeNone, true
-		case 1:
-			return AccessRestrictionType_accessRestrictionTypeSigningRequired, true
-		case 2:
-			return AccessRestrictionType_accessRestrictionTypeEncryptionRequired, true
-		case 4:
-			return AccessRestrictionType_accessRestrictionTypeSessionRequired, true
-		case 8:
-			return AccessRestrictionType_accessRestrictionTypeApplyRestrictionsToBrowse, true
+	case 0:
+		return AccessRestrictionType_accessRestrictionTypeNone, true
+	case 1:
+		return AccessRestrictionType_accessRestrictionTypeSigningRequired, true
+	case 2:
+		return AccessRestrictionType_accessRestrictionTypeEncryptionRequired, true
+	case 4:
+		return AccessRestrictionType_accessRestrictionTypeSessionRequired, true
+	case 8:
+		return AccessRestrictionType_accessRestrictionTypeApplyRestrictionsToBrowse, true
 	}
 	return 0, false
 }
@@ -93,13 +93,13 @@ func AccessRestrictionTypeByName(value string) (enum AccessRestrictionType, ok b
 	return 0, false
 }
 
-func AccessRestrictionTypeKnows(value uint16)  bool {
+func AccessRestrictionTypeKnows(value uint16) bool {
 	for _, typeValue := range AccessRestrictionTypeValues {
 		if uint16(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastAccessRestrictionType(structType any) AccessRestrictionType {
@@ -173,4 +173,3 @@ func (e AccessRestrictionType) PLC4XEnumName() string {
 func (e AccessRestrictionType) String() string {
 	return e.PLC4XEnumName()
 }
-

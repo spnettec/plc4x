@@ -40,7 +40,7 @@ type IOpcuaNodeIdServicesVariableTimestamps interface {
 	utils.Serializable
 }
 
-const(
+const (
 	OpcuaNodeIdServicesVariableTimestamps_TimestampsToReturn_EnumStrings OpcuaNodeIdServicesVariableTimestamps = 7606
 )
 
@@ -48,15 +48,15 @@ var OpcuaNodeIdServicesVariableTimestampsValues []OpcuaNodeIdServicesVariableTim
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariableTimestampsValues = []OpcuaNodeIdServicesVariableTimestamps {
+	OpcuaNodeIdServicesVariableTimestampsValues = []OpcuaNodeIdServicesVariableTimestamps{
 		OpcuaNodeIdServicesVariableTimestamps_TimestampsToReturn_EnumStrings,
 	}
 }
 
 func OpcuaNodeIdServicesVariableTimestampsByValue(value int32) (enum OpcuaNodeIdServicesVariableTimestamps, ok bool) {
 	switch value {
-		case 7606:
-			return OpcuaNodeIdServicesVariableTimestamps_TimestampsToReturn_EnumStrings, true
+	case 7606:
+		return OpcuaNodeIdServicesVariableTimestamps_TimestampsToReturn_EnumStrings, true
 	}
 	return 0, false
 }
@@ -69,13 +69,13 @@ func OpcuaNodeIdServicesVariableTimestampsByName(value string) (enum OpcuaNodeId
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariableTimestampsKnows(value int32)  bool {
+func OpcuaNodeIdServicesVariableTimestampsKnows(value int32) bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariableTimestampsValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastOpcuaNodeIdServicesVariableTimestamps(structType any) OpcuaNodeIdServicesVariableTimestamps {
@@ -141,4 +141,3 @@ func (e OpcuaNodeIdServicesVariableTimestamps) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariableTimestamps) String() string {
 	return e.PLC4XEnumName()
 }
-

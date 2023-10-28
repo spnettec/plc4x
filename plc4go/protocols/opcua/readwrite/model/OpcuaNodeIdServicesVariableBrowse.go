@@ -40,7 +40,7 @@ type IOpcuaNodeIdServicesVariableBrowse interface {
 	utils.Serializable
 }
 
-const(
+const (
 	OpcuaNodeIdServicesVariableBrowse_BrowseDirection_EnumStrings OpcuaNodeIdServicesVariableBrowse = 7603
 	OpcuaNodeIdServicesVariableBrowse_BrowseResultMask_EnumValues OpcuaNodeIdServicesVariableBrowse = 11883
 )
@@ -49,7 +49,7 @@ var OpcuaNodeIdServicesVariableBrowseValues []OpcuaNodeIdServicesVariableBrowse
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariableBrowseValues = []OpcuaNodeIdServicesVariableBrowse {
+	OpcuaNodeIdServicesVariableBrowseValues = []OpcuaNodeIdServicesVariableBrowse{
 		OpcuaNodeIdServicesVariableBrowse_BrowseDirection_EnumStrings,
 		OpcuaNodeIdServicesVariableBrowse_BrowseResultMask_EnumValues,
 	}
@@ -57,10 +57,10 @@ func init() {
 
 func OpcuaNodeIdServicesVariableBrowseByValue(value int32) (enum OpcuaNodeIdServicesVariableBrowse, ok bool) {
 	switch value {
-		case 11883:
-			return OpcuaNodeIdServicesVariableBrowse_BrowseResultMask_EnumValues, true
-		case 7603:
-			return OpcuaNodeIdServicesVariableBrowse_BrowseDirection_EnumStrings, true
+	case 11883:
+		return OpcuaNodeIdServicesVariableBrowse_BrowseResultMask_EnumValues, true
+	case 7603:
+		return OpcuaNodeIdServicesVariableBrowse_BrowseDirection_EnumStrings, true
 	}
 	return 0, false
 }
@@ -75,13 +75,13 @@ func OpcuaNodeIdServicesVariableBrowseByName(value string) (enum OpcuaNodeIdServ
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariableBrowseKnows(value int32)  bool {
+func OpcuaNodeIdServicesVariableBrowseKnows(value int32) bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariableBrowseValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastOpcuaNodeIdServicesVariableBrowse(structType any) OpcuaNodeIdServicesVariableBrowse {
@@ -149,4 +149,3 @@ func (e OpcuaNodeIdServicesVariableBrowse) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariableBrowse) String() string {
 	return e.PLC4XEnumName()
 }
-

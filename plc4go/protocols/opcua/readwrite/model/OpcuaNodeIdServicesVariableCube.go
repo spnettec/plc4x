@@ -40,24 +40,24 @@ type IOpcuaNodeIdServicesVariableCube interface {
 	utils.Serializable
 }
 
-const(
-	OpcuaNodeIdServicesVariableCube_CubeItemType_Definition OpcuaNodeIdServicesVariableCube = 12058
-	OpcuaNodeIdServicesVariableCube_CubeItemType_ValuePrecision OpcuaNodeIdServicesVariableCube = 12059
-	OpcuaNodeIdServicesVariableCube_CubeItemType_InstrumentRange OpcuaNodeIdServicesVariableCube = 12060
-	OpcuaNodeIdServicesVariableCube_CubeItemType_EURange OpcuaNodeIdServicesVariableCube = 12061
+const (
+	OpcuaNodeIdServicesVariableCube_CubeItemType_Definition       OpcuaNodeIdServicesVariableCube = 12058
+	OpcuaNodeIdServicesVariableCube_CubeItemType_ValuePrecision   OpcuaNodeIdServicesVariableCube = 12059
+	OpcuaNodeIdServicesVariableCube_CubeItemType_InstrumentRange  OpcuaNodeIdServicesVariableCube = 12060
+	OpcuaNodeIdServicesVariableCube_CubeItemType_EURange          OpcuaNodeIdServicesVariableCube = 12061
 	OpcuaNodeIdServicesVariableCube_CubeItemType_EngineeringUnits OpcuaNodeIdServicesVariableCube = 12062
-	OpcuaNodeIdServicesVariableCube_CubeItemType_Title OpcuaNodeIdServicesVariableCube = 12063
-	OpcuaNodeIdServicesVariableCube_CubeItemType_AxisScaleType OpcuaNodeIdServicesVariableCube = 12064
-	OpcuaNodeIdServicesVariableCube_CubeItemType_XAxisDefinition OpcuaNodeIdServicesVariableCube = 12065
-	OpcuaNodeIdServicesVariableCube_CubeItemType_YAxisDefinition OpcuaNodeIdServicesVariableCube = 12066
-	OpcuaNodeIdServicesVariableCube_CubeItemType_ZAxisDefinition OpcuaNodeIdServicesVariableCube = 12067
+	OpcuaNodeIdServicesVariableCube_CubeItemType_Title            OpcuaNodeIdServicesVariableCube = 12063
+	OpcuaNodeIdServicesVariableCube_CubeItemType_AxisScaleType    OpcuaNodeIdServicesVariableCube = 12064
+	OpcuaNodeIdServicesVariableCube_CubeItemType_XAxisDefinition  OpcuaNodeIdServicesVariableCube = 12065
+	OpcuaNodeIdServicesVariableCube_CubeItemType_YAxisDefinition  OpcuaNodeIdServicesVariableCube = 12066
+	OpcuaNodeIdServicesVariableCube_CubeItemType_ZAxisDefinition  OpcuaNodeIdServicesVariableCube = 12067
 )
 
 var OpcuaNodeIdServicesVariableCubeValues []OpcuaNodeIdServicesVariableCube
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariableCubeValues = []OpcuaNodeIdServicesVariableCube {
+	OpcuaNodeIdServicesVariableCubeValues = []OpcuaNodeIdServicesVariableCube{
 		OpcuaNodeIdServicesVariableCube_CubeItemType_Definition,
 		OpcuaNodeIdServicesVariableCube_CubeItemType_ValuePrecision,
 		OpcuaNodeIdServicesVariableCube_CubeItemType_InstrumentRange,
@@ -73,26 +73,26 @@ func init() {
 
 func OpcuaNodeIdServicesVariableCubeByValue(value int32) (enum OpcuaNodeIdServicesVariableCube, ok bool) {
 	switch value {
-		case 12058:
-			return OpcuaNodeIdServicesVariableCube_CubeItemType_Definition, true
-		case 12059:
-			return OpcuaNodeIdServicesVariableCube_CubeItemType_ValuePrecision, true
-		case 12060:
-			return OpcuaNodeIdServicesVariableCube_CubeItemType_InstrumentRange, true
-		case 12061:
-			return OpcuaNodeIdServicesVariableCube_CubeItemType_EURange, true
-		case 12062:
-			return OpcuaNodeIdServicesVariableCube_CubeItemType_EngineeringUnits, true
-		case 12063:
-			return OpcuaNodeIdServicesVariableCube_CubeItemType_Title, true
-		case 12064:
-			return OpcuaNodeIdServicesVariableCube_CubeItemType_AxisScaleType, true
-		case 12065:
-			return OpcuaNodeIdServicesVariableCube_CubeItemType_XAxisDefinition, true
-		case 12066:
-			return OpcuaNodeIdServicesVariableCube_CubeItemType_YAxisDefinition, true
-		case 12067:
-			return OpcuaNodeIdServicesVariableCube_CubeItemType_ZAxisDefinition, true
+	case 12058:
+		return OpcuaNodeIdServicesVariableCube_CubeItemType_Definition, true
+	case 12059:
+		return OpcuaNodeIdServicesVariableCube_CubeItemType_ValuePrecision, true
+	case 12060:
+		return OpcuaNodeIdServicesVariableCube_CubeItemType_InstrumentRange, true
+	case 12061:
+		return OpcuaNodeIdServicesVariableCube_CubeItemType_EURange, true
+	case 12062:
+		return OpcuaNodeIdServicesVariableCube_CubeItemType_EngineeringUnits, true
+	case 12063:
+		return OpcuaNodeIdServicesVariableCube_CubeItemType_Title, true
+	case 12064:
+		return OpcuaNodeIdServicesVariableCube_CubeItemType_AxisScaleType, true
+	case 12065:
+		return OpcuaNodeIdServicesVariableCube_CubeItemType_XAxisDefinition, true
+	case 12066:
+		return OpcuaNodeIdServicesVariableCube_CubeItemType_YAxisDefinition, true
+	case 12067:
+		return OpcuaNodeIdServicesVariableCube_CubeItemType_ZAxisDefinition, true
 	}
 	return 0, false
 }
@@ -123,13 +123,13 @@ func OpcuaNodeIdServicesVariableCubeByName(value string) (enum OpcuaNodeIdServic
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariableCubeKnows(value int32)  bool {
+func OpcuaNodeIdServicesVariableCubeKnows(value int32) bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariableCubeValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastOpcuaNodeIdServicesVariableCube(structType any) OpcuaNodeIdServicesVariableCube {
@@ -213,4 +213,3 @@ func (e OpcuaNodeIdServicesVariableCube) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariableCube) String() string {
 	return e.PLC4XEnumName()
 }
-

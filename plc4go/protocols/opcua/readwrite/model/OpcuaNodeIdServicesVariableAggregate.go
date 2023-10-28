@@ -40,10 +40,10 @@ type IOpcuaNodeIdServicesVariableAggregate interface {
 	utils.Serializable
 }
 
-const(
-	OpcuaNodeIdServicesVariableAggregate_AggregateConfigurationType_TreatUncertainAsBad OpcuaNodeIdServicesVariableAggregate = 11188
-	OpcuaNodeIdServicesVariableAggregate_AggregateConfigurationType_PercentDataBad OpcuaNodeIdServicesVariableAggregate = 11189
-	OpcuaNodeIdServicesVariableAggregate_AggregateConfigurationType_PercentDataGood OpcuaNodeIdServicesVariableAggregate = 11190
+const (
+	OpcuaNodeIdServicesVariableAggregate_AggregateConfigurationType_TreatUncertainAsBad    OpcuaNodeIdServicesVariableAggregate = 11188
+	OpcuaNodeIdServicesVariableAggregate_AggregateConfigurationType_PercentDataBad         OpcuaNodeIdServicesVariableAggregate = 11189
+	OpcuaNodeIdServicesVariableAggregate_AggregateConfigurationType_PercentDataGood        OpcuaNodeIdServicesVariableAggregate = 11190
 	OpcuaNodeIdServicesVariableAggregate_AggregateConfigurationType_UseSlopedExtrapolation OpcuaNodeIdServicesVariableAggregate = 11191
 )
 
@@ -51,7 +51,7 @@ var OpcuaNodeIdServicesVariableAggregateValues []OpcuaNodeIdServicesVariableAggr
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariableAggregateValues = []OpcuaNodeIdServicesVariableAggregate {
+	OpcuaNodeIdServicesVariableAggregateValues = []OpcuaNodeIdServicesVariableAggregate{
 		OpcuaNodeIdServicesVariableAggregate_AggregateConfigurationType_TreatUncertainAsBad,
 		OpcuaNodeIdServicesVariableAggregate_AggregateConfigurationType_PercentDataBad,
 		OpcuaNodeIdServicesVariableAggregate_AggregateConfigurationType_PercentDataGood,
@@ -61,14 +61,14 @@ func init() {
 
 func OpcuaNodeIdServicesVariableAggregateByValue(value int32) (enum OpcuaNodeIdServicesVariableAggregate, ok bool) {
 	switch value {
-		case 11188:
-			return OpcuaNodeIdServicesVariableAggregate_AggregateConfigurationType_TreatUncertainAsBad, true
-		case 11189:
-			return OpcuaNodeIdServicesVariableAggregate_AggregateConfigurationType_PercentDataBad, true
-		case 11190:
-			return OpcuaNodeIdServicesVariableAggregate_AggregateConfigurationType_PercentDataGood, true
-		case 11191:
-			return OpcuaNodeIdServicesVariableAggregate_AggregateConfigurationType_UseSlopedExtrapolation, true
+	case 11188:
+		return OpcuaNodeIdServicesVariableAggregate_AggregateConfigurationType_TreatUncertainAsBad, true
+	case 11189:
+		return OpcuaNodeIdServicesVariableAggregate_AggregateConfigurationType_PercentDataBad, true
+	case 11190:
+		return OpcuaNodeIdServicesVariableAggregate_AggregateConfigurationType_PercentDataGood, true
+	case 11191:
+		return OpcuaNodeIdServicesVariableAggregate_AggregateConfigurationType_UseSlopedExtrapolation, true
 	}
 	return 0, false
 }
@@ -87,13 +87,13 @@ func OpcuaNodeIdServicesVariableAggregateByName(value string) (enum OpcuaNodeIdS
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariableAggregateKnows(value int32)  bool {
+func OpcuaNodeIdServicesVariableAggregateKnows(value int32) bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariableAggregateValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastOpcuaNodeIdServicesVariableAggregate(structType any) OpcuaNodeIdServicesVariableAggregate {
@@ -165,4 +165,3 @@ func (e OpcuaNodeIdServicesVariableAggregate) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariableAggregate) String() string {
 	return e.PLC4XEnumName()
 }
-

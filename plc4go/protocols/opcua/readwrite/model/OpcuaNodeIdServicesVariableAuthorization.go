@@ -40,20 +40,20 @@ type IOpcuaNodeIdServicesVariableAuthorization interface {
 	utils.Serializable
 }
 
-const(
-	OpcuaNodeIdServicesVariableAuthorization_AuthorizationServiceConfigurationType_ServiceCertificate OpcuaNodeIdServicesVariableAuthorization = 17860
-	OpcuaNodeIdServicesVariableAuthorization_AuthorizationServiceConfigurationType_ServiceUri OpcuaNodeIdServicesVariableAuthorization = 18072
-	OpcuaNodeIdServicesVariableAuthorization_AuthorizationServiceConfigurationType_IssuerEndpointUrl OpcuaNodeIdServicesVariableAuthorization = 18073
-	OpcuaNodeIdServicesVariableAuthorization_AuthorizationServicesConfigurationFolderType_ServiceName_Placeholder_ServiceUri OpcuaNodeIdServicesVariableAuthorization = 23558
+const (
+	OpcuaNodeIdServicesVariableAuthorization_AuthorizationServiceConfigurationType_ServiceCertificate                                OpcuaNodeIdServicesVariableAuthorization = 17860
+	OpcuaNodeIdServicesVariableAuthorization_AuthorizationServiceConfigurationType_ServiceUri                                        OpcuaNodeIdServicesVariableAuthorization = 18072
+	OpcuaNodeIdServicesVariableAuthorization_AuthorizationServiceConfigurationType_IssuerEndpointUrl                                 OpcuaNodeIdServicesVariableAuthorization = 18073
+	OpcuaNodeIdServicesVariableAuthorization_AuthorizationServicesConfigurationFolderType_ServiceName_Placeholder_ServiceUri         OpcuaNodeIdServicesVariableAuthorization = 23558
 	OpcuaNodeIdServicesVariableAuthorization_AuthorizationServicesConfigurationFolderType_ServiceName_Placeholder_ServiceCertificate OpcuaNodeIdServicesVariableAuthorization = 23559
-	OpcuaNodeIdServicesVariableAuthorization_AuthorizationServicesConfigurationFolderType_ServiceName_Placeholder_IssuerEndpointUrl OpcuaNodeIdServicesVariableAuthorization = 23560
+	OpcuaNodeIdServicesVariableAuthorization_AuthorizationServicesConfigurationFolderType_ServiceName_Placeholder_IssuerEndpointUrl  OpcuaNodeIdServicesVariableAuthorization = 23560
 )
 
 var OpcuaNodeIdServicesVariableAuthorizationValues []OpcuaNodeIdServicesVariableAuthorization
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariableAuthorizationValues = []OpcuaNodeIdServicesVariableAuthorization {
+	OpcuaNodeIdServicesVariableAuthorizationValues = []OpcuaNodeIdServicesVariableAuthorization{
 		OpcuaNodeIdServicesVariableAuthorization_AuthorizationServiceConfigurationType_ServiceCertificate,
 		OpcuaNodeIdServicesVariableAuthorization_AuthorizationServiceConfigurationType_ServiceUri,
 		OpcuaNodeIdServicesVariableAuthorization_AuthorizationServiceConfigurationType_IssuerEndpointUrl,
@@ -65,18 +65,18 @@ func init() {
 
 func OpcuaNodeIdServicesVariableAuthorizationByValue(value int32) (enum OpcuaNodeIdServicesVariableAuthorization, ok bool) {
 	switch value {
-		case 17860:
-			return OpcuaNodeIdServicesVariableAuthorization_AuthorizationServiceConfigurationType_ServiceCertificate, true
-		case 18072:
-			return OpcuaNodeIdServicesVariableAuthorization_AuthorizationServiceConfigurationType_ServiceUri, true
-		case 18073:
-			return OpcuaNodeIdServicesVariableAuthorization_AuthorizationServiceConfigurationType_IssuerEndpointUrl, true
-		case 23558:
-			return OpcuaNodeIdServicesVariableAuthorization_AuthorizationServicesConfigurationFolderType_ServiceName_Placeholder_ServiceUri, true
-		case 23559:
-			return OpcuaNodeIdServicesVariableAuthorization_AuthorizationServicesConfigurationFolderType_ServiceName_Placeholder_ServiceCertificate, true
-		case 23560:
-			return OpcuaNodeIdServicesVariableAuthorization_AuthorizationServicesConfigurationFolderType_ServiceName_Placeholder_IssuerEndpointUrl, true
+	case 17860:
+		return OpcuaNodeIdServicesVariableAuthorization_AuthorizationServiceConfigurationType_ServiceCertificate, true
+	case 18072:
+		return OpcuaNodeIdServicesVariableAuthorization_AuthorizationServiceConfigurationType_ServiceUri, true
+	case 18073:
+		return OpcuaNodeIdServicesVariableAuthorization_AuthorizationServiceConfigurationType_IssuerEndpointUrl, true
+	case 23558:
+		return OpcuaNodeIdServicesVariableAuthorization_AuthorizationServicesConfigurationFolderType_ServiceName_Placeholder_ServiceUri, true
+	case 23559:
+		return OpcuaNodeIdServicesVariableAuthorization_AuthorizationServicesConfigurationFolderType_ServiceName_Placeholder_ServiceCertificate, true
+	case 23560:
+		return OpcuaNodeIdServicesVariableAuthorization_AuthorizationServicesConfigurationFolderType_ServiceName_Placeholder_IssuerEndpointUrl, true
 	}
 	return 0, false
 }
@@ -99,13 +99,13 @@ func OpcuaNodeIdServicesVariableAuthorizationByName(value string) (enum OpcuaNod
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariableAuthorizationKnows(value int32)  bool {
+func OpcuaNodeIdServicesVariableAuthorizationKnows(value int32) bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariableAuthorizationValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastOpcuaNodeIdServicesVariableAuthorization(structType any) OpcuaNodeIdServicesVariableAuthorization {
@@ -181,4 +181,3 @@ func (e OpcuaNodeIdServicesVariableAuthorization) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariableAuthorization) String() string {
 	return e.PLC4XEnumName()
 }
-

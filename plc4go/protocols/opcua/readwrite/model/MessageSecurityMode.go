@@ -40,10 +40,10 @@ type IMessageSecurityMode interface {
 	utils.Serializable
 }
 
-const(
-	MessageSecurityMode_messageSecurityModeInvalid MessageSecurityMode = 0
-	MessageSecurityMode_messageSecurityModeNone MessageSecurityMode = 1
-	MessageSecurityMode_messageSecurityModeSign MessageSecurityMode = 2
+const (
+	MessageSecurityMode_messageSecurityModeInvalid        MessageSecurityMode = 0
+	MessageSecurityMode_messageSecurityModeNone           MessageSecurityMode = 1
+	MessageSecurityMode_messageSecurityModeSign           MessageSecurityMode = 2
 	MessageSecurityMode_messageSecurityModeSignAndEncrypt MessageSecurityMode = 3
 )
 
@@ -51,7 +51,7 @@ var MessageSecurityModeValues []MessageSecurityMode
 
 func init() {
 	_ = errors.New
-	MessageSecurityModeValues = []MessageSecurityMode {
+	MessageSecurityModeValues = []MessageSecurityMode{
 		MessageSecurityMode_messageSecurityModeInvalid,
 		MessageSecurityMode_messageSecurityModeNone,
 		MessageSecurityMode_messageSecurityModeSign,
@@ -61,14 +61,14 @@ func init() {
 
 func MessageSecurityModeByValue(value uint32) (enum MessageSecurityMode, ok bool) {
 	switch value {
-		case 0:
-			return MessageSecurityMode_messageSecurityModeInvalid, true
-		case 1:
-			return MessageSecurityMode_messageSecurityModeNone, true
-		case 2:
-			return MessageSecurityMode_messageSecurityModeSign, true
-		case 3:
-			return MessageSecurityMode_messageSecurityModeSignAndEncrypt, true
+	case 0:
+		return MessageSecurityMode_messageSecurityModeInvalid, true
+	case 1:
+		return MessageSecurityMode_messageSecurityModeNone, true
+	case 2:
+		return MessageSecurityMode_messageSecurityModeSign, true
+	case 3:
+		return MessageSecurityMode_messageSecurityModeSignAndEncrypt, true
 	}
 	return 0, false
 }
@@ -87,13 +87,13 @@ func MessageSecurityModeByName(value string) (enum MessageSecurityMode, ok bool)
 	return 0, false
 }
 
-func MessageSecurityModeKnows(value uint32)  bool {
+func MessageSecurityModeKnows(value uint32) bool {
 	for _, typeValue := range MessageSecurityModeValues {
 		if uint32(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastMessageSecurityMode(structType any) MessageSecurityMode {
@@ -165,4 +165,3 @@ func (e MessageSecurityMode) PLC4XEnumName() string {
 func (e MessageSecurityMode) String() string {
 	return e.PLC4XEnumName()
 }
-

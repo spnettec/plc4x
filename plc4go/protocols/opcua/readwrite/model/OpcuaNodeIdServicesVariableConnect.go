@@ -40,8 +40,8 @@ type IOpcuaNodeIdServicesVariableConnect interface {
 	utils.Serializable
 }
 
-const(
-	OpcuaNodeIdServicesVariableConnect_ConnectSecurityGroupsMethodType_InputArguments OpcuaNodeIdServicesVariableConnect = 25332
+const (
+	OpcuaNodeIdServicesVariableConnect_ConnectSecurityGroupsMethodType_InputArguments  OpcuaNodeIdServicesVariableConnect = 25332
 	OpcuaNodeIdServicesVariableConnect_ConnectSecurityGroupsMethodType_OutputArguments OpcuaNodeIdServicesVariableConnect = 25333
 )
 
@@ -49,7 +49,7 @@ var OpcuaNodeIdServicesVariableConnectValues []OpcuaNodeIdServicesVariableConnec
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariableConnectValues = []OpcuaNodeIdServicesVariableConnect {
+	OpcuaNodeIdServicesVariableConnectValues = []OpcuaNodeIdServicesVariableConnect{
 		OpcuaNodeIdServicesVariableConnect_ConnectSecurityGroupsMethodType_InputArguments,
 		OpcuaNodeIdServicesVariableConnect_ConnectSecurityGroupsMethodType_OutputArguments,
 	}
@@ -57,10 +57,10 @@ func init() {
 
 func OpcuaNodeIdServicesVariableConnectByValue(value int32) (enum OpcuaNodeIdServicesVariableConnect, ok bool) {
 	switch value {
-		case 25332:
-			return OpcuaNodeIdServicesVariableConnect_ConnectSecurityGroupsMethodType_InputArguments, true
-		case 25333:
-			return OpcuaNodeIdServicesVariableConnect_ConnectSecurityGroupsMethodType_OutputArguments, true
+	case 25332:
+		return OpcuaNodeIdServicesVariableConnect_ConnectSecurityGroupsMethodType_InputArguments, true
+	case 25333:
+		return OpcuaNodeIdServicesVariableConnect_ConnectSecurityGroupsMethodType_OutputArguments, true
 	}
 	return 0, false
 }
@@ -75,13 +75,13 @@ func OpcuaNodeIdServicesVariableConnectByName(value string) (enum OpcuaNodeIdSer
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariableConnectKnows(value int32)  bool {
+func OpcuaNodeIdServicesVariableConnectKnows(value int32) bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariableConnectValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastOpcuaNodeIdServicesVariableConnect(structType any) OpcuaNodeIdServicesVariableConnect {
@@ -149,4 +149,3 @@ func (e OpcuaNodeIdServicesVariableConnect) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariableConnect) String() string {
 	return e.PLC4XEnumName()
 }
-

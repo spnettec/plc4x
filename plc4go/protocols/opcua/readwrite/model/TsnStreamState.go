@@ -40,19 +40,19 @@ type ITsnStreamState interface {
 	utils.Serializable
 }
 
-const(
-	TsnStreamState_tsnStreamStateDisabled TsnStreamState = 0
+const (
+	TsnStreamState_tsnStreamStateDisabled    TsnStreamState = 0
 	TsnStreamState_tsnStreamStateConfiguring TsnStreamState = 1
-	TsnStreamState_tsnStreamStateReady TsnStreamState = 2
+	TsnStreamState_tsnStreamStateReady       TsnStreamState = 2
 	TsnStreamState_tsnStreamStateOperational TsnStreamState = 3
-	TsnStreamState_tsnStreamStateError TsnStreamState = 4
+	TsnStreamState_tsnStreamStateError       TsnStreamState = 4
 )
 
 var TsnStreamStateValues []TsnStreamState
 
 func init() {
 	_ = errors.New
-	TsnStreamStateValues = []TsnStreamState {
+	TsnStreamStateValues = []TsnStreamState{
 		TsnStreamState_tsnStreamStateDisabled,
 		TsnStreamState_tsnStreamStateConfiguring,
 		TsnStreamState_tsnStreamStateReady,
@@ -63,16 +63,16 @@ func init() {
 
 func TsnStreamStateByValue(value uint32) (enum TsnStreamState, ok bool) {
 	switch value {
-		case 0:
-			return TsnStreamState_tsnStreamStateDisabled, true
-		case 1:
-			return TsnStreamState_tsnStreamStateConfiguring, true
-		case 2:
-			return TsnStreamState_tsnStreamStateReady, true
-		case 3:
-			return TsnStreamState_tsnStreamStateOperational, true
-		case 4:
-			return TsnStreamState_tsnStreamStateError, true
+	case 0:
+		return TsnStreamState_tsnStreamStateDisabled, true
+	case 1:
+		return TsnStreamState_tsnStreamStateConfiguring, true
+	case 2:
+		return TsnStreamState_tsnStreamStateReady, true
+	case 3:
+		return TsnStreamState_tsnStreamStateOperational, true
+	case 4:
+		return TsnStreamState_tsnStreamStateError, true
 	}
 	return 0, false
 }
@@ -93,13 +93,13 @@ func TsnStreamStateByName(value string) (enum TsnStreamState, ok bool) {
 	return 0, false
 }
 
-func TsnStreamStateKnows(value uint32)  bool {
+func TsnStreamStateKnows(value uint32) bool {
 	for _, typeValue := range TsnStreamStateValues {
 		if uint32(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastTsnStreamState(structType any) TsnStreamState {
@@ -173,4 +173,3 @@ func (e TsnStreamState) PLC4XEnumName() string {
 func (e TsnStreamState) String() string {
 	return e.PLC4XEnumName()
 }
-

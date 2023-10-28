@@ -40,19 +40,19 @@ type IOpcuaNodeIdServicesVariableDevice interface {
 	utils.Serializable
 }
 
-const(
-	OpcuaNodeIdServicesVariableDevice_DeviceFailureEventType_EventId OpcuaNodeIdServicesVariableDevice = 3662
-	OpcuaNodeIdServicesVariableDevice_DeviceFailureEventType_EventType OpcuaNodeIdServicesVariableDevice = 3663
-	OpcuaNodeIdServicesVariableDevice_DeviceFailureEventType_SourceNode OpcuaNodeIdServicesVariableDevice = 3664
-	OpcuaNodeIdServicesVariableDevice_DeviceFailureEventType_SourceName OpcuaNodeIdServicesVariableDevice = 3665
-	OpcuaNodeIdServicesVariableDevice_DeviceFailureEventType_Time OpcuaNodeIdServicesVariableDevice = 3666
-	OpcuaNodeIdServicesVariableDevice_DeviceFailureEventType_ReceiveTime OpcuaNodeIdServicesVariableDevice = 3667
-	OpcuaNodeIdServicesVariableDevice_DeviceFailureEventType_LocalTime OpcuaNodeIdServicesVariableDevice = 3668
-	OpcuaNodeIdServicesVariableDevice_DeviceFailureEventType_Message OpcuaNodeIdServicesVariableDevice = 3669
-	OpcuaNodeIdServicesVariableDevice_DeviceFailureEventType_Severity OpcuaNodeIdServicesVariableDevice = 3670
-	OpcuaNodeIdServicesVariableDevice_DeviceFailureEventType_ConditionClassId OpcuaNodeIdServicesVariableDevice = 31879
-	OpcuaNodeIdServicesVariableDevice_DeviceFailureEventType_ConditionClassName OpcuaNodeIdServicesVariableDevice = 31880
-	OpcuaNodeIdServicesVariableDevice_DeviceFailureEventType_ConditionSubClassId OpcuaNodeIdServicesVariableDevice = 31881
+const (
+	OpcuaNodeIdServicesVariableDevice_DeviceFailureEventType_EventId               OpcuaNodeIdServicesVariableDevice = 3662
+	OpcuaNodeIdServicesVariableDevice_DeviceFailureEventType_EventType             OpcuaNodeIdServicesVariableDevice = 3663
+	OpcuaNodeIdServicesVariableDevice_DeviceFailureEventType_SourceNode            OpcuaNodeIdServicesVariableDevice = 3664
+	OpcuaNodeIdServicesVariableDevice_DeviceFailureEventType_SourceName            OpcuaNodeIdServicesVariableDevice = 3665
+	OpcuaNodeIdServicesVariableDevice_DeviceFailureEventType_Time                  OpcuaNodeIdServicesVariableDevice = 3666
+	OpcuaNodeIdServicesVariableDevice_DeviceFailureEventType_ReceiveTime           OpcuaNodeIdServicesVariableDevice = 3667
+	OpcuaNodeIdServicesVariableDevice_DeviceFailureEventType_LocalTime             OpcuaNodeIdServicesVariableDevice = 3668
+	OpcuaNodeIdServicesVariableDevice_DeviceFailureEventType_Message               OpcuaNodeIdServicesVariableDevice = 3669
+	OpcuaNodeIdServicesVariableDevice_DeviceFailureEventType_Severity              OpcuaNodeIdServicesVariableDevice = 3670
+	OpcuaNodeIdServicesVariableDevice_DeviceFailureEventType_ConditionClassId      OpcuaNodeIdServicesVariableDevice = 31879
+	OpcuaNodeIdServicesVariableDevice_DeviceFailureEventType_ConditionClassName    OpcuaNodeIdServicesVariableDevice = 31880
+	OpcuaNodeIdServicesVariableDevice_DeviceFailureEventType_ConditionSubClassId   OpcuaNodeIdServicesVariableDevice = 31881
 	OpcuaNodeIdServicesVariableDevice_DeviceFailureEventType_ConditionSubClassName OpcuaNodeIdServicesVariableDevice = 31882
 )
 
@@ -60,7 +60,7 @@ var OpcuaNodeIdServicesVariableDeviceValues []OpcuaNodeIdServicesVariableDevice
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariableDeviceValues = []OpcuaNodeIdServicesVariableDevice {
+	OpcuaNodeIdServicesVariableDeviceValues = []OpcuaNodeIdServicesVariableDevice{
 		OpcuaNodeIdServicesVariableDevice_DeviceFailureEventType_EventId,
 		OpcuaNodeIdServicesVariableDevice_DeviceFailureEventType_EventType,
 		OpcuaNodeIdServicesVariableDevice_DeviceFailureEventType_SourceNode,
@@ -79,32 +79,32 @@ func init() {
 
 func OpcuaNodeIdServicesVariableDeviceByValue(value int32) (enum OpcuaNodeIdServicesVariableDevice, ok bool) {
 	switch value {
-		case 31879:
-			return OpcuaNodeIdServicesVariableDevice_DeviceFailureEventType_ConditionClassId, true
-		case 31880:
-			return OpcuaNodeIdServicesVariableDevice_DeviceFailureEventType_ConditionClassName, true
-		case 31881:
-			return OpcuaNodeIdServicesVariableDevice_DeviceFailureEventType_ConditionSubClassId, true
-		case 31882:
-			return OpcuaNodeIdServicesVariableDevice_DeviceFailureEventType_ConditionSubClassName, true
-		case 3662:
-			return OpcuaNodeIdServicesVariableDevice_DeviceFailureEventType_EventId, true
-		case 3663:
-			return OpcuaNodeIdServicesVariableDevice_DeviceFailureEventType_EventType, true
-		case 3664:
-			return OpcuaNodeIdServicesVariableDevice_DeviceFailureEventType_SourceNode, true
-		case 3665:
-			return OpcuaNodeIdServicesVariableDevice_DeviceFailureEventType_SourceName, true
-		case 3666:
-			return OpcuaNodeIdServicesVariableDevice_DeviceFailureEventType_Time, true
-		case 3667:
-			return OpcuaNodeIdServicesVariableDevice_DeviceFailureEventType_ReceiveTime, true
-		case 3668:
-			return OpcuaNodeIdServicesVariableDevice_DeviceFailureEventType_LocalTime, true
-		case 3669:
-			return OpcuaNodeIdServicesVariableDevice_DeviceFailureEventType_Message, true
-		case 3670:
-			return OpcuaNodeIdServicesVariableDevice_DeviceFailureEventType_Severity, true
+	case 31879:
+		return OpcuaNodeIdServicesVariableDevice_DeviceFailureEventType_ConditionClassId, true
+	case 31880:
+		return OpcuaNodeIdServicesVariableDevice_DeviceFailureEventType_ConditionClassName, true
+	case 31881:
+		return OpcuaNodeIdServicesVariableDevice_DeviceFailureEventType_ConditionSubClassId, true
+	case 31882:
+		return OpcuaNodeIdServicesVariableDevice_DeviceFailureEventType_ConditionSubClassName, true
+	case 3662:
+		return OpcuaNodeIdServicesVariableDevice_DeviceFailureEventType_EventId, true
+	case 3663:
+		return OpcuaNodeIdServicesVariableDevice_DeviceFailureEventType_EventType, true
+	case 3664:
+		return OpcuaNodeIdServicesVariableDevice_DeviceFailureEventType_SourceNode, true
+	case 3665:
+		return OpcuaNodeIdServicesVariableDevice_DeviceFailureEventType_SourceName, true
+	case 3666:
+		return OpcuaNodeIdServicesVariableDevice_DeviceFailureEventType_Time, true
+	case 3667:
+		return OpcuaNodeIdServicesVariableDevice_DeviceFailureEventType_ReceiveTime, true
+	case 3668:
+		return OpcuaNodeIdServicesVariableDevice_DeviceFailureEventType_LocalTime, true
+	case 3669:
+		return OpcuaNodeIdServicesVariableDevice_DeviceFailureEventType_Message, true
+	case 3670:
+		return OpcuaNodeIdServicesVariableDevice_DeviceFailureEventType_Severity, true
 	}
 	return 0, false
 }
@@ -141,13 +141,13 @@ func OpcuaNodeIdServicesVariableDeviceByName(value string) (enum OpcuaNodeIdServ
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariableDeviceKnows(value int32)  bool {
+func OpcuaNodeIdServicesVariableDeviceKnows(value int32) bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariableDeviceValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastOpcuaNodeIdServicesVariableDevice(structType any) OpcuaNodeIdServicesVariableDevice {
@@ -237,4 +237,3 @@ func (e OpcuaNodeIdServicesVariableDevice) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariableDevice) String() string {
 	return e.PLC4XEnumName()
 }
-

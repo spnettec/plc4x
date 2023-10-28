@@ -40,34 +40,34 @@ type IOpcuaNodeIdServicesVariableTemporary interface {
 	utils.Serializable
 }
 
-const(
-	OpcuaNodeIdServicesVariableTemporary_TemporaryFileTransferType_ClientProcessingTimeout OpcuaNodeIdServicesVariableTemporary = 15745
-	OpcuaNodeIdServicesVariableTemporary_TemporaryFileTransferType_GenerateFileForRead_InputArguments OpcuaNodeIdServicesVariableTemporary = 15747
-	OpcuaNodeIdServicesVariableTemporary_TemporaryFileTransferType_GenerateFileForRead_OutputArguments OpcuaNodeIdServicesVariableTemporary = 15748
-	OpcuaNodeIdServicesVariableTemporary_TemporaryFileTransferType_GenerateFileForWrite_OutputArguments OpcuaNodeIdServicesVariableTemporary = 15750
-	OpcuaNodeIdServicesVariableTemporary_TemporaryFileTransferType_CloseAndCommit_InputArguments OpcuaNodeIdServicesVariableTemporary = 15752
-	OpcuaNodeIdServicesVariableTemporary_TemporaryFileTransferType_CloseAndCommit_OutputArguments OpcuaNodeIdServicesVariableTemporary = 15753
-	OpcuaNodeIdServicesVariableTemporary_TemporaryFileTransferType_TransferState_Placeholder_CurrentState OpcuaNodeIdServicesVariableTemporary = 15755
-	OpcuaNodeIdServicesVariableTemporary_TemporaryFileTransferType_TransferState_Placeholder_CurrentState_Id OpcuaNodeIdServicesVariableTemporary = 15756
-	OpcuaNodeIdServicesVariableTemporary_TemporaryFileTransferType_TransferState_Placeholder_CurrentState_Name OpcuaNodeIdServicesVariableTemporary = 15757
-	OpcuaNodeIdServicesVariableTemporary_TemporaryFileTransferType_TransferState_Placeholder_CurrentState_Number OpcuaNodeIdServicesVariableTemporary = 15758
-	OpcuaNodeIdServicesVariableTemporary_TemporaryFileTransferType_TransferState_Placeholder_CurrentState_EffectiveDisplayName OpcuaNodeIdServicesVariableTemporary = 15759
-	OpcuaNodeIdServicesVariableTemporary_TemporaryFileTransferType_TransferState_Placeholder_LastTransition OpcuaNodeIdServicesVariableTemporary = 15760
-	OpcuaNodeIdServicesVariableTemporary_TemporaryFileTransferType_TransferState_Placeholder_LastTransition_Id OpcuaNodeIdServicesVariableTemporary = 15761
-	OpcuaNodeIdServicesVariableTemporary_TemporaryFileTransferType_TransferState_Placeholder_LastTransition_Name OpcuaNodeIdServicesVariableTemporary = 15762
-	OpcuaNodeIdServicesVariableTemporary_TemporaryFileTransferType_TransferState_Placeholder_LastTransition_Number OpcuaNodeIdServicesVariableTemporary = 15763
-	OpcuaNodeIdServicesVariableTemporary_TemporaryFileTransferType_TransferState_Placeholder_LastTransition_TransitionTime OpcuaNodeIdServicesVariableTemporary = 15764
+const (
+	OpcuaNodeIdServicesVariableTemporary_TemporaryFileTransferType_ClientProcessingTimeout                                          OpcuaNodeIdServicesVariableTemporary = 15745
+	OpcuaNodeIdServicesVariableTemporary_TemporaryFileTransferType_GenerateFileForRead_InputArguments                               OpcuaNodeIdServicesVariableTemporary = 15747
+	OpcuaNodeIdServicesVariableTemporary_TemporaryFileTransferType_GenerateFileForRead_OutputArguments                              OpcuaNodeIdServicesVariableTemporary = 15748
+	OpcuaNodeIdServicesVariableTemporary_TemporaryFileTransferType_GenerateFileForWrite_OutputArguments                             OpcuaNodeIdServicesVariableTemporary = 15750
+	OpcuaNodeIdServicesVariableTemporary_TemporaryFileTransferType_CloseAndCommit_InputArguments                                    OpcuaNodeIdServicesVariableTemporary = 15752
+	OpcuaNodeIdServicesVariableTemporary_TemporaryFileTransferType_CloseAndCommit_OutputArguments                                   OpcuaNodeIdServicesVariableTemporary = 15753
+	OpcuaNodeIdServicesVariableTemporary_TemporaryFileTransferType_TransferState_Placeholder_CurrentState                           OpcuaNodeIdServicesVariableTemporary = 15755
+	OpcuaNodeIdServicesVariableTemporary_TemporaryFileTransferType_TransferState_Placeholder_CurrentState_Id                        OpcuaNodeIdServicesVariableTemporary = 15756
+	OpcuaNodeIdServicesVariableTemporary_TemporaryFileTransferType_TransferState_Placeholder_CurrentState_Name                      OpcuaNodeIdServicesVariableTemporary = 15757
+	OpcuaNodeIdServicesVariableTemporary_TemporaryFileTransferType_TransferState_Placeholder_CurrentState_Number                    OpcuaNodeIdServicesVariableTemporary = 15758
+	OpcuaNodeIdServicesVariableTemporary_TemporaryFileTransferType_TransferState_Placeholder_CurrentState_EffectiveDisplayName      OpcuaNodeIdServicesVariableTemporary = 15759
+	OpcuaNodeIdServicesVariableTemporary_TemporaryFileTransferType_TransferState_Placeholder_LastTransition                         OpcuaNodeIdServicesVariableTemporary = 15760
+	OpcuaNodeIdServicesVariableTemporary_TemporaryFileTransferType_TransferState_Placeholder_LastTransition_Id                      OpcuaNodeIdServicesVariableTemporary = 15761
+	OpcuaNodeIdServicesVariableTemporary_TemporaryFileTransferType_TransferState_Placeholder_LastTransition_Name                    OpcuaNodeIdServicesVariableTemporary = 15762
+	OpcuaNodeIdServicesVariableTemporary_TemporaryFileTransferType_TransferState_Placeholder_LastTransition_Number                  OpcuaNodeIdServicesVariableTemporary = 15763
+	OpcuaNodeIdServicesVariableTemporary_TemporaryFileTransferType_TransferState_Placeholder_LastTransition_TransitionTime          OpcuaNodeIdServicesVariableTemporary = 15764
 	OpcuaNodeIdServicesVariableTemporary_TemporaryFileTransferType_TransferState_Placeholder_LastTransition_EffectiveTransitionTime OpcuaNodeIdServicesVariableTemporary = 15765
-	OpcuaNodeIdServicesVariableTemporary_TemporaryFileTransferType_GenerateFileForWrite_InputArguments OpcuaNodeIdServicesVariableTemporary = 16359
-	OpcuaNodeIdServicesVariableTemporary_TemporaryFileTransferType_TransferState_Placeholder_AvailableStates OpcuaNodeIdServicesVariableTemporary = 17637
-	OpcuaNodeIdServicesVariableTemporary_TemporaryFileTransferType_TransferState_Placeholder_AvailableTransitions OpcuaNodeIdServicesVariableTemporary = 17638
+	OpcuaNodeIdServicesVariableTemporary_TemporaryFileTransferType_GenerateFileForWrite_InputArguments                              OpcuaNodeIdServicesVariableTemporary = 16359
+	OpcuaNodeIdServicesVariableTemporary_TemporaryFileTransferType_TransferState_Placeholder_AvailableStates                        OpcuaNodeIdServicesVariableTemporary = 17637
+	OpcuaNodeIdServicesVariableTemporary_TemporaryFileTransferType_TransferState_Placeholder_AvailableTransitions                   OpcuaNodeIdServicesVariableTemporary = 17638
 )
 
 var OpcuaNodeIdServicesVariableTemporaryValues []OpcuaNodeIdServicesVariableTemporary
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariableTemporaryValues = []OpcuaNodeIdServicesVariableTemporary {
+	OpcuaNodeIdServicesVariableTemporaryValues = []OpcuaNodeIdServicesVariableTemporary{
 		OpcuaNodeIdServicesVariableTemporary_TemporaryFileTransferType_ClientProcessingTimeout,
 		OpcuaNodeIdServicesVariableTemporary_TemporaryFileTransferType_GenerateFileForRead_InputArguments,
 		OpcuaNodeIdServicesVariableTemporary_TemporaryFileTransferType_GenerateFileForRead_OutputArguments,
@@ -93,46 +93,46 @@ func init() {
 
 func OpcuaNodeIdServicesVariableTemporaryByValue(value int32) (enum OpcuaNodeIdServicesVariableTemporary, ok bool) {
 	switch value {
-		case 15745:
-			return OpcuaNodeIdServicesVariableTemporary_TemporaryFileTransferType_ClientProcessingTimeout, true
-		case 15747:
-			return OpcuaNodeIdServicesVariableTemporary_TemporaryFileTransferType_GenerateFileForRead_InputArguments, true
-		case 15748:
-			return OpcuaNodeIdServicesVariableTemporary_TemporaryFileTransferType_GenerateFileForRead_OutputArguments, true
-		case 15750:
-			return OpcuaNodeIdServicesVariableTemporary_TemporaryFileTransferType_GenerateFileForWrite_OutputArguments, true
-		case 15752:
-			return OpcuaNodeIdServicesVariableTemporary_TemporaryFileTransferType_CloseAndCommit_InputArguments, true
-		case 15753:
-			return OpcuaNodeIdServicesVariableTemporary_TemporaryFileTransferType_CloseAndCommit_OutputArguments, true
-		case 15755:
-			return OpcuaNodeIdServicesVariableTemporary_TemporaryFileTransferType_TransferState_Placeholder_CurrentState, true
-		case 15756:
-			return OpcuaNodeIdServicesVariableTemporary_TemporaryFileTransferType_TransferState_Placeholder_CurrentState_Id, true
-		case 15757:
-			return OpcuaNodeIdServicesVariableTemporary_TemporaryFileTransferType_TransferState_Placeholder_CurrentState_Name, true
-		case 15758:
-			return OpcuaNodeIdServicesVariableTemporary_TemporaryFileTransferType_TransferState_Placeholder_CurrentState_Number, true
-		case 15759:
-			return OpcuaNodeIdServicesVariableTemporary_TemporaryFileTransferType_TransferState_Placeholder_CurrentState_EffectiveDisplayName, true
-		case 15760:
-			return OpcuaNodeIdServicesVariableTemporary_TemporaryFileTransferType_TransferState_Placeholder_LastTransition, true
-		case 15761:
-			return OpcuaNodeIdServicesVariableTemporary_TemporaryFileTransferType_TransferState_Placeholder_LastTransition_Id, true
-		case 15762:
-			return OpcuaNodeIdServicesVariableTemporary_TemporaryFileTransferType_TransferState_Placeholder_LastTransition_Name, true
-		case 15763:
-			return OpcuaNodeIdServicesVariableTemporary_TemporaryFileTransferType_TransferState_Placeholder_LastTransition_Number, true
-		case 15764:
-			return OpcuaNodeIdServicesVariableTemporary_TemporaryFileTransferType_TransferState_Placeholder_LastTransition_TransitionTime, true
-		case 15765:
-			return OpcuaNodeIdServicesVariableTemporary_TemporaryFileTransferType_TransferState_Placeholder_LastTransition_EffectiveTransitionTime, true
-		case 16359:
-			return OpcuaNodeIdServicesVariableTemporary_TemporaryFileTransferType_GenerateFileForWrite_InputArguments, true
-		case 17637:
-			return OpcuaNodeIdServicesVariableTemporary_TemporaryFileTransferType_TransferState_Placeholder_AvailableStates, true
-		case 17638:
-			return OpcuaNodeIdServicesVariableTemporary_TemporaryFileTransferType_TransferState_Placeholder_AvailableTransitions, true
+	case 15745:
+		return OpcuaNodeIdServicesVariableTemporary_TemporaryFileTransferType_ClientProcessingTimeout, true
+	case 15747:
+		return OpcuaNodeIdServicesVariableTemporary_TemporaryFileTransferType_GenerateFileForRead_InputArguments, true
+	case 15748:
+		return OpcuaNodeIdServicesVariableTemporary_TemporaryFileTransferType_GenerateFileForRead_OutputArguments, true
+	case 15750:
+		return OpcuaNodeIdServicesVariableTemporary_TemporaryFileTransferType_GenerateFileForWrite_OutputArguments, true
+	case 15752:
+		return OpcuaNodeIdServicesVariableTemporary_TemporaryFileTransferType_CloseAndCommit_InputArguments, true
+	case 15753:
+		return OpcuaNodeIdServicesVariableTemporary_TemporaryFileTransferType_CloseAndCommit_OutputArguments, true
+	case 15755:
+		return OpcuaNodeIdServicesVariableTemporary_TemporaryFileTransferType_TransferState_Placeholder_CurrentState, true
+	case 15756:
+		return OpcuaNodeIdServicesVariableTemporary_TemporaryFileTransferType_TransferState_Placeholder_CurrentState_Id, true
+	case 15757:
+		return OpcuaNodeIdServicesVariableTemporary_TemporaryFileTransferType_TransferState_Placeholder_CurrentState_Name, true
+	case 15758:
+		return OpcuaNodeIdServicesVariableTemporary_TemporaryFileTransferType_TransferState_Placeholder_CurrentState_Number, true
+	case 15759:
+		return OpcuaNodeIdServicesVariableTemporary_TemporaryFileTransferType_TransferState_Placeholder_CurrentState_EffectiveDisplayName, true
+	case 15760:
+		return OpcuaNodeIdServicesVariableTemporary_TemporaryFileTransferType_TransferState_Placeholder_LastTransition, true
+	case 15761:
+		return OpcuaNodeIdServicesVariableTemporary_TemporaryFileTransferType_TransferState_Placeholder_LastTransition_Id, true
+	case 15762:
+		return OpcuaNodeIdServicesVariableTemporary_TemporaryFileTransferType_TransferState_Placeholder_LastTransition_Name, true
+	case 15763:
+		return OpcuaNodeIdServicesVariableTemporary_TemporaryFileTransferType_TransferState_Placeholder_LastTransition_Number, true
+	case 15764:
+		return OpcuaNodeIdServicesVariableTemporary_TemporaryFileTransferType_TransferState_Placeholder_LastTransition_TransitionTime, true
+	case 15765:
+		return OpcuaNodeIdServicesVariableTemporary_TemporaryFileTransferType_TransferState_Placeholder_LastTransition_EffectiveTransitionTime, true
+	case 16359:
+		return OpcuaNodeIdServicesVariableTemporary_TemporaryFileTransferType_GenerateFileForWrite_InputArguments, true
+	case 17637:
+		return OpcuaNodeIdServicesVariableTemporary_TemporaryFileTransferType_TransferState_Placeholder_AvailableStates, true
+	case 17638:
+		return OpcuaNodeIdServicesVariableTemporary_TemporaryFileTransferType_TransferState_Placeholder_AvailableTransitions, true
 	}
 	return 0, false
 }
@@ -183,13 +183,13 @@ func OpcuaNodeIdServicesVariableTemporaryByName(value string) (enum OpcuaNodeIdS
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariableTemporaryKnows(value int32)  bool {
+func OpcuaNodeIdServicesVariableTemporaryKnows(value int32) bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariableTemporaryValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastOpcuaNodeIdServicesVariableTemporary(structType any) OpcuaNodeIdServicesVariableTemporary {
@@ -293,4 +293,3 @@ func (e OpcuaNodeIdServicesVariableTemporary) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariableTemporary) String() string {
 	return e.PLC4XEnumName()
 }
-

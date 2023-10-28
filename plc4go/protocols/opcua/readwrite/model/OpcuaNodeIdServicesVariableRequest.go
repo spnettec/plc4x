@@ -40,16 +40,16 @@ type IOpcuaNodeIdServicesVariableRequest interface {
 	utils.Serializable
 }
 
-const(
+const (
 	OpcuaNodeIdServicesVariableRequest_RequestServerStateChangeMethodType_InputArguments OpcuaNodeIdServicesVariableRequest = 12889
-	OpcuaNodeIdServicesVariableRequest_RequestTicketsMethodType_OutputArguments OpcuaNodeIdServicesVariableRequest = 25728
+	OpcuaNodeIdServicesVariableRequest_RequestTicketsMethodType_OutputArguments          OpcuaNodeIdServicesVariableRequest = 25728
 )
 
 var OpcuaNodeIdServicesVariableRequestValues []OpcuaNodeIdServicesVariableRequest
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariableRequestValues = []OpcuaNodeIdServicesVariableRequest {
+	OpcuaNodeIdServicesVariableRequestValues = []OpcuaNodeIdServicesVariableRequest{
 		OpcuaNodeIdServicesVariableRequest_RequestServerStateChangeMethodType_InputArguments,
 		OpcuaNodeIdServicesVariableRequest_RequestTicketsMethodType_OutputArguments,
 	}
@@ -57,10 +57,10 @@ func init() {
 
 func OpcuaNodeIdServicesVariableRequestByValue(value int32) (enum OpcuaNodeIdServicesVariableRequest, ok bool) {
 	switch value {
-		case 12889:
-			return OpcuaNodeIdServicesVariableRequest_RequestServerStateChangeMethodType_InputArguments, true
-		case 25728:
-			return OpcuaNodeIdServicesVariableRequest_RequestTicketsMethodType_OutputArguments, true
+	case 12889:
+		return OpcuaNodeIdServicesVariableRequest_RequestServerStateChangeMethodType_InputArguments, true
+	case 25728:
+		return OpcuaNodeIdServicesVariableRequest_RequestTicketsMethodType_OutputArguments, true
 	}
 	return 0, false
 }
@@ -75,13 +75,13 @@ func OpcuaNodeIdServicesVariableRequestByName(value string) (enum OpcuaNodeIdSer
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariableRequestKnows(value int32)  bool {
+func OpcuaNodeIdServicesVariableRequestKnows(value int32) bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariableRequestValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastOpcuaNodeIdServicesVariableRequest(structType any) OpcuaNodeIdServicesVariableRequest {
@@ -149,4 +149,3 @@ func (e OpcuaNodeIdServicesVariableRequest) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariableRequest) String() string {
 	return e.PLC4XEnumName()
 }
-

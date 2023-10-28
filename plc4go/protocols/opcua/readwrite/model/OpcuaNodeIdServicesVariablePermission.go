@@ -40,7 +40,7 @@ type IOpcuaNodeIdServicesVariablePermission interface {
 	utils.Serializable
 }
 
-const(
+const (
 	OpcuaNodeIdServicesVariablePermission_PermissionType_OptionSetValues OpcuaNodeIdServicesVariablePermission = 15030
 )
 
@@ -48,15 +48,15 @@ var OpcuaNodeIdServicesVariablePermissionValues []OpcuaNodeIdServicesVariablePer
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariablePermissionValues = []OpcuaNodeIdServicesVariablePermission {
+	OpcuaNodeIdServicesVariablePermissionValues = []OpcuaNodeIdServicesVariablePermission{
 		OpcuaNodeIdServicesVariablePermission_PermissionType_OptionSetValues,
 	}
 }
 
 func OpcuaNodeIdServicesVariablePermissionByValue(value int32) (enum OpcuaNodeIdServicesVariablePermission, ok bool) {
 	switch value {
-		case 15030:
-			return OpcuaNodeIdServicesVariablePermission_PermissionType_OptionSetValues, true
+	case 15030:
+		return OpcuaNodeIdServicesVariablePermission_PermissionType_OptionSetValues, true
 	}
 	return 0, false
 }
@@ -69,13 +69,13 @@ func OpcuaNodeIdServicesVariablePermissionByName(value string) (enum OpcuaNodeId
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariablePermissionKnows(value int32)  bool {
+func OpcuaNodeIdServicesVariablePermissionKnows(value int32) bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariablePermissionValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastOpcuaNodeIdServicesVariablePermission(structType any) OpcuaNodeIdServicesVariablePermission {
@@ -141,4 +141,3 @@ func (e OpcuaNodeIdServicesVariablePermission) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariablePermission) String() string {
 	return e.PLC4XEnumName()
 }
-

@@ -40,16 +40,16 @@ type IOpcuaNodeIdServicesVariableInterface interface {
 	utils.Serializable
 }
 
-const(
+const (
 	OpcuaNodeIdServicesVariableInterface_InterfaceAdminStatus_EnumValues OpcuaNodeIdServicesVariableInterface = 24236
-	OpcuaNodeIdServicesVariableInterface_InterfaceOperStatus_EnumValues OpcuaNodeIdServicesVariableInterface = 24237
+	OpcuaNodeIdServicesVariableInterface_InterfaceOperStatus_EnumValues  OpcuaNodeIdServicesVariableInterface = 24237
 )
 
 var OpcuaNodeIdServicesVariableInterfaceValues []OpcuaNodeIdServicesVariableInterface
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariableInterfaceValues = []OpcuaNodeIdServicesVariableInterface {
+	OpcuaNodeIdServicesVariableInterfaceValues = []OpcuaNodeIdServicesVariableInterface{
 		OpcuaNodeIdServicesVariableInterface_InterfaceAdminStatus_EnumValues,
 		OpcuaNodeIdServicesVariableInterface_InterfaceOperStatus_EnumValues,
 	}
@@ -57,10 +57,10 @@ func init() {
 
 func OpcuaNodeIdServicesVariableInterfaceByValue(value int32) (enum OpcuaNodeIdServicesVariableInterface, ok bool) {
 	switch value {
-		case 24236:
-			return OpcuaNodeIdServicesVariableInterface_InterfaceAdminStatus_EnumValues, true
-		case 24237:
-			return OpcuaNodeIdServicesVariableInterface_InterfaceOperStatus_EnumValues, true
+	case 24236:
+		return OpcuaNodeIdServicesVariableInterface_InterfaceAdminStatus_EnumValues, true
+	case 24237:
+		return OpcuaNodeIdServicesVariableInterface_InterfaceOperStatus_EnumValues, true
 	}
 	return 0, false
 }
@@ -75,13 +75,13 @@ func OpcuaNodeIdServicesVariableInterfaceByName(value string) (enum OpcuaNodeIdS
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariableInterfaceKnows(value int32)  bool {
+func OpcuaNodeIdServicesVariableInterfaceKnows(value int32) bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariableInterfaceValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastOpcuaNodeIdServicesVariableInterface(structType any) OpcuaNodeIdServicesVariableInterface {
@@ -149,4 +149,3 @@ func (e OpcuaNodeIdServicesVariableInterface) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariableInterface) String() string {
 	return e.PLC4XEnumName()
 }
-

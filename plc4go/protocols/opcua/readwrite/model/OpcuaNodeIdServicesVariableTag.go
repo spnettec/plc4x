@@ -40,18 +40,18 @@ type IOpcuaNodeIdServicesVariableTag interface {
 	utils.Serializable
 }
 
-const(
-	OpcuaNodeIdServicesVariableTag_TagVariables_SubAliasNameCategories_Placeholder_FindAlias_InputArguments OpcuaNodeIdServicesVariableTag = 23483
+const (
+	OpcuaNodeIdServicesVariableTag_TagVariables_SubAliasNameCategories_Placeholder_FindAlias_InputArguments  OpcuaNodeIdServicesVariableTag = 23483
 	OpcuaNodeIdServicesVariableTag_TagVariables_SubAliasNameCategories_Placeholder_FindAlias_OutputArguments OpcuaNodeIdServicesVariableTag = 23484
-	OpcuaNodeIdServicesVariableTag_TagVariables_FindAlias_InputArguments OpcuaNodeIdServicesVariableTag = 23486
-	OpcuaNodeIdServicesVariableTag_TagVariables_FindAlias_OutputArguments OpcuaNodeIdServicesVariableTag = 23487
+	OpcuaNodeIdServicesVariableTag_TagVariables_FindAlias_InputArguments                                     OpcuaNodeIdServicesVariableTag = 23486
+	OpcuaNodeIdServicesVariableTag_TagVariables_FindAlias_OutputArguments                                    OpcuaNodeIdServicesVariableTag = 23487
 )
 
 var OpcuaNodeIdServicesVariableTagValues []OpcuaNodeIdServicesVariableTag
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariableTagValues = []OpcuaNodeIdServicesVariableTag {
+	OpcuaNodeIdServicesVariableTagValues = []OpcuaNodeIdServicesVariableTag{
 		OpcuaNodeIdServicesVariableTag_TagVariables_SubAliasNameCategories_Placeholder_FindAlias_InputArguments,
 		OpcuaNodeIdServicesVariableTag_TagVariables_SubAliasNameCategories_Placeholder_FindAlias_OutputArguments,
 		OpcuaNodeIdServicesVariableTag_TagVariables_FindAlias_InputArguments,
@@ -61,14 +61,14 @@ func init() {
 
 func OpcuaNodeIdServicesVariableTagByValue(value int32) (enum OpcuaNodeIdServicesVariableTag, ok bool) {
 	switch value {
-		case 23483:
-			return OpcuaNodeIdServicesVariableTag_TagVariables_SubAliasNameCategories_Placeholder_FindAlias_InputArguments, true
-		case 23484:
-			return OpcuaNodeIdServicesVariableTag_TagVariables_SubAliasNameCategories_Placeholder_FindAlias_OutputArguments, true
-		case 23486:
-			return OpcuaNodeIdServicesVariableTag_TagVariables_FindAlias_InputArguments, true
-		case 23487:
-			return OpcuaNodeIdServicesVariableTag_TagVariables_FindAlias_OutputArguments, true
+	case 23483:
+		return OpcuaNodeIdServicesVariableTag_TagVariables_SubAliasNameCategories_Placeholder_FindAlias_InputArguments, true
+	case 23484:
+		return OpcuaNodeIdServicesVariableTag_TagVariables_SubAliasNameCategories_Placeholder_FindAlias_OutputArguments, true
+	case 23486:
+		return OpcuaNodeIdServicesVariableTag_TagVariables_FindAlias_InputArguments, true
+	case 23487:
+		return OpcuaNodeIdServicesVariableTag_TagVariables_FindAlias_OutputArguments, true
 	}
 	return 0, false
 }
@@ -87,13 +87,13 @@ func OpcuaNodeIdServicesVariableTagByName(value string) (enum OpcuaNodeIdService
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariableTagKnows(value int32)  bool {
+func OpcuaNodeIdServicesVariableTagKnows(value int32) bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariableTagValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastOpcuaNodeIdServicesVariableTag(structType any) OpcuaNodeIdServicesVariableTag {
@@ -165,4 +165,3 @@ func (e OpcuaNodeIdServicesVariableTag) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariableTag) String() string {
 	return e.PLC4XEnumName()
 }
-

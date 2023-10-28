@@ -40,7 +40,7 @@ type IOpcuaNodeIdServicesVariableOrientation interface {
 	utils.Serializable
 }
 
-const(
+const (
 	OpcuaNodeIdServicesVariableOrientation_OrientationType_AngleUnit OpcuaNodeIdServicesVariableOrientation = 18780
 )
 
@@ -48,15 +48,15 @@ var OpcuaNodeIdServicesVariableOrientationValues []OpcuaNodeIdServicesVariableOr
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariableOrientationValues = []OpcuaNodeIdServicesVariableOrientation {
+	OpcuaNodeIdServicesVariableOrientationValues = []OpcuaNodeIdServicesVariableOrientation{
 		OpcuaNodeIdServicesVariableOrientation_OrientationType_AngleUnit,
 	}
 }
 
 func OpcuaNodeIdServicesVariableOrientationByValue(value int32) (enum OpcuaNodeIdServicesVariableOrientation, ok bool) {
 	switch value {
-		case 18780:
-			return OpcuaNodeIdServicesVariableOrientation_OrientationType_AngleUnit, true
+	case 18780:
+		return OpcuaNodeIdServicesVariableOrientation_OrientationType_AngleUnit, true
 	}
 	return 0, false
 }
@@ -69,13 +69,13 @@ func OpcuaNodeIdServicesVariableOrientationByName(value string) (enum OpcuaNodeI
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariableOrientationKnows(value int32)  bool {
+func OpcuaNodeIdServicesVariableOrientationKnows(value int32) bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariableOrientationValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastOpcuaNodeIdServicesVariableOrientation(structType any) OpcuaNodeIdServicesVariableOrientation {
@@ -141,4 +141,3 @@ func (e OpcuaNodeIdServicesVariableOrientation) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariableOrientation) String() string {
 	return e.PLC4XEnumName()
 }
-

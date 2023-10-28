@@ -40,22 +40,22 @@ type IOpcuaNodeIdServicesVariableN interface {
 	utils.Serializable
 }
 
-const(
-	OpcuaNodeIdServicesVariableN_NDimensionArrayItemType_Definition OpcuaNodeIdServicesVariableN = 12069
-	OpcuaNodeIdServicesVariableN_NDimensionArrayItemType_ValuePrecision OpcuaNodeIdServicesVariableN = 12070
-	OpcuaNodeIdServicesVariableN_NDimensionArrayItemType_InstrumentRange OpcuaNodeIdServicesVariableN = 12071
-	OpcuaNodeIdServicesVariableN_NDimensionArrayItemType_EURange OpcuaNodeIdServicesVariableN = 12072
+const (
+	OpcuaNodeIdServicesVariableN_NDimensionArrayItemType_Definition       OpcuaNodeIdServicesVariableN = 12069
+	OpcuaNodeIdServicesVariableN_NDimensionArrayItemType_ValuePrecision   OpcuaNodeIdServicesVariableN = 12070
+	OpcuaNodeIdServicesVariableN_NDimensionArrayItemType_InstrumentRange  OpcuaNodeIdServicesVariableN = 12071
+	OpcuaNodeIdServicesVariableN_NDimensionArrayItemType_EURange          OpcuaNodeIdServicesVariableN = 12072
 	OpcuaNodeIdServicesVariableN_NDimensionArrayItemType_EngineeringUnits OpcuaNodeIdServicesVariableN = 12073
-	OpcuaNodeIdServicesVariableN_NDimensionArrayItemType_Title OpcuaNodeIdServicesVariableN = 12074
-	OpcuaNodeIdServicesVariableN_NDimensionArrayItemType_AxisScaleType OpcuaNodeIdServicesVariableN = 12075
-	OpcuaNodeIdServicesVariableN_NDimensionArrayItemType_AxisDefinition OpcuaNodeIdServicesVariableN = 12076
+	OpcuaNodeIdServicesVariableN_NDimensionArrayItemType_Title            OpcuaNodeIdServicesVariableN = 12074
+	OpcuaNodeIdServicesVariableN_NDimensionArrayItemType_AxisScaleType    OpcuaNodeIdServicesVariableN = 12075
+	OpcuaNodeIdServicesVariableN_NDimensionArrayItemType_AxisDefinition   OpcuaNodeIdServicesVariableN = 12076
 )
 
 var OpcuaNodeIdServicesVariableNValues []OpcuaNodeIdServicesVariableN
 
 func init() {
 	_ = errors.New
-	OpcuaNodeIdServicesVariableNValues = []OpcuaNodeIdServicesVariableN {
+	OpcuaNodeIdServicesVariableNValues = []OpcuaNodeIdServicesVariableN{
 		OpcuaNodeIdServicesVariableN_NDimensionArrayItemType_Definition,
 		OpcuaNodeIdServicesVariableN_NDimensionArrayItemType_ValuePrecision,
 		OpcuaNodeIdServicesVariableN_NDimensionArrayItemType_InstrumentRange,
@@ -69,22 +69,22 @@ func init() {
 
 func OpcuaNodeIdServicesVariableNByValue(value int32) (enum OpcuaNodeIdServicesVariableN, ok bool) {
 	switch value {
-		case 12069:
-			return OpcuaNodeIdServicesVariableN_NDimensionArrayItemType_Definition, true
-		case 12070:
-			return OpcuaNodeIdServicesVariableN_NDimensionArrayItemType_ValuePrecision, true
-		case 12071:
-			return OpcuaNodeIdServicesVariableN_NDimensionArrayItemType_InstrumentRange, true
-		case 12072:
-			return OpcuaNodeIdServicesVariableN_NDimensionArrayItemType_EURange, true
-		case 12073:
-			return OpcuaNodeIdServicesVariableN_NDimensionArrayItemType_EngineeringUnits, true
-		case 12074:
-			return OpcuaNodeIdServicesVariableN_NDimensionArrayItemType_Title, true
-		case 12075:
-			return OpcuaNodeIdServicesVariableN_NDimensionArrayItemType_AxisScaleType, true
-		case 12076:
-			return OpcuaNodeIdServicesVariableN_NDimensionArrayItemType_AxisDefinition, true
+	case 12069:
+		return OpcuaNodeIdServicesVariableN_NDimensionArrayItemType_Definition, true
+	case 12070:
+		return OpcuaNodeIdServicesVariableN_NDimensionArrayItemType_ValuePrecision, true
+	case 12071:
+		return OpcuaNodeIdServicesVariableN_NDimensionArrayItemType_InstrumentRange, true
+	case 12072:
+		return OpcuaNodeIdServicesVariableN_NDimensionArrayItemType_EURange, true
+	case 12073:
+		return OpcuaNodeIdServicesVariableN_NDimensionArrayItemType_EngineeringUnits, true
+	case 12074:
+		return OpcuaNodeIdServicesVariableN_NDimensionArrayItemType_Title, true
+	case 12075:
+		return OpcuaNodeIdServicesVariableN_NDimensionArrayItemType_AxisScaleType, true
+	case 12076:
+		return OpcuaNodeIdServicesVariableN_NDimensionArrayItemType_AxisDefinition, true
 	}
 	return 0, false
 }
@@ -111,13 +111,13 @@ func OpcuaNodeIdServicesVariableNByName(value string) (enum OpcuaNodeIdServicesV
 	return 0, false
 }
 
-func OpcuaNodeIdServicesVariableNKnows(value int32)  bool {
+func OpcuaNodeIdServicesVariableNKnows(value int32) bool {
 	for _, typeValue := range OpcuaNodeIdServicesVariableNValues {
 		if int32(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastOpcuaNodeIdServicesVariableN(structType any) OpcuaNodeIdServicesVariableN {
@@ -197,4 +197,3 @@ func (e OpcuaNodeIdServicesVariableN) PLC4XEnumName() string {
 func (e OpcuaNodeIdServicesVariableN) String() string {
 	return e.PLC4XEnumName()
 }
-
