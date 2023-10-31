@@ -21,11 +21,9 @@ package org.apache.plc4x.java.opcua.config;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.BooleanDefaultValue;
-import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultValue;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.StringDefaultValue;
-import org.apache.plc4x.java.transport.tcp.TcpTransportConfiguration;
 
-public class OpcuaConfiguration implements Configuration, TcpTransportConfiguration {
+public class OpcuaConfiguration implements Configuration {
 
     @ConfigurationParameter("protocolCode")
     private String protocolCode;
