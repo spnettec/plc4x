@@ -33,6 +33,10 @@
   <name>PLC4J: Drivers</name>
   <description>Wrapper project for all PLC4J driver implementations.</description>
 
+  <properties>
+    <project.build.outputTimestamp>2023-11-02T07:23:09Z</project.build.outputTimestamp>
+  </properties>
+
   <modules>
     <module>ab-eth</module>
     <module>ads</module>

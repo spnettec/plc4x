@@ -27,7 +27,12 @@
   </parent>
 
   <artifactId>plc4j-driver-knxnetip</artifactId>
+
   <name>PLC4J: Driver: KNXNet/IP</name>
+
+  <properties>
+    <project.build.outputTimestamp>2023-11-02T07:23:09Z</project.build.outputTimestamp>
+  </properties>
 
   <build>
     <plugins>

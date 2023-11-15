@@ -32,6 +32,10 @@
   <name>Protocols: OPC UA</name>
   <description>Base protocol specifications for the OPC UA protocol</description>
 
+  <properties>
+    <project.build.outputTimestamp>2023-11-02T07:23:09Z</project.build.outputTimestamp>
+  </properties>
+
   <build>
     <resources>
       <resource>
@@ -101,7 +105,7 @@
             <executions>
               <execution>
                 <id>transform-services</id>
-                <phase>process-resources</phase>
+                <phase>generate-resources</phase>
                 <goals>
                   <goal>transform</goal>
                 </goals>

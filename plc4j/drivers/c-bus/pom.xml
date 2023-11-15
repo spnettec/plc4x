@@ -27,9 +27,14 @@
   </parent>
 
   <artifactId>plc4j-driver-c-bus</artifactId>
+
   <name>PLC4J: Driver: C-Bus</name>
   <description>Implementation of a PLC4X driver able to speak using the C-Bus Protocol.
   </description>
+
+  <properties>
+    <project.build.outputTimestamp>2023-11-02T07:23:09Z</project.build.outputTimestamp>
+  </properties>
 
   <build>
     <plugins>
