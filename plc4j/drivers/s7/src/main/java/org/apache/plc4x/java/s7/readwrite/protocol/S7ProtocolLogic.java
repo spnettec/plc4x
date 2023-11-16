@@ -315,12 +315,12 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
                     clientFuture.complete(plcItems);
                 } catch (Exception e) {
                     clientFuture.completeExceptionally(e);
-                    logger.info("uh", e);
+                    logger.info("decodeReadResponse error", e);
                 }
             });
         } catch (Exception e) {
             clientFuture.completeExceptionally(e);
-            logger.info("uh", e);
+            logger.info("clientExecutorService error", e);
         }
 
         return clientFuture;

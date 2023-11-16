@@ -76,15 +76,78 @@ public class DatatypesTest {
 
         }
          */
-        try (PlcConnection connection = plcConnectionManager.getConnection("s7://192.168.0.188")) {
+        while(true) {
+        try (PlcConnection connection = plcConnectionManager.getConnection("s7://10.110.20.104?controller-type=S7_200&remote-rack=0&remote-slot=2")) {
             final PlcReadRequest.Builder builder = connection.readRequestBuilder();
-            builder.addTagAddress("string", "%DB4:340:BYTE[256]"); // true
-
+            builder.addTagAddress("string", "%DB1.DBD28:REAL"); // true
+            builder.addTagAddress("Caterpillar-ControllerFailure",	"%M81.3:BOOL");
+            builder.addTagAddress("Caterpillar-Current",	"%DB1.DBD28:REAL");
+            builder.addTagAddress("Caterpillar-DownStatus",	"%DB12.DBX32.1:BOOL");
+            builder.addTagAddress("Caterpillar-EmergencyStop",	"%M80.7:BOOL");
+            builder.addTagAddress("Caterpillar-HighSpeed-Selection",	"%M35.4:BOOL");
+            builder.addTagAddress("Caterpillar-LowSpeed-Selection",	"%M35.5:BOOL");
+            builder.addTagAddress("Caterpillar-Speed",	"%DB1.DBD20:REAL");
+            builder.addTagAddress("Caterpillar-Status",	"%M12.7:BOOL");
+            builder.addTagAddress("Charge-Mode","%M13.1:BOOL");
+            builder.addTagAddress("Clearance-Mode","%M13.0:BOOL");
+            builder.addTagAddress("Clearance-Switch","%M19.3:BOOL");
+            builder.addTagAddress("CoolingFan-Failure","%M81.7:BOOL");
+            builder.addTagAddress("Diameter-Setting","%DB1.DBD174:REAL");
+            builder.addTagAddress("DiameterAverage-Display","%DB66.DBD40:REAL");
+            builder.addTagAddress("DiameterDeviation-AlarmCount","%DB1.DBW244:INT");
+            builder.addTagAddress("DiameterDeviation-Value","%DB1.DBD306:REAL");
+            builder.addTagAddress("Extruder-Current","%DB1.DBD44:REAL");
+            builder.addTagAddress("Extruder-Failure","%M81.1:BOOL");
+            builder.addTagAddress("Extruder-Speed","%DB1.DBD36:REAL");
+            builder.addTagAddress("Extruder-Status","%M12.0:BOOL");
+            builder.addTagAddress("FuelSupply-Switch","%M19.4:BOOL");
+            builder.addTagAddress("Heat-Mode","%M100.0:BOOL");
+            builder.addTagAddress("Length-Product","%DB1.DBD224:REAL");
+            builder.addTagAddress("Lump-AlarmCount","%DB1.DBW246:INT");
+            builder.addTagAddress("MainCabinet-EmergencyStop","%M81.4:BOOL");
+            builder.addTagAddress("Neck-AlarmCount","%DB1.DBW248:INT");
+            builder.addTagAddress("PO-Alarm","%M80.6:BOOL");
+            builder.addTagAddress("PO-DanceAlarm","%M82.1:BOOL");
+            builder.addTagAddress("Separate-or-Sychrom","%M35.6:BOOL");
+            builder.addTagAddress("Spark-Alarm","%M80.2:BOOL");
+            builder.addTagAddress("Spark-AlarmCount","%DB1.DBW250:INT");
+            builder.addTagAddress("TU-Alarm","%M80.5:BOOL");
+            builder.addTagAddress("Temperature-Alarm","%M65.0:BOOL");
+            builder.addTagAddress("Vacuum-Failure","%M81.6:BOOL");
+            builder.addTagAddress("Vacuum-Switch","%M30.4:BOOL");
+            builder.addTagAddress("WaterPump-Failure","%M80.1:BOOL");
+            builder.addTagAddress("WaterPump-Switch","%M30.1:BOOL");
+            builder.addTagAddress("WaterTank-Temperature","%DB32.DBW74:INT");
+            builder.addTagAddress("Xaxis-Display","%DB66.DBD44:REAL");
+            builder.addTagAddress("Yaxis-Display","%DB66.DBD48:REAL");
+            builder.addTagAddress("Zone1-Temperature","%DB32.DBW56:INT");
+            builder.addTagAddress("Zone2-Temperature","%DB32.DBW58:INT");
+            builder.addTagAddress("Zone3-Temperature","%DB32.DBW60:INT");
+            builder.addTagAddress("Zone4-Temperature","%DB32.DBW62:INT");
+            builder.addTagAddress("Zone5-Temperature","%DB32.DBW64:INT");
+            builder.addTagAddress("Zone6-Temperature","%DB32.DBW66:INT");
+            builder.addTagAddress("Zone7-Temperature","%DB32.DBW68:INT");
+            builder.addTagAddress("Zone8-Temperature","%DB32.DBW70:INT");
+            builder.addTagAddress("Zone9-Temperature","%DB32.DBW72:INT");
+            builder.addTagAddress("sb_23_pv","%DB1.DBD20:REAL");
+            builder.addTagAddress("sb_25_pv","%DB1.DBD224:REAL");
+            builder.addTagAddress("sb_27_pv","%DB1.DBW244:INT");
+            builder.addTagAddress("sb_28_pv","%DB1.DBW246:INT");
+            builder.addTagAddress("sb_29_pv","%DB1.DBW248:INT");
+            builder.addTagAddress("sb_30_pv","%DB1.DBW250:INT");
             final PlcReadRequest readRequest = builder.build();
 
             final PlcReadResponse readResponse = readRequest.execute().get();
 
             System.out.println(readResponse.getAsPlcValue());
+        } catch (Exception e){
+            System.out.println("error:"+e.getMessage());
+        }
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                System.out.println("sleep:"+e.getMessage());
+            }
         }
     }
 

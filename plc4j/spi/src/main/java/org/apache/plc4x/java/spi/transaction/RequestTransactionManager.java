@@ -56,12 +56,17 @@ public class RequestTransactionManager {
     public RequestTransactionManager(int numberOfConcurrentRequests) {
         this.numberOfConcurrentRequests = numberOfConcurrentRequests;
         // Immutable Map
-        executor = new ThreadPoolExecutor(0, numberOfConcurrentRequests,
+        executor = new ThreadPoolExecutor(numberOfConcurrentRequests, numberOfConcurrentRequests,
             0L, TimeUnit.MILLISECONDS,
-            new LinkedBlockingQueue<>(1024),
-            new BasicThreadFactory.Builder().namingPattern("RequestTransactionManager-pool-%d").daemon(true).build(),
-            new ThreadPoolExecutor.AbortPolicy());;
+            new LinkedBlockingQueue<>(10),
+            new BasicThreadFactory.Builder()
+                    .namingPattern("RequestTransactionManager-pool-%d")
+                    .daemon(true)
+                    .priority(Thread.MAX_PRIORITY)
+                    .build(),
+            new ThreadPoolExecutor.AbortPolicy());
         runningRequests = ConcurrentHashMap.newKeySet();
+
     }
 
     public RequestTransactionManager() {
