@@ -133,8 +133,9 @@ public class S7HPlcConnection extends DefaultNettyPlcConnection implements Runna
             // Inject the configuration
             ConfigurationFactory.configure(configuration, channelFactory);
             
-            if (secondaryChannelFactory != null )
-            ConfigurationFactory.configure(configuration, secondaryChannelFactory);    
+            if (secondaryChannelFactory != null ) {
+                ConfigurationFactory.configure(configuration, secondaryChannelFactory);
+            }
             
             if (null == channel) {
                 channel = new EmbeddedChannel(
@@ -392,7 +393,7 @@ public class S7HPlcConnection extends DefaultNettyPlcConnection implements Runna
                     PlcReadResponse readResponse = readRequest.execute().get(2, TimeUnit.SECONDS);
                     logger.debug("PING: " + readResponse.getResponseCode("value"));
                 } catch (Exception ex){
-                    logger.info("PING: " + ex.toString());
+                    logger.info("PING: " + ex);
                 }
             });                
         }        

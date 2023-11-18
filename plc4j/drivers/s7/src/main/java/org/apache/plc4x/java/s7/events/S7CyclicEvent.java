@@ -112,7 +112,7 @@ public class S7CyclicEvent implements S7Event {
     }
     
     public S7CyclicEvent(PlcSubscriptionRequest request, short jobid, S7PayloadUserDataItemCyclicServicesChangeDrivenPush event) {
-        this.map = new HashMap();
+        this.map = new HashMap<>();
         this.timeStamp = Instant.now(); 
         this.request = request;
         map.put(Fields.TYPE.name(), "CYCEVENT");         
