@@ -1,4 +1,4 @@
-/* 
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -23,7 +23,7 @@ import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParamete
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.BooleanDefaultValue;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultValue;
 
-public class S7Configuration implements Configuration {
+public class S7Configuration extends S7TcpTransportConfiguration implements Configuration {
 
     @ConfigurationParameter("local-group")
     @IntDefaultValue(3)
@@ -101,6 +101,21 @@ public class S7Configuration implements Configuration {
     @IntDefaultValue(0)
     public int retryTime = 0;
 
+    public int getLocalGroup() {
+        return localGroup;
+    }
+
+    public void setLocalGroup(int localGroup) {
+        this.localGroup = localGroup;
+    }
+
+    public int getRemoteGroup() {
+        return remoteGroup;
+    }
+
+    public void setRemoteGroup(int remoteGroup) {
+        this.remoteGroup = remoteGroup;
+    }
 
     public int getLocalRack() {
         return localRack;

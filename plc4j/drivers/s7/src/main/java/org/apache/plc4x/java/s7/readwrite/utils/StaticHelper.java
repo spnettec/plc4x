@@ -37,7 +37,12 @@ import org.apache.plc4x.java.spi.generation.ReadBuffer;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.nio.ByteBuffer;
+import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
+import java.nio.charset.CharsetDecoder;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.LocalDate;
@@ -51,6 +56,8 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.apache.plc4x.java.s7.readwrite.DataTransportSize;
+import org.apache.plc4x.java.spi.values.PlcList;
+import org.apache.plc4x.java.spi.values.PlcWCHAR;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -2779,7 +2786,7 @@ public class StaticHelper {
         throw new NotImplementedException("Serializing DATE_AND_TIME not implemented");
     }
 
-    public static String parseS7Char(ReadBuffer io, String encoding) throws ParseException {
+    public static String parseS7Char(ReadBuffer io, String encoding, String stringEncoding) throws ParseException{
         if ("UTF-8".equalsIgnoreCase(encoding)) {
             return io.readString(8, WithOption.WithEncoding(encoding));
         } else if ("UTF-16".equalsIgnoreCase(encoding)) {
@@ -2789,14 +2796,14 @@ public class StaticHelper {
         }
     }
 
-    public static String parseS7String(ReadBuffer io, int stringLength, String encoding) {
+    public static String parseS7String(ReadBuffer io, int stringLength, String encoding, String stringEncoding) {
         try {
             if ("UTF-8".equalsIgnoreCase(encoding)) {
                 // This is the maximum number of bytes a string can be long.
                 short maxLength = io.readUnsignedShort(8);
                 // This is the total length of the string on the PLC (Not necessarily the number of characters read)
                 short totalStringLength = io.readUnsignedShort(8);
-
+                totalStringLength = (short) Math.min(maxLength, totalStringLength);
                 final byte[] byteArray = new byte[totalStringLength];
                 for (int i = 0; (i < stringLength) && io.hasMore(8); i++) {
                     final byte curByte = io.readByte();

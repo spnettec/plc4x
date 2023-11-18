@@ -26,10 +26,7 @@ import org.apache.plc4x.java.s7.readwrite.TPKTPacket;
 import org.apache.plc4x.java.s7.readwrite.configuration.S7TcpTransportConfiguration;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.ConfigurationFactory;
-import org.apache.plc4x.java.spi.connection.ChannelFactory;
-import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
-import org.apache.plc4x.java.spi.connection.PlcTagHandler;
-import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
+import org.apache.plc4x.java.spi.connection.*;
 import org.apache.plc4x.java.spi.transport.Transport;
 import org.apache.plc4x.java.spi.transport.TransportConfiguration;
 import org.apache.plc4x.java.spi.transport.TransportConfigurationTypeProvider;
@@ -42,7 +39,7 @@ import java.util.regex.Pattern;
 
 import static org.apache.plc4x.java.spi.configuration.ConfigurationFactory.configure;
 
-public class S7HGeneratedDriverBase extends GeneratedDriverBase<TPKTPacket> implements TransportConfigurationTypeProvider {
+public class S7HGeneratedDriverBase extends GeneratedDriverBase<TPKTPacket> {
 
     private static final Logger logger = LoggerFactory.getLogger(S7HGeneratedDriverBase.class);
 
@@ -144,23 +141,45 @@ public class S7HGeneratedDriverBase extends GeneratedDriverBase<TPKTPacket> impl
         if (System.getProperty(PROPERTY_PLC4X_FORCE_AWAIT_DISCOVER_COMPLETE) != null) {
             awaitDiscoverComplete = Boolean.parseBoolean(System.getProperty(PROPERTY_PLC4X_FORCE_AWAIT_DISCOVER_COMPLETE));
         }
+        boolean fireDiscoverEvent = fireDiscoverEvent();
+        if(System.getProperty(PROPERTY_PLC4X_FORCE_FIRE_DISCOVER_EVENT) != null) {
+            fireDiscoverEvent = Boolean.parseBoolean(System.getProperty(PROPERTY_PLC4X_FORCE_FIRE_DISCOVER_EVENT));
+        }
+        //if (hmatcher.matches()) {
+            return new S7HPlcConnection(
+                    canPing(),
+                    canRead(), canWrite(), canSubscribe(), canBrowse(),
+                    getTagHandler(),
+                    getValueHandler(),
+                    configuration,
+                    channelFactory,
+                    secondaryChannelFactory,
+                    fireDiscoverEvent,
+                    awaitSetupComplete,
+                    awaitDisconnectComplete,
+                    awaitDiscoverComplete,
+                    getStackConfigurer(transport),
+                    getOptimizer(),
+                    getAuthentication());
+        //}
+/*
+        return new DefaultNettyPlcConnection(
+                canPing(), canRead(), canWrite(), canSubscribe(), canBrowse(),
+                getTagHandler(),
+                getValueHandler(),
+                configuration,
+                channelFactory,
+                fireDiscoverEvent,
+                awaitSetupComplete,
+                awaitDisconnectComplete,
+                awaitDiscoverComplete,
+                getStackConfigurer(transport),
+                getOptimizer(),
+                getAuthentication());
 
-        return new S7HPlcConnection(
-            canPing(),
-            canRead(), canWrite(), canSubscribe(), canBrowse(),
-            getTagHandler(),
-            getValueHandler(),
-            configuration,
-            channelFactory,
-            secondaryChannelFactory,
-                false,
-            awaitSetupComplete,
-            awaitDisconnectComplete,
-            awaitDiscoverComplete,
-            getStackConfigurer(transport),
-            getOptimizer(),
-            getAuthentication());
+ */
     }
+
 
     @Override
     protected Class<? extends Configuration> getConfigurationType() {
@@ -201,13 +220,5 @@ public class S7HGeneratedDriverBase extends GeneratedDriverBase<TPKTPacket> impl
         return null;
     }
 
-    @Override
-    public Class<? extends TransportConfiguration> getTransportConfigurationType(String transportCode) {
-        switch (transportCode) {
-            case "tcp":
-                return S7TcpTransportConfiguration.class;
-        }
-        return null;
-    }
 
 }
