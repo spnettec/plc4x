@@ -18,27 +18,11 @@
  */
 package org.apache.plc4x.java.s7.readwrite.protocol;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.channel.Channel;
-import io.netty.channel.EventLoop;
-import io.netty.channel.embedded.EmbeddedChannel;
-import io.netty.handler.codec.MessageToMessageCodec;
-import io.netty.handler.logging.LogLevel;
-import io.netty.handler.logging.LoggingHandler;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
+import java.util.concurrent.*;
+
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.api.listener.ConnectionStateListener;
 import org.apache.plc4x.java.api.messages.PlcPingResponse;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
@@ -50,13 +34,18 @@ import org.apache.plc4x.java.spi.connection.DefaultNettyPlcConnection;
 import org.apache.plc4x.java.spi.connection.PlcTagHandler;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.events.CloseConnectionEvent;
-import org.apache.plc4x.java.spi.events.ConnectEvent;
 import org.apache.plc4x.java.spi.events.ConnectedEvent;
 import org.apache.plc4x.java.spi.events.DisconnectEvent;
-import org.apache.plc4x.java.spi.events.DisconnectedEvent;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.Channel;
+import io.netty.channel.embedded.EmbeddedChannel;
+import io.netty.handler.codec.MessageToMessageCodec;
+import io.netty.handler.logging.LogLevel;
+import io.netty.handler.logging.LoggingHandler;
 
 /**
  * This object generates the main connection and includes the management
@@ -250,7 +239,7 @@ public class S7HPlcConnection extends DefaultNettyPlcConnection implements Runna
 
     @Override
     public boolean isConnected() {
-        return channel.attr(S7HMuxImpl.IS_CONNECTED).get();
+        return channel.attr(IS_CONNECTED).get();
     }
      
     
@@ -310,7 +299,7 @@ public class S7HPlcConnection extends DefaultNettyPlcConnection implements Runna
         * is generated, so the user application can generate its requests again.
         */
         if ((channel.attr(S7HMuxImpl.WAS_CONNECTED).get()) &&
-            (channel.attr(S7HMuxImpl.IS_CONNECTED).get())) {
+            (channel.attr(IS_CONNECTED).get())) {
             (channel.attr(S7HMuxImpl.WAS_CONNECTED)).set(false);
             channel.pipeline().fireUserEventTriggered(new ConnectedEvent()); 
         }        
@@ -343,7 +332,7 @@ public class S7HPlcConnection extends DefaultNettyPlcConnection implements Runna
                     doPrimaryTcpConnections();                    
                 } else  if (null == secondary_channel)
                         if ((channel.attr(S7HMuxImpl.WAS_CONNECTED).get()) &&
-                            (!channel.attr(S7HMuxImpl.IS_CONNECTED).get())) {
+                            (!channel.attr(IS_CONNECTED).get())) {
                             logger.info("Reconnecting primary channel.");
                             if (null !=  ((S7HMux) s7hmux).getTCPChannel()) {
                                 ((S7HMux) s7hmux).setPrimaryChannel(primary_channel);
@@ -361,7 +350,7 @@ public class S7HPlcConnection extends DefaultNettyPlcConnection implements Runna
                     doSecondaryTcpConnections();                 
                 }  else  if (null == primary_channel)
                         if ((channel.attr(S7HMuxImpl.WAS_CONNECTED).get()) &&
-                            (!channel.attr(S7HMuxImpl.IS_CONNECTED).get())) { 
+                            (!channel.attr(IS_CONNECTED).get())) {
                             logger.info("Reconnecting secondary channel.");
                             if (null !=  ((S7HMux) s7hmux).getTCPChannel()) {
                                 ((S7HMux) s7hmux).setSecondaryChannel(secondary_channel);
@@ -379,13 +368,13 @@ public class S7HPlcConnection extends DefaultNettyPlcConnection implements Runna
         if (channel.attr(S7HMuxImpl.RETRY_TIME).get() > 0) 
             slice_retry_time++;
       
-        connected = channel.attr(S7HMuxImpl.IS_CONNECTED).get();
+        connected = channel.attr(IS_CONNECTED).get();
         logger.trace("*************************************************\r\n"
                    +"INSTAMCIA PRIMARIO      : " + ((null == primary_channel)?"NULL":primary_channel.toString()) + "\r\n"
                    +"ACTIVO PRIMARIO         : " + ((null == primary_channel)?"NULL":primary_channel.isActive()) + "\r\n"        
                    +"INSTAMCIA SECUNDARIO    : " + ((null == secondary_channel)?"NULL":secondary_channel.toString()) + "\r\n"  
                    +"ACTIVO SECUNDARIO       : " + ((null == secondary_channel)?"NULL":secondary_channel.isActive()) + "\r\n"
-                   +"CANAL CONECTADO?        : " + channel.attr(S7HMuxImpl.IS_CONNECTED).get() + "\r\n"
+                   +"CANAL CONECTADO?        : " + channel.attr(IS_CONNECTED).get() + "\r\n"
                    +"CANAL ESTUVO CONECTADO? : " + channel.attr(S7HMuxImpl.WAS_CONNECTED).get() + "\r\n" 
                    +"CONTADORES              : " + slice_ping + " : " + slice_retry_time + "\r\n"
                    +"*************************************************");
@@ -396,7 +385,7 @@ public class S7HPlcConnection extends DefaultNettyPlcConnection implements Runna
     */
     @Override
     public CompletableFuture<? extends PlcPingResponse> ping() { 
-        if (channel.attr(S7HMuxImpl.IS_CONNECTED).get())  {
+        if (channel.attr(IS_CONNECTED).get())  {
             
             //channel.eventLoop().execute(()->{
             executor.execute(()->{

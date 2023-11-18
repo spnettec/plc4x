@@ -18,9 +18,12 @@
  */
 package org.apache.plc4x.java.s7.readwrite.protocol;
 
+import static org.apache.plc4x.java.spi.configuration.ConfigurationFactory.configure;
+
 import java.util.ServiceLoader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
@@ -28,13 +31,9 @@ import org.apache.plc4x.java.api.value.PlcValueHandler;
 import org.apache.plc4x.java.s7.readwrite.TPKTPacket;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.ConfigurationFactory;
-import static org.apache.plc4x.java.spi.configuration.ConfigurationFactory.configure;
 import org.apache.plc4x.java.spi.connection.ChannelFactory;
 import org.apache.plc4x.java.spi.connection.DefaultNettyPlcConnection;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
-import static org.apache.plc4x.java.spi.connection.GeneratedDriverBase.PROPERTY_PLC4X_FORCE_AWAIT_DISCONNECT_COMPLETE;
-import static org.apache.plc4x.java.spi.connection.GeneratedDriverBase.PROPERTY_PLC4X_FORCE_AWAIT_DISCOVER_COMPLETE;
-import static org.apache.plc4x.java.spi.connection.GeneratedDriverBase.PROPERTY_PLC4X_FORCE_AWAIT_SETUP_COMPLETE;
 import org.apache.plc4x.java.spi.connection.PlcTagHandler;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.transport.Transport;
@@ -116,20 +115,20 @@ public class S7HGeneratedDriverBase extends GeneratedDriverBase<TPKTPacket>{
         ChannelFactory secondaryChannelFactory = null;
         if (hmatcher.matches()) {
             secondaryChannelFactory = transport.createChannelFactory(transportConfig2);
-            if(secondaryChannelFactory == null) {
+            if (secondaryChannelFactory == null) {
                 logger.info("Unable to get channel factory from url " + transportConfig2);
+            } else {
+                configure(configuration, secondaryChannelFactory);
+                initializePipeline(secondaryChannelFactory);
             }
         }
-        
-        if (hmatcher.matches()) 
-        configure(configuration, secondaryChannelFactory);        
-
         // Give drivers the option to customize the channel.
         initializePipeline(channelFactory);
         
         // Give drivers the option to customize the channel.
-        if (hmatcher.matches()) 
-        initializePipeline(secondaryChannelFactory);        
+        if (hmatcher.matches()) {
+            initializePipeline(secondaryChannelFactory);
+        }
 
         // Make the "await setup complete" overridable via system property.
         boolean awaitSetupComplete = awaitSetupComplete();
@@ -148,22 +147,41 @@ public class S7HGeneratedDriverBase extends GeneratedDriverBase<TPKTPacket>{
         if(System.getProperty(PROPERTY_PLC4X_FORCE_AWAIT_DISCOVER_COMPLETE) != null) {
             awaitDiscoverComplete = Boolean.parseBoolean(System.getProperty(PROPERTY_PLC4X_FORCE_AWAIT_DISCOVER_COMPLETE));
         }
+        boolean fireDiscoverEvent = fireDiscoverEvent();
+        if(System.getProperty(PROPERTY_PLC4X_FORCE_FIRE_DISCOVER_EVENT) != null) {
+            fireDiscoverEvent = Boolean.parseBoolean(System.getProperty(PROPERTY_PLC4X_FORCE_FIRE_DISCOVER_EVENT));
+        }
+        if (hmatcher.matches()) {
+            return new S7HPlcConnection(
+                    canPing(),
+                    canRead(), canWrite(), canSubscribe(), canBrowse(),
+                    getTagHandler(),
+                    getValueHandler(),
+                    configuration,
+                    channelFactory,
+                    secondaryChannelFactory,
+                    fireDiscoverEvent,
+                    awaitSetupComplete,
+                    awaitDisconnectComplete,
+                    awaitDiscoverComplete,
+                    getStackConfigurer(transport),
+                    getOptimizer(),
+                    getAuthentication());
+        }
 
-        return new S7HPlcConnection(
-            canPing(),
-            canRead(), canWrite(), canSubscribe(), canBrowse(),
-            getTagHandler(),
-            getValueHandler(),
-            configuration,
-            channelFactory,
-            secondaryChannelFactory,
-                false,
-            awaitSetupComplete,
-            awaitDisconnectComplete,
-            awaitDiscoverComplete,
-            getStackConfigurer(transport),
-            getOptimizer(),
-            getAuthentication());
+        return new DefaultNettyPlcConnection(
+                canPing(), canRead(), canWrite(), canSubscribe(), canBrowse(),
+                getTagHandler(),
+                getValueHandler(),
+                configuration,
+                channelFactory,
+                fireDiscoverEvent,
+                awaitSetupComplete,
+                awaitDisconnectComplete,
+                awaitDiscoverComplete,
+                getStackConfigurer(transport),
+                getOptimizer(),
+                getAuthentication());
     }
 
 

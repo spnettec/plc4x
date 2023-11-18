@@ -23,9 +23,8 @@ import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.BooleanDefaultValue;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultValue;
-import org.apache.plc4x.java.transport.tcp.TcpTransportConfiguration;
 
-public class S7Configuration implements Configuration {
+public class S7Configuration extends S7TcpTransportConfiguration implements Configuration {
     @ConfigurationParameter("local-group")
     @IntDefaultValue(3)
     public int localGroup = 3;
