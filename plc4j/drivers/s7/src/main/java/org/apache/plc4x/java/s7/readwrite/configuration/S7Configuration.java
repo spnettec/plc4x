@@ -1,4 +1,4 @@
-/*
+/* 
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -18,13 +18,13 @@
  */
 package org.apache.plc4x.java.s7.readwrite.configuration;
 
-import org.apache.plc4x.java.s7.readwrite.S7Driver;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.BooleanDefaultValue;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultValue;
 
-public class S7Configuration extends S7TcpTransportConfiguration implements Configuration {
+public class S7Configuration implements Configuration {
+
     @ConfigurationParameter("local-group")
     @IntDefaultValue(3)
     public int localGroup = 3;
@@ -206,16 +206,16 @@ public class S7Configuration extends S7TcpTransportConfiguration implements Conf
         this.readTimeout = readTimeOut;
     }
 
+    public boolean getPing() {
+        return ping;
+    }
+
     public int getTimeoutRequest() {
         return timeoutRequest;
     }
 
     public void setTimeoutRequest(int timeoutRequest) {
         this.timeoutRequest = timeoutRequest;
-    }
-
-    public boolean getPing() {
-        return ping;
     }
 
     public void setPing(boolean ping) {
@@ -238,16 +238,6 @@ public class S7Configuration extends S7TcpTransportConfiguration implements Conf
         this.retryTime = retryTime;
     }
 
-
-    /**
-     * Per default port for the S7 protocol is 102.
-     * @return 102
-     */
-    @Override
-    public int getDefaultPort() {
-        return S7Driver.ISO_ON_TCP_PORT;
-    }
-
     @Override
     public String toString() {
         return "Configuration{" +
@@ -268,7 +258,7 @@ public class S7Configuration extends S7TcpTransportConfiguration implements Conf
             ", ping='" + ping +
             ", pingTime='" + pingTime +
             ", retryTime='" + retryTime +
-                '\'' +
+            '\'' +
             '}';
     }
 
