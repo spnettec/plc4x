@@ -158,13 +158,13 @@ public class S7HPlcConnection extends DefaultNettyPlcConnection implements Runna
             */
             doPrimaryTcpConnections();
                 
-            if (secondaryChannelFactory != null )
-            doSecondaryTcpConnections();
+            if (secondaryChannelFactory != null ) {
+                doSecondaryTcpConnections();
+            }
             
             //If it is not possible to generate a TCP connection.
             //Safety shutdownn all executors in the channels.
-            if (primary_channel == null)         
-            if (secondary_channel == null) {
+            if (primary_channel == null && secondary_channel == null) {
                 sendChannelDisconectEvent();
                 throw new PlcConnectionException("Connection is not possible.");
             }         
@@ -212,8 +212,7 @@ public class S7HPlcConnection extends DefaultNettyPlcConnection implements Runna
         } catch (Exception ex) {
             logger.info(ex.toString());
         }
-        if (primary_channel != null)         
-        if (primary_channel.isActive()){
+        if (primary_channel != null && primary_channel.isActive()){
             try {
             primary_channel.pipeline().remove(MULTIPLEXOR);
             primary_channel.pipeline().fireUserEventTriggered(new CloseConnectionEvent());            
@@ -224,8 +223,7 @@ public class S7HPlcConnection extends DefaultNettyPlcConnection implements Runna
             }
         };
 
-        if (secondary_channel != null) 
-        if (secondary_channel.isActive()){
+        if (secondary_channel != null && secondary_channel.isActive()){
             secondary_channel.pipeline().remove(MULTIPLEXOR);            
             secondary_channel.pipeline().fireUserEventTriggered(new CloseConnectionEvent());  
             secondary_channel.eventLoop().shutdownGracefully();
@@ -241,8 +239,6 @@ public class S7HPlcConnection extends DefaultNettyPlcConnection implements Runna
     public boolean isConnected() {
         return channel.attr(IS_CONNECTED).get();
     }
-     
-    
     
     public void doPrimaryTcpConnections(){
         try {
@@ -251,8 +247,7 @@ public class S7HPlcConnection extends DefaultNettyPlcConnection implements Runna
             primary_channel = null;
             logger.info(ex.toString());
         }
-        if (primary_channel != null)
-        if (primary_channel.isActive()) {
+        if (primary_channel != null && primary_channel.isActive()) {
             primary_channel.pipeline().addFirst(MULTIPLEXOR,s7hmux);             
             ((S7HMux) s7hmux).setPrimaryChannel(primary_channel);  
         }
@@ -265,8 +260,7 @@ public class S7HPlcConnection extends DefaultNettyPlcConnection implements Runna
             secondary_channel = null;
             logger.info(ex.toString());
         }
-        if (secondary_channel != null)
-        if (secondary_channel.isActive()) {
+        if (secondary_channel != null && secondary_channel.isActive()) {
             secondary_channel.pipeline().addFirst(MULTIPLEXOR,s7hmux);             
             ((S7HMux) s7hmux).setSecondaryChannel(secondary_channel);
         }
