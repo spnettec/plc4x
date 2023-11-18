@@ -729,7 +729,7 @@ public class StaticHelper {
             } catch (Exception ex) {
                 sb.append(ex);
             }
-            return sb.append(jsonszl);
+            return sb.append(jsonszl.toString());
         }        
         
         /*
@@ -767,7 +767,7 @@ public class StaticHelper {
             } catch (Exception ex) {
                 sb.append(ex);
             }
-            return sb.append(jsonszl);
+            return sb.append(jsonszl.toString());
         }
 
         /*
@@ -802,7 +802,7 @@ public class StaticHelper {
             } catch (Exception ex) {
                 sb.append(ex);
             }
-            return sb.append(jsonszl);
+            return sb.append(jsonszl.toString());
         }
 
         /*
@@ -848,7 +848,7 @@ public class StaticHelper {
                 sb.append(ex);
             }
             
-            sb.append(jsonszl);
+            sb.append(jsonszl.toString());
             
             return sb;
         }
@@ -892,7 +892,7 @@ public class StaticHelper {
                 sb.append(ex);
             }
             
-            sb.append(jsonszl);
+            sb.append(jsonszl.toString());
             
             return sb;
         }
@@ -932,7 +932,7 @@ public class StaticHelper {
                 sb.append(ex);
             }
             
-            sb.append(jsonszl);
+            sb.append(jsonszl.toString());
             
             return sb;
         }
@@ -1081,7 +1081,7 @@ public class StaticHelper {
                 sb.append(ex);
             }
             
-            sb.append(jsonszl);
+            sb.append(jsonszl.toString());
             
             return sb;
         }
@@ -1121,7 +1121,7 @@ public class StaticHelper {
                 sb.append(ex);
             }
             
-            sb.append(jsonszl);
+            sb.append(jsonszl.toString());
             
             return sb;
 
@@ -1161,7 +1161,7 @@ public class StaticHelper {
                 sb.append(ex);
             }
             
-            sb.append(jsonszl);
+            sb.append(jsonszl.toString());
             
             return sb;
         }
@@ -1201,7 +1201,7 @@ public class StaticHelper {
                 sb.append(ex);
             }
             
-            sb.append(jsonszl);
+            sb.append(jsonszl.toString());
             
             return sb;
         }
@@ -1250,7 +1250,7 @@ public class StaticHelper {
                 sb.append(ex);
             }
             
-            sb.append(jsonszl);
+            sb.append(jsonszl.toString());
             
             return sb;
         }
@@ -1291,7 +1291,7 @@ public class StaticHelper {
                 sb.append(ex);
             }
             
-            sb.append(jsonszl);
+            sb.append(jsonszl.toString());
             
             return sb;
         }
@@ -1335,7 +1335,7 @@ public class StaticHelper {
                 sb.append(ex);
             }
             
-            sb.append(jsonszl);
+            sb.append(jsonszl.toString());
             
             return sb;
         }
@@ -1384,7 +1384,7 @@ public class StaticHelper {
                 sb.append(ex);
             }
             
-            sb.append(jsonszl);
+            sb.append(jsonszl.toString());
             
             return sb;
         }
@@ -1431,7 +1431,7 @@ public class StaticHelper {
                 sb.append(ex);
             }
             
-            sb.append(jsonszl);
+            sb.append(jsonszl.toString());
             
             return sb;
         }
@@ -1486,7 +1486,7 @@ public class StaticHelper {
                 sb.append(ex);
             }
             
-            sb.append(jsonszl);
+            sb.append(jsonszl.toString());
             
             return sb;
         }
@@ -1529,7 +1529,7 @@ public class StaticHelper {
                 sb.append(ex);
             }
             
-            sb.append(jsonszl);
+            sb.append(jsonszl.toString());
             
             return sb;
         }
@@ -1584,7 +1584,7 @@ public class StaticHelper {
                 sb.append(ex);
             }
             
-            sb.append(jsonszl);
+            sb.append(jsonszl.toString());
             
             return sb;
         }
@@ -1638,7 +1638,7 @@ public class StaticHelper {
                 sb.append(ex);
             }
             
-            sb.append(jsonszl);
+            sb.append(jsonszl.toString());
             
             return sb;
         }
@@ -1683,7 +1683,7 @@ public class StaticHelper {
                 sb.append(ex);
             }
             
-            sb.append(jsonszl);
+            sb.append(jsonszl.toString());
             
             return sb;
         }
@@ -1753,7 +1753,7 @@ public class StaticHelper {
                 sb.append(ex);
             }
 
-            sb.append(jsonszl);
+            sb.append(jsonszl.toString());
             
             return sb;
         }
@@ -1796,7 +1796,7 @@ public class StaticHelper {
                 sb.append(ex);
             }
             
-            sb.append(jsonszl);
+            sb.append(jsonszl.toString());
             
             return sb;
         }
@@ -1836,7 +1836,7 @@ public class StaticHelper {
                 sb.append(ex);
             }
             
-            sb.append(jsonszl);
+            sb.append(jsonszl.toString());
             
             return sb;
         }
@@ -1875,7 +1875,7 @@ public class StaticHelper {
                 sb.append(ex);
             }
             
-            sb.append(jsonszl);
+            sb.append(jsonszl.toString());
             
             return sb;
         }
@@ -1920,7 +1920,7 @@ public class StaticHelper {
                 sb.append(ex);
             }
             
-            sb.append(jsonszl);
+            sb.append(jsonszl.toString());
             
             return sb;
         }
@@ -2153,13 +2153,13 @@ public class StaticHelper {
         res[4] = ByteToBcd(data.getMinute());
         res[5] = ByteToBcd(data.getSecond());
 
-        long ms = data.getNano() / 1_000_000;
+        long ms = (long) (data.getNano() / 1_000_000);
         res[6] = (byte) ((int) (((ms / 100) << 4) | ((ms / 10) % 10)));
         //Java:1 (Monday) to 7 (Sunday)->S7:1 (Sunday) to 7 (Saturday)
         byte dayofweek = (byte) ((data.getDayOfWeek().getValue() < 7) ?
             data.getDayOfWeek().getValue() + 1 :
             (byte) 0x01);
-        res[7] = (byte) (((ms % 10) << 4) | dayofweek);
+        res[7] = (byte) (((ms % 10) << 4) | ((byte) (dayofweek)));
 
         return res;
     }
@@ -2227,7 +2227,8 @@ public class StaticHelper {
     
     public static int RightShift3(final ReadBuffer buffer, DataTransportSize tsize) throws ParseException {
         int value = 0;
-        if (tsize == DataTransportSize.OCTET_STRING){
+        if ((tsize == DataTransportSize.OCTET_STRING) ||
+            (tsize == DataTransportSize.REAL))    {
             value = buffer.readUnsignedInt(16);
         } else {
             value = buffer.readUnsignedInt(16) >> 3;
@@ -2265,7 +2266,7 @@ public class StaticHelper {
     private static byte[] wordToBytes(long data) {
         return new byte[]{
             (byte) ((data >> 8) & 0xff),
-            (byte) ((data) & 0xff),
+            (byte) ((data >> 0) & 0xff),
         };
     }
 
@@ -2274,7 +2275,7 @@ public class StaticHelper {
             (byte) ((data >> 24) & 0xff),
             (byte) ((data >> 16) & 0xff),
             (byte) ((data >> 8) & 0xff),
-            (byte) ((data) & 0xff),
+            (byte) ((data >> 0) & 0xff),
         };
     }
 
@@ -2975,7 +2976,6 @@ public class StaticHelper {
         } else {
             throw new PlcRuntimeException("Unsupported string encoding " + encoding);
         }
-
     }
 
 }

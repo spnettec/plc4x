@@ -26,8 +26,6 @@ import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.api.messages.PlcPingResponse;
-import org.apache.plc4x.java.api.exceptions.PlcIoException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.value.PlcValueHandler;
@@ -40,7 +38,6 @@ import org.apache.plc4x.java.spi.connection.PlcTagHandler;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.events.CloseConnectionEvent;
 import org.apache.plc4x.java.spi.events.DisconnectEvent;
-import org.apache.plc4x.java.spi.events.DiscoverEvent;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,6 +46,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import org.apache.plc4x.java.api.messages.PlcPingResponse;
 
 /**
  * @author cgarcia
@@ -87,7 +85,8 @@ public class S7HDefaultNettyPlcConnection extends DefaultNettyPlcConnection impl
                                         ProtocolStackConfigurer<TPKTPacket> stackConfigurer,
                                         BaseOptimizer optimizer,
                                         PlcAuthentication authentication) {
-        super(canPing,
+        super(
+            canPing,
             canRead,
             canWrite,
             canSubscribe,
@@ -134,14 +133,14 @@ public class S7HDefaultNettyPlcConnection extends DefaultNettyPlcConnection impl
             channel.pipeline().addFirst(s7hmux);
             ((S7HMux) s7hmux).setEmbeddedChannel(channel);
             //channel.pipeline().addFirst((new LoggingHandler(LogLevel.INFO))); 
-
+            /*
             channel.closeFuture().addListener(future -> {
                 if (!sessionSetupCompleteFuture.isDone()) {
-                    channel.pipeline().fireUserEventTriggered(new CloseConnectionEvent());
                     sessionSetupCompleteFuture.completeExceptionally(
                         new PlcIoException("Connection terminated by remote"));
                 }
             });
+            */
             channel.pipeline().fireUserEventTriggered(new DiscoverEvent());
             if (awaitSessionDiscoverComplete) {
                 sessionDiscoveredCompleteFuture.get();
@@ -309,7 +308,6 @@ public class S7HDefaultNettyPlcConnection extends DefaultNettyPlcConnection impl
     }
 
     @Override
-    // TODO: This method needs some cleaning up ...
     public CompletableFuture<? extends PlcPingResponse> ping() {
         if (channel.attr(IS_CONNECTED).get()) {
             channel.eventLoop().execute(() -> {

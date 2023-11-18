@@ -17,9 +17,6 @@
  * under the License.
  */
 
-// https://blog.viettelcybersecurity.com/security-wall-of-s7commplus-part-1/
-// https://blog.viettelcybersecurity.com/security-wall-of-s7commplus-3/
-
 ////////////////////////////////////////////////////////////////
 // IsoOnTcp/TPKT
 ////////////////////////////////////////////////////////////////
@@ -288,10 +285,10 @@
     ]
 ]
 
-//TODO: Se debe modificar el calculo para incluir el tipo
-//      . si es tipo 4 usa el desplazamiento
-//      . si es tipo 3, la longitud es la indicada
-//      . verificar calculo con los otros tipos
+//TODO: The calculation must be modified to include the type
+//      . if it is type 0x07(REAL) or 0x09 (OCTET_STRING), the length is indicated
+//      . another type uses scrolling
+//      . verify calculation with the other types
 [type AssociatedValueType
     [simple DataTransportErrorCode returnCode]
     [simple DataTransportSize      transportSize]
@@ -442,7 +439,8 @@
     [simple   uint 8 syntaxId]
     [typeSwitch syntaxId
         ['0x10' CycServiceItemAnyType
-            [simple  TransportSize   transportSize]
+            //[simple  TransportSize   transportSize]
+            [enum     TransportSize transportSize code]
             [simple uint 16 length]
             [simple uint 16 dbNumber]
             [simple MemoryArea memoryArea]
@@ -493,7 +491,7 @@
 [discriminatedType S7PayloadUserDataItem(uint 4 cpuFunctionGroup, uint 4 cpuFunctionType, uint 8 cpuSubfunction)
     [simple     DataTransportErrorCode returnCode]
     [simple     DataTransportSize      transportSize]
-    [simple     uint 16                dataLength]
+    [simple         uint 16                dataLength]
     //[implicit   uint 16                dataLength    'lengthInBytes - 4']
 
     [typeSwitch cpuFunctionGroup, cpuFunctionType, cpuSubfunction, dataLength
@@ -579,7 +577,6 @@
             [simple   uint 16                szlIndex]
         ]
 
-        // TODO: carcia: explain why you out commented this? the byte array variant below looks hacky
         //['0x04', '0x08', '0x01' S7PayloadUserDataItemCpuFunctionReadSzlResponse
         //    [simple   SzlId           szlId]
         //    [simple   uint 16         szlIndex]
@@ -647,6 +644,34 @@
 
         ['0x04', '0x08', '0x13' S7PayloadUserDataItemCpuFunctionAlarmQueryResponse(uint 16 dataLength)
             [array byte items count 'dataLength']
+        ]
+
+        //Time Functions
+        ['0x07', '0x04', '0x01' S7PayloadUserDataItemClkRequest
+        ]
+
+        ['0x07', '0x08', '0x01' S7PayloadUserDataItemClkResponse(uint 16 dataLength)
+            [simple uint 8       Reserved]
+            [simple uint 8       Year1]
+            [simple DateAndTime TimeStamp]
+        ]
+
+        ['0x07', '0x04', '0x03' S7PayloadUserDataItemClkFRequest
+        ]
+
+        ['0x07', '0x08', '0x03' S7PayloadUserDataItemClkFResponse(uint 16 dataLength)
+            [simple uint 8       Reserved]
+            [simple uint 8       Year1]
+            [simple DateAndTime TimeStamp]
+        ]
+
+        ['0x07', '0x04', '0x04' S7PayloadUserDataItemClkSetRequest
+            [reserved uint 8       '0x00']
+            [reserved uint 8       '0x00']
+            [simple DateAndTime TimeStamp]
+        ]
+
+        ['0x07', '0x08', '0x04' S7PayloadUserDataItemClkSetResponse
         ]
 
     ]
@@ -994,7 +1019,7 @@
     ['0x12' UPDATE]
 ]
 
-[enum uint 8 TimeBase
+[enum uint 8 'TimeBase'
     ['0x00' B01SEC]
     ['0x01' B1SEC]
     ['0X02' B10SEC]

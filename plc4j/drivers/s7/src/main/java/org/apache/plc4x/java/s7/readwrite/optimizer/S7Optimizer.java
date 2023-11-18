@@ -35,6 +35,7 @@ import org.apache.plc4x.java.spi.messages.utils.TagValueItem;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
 
 import java.util.*;
+import org.apache.plc4x.java.s7.readwrite.tag.S7ClkTag;
 import org.apache.plc4x.java.s7.readwrite.tag.S7SzlTag;
 
 public class S7Optimizer extends BaseOptimizer {
@@ -64,7 +65,9 @@ public class S7Optimizer extends BaseOptimizer {
         LinkedHashMap<String, PlcTag> curTags = new LinkedHashMap<>();
 
         for (String tagName : readRequest.getTagNames()) {
-            if (readRequest.getTag(tagName) instanceof S7SzlTag){
+                    
+            if ((readRequest.getTag(tagName) instanceof S7SzlTag) || 
+                (readRequest.getTag(tagName) instanceof S7ClkTag)) {
                 curTags.put(tagName, readRequest.getTag(tagName));
                 continue;
             }
@@ -123,8 +126,16 @@ public class S7Optimizer extends BaseOptimizer {
         return processedRequests;
     }
 
+
     @Override
     protected List<PlcWriteRequest> processWriteRequest(PlcWriteRequest writeRequest, DriverContext driverContext) {
+        
+        for (String tagName : writeRequest.getTagNames()) {
+            if (writeRequest.getTag(tagName) instanceof S7ClkTag) {
+                return Collections.singletonList( writeRequest);
+            }
+        } 
+        
         S7DriverContext s7DriverContext = (S7DriverContext) driverContext;
         List<PlcWriteRequest> processedRequests = new LinkedList<>();
 
@@ -135,7 +146,7 @@ public class S7Optimizer extends BaseOptimizer {
 
         // List of all items in the current request.
         LinkedHashMap<String, TagValueItem> curTags = new LinkedHashMap<>();
-
+        
         for (String tagName : writeRequest.getTagNames()) {
             S7Tag tag = (S7Tag) writeRequest.getTag(tagName);
             PlcValue value = writeRequest.getPlcValue(tagName);

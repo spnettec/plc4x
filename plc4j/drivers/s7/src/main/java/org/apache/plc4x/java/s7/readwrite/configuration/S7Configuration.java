@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   https://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -18,10 +18,12 @@
  */
 package org.apache.plc4x.java.s7.readwrite.configuration;
 
+import org.apache.plc4x.java.s7.readwrite.S7Driver;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.BooleanDefaultValue;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultValue;
+import org.apache.plc4x.java.transport.tcp.TcpTransportConfiguration;
 
 public class S7Configuration implements Configuration {
     @ConfigurationParameter("local-group")
@@ -81,8 +83,8 @@ public class S7Configuration implements Configuration {
     public String controllerType;
 
     @ConfigurationParameter("read-timeout")
-    @IntDefaultValue(8)
-    public int readTimeout = 8;
+    @IntDefaultValue(0)
+    public int readTimeout = 0;
 
     @ConfigurationParameter("timeout-request")
     @IntDefaultValue(4000)
@@ -93,12 +95,13 @@ public class S7Configuration implements Configuration {
     public boolean ping = false;
 
     @ConfigurationParameter("ping-time")
-    @IntDefaultValue(-1)
-    public int pingTime = -1;
+    @IntDefaultValue(0)
+    public int pingTime = 0;
 
     @ConfigurationParameter("retry-time")
-    @IntDefaultValue(4)
-    public int retryTime = 4;
+    @IntDefaultValue(0)
+    public int retryTime = 0;
+
 
     public int getLocalRack() {
         return localRack;
@@ -229,21 +232,29 @@ public class S7Configuration implements Configuration {
     }
 
     public int getRetryTime() {
-        return pingTime;
+        return retryTime;
     }
 
     public void setRetryTime(int retryTime) {
         this.retryTime = retryTime;
     }
 
+
+    /**
+     * Per default port for the S7 protocol is 102.
+     * @return 102
+     */
+    @Override
+    public int getDefaultPort() {
+        return S7Driver.ISO_ON_TCP_PORT;
+    }
+
     @Override
     public String toString() {
         return "Configuration{" +
             "local-rack=" + localRack +
-            ", local-group=" + localGroup +
             ", local-slot=" + localSlot +
             ", local-tsap=" + localTsap +
-            ", remote-group=" + remoteGroup +
             ", remote-rack=" + remoteRack +
             ", remote-slot=" + remoteSlot +
             ", remote-rack2=" + remoteRack2 +
@@ -252,12 +263,13 @@ public class S7Configuration implements Configuration {
             ", pduSize=" + pduSize +
             ", maxAmqCaller=" + maxAmqCaller +
             ", maxAmqCallee=" + maxAmqCallee +
-            ", controllerType=" + controllerType +
-            ", readTimeOut=" + readTimeout +
+            ", controllerType='" + controllerType +
+            ", readTimeOut='" + readTimeout +
             ", timeoutRequest=" + timeoutRequest +
-            ", ping=" + ping +
-            ", pingTime=" + pingTime +
-            ", retryTime=" + retryTime +
+            ", ping='" + ping +
+            ", pingTime='" + pingTime +
+            ", retryTime='" + retryTime +
+                '\'' +
             '}';
     }
 
