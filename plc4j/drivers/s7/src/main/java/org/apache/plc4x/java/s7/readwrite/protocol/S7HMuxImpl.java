@@ -183,7 +183,7 @@ public class S7HMuxImpl extends MessageToMessageCodec<ByteBuf, ByteBuf> implemen
             }
             try {
                 if ((embeded_channel.attr(READ_TIME_OUT).get() > 0) &&
-                    (embeded_channel.attr(IS_PING_ACTIVE ).get() == true))
+                    (embeded_channel.attr(IS_PING_ACTIVE).get()))
                     tcp_channel.pipeline().addFirst("watchdog",
                             new ReadTimeoutHandler(embeded_channel.attr(READ_TIME_OUT).get()));
                 if (tcp_channel.isActive()) {
@@ -248,8 +248,7 @@ public class S7HMuxImpl extends MessageToMessageCodec<ByteBuf, ByteBuf> implemen
                 embeded_channel.attr(IS_PRIMARY).set(false);
                 embeded_channel.pipeline().fireUserEventTriggered(new ConnectEvent());
             }
-        };
-
+        }
 
         if ((tcp_channel == secondary_channel) &&
             (secondary_channel == ctx.channel()))
