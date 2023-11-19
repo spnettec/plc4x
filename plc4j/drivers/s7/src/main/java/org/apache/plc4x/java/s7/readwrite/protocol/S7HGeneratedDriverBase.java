@@ -22,8 +22,10 @@ import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.value.PlcValueHandler;
+import org.apache.plc4x.java.s7.readwrite.S7Driver;
 import org.apache.plc4x.java.s7.readwrite.TPKTPacket;
 import org.apache.plc4x.java.s7.readwrite.configuration.S7TcpTransportConfiguration;
+import org.apache.plc4x.java.s7.readwrite.context.S7DriverContext;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.ConfigurationFactory;
 import org.apache.plc4x.java.spi.connection.*;
@@ -145,7 +147,7 @@ public class S7HGeneratedDriverBase extends GeneratedDriverBase<TPKTPacket> {
         if(System.getProperty(PROPERTY_PLC4X_FORCE_FIRE_DISCOVER_EVENT) != null) {
             fireDiscoverEvent = Boolean.parseBoolean(System.getProperty(PROPERTY_PLC4X_FORCE_FIRE_DISCOVER_EVENT));
         }
-        //if (hmatcher.matches()) {
+        if (hmatcher.matches()) {
             return new S7HPlcConnection(
                     canPing(),
                     canRead(), canWrite(), canSubscribe(), canBrowse(),
@@ -161,8 +163,8 @@ public class S7HGeneratedDriverBase extends GeneratedDriverBase<TPKTPacket> {
                     getStackConfigurer(transport),
                     getOptimizer(),
                     getAuthentication());
-        //}
-/*
+        }
+
         return new DefaultNettyPlcConnection(
                 canPing(), canRead(), canWrite(), canSubscribe(), canBrowse(),
                 getTagHandler(),
@@ -173,13 +175,19 @@ public class S7HGeneratedDriverBase extends GeneratedDriverBase<TPKTPacket> {
                 awaitSetupComplete,
                 awaitDisconnectComplete,
                 awaitDiscoverComplete,
-                getStackConfigurer(transport),
+                getNonHStackConfigurer(),
                 getOptimizer(),
                 getAuthentication());
-
- */
     }
 
+    protected ProtocolStackConfigurer<TPKTPacket> getNonHStackConfigurer() {
+        return S7HSingleProtocolStackConfigurer.builder(TPKTPacket.class, TPKTPacket::staticParse)
+            .withProtocol(S7NonHProtocolLogic.class)
+            .withDriverContext(S7DriverContext.class)
+            .withPacketSizeEstimator(S7Driver.ByteLengthEstimator.class)
+            .withCorruptPacketRemover(S7Driver.CorruptPackageCleaner.class)
+            .build();
+    }
 
     @Override
     protected Class<? extends Configuration> getConfigurationType() {
