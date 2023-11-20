@@ -100,15 +100,11 @@ public class RequestTransactionManager {
     public void submit(Consumer<RequestTransaction> context) {
         RequestTransaction transaction = startRequest();
         context.accept(transaction);
-        // this.submit(transaction);
     }
 
     void submit(RequestTransaction handle) {
         assert handle.operation != null;
-        // Add this Request with this handle i the Worklog
-        // Put Transaction into Worklog
         workLog.add(handle);
-        // Try to Process the Worklog
         processWorklog();
     }
 

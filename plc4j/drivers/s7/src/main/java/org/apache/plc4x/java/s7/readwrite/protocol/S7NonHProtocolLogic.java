@@ -107,19 +107,12 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 		}
 		TPKTPacket packet = new TPKTPacket(createCOTPConnectionRequest(s7DriverContext.getCalledTsapId(),
 				s7DriverContext.getCallingTsapId(), s7DriverContext.getCotpTpduSize()));
-
-		context.getChannel().pipeline().names().forEach(s -> {
-			logger.debug("Nombre tuberias: " + s);
-		});
-
 		context.sendRequest(packet).onTimeout(e -> {
 			logger.info("Timeout during Connection establishing, closing channel...");
-            context.fireDisconnected();
+			context.fireDisconnected();
 		}).expectResponse(TPKTPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
 				.check(p -> p.getPayload() instanceof COTPPacketConnectionResponse)
 				.unwrap(p -> (COTPPacketConnectionResponse) p.getPayload()).handle(cotpPacketConnectionResponse -> {
-					logger.debug("Got COTP Connection Response");
-					logger.debug("Sending S7 Connection Request");
 					context.sendRequest(createS7ConnectionRequest(cotpPacketConnectionResponse)).onTimeout(e -> {
 						logger.warn("Timeout during Connection establishing, closing channel...");
 						context.fireDisconnected();
@@ -127,7 +120,6 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 							.unwrap(TPKTPacket::getPayload).only(COTPPacketData.class).unwrap(COTPPacket::getPayload)
 							.only(S7MessageResponseData.class).unwrap(S7Message::getParameter)
 							.only(S7ParameterSetupCommunication.class).handle(setupCommunication -> {
-								logger.debug("Got S7 Connection Response");
 								s7DriverContext.setMaxAmqCaller(setupCommunication.getMaxAmqCaller());
 								s7DriverContext.setMaxAmqCallee(setupCommunication.getMaxAmqCallee());
 								s7DriverContext.setPduSize(setupCommunication.getPduLength());
@@ -138,7 +130,6 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 									context.fireConnected();
 									return;
 								}
-								logger.debug("Sending S7 Identification Request");
 								TPKTPacket tpktPacket = createIdentifyRemoteMessage();
 								context.sendRequest(tpktPacket).onTimeout(e -> {
 									logger.warn("Timeout during Connection establishing, closing channel...");
@@ -150,7 +141,6 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 										.unwrap(p -> ((S7MessageUserData) p.getPayload()))
 										.check(p -> p.getPayload() instanceof S7PayloadUserData)
 										.handle(messageUserData -> {
-											logger.debug("Got S7 Identification Response");
 											S7PayloadUserData payloadUserData = (S7PayloadUserData) messageUserData
 													.getPayload();
 											extractControllerTypeAndFireConnected(context, payloadUserData);
@@ -159,10 +149,6 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 				});
 	}
 
-	/*
-	 * It performs the sequential and safe shutdown of the driver. Completion of
-	 * pending requests, executors and associated tasks.
-	 */
 	@Override
 	public void onDisconnect(ConversationContext<TPKTPacket> context) {
 		tm.shutdown();
@@ -238,22 +224,16 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 				: new S7MessageRequest(tpduId, request.getParameter(), request.getPayload());
 
 		TPKTPacket tpktPacket = new TPKTPacket(new COTPPacketData(null, message, true, (byte) tpduId));
-
-		// Start a new request-transaction (Is ended in the response-handler)
-
-		RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
-
-		transaction.submit(
-				() -> context.sendRequest(tpktPacket)
-                    .onTimeout(new TransactionErrorCallback<>(future, transaction))
-                    .onError(new TransactionErrorCallback<>(future, transaction))
-                    .expectResponse(TPKTPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
-                    .check(p -> p.getPayload() instanceof COTPPacketData)
-                    .unwrap(p -> (COTPPacketData) p.getPayload()).check(p -> p.getPayload() != null)
-                    .unwrap(COTPPacket::getPayload).check(p -> p.getTpduReference() == tpduId).handle(p -> {
-                        future.complete(p);
-                        transaction.endRequest();
-                    }));
+		tm.submit(transaction -> transaction.submit(
+				() -> context.sendRequest(tpktPacket).onTimeout(new TransactionErrorCallback<>(future, transaction))
+						.onError(new TransactionErrorCallback<>(future, transaction))
+						.expectResponse(TPKTPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
+						.check(p -> p.getPayload() instanceof COTPPacketData)
+						.unwrap(p -> (COTPPacketData) p.getPayload()).check(p -> p.getPayload() != null)
+						.unwrap(COTPPacket::getPayload).check(p -> p.getTpduReference() == tpduId).handle(p -> {
+							future.complete(p);
+							transaction.endRequest();
+						})));
 
 		return future;
 	}
@@ -285,8 +265,7 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 		TPKTPacket tpktPacket = new TPKTPacket(
 				new COTPPacketData(null, new S7MessageRequest(tpduId, new S7ParameterWriteVarRequest(parameterItems),
 						new S7PayloadWriteVarRequest(payloadItems)), true, (byte) tpduId));
-		RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
-		transaction.submit(() -> context.sendRequest(tpktPacket)
+		tm.submit(transaction -> context.sendRequest(tpktPacket)
 				.onTimeout(new TransactionErrorCallback<>(future, transaction))
 				.onError(new TransactionErrorCallback<>(future, transaction))
 				.expectResponse(TPKTPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
