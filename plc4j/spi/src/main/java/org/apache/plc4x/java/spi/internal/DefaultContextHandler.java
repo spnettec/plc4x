@@ -22,7 +22,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import org.apache.plc4x.java.spi.ConversationContext;
 
-class DefaultContextHandler implements ConversationContext.ContextHandler {
+public class DefaultContextHandler implements ConversationContext.ContextHandler {
 
     private final Future<Void> awaitable;
     private final Runnable cancel;

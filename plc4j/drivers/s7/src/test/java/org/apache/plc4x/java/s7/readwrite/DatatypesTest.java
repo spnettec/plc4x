@@ -143,11 +143,7 @@ public class DatatypesTest {
         } catch (Exception e){
             System.out.println("error:"+e.getMessage());
         }
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                System.out.println("sleep:"+e.getMessage());
-            }
+
         }
     }
 
