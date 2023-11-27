@@ -264,6 +264,7 @@ public class S7Configuration extends S7TcpTransportConfiguration implements Conf
             ", remote-rack2=" + remoteRack2 +
             ", remote-slot2=" + remoteSlot2 +
             ", remote-tsap=" + remoteTsap +
+            ", port=" + getDefaultPort() +
             ", pduSize=" + pduSize +
             ", maxAmqCaller=" + maxAmqCaller +
             ", maxAmqCallee=" + maxAmqCallee +

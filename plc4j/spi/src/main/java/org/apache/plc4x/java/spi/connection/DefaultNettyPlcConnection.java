@@ -213,7 +213,7 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
         return new ChannelInitializer<>() {
             @Override
             protected void initChannel(Channel channel) {
-                // Build the protocol stack for communicating with the s7 protocol.
+                // Build the protocol stack for communicating with desired protocol.
                 ChannelPipeline pipeline = channel.pipeline();
                 pipeline.addLast(new ChannelInboundHandlerAdapter() {
                     @Override
@@ -226,10 +226,12 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
                         } else if (evt instanceof DisconnectedEvent) {
                             sessionDisconnectCompleteFuture.complete(null);
                             eventListeners.forEach(ConnectionStateListener::disconnected);
+                            // Fix for https://github.com/apache/plc4x/issues/801
                             super.userEventTriggered(ctx, evt);
                         } else if (evt instanceof DiscoveredEvent) {
                             sessionDiscoverCompleteFuture.complete(((DiscoveredEvent) evt).getConfiguration());
-                        } else if (evt instanceof ConnectEvent) {
+                        } else if (evt instanceof ConnectEvent || evt instanceof DiscoverEvent) {
+                            // Fix for https://github.com/apache/plc4x/issues/801
                             if (!sessionSetupCompleteFuture.isCompletedExceptionally()) {
                                 if (awaitSessionSetupComplete) {
                                     setProtocol(
@@ -237,7 +239,8 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
                                                     configuration,
                                                     pipeline,
                                                     getAuthentication(),
-                                                    channelFactory.isPassive()
+                                                    channelFactory.isPassive(),
+                                                    listeners
                                             )
                                     );
                                 }
@@ -264,7 +267,7 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
                 // Fix for https://github.com/apache/plc4x/issues/801
                 if (!awaitSessionSetupComplete) {
                     setProtocol(stackConfigurer.configurePipeline(configuration, pipeline, getAuthentication(),
-                            channelFactory.isPassive()));
+                            channelFactory.isPassive(), listeners));
                 }
             }
         };
