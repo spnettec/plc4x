@@ -245,7 +245,7 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
                             super.userEventTriggered(ctx, evt);
                         } else if (evt instanceof DiscoveredEvent) {
                             sessionDiscoverCompleteFuture.complete(((DiscoveredEvent) evt).getConfiguration());
-                        } else if (evt instanceof ConnectEvent || evt instanceof DiscoverEvent) {
+                        } else if (evt instanceof ConnectEvent) {
                             // Fix for https://github.com/apache/plc4x/issues/801
                             if (!sessionSetupCompleteFuture.isCompletedExceptionally()) {
                                 if (awaitSessionSetupComplete) {
