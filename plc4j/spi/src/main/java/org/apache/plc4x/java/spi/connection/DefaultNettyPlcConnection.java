@@ -110,36 +110,33 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
             // Have the channel factory create a new channel instance.
             // TODO: Why is this code necessary? Discovery should be an API function that is
             //  explicitly called independently from the connection establishment.
-            if (fireDiscoverEvent) {
-                channel = channelFactory.createChannel(getChannelHandler(sessionSetupCompleteFuture, sessionDisconnectCompleteFuture, sessionDiscoveredCompleteFuture));
-                channel.closeFuture().addListener(future -> {
-                    if (!sessionDiscoveredCompleteFuture.isDone()) {
+            channel = channelFactory.createChannel(getChannelHandler(sessionSetupCompleteFuture, sessionDisconnectCompleteFuture, sessionDiscoveredCompleteFuture));
+            channel.closeFuture().addListener(future -> {
+                if (!sessionSetupCompleteFuture.isDone()) {
+                    sessionSetupCompleteFuture.completeExceptionally(
+                            new PlcIoException("Connection terminated by remote"));
+                }
+                if (!sessionDiscoveredCompleteFuture.isDone()) {
+                    //Do Nothing
+                    try {
+                        sessionDiscoveredCompleteFuture.complete(null);
+                    } catch (Exception e) {
                         //Do Nothing
-                        try {
-                            sessionDiscoveredCompleteFuture.complete(null);
-                        } catch (Exception e) {
-                            //Do Nothing
-                        }
-
                     }
-                });
+
+                }
+            });
+
+            // Send an event to the pipeline telling the Protocol filters what's going on.
+            sendChannelCreatedEvent();
+
+            if(fireDiscoverEvent){
                 channel.pipeline().fireUserEventTriggered(new DiscoverEvent());
             }
             if (awaitSessionDiscoverComplete) {
                 // Wait till the connection is established.
                 sessionDiscoveredCompleteFuture.get();
             }
-
-            channel = channelFactory.createChannel(getChannelHandler(sessionSetupCompleteFuture, sessionDisconnectCompleteFuture, sessionDiscoveredCompleteFuture));
-            channel.closeFuture().addListener(future -> {
-                if (!sessionSetupCompleteFuture.isDone()) {
-                    sessionSetupCompleteFuture.completeExceptionally(
-                        new PlcIoException("Connection terminated by remote"));
-                }
-            });
-            // Send an event to the pipeline telling the Protocol filters what's going on.
-            sendChannelCreatedEvent();
-
             // Wait till the connection is established.
             if (awaitSessionSetupComplete) {
                 sessionSetupCompleteFuture.get();

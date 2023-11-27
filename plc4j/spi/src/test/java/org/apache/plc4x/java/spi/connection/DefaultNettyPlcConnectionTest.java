@@ -50,40 +50,36 @@ class DefaultNettyPlcConnectionTest {
         final GateKeeper disconnect = new GateKeeper("disconnect");
         final GateKeeper close = new GateKeeper("close");
 
-        ProtocolStackConfigurer<Message> stackConfigurer = new ProtocolStackConfigurer<>() {
-            @Override
-            public Plc4xProtocolBase<Message> configurePipeline(Configuration configuration, ChannelPipeline pipeline, PlcAuthentication authentication, boolean passive, List<EventListener> listeners) {
-                TestProtocolBase base = new TestProtocolBase(discovery, connect, disconnect, close);
-                Plc4xNettyWrapper<Message> context = new Plc4xNettyWrapper<>(new NettyHashTimerTimeoutManager(), pipeline, passive, base, authentication, Message.class);
-                pipeline.addLast(context);
-                return base;
-            }
+        ProtocolStackConfigurer<Message> stackConfigurer = (configuration, pipeline, authentication, passive, listeners) -> {
+            TestProtocolBase base = new TestProtocolBase(discovery, connect, disconnect, close);
+            Plc4xNettyWrapper<Message> context = new Plc4xNettyWrapper<>(new NettyHashTimerTimeoutManager(),
+                    pipeline, passive, base, authentication, Message.class);
+            pipeline.addLast(context);
+            return base;
         };
 
         DefaultNettyPlcConnection connection = new PlcConnectionFactory().withDiscovery().create(channelFactory, stackConfigurer);
-        commonPool().submit(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    logger.info("Activating connection");
-                    connection.connect();
-                } catch (PlcConnectionException e) {
-                    throw new RuntimeException(e);
-                }
+        commonPool().submit(() -> {
+            try {
+                logger.info("Activating connection");
+                connection.connect();
+            } catch (PlcConnectionException e) {
+                throw new RuntimeException(e);
             }
         });
 
+
         logger.info("Warming up");
         expect(false, false, false, false, discovery, connect, disconnect, close);
-        discovery.permitIn();
-
-        discovery.awaitOut();
-        logger.info("Verify discovery phase completion");
-        expect(true, false, false, false, discovery, connect, disconnect, close);
         connect.permitIn();
-
         connect.awaitOut();
+
         logger.info("Verify connection completion");
+        expect(false, true, false, false, discovery, connect, disconnect, close);
+        discovery.permitIn();
+        discovery.awaitOut();
+
+        logger.info("Verify discovery phase completion");
         expect(true, true, false, false, discovery, connect, disconnect, close);
 
         logger.info("Close connection");

@@ -103,7 +103,9 @@ public class CustomProtocolStackConfigurer<BASE_PACKET_CLASS extends Message> im
         if (driverContext != null) {
             protocol.setDriverContext(driverContext);
         }
-        pipeline.addLast(new EventListenerMessageCodec(listeners));
+        if(!listeners.isEmpty()) {
+            pipeline.addLast(new EventListenerMessageCodec(listeners));
+        }
         Plc4xNettyWrapper<BASE_PACKET_CLASS> context = new Plc4xNettyWrapper<>(new NettyHashTimerTimeoutManager(), pipeline, passive, protocol, authentication, basePacketClass);
         pipeline.addLast(context);
         return protocol;
