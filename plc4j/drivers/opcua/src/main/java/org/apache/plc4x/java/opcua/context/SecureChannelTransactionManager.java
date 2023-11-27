@@ -67,16 +67,19 @@ public class SecureChannelTransactionManager {
         int transactionId = transactionIdentifierGenerator.getAndIncrement();
         if(transactionIdentifierGenerator.get() == DEFAULT_MAX_REQUEST_ID) {
             transactionIdentifierGenerator.set(1);
-            transactionId = 1;
         }
         return transactionId;
     }
 
+    /**
+     * Returns the next transaction identifier.
+     *
+     * @return the next sequential transaction identifier
+     */
     private int getActiveTransactionIdentifier() {
         int transactionId = activeTransactionId.incrementAndGet();
         if(activeTransactionId.get() == DEFAULT_MAX_REQUEST_ID) {
             activeTransactionId.set(1);
-            transactionId = 1;
         }
         return transactionId;
     }

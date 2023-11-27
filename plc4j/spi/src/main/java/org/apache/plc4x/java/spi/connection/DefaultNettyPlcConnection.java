@@ -108,20 +108,35 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
             ConfigurationFactory.configure(configuration, channelFactory);
 
             // Have the channel factory create a new channel instance.
+            // TODO: Why is this code necessary? Discovery should be an API function that is
+            //  explicitly called independently from the connection establishment.
+            if (fireDiscoverEvent) {
+                channel = channelFactory.createChannel(getChannelHandler(sessionSetupCompleteFuture, sessionDisconnectCompleteFuture, sessionDiscoveredCompleteFuture));
+                channel.closeFuture().addListener(future -> {
+                    if (!sessionDiscoveredCompleteFuture.isDone()) {
+                        //Do Nothing
+                        try {
+                            sessionDiscoveredCompleteFuture.complete(null);
+                        } catch (Exception e) {
+                            //Do Nothing
+                        }
+
+                    }
+                });
+                channel.pipeline().fireUserEventTriggered(new DiscoverEvent());
+            }
+            if (awaitSessionDiscoverComplete) {
+                // Wait till the connection is established.
+                sessionDiscoveredCompleteFuture.get();
+            }
+
             channel = channelFactory.createChannel(getChannelHandler(sessionSetupCompleteFuture, sessionDisconnectCompleteFuture, sessionDiscoveredCompleteFuture));
             channel.closeFuture().addListener(future -> {
                 if (!sessionSetupCompleteFuture.isDone()) {
-                    channel.pipeline().fireUserEventTriggered(new CloseConnectionEvent());
                     sessionSetupCompleteFuture.completeExceptionally(
                         new PlcIoException("Connection terminated by remote"));
                 }
             });
-            if (fireDiscoverEvent) {
-                channel.pipeline().fireUserEventTriggered(new DiscoverEvent());
-            }
-            if (awaitSessionDiscoverComplete) {
-                sessionDiscoveredCompleteFuture.get();
-            }
             // Send an event to the pipeline telling the Protocol filters what's going on.
             sendChannelCreatedEvent();
 

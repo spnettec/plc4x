@@ -18,12 +18,11 @@
  */
 package org.apache.plc4x.java.s7.readwrite.configuration;
 
-import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.BooleanDefaultValue;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultValue;
 
-public class S7Configuration extends S7TcpTransportConfiguration implements Configuration {
+public class S7Configuration extends S7TcpTransportConfiguration {
 
     @ConfigurationParameter("local-group")
     @IntDefaultValue(3)

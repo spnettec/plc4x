@@ -1131,7 +1131,6 @@ public class SecureChannel {
         int transactionId = requestHandleGenerator.getAndIncrement();
         if (requestHandleGenerator.get() == SecureChannelTransactionManager.DEFAULT_MAX_REQUEST_ID) {
             requestHandleGenerator.set(1);
-            transactionId = 1;
         }
         return transactionId;
     }

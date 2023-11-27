@@ -387,7 +387,7 @@ public class S7HPlcConnection extends DefaultNettyPlcConnection implements Runna
             + "ACTIVO PRIMARIO         : " + ((null == primaryChannel) ? "NULL" : primaryChannel.isActive()) + "\r\n"
             + "INSTAMCIA SECUNDARIO    : " + ((null == secondaryChannel) ? "NULL" : secondaryChannel.toString()) + "\r\n"
             + "ACTIVO SECUNDARIO       : " + ((null == secondaryChannel) ? "NULL" : secondaryChannel.isActive()) + "\r\n"
-            + "CANAL CONECTADO?        : " + channel.attr(S7HMuxImpl.IS_CONNECTED).get() + "\r\n"
+            + "CANAL CONECTADO?        : " + channel.attr(IS_CONNECTED).get() + "\r\n"
             + "CANAL ESTUVO CONECTADO? : " + channel.attr(S7HMuxImpl.WAS_CONNECTED).get() + "\r\n"
             + "CONTADORES              : " + slicePing + " : " + sliceRetryTime + "\r\n"
             + "*************************************************");

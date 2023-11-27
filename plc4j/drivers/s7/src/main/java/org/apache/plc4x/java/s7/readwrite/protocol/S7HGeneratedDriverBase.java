@@ -53,7 +53,6 @@ public class S7HGeneratedDriverBase extends GeneratedDriverBase<TPKTPacket> {
 
     @Override
     public PlcConnection getConnection(String connectionString) throws PlcConnectionException {
-        ConfigurationFactory configurationFactory = new ConfigurationFactory();
         // Split up the connection string into it's individual segments.
         Matcher smatcher = URI_PATTERN.matcher(connectionString);
         Matcher hmatcher = URI_H_PATTERN.matcher(connectionString);
@@ -79,7 +78,7 @@ public class S7HGeneratedDriverBase extends GeneratedDriverBase<TPKTPacket> {
         }
 
         // Create the configuration object.
-        Configuration configuration = configurationFactory.createConfiguration(
+        Configuration configuration = new ConfigurationFactory().createConfiguration(
             getConfigurationType(), protocolCode, transportCode, transportConfig, paramString);
         if (configuration == null) {
             throw new PlcConnectionException("Unsupported configuration");
@@ -99,24 +98,8 @@ public class S7HGeneratedDriverBase extends GeneratedDriverBase<TPKTPacket> {
             throw new PlcConnectionException("Unsupported transport " + transportCode);
         }
 
-        // Find out the type of the transport configuration.
-        Class<? extends TransportConfiguration> transportConfigurationType = transport.getTransportConfigType();
-        if(this instanceof TransportConfigurationTypeProvider) {
-            TransportConfigurationTypeProvider transportConfigurationTypeProvider =
-                (TransportConfigurationTypeProvider) this;
-            Class<? extends TransportConfiguration> driverTransportConfigurationType =
-                transportConfigurationTypeProvider.getTransportConfigurationType(transportCode);
-            if(driverTransportConfigurationType != null) {
-                transportConfigurationType = driverTransportConfigurationType;
-            }
-        }
-        // Use the transport configuration type to actually configure the transport instance.
-        if(transportConfigurationType != null) {
-            Configuration transportConfiguration = configurationFactory
-                .createPrefixedConfiguration(transportConfigurationType,
-                    transportCode, protocolCode, transportCode, transportConfig, paramString);
-            configure(transportConfiguration, transport);
-        }
+        // Inject the configuration into the transport.
+        configure(configuration, transport);
 
         // Create an instance of the communication channel which the driver should use.
         ChannelFactory channelFactory = transport.createChannelFactory(transportConfig);
