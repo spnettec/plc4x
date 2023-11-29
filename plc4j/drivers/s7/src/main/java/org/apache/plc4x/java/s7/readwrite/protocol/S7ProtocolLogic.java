@@ -21,6 +21,7 @@ package org.apache.plc4x.java.s7.readwrite.protocol;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
+import io.netty.channel.Channel;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
@@ -178,6 +179,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
         context.sendRequest(packet)
             .onTimeout(e -> {
                 logger.info("Timeout during Connection establishing, closing channel...");
+                context.getChannel().close();
                 // TODO: We're saying that we're closing the channel, but not closing the channel ... sure, this is what we want?
                 //context.getChannel().close();
             })
@@ -392,8 +394,8 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
         RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
 
         transaction.submit(() -> context.sendRequest(tpktPacket)
-            .onTimeout(new TransactionErrorCallback<>(future, transaction))
-            .onError(new TransactionErrorCallback<>(future, transaction))
+            .onTimeout(new TransactionErrorCallback<>(future, transaction,context.getChannel(),true,false))
+            .onError(new TransactionErrorCallback<>(future, transaction,context.getChannel()))
             .expectResponse(TPKTPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
             .check(p -> p.getPayload() instanceof COTPPacketData)
             .unwrap(p -> (COTPPacketData) p.getPayload())
@@ -468,8 +470,8 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
         // Start a new request-transaction (Is ended in the response-handler)
         RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
         transaction.submit(() -> context.sendRequest(tpktPacket)
-            .onTimeout(new TransactionErrorCallback<>(future, transaction))
-            .onError(new TransactionErrorCallback<>(future, transaction))
+            .onTimeout(new TransactionErrorCallback<>(future, transaction,context.getChannel(),true,false))
+            .onError(new TransactionErrorCallback<>(future, transaction,context.getChannel()))
             .expectResponse(TPKTPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
             .check(p -> p.getPayload() instanceof COTPPacketData)
             .unwrap(p -> ((COTPPacketData) p.getPayload()))
@@ -511,8 +513,8 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
         // Start a new request-transaction (Is ended in the response-handler)
         RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
         transaction.submit(() -> context.sendRequest(tpktPacket)
-            .onTimeout(new TransactionErrorCallback<>(future, transaction))
-            .onError(new TransactionErrorCallback<>(future, transaction))
+            .onTimeout(new TransactionErrorCallback<>(future, transaction,context.getChannel(),true,false))
+            .onError(new TransactionErrorCallback<>(future, transaction,context.getChannel()))
             .expectResponse(TPKTPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
             .check(p -> p.getPayload() instanceof COTPPacketData)
             .unwrap(p -> ((COTPPacketData) p.getPayload()))
@@ -610,8 +612,8 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
             // Start a new request-transaction (Is ended in the response-handler)
             RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
             transaction.submit(() -> context.sendRequest(tpktPacket)
-                .onTimeout(new TransactionErrorCallback<>(future, transaction))
-                .onError(new TransactionErrorCallback<>(future, transaction))
+                .onTimeout(new TransactionErrorCallback<>(future, transaction,context.getChannel(),true,false))
+                .onError(new TransactionErrorCallback<>(future, transaction,context.getChannel()))
                 .expectResponse(TPKTPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
                 .check(p -> p.getPayload() instanceof COTPPacketData)
                 .unwrap(p -> ((COTPPacketData) p.getPayload()))
@@ -700,8 +702,8 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
         // Start a new request-transaction (Is ended in the response-handler)
         RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
         transaction.submit(() -> context.sendRequest(tpktPacket)
-            .onTimeout(new TransactionErrorCallback<>(future, transaction))
-            .onError(new TransactionErrorCallback<>(future, transaction))
+            .onTimeout(new TransactionErrorCallback<>(future, transaction,context.getChannel(),true,false))
+            .onError(new TransactionErrorCallback<>(future, transaction,context.getChannel()))
             .expectResponse(TPKTPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
             .check(p -> p.getPayload() instanceof COTPPacketData)
             .unwrap(p -> ((COTPPacketData) p.getPayload()))
@@ -2079,7 +2081,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
         context.sendRequest(request)
             .onTimeout(e -> {
                 logger.warn("Timeout during Connection establishing, closing channel...");
-                //context.getChannel().close();
+                context.getChannel().close();
             })
             .expectResponse(TPKTPacket.class, Duration.ofMillis(1000))
             .check(p -> p.getPayload() instanceof COTPPacketData)
@@ -2121,7 +2123,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
         context.sendRequest(request)
             .onTimeout(e -> {
                 logger.warn("Timeout during Connection establishing, closing channel...");
-                //context.getChannel().close();
+                context.getChannel().close();
             })
             .expectResponse(TPKTPacket.class, Duration.ofMillis(1000))
             .check(p -> p.getPayload() instanceof COTPPacketData)
@@ -2152,20 +2154,40 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
     /**
      * A generic purpose error handler which terminates transaction and calls back given future with error message.
      */
-    static class TransactionErrorCallback<T, E extends Throwable> implements Consumer<TimeoutException>, BiConsumer<TPKTPacket, E> {
+    static class TransactionErrorCallback<T, E extends Throwable>
+            implements Consumer<TimeoutException>, BiConsumer<TPKTPacket, E> {
 
         private final CompletableFuture<T> future;
         private final RequestTransactionManager.RequestTransaction transaction;
+        private final Channel channel;
 
-        TransactionErrorCallback(CompletableFuture<T> future, RequestTransactionManager.RequestTransaction transaction) {
+        private final boolean timeOutCloseChannel;
+        private final boolean errCloseChannel;
+
+        TransactionErrorCallback(CompletableFuture<T> future,
+                RequestTransactionManager.RequestTransaction transaction,Channel channel) {
             this.future = future;
             this.transaction = transaction;
+            this.channel = channel;
+            this.timeOutCloseChannel = false;
+            this.errCloseChannel = false;
+        }
+        TransactionErrorCallback(CompletableFuture<T> future,
+                RequestTransactionManager.RequestTransaction transaction,Channel channel,boolean timeOutCloseChannel,boolean errCloseChannel) {
+            this.future = future;
+            this.transaction = transaction;
+            this.channel = channel;
+            this.timeOutCloseChannel = timeOutCloseChannel;
+            this.errCloseChannel = errCloseChannel;
         }
 
         @Override
         public void accept(TimeoutException e) {
             try {
                 transaction.endRequest();
+                if(timeOutCloseChannel) {
+                    channel.close();
+                }
             } catch (Exception ex) {
                 logger.info(ex.getMessage());
             }
@@ -2175,6 +2197,9 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
         @Override
         public void accept(TPKTPacket tpktPacket, E e) {
             try {
+                if(errCloseChannel) {
+                    channel.close();
+                }
                 transaction.endRequest();
             } catch (Exception ex) {
                 logger.info(ex.getMessage());

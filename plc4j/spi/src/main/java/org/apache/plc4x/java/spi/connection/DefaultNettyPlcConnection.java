@@ -268,7 +268,7 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
                         new ChannelInboundHandlerAdapter() {
                             @Override
                             public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws PlcConnectionException {
-                                logger.error("unknown error, close the connection", cause);
+                                logger.error("unknown error, close the connection:{}", cause.getMessage());
                                 close();
                             }
                         }

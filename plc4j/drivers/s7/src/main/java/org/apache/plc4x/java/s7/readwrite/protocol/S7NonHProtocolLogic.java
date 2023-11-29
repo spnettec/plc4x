@@ -20,6 +20,7 @@ package org.apache.plc4x.java.s7.readwrite.protocol;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import io.netty.channel.Channel;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.*;
@@ -100,14 +101,14 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 		TPKTPacket packet = new TPKTPacket(createCOTPConnectionRequest(s7DriverContext.getCalledTsapId(),
 				s7DriverContext.getCallingTsapId(), s7DriverContext.getCotpTpduSize()));
 		context.sendRequest(packet).onTimeout(e -> {
-			logger.info("Timeout during Connection establishing, closing channel...");
-			context.fireDisconnected();
+			logger.info("Timeout during Connection establishing, closing channel1...");
+			context.getChannel().close();
 		}).expectResponse(TPKTPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
 				.check(p -> p.getPayload() instanceof COTPPacketConnectionResponse)
 				.unwrap(p -> (COTPPacketConnectionResponse) p.getPayload()).handle(cotpPacketConnectionResponse -> {
 					context.sendRequest(createS7ConnectionRequest(cotpPacketConnectionResponse)).onTimeout(e -> {
-						logger.warn("Timeout during Connection establishing, closing channel...");
-						context.fireDisconnected();
+						logger.warn("Timeout during Connection establishing, closing channel2...");
+						context.getChannel().close();
 					}).expectResponse(TPKTPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
 							.unwrap(TPKTPacket::getPayload).only(COTPPacketData.class).unwrap(COTPPacket::getPayload)
 							.only(S7MessageResponseData.class).unwrap(S7Message::getParameter)
@@ -124,7 +125,8 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 								}
 								TPKTPacket tpktPacket = createIdentifyRemoteMessage();
 								context.sendRequest(tpktPacket).onTimeout(e -> {
-									logger.warn("Timeout during Connection establishing, closing channel...");
+									logger.warn("Timeout during Connection establishing, closing channel3...");
+									context.getChannel().close();
 								}).expectResponse(TPKTPacket.class,
 										Duration.ofMillis(configuration.getTimeoutRequest()))
 										.check(p -> p.getPayload() instanceof COTPPacketData)
@@ -203,6 +205,11 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 	 * {@link S7MessageResponseData} and does not further check that!
 	 */
 	private CompletableFuture<S7Message> readInternal(S7Message request) {
+		if (!isConnected()) {
+			CompletableFuture<S7Message> future = new CompletableFuture<>();
+			future.completeExceptionally(new PlcRuntimeException("Disconnected"));
+			return future;
+		}
 		CompletableFuture<S7Message> future = new CompletableFuture<>();
 		int thisTpduId = 0;
 		if (this.s7DriverContext.getControllerType() != S7ControllerType.S7_200) {
@@ -217,8 +224,8 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 
 		TPKTPacket tpktPacket = new TPKTPacket(new COTPPacketData(null, message, true, (byte) tpduId));
 		tm.submit(transaction -> transaction.submit(
-				() -> context.sendRequest(tpktPacket).onTimeout(new TransactionErrorCallback<>(future, transaction))
-						.onError(new TransactionErrorCallback<>(future, transaction))
+				() -> context.sendRequest(tpktPacket).onTimeout(new TransactionErrorCallback<>(future, transaction,context.getChannel(),true,false))
+						.onError(new TransactionErrorCallback<>(future, transaction,context.getChannel()))
 						.expectResponse(TPKTPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
 						.check(p -> p.getPayload() instanceof COTPPacketData)
 						.unwrap(p -> (COTPPacketData) p.getPayload()).check(p -> p.getPayload() != null)
@@ -258,8 +265,8 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 				new COTPPacketData(null, new S7MessageRequest(tpduId, new S7ParameterWriteVarRequest(parameterItems),
 						new S7PayloadWriteVarRequest(payloadItems)), true, (byte) tpduId));
 		tm.submit(transaction -> context.sendRequest(tpktPacket)
-				.onTimeout(new TransactionErrorCallback<>(future, transaction))
-				.onError(new TransactionErrorCallback<>(future, transaction))
+				.onTimeout(new TransactionErrorCallback<>(future, transaction,context.getChannel(),true,false))
+				.onError(new TransactionErrorCallback<>(future, transaction,context.getChannel()))
 				.expectResponse(TPKTPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
 				.check(p -> p.getPayload() instanceof COTPPacketData).unwrap(p -> ((COTPPacketData) p.getPayload()))
 				.unwrap(COTPPacket::getPayload).check(p -> p.getTpduReference() == tpduId).handle(p -> {
@@ -768,8 +775,8 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 		tpduGenerator.compareAndExchange(0xFFFF, 1);
 		TPKTPacket request = createSzlReassembledRequest(tpduId, sequenceNumber);
 		RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
-		context.sendRequest(request).onTimeout(new TransactionErrorCallback<>(future, transaction))
-				.onError(new TransactionErrorCallback<>(future, transaction))
+		context.sendRequest(request).onTimeout(new TransactionErrorCallback<>(future, transaction,context.getChannel(),true,false))
+				.onError(new TransactionErrorCallback<>(future, transaction,context.getChannel()))
 				.expectResponse(TPKTPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
 				.check(p -> p.getPayload() instanceof COTPPacketData).unwrap(p -> ((COTPPacketData) p.getPayload()))
 				.check(p -> p.getPayload() instanceof S7MessageUserData)
@@ -804,17 +811,35 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 
 		private final CompletableFuture<T> future;
 		private final RequestTransactionManager.RequestTransaction transaction;
+		private final Channel channel;
+
+		private final boolean timeOutCloseChannel;
+		private final boolean errCloseChannel;
 
 		TransactionErrorCallback(CompletableFuture<T> future,
-				RequestTransactionManager.RequestTransaction transaction) {
+				RequestTransactionManager.RequestTransaction transaction,Channel channel) {
 			this.future = future;
 			this.transaction = transaction;
+			this.channel = channel;
+			this.timeOutCloseChannel = false;
+			this.errCloseChannel = false;
+		}
+		TransactionErrorCallback(CompletableFuture<T> future,
+				RequestTransactionManager.RequestTransaction transaction,Channel channel,boolean timeOutCloseChannel,boolean errCloseChannel) {
+			this.future = future;
+			this.transaction = transaction;
+			this.channel = channel;
+			this.timeOutCloseChannel = timeOutCloseChannel;
+			this.errCloseChannel = errCloseChannel;
 		}
 
 		@Override
 		public void accept(TimeoutException e) {
 			try {
 				transaction.endRequest();
+				if(timeOutCloseChannel) {
+					channel.close();
+				}
 			} catch (Exception ex) {
 				logger.info(ex.getMessage());
 			}
@@ -824,6 +849,9 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 		@Override
 		public void accept(TPKTPacket tpktPacket, E e) {
 			try {
+				if(errCloseChannel) {
+					channel.close();
+				}
 				transaction.endRequest();
 			} catch (Exception ex) {
 				logger.info(ex.getMessage());
