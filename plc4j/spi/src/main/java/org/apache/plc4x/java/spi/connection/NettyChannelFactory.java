@@ -23,6 +23,10 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.EventLoopGroup;
+import io.netty.channel.epoll.Epoll;
+import io.netty.channel.epoll.EpollEventLoopGroup;
+import io.netty.channel.kqueue.KQueue;
+import io.netty.channel.kqueue.KQueueEventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.slf4j.Logger;
@@ -90,7 +94,13 @@ public abstract class NettyChannelFactory implements ChannelFactory {
      * Transports which have to use a different EventLoopGroup have to override {#getEventLoopGroup()}.
      */
     public EventLoopGroup getEventLoopGroup() {
-        return new NioEventLoopGroup();
+        if (Epoll.isAvailable()) {
+            return  new EpollEventLoopGroup();
+        } if(KQueue.isAvailable()) {
+            return new KQueueEventLoopGroup();
+        } else {
+            return new NioEventLoopGroup();
+        }
     }
 
     @Override
