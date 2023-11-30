@@ -25,9 +25,12 @@ import io.netty.channel.ChannelHandler;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.epoll.Epoll;
 import io.netty.channel.epoll.EpollEventLoopGroup;
+import io.netty.channel.epoll.EpollSocketChannel;
 import io.netty.channel.kqueue.KQueue;
 import io.netty.channel.kqueue.KQueueEventLoopGroup;
+import io.netty.channel.kqueue.KQueueSocketChannel;
 import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.nio.NioSocketChannel;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -94,12 +97,22 @@ public abstract class NettyChannelFactory implements ChannelFactory {
      * Transports which have to use a different EventLoopGroup have to override {#getEventLoopGroup()}.
      */
     public EventLoopGroup getEventLoopGroup() {
-        if (Epoll.isAvailable()) {
+        if (classIsPresent("io.netty.channel.epoll.Epoll") && Epoll.isAvailable()) {
             return  new EpollEventLoopGroup();
-        } if(KQueue.isAvailable()) {
+        } else if(classIsPresent("io.netty.channel.kqueue.KQueue") && KQueue.isAvailable()) {
             return new KQueueEventLoopGroup();
         } else {
             return new NioEventLoopGroup();
+        }
+    }
+
+    public Class<? extends Channel> getChannelDefault() {
+        if (classIsPresent("io.netty.channel.epoll.Epoll") && Epoll.isAvailable()) {
+            return EpollSocketChannel.class;
+        } else if(classIsPresent("io.netty.channel.kqueue.KQueue") && KQueue.isAvailable()) {
+            return KQueueSocketChannel.class;
+        } else {
+            return NioSocketChannel.class;
         }
     }
 
@@ -172,5 +185,12 @@ public abstract class NettyChannelFactory implements ChannelFactory {
             logger.warn("Trying to remove EventLoop for Channel {} but have none stored", channel);
         }
     }
-
+    private static boolean classIsPresent(String className){
+        try{
+            Class.forName(className);
+            return true;
+        } catch (ClassNotFoundException e){
+            return false;
+        }
+    }
 }

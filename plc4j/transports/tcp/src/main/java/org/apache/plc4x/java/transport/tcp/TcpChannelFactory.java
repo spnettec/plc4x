@@ -46,7 +46,7 @@ public class TcpChannelFactory extends NettyChannelFactory implements HasConfigu
 
     @Override
     public Class<? extends Channel> getChannel() {
-        return NioSocketChannel.class;
+        return super.getChannelDefault();
     }
 
     @Override
