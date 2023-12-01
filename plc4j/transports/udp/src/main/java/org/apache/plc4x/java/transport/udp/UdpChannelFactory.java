@@ -21,9 +21,17 @@ package org.apache.plc4x.java.transport.udp;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelPipeline;
+import io.netty.channel.epoll.Epoll;
+import io.netty.channel.epoll.EpollDatagramChannel;
+import io.netty.channel.epoll.EpollEventLoopGroup;
+import io.netty.channel.kqueue.KQueue;
+import io.netty.channel.kqueue.KQueueDatagramChannel;
+import io.netty.channel.kqueue.KQueueEventLoopGroup;
+import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioDatagramChannel;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
 import org.apache.plc4x.java.spi.connection.NettyChannelFactory;
+import org.apache.plc4x.java.spi.utils.ClassUtils;
 import org.apache.plc4x.java.transport.udp.protocol.DatagramUnpackingHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,7 +59,13 @@ public class UdpChannelFactory extends NettyChannelFactory implements HasConfigu
 
     @Override
     public Class<? extends Channel> getChannel() {
-        return NioDatagramChannel.class;
+        if (ClassUtils.classIsPresent("io.netty.channel.epoll.Epoll") && Epoll.isAvailable()) {
+            return  EpollDatagramChannel.class;
+        } else if(ClassUtils.classIsPresent("io.netty.channel.kqueue.KQueue") && KQueue.isAvailable()) {
+            return KQueueDatagramChannel.class;
+        } else {
+            return NioDatagramChannel.class;
+        }
     }
 
     @Override

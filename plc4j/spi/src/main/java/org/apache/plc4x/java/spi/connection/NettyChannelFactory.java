@@ -32,6 +32,7 @@ import io.netty.channel.kqueue.KQueueSocketChannel;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
+import org.apache.plc4x.java.spi.utils.ClassUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,7 +67,15 @@ public abstract class NettyChannelFactory implements ChannelFactory {
     /**
      * Channel to Use, e.g. NiO, EiO
      */
-    public abstract Class<? extends Channel> getChannel();
+    public Class<? extends Channel> getChannel(){
+        if (ClassUtils.classIsPresent("io.netty.channel.epoll.Epoll") && Epoll.isAvailable()) {
+            return EpollSocketChannel.class;
+        } else if(ClassUtils.classIsPresent("io.netty.channel.kqueue.KQueue") && KQueue.isAvailable()) {
+            return KQueueSocketChannel.class;
+        } else {
+            return NioSocketChannel.class;
+        }
+    }
 
     /**
      * We need to be able to override this in the TestChanelFactory
@@ -97,22 +106,12 @@ public abstract class NettyChannelFactory implements ChannelFactory {
      * Transports which have to use a different EventLoopGroup have to override {#getEventLoopGroup()}.
      */
     public EventLoopGroup getEventLoopGroup() {
-        if (classIsPresent("io.netty.channel.epoll.Epoll") && Epoll.isAvailable()) {
+        if (ClassUtils.classIsPresent("io.netty.channel.epoll.Epoll") && Epoll.isAvailable()) {
             return  new EpollEventLoopGroup();
-        } else if(classIsPresent("io.netty.channel.kqueue.KQueue") && KQueue.isAvailable()) {
+        } else if(ClassUtils.classIsPresent("io.netty.channel.kqueue.KQueue") && KQueue.isAvailable()) {
             return new KQueueEventLoopGroup();
         } else {
             return new NioEventLoopGroup();
-        }
-    }
-
-    public Class<? extends Channel> getChannelDefault() {
-        if (classIsPresent("io.netty.channel.epoll.Epoll") && Epoll.isAvailable()) {
-            return EpollSocketChannel.class;
-        } else if(classIsPresent("io.netty.channel.kqueue.KQueue") && KQueue.isAvailable()) {
-            return KQueueSocketChannel.class;
-        } else {
-            return NioSocketChannel.class;
         }
     }
 
@@ -185,12 +184,5 @@ public abstract class NettyChannelFactory implements ChannelFactory {
             logger.warn("Trying to remove EventLoop for Channel {} but have none stored", channel);
         }
     }
-    private static boolean classIsPresent(String className){
-        try{
-            Class.forName(className);
-            return true;
-        } catch (ClassNotFoundException e){
-            return false;
-        }
-    }
+
 }

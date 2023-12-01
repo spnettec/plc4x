@@ -45,11 +45,6 @@ public class TcpChannelFactory extends NettyChannelFactory implements HasConfigu
     }
 
     @Override
-    public Class<? extends Channel> getChannel() {
-        return super.getChannelDefault();
-    }
-
-    @Override
     public boolean isPassive() {
         return false;
     }
