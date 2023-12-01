@@ -318,7 +318,9 @@
                 <ignoredDependency>org.apache.groovy:groovy-test-junit5</ignoredDependency>
                 <ignoredDependency>org.apache.groovy:groovy</ignoredDependency>
                 <ignoredDependency>com.athaydes:spock-reports</ignoredDependency>
-                <ignoredDependency>org.apache.nifi:nifi-standard-nar</ignoredDependency>                
+                <ignoredDependency>org.apache.nifi:nifi-standard-nar</ignoredDependency>
+                <ignoredDependency>io.netty:netty-transport-classes-epoll</ignoredDependency>
+                <ignoredDependency>io.netty:netty-transport-classes-kqueue</ignoredDependency>
               </ignoredDependencies>
             </configuration>
           </execution>
@@ -329,21 +331,6 @@
 
   <!-- Dependencies common to all java modules -->
   <dependencies>
-    <dependency>
-      <groupId>io.netty</groupId>
-      <artifactId>netty-transport-classes-epoll</artifactId>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>io.netty</groupId>
-      <artifactId>netty-transport-classes-kqueue</artifactId>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>com.fasterxml.woodstox</groupId>
-      <artifactId>woodstox-core</artifactId>
-      <scope>runtime</scope>
-    </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
