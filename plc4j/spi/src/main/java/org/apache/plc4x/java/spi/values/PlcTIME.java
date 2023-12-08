@@ -30,6 +30,7 @@ import java.time.Duration;
 import java.time.Period;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
 
 public class PlcTIME extends PlcSimpleValue<Duration> {
 
@@ -105,7 +106,7 @@ public class PlcTIME extends PlcSimpleValue<Duration> {
 
     @Override
     public long getLong() {
-        return value.get(ChronoUnit.NANOS) / 1000000;
+        return value.toMillis();
     }
 
     @Override
@@ -125,10 +126,11 @@ public class PlcTIME extends PlcSimpleValue<Duration> {
 
     @Override
     public void serialize(WriteBuffer writeBuffer) throws SerializationException {
-        String valueString = value.toString();
-        writeBuffer.writeString(getClass().getSimpleName(),
-            valueString.getBytes(StandardCharsets.UTF_8).length*8,
-            valueString, WithOption.WithEncoding(StandardCharsets.UTF_8.name()));
+//        String valueString = value.toString();
+//        writeBuffer.writeString(getClass().getSimpleName(),
+//            valueString.getBytes(StandardCharsets.UTF_8).length*8,
+//            valueString, WithOption.WithEncoding(StandardCharsets.UTF_8.name()));
+        writeBuffer.writeLong(getClass().getSimpleName(), 32, value.toMillis());        
     }
     @Override
     public Object getPropertyByName(String property){

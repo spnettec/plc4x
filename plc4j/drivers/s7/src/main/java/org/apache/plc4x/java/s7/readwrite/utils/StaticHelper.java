@@ -29,6 +29,7 @@ import org.apache.plc4x.java.s7.events.S7AlarmEvent;
 import org.apache.plc4x.java.s7.events.S7ModeEvent;
 import org.apache.plc4x.java.s7.events.S7SysEvent;
 import org.apache.plc4x.java.s7.readwrite.DataTransportErrorCode;
+import org.apache.plc4x.java.s7.readwrite.DataTransportSize;
 import org.apache.plc4x.java.s7.readwrite.ModeTransitionType;
 import org.apache.plc4x.java.s7.utils.S7DiagnosticEventId;
 import org.apache.plc4x.java.spi.codegen.WithOption;
@@ -36,13 +37,10 @@ import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.ReadBuffer;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
-import java.nio.ByteBuffer;
-import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
-import java.nio.charset.CharsetDecoder;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.LocalDate;
@@ -55,11 +53,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.apache.plc4x.java.s7.readwrite.DataTransportSize;
-import org.apache.plc4x.java.spi.values.PlcList;
-import org.apache.plc4x.java.spi.values.PlcWCHAR;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 /**
  * +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
@@ -137,87 +130,6 @@ import org.json.JSONObject;
  */
 
 public class StaticHelper {
-    private static final String[] DEFAULTCHARSETS = {"ASCII", "UTF-8", "GBK", "GB2312", "BIG5", "GB18030"};
-
-    public static Charset detectCharset(String firstMaTch, byte[] bytes) {
-
-        Charset charset = null;
-        if (firstMaTch!=null && !"".equals(firstMaTch))
-        {
-            try {
-                charset = Charset.forName(firstMaTch.replaceAll("[^a-zA-Z0-9]", ""));
-            }catch (Exception ignored) {
-            }
-            return charset;
-        }
-        for (String charsetName : DEFAULTCHARSETS) {
-            charset = detectCharset(bytes, Charset.forName(charsetName), bytes.length);
-            if (charset != null) {
-                break;
-            }
-        }
-
-        return charset;
-    }
-
-    private static Charset detectCharset(byte[] bytes, Charset charset, int length) {
-        try {
-            BufferedInputStream input = new BufferedInputStream(new ByteArrayInputStream(bytes, 0, length));
-
-            CharsetDecoder decoder = charset.newDecoder();
-            decoder.reset();
-
-            byte[] buffer = new byte[512];
-            boolean identified = false;
-            while (input.read(buffer) != -1 && !identified) {
-                identified = identify(buffer, decoder);
-            }
-
-            input.close();
-
-            if (identified) {
-                return charset;
-            } else {
-                return null;
-            }
-
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    private static boolean identify(byte[] bytes, CharsetDecoder decoder) {
-        try {
-            decoder.decode(ByteBuffer.wrap(bytes));
-        } catch (CharacterCodingException e) {
-            return false;
-        }
-        return true;
-    }
-    public static Charset getEncoding(String firstMaTch, String str) {
-        if (str == null || str.trim().length() < 1) {
-            return null;
-        }
-        Charset charset = null;
-        if (firstMaTch!=null && !"".equals(firstMaTch))
-        {
-            try {
-                charset = Charset.forName(firstMaTch.replaceAll("[^a-zA-Z0-9]", ""));
-            }catch (Exception ignored) {
-            }
-            return charset;
-        }
-        for (String encode : DEFAULTCHARSETS) {
-            try {
-                Charset charset1 = Charset.forName(encode);
-                if (str.equals(new String(str.getBytes(charset1), charset1))) {
-                    return charset1;
-                }
-            } catch (Exception er) {
-            }
-        }
-        return null;
-    }
 
     public enum OB {
         FREE_CYC(0X0000, "OB1 Free cycle"),
@@ -1348,10 +1260,10 @@ public class StaticHelper {
             JSONArray ja = new JSONArray();
             JSONObject jo = null;
             ByteBuf infobytes = null;
-            
-            int szl_id = Short.toUnsignedInt(data.readShort()); 
-            int szl_index = Short.toUnsignedInt(data.readShort()); 
-            int szl_lengthdr = Short.toUnsignedInt(data.readShort());              
+
+            int szl_id = Short.toUnsignedInt(data.readShort());
+            int szl_index = Short.toUnsignedInt(data.readShort());
+            int szl_lengthdr = Short.toUnsignedInt(data.readShort());
             int szl_n_dr = Short.toUnsignedInt(data.readShort());
 
             try {
@@ -2347,6 +2259,7 @@ public class StaticHelper {
                         strField = String.format(format, value);
                     }
                     strOut = strOut.replaceAll(matcher.group(0), strField);
+                    ;
                     break;
                 case "C":
                     if (format.contains("%T#")) {
@@ -2358,10 +2271,11 @@ public class StaticHelper {
                             length = Integer.parseInt(fieldformat.group(1));
                             length = (length > bytebuf.capacity()) ? bytebuf.capacity() : length;
                             strField =
-                                bytebuf.readCharSequence(length, StandardCharsets.UTF_8).toString();
+                                bytebuf.readCharSequence(length, Charset.forName("utf-8")).toString();
                         }
                     }
                     strOut = strOut.replaceAll(matcher.group(0), strField);
+                    ;
                     break;
                 case "W":
                     if (bytebuf.capacity() < Short.BYTES) break;
@@ -2380,6 +2294,7 @@ public class StaticHelper {
                         strField = String.format(format, value);
                     }
                     strOut = strOut.replaceAll(matcher.group(0), strField);
+                    ;
                     break;
                 case "I":
                     if (bytebuf.capacity() < Integer.BYTES) break;
@@ -2441,6 +2356,7 @@ public class StaticHelper {
                         strField = String.format(format, value);
                         strOut = strOut.replaceAll(matcher.group(0), strField);
                     }
+                    ;
                     break;
             }
         }
@@ -2525,6 +2441,7 @@ public class StaticHelper {
                     if (bytebuf.capacity() < Byte.BYTES) break;
                     strField = String.valueOf(bytebuf.getBoolean(0));
                     strOut = strOut.replaceAll(matcher.group(0), strField);
+                    ;
                     break;
                 case "Y":
                     if (bytebuf.capacity() < Byte.BYTES) break;
@@ -2543,6 +2460,7 @@ public class StaticHelper {
                         strField = String.format(format, value);
                     }
                     strOut = strOut.replaceAll(matcher.group(0), strField);
+                    ;
                     break;
                 case "C":
                     if (format.contains("%T#")) {
@@ -2558,6 +2476,7 @@ public class StaticHelper {
                         }
                     }
                     strOut = strOut.replaceAll(matcher.group(0), strField);
+                    ;
                     break;
                 case "W":
                     if (bytebuf.capacity() < Short.BYTES) break;
@@ -2576,6 +2495,7 @@ public class StaticHelper {
                         strField = String.format(format, value);
                     }
                     strOut = strOut.replaceAll(matcher.group(0), strField);
+                    ;
                     break;
                 case "I":
                     if (bytebuf.capacity() < Integer.BYTES) break;
@@ -2593,7 +2513,9 @@ public class StaticHelper {
                         value = bytebuf.getInt(0);
                         strField = String.format(format, value);
                     }
+                    ;
                     strOut = strOut.replaceAll(matcher.group(0), strField);
+                    ;
                     break;
                 case "X":
                     if (bytebuf.capacity() < Long.BYTES) break;
@@ -2611,7 +2533,9 @@ public class StaticHelper {
                         value = bytebuf.getLong(0);
                         strField = String.format(format, value);
                     }
+                    ;
                     strOut = strOut.replaceAll(matcher.group(0), strField);
+                    ;
                     break;
                 case "D":
                     if (bytebuf.capacity() < Double.BYTES) break;
@@ -2629,7 +2553,9 @@ public class StaticHelper {
                         value = bytebuf.getLong(0);
                         strField = String.format(format, value);
                     }
+                    ;
                     strOut = strOut.replaceAll(matcher.group(0), strField);
+                    ;
                     break;
                 case "R":
                     if (bytebuf.capacity() < Float.BYTES) break;
@@ -2637,6 +2563,7 @@ public class StaticHelper {
                         strField = String.format(format, value);
                         strOut = strOut.replaceAll(matcher.group(0), strField);
                     }
+                    ;
                     break;
 
             }
@@ -2659,18 +2586,25 @@ public class StaticHelper {
         throw new NotImplementedException("Serializing TIME not implemented");
     }
 
-    public static LocalTime parseS5Time(ReadBuffer io) {
+    public static Long parseS5Time(ReadBuffer io) {
         try {
-            int stuff = io.readInt(16);
-            // TODO: Implement this correctly.
-            throw new NotImplementedException("S5TIME not implemented");
+            short s5time = (short) io.readInt(16);
+            return S5TimeToDuration(s5time);
         } catch (ParseException e) {
             return null;
         }
     }
 
-    public static void serializeS5Time(WriteBuffer io, PlcValue value) {
-        throw new NotImplementedException("Serializing S5TIME not implemented");
+    public static void serializeS5Time(final WriteBuffer io, PlcValue value) {
+        final PlcTIME time = (PlcTIME) value;
+        Short shortValue = DurationToS5Time(time.getDuration());
+        System.out.println(">>>TIPO: " + value.getClass().getName() + " : " + shortValue);
+        try {
+            io.writeUnsignedInt(16,shortValue);
+        } catch (SerializationException ex) {
+            ex.printStackTrace();
+            return;
+        }
 
     }
 
@@ -2696,17 +2630,27 @@ public class StaticHelper {
         throw new NotImplementedException("Serializing TIME_OF_DAY not implemented");
     }
 
-    public static LocalDate parseTiaDate(ReadBuffer io) {
+    private static final LocalDate siemensEpoch = LocalDate.of(1990, 1, 1);
+    private static final int daysBetweenUnixAndSiemensEpoch = (int) ChronoUnit.DAYS.between(LocalDate.EPOCH, siemensEpoch);
+    public static Integer parseTiaDate(ReadBuffer io) {
         try {
-            int daysSince1990 = io.readUnsignedInt(16);
-            return LocalDate.now().withYear(1990).withDayOfMonth(1).withMonth(1).plus(daysSince1990, ChronoUnit.DAYS);
+            // Dates in Siemens PLCs are stored relative to "Siemens Epoch", which is 1990-01-01
+            int daysSinceSiemensEpoch = io.readUnsignedInt(16);
+            return daysSinceSiemensEpoch + daysBetweenUnixAndSiemensEpoch;
         } catch (ParseException e) {
             return null;
         }
     }
 
     public static void serializeTiaDate(WriteBuffer io, PlcValue value) {
-        throw new NotImplementedException("Serializing DATE not implemented");
+        final PlcDATE userDate = (PlcDATE) value;
+
+        int daysSince1990 = userDate.getDaysSinceEpoch() - daysBetweenUnixAndSiemensEpoch;
+        try {
+            io.writeUnsignedInt(16, daysSince1990);
+        } catch (SerializationException ex) {
+            return;
+        }
     }
 
     //TODO: Call BCD converter

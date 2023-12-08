@@ -24,6 +24,7 @@ import java.math.BigInteger;
 import java.time.*;
 import java.util.*;
 import org.apache.plc4x.java.api.value.*;
+import org.apache.plc4x.java.spi.codegen.WithOption;
 import org.apache.plc4x.java.spi.generation.ByteOrder;
 import org.apache.plc4x.java.spi.generation.EvaluationHelper;
 import org.apache.plc4x.java.spi.generation.ParseException;

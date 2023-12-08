@@ -442,7 +442,7 @@
             //[simple  TransportSize   transportSize]
             [enum     TransportSize transportSize code]
             [simple uint 16 length]
-            [simple uint 16 dbNumber]
+            [simple uint 16 dbNumber]            
             [simple MemoryArea memoryArea]
             [simple uint 24 address]
         ]
@@ -773,20 +773,20 @@
         ['"IEC61131_TIME"' TIME
             [simple uint 32 milliseconds]
         ]
-        //['"S7_S5TIME"' TIME
-        //    [reserved uint 2  '0x00']
-        //    [uint     uint 2  'base']
-        //    [simple   uint 12 value]
-        //]
+        ['"S7_S5TIME"' TIME
+            [manual uint 32 milliseconds   'STATIC_CALL("parseS5Time", readBuffer)' 'STATIC_CALL("serializeS5Time", writeBuffer, _value)' '2']
+        ]
         // - Duration: Interpreted as "number of nanoseconds"
         ['"IEC61131_LTIME"' LTIME
             [simple uint 64 nanoseconds]
         ]
         // - Date: Interpreted as "number of days since 1990-01-01"
+        // - Range in PLC S7-300/400 Min -> D#1990-01-01 (W#16#0000)
+        //                           Max -> D#2168-12-31 (W#16#FF62)
+        // - 01. Serialization using PlcDATE offsets the day indication by +/- 1 day.
+        // - 02. Need to test with S7-1200/S7-1500.
         ['"IEC61131_DATE"' DATE
-            [simple uint 16 daysSinceSiemensEpoch]
-            // Number of days between 1990-01-01 and 1970-01-01 according to https://www.timeanddate.com/
-            //[virtual uint 16 daysSinceEpoch 'daysSinceSiemensEpoch + 7305']
+            [manual uint 16 daysSinceEpoch   'STATIC_CALL("parseTiaDate", readBuffer)' 'STATIC_CALL("serializeTiaDate", writeBuffer, _value)' '2']
         ]
         //['"IEC61131_LDATE"' LDATE
         //    [implicit uint 16 daysSinceSiemensEpoch 'daysSinceEpoch - 7305']

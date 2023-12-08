@@ -23,7 +23,6 @@ import (
 	"context"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/spi/utils"
-	"strconv"
 	"time"
 )
 
@@ -85,23 +84,21 @@ func SerializeTiaTimeOfDay(ctx context.Context, io utils.WriteBuffer, value valu
 	return nil
 }
 
-func ParseTiaDate(ctx context.Context, io utils.ReadBuffer) (time.Time, error) {
+func ParseTiaDate(ctx context.Context, io utils.ReadBuffer) (uint16, error) {
 	/*try {
 	      int daysSince1990 = io.readUnsignedInt(16);
 	      return LocalDate.now().withYear(1990).withDayOfMonth(1).withMonth(1).plus(daysSince1990, ChronoUnit.DAYS);
 	  } catch (ParseException e) {
 	      return null;
 	  }*/
-	return time.Time{}, nil
+	return 0, nil
 }
 
 func SerializeTiaDate(ctx context.Context, io utils.WriteBuffer, value values.PlcValue) error {
 	//throw new NotImplementedException("Serializing DATE not implemented");
 	return nil
 }
-func SerializeBCDDateAndTime(ctx context.Context, io utils.WriteBuffer, value values.PlcValue) error {
-	return nil
-}
+
 func ParseTiaDateTime(ctx context.Context, io utils.ReadBuffer) (time.Time, error) {
 	/*try {
 	      int year = io.readUnsignedInt(16);
@@ -121,27 +118,23 @@ func ParseTiaDateTime(ctx context.Context, io utils.ReadBuffer) (time.Time, erro
 	return time.Time{}, nil
 }
 
-func ParseS7BCDDateAndTime(ctx context.Context, io utils.ReadBuffer) (time.Time, error) {
-	return time.Time{}, nil
-}
-
 func SerializeTiaDateTime(ctx context.Context, io utils.WriteBuffer, value values.PlcValue) error {
 	//throw new NotImplementedException("Serializing DATE_AND_TIME not implemented");
 	return nil
 }
 
-func ParseS7String(ctx context.Context, io utils.ReadBuffer, stringLength int32, encoding string, stringEncoding string) (string, error) {
+func parseTiaDate(ctx context.Context, io utils.ReadBuffer) (time.Time, error) {
+	return time.Time{}, nil
+}
+
+func serializeTiaDate(ctx context.Context, io utils.WriteBuffer, value values.PlcValue) error {
+	return nil
+}
+
+func ParseS7String(ctx context.Context, io utils.ReadBuffer, stringLength int32, encoding string) (string, error) {
 	var multiplier int32
 	switch encoding {
 	case "UTF-8":
-		totalStringLength, _ := io.ReadUint8("", 8)
-		length, _ := io.ReadUint8("", 8)
-		if totalStringLength < length {
-			length = totalStringLength
-		}
-		if stringLength < int32(length) {
-			length = uint8(stringLength)
-		}
 		multiplier = 8
 	case "UTF-16":
 		multiplier = 16
@@ -149,7 +142,7 @@ func ParseS7String(ctx context.Context, io utils.ReadBuffer, stringLength int32,
 	return io.ReadString("", uint32(stringLength*multiplier), encoding)
 }
 
-func SerializeS7String(ctx context.Context, io utils.WriteBuffer, value values.PlcValue, stringLength int32, encoding string, stringEncoding string) error {
+func SerializeS7String(ctx context.Context, io utils.WriteBuffer, value values.PlcValue, stringLength int32, encoding string) error {
 	var multiplier int32
 	switch encoding {
 	case "UTF-8":
@@ -160,12 +153,11 @@ func SerializeS7String(ctx context.Context, io utils.WriteBuffer, value values.P
 	return io.WriteString("", uint32(stringLength*multiplier), encoding, value.GetString())
 }
 
-func ParseS7Char(ctx context.Context, io utils.ReadBuffer, encoding string, stringEncoding string) (string, error) {
-	result, _ := io.ReadUint8("", 8)
-	return strconv.Itoa(int(result)), nil
+func ParseS7Char(ctx context.Context, io utils.ReadBuffer, encoding string) (uint8, error) {
+	return io.ReadUint8("", 8)
 }
 
-func SerializeS7Char(ctx context.Context, io utils.WriteBuffer, value values.PlcValue, encoding string, stringEncoding string) error {
+func SerializeS7Char(ctx context.Context, io utils.WriteBuffer, value values.PlcValue, encoding string) error {
 	return io.WriteUint8("", 8, value.GetUint8())
 }
 
