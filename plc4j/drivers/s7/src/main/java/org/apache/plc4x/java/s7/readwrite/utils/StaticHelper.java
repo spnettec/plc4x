@@ -37,10 +37,19 @@ import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.ReadBuffer;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
+import org.apache.plc4x.java.spi.values.PlcDATE;
+import org.apache.plc4x.java.spi.values.PlcList;
+import org.apache.plc4x.java.spi.values.PlcTIME;
+import org.apache.plc4x.java.spi.values.PlcWCHAR;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.nio.ByteBuffer;
+import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
+import java.nio.charset.CharsetDecoder;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.LocalDate;
@@ -130,6 +139,87 @@ import java.util.regex.Pattern;
  */
 
 public class StaticHelper {
+    private static final String[] DEFAULTCHARSETS = {"ASCII", "UTF-8", "GBK", "GB2312", "BIG5", "GB18030"};
+
+    public static Charset detectCharset(String firstMaTch, byte[] bytes) {
+
+        Charset charset = null;
+        if (firstMaTch!=null && !"".equals(firstMaTch))
+        {
+            try {
+                charset = Charset.forName(firstMaTch.replaceAll("[^a-zA-Z0-9]", ""));
+            }catch (Exception ignored) {
+            }
+            return charset;
+        }
+        for (String charsetName : DEFAULTCHARSETS) {
+            charset = detectCharset(bytes, Charset.forName(charsetName), bytes.length);
+            if (charset != null) {
+                break;
+            }
+        }
+
+        return charset;
+    }
+
+    private static Charset detectCharset(byte[] bytes, Charset charset, int length) {
+        try {
+            BufferedInputStream input = new BufferedInputStream(new ByteArrayInputStream(bytes, 0, length));
+
+            CharsetDecoder decoder = charset.newDecoder();
+            decoder.reset();
+
+            byte[] buffer = new byte[512];
+            boolean identified = false;
+            while (input.read(buffer) != -1 && !identified) {
+                identified = identify(buffer, decoder);
+            }
+
+            input.close();
+
+            if (identified) {
+                return charset;
+            } else {
+                return null;
+            }
+
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private static boolean identify(byte[] bytes, CharsetDecoder decoder) {
+        try {
+            decoder.decode(ByteBuffer.wrap(bytes));
+        } catch (CharacterCodingException e) {
+            return false;
+        }
+        return true;
+    }
+    public static Charset getEncoding(String firstMaTch, String str) {
+        if (str == null || str.trim().length() < 1) {
+            return null;
+        }
+        Charset charset = null;
+        if (firstMaTch!=null && !"".equals(firstMaTch))
+        {
+            try {
+                charset = Charset.forName(firstMaTch.replaceAll("[^a-zA-Z0-9]", ""));
+            }catch (Exception ignored) {
+            }
+            return charset;
+        }
+        for (String encode : DEFAULTCHARSETS) {
+            try {
+                Charset charset1 = Charset.forName(encode);
+                if (str.equals(new String(str.getBytes(charset1), charset1))) {
+                    return charset1;
+                }
+            } catch (Exception er) {
+            }
+        }
+        return null;
+    }
 
     public enum OB {
         FREE_CYC(0X0000, "OB1 Free cycle"),
@@ -2589,7 +2679,7 @@ public class StaticHelper {
     public static Long parseS5Time(ReadBuffer io) {
         try {
             short s5time = (short) io.readInt(16);
-            return S5TimeToDuration(s5time);
+            return S5TimeToDuration(s5time).toNanos();
         } catch (ParseException e) {
             return null;
         }

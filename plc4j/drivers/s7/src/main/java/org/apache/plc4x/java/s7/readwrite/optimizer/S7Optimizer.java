@@ -24,8 +24,7 @@ import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.s7.readwrite.*;
 import org.apache.plc4x.java.s7.readwrite.context.S7DriverContext;
-import org.apache.plc4x.java.s7.readwrite.tag.S7StringTag;
-import org.apache.plc4x.java.s7.readwrite.tag.S7Tag;
+import org.apache.plc4x.java.s7.readwrite.tag.*;
 import org.apache.plc4x.java.s7.readwrite.MemoryArea;
 import org.apache.plc4x.java.s7.readwrite.TransportSize;
 import org.apache.plc4x.java.spi.context.DriverContext;
@@ -35,10 +34,6 @@ import org.apache.plc4x.java.spi.messages.utils.TagValueItem;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
 
 import java.util.*;
-import org.apache.plc4x.java.s7.readwrite.tag.S7ClkTag;
-import org.apache.plc4x.java.s7.readwrite.tag.S7SzlTag;
-
-import org.apache.plc4x.java.s7.readwrite.tag.S7StringVarLengthTag;
 
 public class S7Optimizer extends BaseOptimizer {
 
@@ -88,9 +83,9 @@ public class S7Optimizer extends BaseOptimizer {
 
             int readRequestItemSize = S7_ADDRESS_ANY_SIZE;
             int length = 1;
-            if(tag instanceof S7StringTag)
+            if(tag instanceof S7StringFixedLengthTag)
             {
-                length = ((S7StringTag)tag).getStringLength() + 2 ;
+                length = ((S7StringFixedLengthTag)tag).getStringLength() + 2 ;
             }
             int readResponseItemSize = 4 + (tag.getNumberOfElements() * tag.getDataType().getSizeInBytes() * length);
             // If it's an odd number of bytes, add one to make it even
@@ -179,9 +174,9 @@ public class S7Optimizer extends BaseOptimizer {
                 writeRequestItemSize += (int) Math.ceil((double) tag.getNumberOfElements() / 8);
             } else {
                 int length = 1;
-                if(tag instanceof S7StringTag)
+                if(tag instanceof S7StringFixedLengthTag)
                 {
-                    length = ((S7StringTag)tag).getStringLength() + 2;
+                    length = ((S7StringFixedLengthTag)tag).getStringLength() + 2;
                 }
                 writeRequestItemSize += (tag.getNumberOfElements() * tag.getDataType().getSizeInBytes() * length);
             }

@@ -32,18 +32,18 @@ import java.util.regex.Pattern;
 public class S7StringFixedLengthTag extends S7Tag {
 
     public static final Pattern DATA_BLOCK_STRING_FIXED_LENGTH_ADDRESS_PATTERN =
-        Pattern.compile("^%DB(?<blockNumber>\\d{1,5}).DB(?<transferSizeCode>[XBWD]?)(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?:(?<dataType>STRING|WSTRING)\\((?<stringLength>\\d{1,3})\\)(\\[(?<numElements>\\d+)])?");
+        Pattern.compile("^%DB(?<blockNumber>\\d{1,5}).DB(?<transferSizeCode>[XBWD]?)(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?:(?<dataType>STRING|WSTRING)\\((?<stringLength>\\d{1,3})\\)(\\[(?<numElements>\\d+)])?(\\|(?<stringEncoding>[a-z0-9A-Z_-]+))?");
 
     public static final Pattern DATA_BLOCK_STRING_FIXED_LENGTH_SHORT_PATTERN =
-        Pattern.compile("^%DB(?<blockNumber>\\d{1,5}):(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?:(?<dataType>STRING|WSTRING)\\((?<stringLength>\\d{1,3})\\)(\\[(?<numElements>\\d+)])?");
+        Pattern.compile("^%DB(?<blockNumber>\\d{1,5}):(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?:(?<dataType>STRING|WSTRING)\\((?<stringLength>\\d{1,3})\\)(\\[(?<numElements>\\d+)])?(\\|(?<stringEncoding>[a-z0-9A-Z_-]+))?");
 
     private final int stringLength;
 
     public S7StringFixedLengthTag(TransportSize dataType, MemoryArea memoryArea,
                                      int blockNumber, int byteOffset,
                                      byte bitOffset, int numElements,
-                                     int stringLength) {
-        super(dataType, memoryArea, blockNumber, byteOffset, bitOffset, numElements);
+                                     int stringLength,String stringEncoding) {
+        super(dataType, memoryArea, blockNumber, byteOffset, bitOffset, numElements,stringEncoding);
         this.stringLength = stringLength;
     }
 
@@ -105,8 +105,16 @@ public class S7StringFixedLengthTag extends S7Tag {
                 throw new PlcInvalidTagException("Transfer size code '" + transferSizeCode +
                     "' doesn't match specified data type '" + dataType.name() + "'");
             }
-
-            return new S7StringFixedLengthTag(dataType, memoryArea, blockNumber, byteOffset, bitOffset, numElements, stringLength);
+            String stringEncoding = matcher.group(STRING_ENCODING);
+            if (stringEncoding==null || stringEncoding.isEmpty())
+            {
+                stringEncoding = "UTF-8";
+                if (dataType == TransportSize.WSTRING || dataType == TransportSize.WCHAR)
+                {
+                    stringEncoding = "UTF-16";
+                }
+            }
+            return new S7StringFixedLengthTag(dataType, memoryArea, blockNumber, byteOffset, bitOffset, numElements, stringLength,stringEncoding);
         } else if ((matcher = DATA_BLOCK_STRING_FIXED_LENGTH_SHORT_PATTERN.matcher(address)).matches()) {
             TransportSize dataType = TransportSize.valueOf(matcher.group(DATA_TYPE));
             int stringLength = Integer.parseInt(matcher.group(STRING_LENGTH));
@@ -118,9 +126,17 @@ public class S7StringFixedLengthTag extends S7Tag {
             if (matcher.group(NUM_ELEMENTS) != null) {
                 numElements = Integer.parseInt(matcher.group(NUM_ELEMENTS));
             }
-
+            String stringEncoding = matcher.group(STRING_ENCODING);
+            if (stringEncoding==null || stringEncoding.isEmpty())
+            {
+                stringEncoding = "UTF-8";
+                if (dataType == TransportSize.WSTRING || dataType == TransportSize.WCHAR)
+                {
+                    stringEncoding = "UTF-16";
+                }
+            }
             return new S7StringFixedLengthTag(dataType, memoryArea, blockNumber,
-                byteOffset, bitOffset, numElements, stringLength);
+                byteOffset, bitOffset, numElements, stringLength,stringEncoding);
         }
         
         return null;

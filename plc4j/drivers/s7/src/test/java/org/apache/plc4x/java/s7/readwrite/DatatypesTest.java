@@ -76,6 +76,7 @@ public class DatatypesTest {
 
         }
          */
+        /*
         while(true) {
         try (PlcConnection connection = plcConnectionManager.getConnection("s7://10.110.20.104?controller-type=S7_200&remote-rack=0&remote-slot=2")) {
             final PlcReadRequest.Builder builder = connection.readRequestBuilder();
@@ -144,6 +145,19 @@ public class DatatypesTest {
             System.out.println("error:"+e.getMessage());
         }
 
+        }
+
+         */
+
+        try (PlcConnection connection = plcConnectionManager.getConnection("s7://192.168.0.188")) {
+            final PlcReadRequest.Builder builder = connection.readRequestBuilder();
+            builder.addTagAddress("string", "%DB4:340:BYTE[256]"); // true
+
+            final PlcReadRequest readRequest = builder.build();
+
+            final PlcReadResponse readResponse = readRequest.execute().get();
+
+            System.out.println(readResponse.getAsPlcValue());
         }
     }
 

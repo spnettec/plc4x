@@ -32,16 +32,16 @@ import org.apache.plc4x.java.api.exceptions.PlcInvalidTagException;
 public class S7StringVarLengthTag extends S7Tag {
     
     public static final Pattern DATA_BLOCK_STRING_VAR_LENGTH_ADDRESS_PATTERN =
-        Pattern.compile("^%DB(?<blockNumber>\\d{1,5}).DB(?<transferSizeCode>[XBWD]?)(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?:(?<dataType>STRING|WSTRING)(\\[(?<numElements>\\d+)])?");
+        Pattern.compile("^%DB(?<blockNumber>\\d{1,5}).DB(?<transferSizeCode>[XBWD]?)(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?:(?<dataType>STRING|WSTRING)(\\[(?<numElements>\\d+)])?(\\|(?<stringEncoding>[a-z0-9A-Z_-]+))?");
 
     public static final Pattern DATA_BLOCK_STRING_VAR_LENGTH_SHORT_PATTERN =
-        Pattern.compile("^%DB(?<blockNumber>\\d{1,5}):(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?:(?<dataType>STRING|WSTRING)(\\[(?<numElements>\\d+)])?");
+        Pattern.compile("^%DB(?<blockNumber>\\d{1,5}):(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?:(?<dataType>STRING|WSTRING)(\\[(?<numElements>\\d+)])?(\\|(?<stringEncoding>[a-z0-9A-Z_-]+))?");
      
 
     protected S7StringVarLengthTag(TransportSize dataType, MemoryArea memoryArea,
                                    int blockNumber, int byteOffset,
-                                   byte bitOffset, int numElements) {
-        super(dataType, memoryArea, blockNumber, byteOffset, bitOffset, numElements);
+                                   byte bitOffset, int numElements, String stringEncoding) {
+        super(dataType, memoryArea, blockNumber, byteOffset, bitOffset, numElements,stringEncoding);
     }
 
     public static boolean matches(String address) {
@@ -96,8 +96,16 @@ public class S7StringVarLengthTag extends S7Tag {
                 throw new PlcInvalidTagException("Transfer size code '" + transferSizeCode +
                     "' doesn't match specified data type '" + dataType.name() + "'");
             }
-
-            return new S7StringVarLengthTag(dataType, memoryArea, blockNumber, byteOffset, bitOffset, numElements);
+            String stringEncoding = matcher.group(STRING_ENCODING);
+            if (stringEncoding==null || stringEncoding.isEmpty())
+            {
+                stringEncoding = "UTF-8";
+                if (dataType == TransportSize.WSTRING || dataType == TransportSize.WCHAR)
+                {
+                    stringEncoding = "UTF-16";
+                }
+            }
+            return new S7StringVarLengthTag(dataType, memoryArea, blockNumber, byteOffset, bitOffset, numElements,stringEncoding);
         } else if ((matcher = DATA_BLOCK_STRING_VAR_LENGTH_SHORT_PATTERN.matcher(address)).matches()) {
             TransportSize dataType = TransportSize.valueOf(matcher.group(DATA_TYPE));
             MemoryArea memoryArea = MemoryArea.DATA_BLOCKS;
@@ -108,9 +116,17 @@ public class S7StringVarLengthTag extends S7Tag {
             if (matcher.group(NUM_ELEMENTS) != null) {
                 numElements = Integer.parseInt(matcher.group(NUM_ELEMENTS));
             }
-
+            String stringEncoding = matcher.group(STRING_ENCODING);
+            if (stringEncoding==null || stringEncoding.isEmpty())
+            {
+                stringEncoding = "UTF-8";
+                if (dataType == TransportSize.WSTRING || dataType == TransportSize.WCHAR)
+                {
+                    stringEncoding = "UTF-16";
+                }
+            }
             return new S7StringVarLengthTag(dataType, memoryArea, blockNumber,
-                byteOffset, bitOffset, numElements);
+                byteOffset, bitOffset, numElements, stringEncoding);
         }
         
         return null;

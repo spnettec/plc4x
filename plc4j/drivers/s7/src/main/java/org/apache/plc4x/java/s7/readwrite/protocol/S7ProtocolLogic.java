@@ -21,8 +21,9 @@ package org.apache.plc4x.java.s7.readwrite.protocol;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
+import io.netty.channel.Channel;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
-import org.apache.commons.lang3.tuple.MutablePair;
+import org.apache.plc4x.java.api.exceptions.PlcInvalidTagException;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.*;
@@ -34,6 +35,7 @@ import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.s7.events.S7CyclicEvent;
 import org.apache.plc4x.java.s7.events.S7Event;
 import org.apache.plc4x.java.s7.readwrite.*;
+import org.apache.plc4x.java.s7.readwrite.configuration.S7Configuration;
 import org.apache.plc4x.java.s7.readwrite.context.S7DriverContext;
 import org.apache.plc4x.java.s7.readwrite.tag.*;
 import org.apache.plc4x.java.s7.readwrite.types.S7ControllerType;
@@ -72,7 +74,7 @@ import static org.apache.plc4x.java.spi.connection.AbstractPlcConnection.IS_CONN
  * So we need to limit those.
  * Thus, each request goes to a Work Queue and this Queue ensures, that only 3 are open at the same time.
  */
-public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
+public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements HasConfiguration<S7Configuration> {
 
     private static final Logger logger = LoggerFactory.getLogger(S7ProtocolLogic.class);
 
@@ -1276,7 +1278,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                         int stringLength = s7StringVarLengthTagStringSizesMap.get(varLengthTag).getCurLength();
                         S7StringFixedLengthTag newTag = new S7StringFixedLengthTag(varLengthTag.getDataType(), varLengthTag.getMemoryArea(),
                             varLengthTag.getBlockNumber(), varLengthTag.getByteOffset(), varLengthTag.getBitOffset(),
-                            varLengthTag.getNumberOfElements(), stringLength);
+                            varLengthTag.getNumberOfElements(), stringLength,varLengthTag.getStringEncoding());
                         updatedRequestItems.put(tagName, newTag);
                     } else {
                         updatedRequestItems.put(tagName, tag);
@@ -1368,7 +1370,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                         int stringLength = s7StringVarLengthTagStringSizesMap.get(varLengthTag).getCurLength();
                         S7StringFixedLengthTag newTag = new S7StringFixedLengthTag(varLengthTag.getDataType(), varLengthTag.getMemoryArea(),
                             varLengthTag.getBlockNumber(), varLengthTag.getByteOffset(), varLengthTag.getBitOffset(),
-                            varLengthTag.getNumberOfElements(), stringLength);
+                            varLengthTag.getNumberOfElements(), stringLength,varLengthTag.getStringEncoding());
                         updatedRequestItems.put(tagName, new TagValueItem(newTag, value));
                     } else {
                         updatedRequestItems.put(tagName, new TagValueItem(tag, value));
@@ -1429,9 +1431,9 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
         // Send the request.
         transaction.submit(() -> context.sendRequest(tpktPacket)
-            .onTimeout(new TransactionErrorCallback<>(future, transaction))
-            .onError(new TransactionErrorCallback<>(future, transaction))
-            .expectResponse(TPKTPacket.class, REQUEST_TIMEOUT)
+            .onTimeout(new TransactionErrorCallback<>(future, transaction,context.getChannel()))
+            .onError(new TransactionErrorCallback<>(future, transaction,context.getChannel()))
+            .expectResponse(TPKTPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
             .check(p -> p.getPayload() instanceof COTPPacketData)
             .unwrap(p -> (COTPPacketData) p.getPayload())
             .check(p -> p.getPayload() != null)
@@ -1903,7 +1905,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
             int stringLength = (tag instanceof S7StringFixedLengthTag) ? ((S7StringFixedLengthTag) tag).getStringLength() : 254;
             ByteBuffer byteBuffer = null;
             for (int i = 0; i < tag.getNumberOfElements(); i++) {
-                int lengthInBits = DataItem.getLengthInBits(plcValue.getIndex(i), tag.getDataType().getDataProtocolId(), stringLength);
+                int lengthInBits = DataItem.getLengthInBits(plcValue.getIndex(i), tag.getDataType().getDataProtocolId(), stringLength,tag.getStringEncoding());
                 // Cap the length of the string with the maximum allowed size.
                 if(tag.getDataType() == TransportSize.STRING) {
                     lengthInBits = Math.min(lengthInBits, (stringLength * 8) + 16);
@@ -1914,7 +1916,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                     lengthInBits = lengthInBits * 8;
                 }
                 final WriteBufferByteBased writeBuffer = new WriteBufferByteBased((int) Math.ceil(((float) lengthInBits) / 8.0f));
-                DataItem.staticSerialize(writeBuffer, plcValue.getIndex(i), tag.getDataType().getDataProtocolId(), stringLength);
+                DataItem.staticSerialize(writeBuffer, plcValue.getIndex(i), tag.getDataType().getDataProtocolId(), stringLength,tag.getStringEncoding());
                 // Allocate enough space for all items.
                 if (byteBuffer == null) {
                     // TODO: This logic will cause problems when reading arrays of strings.
@@ -2058,11 +2060,11 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         }
         if (transportSize == TransportSize.STRING) {
             transportSize = TransportSize.BYTE;
-            int stringLength = (s7Tag instanceof S7StringTag) ? ((S7StringTag) s7Tag).getStringLength() : 254;
+            int stringLength = (s7Tag instanceof S7StringFixedLengthTag) ? ((S7StringFixedLengthTag) s7Tag).getStringLength() : 254;
             numElements = numElements * (stringLength + 2);
         } else if (transportSize == TransportSize.WSTRING) {
             transportSize = TransportSize.BYTE;
-            int stringLength = (s7Tag instanceof S7StringTag) ? ((S7StringTag) s7Tag).getStringLength() : 254;
+            int stringLength = (s7Tag instanceof S7StringFixedLengthTag) ? ((S7StringFixedLengthTag) s7Tag).getStringLength() : 254;
             numElements = numElements * (stringLength + 2) * 2;
         }
         return new S7AddressAny(transportSize, numElements, s7Tag.getBlockNumber(),

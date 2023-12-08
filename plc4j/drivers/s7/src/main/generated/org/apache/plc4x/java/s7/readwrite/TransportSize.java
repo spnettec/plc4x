@@ -286,6 +286,19 @@ public enum TransportSize {
       DataTransportSize.BYTE_WORD_DWORD,
       (String) "IEC61131_TIME",
       null),
+  S5TIME(
+      (short) 0x15,
+      (boolean) true,
+      (boolean) true,
+      (short) 0x04,
+      (short) 2,
+      (boolean) true,
+      (boolean) true,
+      (short) 'X',
+      (boolean) true,
+      DataTransportSize.BYTE_WORD_DWORD,
+      (String) "S7_S5TIME",
+      null),
   LTIME(
       (short) 0x16,
       (boolean) false,
@@ -296,7 +309,7 @@ public enum TransportSize {
       (boolean) false,
       (short) 'X',
       (boolean) true,
-      DataTransportSize.BYTE_WORD_DWORD,
+      null,
       (String) "IEC61131_LTIME",
       TransportSize.TIME),
   DATE(
@@ -348,7 +361,7 @@ public enum TransportSize {
       (boolean) false,
       (short) 'X',
       (boolean) true,
-      DataTransportSize.BYTE_WORD_DWORD,
+      null,
       (String) "IEC61131_DATE_AND_TIME",
       null),
   DT(
@@ -361,7 +374,7 @@ public enum TransportSize {
       (boolean) false,
       (short) 'X',
       (boolean) true,
-      DataTransportSize.BYTE_WORD_DWORD,
+      null,
       (String) "IEC61131_DATE_AND_TIME",
       null);
   private static final Map<Short, TransportSize> map;

@@ -52,23 +52,17 @@ public class S7Tag implements PlcTag, Serializable {
     private static final Pattern DATA_BLOCK_SHORT_PATTERN =
         Pattern.compile("^%DB(?<blockNumber>\\d{1,5}):(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?:(?<dataType>[a-zA-Z_]+)(\\[(?<numElements>\\d+)])?(\\|(?<stringEncoding>[a-z0-9A-Z_-]+))?");
 
-    private static final Pattern DATA_BLOCK_STRING_ADDRESS_PATTERN =
-        Pattern.compile("^%DB(?<blockNumber>\\d{1,5}).DB(?<transferSizeCode>[XBWD]?)(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?:(?<dataType>STRING|WSTRING)\\((?<stringLength>\\d{1,3})\\)(\\[(?<numElements>\\d+)])?(\\|(?<stringEncoding>[a-z0-9A-Z_-]+))?");
-
-    private static final Pattern DATA_BLOCK_STRING_SHORT_PATTERN =
-        Pattern.compile("^%DB(?<blockNumber>\\d{1,5}):(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?:(?<dataType>STRING|WSTRING)\\((?<stringLength>\\d{1,3})\\)(\\[(?<numElements>\\d+)])?(\\|(?<stringEncoding>[a-z0-9A-Z_-]+))?");
-
     private static final Pattern PLC_PROXY_ADDRESS_PATTERN =
         Pattern.compile("[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}(\\|(?<stringEncoding>[a-z0-9A-Z_-]+))?");
-    private static final String DATA_TYPE = "dataType";
-    private static final String STRING_LENGTH = "stringLength";
-    private static final String TRANSFER_SIZE_CODE = "transferSizeCode";
-    private static final String BLOCK_NUMBER = "blockNumber";
-    private static final String BYTE_OFFSET = "byteOffset";
-    private static final String BIT_OFFSET = "bitOffset";
-    private static final String NUM_ELEMENTS = "numElements";
-    private static final String MEMORY_AREA = "memoryArea";
-    private static final String STRING_ENCODING = "stringEncoding";
+    protected static final String DATA_TYPE = "dataType";
+    protected static final String STRING_LENGTH = "stringLength";
+    protected static final String TRANSFER_SIZE_CODE = "transferSizeCode";
+    protected static final String BLOCK_NUMBER = "blockNumber";
+    protected static final String BYTE_OFFSET = "byteOffset";
+    protected static final String BIT_OFFSET = "bitOffset";
+    protected static final String NUM_ELEMENTS = "numElements";
+    protected static final String MEMORY_AREA = "memoryArea";
+    protected static final String STRING_ENCODING = "stringEncoding";
 
     private final TransportSize dataType;
     private final MemoryArea memoryArea;
@@ -184,8 +178,8 @@ public class S7Tag implements PlcTag, Serializable {
                 }
             }
             if(dataType==TransportSize.STRING) {
-                return new S7StringTag(dataType, memoryArea, blockNumber,
-                    byteOffset, bitOffset, numElements, 254, stringEncoding);
+                return new S7StringVarLengthTag(dataType, memoryArea, blockNumber,
+                    byteOffset, bitOffset, numElements, stringEncoding);
             }
             return new S7Tag(dataType, memoryArea, blockNumber, byteOffset, bitOffset, numElements, stringEncoding);
         } else if ((matcher = DATA_BLOCK_SHORT_PATTERN.matcher(tagString)).matches()) {
@@ -213,8 +207,8 @@ public class S7Tag implements PlcTag, Serializable {
                 }
             }
             if(dataType==TransportSize.STRING) {
-                return new S7StringTag(dataType, memoryArea, blockNumber,
-                    byteOffset, bitOffset, numElements, 254, stringEncoding);
+                return new S7StringVarLengthTag(dataType, memoryArea, blockNumber,
+                    byteOffset, bitOffset, numElements, stringEncoding);
             }
             return new S7Tag(dataType, memoryArea, blockNumber, byteOffset, bitOffset, numElements, stringEncoding);
         } else if ((matcher = PLC_PROXY_ADDRESS_PATTERN.matcher(tagString)).matches()) {

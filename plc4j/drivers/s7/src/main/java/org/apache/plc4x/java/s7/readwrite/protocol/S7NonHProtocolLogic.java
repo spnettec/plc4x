@@ -596,15 +596,17 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 	private S7VarPayloadDataItem serializePlcValue(S7Tag tag, PlcValue plcValue) {
 		try {
 			DataTransportSize transportSize = tag.getDataType().getDataTransportSize();
-			int stringLength = (tag instanceof S7StringTag) ? ((S7StringTag) tag).getStringLength() : 254;
+			int stringLength = (tag instanceof S7StringFixedLengthTag) ? ((S7StringFixedLengthTag) tag).getStringLength() : 254;
 			ByteBuffer byteBuffer = null;
 			for (int i = 0; i < tag.getNumberOfElements(); i++) {
 				final int lengthInBytes = DataItem.getLengthInBytes(plcValue.getIndex(i),
 						tag.getDataType().getDataProtocolId(), stringLength, tag.getStringEncoding());
 				final WriteBufferByteBased writeBuffer = new WriteBufferByteBased(lengthInBytes);
+				/*
 				if (tag.getDataType() == TransportSize.BOOL && tag.getNumberOfElements() == 1) {
 					writeBuffer.writeUnsignedShort("", 7, ((Number) (short) 0x00).shortValue());
 				}
+				 */
 				DataItem.staticSerialize(writeBuffer, plcValue.getIndex(i), tag.getDataType().getDataProtocolId(),
 						stringLength, tag.getStringEncoding());
 				if (byteBuffer == null) {
@@ -625,8 +627,9 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 	private PlcValue parsePlcValue(S7Tag tag, ByteBuf data) {
 		ReadBuffer readBuffer = new ReadBufferByteBased(data.array());
 		try {
-			int stringLength = (tag instanceof S7StringTag) ? ((S7StringTag) tag).getStringLength() : 254;
+			int stringLength = (tag instanceof S7StringFixedLengthTag) ? ((S7StringFixedLengthTag) tag).getStringLength() : 254;
 			if (tag.getNumberOfElements() == 1) {
+				/*
 				if (tag.getDataType() == TransportSize.BOOL) {
 					short reserved = readBuffer.readUnsignedShort("", 7);
 					if (reserved != (short) 0x00) {
@@ -634,6 +637,7 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 								"Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
 					}
 				}
+				*/
 				return DataItem.staticParse(readBuffer, tag.getDataType().getDataProtocolId(), stringLength,
 						tag.getStringEncoding());
 			} else {
@@ -748,11 +752,11 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 		}
 		if (transportSize == TransportSize.STRING) {
 			transportSize = TransportSize.BYTE;
-			int stringLength = (s7Tag instanceof S7StringTag) ? ((S7StringTag) s7Tag).getStringLength() : 254;
+			int stringLength = (s7Tag instanceof S7StringFixedLengthTag) ? ((S7StringFixedLengthTag) s7Tag).getStringLength() : 254;
 			numElements = numElements * (stringLength + 2);
 		} else if (transportSize == TransportSize.WSTRING) {
 			transportSize = TransportSize.BYTE;
-			int stringLength = (s7Tag instanceof S7StringTag) ? ((S7StringTag) s7Tag).getStringLength() : 254;
+			int stringLength = (s7Tag instanceof S7StringFixedLengthTag) ? ((S7StringFixedLengthTag) s7Tag).getStringLength() : 254;
 			numElements = numElements * (stringLength + 2) * 2;
 		}
 		return new S7AddressAny(transportSize, numElements, s7Tag.getBlockNumber(), s7Tag.getMemoryArea(),
