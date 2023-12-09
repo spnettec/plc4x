@@ -204,3 +204,4 @@ DartConfiguration.tcl
 
 # Develocity
 .mvn/.gradle-enterprise/
+.idea
