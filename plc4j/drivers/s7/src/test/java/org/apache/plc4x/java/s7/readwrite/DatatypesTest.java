@@ -151,7 +151,7 @@ public class DatatypesTest {
 
         try (PlcConnection connection = plcConnectionManager.getConnection("s7://192.168.0.188")) {
             final PlcReadRequest.Builder builder = connection.readRequestBuilder();
-            builder.addTagAddress("string", "%DB4:340:BYTE[256]"); // true
+            builder.addTagAddress("string", "%DB4:340:STRING(256)"); // true
 
             final PlcReadRequest readRequest = builder.build();
 
