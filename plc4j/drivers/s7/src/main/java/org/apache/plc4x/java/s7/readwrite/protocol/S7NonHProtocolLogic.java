@@ -241,12 +241,7 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 			return future;
 		}
 		CompletableFuture<S7Message> future = new CompletableFuture<>();
-		int thisTpduId = 0;
-		if (this.s7DriverContext.getControllerType() != S7ControllerType.S7_200) {
-			thisTpduId = tpduGenerator.getAndIncrement();
-		}
-		final int tpduId = thisTpduId;
-		tpduGenerator.compareAndExchange(0xFFFF, 1);
+		final int tpduId = getTpduId();
 
 		S7Message message = (request instanceof S7MessageUserData)
 				? new S7MessageUserData(tpduId, request.getParameter(), request.getPayload())
