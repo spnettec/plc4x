@@ -275,7 +275,8 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 			CompletableFuture<S7Message> future = new CompletableFuture<>();
 			futures.add(future);
 			TPKTPacket tpktPacket = new TPKTPacket(new COTPPacketData(null, message, true, (byte) message.getTpduReference()));
-			tm.submit(transaction -> transaction.submit(() -> context.sendRequest(tpktPacket)
+			tm.submit(transaction -> transaction.submit(
+					() -> context.sendRequest(tpktPacket)
 					.onTimeout(new TransactionErrorCallback<>(future, transaction, context.getChannel(), true, false))
 					.onError(new TransactionErrorCallback<>(future, transaction, context.getChannel()))
 					.expectResponse(TPKTPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
@@ -425,7 +426,8 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 		TPKTPacket tpktPacket = new TPKTPacket(
 				new COTPPacketData(null, new S7MessageRequest(tpduId, new S7ParameterWriteVarRequest(parameterItems),
 						new S7PayloadWriteVarRequest(payloadItems)), true, (byte) tpduId));
-		tm.submit(transaction -> context.sendRequest(tpktPacket)
+		tm.submit(transaction -> transaction.submit(
+				() -> context.sendRequest(tpktPacket)
 				.onTimeout(new TransactionErrorCallback<>(future, transaction,context.getChannel(),true,false))
 				.onError(new TransactionErrorCallback<>(future, transaction,context.getChannel()))
 				.expectResponse(TPKTPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
@@ -437,7 +439,7 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 						logger.warn("Error sending 'write' message: '{}'", e.getMessage(), e);
 					}
 					transaction.endRequest();
-				}));
+				})));
 		return future;
 	}
 
