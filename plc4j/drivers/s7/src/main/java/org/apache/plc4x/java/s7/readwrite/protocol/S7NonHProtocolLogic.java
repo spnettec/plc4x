@@ -31,6 +31,7 @@ import org.apache.plc4x.java.s7.readwrite.*;
 import org.apache.plc4x.java.s7.readwrite.configuration.S7Configuration;
 import org.apache.plc4x.java.s7.readwrite.context.S7DriverContext;
 import org.apache.plc4x.java.s7.readwrite.optimizer.LargeTagPlcReadRequest;
+import org.apache.plc4x.java.s7.readwrite.optimizer.LargeTagPlcWriteRequest;
 import org.apache.plc4x.java.s7.readwrite.tag.*;
 import org.apache.plc4x.java.s7.readwrite.types.S7ControllerType;
 import org.apache.plc4x.java.spi.ConversationContext;
@@ -274,8 +275,8 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 			return futures;
 		}
 
-		List<S7Message> msgs = processReadVarParameter(request,this.s7DriverContext.getPduSize());
-		for(S7Message message:msgs) {
+		List<S7Message> messages = splitLargeTagReadVarParameter(request, this.s7DriverContext.getPduSize());
+		for (S7Message message:messages) {
 			CompletableFuture<S7Message> future = new CompletableFuture<>();
 			futures.add(future);
 			TPKTPacket tpktPacket = new TPKTPacket(new COTPPacketData(null, message, true, (byte) message.getTpduReference()));
@@ -292,7 +293,7 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 		}
 		return futures;
 	}
-	private List<S7Message> processReadVarParameter(S7Message request, int pduSize) {
+	private List<S7Message> splitLargeTagReadVarParameter(S7Message request, int pduSize) {
 		boolean isUserData = request instanceof S7MessageUserData;
 		final S7ParameterReadVarRequest readVarParameter = (S7ParameterReadVarRequest) request.getParameter();
 
@@ -403,6 +404,11 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 	public CompletableFuture<PlcWriteResponse> write(PlcWriteRequest writeRequest) {
 
 		CompletableFuture<PlcWriteResponse> future = new CompletableFuture<>();
+		if (writeRequest instanceof LargeTagPlcWriteRequest){
+
+			throw new PlcRuntimeException("Tag size exceeds maximum payload for one item.");
+		}
+
 		DefaultPlcWriteRequest request = (DefaultPlcWriteRequest) writeRequest;
 
 		List<S7VarRequestParameterItem> parameterItems = new ArrayList<>(request.getNumberOfTags());
