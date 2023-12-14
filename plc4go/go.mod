@@ -27,7 +27,7 @@ require (
 	github.com/dchest/uniuri v1.2.0
 	github.com/fatih/color v1.16.0
 	github.com/gdamore/tcell/v2 v2.7.0
-	github.com/google/uuid v1.4.0
+	github.com/google/uuid v1.5.0
 	github.com/gopacket/gopacket v1.2.0
 	github.com/icza/bitio v1.1.0
 	github.com/jacobsa/go-serial v0.0.0-20180131005756-15cf729a72d4
@@ -45,7 +45,7 @@ require (
 	github.com/viney-shih/go-lock v1.1.2
 	golang.org/x/exp v0.0.0-20230905200255-921286631fa9
 	golang.org/x/net v0.19.0
-	golang.org/x/tools v0.16.0
+	golang.org/x/tools v0.16.1
 	gopkg.in/yaml.v3 v3.0.1
 )
 
