@@ -25,7 +25,8 @@ import java.util.Map;
 
 public enum OpcuaNodeIdServicesVariableTransparent {
   TransparentRedundancyType_CurrentServerId((int) 2037L),
-  TransparentRedundancyType_RedundantServerArray((int) 2038L);
+  TransparentRedundancyType_RedundantServerArray((int) 2038L),
+  TransparentRedundancyType_RedundancySupport((int) 3188L);
   private static final Map<Integer, OpcuaNodeIdServicesVariableTransparent> map;
 
   static {

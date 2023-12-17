@@ -30,8 +30,7 @@ public enum JsonNetworkMessageContentMask {
   jsonNetworkMessageContentMaskSingleDataSetMessage((long) 4L),
   jsonNetworkMessageContentMaskPublisherId((long) 8L),
   jsonNetworkMessageContentMaskDataSetClassId((long) 16L),
-  jsonNetworkMessageContentMaskReplyTo((long) 32L),
-  jsonNetworkMessageContentMaskWriterGroupName((long) 64L);
+  jsonNetworkMessageContentMaskReplyTo((long) 32L);
   private static final Map<Long, JsonNetworkMessageContentMask> map;
 
   static {

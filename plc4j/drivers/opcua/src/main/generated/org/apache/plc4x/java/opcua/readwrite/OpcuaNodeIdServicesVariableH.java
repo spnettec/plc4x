@@ -36,9 +36,7 @@ public enum OpcuaNodeIdServicesVariableH {
   HAConfiguration_ExceptionDeviationFormat((int) 11213L),
   HAConfiguration_StartOfArchive((int) 11503L),
   HAConfiguration_StartOfOnlineArchive((int) 11504L),
-  HAConfiguration_ServerTimestampSupported((int) 19093L),
-  HAConfiguration_MaxTimeStoredValues((int) 32635L),
-  HAConfiguration_MaxCountStoredValues((int) 32636L);
+  HAConfiguration_ServerTimestampSupported((int) 19093L);
   private static final Map<Integer, OpcuaNodeIdServicesVariableH> map;
 
   static {

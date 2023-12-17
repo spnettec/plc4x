@@ -460,16 +460,8 @@ public enum OpcuaNodeIdServicesDataType {
   TrimmedString((int) 31918L),
   AlarmMask((int) 32251L),
   TransactionErrorType((int) 32285L),
-  RedundantServerMode((int) 32417L),
-  BitFieldDefinition((int) 32421L),
-  AnnotationDataType((int) 32434L),
-  LinearConversionDataType((int) 32435L),
-  ConversionLimitEnum((int) 32436L),
-  QuantityDimension((int) 32438L),
   ReferenceDescriptionDataType((int) 32659L),
-  ReferenceListEntryDataType((int) 32660L),
-  ReadEventDetails2((int) 32799L),
-  HistoryModifiedEvent((int) 32824L);
+  ReferenceListEntryDataType((int) 32660L);
   private static final Map<Integer, OpcuaNodeIdServicesDataType> map;
 
   static {
