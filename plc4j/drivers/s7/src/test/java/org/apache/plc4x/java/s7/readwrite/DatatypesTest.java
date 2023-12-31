@@ -148,16 +148,17 @@ public class DatatypesTest {
         }
 
          */
+        while(true) {
+            try (PlcConnection connection = plcConnectionManager.getConnection("s7://192.168.0.188")) {
+                final PlcReadRequest.Builder builder = connection.readRequestBuilder();
+                builder.addTagAddress("string", "%DB4:340:STRING(256)"); // true
 
-        try (PlcConnection connection = plcConnectionManager.getConnection("s7://192.168.0.188")) {
-            final PlcReadRequest.Builder builder = connection.readRequestBuilder();
-            builder.addTagAddress("string", "%DB4:340:STRING(256)"); // true
+                final PlcReadRequest readRequest = builder.build();
 
-            final PlcReadRequest readRequest = builder.build();
+                final PlcReadResponse readResponse = readRequest.execute().get();
 
-            final PlcReadResponse readResponse = readRequest.execute().get();
-
-            System.out.println(readResponse.getAsPlcValue());
+                System.out.println(readResponse.getAsPlcValue());
+            }
         }
     }
 

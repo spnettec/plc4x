@@ -81,16 +81,35 @@
       <artifactId>logback-classic</artifactId>
       <scope>compile</scope>
     </dependency>
-
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-core</artifactId>
+      <scope>compile</scope>
+    </dependency>
     <dependency>
       <groupId>org.pcap4j</groupId>
       <artifactId>pcap4j-core</artifactId>
     </dependency>
-
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
     <dependency>
       <groupId>org.pcap4j</groupId>
       <artifactId>pcap4j-packetfactory-static</artifactId>
       <scope>runtime</scope>
+    </dependency>
+      <dependency>
+          <groupId>org.apache.plc4x</groupId>
+          <artifactId>plc4j-spi</artifactId>
+          <version>0.12.0-SNAPSHOT</version>
+          <scope>compile</scope>
+      </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-driver-s7</artifactId>
+      <version>0.12.0-SNAPSHOT</version>
+      <scope>compile</scope>
     </dependency>
   </dependencies>
 
