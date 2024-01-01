@@ -42,11 +42,11 @@ public class PacketCaptureListener implements PacketListener {
 
     @Override
     public void gotPacket(Packet packet) {
-        packet = packet.get(UnknownPacket.class);
+        Packet unkonwPacket = packet.get(UnknownPacket.class);
 
-        if (packet != null) {
+        if (unkonwPacket != null) {
             if (callback != null) {
-                callback.call(packet);
+                callback.call(unkonwPacket,packet);
             } else {
                 byte[] bytes = packet.getRawData();
                 logger.info(Arrays.toString(bytes));
@@ -64,6 +64,6 @@ public class PacketCaptureListener implements PacketListener {
 
     public interface Callback {
 
-        void call(Packet packet);
+        void call(Packet packet,Packet rawPacket);
     }
 }

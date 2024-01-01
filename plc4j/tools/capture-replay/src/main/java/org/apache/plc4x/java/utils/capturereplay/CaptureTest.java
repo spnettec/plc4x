@@ -21,6 +21,7 @@ package org.apache.plc4x.java.utils.capturereplay;
 
 import org.pcap4j.core.PcapNetworkInterface;
 import org.pcap4j.core.Pcaps;
+import org.pcap4j.packet.IpV4Packet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,13 +35,19 @@ public class CaptureTest {
             throw new IllegalArgumentException("Could not open output device eth0");
         }
         PacketCaptureListener listener = new PacketCaptureListener();
-        listener.setCallback(packet -> {
-            logger.info("aa:{}",packet.toString());
+        listener.setCallback((packet,rawPacket) -> {
+            IpV4Packet p = rawPacket.get(IpV4Packet.class);
+            if(p!=null) {
+                logger.info("src ip:{}", p.getHeader().getSrcAddr());
+                logger.info("desc ip:{}", p.getHeader().getDstAddr());
+            }
+            logger.info("aa:{}",packet);
         });
         PacketCaptureThread pThead = builder.withDevice(device)
                 .withTimeout(20)
                 .withFilterExpression("dst port 102")
                 .withListener(listener).build();
+        pThead.setDaemon(true);
         pThead.start();
         Thread.sleep(300000);
         pThead.breakLoop();
