@@ -19,17 +19,9 @@
 
 package org.apache.plc4x.java.utils.capturereplay;
 
-import org.apache.plc4x.java.s7.readwrite.TPKTPacket;
-import org.apache.plc4x.java.spi.generation.ByteOrder;
-import org.apache.plc4x.java.spi.generation.ParseException;
-import org.apache.plc4x.java.spi.generation.ReadBufferByteBased;
 import org.pcap4j.core.PacketListener;
 import org.pcap4j.packet.Packet;
 import org.pcap4j.packet.UnknownPacket;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.Arrays;
 
 public class PacketCaptureListener implements PacketListener {
 
@@ -38,28 +30,12 @@ public class PacketCaptureListener implements PacketListener {
     }
 
     private Callback callback;
-    private static final Logger logger = LoggerFactory.getLogger(PacketCaptureListener.class);
-
     @Override
     public void gotPacket(Packet packet) {
         Packet unkonwPacket = packet.get(UnknownPacket.class);
-
-        if (unkonwPacket != null) {
             if (callback != null) {
                 callback.call(unkonwPacket,packet);
-            } else {
-                byte[] bytes = packet.getRawData();
-                logger.info(Arrays.toString(bytes));
-
-                ReadBufferByteBased readBuffer = new ReadBufferByteBased(bytes, ByteOrder.BIG_ENDIAN);
-                try {
-                    TPKTPacket tPKTPacket = TPKTPacket.staticParse(readBuffer);
-                    logger.info(tPKTPacket.toString());
-                } catch (ParseException e) {
-                    logger.error("error", e);
-                }
             }
-        }
     }
 
     public interface Callback {

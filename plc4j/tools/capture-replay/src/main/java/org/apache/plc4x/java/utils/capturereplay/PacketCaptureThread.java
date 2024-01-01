@@ -24,9 +24,11 @@ import org.pcap4j.core.NotOpenException;
 import org.pcap4j.core.PcapHandle;
 import org.pcap4j.core.PcapNetworkInterface;
 import org.pcap4j.core.PcapNetworkInterface.PromiscuousMode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class PacketCaptureThread extends Thread {
-
+    private static final Logger logger = LoggerFactory.getLogger(PacketCaptureThread.class);
     private PcapNetworkInterface device;
     private PacketCaptureListener listener;
     private int timeout;
@@ -51,6 +53,7 @@ public class PacketCaptureThread extends Thread {
             handle.loop(-1, listener);
 
         } catch (Exception e) {
+            logger.error("error",e);
             breakLoop();
         }
     }
