@@ -321,6 +321,7 @@
                 <ignoredDependency>org.apache.nifi:nifi-standard-nar</ignoredDependency>
                 <ignoredDependency>io.netty:netty-transport-classes-epoll</ignoredDependency>
                 <ignoredDependency>io.netty:netty-transport-classes-kqueue</ignoredDependency>
+
               </ignoredDependencies>
             </configuration>
           </execution>
