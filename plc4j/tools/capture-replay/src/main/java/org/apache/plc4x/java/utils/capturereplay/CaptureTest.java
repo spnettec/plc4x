@@ -32,21 +32,23 @@ import org.slf4j.LoggerFactory;
 import java.util.Arrays;
 
 public class CaptureTest {
+
     private static final Logger logger = LoggerFactory.getLogger(CaptureTest.class);
+
     public static void main(String[] args) throws Exception {
         PacketCaptureThread.Builder builder = new PacketCaptureThread.Builder();
-        PcapNetworkInterface device = Pcaps.getDevByName("en0");
+        PcapNetworkInterface device = Pcaps.getDevByName("en8");
         if (device == null) {
             logger.debug("");
             throw new IllegalArgumentException("Could not open output device eth0");
         }
         PacketCaptureListener listener = new PacketCaptureListener();
-        listener.setCallback((packet,rawPacket) -> {
+        listener.setCallback((packet, rawPacket) -> {
 
-            if(packet==null){
+            if (packet == null) {
                 return;
             }
-            if(isS7Packet(packet.getRawData())) {
+            if (isS7Packet(packet.getRawData())) {
                 IpV4Packet p = rawPacket.get(IpV4Packet.class);
                 if (p != null) {
                     logger.info("src ip:{}", p.getHeader().getSrcAddr());
@@ -57,18 +59,21 @@ public class CaptureTest {
                 //logger.info("unknown packet:{}", packet);
             }
         });
-        PacketCaptureThread pThead = builder.withDevice(device)
-                .withTimeout(20)
-                .withFilterExpression("dst port 102")
+        PacketCaptureThread pThead = builder.withDevice(device).withTimeout(20).withFilterExpression("dst port 102")
                 .withListener(listener).build();
         pThead.setDaemon(true);
         pThead.start();
         Thread.sleep(300000);
         pThead.breakLoop();
     }
-    private static boolean isS7Packet(byte[] bytes){
 
-        if(bytes.length<10 && bytes[0]!=0x03){
+    private static boolean isS7Packet(byte[] bytes) {
+
+        if (bytes.length < 4 && bytes[0] != 0x03) {
+            return false;
+        }
+        int len = (4 << bytes[2]) | bytes[3];
+        if (bytes.length != len) {
             return false;
         }
         ReadBufferByteBased readBuffer = new ReadBufferByteBased(bytes, ByteOrder.BIG_ENDIAN);
@@ -79,6 +84,6 @@ public class CaptureTest {
         } catch (ParseException e) {
             logger.error("error:{}", Arrays.toString(bytes));
         }
-        return tPKTPacket!=null;
+        return tPKTPacket != null;
     }
 }
