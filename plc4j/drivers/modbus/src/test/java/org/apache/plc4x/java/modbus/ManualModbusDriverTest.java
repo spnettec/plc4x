@@ -71,7 +71,7 @@ public class ManualModbusDriverTest extends ManualTest {
     }
 
     public static void main(String[] args) throws Exception {
-        ManualModbusDriverTest test = new ManualModbusDriverTest("modbus-tcp://192.168.23.30");
+        ManualModbusDriverTest test = new ManualModbusDriverTest("modbus-rtu:serial:///dev/cu.Bluetooth-Incoming-Port?unit-identifier=1&baudRate=19200&stopBits=1&parityBits=0&dataBits=8");
         test.addTestCase("holding-register:1:BOOL", new PlcBOOL(true)); // 0001
         test.addTestCase("holding-register:2:BYTE", new PlcBYTE(42)); // 2A
         test.addTestCase("holding-register:3:WORD", new PlcWORD(42424)); // A5B8

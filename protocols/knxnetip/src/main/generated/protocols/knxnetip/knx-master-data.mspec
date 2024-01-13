@@ -1407,8 +1407,9 @@
     ['656' M_HELKAMA_BICA_OY ['714', '"Helkama Bica Oy"']]
     ['657' M_MODULYTE ['715', '"ModuLyte"']]
     ['658' M_CONSOLINNO_ENERGY_GMBH ['716', '"Consolinno Energy GmbH"']]
-    ['659' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
-    ['660' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
+    ['659' M_SCHIDERON_ELECTRIC_ASIA_LIMITED ['717', '"SCHIDERON ELECTRIC (ASIA) LIMITED"']]
+    ['660' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
+    ['661' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
     
 ]
 
