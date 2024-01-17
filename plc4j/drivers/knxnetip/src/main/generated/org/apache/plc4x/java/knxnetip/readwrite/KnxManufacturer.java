@@ -758,9 +758,10 @@ public enum KnxManufacturer {
   M_CONSOLINNO_ENERGY_GMBH((int) 658, (int) 716, (String) "Consolinno Energy GmbH"),
   M_SCHIDERON_ELECTRIC_ASIA_LIMITED(
       (int) 659, (int) 717, (String) "SCHIDERON ELECTRIC (ASIA) LIMITED"),
-  M_ABB___RESERVED((int) 660, (int) 43954, (String) "ABB - reserved"),
+  M_3R((int) 660, (int) 718, (String) "3R"),
+  M_ABB___RESERVED((int) 661, (int) 43954, (String) "ABB - reserved"),
   M_BUSCH_JAEGER_ELEKTRO___RESERVED(
-      (int) 661, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
+      (int) 662, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
   private static final Map<Integer, KnxManufacturer> map;
 
   static {
