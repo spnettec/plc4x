@@ -110,7 +110,7 @@
                   Sets the name of the property containing the settings
                   for JaCoCo runtime agent.
               -->
-              <propertyName>failsafeArgLine</propertyName>
+              <!--<propertyName>failsafeArgLine</propertyName>-->
             </configuration>
           </execution>
           <execution>
@@ -232,7 +232,7 @@
             We have to slightly increase the heap-size or some tests will fail.
             Notice the @ instead of the $ as prefix? That's late evaluation.
           -->
-          <argLine>-Xmx512m @{failsafeArgLine}</argLine>
+          <argLine>-Xmx512m</argLine>
           <includes>
             <include>**/*IT.java</include>
           </includes>

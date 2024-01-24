@@ -64,15 +64,15 @@ class DefaultNettyPlcConnectionTest {
 
         logger.info("Warming up");
         expect(false, false, false, false, discovery, connect, disconnect, close);
-        discovery.permitIn();
-
-        discovery.awaitOut();
-        logger.info("Verify discovery phase completion");
-        expect(true, false, false, false, discovery, connect, disconnect, close);
         connect.permitIn();
-
         connect.awaitOut();
+
         logger.info("Verify connection completion");
+        expect(false, true, false, false, discovery, connect, disconnect, close);
+        discovery.permitIn();
+        discovery.awaitOut();
+
+        logger.info("Verify discovery phase completion");
         expect(true, true, false, false, discovery, connect, disconnect, close);
 
         logger.info("Close connection");
