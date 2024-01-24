@@ -22,15 +22,10 @@ package org.apache.plc4x.java.spi.connection;
 import static java.util.concurrent.ForkJoinPool.commonPool;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import io.netty.channel.ChannelPipeline;
-import java.util.List;
-import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.api.listener.EventListener;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xNettyWrapper;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
-import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.generation.Message;
 import org.apache.plc4x.java.spi.netty.NettyHashTimerTimeoutManager;
 import org.junit.jupiter.api.Test;
@@ -52,8 +47,7 @@ class DefaultNettyPlcConnectionTest {
 
         ProtocolStackConfigurer<Message> stackConfigurer = (configuration, pipeline, authentication, passive, listeners) -> {
             TestProtocolBase base = new TestProtocolBase(discovery, connect, disconnect, close);
-            Plc4xNettyWrapper<Message> context = new Plc4xNettyWrapper<>(new NettyHashTimerTimeoutManager(),
-                    pipeline, passive, base, authentication, Message.class);
+            Plc4xNettyWrapper<Message> context = new Plc4xNettyWrapper<>(new NettyHashTimerTimeoutManager(), pipeline, passive, base, authentication, Message.class);
             pipeline.addLast(context);
             return base;
         };
@@ -68,18 +62,17 @@ class DefaultNettyPlcConnectionTest {
             }
         });
 
-
         logger.info("Warming up");
         expect(false, false, false, false, discovery, connect, disconnect, close);
-        connect.permitIn();
-        connect.awaitOut();
-
-        logger.info("Verify connection completion");
-        expect(false, true, false, false, discovery, connect, disconnect, close);
         discovery.permitIn();
-        discovery.awaitOut();
 
+        discovery.awaitOut();
         logger.info("Verify discovery phase completion");
+        expect(true, false, false, false, discovery, connect, disconnect, close);
+        connect.permitIn();
+
+        connect.awaitOut();
+        logger.info("Verify connection completion");
         expect(true, true, false, false, discovery, connect, disconnect, close);
 
         logger.info("Close connection");
