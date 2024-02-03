@@ -419,68 +419,75 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
 
     private CompletableFuture<PlcReadResponse> readWithoutMessageRouter(PlcReadRequest readRequest) {
         CompletableFuture<PlcReadResponse> future = new CompletableFuture<>();
-        Map<String, ResponseItem<PlcValue>> values = new HashMap<>();
+        RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
 
         PathSegment classSegment = new LogicalSegment(new ClassID((byte) 0, (short) 6));
         PathSegment instanceSegment = new LogicalSegment(new InstanceID((byte) 0, (short) 1));
 
         DefaultPlcReadRequest request = (DefaultPlcReadRequest) readRequest;
-        for (String tagName : request.getTagNames()) {
-            CompletableFuture<Boolean> internalFuture = new CompletableFuture<>();
-            RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
-            EipTag eipTag = (EipTag) request.getTag(tagName);
-            String tag = eipTag.getTag();
+        List<CipService> requests = new ArrayList<>(request.getNumberOfTags());
+        for (PlcTag field : request.getTags()) {
+            EipTag plcField = (EipTag) field;
+            String tag = plcField.getTag();
 
             try {
                 CipReadRequest req = new CipReadRequest(
                     toAnsi(tag),
                     1);
-
-                CipUnconnectedRequest requestItem = new CipUnconnectedRequest(
-                    classSegment,
-                    instanceSegment,
-                    req,
-                    (byte) this.configuration.getBackplane(),
-                    (byte) this.configuration.getSlot());
-
-                List<TypeId> typeIds = new ArrayList<>(2);
-
-                typeIds.add(nullAddressItem);
-                typeIds.add(new UnConnectedDataItem(requestItem));
-
-                CipRRData pkt = new CipRRData(
-                    sessionHandle,
-                    CIPStatus.Success.getValue(),
-                    DEFAULT_SENDER_CONTEXT,
-                    0L,
-                    0L,
-                    0,
-                    typeIds);
-
-                transaction.submit(() -> context.sendRequest(pkt)
-                    .expectResponse(EipPacket.class, REQUEST_TIMEOUT)
-                    .onTimeout(future::completeExceptionally)
-                    .onError((p, e) -> future.completeExceptionally(e))
-                    .check(p -> p instanceof CipRRData)
-                    .unwrap(p -> (CipRRData) p)
-                    .check(p -> p.getSessionHandle() == sessionHandle)
-                    .handle(p -> {
-                        List<TypeId> responseTypeIds = p.getTypeIds();
-                        UnConnectedDataItem dataItem = (UnConnectedDataItem) responseTypeIds.get(1);
-                        Map<String, ResponseItem<PlcValue>> readResponse = decodeSingleReadResponse(dataItem.getService(), tagName, eipTag);
-                        values.putAll(readResponse);
-                        internalFuture.complete(true);
-                        // Finish the request-transaction.
-                        transaction.endRequest();
-                    }));
+                requests.add(req);
             } catch (SerializationException e) {
                 e.printStackTrace();
             }
         }
 
-        // TODO: This seems to be blocking here ... we should probably do this asynchronously
-        PlcReadResponse readResponse = new DefaultPlcReadResponse(readRequest, values);
-        future.complete(readResponse);
+        List<TypeId> typeIds =new ArrayList<>();
+
+        short nb = (short) requests.size();
+        List<Integer> offsets = new ArrayList<>(nb);
+        int offset = 2 + nb * 2;
+        for (int i = 0; i < nb; i++) {
+            offsets.add(offset);
+            offset += requests.get(i).getLengthInBytes();
+        }
+
+        MultipleServiceRequest serviceRequest = new MultipleServiceRequest(new Services(offsets, requests));
+        CipUnconnectedRequest unreq = new CipUnconnectedRequest(
+            classSegment,
+            instanceSegment,
+            serviceRequest,
+            (byte) this.configuration.getBackplane(),
+            (byte) this.configuration.getSlot());
+        typeIds.add(new UnConnectedDataItem(unreq));
+
+        CipRRData pkt = new CipRRData(
+            sessionHandle,
+            CIPStatus.Success.getValue(),
+            DEFAULT_SENDER_CONTEXT,
+            0L,
+            0L,
+            0,
+            typeIds
+        );
+
+        transaction.submit(() -> context.sendRequest(pkt)
+            .expectResponse(EipPacket.class, REQUEST_TIMEOUT)
+            .onTimeout(future::completeExceptionally)
+            .onError((p, e) -> future.completeExceptionally(e))
+            .check(p -> p instanceof CipRRData)
+            .unwrap(p -> (CipRRData) p)
+            .check(p -> p.getSessionHandle() == sessionHandle)
+            .handle(p -> {
+                List<TypeId> responseTypeIds = p.getTypeIds();
+                TypeId typeId = responseTypeIds.get(0);
+                if (typeId instanceof NullAddressItem) {
+                    typeId = responseTypeIds.get(1);
+                }
+                UnConnectedDataItem dataItem = (UnConnectedDataItem) typeId;
+                PlcReadResponse readResponse = decodeReadResponse(dataItem.getService(), request);
+                future.complete(readResponse);
+                // Finish the request-transaction.
+                transaction.endRequest();
+            }));
 
         return future;
     }
@@ -752,21 +759,6 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
         return new DefaultPlcReadResponse(readRequest, values);
     }
 
-    private Map<String, ResponseItem<PlcValue>> decodeSingleReadResponse(CipService p, String tagName, PlcTag tag) {
-        Map<String, ResponseItem<PlcValue>> values = new HashMap<>();
-        CipReadResponse resp = (CipReadResponse) p;
-        PlcResponseCode code = decodeResponseCode(resp.getStatus());
-        PlcValue plcValue = null;
-        CIPDataTypeCode type = resp.getData().getDataType();
-        ByteBuf data = Unpooled.wrappedBuffer(resp.getData().getData());
-        if (code == PlcResponseCode.OK) {
-            plcValue = parsePlcValue((EipTag) tag, data, type);
-        }
-        ResponseItem<PlcValue> result = new ResponseItem<>(code, plcValue);
-        values.put(tagName, result);
-        return values;
-    }
-
     private PlcValue parsePlcValue(EipTag tag, ByteBuf data, CIPDataTypeCode type) {
         final int STRING_LEN_OFFSET = 2, STRING_DATA_OFFSET = 6;
         int nb = tag.getElementNb();
@@ -865,75 +857,81 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
 
     public CompletableFuture<PlcWriteResponse> writeWithoutMessageRouter(PlcWriteRequest writeRequest) {
         CompletableFuture<PlcWriteResponse> future = new CompletableFuture<>();
-        DefaultPlcWriteRequest request = (DefaultPlcWriteRequest) writeRequest;
-        List<CipWriteRequest> items = new ArrayList<>(writeRequest.getNumberOfTags());
+        RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
+
         PathSegment classSegment = new LogicalSegment(new ClassID((byte) 0, (short) 6));
         PathSegment instanceSegment = new LogicalSegment(new InstanceID((byte) 0, (short) 1));
-        Map<String, PlcResponseCode> values = new HashMap<>();
 
-        for (String fieldName : writeRequest.getTagNames()) {
+        DefaultPlcWriteRequest request = (DefaultPlcWriteRequest) writeRequest;
+        List<CipService> requests = new ArrayList<>(writeRequest.getNumberOfTags());
+        for (String fieldName : request.getTagNames()) {
             final EipTag field = (EipTag) request.getTag(fieldName);
             final PlcValue value = request.getPlcValue(fieldName);
             String tag = field.getTag();
             int elements = Math.max(field.getElementNb(), 1);
 
             byte[] data = encodeValue(value, field.getType());
-            CipWriteRequest writeReq = null;
             try {
-                writeReq = new CipWriteRequest(toAnsi(tag), field.getType(), elements, data);
+                CipWriteRequest writeReq = new CipWriteRequest(toAnsi(tag),
+                    field.getType(),
+                    elements,
+                    data);
+                requests.add(writeReq);
             } catch (SerializationException e) {
                 e.printStackTrace();
             }
-            CompletableFuture<Boolean> internalFuture = new CompletableFuture<>();
-            RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
-
-            tm.startRequest();
-
-            UnConnectedDataItem exchange = new UnConnectedDataItem(
-                new CipUnconnectedRequest(
-                    classSegment,
-                    instanceSegment,
-                    writeReq,
-                    (byte) configuration.getBackplane(),
-                    (byte) configuration.getSlot()));
-
-            List<TypeId> typeIds = Arrays.asList(nullAddressItem, exchange);
-
-            CipRRData rrdata = new CipRRData(
-                sessionHandle,
-                0L,
-                senderContext,
-                0L,
-                EMPTY_INTERFACE_HANDLE,
-                0,
-                typeIds);
-
-            transaction.submit(() -> context.sendRequest(rrdata)
-                .expectResponse(EipPacket.class, REQUEST_TIMEOUT)
-                .onTimeout(future::completeExceptionally)
-                .onError((p, e) -> future.completeExceptionally(e))
-                .check(p -> p instanceof CipRRData).unwrap(p -> (CipRRData) p)
-                .check(p -> p.getSessionHandle() == sessionHandle)
-                //.check(p -> p.getSenderContext() == senderContext)
-                .check(p -> ((UnConnectedDataItem) p.getTypeIds().get(1)).getService() instanceof CipWriteResponse)
-                .unwrap(p -> (CipWriteResponse) ((UnConnectedDataItem) p.getTypeIds().get(1)).getService())
-                .handle(p -> {
-                    Map<String, PlcResponseCode> responseItem = decodeSingleWriteResponse(p, fieldName);
-                    values.putAll(responseItem);
-                    internalFuture.complete(true);
-                    transaction.endRequest();
-                })
-            );
-            try {
-                internalFuture.get(REQUEST_TIMEOUT.toMillis(), TimeUnit.MILLISECONDS);
-            } catch (InterruptedException | ExecutionException | TimeoutException e) {
-                future.completeExceptionally(new PlcRuntimeException("Failed to read field"));
-            }
 
         }
-        // TODO: This seems to be blocking here ... we should probably do this asynchronously
-        PlcWriteResponse response = new DefaultPlcWriteResponse(writeRequest, values);
-        future.complete(response);
+
+        List<TypeId> typeIds =new ArrayList<>();
+
+        short nb = (short) requests.size();
+        List<Integer> offsets = new ArrayList<>(nb);
+        int offset = 2 + nb * 2;
+        for (int i = 0; i < nb; i++) {
+            offsets.add(offset);
+            offset += requests.get(i).getLengthInBytes();
+        }
+
+        MultipleServiceRequest serviceRequest = new MultipleServiceRequest(new Services(offsets, requests));
+        CipUnconnectedRequest unreq = new CipUnconnectedRequest(
+            classSegment,
+            instanceSegment,
+            serviceRequest,
+            (byte) this.configuration.getBackplane(),
+            (byte) this.configuration.getSlot());
+        typeIds.add(new UnConnectedDataItem(unreq));
+
+        CipRRData pkt = new CipRRData(
+            sessionHandle,
+            CIPStatus.Success.getValue(),
+            DEFAULT_SENDER_CONTEXT,
+            0L,
+            0L,
+            0,
+            typeIds
+        );
+
+        transaction.submit(() -> context.sendRequest(pkt)
+            .expectResponse(EipPacket.class, REQUEST_TIMEOUT)
+            .onTimeout(future::completeExceptionally)
+            .onError((p, e) -> future.completeExceptionally(e))
+            .check(p -> p instanceof CipRRData)
+            .unwrap(p -> (CipRRData) p)
+            .check(p -> p.getSessionHandle() == sessionHandle)
+            .handle(p -> {
+                List<TypeId> responseTypeIds = p.getTypeIds();
+                TypeId typeId = responseTypeIds.get(0);
+                if (typeId instanceof NullAddressItem) {
+                    typeId = responseTypeIds.get(1);
+                }
+                UnConnectedDataItem dataItem = (UnConnectedDataItem) typeId;
+                PlcWriteResponse writeResponse = (PlcWriteResponse) decodeWriteResponse(dataItem.getService(), writeRequest);
+                future.complete(writeResponse);
+                // Finish the request-transaction.
+                transaction.endRequest();
+            }));
+
         return future;
     }
 
