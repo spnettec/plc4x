@@ -209,7 +209,7 @@
         ]
 
         // Derived Types
-        ['Struct'        Struct       ]
+        //['Struct'        Struct       ]
         //['List'          List         ]
     ]
 ]

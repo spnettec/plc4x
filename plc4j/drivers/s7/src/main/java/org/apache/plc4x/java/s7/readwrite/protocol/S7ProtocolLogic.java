@@ -38,7 +38,6 @@ import org.apache.plc4x.java.s7.readwrite.*;
 import org.apache.plc4x.java.s7.readwrite.configuration.S7Configuration;
 import org.apache.plc4x.java.s7.readwrite.context.S7DriverContext;
 import org.apache.plc4x.java.s7.readwrite.tag.*;
-import org.apache.plc4x.java.s7.readwrite.types.S7ControllerType;
 import org.apache.plc4x.java.s7.readwrite.types.S7SubscriptionType;
 import org.apache.plc4x.java.s7.readwrite.utils.S7PlcSubscriptionHandle;
 import org.apache.plc4x.java.s7.utils.S7ParamErrorCode;
@@ -100,11 +99,11 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
      * Alarm filtering, ack, etc. must be performed by the client application.
      */
     private final BlockingQueue<S7Event> eventQueue = new ArrayBlockingQueue<>(1024);
-    private final S7ProtocolEventLogic EventLogic = new S7ProtocolEventLogic(eventQueue);
-    private final S7PlcSubscriptionHandle modeHandle = new S7PlcSubscriptionHandle(EventType.MODE, EventLogic);
-    private final S7PlcSubscriptionHandle sysHandle = new S7PlcSubscriptionHandle(EventType.SYS, EventLogic);
-    private final S7PlcSubscriptionHandle usrHandle = new S7PlcSubscriptionHandle(EventType.USR, EventLogic);
-    private final S7PlcSubscriptionHandle almHandle = new S7PlcSubscriptionHandle(EventType.ALM, EventLogic);
+    private final S7ProtocolEventLogic eventLogic = new S7ProtocolEventLogic(eventQueue);
+    private final S7PlcSubscriptionHandle modeHandle = new S7PlcSubscriptionHandle(EventType.MODE, eventLogic);
+    private final S7PlcSubscriptionHandle sysHandle = new S7PlcSubscriptionHandle(EventType.SYS, eventLogic);
+    private final S7PlcSubscriptionHandle usrHandle = new S7PlcSubscriptionHandle(EventType.USR, eventLogic);
+    private final S7PlcSubscriptionHandle almHandle = new S7PlcSubscriptionHandle(EventType.ALM, eventLogic);
     //private final S7PlcSubscriptionHandle cycHandle = new S7PlcSubscriptionHandle(EventType.CYC, EventLogic);    
 
     /*
@@ -131,8 +130,18 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
         // No concurrent requests can be sent anyway. It will be updated when receiving the
         // S7ParameterSetupCommunication response.
         this.tm = new RequestTransactionManager(1);
-        EventLogic.start();
+        eventLogic.start();
     }
+
+    @Override
+    public void close(ConversationContext<TPKTPacket> context) {
+        // TODO: Find out how to close this prior to Java 19
+        //clientExecutorService.close();
+        tm.shutdown();
+        eventLogic.stop();
+        // TODO Implement Closing on Protocol Level
+    }
+
     @Override
     public void setConfiguration(S7Configuration configuration) {
         this.configuration = configuration;
@@ -166,13 +175,12 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
         context.sendRequest(packet)
             .onTimeout(e -> {
                 logger.info("Timeout during Connection establishing, closing channel...");
-                context.getChannel().close();
                 // TODO: We're saying that we're closing the channel, but not closing the channel ... sure, this is what we want?
                 //context.getChannel().close();
             })
             .expectResponse(TPKTPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
-            .check(p -> p.getPayload() instanceof COTPPacketConnectionResponse)
-            .unwrap(p -> (COTPPacketConnectionResponse) p.getPayload())
+            .unwrap(TPKTPacket::getPayload)
+            .only(COTPPacketConnectionResponse.class)
             .handle(cotpPacketConnectionResponse -> {
                 logger.debug("Got COTP Connection Response");
                 logger.debug("Sending S7 Connection Request");
@@ -204,7 +212,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
                         // If the controller type is explicitly set, were finished with the login
                         // process. If it's set to ANY, we have to query the serial number information
                         // in order to detect the type of PLC.
-                        if (s7DriverContext.getControllerType() != S7ControllerType.ANY) {
+                        if (s7DriverContext.getControllerType() != ControllerType.ANY) {
                             // Send an event that connection setup is complete.
                             context.fireConnected();
                             return;
@@ -219,14 +227,14 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
                                 context.getChannel().close();
                             })
                             .expectResponse(TPKTPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
-                            .check(p -> p.getPayload() instanceof COTPPacketData)
-                            .unwrap(p -> ((COTPPacketData) p.getPayload()))
-                            .check(p -> p.getPayload() instanceof S7MessageUserData)
-                            .unwrap(p -> ((S7MessageUserData) p.getPayload()))
-                            .check(p -> p.getPayload() instanceof S7PayloadUserData)
-                            .handle(messageUserData -> {
+                            .unwrap(TPKTPacket::getPayload)
+                            .only(COTPPacketData.class)
+                            .unwrap(COTPPacketData::getPayload)
+                            .only(S7MessageUserData.class)
+                            .unwrap(S7MessageUserData::getPayload)
+                            .only(S7PayloadUserData.class)
+                            .handle(payloadUserData -> {
                                 logger.debug("Got S7 Identification Response");
-                                S7PayloadUserData payloadUserData = (S7PayloadUserData) messageUserData.getPayload();
                                 extractControllerTypeAndFireConnected(context, payloadUserData);
                             });
                     });
@@ -244,7 +252,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
         // 2. Performs the shutdown of the transaction executor.
         tm.shutdown();
         // 3. Finish the execution of the tasks for the handling of Events.
-        EventLogic.stop();
+        eventLogic.stop();
         // 4. Executes the closing of the main channel.
         context.getChannel().close();
         // 5. Here is the stop of any task or state machine that is added.
@@ -307,7 +315,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
         CompletableFuture<PlcReadResponse> clientFuture = new CompletableFuture<>();
 
         responseFuture.whenComplete((s7Message, throwable) -> {
-            if(throwable != null) {
+            if (throwable != null) {
                 clientFuture.completeExceptionally(new PlcProtocolException("Error reading", throwable));
             } else {
                 try {
@@ -356,7 +364,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
         CompletableFuture<PlcWriteResponse> clientFuture = new CompletableFuture<>();
 
         responseFuture.whenComplete((s7Message, throwable) -> {
-            if(throwable != null) {
+            if (throwable != null) {
                 clientFuture.completeExceptionally(new PlcProtocolException("Error writing", throwable));
             } else {
                 try {
@@ -437,11 +445,11 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
             // Start a new request-transaction (Is ended in the response-handler)
             RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
             transaction.submit(() -> context.sendRequest(tpktPacket)
-                .onTimeout(new TransactionErrorCallback<>(future, transaction,context.getChannel(),true,false))
-                .onError(new TransactionErrorCallback<>(future, transaction,context.getChannel()))
+                .onTimeout(new TransactionErrorCallback<>(future, transaction))
+                .onError(new TransactionErrorCallback<>(future, transaction))
                 .expectResponse(TPKTPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
-                .check(p -> p.getPayload() instanceof COTPPacketData)
-                .unwrap(p -> ((COTPPacketData) p.getPayload()))
+                .unwrap(TPKTPacket::getPayload)
+                .only(COTPPacketData.class)
                 .unwrap(COTPPacket::getPayload)
                 .check(p -> p.getTpduReference() == tpduId)
                 .handle(p -> {
@@ -518,11 +526,11 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
         // Start a new request-transaction (Is ended in the response-handler)
         RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
         transaction.submit(() -> context.sendRequest(tpktPacket)
-            .onTimeout(new TransactionErrorCallback<>(future, transaction,context.getChannel(),true,false))
-            .onError(new TransactionErrorCallback<>(future, transaction,context.getChannel()))
+            .onTimeout(new TransactionErrorCallback<>(future, transaction))
+            .onError(new TransactionErrorCallback<>(future, transaction))
             .expectResponse(TPKTPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
-            .check(p -> p.getPayload() instanceof COTPPacketData)
-            .unwrap(p -> ((COTPPacketData) p.getPayload()))
+            .unwrap(TPKTPacket::getPayload)
+            .only(COTPPacketData.class)
             .unwrap(COTPPacket::getPayload)
             .check(p -> p.getTpduReference() == tpduId)
             .handle(p -> {
@@ -578,7 +586,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
         } else {
             //TODO: Check for ALARM_S (S7300) and ALARM_8 (S7400), maybe we need verify the CPU
             AlarmStateType alarmType;
-            if (s7DriverContext.getControllerType() == S7ControllerType.S7_400) {
+            if (s7DriverContext.getControllerType() == ControllerType.S7_400) {
                 alarmType = AlarmStateType.ALARM_INITIATE;
             } else {
                 alarmType = AlarmStateType.ALARM_S_INITIATE;
@@ -763,7 +771,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
 
             try {
                 short cpuSubFunction;
-                if (s7DriverContext.getControllerType() == S7ControllerType.S7_300) {
+                if (s7DriverContext.getControllerType() == ControllerType.S7_300) {
                     cpuSubFunction = 0x13;
                 } else {
                     cpuSubFunction = 0xf0;
@@ -799,7 +807,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
 
             eventQueue.add(cycEvent);
 
-            S7PlcSubscriptionHandle cycHandle = new S7PlcSubscriptionHandle(strTagName, EventType.CYC, EventLogic);
+            S7PlcSubscriptionHandle cycHandle = new S7PlcSubscriptionHandle(strTagName, EventType.CYC, eventLogic);
 
             ResponseItem<PlcSubscriptionHandle> response = new ResponseItem<>(PlcResponseCode.OK, cycHandle);
             plcSubscriptionRequest.getTagNames().forEach(s -> values.put(s, response));
@@ -819,7 +827,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
 
             eventQueue.add(cycEvent);
 
-            S7PlcSubscriptionHandle cycHandle = new S7PlcSubscriptionHandle(strTagName, EventType.CYC, EventLogic);
+            S7PlcSubscriptionHandle cycHandle = new S7PlcSubscriptionHandle(strTagName, EventType.CYC, eventLogic);
             values.put(strTagName, new ResponseItem<>(PlcResponseCode.OK, cycHandle));
             return new DefaultPlcSubscriptionResponse(plcSubscriptionRequest, values);
 
@@ -1431,11 +1439,11 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
         RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
         // Send the request.
         transaction.submit(() -> context.sendRequest(tpktPacket)
-            .onTimeout(new TransactionErrorCallback<>(future, transaction,context.getChannel()))
-            .onError(new TransactionErrorCallback<>(future, transaction,context.getChannel()))
+            .onTimeout(new TransactionErrorCallback<>(future, transaction))
+            .onError(new TransactionErrorCallback<>(future, transaction))
             .expectResponse(TPKTPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
-            .check(p -> p.getPayload() instanceof COTPPacketData)
-            .unwrap(p -> (COTPPacketData) p.getPayload())
+            .unwrap(TPKTPacket::getPayload)
+            .only(COTPPacketData.class)
             .check(p -> p.getPayload() != null)
             .unwrap(COTPPacket::getPayload)
             .check(p -> p.getTpduReference() == tpduId)
@@ -1532,12 +1540,6 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
         }
     }
 
-    @Override
-    public void close(ConversationContext<TPKTPacket> context) {
-        // TODO Implement Closing on Protocol Level
-        EventLogic.stop();
-    }
-
     private void extractControllerTypeAndFireConnected(ConversationContext<TPKTPacket> context, S7PayloadUserData payloadUserData) {
         for (S7PayloadUserDataItem item : payloadUserData.getItems()) {
             if (!(item instanceof S7PayloadUserDataItemCpuFunctionReadSzlResponse)) {
@@ -1605,7 +1607,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
         S7Message s7Message = new S7MessageRequest(0, s7ParameterSetupCommunication,
             null);
         int tpduId = 1;
-        if (this.s7DriverContext.getControllerType() == S7ControllerType.S7_200)
+        if (this.s7DriverContext.getControllerType() == ControllerType.S7_200)
         {
             tpduId = 0;
         }
@@ -1773,7 +1775,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
                     }
 
                     List<PlcValue> plcValues = new LinkedList<>();
-                    plcValues.add(PlcLDATE_AND_TIME.of(LocalDateTime.of(
+                    plcValues.add(PlcDATE_AND_LTIME.of(LocalDateTime.of(
                         dt.getYear() + 2000,
                         dt.getMonth(),
                         dt.getDay(),
@@ -1790,7 +1792,6 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
             }
 
             return new DefaultPlcReadResponse(plcReadRequest, values);
-
         }
 
         // In all other cases all went well.
@@ -1905,18 +1906,18 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
             int stringLength = (tag instanceof S7StringFixedLengthTag) ? ((S7StringFixedLengthTag) tag).getStringLength() : 254;
             ByteBuffer byteBuffer = null;
             for (int i = 0; i < tag.getNumberOfElements(); i++) {
-                int lengthInBits = DataItem.getLengthInBits(plcValue.getIndex(i), tag.getDataType().getDataProtocolId(), stringLength,tag.getStringEncoding());
+                int lengthInBits = DataItem.getLengthInBits(plcValue.getIndex(i), tag.getDataType().getDataProtocolId(), s7DriverContext.getControllerType(), stringLength);
+
                 // Cap the length of the string with the maximum allowed size.
-                if(tag.getDataType() == TransportSize.STRING) {
+                if (tag.getDataType() == TransportSize.STRING) {
                     lengthInBits = Math.min(lengthInBits, (stringLength * 8) + 16);
-                } else if(tag.getDataType() == TransportSize.WSTRING) {
+                } else if (tag.getDataType() == TransportSize.WSTRING) {
                     lengthInBits = Math.min(lengthInBits, (stringLength * 16) + 32);
-                } else if((tag.getDataType() == TransportSize.S5TIME) ||
-                        (tag.getDataType() == TransportSize.DATE)) {
+                } else if (tag.getDataType() == TransportSize.S5TIME) {
                     lengthInBits = lengthInBits * 8;
                 }
                 final WriteBufferByteBased writeBuffer = new WriteBufferByteBased((int) Math.ceil(((float) lengthInBits) / 8.0f));
-                DataItem.staticSerialize(writeBuffer, plcValue.getIndex(i), tag.getDataType().getDataProtocolId(), stringLength,tag.getStringEncoding());
+                DataItem.staticSerialize(writeBuffer, plcValue.getIndex(i), tag.getDataType().getDataProtocolId(), s7DriverContext.getControllerType(), stringLength,tag.getStringEncoding());
                 // Allocate enough space for all items.
                 if (byteBuffer == null) {
                     // TODO: This logic will cause problems when reading arrays of strings.
@@ -1991,25 +1992,25 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
      * @param articleNumber article number string.
      * @return type of controller.
      */
-    private S7ControllerType decodeControllerType(String articleNumber) {
+    private ControllerType decodeControllerType(String articleNumber) {
         if (!articleNumber.startsWith("6ES7 ")) {
-            return S7ControllerType.ANY;
+            return ControllerType.ANY;
         }
         String model = articleNumber.substring(articleNumber.indexOf(' ') + 1, articleNumber.indexOf(' ') + 2);
         switch (model) {
             case "2":
-                return S7ControllerType.S7_1200;
+                return ControllerType.S7_1200;
             case "5":
-                return S7ControllerType.S7_1500;
+                return ControllerType.S7_1500;
             case "3":
-                return S7ControllerType.S7_300;
+                return ControllerType.S7_300;
             case "4":
-                return S7ControllerType.S7_400;
+                return ControllerType.S7_400;
             default:
                 if (logger.isInfoEnabled()) {
                     logger.info("Looking up unknown article number {}", articleNumber);
                 }
-                return S7ControllerType.ANY;
+                return ControllerType.ANY;
         }
     }
 
@@ -2030,42 +2031,23 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
         // For these date-types we have to convert the requests to simple byte-array requests
         // As otherwise the S7 will deny them with "Data type not supported" replies.
         if ((transportSize == TransportSize.TIME) /*|| (transportSize == TransportSize.S7_S5TIME)*/ ||
-            (transportSize == TransportSize.LINT) ||
-            (transportSize == TransportSize.ULINT) ||
-            (transportSize == TransportSize.LWORD) ||
-            (transportSize == TransportSize.LREAL) ||
-            (transportSize == TransportSize.REAL) ||
-            (transportSize == TransportSize.LTIME) ||
-            (transportSize == TransportSize.DATE) ||
-            (transportSize == TransportSize.TIME_OF_DAY) ||
-            (transportSize == TransportSize.DATE_AND_TIME)
-        ) {
+            (transportSize == TransportSize.LTIME) || (transportSize == TransportSize.DATE) ||
+            (transportSize == TransportSize.TIME_OF_DAY) || (transportSize == TransportSize.DATE_AND_TIME)) {
             numElements = numElements * transportSize.getSizeInBytes();
-            //((S7Field) field).setDataType(transportSize);
             transportSize = TransportSize.BYTE;
-        }
-        if (transportSize == TransportSize.BOOL) {
-            if(numElements>1) {
-                transportSize = TransportSize.BYTE;
-            }
-            numElements = numElements * transportSize.getSizeInBytes();
-        }
-        if (transportSize == TransportSize.CHAR) {
-            transportSize = TransportSize.BYTE;
-            numElements = numElements * transportSize.getSizeInBytes();
-        }
-        if (transportSize == TransportSize.WCHAR) {
-            transportSize = TransportSize.BYTE;
-            numElements = numElements * transportSize.getSizeInBytes() * 2;
         }
         if (transportSize == TransportSize.STRING) {
-            transportSize = TransportSize.BYTE;
+            transportSize = TransportSize.CHAR;
             int stringLength = (s7Tag instanceof S7StringFixedLengthTag) ? ((S7StringFixedLengthTag) s7Tag).getStringLength() : 254;
             numElements = numElements * (stringLength + 2);
         } else if (transportSize == TransportSize.WSTRING) {
-            transportSize = TransportSize.BYTE;
+            transportSize = TransportSize.CHAR;
             int stringLength = (s7Tag instanceof S7StringFixedLengthTag) ? ((S7StringFixedLengthTag) s7Tag).getStringLength() : 254;
             numElements = numElements * (stringLength + 2) * 2;
+        }
+        if (transportSize.getCode() == 0x00) {
+            numElements = numElements * transportSize.getSizeInBytes();
+            transportSize = TransportSize.BYTE;
         }
         return new S7AddressAny(transportSize, numElements, s7Tag.getBlockNumber(),
             s7Tag.getMemoryArea(), s7Tag.getByteOffset(), s7Tag.getBitOffset());
@@ -2089,8 +2071,8 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
 
 
     private boolean isFeatureSupported() {
-        return (s7DriverContext.getControllerType() == S7ControllerType.S7_300) ||
-            (s7DriverContext.getControllerType() == S7ControllerType.S7_400);
+        return (s7DriverContext.getControllerType() == ControllerType.S7_300) ||
+            (s7DriverContext.getControllerType() == ControllerType.S7_400);
     }
 
     private CompletableFuture<S7MessageUserData> reassembledMessage(short sequenceNumber, List<PlcValue> plcValues) {
@@ -2105,13 +2087,13 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
         context.sendRequest(request)
             .onTimeout(e -> {
                 logger.warn("Timeout during Connection establishing, closing channel...");
-                context.getChannel().close();
+                //context.getChannel().close();
             })
             .expectResponse(TPKTPacket.class, Duration.ofMillis(1000))
-            .check(p -> p.getPayload() instanceof COTPPacketData)
-            .unwrap(p -> ((COTPPacketData) p.getPayload()))
-            .check(p -> p.getPayload() instanceof S7MessageUserData)
-            .unwrap(p -> ((S7MessageUserData) p.getPayload()))
+            .unwrap(TPKTPacket::getPayload)
+            .only(COTPPacketData.class)
+            .unwrap(COTPPacketData::getPayload)
+            .only(S7MessageUserData.class)
             .check(p -> p.getPayload() instanceof S7PayloadUserData)
             .handle(future::complete);
 
@@ -2145,13 +2127,13 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
         context.sendRequest(request)
             .onTimeout(e -> {
                 logger.warn("Timeout during Connection establishing, closing channel...");
-                context.getChannel().close();
+                //context.getChannel().close();
             })
             .expectResponse(TPKTPacket.class, Duration.ofMillis(1000))
-            .check(p -> p.getPayload() instanceof COTPPacketData)
-            .unwrap(p -> ((COTPPacketData) p.getPayload()))
-            .check(p -> p.getPayload() instanceof S7MessageUserData)
-            .unwrap(p -> ((S7MessageUserData) p.getPayload()))
+            .unwrap(TPKTPacket::getPayload)
+            .only(COTPPacketData.class)
+            .unwrap(COTPPacketData::getPayload)
+            .only(S7MessageUserData.class)
             .check(p -> p.getPayload() instanceof S7PayloadUserData)
             .handle(future::complete);
 
