@@ -45,7 +45,7 @@ public class DataItem {
   private static final Logger LOGGER = LoggerFactory.getLogger(DataItem.class);
 
   public static PlcValue staticParse(
-      ReadBuffer readBuffer, PlcValueType plcValueType, Integer stringLength)
+      ReadBuffer readBuffer, PlcValueType plcValueType, Integer stringLength, String stringEncoding)
       throws ParseException {
     if (EvaluationHelper.equals(plcValueType, PlcValueType.BOOL)) { // BOOL
       Byte reservedField0 =
@@ -106,24 +106,25 @@ public class DataItem {
       return new PlcWCHAR(value);
     } else if (EvaluationHelper.equals(plcValueType, PlcValueType.STRING)) { // STRING
       String value =
-          readSimpleField(
+          readManualField(
               "value",
-              readString(readBuffer, (stringLength) * (8)),
-              WithOption.WithEncoding("Windows-1252"));
-
-      Short reservedField0 =
-          readReservedField("reserved", readUnsignedShort(readBuffer, 8), (short) 0x00);
+              readBuffer,
+              () ->
+                  (String)
+                      (org.apache.plc4x.java.ads.readwrite.utils.StaticHelper.parseAmsString(
+                          readBuffer, stringLength, "UTF-8", stringEncoding)));
       return new PlcSTRING(value);
-    } else if (EvaluationHelper.equals(plcValueType, PlcValueType.WSTRING)) { // WSTRING
+    } else if (EvaluationHelper.equals(plcValueType, PlcValueType.WSTRING)) { // STRING
       String value =
-          readSimpleField(
+          readManualField(
               "value",
-              readString(readBuffer, ((stringLength) * (8)) * (2)),
-              WithOption.WithEncoding("UTF-16LE"));
-
-      Integer reservedField0 =
-          readReservedField("reserved", readUnsignedInt(readBuffer, 16), (int) 0x0000);
-      return new PlcWSTRING(value);
+              readBuffer,
+              () ->
+                  (String)
+                      (org.apache.plc4x.java.ads.readwrite.utils.StaticHelper.parseAmsString(
+                          readBuffer, stringLength, "UTF-16", stringEncoding)),
+              WithOption.WithEncoding("UTF-16"));
+      return new PlcSTRING(value);
     } else if (EvaluationHelper.equals(plcValueType, PlcValueType.TIME)) { // TIME
       long milliseconds = readSimpleField("milliseconds", readUnsignedLong(readBuffer, 32));
       return PlcTIME.ofMilliseconds(milliseconds);
@@ -161,12 +162,14 @@ public class DataItem {
   }
 
   public static int getLengthInBytes(
-      PlcValue _value, PlcValueType plcValueType, Integer stringLength) {
-    return (int) Math.ceil((float) getLengthInBits(_value, plcValueType, stringLength) / 8.0);
+      PlcValue _value, PlcValueType plcValueType, Integer stringLength, String stringEncoding) {
+    return (int)
+        Math.ceil(
+            (float) getLengthInBits(_value, plcValueType, stringLength, stringEncoding) / 8.0);
   }
 
   public static int getLengthInBits(
-      PlcValue _value, PlcValueType plcValueType, Integer stringLength) {
+      PlcValue _value, PlcValueType plcValueType, Integer stringLength, String stringEncoding) {
     int lengthInBits = 0;
     if (EvaluationHelper.equals(plcValueType, PlcValueType.BOOL)) { // BOOL
       // Reserved Field (reserved)
@@ -223,17 +226,11 @@ public class DataItem {
       // Simple field (value)
       lengthInBits += 16;
     } else if (EvaluationHelper.equals(plcValueType, PlcValueType.STRING)) { // STRING
-      // Simple field (value)
+      // Manual Field (value)
       lengthInBits += (stringLength) * (8);
-
-      // Reserved Field (reserved)
-      lengthInBits += 8;
-    } else if (EvaluationHelper.equals(plcValueType, PlcValueType.WSTRING)) { // WSTRING
-      // Simple field (value)
-      lengthInBits += ((stringLength) * (8)) * (2);
-
-      // Reserved Field (reserved)
-      lengthInBits += 16;
+    } else if (EvaluationHelper.equals(plcValueType, PlcValueType.WSTRING)) { // STRING
+      // Manual Field (value)
+      lengthInBits += (stringLength) * (16);
     } else if (EvaluationHelper.equals(plcValueType, PlcValueType.TIME)) { // TIME
       // Simple field (milliseconds)
       lengthInBits += 32;
@@ -265,9 +262,14 @@ public class DataItem {
   }
 
   public static void staticSerialize(
-      WriteBuffer writeBuffer, PlcValue _value, PlcValueType plcValueType, Integer stringLength)
+      WriteBuffer writeBuffer,
+      PlcValue _value,
+      PlcValueType plcValueType,
+      Integer stringLength,
+      String stringEncoding)
       throws SerializationException {
-    staticSerialize(writeBuffer, _value, plcValueType, stringLength, ByteOrder.BIG_ENDIAN);
+    staticSerialize(
+        writeBuffer, _value, plcValueType, stringLength, stringEncoding, ByteOrder.BIG_ENDIAN);
   }
 
   public static void staticSerialize(
@@ -275,6 +277,7 @@ public class DataItem {
       PlcValue _value,
       PlcValueType plcValueType,
       Integer stringLength,
+      String stringEncoding,
       ByteOrder byteOrder)
       throws SerializationException {
     if (EvaluationHelper.equals(plcValueType, PlcValueType.BOOL)) { // BOOL
@@ -342,25 +345,22 @@ public class DataItem {
           writeString(writeBuffer, 16),
           WithOption.WithEncoding("UTF-16LE"));
     } else if (EvaluationHelper.equals(plcValueType, PlcValueType.STRING)) { // STRING
-      // Simple Field (value)
-      writeSimpleField(
+      // Manual Field (value)
+      writeManualField(
           "value",
-          (String) _value.getString(),
-          writeString(writeBuffer, (stringLength) * (8)),
-          WithOption.WithEncoding("Windows-1252"));
-
-      // Reserved Field (reserved)
-      writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 8));
-    } else if (EvaluationHelper.equals(plcValueType, PlcValueType.WSTRING)) { // WSTRING
-      // Simple Field (value)
-      writeSimpleField(
+          () ->
+              org.apache.plc4x.java.ads.readwrite.utils.StaticHelper.serializeAmsString(
+                  writeBuffer, _value, stringLength, "UTF-8", stringEncoding),
+          writeBuffer);
+    } else if (EvaluationHelper.equals(plcValueType, PlcValueType.WSTRING)) { // STRING
+      // Manual Field (value)
+      writeManualField(
           "value",
-          (String) _value.getString(),
-          writeString(writeBuffer, ((stringLength) * (8)) * (2)),
-          WithOption.WithEncoding("UTF-16LE"));
-
-      // Reserved Field (reserved)
-      writeReservedField("reserved", (int) 0x0000, writeUnsignedInt(writeBuffer, 16));
+          () ->
+              org.apache.plc4x.java.ads.readwrite.utils.StaticHelper.serializeAmsString(
+                  writeBuffer, _value, stringLength, "UTF-16", stringEncoding),
+          writeBuffer,
+          WithOption.WithEncoding("UTF-16"));
     } else if (EvaluationHelper.equals(plcValueType, PlcValueType.TIME)) { // TIME
       // Simple Field (milliseconds)
       writeSimpleField(

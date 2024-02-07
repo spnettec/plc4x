@@ -99,6 +99,7 @@ public class S7HGeneratedDriverBase extends GeneratedDriverBase<TPKTPacket> {
         }
 
         // Find out the type of the transport configuration.
+        /*
         Class<? extends TransportConfiguration> transportConfigurationType = transport.getTransportConfigType();
         if(this instanceof TransportConfigurationTypeProvider) {
             TransportConfigurationTypeProvider transportConfigurationTypeProvider =
@@ -116,7 +117,8 @@ public class S7HGeneratedDriverBase extends GeneratedDriverBase<TPKTPacket> {
                     transportCode, protocolCode, transportCode, transportConfig, paramString);
             configure(transportConfiguration, transport);
         }
-
+         */
+        configure(configuration, transport);
         // Create an instance of the communication channel which the driver should use.
         ChannelFactory channelFactory = transport.createChannelFactory(transportConfig);
         if (channelFactory == null) {

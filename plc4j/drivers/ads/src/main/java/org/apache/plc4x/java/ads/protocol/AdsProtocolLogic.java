@@ -857,12 +857,12 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                 // Sometimes the ADS device just sends shorter strings than we asked for.
                 int remainingBytes = readBufferByteBased.getTotalBytes() - readBufferByteBased.getPos();
                 final int singleStringLength = Math.min(remainingBytes - 1, stringLength);
-                return new ResponseItem<>(PlcResponseCode.OK, parsePlcValue(plcValueType, adsDataTypeTableEntry, singleStringLength, readBuffer));
+                return new ResponseItem<>(PlcResponseCode.OK, parsePlcValue(plcValueType, adsDataTypeTableEntry, singleStringLength, readBuffer, tag.getStringEncoding()));
             } else {
                 // Fetch all
                 final PlcValue[] resultItems = IntStream.range(0, tag.getNumberOfElements()).mapToObj(i -> {
                     try {
-                        return parsePlcValue(plcValueType, adsDataTypeTableEntry, stringLength, readBuffer);
+                        return parsePlcValue(plcValueType, adsDataTypeTableEntry, stringLength, readBuffer,tag.getStringEncoding());
                     } catch (ParseException e) {
                         LOGGER.warn("Error parsing tag item of type: '{}' (at position {}})", tag.getPlcDataType(), i, e);
                     }
@@ -876,7 +876,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
         }
     }
 
-    private PlcValue parsePlcValue(PlcValueType plcValueType, AdsDataTypeTableEntry adsDataTypeTableEntry, int stringLength, ReadBuffer readBuffer) throws ParseException {
+    private PlcValue parsePlcValue(PlcValueType plcValueType, AdsDataTypeTableEntry adsDataTypeTableEntry, int stringLength, ReadBuffer readBuffer, String stringEncoding) throws ParseException {
         switch (plcValueType) {
             case Struct:
                 Map<String, PlcValue> properties = new HashMap<>();
@@ -898,19 +898,19 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                         // Extract the string length from the data type name.
                         strLen = Integer.parseInt(dataTypeName.substring(dataTypeName.indexOf("(") + 1, dataTypeName.indexOf(")")));
                     }
-                    PlcValue propertyValue = parsePlcValue(propertyPlcValueType, propertyDataTypeTableEntry, strLen, readBuffer);
+                    PlcValue propertyValue = parsePlcValue(propertyPlcValueType, propertyDataTypeTableEntry, strLen, readBuffer, stringEncoding);
                     properties.put(propertyName, propertyValue);
                     curPos = readBuffer.getPos() - startPos;
                 }
                 return new PlcStruct(properties);
             case List:
-                return parseArrayLevel(adsDataTypeTableEntry, adsDataTypeTableEntry.getArrayInfo(), readBuffer);
+                return parseArrayLevel(adsDataTypeTableEntry, adsDataTypeTableEntry.getArrayInfo(), readBuffer, stringEncoding);
             default:
-                return DataItem.staticParse(readBuffer, plcValueType, stringLength);
+                return DataItem.staticParse(readBuffer, plcValueType, stringLength, stringEncoding);
         }
     }
 
-    private PlcValue parseArrayLevel(AdsDataTypeTableEntry adsDataTypeTableEntry, List<AdsDataTypeArrayInfo> arrayLayers, ReadBuffer readBuffer) throws ParseException {
+    private PlcValue parseArrayLevel(AdsDataTypeTableEntry adsDataTypeTableEntry, List<AdsDataTypeArrayInfo> arrayLayers, ReadBuffer readBuffer, String stringEncoding) throws ParseException {
         // If this is the last layer of the Array, parse the values themselves.
         if (arrayLayers.isEmpty()) {
             String dataTypeName = adsDataTypeTableEntry.getDataTypeName();
@@ -923,7 +923,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
             }
             AdsDataTypeTableEntry elementDataTypeTableEntry = dataTypeTable.get(dataTypeName);
             PlcValueType plcValueType = getPlcValueTypeForAdsDataType(elementDataTypeTableEntry);
-            return parsePlcValue(plcValueType, elementDataTypeTableEntry, stringLength, readBuffer);
+            return parsePlcValue(plcValueType, elementDataTypeTableEntry, stringLength, readBuffer, stringEncoding);
         }
 
         List<PlcValue> elements = new ArrayList<>();
@@ -931,7 +931,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
         AdsDataTypeArrayInfo firstLayer = arrayInfo.get(0);
         for (int i = 0; i < firstLayer.getNumElements(); i++) {
             List<AdsDataTypeArrayInfo> remainingLayers = arrayInfo.subList(1, arrayInfo.size());
-            elements.add(parseArrayLevel(adsDataTypeTableEntry, remainingLayers, readBuffer));
+            elements.add(parseArrayLevel(adsDataTypeTableEntry, remainingLayers, readBuffer, stringEncoding));
         }
         return new PlcList(elements);
     }

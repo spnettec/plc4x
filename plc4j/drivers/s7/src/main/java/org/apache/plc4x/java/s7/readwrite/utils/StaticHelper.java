@@ -2007,12 +2007,7 @@ public class StaticHelper {
         long tv = (short) (((t & 0x000F)) + ((t & 0x00F0) >> 4) * 10 + ((t & 0x0F00) >> 8) * 100);
         long tb = (short) (10 * Math.pow(10, ((t & 0xF000) >> 12)));
         long totalms = tv * tb;
-        if (totalms <= 9990000) {
-            res = Duration.ofMillis(totalms);
-        } else {
-            res = Duration.ofMillis(9990000);
-        }
-        return res;
+        return (totalms <= 9990000)?totalms:9990000;
     }
 
     public static Short durationToS5Time(Duration duration) {
@@ -2701,6 +2696,16 @@ public class StaticHelper {
             io.writeUnsignedInt(16, daysSince1990);
         } catch (SerializationException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    public static String parseS7Char(ReadBuffer io, String encoding, String stringEncoding) throws ParseException{
+        if ("UTF-8".equalsIgnoreCase(encoding)) {
+            return io.readString(8, WithOption.WithEncoding(encoding));
+        } else if ("UTF-16".equalsIgnoreCase(encoding)) {
+            return io.readString(16, WithOption.WithEncoding(encoding));
+        } else {
+            throw new PlcRuntimeException("Unsupported encoding");
         }
     }
 

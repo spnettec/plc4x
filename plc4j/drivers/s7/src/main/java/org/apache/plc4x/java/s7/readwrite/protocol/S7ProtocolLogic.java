@@ -445,8 +445,8 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
             // Start a new request-transaction (Is ended in the response-handler)
             RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
             transaction.submit(() -> context.sendRequest(tpktPacket)
-                .onTimeout(new TransactionErrorCallback<>(future, transaction))
-                .onError(new TransactionErrorCallback<>(future, transaction))
+                .onTimeout(new TransactionErrorCallback<>(future, transaction,context.getChannel(),true,false))
+                .onError(new TransactionErrorCallback<>(future, transaction,context.getChannel()))
                 .expectResponse(TPKTPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
                 .unwrap(TPKTPacket::getPayload)
                 .only(COTPPacketData.class)
@@ -526,8 +526,8 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
         // Start a new request-transaction (Is ended in the response-handler)
         RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
         transaction.submit(() -> context.sendRequest(tpktPacket)
-            .onTimeout(new TransactionErrorCallback<>(future, transaction))
-            .onError(new TransactionErrorCallback<>(future, transaction))
+            .onTimeout(new TransactionErrorCallback<>(future, transaction,context.getChannel(),true,false))
+            .onError(new TransactionErrorCallback<>(future, transaction,context.getChannel()))
             .expectResponse(TPKTPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
             .unwrap(TPKTPacket::getPayload)
             .only(COTPPacketData.class)
@@ -1439,8 +1439,8 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
         RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
         // Send the request.
         transaction.submit(() -> context.sendRequest(tpktPacket)
-            .onTimeout(new TransactionErrorCallback<>(future, transaction))
-            .onError(new TransactionErrorCallback<>(future, transaction))
+            .onTimeout(new TransactionErrorCallback<>(future, transaction,context.getChannel()))
+            .onError(new TransactionErrorCallback<>(future, transaction,context.getChannel()))
             .expectResponse(TPKTPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
             .unwrap(TPKTPacket::getPayload)
             .only(COTPPacketData.class)
@@ -1906,7 +1906,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
             int stringLength = (tag instanceof S7StringFixedLengthTag) ? ((S7StringFixedLengthTag) tag).getStringLength() : 254;
             ByteBuffer byteBuffer = null;
             for (int i = 0; i < tag.getNumberOfElements(); i++) {
-                int lengthInBits = DataItem.getLengthInBits(plcValue.getIndex(i), tag.getDataType().getDataProtocolId(), s7DriverContext.getControllerType(), stringLength);
+                int lengthInBits = DataItem.getLengthInBits(plcValue.getIndex(i), tag.getDataType().getDataProtocolId(), s7DriverContext.getControllerType(), stringLength,tag.getStringEncoding());
 
                 // Cap the length of the string with the maximum allowed size.
                 if (tag.getDataType() == TransportSize.STRING) {
@@ -1941,13 +1941,13 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
             int stringLength = (tag instanceof S7StringFixedLengthTag) ? ((S7StringFixedLengthTag) tag).getStringLength() : 254;
             if (tag.getNumberOfElements() == 1) {
                 return DataItem.staticParse(readBuffer, tag.getDataType().getDataProtocolId(),
-                    stringLength, tag.getStringEncoding());
+                        s7DriverContext.getControllerType(), stringLength, tag.getStringEncoding());
             } else {
                 // Fetch all
                 final PlcValue[] resultItems = IntStream.range(0, tag.getNumberOfElements()).mapToObj(i -> {
                     try {
                         return DataItem.staticParse(readBuffer, tag.getDataType().getDataProtocolId(),
-                            stringLength, tag.getStringEncoding());
+                                s7DriverContext.getControllerType(), stringLength, tag.getStringEncoding());
                     } catch (ParseException e) {
                         logger.warn("Error parsing tag item of type: '{}' (at position {}})", tag.getDataType().name(), i, e);
                     }

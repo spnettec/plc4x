@@ -24,6 +24,7 @@ import (
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
+	"strconv"
 	"time"
 )
 
@@ -132,10 +133,18 @@ func serializeTiaDate(ctx context.Context, io utils.WriteBuffer, value values.Pl
 	return nil
 }
 
-func ParseS7String(ctx context.Context, io utils.ReadBuffer, stringLength int32, encoding string) (string, error) {
+func ParseS7String(ctx context.Context, io utils.ReadBuffer, stringLength int32, encoding string, stringEncoding string) (string, error) {
 	var multiplier int32
 	switch encoding {
 	case "UTF-8":
+		totalStringLength, _ := io.ReadUint8("", 8)
+		length, _ := io.ReadUint8("", 8)
+		if totalStringLength < length {
+			length = totalStringLength
+		}
+		if stringLength < int32(length) {
+			length = uint8(stringLength)
+		}
 		multiplier = 8
 	case "UTF-16":
 		multiplier = 16
@@ -143,7 +152,7 @@ func ParseS7String(ctx context.Context, io utils.ReadBuffer, stringLength int32,
 	return io.ReadString("", uint32(stringLength*multiplier), encoding)
 }
 
-func SerializeS7String(ctx context.Context, io utils.WriteBuffer, value values.PlcValue, stringLength int32, encoding string) error {
+func SerializeS7String(ctx context.Context, io utils.WriteBuffer, value values.PlcValue, stringLength int32, encoding string, stringEncoding string) error {
 	var multiplier int32
 	switch encoding {
 	case "UTF-8":
@@ -154,11 +163,12 @@ func SerializeS7String(ctx context.Context, io utils.WriteBuffer, value values.P
 	return io.WriteString("", uint32(stringLength*multiplier), encoding, value.GetString())
 }
 
-func ParseS7Char(ctx context.Context, io utils.ReadBuffer, encoding string) (uint8, error) {
-	return io.ReadUint8("", 8)
+func ParseS7Char(ctx context.Context, io utils.ReadBuffer, encoding string, stringEncoding string) (string, error) {
+	result, _ := io.ReadUint8("", 8)
+	return strconv.Itoa(int(result)), nil
 }
 
-func SerializeS7Char(ctx context.Context, io utils.WriteBuffer, value values.PlcValue, encoding string) error {
+func SerializeS7Char(ctx context.Context, io utils.WriteBuffer, value values.PlcValue, encoding string, stringEncoding string) error {
 	return io.WriteUint8("", 8, value.GetUint8())
 }
 

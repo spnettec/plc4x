@@ -33,7 +33,6 @@ import org.apache.plc4x.java.s7.readwrite.context.S7DriverContext;
 import org.apache.plc4x.java.s7.readwrite.optimizer.LargeTagPlcReadRequest;
 import org.apache.plc4x.java.s7.readwrite.optimizer.LargeTagPlcWriteRequest;
 import org.apache.plc4x.java.s7.readwrite.tag.*;
-import org.apache.plc4x.java.s7.readwrite.types.S7ControllerType;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
@@ -124,7 +123,7 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 
 								tm.setNumberOfConcurrentRequests(s7DriverContext.getMaxAmqCallee());
 
-								if (s7DriverContext.getControllerType() != S7ControllerType.ANY) {
+								if (s7DriverContext.getControllerType() != ControllerType.ANY) {
 									context.fireConnected();
 									return;
 								}
@@ -515,7 +514,7 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 				s7DriverContext.getMaxAmqCaller(), s7DriverContext.getMaxAmqCallee(), s7DriverContext.getPduSize());
 		S7Message s7Message = new S7MessageRequest(0, s7ParameterSetupCommunication, null);
 		int tpduId = 1;
-		if (this.s7DriverContext.getControllerType() == S7ControllerType.S7_200) {
+		if (this.s7DriverContext.getControllerType() == ControllerType.S7_200) {
 			tpduId = 0;
 		}
 		COTPPacketData cotpPacketData = new COTPPacketData(null, s7Message, true, (byte) tpduId);
@@ -831,7 +830,8 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 			ByteBuffer byteBuffer = null;
 			for (int i = 0; i < tag.getNumberOfElements(); i++) {
 				final int lengthInBytes = DataItem.getLengthInBytes(plcValue.getIndex(i),
-						tag.getDataType().getDataProtocolId(), stringLength, tag.getStringEncoding());
+						tag.getDataType().getDataProtocolId(), s7DriverContext.getControllerType(),
+						stringLength, tag.getStringEncoding());
 				final WriteBufferByteBased writeBuffer = new WriteBufferByteBased(lengthInBytes);
 				/*
 				if (tag.getDataType() == TransportSize.BOOL && tag.getNumberOfElements() == 1) {
@@ -839,7 +839,7 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 				}
 				 */
 				DataItem.staticSerialize(writeBuffer, plcValue.getIndex(i), tag.getDataType().getDataProtocolId(),
-						stringLength, tag.getStringEncoding());
+						s7DriverContext.getControllerType(),stringLength, tag.getStringEncoding());
 				if (byteBuffer == null) {
 					byteBuffer = ByteBuffer.allocate(lengthInBytes * tag.getNumberOfElements());
 				}
@@ -869,14 +869,14 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 					}
 				}
 				*/
-				return DataItem.staticParse(readBuffer, tag.getDataType().getDataProtocolId(), stringLength,
-						tag.getStringEncoding());
+				return DataItem.staticParse(readBuffer, tag.getDataType().getDataProtocolId(), s7DriverContext.getControllerType()
+						,stringLength, tag.getStringEncoding());
 			} else {
 				// Fetch all
 				final PlcValue[] resultItems = IntStream.range(0, tag.getNumberOfElements()).mapToObj(i -> {
 					try {
-						return DataItem.staticParse(readBuffer, tag.getDataType().getDataProtocolId(), stringLength,
-								tag.getStringEncoding());
+						return DataItem.staticParse(readBuffer, tag.getDataType().getDataProtocolId(), s7DriverContext.getControllerType(),
+								stringLength, tag.getStringEncoding());
 					} catch (ParseException e) {
 						logger.warn("Error parsing tag item of type: '{}' (at position {}})", tag.getDataType().name(),
 								i, e);
@@ -923,25 +923,25 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 	 * @param articleNumber article number string.
 	 * @return type of controller.
 	 */
-	private S7ControllerType decodeControllerType(String articleNumber) {
+	private ControllerType decodeControllerType(String articleNumber) {
 		if (!articleNumber.startsWith("6ES7 ")) {
-			return S7ControllerType.ANY;
+			return ControllerType.ANY;
 		}
 		String model = articleNumber.substring(articleNumber.indexOf(' ') + 1, articleNumber.indexOf(' ') + 2);
 		switch (model) {
 		case "2":
-			return S7ControllerType.S7_1200;
+			return ControllerType.S7_1200;
 		case "5":
-			return S7ControllerType.S7_1500;
+			return ControllerType.S7_1500;
 		case "3":
-			return S7ControllerType.S7_300;
+			return ControllerType.S7_300;
 		case "4":
-			return S7ControllerType.S7_400;
+			return ControllerType.S7_400;
 		default:
 			if (logger.isInfoEnabled()) {
 				logger.info("Looking up unknown article number {}", articleNumber);
 			}
-			return S7ControllerType.ANY;
+			return ControllerType.ANY;
 		}
 	}
 
@@ -1038,7 +1038,7 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 
 	private int getTpduId() {
 		int thisTpduId = 0;
-		if (this.s7DriverContext.getControllerType() != S7ControllerType.S7_200) {
+		if (this.s7DriverContext.getControllerType() != ControllerType.S7_200) {
 			thisTpduId = tpduGenerator.getAndIncrement();
 		}
 		final int tpduId = thisTpduId;

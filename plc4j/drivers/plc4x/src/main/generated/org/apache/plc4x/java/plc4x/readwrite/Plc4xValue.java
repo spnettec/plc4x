@@ -101,6 +101,27 @@ public class Plc4xValue {
       String value =
           readSimpleField("value", readString(readBuffer, 16), WithOption.WithEncoding("UTF-16"));
       return new PlcSTRING(value);
+    } else if (EvaluationHelper.equals(valueType, Plc4xValueType.STRING)) { // STRING
+      String value =
+          readManualField(
+              "value",
+              readBuffer,
+              () ->
+                  (String)
+                      (org.apache.plc4x.java.plc4x.readwrite.utils.StaticHelper.parseString(
+                          readBuffer, "UTF-8")));
+      return new PlcSTRING(value);
+    } else if (EvaluationHelper.equals(valueType, Plc4xValueType.WSTRING)) { // STRING
+      String value =
+          readManualField(
+              "value",
+              readBuffer,
+              () ->
+                  (String)
+                      (org.apache.plc4x.java.plc4x.readwrite.utils.StaticHelper.parseString(
+                          readBuffer, "UTF-16")),
+              WithOption.WithEncoding("UTF-16"));
+      return new PlcSTRING(value);
     } else if (EvaluationHelper.equals(valueType, Plc4xValueType.TIME)) { // TIME
       long milliseconds = readSimpleField("milliseconds", readUnsignedLong(readBuffer, 32));
       return PlcTIME.ofMilliseconds(milliseconds);
@@ -197,6 +218,12 @@ public class Plc4xValue {
     } else if (EvaluationHelper.equals(valueType, Plc4xValueType.WCHAR)) { // STRING
       // Simple field (value)
       lengthInBits += 16;
+    } else if (EvaluationHelper.equals(valueType, Plc4xValueType.STRING)) { // STRING
+      // Manual Field (value)
+      lengthInBits += (((STR_LEN(_value)) + (1))) * (8);
+    } else if (EvaluationHelper.equals(valueType, Plc4xValueType.WSTRING)) { // STRING
+      // Manual Field (value)
+      lengthInBits += (((STR_LEN(_value)) + (1))) * (16);
     } else if (EvaluationHelper.equals(valueType, Plc4xValueType.TIME)) { // TIME
       // Simple field (milliseconds)
       lengthInBits += 32;
@@ -295,6 +322,23 @@ public class Plc4xValue {
           "value",
           (String) _value.getString(),
           writeString(writeBuffer, 16),
+          WithOption.WithEncoding("UTF-16"));
+    } else if (EvaluationHelper.equals(valueType, Plc4xValueType.STRING)) { // STRING
+      // Manual Field (value)
+      writeManualField(
+          "value",
+          () ->
+              org.apache.plc4x.java.plc4x.readwrite.utils.StaticHelper.serializeString(
+                  writeBuffer, _value, "UTF-8"),
+          writeBuffer);
+    } else if (EvaluationHelper.equals(valueType, Plc4xValueType.WSTRING)) { // STRING
+      // Manual Field (value)
+      writeManualField(
+          "value",
+          () ->
+              org.apache.plc4x.java.plc4x.readwrite.utils.StaticHelper.serializeString(
+                  writeBuffer, _value, "UTF-16"),
+          writeBuffer,
           WithOption.WithEncoding("UTF-16"));
     } else if (EvaluationHelper.equals(valueType, Plc4xValueType.TIME)) { // TIME
       // Simple Field (milliseconds)
