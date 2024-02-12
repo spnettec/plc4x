@@ -112,9 +112,10 @@ public class DataItem {
               () ->
                   (String)
                       (org.apache.plc4x.java.ads.readwrite.utils.StaticHelper.parseAmsString(
-                          readBuffer, stringLength, "UTF-8", stringEncoding)));
+                          readBuffer, stringLength, "UTF-8", stringEncoding)),
+              WithOption.WithEncoding("UTF-8"));
       return new PlcSTRING(value);
-    } else if (EvaluationHelper.equals(plcValueType, PlcValueType.WSTRING)) { // STRING
+    } else if (EvaluationHelper.equals(plcValueType, PlcValueType.WSTRING)) { // WSTRING
       String value =
           readManualField(
               "value",
@@ -124,7 +125,7 @@ public class DataItem {
                       (org.apache.plc4x.java.ads.readwrite.utils.StaticHelper.parseAmsString(
                           readBuffer, stringLength, "UTF-16", stringEncoding)),
               WithOption.WithEncoding("UTF-16"));
-      return new PlcSTRING(value);
+      return new PlcWSTRING(value);
     } else if (EvaluationHelper.equals(plcValueType, PlcValueType.TIME)) { // TIME
       long milliseconds = readSimpleField("milliseconds", readUnsignedLong(readBuffer, 32));
       return PlcTIME.ofMilliseconds(milliseconds);
@@ -228,7 +229,7 @@ public class DataItem {
     } else if (EvaluationHelper.equals(plcValueType, PlcValueType.STRING)) { // STRING
       // Manual Field (value)
       lengthInBits += (stringLength) * (8);
-    } else if (EvaluationHelper.equals(plcValueType, PlcValueType.WSTRING)) { // STRING
+    } else if (EvaluationHelper.equals(plcValueType, PlcValueType.WSTRING)) { // WSTRING
       // Manual Field (value)
       lengthInBits += (stringLength) * (16);
     } else if (EvaluationHelper.equals(plcValueType, PlcValueType.TIME)) { // TIME
@@ -351,8 +352,9 @@ public class DataItem {
           () ->
               org.apache.plc4x.java.ads.readwrite.utils.StaticHelper.serializeAmsString(
                   writeBuffer, _value, stringLength, "UTF-8", stringEncoding),
-          writeBuffer);
-    } else if (EvaluationHelper.equals(plcValueType, PlcValueType.WSTRING)) { // STRING
+          writeBuffer,
+          WithOption.WithEncoding("UTF-8"));
+    } else if (EvaluationHelper.equals(plcValueType, PlcValueType.WSTRING)) { // WSTRING
       // Manual Field (value)
       writeManualField(
           "value",

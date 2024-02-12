@@ -468,11 +468,9 @@
             [simple   string 16                      value    encoding='"UTF-16LE"'    ]
         ]
         ['STRING' STRING
-            // TODO: Fix this length
-            [manual vstring value 'STATIC_CALL("parseAmsString", readBuffer, stringLength, _type.encoding, stringEncoding)' 'STATIC_CALL("serializeAmsString", writeBuffer, _value, stringLength, _type.encoding, stringEncoding)' 'stringLength * 8']
+            [manual vstring value 'STATIC_CALL("parseAmsString", readBuffer, stringLength, _type.encoding, stringEncoding)' 'STATIC_CALL("serializeAmsString", writeBuffer, _value, stringLength, _type.encoding, stringEncoding)' 'stringLength * 8' encoding='"UTF-8"']
         ]
-        ['WSTRING' STRING
-            // TODO: Fix this length
+        ['WSTRING' WSTRING
             [manual vstring value 'STATIC_CALL("parseAmsString", readBuffer, stringLength, _type.encoding, stringEncoding)' 'STATIC_CALL("serializeAmsString", writeBuffer, _value, stringLength, _type.encoding, stringEncoding)' 'stringLength * 16' encoding='"UTF-16"']
         ]
 

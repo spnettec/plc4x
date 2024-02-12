@@ -99,9 +99,9 @@ public class DirectAdsTag implements AdsTag {
         String numberOfElementsString = matcher.group("numberOfElements");
         Integer numberOfElements = numberOfElementsString != null ? Integer.valueOf(numberOfElementsString) : null;
         String stringEncoding = matcher.group("stringEncoding");
-        if (stringEncoding==null || "".equals(stringEncoding))
+        if (stringEncoding==null || stringEncoding.isEmpty())
         {
-            stringEncoding = "UTF-8";
+            stringEncoding = "AUTO";
             if ("WSTRING".equals(adsDataTypeString))
             {
                 stringEncoding = "UTF-16";

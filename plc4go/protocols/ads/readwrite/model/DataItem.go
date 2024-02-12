@@ -206,7 +206,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, p
 		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcSTRING(value), nil
-	case plcValueType == PlcValueType_WSTRING: // STRING
+	case plcValueType == PlcValueType_WSTRING: // WSTRING
 		// Manual Field (value)
 		value, _valueErr := ParseAmsString(ctx, readBuffer, stringLength, "UTF-16", stringEncoding)
 		if _valueErr != nil {
@@ -214,7 +214,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, p
 		}
 		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
-		return values.NewPlcSTRING(value), nil
+		return values.NewPlcWSTRING(value), nil
 	case plcValueType == PlcValueType_TIME: // TIME
 		// Simple Field (milliseconds)
 		milliseconds, _millisecondsErr := readBuffer.ReadUint32("milliseconds", 32)
@@ -411,7 +411,7 @@ func DataItemSerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.Wri
 		if _valueErr != nil {
 			return errors.Wrap(_valueErr, "Error serializing 'value' field")
 		}
-	case plcValueType == PlcValueType_WSTRING: // STRING
+	case plcValueType == PlcValueType_WSTRING: // WSTRING
 		// Manual Field (value)
 		_valueErr := SerializeAmsString(ctx, writeBuffer, value, stringLength, "UTF-16", m.StringEncoding)
 		if _valueErr != nil {

@@ -404,12 +404,12 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                                     // Subscribe to online-version changes (get the address from the collected data for symbol: "TwinCAT_SystemInfoVarList._AppInfo.OnlineChangeCnt")
                                     subscriptionTags.put("onlineVersion", new DefaultPlcSubscriptionTag(
                                         PlcSubscriptionType.CHANGE_OF_STATE,
-                                        new SymbolicAdsTag("TwinCAT_SystemInfoVarList._AppInfo.OnlineChangeCnt", org.apache.plc4x.java.api.types.PlcValueType.UDINT, Collections.emptyList(),"UTF-8"),
+                                        new SymbolicAdsTag("TwinCAT_SystemInfoVarList._AppInfo.OnlineChangeCnt", org.apache.plc4x.java.api.types.PlcValueType.UDINT, Collections.emptyList(),"AUTO"),
                                         Duration.ofMillis(1000)));
                                     // Subscribe to symbol-version changes (Address: GroupID: 0xF008, Offset: 0, Read length: 1)
                                     subscriptionTags.put("symbolVersion", new DefaultPlcSubscriptionTag(
                                         PlcSubscriptionType.CHANGE_OF_STATE,
-                                        new DirectAdsTag(0xF008, 0x0000, "USINT", 1, "UTF-8"),
+                                        new DirectAdsTag(0xF008, 0x0000, "USINT", 1, "AUTO"),
                                         Duration.ofMillis(1000)));
                                     LinkedHashMap<String, List<Consumer<PlcSubscriptionEvent>>> consumer = new LinkedHashMap<>();
                                     consumer.put("onlineVersion", Collections.singletonList(plcSubscriptionEvent -> {
@@ -510,7 +510,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                         arrayInfo.add(new DefaultArrayInfo(
                             (int) adsDataTypeArrayInfo.getLowerBound(), (int) adsDataTypeArrayInfo.getUpperBound()));
                     }
-                    DefaultListPlcBrowseItem item = new DefaultListPlcBrowseItem( new SymbolicAdsTag(symbol.getName(), plc4xPlcValueType, arrayInfo,"UTF-8"), itemName,
+                    DefaultListPlcBrowseItem item = new DefaultListPlcBrowseItem( new SymbolicAdsTag(symbol.getName(), plc4xPlcValueType, arrayInfo,"AUTO"), itemName,
                         true, !symbol.getFlagReadOnly(), true, childMap, options);
 
                     // Check if this item should be added to the result
@@ -519,7 +519,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                         resultsForQuery.add(item);
                     }
                 } else {
-                    DefaultPlcBrowseItem item = new DefaultPlcBrowseItem(new SymbolicAdsTag(symbol.getName(), plc4xPlcValueType, Collections.emptyList(),"UTF-8"), itemName, true,
+                    DefaultPlcBrowseItem item = new DefaultPlcBrowseItem(new SymbolicAdsTag(symbol.getName(), plc4xPlcValueType, Collections.emptyList(),"AUTO"), itemName, true,
                         !symbol.getFlagReadOnly(), true, childMap, options);
 
                     // Check if this item should be added to the result
@@ -577,11 +577,11 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                         (int) adsDataTypeArrayInfo.getLowerBound(), (int) adsDataTypeArrayInfo.getUpperBound()));
                 }
                 // Add the type itself.
-                values.add(new DefaultListPlcBrowseItem(new SymbolicAdsTag(basePath + "." + child.getPropertyName(), plc4xPlcValueType, arrayInfo,"UTF-8"), itemName,
+                values.add(new DefaultListPlcBrowseItem(new SymbolicAdsTag(basePath + "." + child.getPropertyName(), plc4xPlcValueType, arrayInfo,"AUTO"), itemName,
                     true, parentWritable, true, childMap, options));
             } else {
                 // Add the type itself.
-                values.add(new DefaultPlcBrowseItem(new SymbolicAdsTag(basePath + "." + child.getPropertyName(), plc4xPlcValueType, Collections.emptyList(),"UTF-8"), itemName,
+                values.add(new DefaultPlcBrowseItem(new SymbolicAdsTag(basePath + "." + child.getPropertyName(), plc4xPlcValueType, Collections.emptyList(),"AUTO"), itemName,
                     true, parentWritable, true, childMap, options));
             }
         }
@@ -1190,7 +1190,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                 stringLength = Integer.parseInt(
                     stringTypeName.substring(stringTypeName.indexOf("(") + 1, stringTypeName.indexOf(")")));
             }
-            DataItem.staticSerialize(writeBuffer, contextValue, plcValueType, stringLength,"UTF-8");
+            DataItem.staticSerialize(writeBuffer, contextValue, plcValueType, stringLength,"AUTO");
         }
     }
 

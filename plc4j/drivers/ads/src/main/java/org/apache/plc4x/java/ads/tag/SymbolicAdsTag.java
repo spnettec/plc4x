@@ -75,7 +75,7 @@ public class SymbolicAdsTag implements AdsTag {
     public String getStringEncoding(String adsDataTypeName) {
         if (stringEncoding == null || "".equals(stringEncoding))
         {
-            stringEncoding = "UTF-8";
+            stringEncoding = "AUTO";
             if ("WSTRING".equalsIgnoreCase(adsDataTypeName) || "WCHAR".equalsIgnoreCase(adsDataTypeName))
             {
                 stringEncoding = "UTF-16";

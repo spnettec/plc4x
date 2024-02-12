@@ -32,10 +32,18 @@ import java.util.logging.Logger;
 
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.value.PlcValue;
+import org.apache.plc4x.java.spi.codegen.WithOption;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.ReadBuffer;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
+
+import static org.apache.plc4x.java.spi.codegen.fields.FieldReaderFactory.readReservedField;
+import static org.apache.plc4x.java.spi.codegen.fields.FieldReaderFactory.readSimpleField;
+import static org.apache.plc4x.java.spi.codegen.fields.FieldWriterFactory.writeReservedField;
+import static org.apache.plc4x.java.spi.codegen.fields.FieldWriterFactory.writeSimpleField;
+import static org.apache.plc4x.java.spi.codegen.io.DataReaderFactory.*;
+import static org.apache.plc4x.java.spi.codegen.io.DataWriterFactory.*;
 
 public class StaticHelper {
     private static final String[] DEFAULTCHARSETS = {"ASCII", "UTF-8", "GBK", "GB2312", "BIG5", "GB18030"};
@@ -96,11 +104,11 @@ public class StaticHelper {
         return true;
     }
     public static Charset getEncoding(String firstMaTch, String str) {
-        if (str == null || str.trim().length() < 1) {
+        if (str == null || str.trim().isEmpty()) {
             return null;
         }
         Charset charset = null;
-        if (firstMaTch!=null && !"".equals(firstMaTch))
+        if (firstMaTch!=null && !firstMaTch.isEmpty())
         {
             try {
                 charset = Charset.forName(firstMaTch.replaceAll("[^a-zA-Z0-9]", ""));
@@ -122,75 +130,27 @@ public class StaticHelper {
 
     public static String parseAmsString(ReadBuffer readBuffer, int stringLength, String encoding, String stringEncoding) {
         stringLength = Math.min(stringLength, 256);
+        if ("AUTO".equalsIgnoreCase(stringEncoding))
+        {
+            stringEncoding = null;
+        }
         try {
             if ("UTF-8".equalsIgnoreCase(encoding)) {
-                List<Byte> bytes = new ArrayList<>();
-                for(int i = 0; (i < stringLength) && readBuffer.hasMore(8); i++) {
-                    final byte curByte = readBuffer.readByte();
-                    if (curByte != 0) {
-                        bytes.add(curByte);
-                    } else {
-                        // Gobble up the remaining data, which is not added to the string.
-                        i++;
-                        for(; (i < stringLength) && readBuffer.hasMore(8); i++) {
-                            readBuffer.readByte();
-                        }
-                        break;
-                    }
-                }
-                // Read the terminating byte.
-                readBuffer.readByte();
-                final byte[] byteArray = new byte[bytes.size()];
-                for (int i = 0; i < bytes.size(); i++) {
-                    byteArray[i] = bytes.get(i);
-                }
-
-                Charset charset = detectCharset(null,byteArray);
-                if (charset == null) {
-                    try {
-                        charset = Charset.forName(stringEncoding.replaceAll("[^a-zA-Z0-9]", ""));
-                    }catch (Exception ignored) {
-                    }
-                    if (charset == null) {
-                        charset = StandardCharsets.UTF_8;
-                    }
-                }
-                String substr = new String(byteArray, charset);
-                substr = substr.replaceAll("[^\u0020-\u9FA5]", "");
-                return substr;
+                String value =
+                    readSimpleField(
+                        "value",
+                        readString(readBuffer, (stringLength) * (8)),
+                        WithOption.WithEncoding("Windows-1252"));
+                    readReservedField("reserved", readUnsignedShort(readBuffer, 8), (short) 0x00);
+                return value;
             } else if ("UTF-16".equalsIgnoreCase(encoding)) {
-                List<Byte> bytes = new ArrayList<>();
-                for(int i = 0; (i < stringLength) && readBuffer.hasMore(16); i++) {
-                    final short curShort = readBuffer.readShort(16);
-                    if (curShort != 0) {
-                        bytes.add((byte) (curShort >>> 8));
-                        bytes.add((byte) (curShort & 0xFF));
-                    } else {
-                        // Gobble up the remaining data, which is not added to the string.
-                        i++;
-                        for(; (i < stringLength) && readBuffer.hasMore(16); i++) {
-                            readBuffer.readShort(16);
-                        }
-                        break;
-                    }
-                }
-                // Read the terminating byte.
-                readBuffer.readByte();
-                final byte[] byteArray = new byte[bytes.size()];
-                for (int i = 0; i < bytes.size(); i++) {
-                    byteArray[i] = bytes.get(i);
-                }
-                Charset charset = detectCharset(stringEncoding,byteArray);
-                if (charset == null) {
-                    try {
-                        charset = Charset.forName(stringEncoding.replaceAll("[^a-zA-Z0-9]", ""));
-                    }catch (Exception ignored) {
-                    }
-                    if (charset == null) {
-                        charset = StandardCharsets.UTF_16;
-                    }
-                }
-                return new String(byteArray, charset);
+                String value =
+                    readSimpleField(
+                        "value",
+                        readString(readBuffer, ((stringLength) * (8)) * (2)),
+                        WithOption.WithEncoding("UTF-16LE"));
+                    readReservedField("reserved", readUnsignedInt(readBuffer, 16), (int) 0x0000);
+                return value;
             } else {
                 throw new PlcRuntimeException("Unsupported string encoding " + encoding);
             }
@@ -212,32 +172,30 @@ public class StaticHelper {
             if (charsetTemp == null) {
                 charsetTemp = StandardCharsets.UTF_8;
             }
-            final byte[] raw = valueString.getBytes(charsetTemp);
             try {
-                for (int i = 0; i < stringLength; i++) {
-                    if (i >= raw.length) {
-                        io.writeByte((byte) 0x00);
-                    } else {
-                        io.writeByte( raw[i]);
-                    }
-                }
+                writeSimpleField(
+                    "value",
+                    valueString,
+                    writeString(io, (stringLength) * (8)),
+                    WithOption.WithEncoding("Windows-1252"));
+                writeReservedField("reserved", (short) 0x00, writeUnsignedShort(io, 8));
             }
             catch (SerializationException ex) {
                 Logger.getLogger(StaticHelper.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else if ("UTF-16".equalsIgnoreCase(encoding)) {
-            if (charsetTemp == null) {
-                charsetTemp = StandardCharsets.UTF_16;
+            if (charsetTemp == null || charsetTemp == StandardCharsets.UTF_8 || charsetTemp == StandardCharsets.UTF_16) {
+                charsetTemp = StandardCharsets.UTF_16LE;
             }
-            final byte[] raw = valueString.getBytes(charsetTemp);
             try {
-                for (int i = 0; i < stringLength * 2; i++) {
-                    if (i >= raw.length) {
-                        io.writeByte((byte) 0x00);
-                    } else {
-                        io.writeByte( raw[i]);
-                    }
-                }
+                writeSimpleField(
+                    "value",
+                    valueString,
+                    writeString(io, ((stringLength) * (8)) * (2)),
+                    WithOption.WithEncoding("UTF-16LE"));
+
+                // Reserved Field (reserved)
+                writeReservedField("reserved", (int) 0x0000, writeUnsignedInt(io, 16));
             }
             catch (SerializationException ex) {
                 Logger.getLogger(StaticHelper.class.getName()).log(Level.SEVERE, null, ex);
