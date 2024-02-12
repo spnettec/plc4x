@@ -144,7 +144,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
 
     @Override
     public void onDiscover(ConversationContext<OpcuaAPU> context) {
-        if (!configuration.isDiscovery()) {
+        if (!configuration.isDiscovery() || conversation.getSecurityPolicy() == SecurityPolicy.NONE) {
             LOGGER.debug("not encrypted, ignoring onDiscover");
             context.fireDiscovered(configuration);
             return;
