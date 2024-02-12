@@ -28,6 +28,6 @@ public interface SerialTransportConfiguration extends TransportConfiguration {
 
     int getNumStopBits();
 
-    int getParityBits();
+    SerialChannelOptionsParity getParity();
 
 }

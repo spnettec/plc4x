@@ -92,14 +92,10 @@ public class OpcuaPlcDriver extends GeneratedDriverBase<OpcuaAPU> {
     }
 
     @Override
-    protected boolean awaitDisconnectComplete() {
-        return true;
-    }
-
-    @Override
     protected boolean awaitDiscoverComplete() {
         return true;
     }
+
 
     @Override
     protected ProtocolStackConfigurer<OpcuaAPU> getStackConfigurer() {

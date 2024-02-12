@@ -612,7 +612,7 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KnxNetIpMessage> im
         } catch (Exception e) {
             throw new PlcRuntimeException("Error converting tag into knx address data.", e);
         }
-        return address.getData();
+        return address.getBytes();
     }
 
     protected static String toString(KnxAddress knxAddress) {

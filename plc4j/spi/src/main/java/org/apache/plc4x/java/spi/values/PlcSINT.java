@@ -259,7 +259,7 @@ public class PlcSINT extends PlcIECValue<Byte> {
 
     @Override
     public void serialize(WriteBuffer writeBuffer) throws SerializationException {
-        writeBuffer.writeByte(getClass().getSimpleName(), value);
+        writeBuffer.writeInt(getClass().getSimpleName(), 8, value);
     }
 
 }

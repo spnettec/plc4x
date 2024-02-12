@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class RequestTransactionManagerTest {
@@ -124,7 +124,7 @@ public class RequestTransactionManagerTest {
     }
 
     @Test
-    //@Disabled("This test is randomly failing on Jenkins")
+    @Disabled("This test seems to be very flaky, investigating in PR #1396")
     public void abortTransactionFromExternally() throws ExecutionException, InterruptedException {
         CompletableFuture<Void> sendRequest = new CompletableFuture<>();
         CompletableFuture<Void> receiveResponse = new CompletableFuture<>();
