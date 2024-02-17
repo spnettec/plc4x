@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -17,7 +17,30 @@
  * under the License.
  */
 
-package org.apache.plc4x.java.api.configuration;
+package org.apache.plc4x.java.spi.metadata;
 
-public interface PlcConnectionConfiguration {
+import org.apache.plc4x.java.api.metadata.Option;
+import org.apache.plc4x.java.api.metadata.OptionMetadata;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+public class DefaultOptionMetadata implements OptionMetadata {
+
+    final List<Option> options;
+
+    public DefaultOptionMetadata(List<Option> options) {
+        this.options = options;
+    }
+
+    @Override
+    public List<Option> getOptions() {
+        return options;
+    }
+
+    @Override
+    public List<Option> getRequiredOptions() {
+        return options.stream().filter(Option::isRequired).collect(Collectors.toList());
+    }
+
 }

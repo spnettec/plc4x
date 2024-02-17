@@ -124,7 +124,7 @@ public class DefaultPlcDriverManager implements PlcDriverManager, PlcConnectionM
     }
 
     /**
-     * Returns the codes of all of the drivers which are currently registered at the PlcDriverManager
+     * Returns the codes of all the drivers which are currently registered at the PlcDriverManager
      * @return Set of driver codes for all drivers registered
      */
     @Override
@@ -163,8 +163,8 @@ public class DefaultPlcDriverManager implements PlcDriverManager, PlcConnectionM
             throw new PlcConnectionException("Invalid plc4j connection string '" + url + "'", e);
         }
     }
-    @Override
 
+    @Override
     public PlcConnectionManager getConnectionManager() {
         return this;
     }

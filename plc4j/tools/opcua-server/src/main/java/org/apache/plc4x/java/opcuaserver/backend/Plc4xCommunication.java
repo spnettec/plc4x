@@ -18,9 +18,7 @@
  */
 package org.apache.plc4x.java.opcuaserver.backend;
 
-import org.apache.plc4x.java.DefaultPlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
-import org.apache.plc4x.java.api.PlcConnectionManager;
 import org.apache.plc4x.java.api.PlcDriverManager;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
@@ -55,7 +53,9 @@ import static org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.Unsigned.
 
 
 public class Plc4xCommunication extends AbstractLifecycle {
-    private PlcConnectionManager plcConnectionManager;
+
+    private PlcDriverManager driverManager;
+    private CachedPlcConnectionManager cachedPlcConnectionManager;
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final Integer DEFAULT_TIMEOUT = 1000000;
     private final Integer DEFAULT_RETRY_BACKOFF = 5000;
@@ -163,7 +163,7 @@ public class Plc4xCommunication extends AbstractLifecycle {
                 return BAD_RESPONSE;
             }
 
-            if (!connection.getMetadata().canRead()) {
+            if (!connection.getMetadata().isReadSupported()) {
                 logger.error("This connection doesn't support reading.");
                 try {
                     connection.close();
@@ -248,7 +248,7 @@ public class Plc4xCommunication extends AbstractLifecycle {
 
     public void setValue(String tag, String value, String connectionString) {
         try (PlcConnection connection = plcConnectionManager.getConnection(connectionString)) {
-            if (!connection.getMetadata().canWrite()) {
+            if (!connection.getMetadata().isWriteSupported()) {
                 logger.error("This connection doesn't support writing.");
                 return;
             }

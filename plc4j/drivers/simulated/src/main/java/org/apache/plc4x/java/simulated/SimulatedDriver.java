@@ -21,9 +21,7 @@ package org.apache.plc4x.java.simulated;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.PlcDriver;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
-import org.apache.plc4x.java.api.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.simulated.configuration.SimulatedConfiguration;
 import org.apache.plc4x.java.simulated.connection.SimulatedConnection;
 import org.apache.plc4x.java.simulated.connection.SimulatedDevice;
 import org.apache.plc4x.java.simulated.tag.SimulatedTag;
@@ -95,11 +93,6 @@ public class SimulatedDriver implements PlcDriver {
     @Override
     public SimulatedTag prepareTag(String tagAddress){
         return SimulatedTag.of(tagAddress);
-    }
-
-    @Override
-    public Class<? extends PlcConnectionConfiguration> getConfigurationType() {
-        return SimulatedConfiguration.class;
     }
 
 }

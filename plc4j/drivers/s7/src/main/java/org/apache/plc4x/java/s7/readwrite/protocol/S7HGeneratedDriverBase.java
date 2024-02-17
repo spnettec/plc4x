@@ -20,14 +20,17 @@ package org.apache.plc4x.java.s7.readwrite.protocol;
 
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
+import org.apache.plc4x.java.api.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.value.PlcValueHandler;
-import org.apache.plc4x.java.s7.readwrite.S7Driver;
 import org.apache.plc4x.java.s7.readwrite.TPKTPacket;
-import org.apache.plc4x.java.s7.readwrite.context.S7DriverContext;
+import org.apache.plc4x.java.s7.readwrite.configuration.S7TcpTransportConfiguration;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.ConfigurationFactory;
-import org.apache.plc4x.java.spi.connection.*;
+import org.apache.plc4x.java.spi.connection.ChannelFactory;
+import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
+import org.apache.plc4x.java.spi.connection.PlcTagHandler;
+import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.transport.Transport;
 import org.apache.plc4x.java.spi.transport.TransportConfiguration;
 import org.apache.plc4x.java.spi.transport.TransportConfigurationTypeProvider;
@@ -65,7 +68,7 @@ public class S7HGeneratedDriverBase extends GeneratedDriverBase<TPKTPacket> {
 
         final String protocolCode = matcher.group("protocolCode");
         final String transportCode = (matcher.group("transportCode") != null) ?
-            matcher.group("transportCode") : getDefaultTransport();
+            matcher.group("transportCode") : getDefaultTransportCode().get();
         final String transportConfig = matcher.group("transportConfig");
         final String transportConfig2 = (hmatcher.matches()) ? matcher.group("transportConfig2") : null;
         final String paramString = matcher.group("paramString");
@@ -99,26 +102,16 @@ public class S7HGeneratedDriverBase extends GeneratedDriverBase<TPKTPacket> {
         }
 
         // Find out the type of the transport configuration.
-        /*
-        Class<? extends TransportConfiguration> transportConfigurationType = transport.getTransportConfigType();
-        if(this instanceof TransportConfigurationTypeProvider) {
-            TransportConfigurationTypeProvider transportConfigurationTypeProvider =
-                (TransportConfigurationTypeProvider) this;
-            Class<? extends TransportConfiguration> driverTransportConfigurationType =
-                transportConfigurationTypeProvider.getTransportConfigurationType(transportCode);
-            if(driverTransportConfigurationType != null) {
-                transportConfigurationType = driverTransportConfigurationType;
-            }
+        Class<? extends PlcTransportConfiguration> transportConfigurationType = transport.getTransportConfigType();
+        if(getTransportConfigurationClass(transportCode).isPresent()) {
+            transportConfigurationType = getTransportConfigurationClass(transportCode).get();
         }
         // Use the transport configuration type to actually configure the transport instance.
-        if(transportConfigurationType != null) {
-            Configuration transportConfiguration = configurationFactory
-                .createPrefixedConfiguration(transportConfigurationType,
-                    transportCode, protocolCode, transportCode, transportConfig, paramString);
-            configure(transportConfiguration, transport);
-        }
-         */
-        configure(configuration, transport);
+        PlcTransportConfiguration transportConfiguration =
+            configurationFactory.createTransportConfiguration(
+                transportConfigurationType, protocolCode, transportCode, transportConfig, paramString);
+        configure(transportConfiguration, transport);
+
         // Create an instance of the communication channel which the driver should use.
         ChannelFactory channelFactory = transport.createChannelFactory(transportConfig);
         if (channelFactory == null) {
@@ -246,5 +239,28 @@ public class S7HGeneratedDriverBase extends GeneratedDriverBase<TPKTPacket> {
         return null;
     }
 
+    @Override
+    protected Class<? extends PlcConnectionConfiguration> getConfigurationClass() {
+        return S7Configuration.class;
+    }
+
+    @Override
+    protected Optional<Class<? extends PlcTransportConfiguration>> getTransportConfigurationClass(String transportCode) {
+        switch (transportCode) {
+            case "tcp":
+                return Optional.of(S7TcpTransportConfiguration.class);
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    protected Optional<String> getDefaultTransportCode() {
+        return Optional.of("tcp");
+    }
+
+    @Override
+    protected List<String> getSupportedTransportCodes() {
+        return Collections.singletonList("tcp");
+    }
 
 }
