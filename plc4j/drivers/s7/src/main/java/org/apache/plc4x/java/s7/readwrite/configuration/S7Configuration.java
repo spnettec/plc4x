@@ -18,12 +18,13 @@
  */
 package org.apache.plc4x.java.s7.readwrite.configuration;
 
+import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
 import org.apache.plc4x.java.spi.configuration.annotations.Description;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.BooleanDefaultValue;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultValue;
 
-public class S7Configuration extends S7TcpTransportConfiguration {
+public class S7Configuration implements PlcConnectionConfiguration {
 
     @ConfigurationParameter("local-group")
     @IntDefaultValue(3)
@@ -279,7 +280,6 @@ public class S7Configuration extends S7TcpTransportConfiguration {
             ", remote-rack2=" + remoteRack2 +
             ", remote-slot2=" + remoteSlot2 +
             ", remote-tsap=" + remoteTsap +
-            ", port=" + getDefaultPort() +                
             ", pduSize=" + pduSize +
             ", maxAmqCaller=" + maxAmqCaller +
             ", maxAmqCallee=" + maxAmqCallee +

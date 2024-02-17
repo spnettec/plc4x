@@ -206,9 +206,9 @@ class PooledPlcConnectionManagerTest implements WithAssertions {
 
         PlcConnection connection = SUT.getConnection("dummydummy:single/socket1/socket2?fancyOption=true");
         assertThat(connection.isConnected()).isEqualTo(true);
-        assertThat(connection.getMetadata().canRead()).isEqualTo(false);
-        assertThat(connection.getMetadata().canWrite()).isEqualTo(false);
-        assertThat(connection.getMetadata().canSubscribe()).isEqualTo(false);
+        assertThat(connection.getMetadata().isReadSupported()).isEqualTo(false);
+        assertThat(connection.getMetadata().isWriteSupported()).isEqualTo(false);
+        assertThat(connection.getMetadata().isSubscribeSupported()).isEqualTo(false);
 
         connection.close();
         assertThatThrownBy(connection::connect).isInstanceOf(IllegalStateException.class).hasMessage("Proxy not valid anymore");
@@ -314,22 +314,22 @@ class PooledPlcConnectionManagerTest implements WithAssertions {
         }
 
         @Override
-        public boolean canRead() {
+        public boolean isReadSupported() {
             return false;
         }
 
         @Override
-        public boolean canWrite() {
+        public boolean isWriteSupported() {
             return false;
         }
 
         @Override
-        public boolean canSubscribe() {
+        public boolean isSubscribeSupported() {
             return false;
         }
 
         @Override
-        public boolean canBrowse() {
+        public boolean isBrowseSupported() {
             return false;
         }
 

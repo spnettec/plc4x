@@ -20,23 +20,24 @@ package org.apache.plc4x.java.s7.readwrite.protocol;
 
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
-import org.apache.plc4x.java.api.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.value.PlcValueHandler;
+import org.apache.plc4x.java.s7.readwrite.S7Driver;
 import org.apache.plc4x.java.s7.readwrite.TPKTPacket;
+import org.apache.plc4x.java.s7.readwrite.configuration.S7Configuration;
 import org.apache.plc4x.java.s7.readwrite.configuration.S7TcpTransportConfiguration;
-import org.apache.plc4x.java.spi.configuration.Configuration;
+import org.apache.plc4x.java.s7.readwrite.context.S7DriverContext;
 import org.apache.plc4x.java.spi.configuration.ConfigurationFactory;
-import org.apache.plc4x.java.spi.connection.ChannelFactory;
-import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
-import org.apache.plc4x.java.spi.connection.PlcTagHandler;
-import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
+import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
+import org.apache.plc4x.java.spi.configuration.PlcTransportConfiguration;
+import org.apache.plc4x.java.spi.connection.*;
 import org.apache.plc4x.java.spi.transport.Transport;
-import org.apache.plc4x.java.spi.transport.TransportConfiguration;
-import org.apache.plc4x.java.spi.transport.TransportConfigurationTypeProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import java.util.ServiceLoader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -81,8 +82,8 @@ public class S7HGeneratedDriverBase extends GeneratedDriverBase<TPKTPacket> {
         }
 
         // Create the configuration object.
-        Configuration configuration = configurationFactory.createConfiguration(
-            getConfigurationType(), protocolCode, transportCode, transportConfig, paramString);
+        PlcConnectionConfiguration configuration = configurationFactory.createConfiguration(
+            getConfigurationClass(), protocolCode, transportCode, transportConfig, paramString);
         if (configuration == null) {
             throw new PlcConnectionException("Unsupported configuration");
         }
@@ -200,10 +201,6 @@ public class S7HGeneratedDriverBase extends GeneratedDriverBase<TPKTPacket> {
             .build();
     }
 
-    @Override
-    public Class<? extends Configuration> getConfigurationType() {
-        throw new UnsupportedOperationException("getConfigurationType, Not supported yet.");
-    }
 
     @Override
     protected PlcTagHandler getTagHandler() {
@@ -214,12 +211,6 @@ public class S7HGeneratedDriverBase extends GeneratedDriverBase<TPKTPacket> {
     protected PlcValueHandler getValueHandler() {
         throw new UnsupportedOperationException("getValueHandler, Not supported yet.");
     }
-
-    @Override
-    protected String getDefaultTransport() {
-        throw new UnsupportedOperationException("getDefaultTransport, Not supported yet.");
-    }
-
     @Override
     protected ProtocolStackConfigurer<TPKTPacket> getStackConfigurer() {
         throw new UnsupportedOperationException("getStackConfigurer, Not supported yet.");

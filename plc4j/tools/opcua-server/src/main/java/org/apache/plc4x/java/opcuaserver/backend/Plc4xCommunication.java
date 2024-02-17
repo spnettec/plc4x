@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.opcuaserver.backend;
 
+import org.apache.plc4x.java.DefaultPlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.PlcDriverManager;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
@@ -71,7 +72,7 @@ public class Plc4xCommunication extends AbstractLifecycle {
 
     @Override
     protected void onStartup() {
-        setConnectionManager(CachedPlcConnectionManager.getBuilder(new DefaultPlcDriverManager()).build());
+        setDriverManager();
     }
 
     @Override
@@ -79,16 +80,17 @@ public class Plc4xCommunication extends AbstractLifecycle {
         //Do Nothing
     }
 
-    public PlcConnectionManager getConnectionManager() {
-        return plcConnectionManager;
+    public PlcDriverManager getDriverManager() {
+        return driverManager;
     }
 
-    public void setConnectionManager(PlcConnectionManager connectionManager) {
-        this.plcConnectionManager = connectionManager;
+    public void setDriverManager() {
+        this.cachedPlcConnectionManager = CachedPlcConnectionManager.getBuilder(new DefaultPlcDriverManager()).build();
+        this.driverManager = this.cachedPlcConnectionManager.getDriverManager();
     }
 
     public PlcTag getTag(String tag, String connectionString) throws PlcConnectionException {
-        return plcConnectionManager.getDriverManager().getDriverForUrl(connectionString).prepareTag(tag);
+        return driverManager.getDriverForUrl(connectionString).prepareTag(tag);
     }
 
     public void addTag(DataItem item) {
@@ -155,7 +157,7 @@ public class Plc4xCommunication extends AbstractLifecycle {
 
             //Try to connect to PLC
             try {
-                connection = plcConnectionManager.getConnection(connectionString);
+                connection = cachedPlcConnectionManager.getConnection(connectionString);
                 logger.debug(connectionString + " Connected");
             } catch (PlcConnectionException e) {
                 logger.error("Failed to connect to device, error raised - " + e);
@@ -247,7 +249,7 @@ public class Plc4xCommunication extends AbstractLifecycle {
     }
 
     public void setValue(String tag, String value, String connectionString) {
-        try (PlcConnection connection = plcConnectionManager.getConnection(connectionString)) {
+        try (PlcConnection connection = cachedPlcConnectionManager.getConnection(connectionString)) {
             if (!connection.getMetadata().isWriteSupported()) {
                 logger.error("This connection doesn't support writing.");
                 return;

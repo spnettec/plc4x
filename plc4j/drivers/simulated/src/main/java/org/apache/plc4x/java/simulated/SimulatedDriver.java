@@ -22,6 +22,7 @@ import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.PlcDriver;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
+import org.apache.plc4x.java.simulated.configuration.SimulatedConfiguration;
 import org.apache.plc4x.java.simulated.connection.SimulatedConnection;
 import org.apache.plc4x.java.simulated.connection.SimulatedDevice;
 import org.apache.plc4x.java.simulated.tag.SimulatedTag;
@@ -76,7 +77,7 @@ public class SimulatedDriver implements PlcDriver {
         }
         // Create the configuration object.
         SimulatedConfiguration configuration = new ConfigurationFactory().createConfiguration(
-            SimulatedConfiguration.class, protocolCode==null?"":protocolCode,
+            SimulatedConfiguration.class, protocolCode,
                 transportCode == null?"":transportCode, transportConfig, paramString);
         if (configuration == null) {
             throw new PlcConnectionException("Unsupported configuration");

@@ -128,7 +128,7 @@ public class DefaultPlcDriverManager implements PlcDriverManager, PlcConnectionM
      * @return Set of driver codes for all drivers registered
      */
     @Override
-    public Set<String> listDrivers() {
+    public Set<String> getProtocolCodes() {
         return driverMap.keySet();
     }
 
