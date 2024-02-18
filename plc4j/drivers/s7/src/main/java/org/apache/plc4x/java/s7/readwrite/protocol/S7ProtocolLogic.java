@@ -2064,12 +2064,6 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
         int numElements = s7Tag.getNumberOfElements();
         // For these date-types we have to convert the requests to simple byte-array requests
         // As otherwise the S7 will deny them with "Data type not supported" replies.
-        if ((transportSize == TransportSize.TIME) /*|| (transportSize == TransportSize.S7_S5TIME)*/ ||
-            (transportSize == TransportSize.LTIME) || (transportSize == TransportSize.DATE) ||
-            (transportSize == TransportSize.TIME_OF_DAY) || (transportSize == TransportSize.DATE_AND_TIME)) {
-            numElements = numElements * transportSize.getSizeInBytes();
-            transportSize = TransportSize.BYTE;
-        }
         if (transportSize == TransportSize.STRING) {
             transportSize = TransportSize.CHAR;
             int stringLength = (s7Tag instanceof S7StringFixedLengthTag) ? ((S7StringFixedLengthTag) s7Tag).getStringLength() : 254;

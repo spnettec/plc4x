@@ -959,39 +959,23 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 		S7Tag s7Tag = (S7Tag) tag;
 		TransportSize transportSize = s7Tag.getDataType();
 		int numElements = s7Tag.getNumberOfElements();
-		if ((transportSize == TransportSize.TIME) || (transportSize == TransportSize.LINT)
-				|| (transportSize == TransportSize.ULINT) || (transportSize == TransportSize.LWORD)
-				|| (transportSize == TransportSize.LREAL) || (transportSize == TransportSize.REAL)
-				|| (transportSize == TransportSize.LTIME) || (transportSize == TransportSize.DATE)
-				|| (transportSize == TransportSize.TIME_OF_DAY) || (transportSize == TransportSize.DATE_AND_TIME)) {
-			numElements = numElements * transportSize.getSizeInBytes();
-			transportSize = TransportSize.BYTE;
-		}
-		if (transportSize == TransportSize.BOOL) {
-			if (numElements > 1) {
-				transportSize = TransportSize.BYTE;
-			}
-			numElements = numElements * transportSize.getSizeInBytes();
-		}
-		if (transportSize == TransportSize.CHAR) {
-			transportSize = TransportSize.BYTE;
-			numElements = numElements * transportSize.getSizeInBytes();
-		}
-		if (transportSize == TransportSize.WCHAR) {
-			transportSize = TransportSize.BYTE;
-			numElements = numElements * transportSize.getSizeInBytes() * 2;
-		}
+		// For these date-types we have to convert the requests to simple byte-array requests
+		// As otherwise the S7 will deny them with "Data type not supported" replies.
 		if (transportSize == TransportSize.STRING) {
-			transportSize = TransportSize.BYTE;
+			transportSize = TransportSize.CHAR;
 			int stringLength = (s7Tag instanceof S7StringFixedLengthTag) ? ((S7StringFixedLengthTag) s7Tag).getStringLength() : 254;
 			numElements = numElements * (stringLength + 2);
 		} else if (transportSize == TransportSize.WSTRING) {
-			transportSize = TransportSize.BYTE;
+			transportSize = TransportSize.CHAR;
 			int stringLength = (s7Tag instanceof S7StringFixedLengthTag) ? ((S7StringFixedLengthTag) s7Tag).getStringLength() : 254;
 			numElements = numElements * (stringLength + 2) * 2;
 		}
-		return new S7AddressAny(transportSize, numElements, s7Tag.getBlockNumber(), s7Tag.getMemoryArea(),
-				s7Tag.getByteOffset(), s7Tag.getBitOffset());
+		if (transportSize.getCode() == 0x00) {
+			numElements = numElements * transportSize.getSizeInBytes();
+			transportSize = TransportSize.BYTE;
+		}
+		return new S7AddressAny(transportSize, numElements, s7Tag.getBlockNumber(),
+				s7Tag.getMemoryArea(), s7Tag.getByteOffset(), s7Tag.getBitOffset());
 	}
 
 	/*
