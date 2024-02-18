@@ -39,7 +39,7 @@
 # ----------------------------------------------------------------------------
 
 DIRECTORY=$(pwd)
-PRE_RELEASE_VERSION=0.12.0-SNAPSHOT
+PRE_RELEASE_VERSION=0.13.0-SNAPSHOT
 
 # Set the local development version back to the initial one.
 ../mvnw -f ../pom.xml -e -P with-c,with-dotnet,with-go,with-java,with-python,with-sandbox,update-generated-code -Dmaven.repo.local="$DIRECTORY/../out/.repository" versions:set -DnewVersion="$PRE_RELEASE_VERSION"
