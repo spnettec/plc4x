@@ -59,12 +59,10 @@ public class S7Optimizer extends BaseOptimizer {
         int curResponseSize = EMPTY_READ_RESPONSE_SIZE;
 
         // List of all items in the current request.
-
         LinkedHashMap<String, PlcTag> curTags = new LinkedHashMap<>();
 
         for (String tagName : readRequest.getTagNames()) {
-           
-            //TODO: Individual processing of these types of tags. like S7StringTag
+
             if ((readRequest.getTag(tagName) instanceof S7SzlTag) ||
                 (readRequest.getTag(tagName) instanceof S7ClkTag)) {
                 curTags.put(tagName, readRequest.getTag(tagName));
@@ -75,9 +73,9 @@ public class S7Optimizer extends BaseOptimizer {
 
             int readRequestItemSize = S7_ADDRESS_ANY_SIZE;
             int length = 1;
-            if(tag instanceof S7StringFixedLengthTag)
+            if(tag instanceof S7StringTag)
             {
-                length = ((S7StringFixedLengthTag)tag).getStringLength() + 2 ;
+                length = ((S7StringTag)tag).getStringLength() + 2 ;
             }
             int readResponseItemSize = 4 + (tag.getNumberOfElements() * tag.getDataType().getSizeInBytes() * length);
             // If it's an odd number of bytes, add one to make it even
@@ -151,17 +149,6 @@ public class S7Optimizer extends BaseOptimizer {
         LinkedHashMap<String, TagValueItem> curTags = new LinkedHashMap<>();
 
         for (String tagName : writeRequest.getTagNames()) {
-            
-            if ((writeRequest.getTag(tagName) instanceof S7StringVarLengthTag)) {
-                LinkedHashMap<String, TagValueItem> strTags = new LinkedHashMap<>();
-                strTags.put(tagName, 
-                        new TagValueItem(writeRequest.getTag(tagName), 
-                                writeRequest.getPlcValue(tagName)));  
-                processedRequests.add(new DefaultPlcWriteRequest(
-                ((DefaultPlcWriteRequest) writeRequest).getWriter(), strTags));
-                continue;                
-            }
-                                    
             S7Tag tag = (S7Tag) writeRequest.getTag(tagName);
             PlcValue value = writeRequest.getPlcValue(tagName);
 
@@ -170,9 +157,9 @@ public class S7Optimizer extends BaseOptimizer {
                 writeRequestItemSize += (int) Math.ceil((double) tag.getNumberOfElements() / 8);
             } else {
                 int length = 1;
-                if(tag instanceof S7StringFixedLengthTag)
+                if(tag instanceof S7StringTag)
                 {
-                    length = ((S7StringFixedLengthTag)tag).getStringLength() + 2;
+                    length = ((S7StringTag)tag).getStringLength() + 2;
                 }
                 writeRequestItemSize += (tag.getNumberOfElements() * tag.getDataType().getSizeInBytes() * length);
             }

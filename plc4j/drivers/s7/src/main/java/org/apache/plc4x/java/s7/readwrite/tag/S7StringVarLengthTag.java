@@ -29,6 +29,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidTagException;
 
+@Deprecated
 public class S7StringVarLengthTag extends S7Tag {
     
     public static final Pattern DATA_BLOCK_STRING_VAR_LENGTH_ADDRESS_PATTERN =

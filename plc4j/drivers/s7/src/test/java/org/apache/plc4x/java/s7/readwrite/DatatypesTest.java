@@ -34,7 +34,7 @@ public class DatatypesTest {
                 builder.addTagAddress("bool-value-1", "%DB1:0.0:BOOL"); // true
                 builder.addTagAddress("bool-value-2", "%DB1:2.1:BOOL"); // false
                 // It seems S7 PLCs ignores the array notation for BOOL
-                //builder.addTagAddress("bool-array", "%DB1:2:BOOL[16]");
+                builder.addTagAddress("bool-array", "%DB1:2:BOOL[15]");
                 builder.addTagAddress("byte-value", "%DB1:4:BYTE");
                 builder.addTagAddress("byte-array", "%DB1:6:BYTE[2]");
                 builder.addTagAddress("word-value", "%DB1:8:WORD");

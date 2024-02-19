@@ -52,6 +52,12 @@ public class S7Tag implements PlcTag, Serializable {
     private static final Pattern DATA_BLOCK_SHORT_PATTERN =
         Pattern.compile("^%DB(?<blockNumber>\\d{1,5}):(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?:(?<dataType>[a-zA-Z_]+)(\\[(?<numElements>\\d+)])?(\\|(?<stringEncoding>[a-z0-9A-Z_-]+))?");
 
+    private static final Pattern DATA_BLOCK_STRING_ADDRESS_PATTERN =
+        Pattern.compile("^%DB(?<blockNumber>\\d{1,5}).DB(?<transferSizeCode>[XBWD]?)(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?:(?<dataType>STRING|WSTRING)\\((?<stringLength>\\d{1,3})\\)(\\[(?<numElements>\\d+)])?(\\|(?<stringEncoding>[a-z0-9A-Z_-]+))?");
+
+    private static final Pattern DATA_BLOCK_STRING_SHORT_PATTERN =
+        Pattern.compile("^%DB(?<blockNumber>\\d{1,5}):(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?:(?<dataType>STRING|WSTRING)\\((?<stringLength>\\d{1,3})\\)(\\[(?<numElements>\\d+)])?(\\|(?<stringEncoding>[a-z0-9A-Z_-]+))?");
+
     private static final Pattern PLC_PROXY_ADDRESS_PATTERN =
         Pattern.compile("[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}(\\|(?<stringEncoding>[a-z0-9A-Z_-]+))?");
     protected static final String DATA_TYPE = "dataType";
@@ -147,15 +153,72 @@ public class S7Tag implements PlcTag, Serializable {
     }
 
     public static boolean matches(String tagString) {
-        return DATA_BLOCK_ADDRESS_PATTERN.matcher(tagString).matches() ||
-            DATA_BLOCK_SHORT_PATTERN.matcher(tagString).matches() ||
-            PLC_PROXY_ADDRESS_PATTERN.matcher(tagString).matches() ||
-            ADDRESS_PATTERN.matcher(tagString).matches();
+        return
+            DATA_BLOCK_STRING_ADDRESS_PATTERN.matcher(tagString).matches() ||
+                DATA_BLOCK_STRING_SHORT_PATTERN.matcher(tagString).matches() ||
+                DATA_BLOCK_ADDRESS_PATTERN.matcher(tagString).matches() ||
+                DATA_BLOCK_SHORT_PATTERN.matcher(tagString).matches() ||
+                PLC_PROXY_ADDRESS_PATTERN.matcher(tagString).matches() ||
+                ADDRESS_PATTERN.matcher(tagString).matches();
     }
 
     public static S7Tag of(String tagString) {
         Matcher matcher;
-        if ((matcher = DATA_BLOCK_ADDRESS_PATTERN.matcher(tagString)).matches()) {
+        if ((matcher = DATA_BLOCK_STRING_ADDRESS_PATTERN.matcher(tagString)).matches()) {
+            TransportSize dataType = TransportSize.valueOf(matcher.group(DATA_TYPE));
+            int stringLength = Integer.parseInt(matcher.group(STRING_LENGTH));
+            MemoryArea memoryArea = MemoryArea.DATA_BLOCKS;
+            int blockNumber = checkDataBlockNumber(Integer.parseInt(matcher.group(BLOCK_NUMBER)));
+            Short transferSizeCode = getSizeCode(matcher.group(TRANSFER_SIZE_CODE));
+            int byteOffset = checkByteOffset(Integer.parseInt(matcher.group(BYTE_OFFSET)));
+            byte bitOffset = 0;
+            if (matcher.group(BIT_OFFSET) != null) {
+                bitOffset = Byte.parseByte(matcher.group(BIT_OFFSET));
+            } else if (dataType == TransportSize.BOOL) {
+                //throw new PlcInvalidTagException("Expected bit offset for BOOL parameters.");
+            }
+            int numElements = 1;
+            if (matcher.group(NUM_ELEMENTS) != null) {
+                numElements = Integer.parseInt(matcher.group(NUM_ELEMENTS));
+            }
+
+            if ((transferSizeCode != null) && (dataType.getShortName() != transferSizeCode)) {
+                throw new PlcInvalidTagException("Transfer size code '" + transferSizeCode +
+                    "' doesn't match specified data type '" + dataType.name() + "'");
+            }
+            String stringEncoding = matcher.group(STRING_ENCODING);
+            if (stringEncoding==null || stringEncoding.isEmpty())
+            {
+                stringEncoding = "UTF-8";
+                if (dataType == TransportSize.WSTRING || dataType == TransportSize.WCHAR)
+                {
+                    stringEncoding = "UTF-16";
+                }
+            }
+            return new S7StringTag(dataType, memoryArea, blockNumber, byteOffset, bitOffset, numElements, stringLength, stringEncoding);
+        } else if ((matcher = DATA_BLOCK_STRING_SHORT_PATTERN.matcher(tagString)).matches()) {
+            TransportSize dataType = TransportSize.valueOf(matcher.group(DATA_TYPE));
+            int stringLength = Integer.parseInt(matcher.group(STRING_LENGTH));
+            MemoryArea memoryArea = MemoryArea.DATA_BLOCKS;
+            int blockNumber = checkDataBlockNumber(Integer.parseInt(matcher.group(BLOCK_NUMBER)));
+            int byteOffset = checkByteOffset(Integer.parseInt(matcher.group(BYTE_OFFSET)));
+            byte bitOffset = 0;
+            int numElements = 1;
+            if (matcher.group(NUM_ELEMENTS) != null) {
+                numElements = Integer.parseInt(matcher.group(NUM_ELEMENTS));
+            }
+            String stringEncoding = matcher.group(STRING_ENCODING);
+            if (stringEncoding==null || stringEncoding.isEmpty())
+            {
+                stringEncoding = "UTF-8";
+                if (dataType == TransportSize.WSTRING || dataType == TransportSize.WCHAR)
+                {
+                    stringEncoding = "UTF-16";
+                }
+            }
+            return new S7StringTag(dataType, memoryArea, blockNumber,
+                byteOffset, bitOffset, numElements, stringLength, stringEncoding);
+        } else if ((matcher = DATA_BLOCK_ADDRESS_PATTERN.matcher(tagString)).matches()) {
             TransportSize dataType = TransportSize.valueOf(matcher.group(DATA_TYPE));
             MemoryArea memoryArea = MemoryArea.DATA_BLOCKS;
             Short transferSizeCode = getSizeCode(matcher.group(TRANSFER_SIZE_CODE));
@@ -186,8 +249,8 @@ public class S7Tag implements PlcTag, Serializable {
                 }
             }
             if(dataType==TransportSize.STRING) {
-                return new S7StringVarLengthTag(dataType, memoryArea, blockNumber,
-                    byteOffset, bitOffset, numElements, stringEncoding);
+                return new S7StringTag(dataType, memoryArea, blockNumber,
+                    byteOffset, bitOffset, numElements, 254, stringEncoding);
             }
             return new S7Tag(dataType, memoryArea, blockNumber, byteOffset, bitOffset, numElements, stringEncoding);
         } else if ((matcher = DATA_BLOCK_SHORT_PATTERN.matcher(tagString)).matches()) {
@@ -206,7 +269,7 @@ public class S7Tag implements PlcTag, Serializable {
                 numElements = Integer.parseInt(matcher.group(NUM_ELEMENTS));
             }
             String stringEncoding = matcher.group(STRING_ENCODING);
-            if (stringEncoding==null || "".equals(stringEncoding))
+            if (stringEncoding==null || stringEncoding.isEmpty())
             {
                 stringEncoding = "UTF-8";
                 if (dataType == TransportSize.WSTRING || dataType == TransportSize.WCHAR)
@@ -215,8 +278,8 @@ public class S7Tag implements PlcTag, Serializable {
                 }
             }
             if(dataType==TransportSize.STRING) {
-                return new S7StringVarLengthTag(dataType, memoryArea, blockNumber,
-                    byteOffset, bitOffset, numElements, stringEncoding);
+                return new S7StringTag(dataType, memoryArea, blockNumber,
+                    byteOffset, bitOffset, numElements, 254, stringEncoding);
             }
             return new S7Tag(dataType, memoryArea, blockNumber, byteOffset, bitOffset, numElements, stringEncoding);
         } else if ((matcher = PLC_PROXY_ADDRESS_PATTERN.matcher(tagString)).matches()) {
@@ -231,7 +294,7 @@ public class S7Tag implements PlcTag, Serializable {
                         throw new PlcInvalidTagException("A bit offset other than 0 is only supported for type BOOL");
                     }
                     String stringEncoding = matcher.group(STRING_ENCODING);
-                    if (stringEncoding==null || "".equals(stringEncoding))
+                    if (stringEncoding==null || stringEncoding.isEmpty())
                     {
                         stringEncoding = "UTF-8";
                         if (s7AddressAny.getTransportSize() == TransportSize.WSTRING || s7AddressAny.getTransportSize() == TransportSize.WCHAR)
@@ -272,7 +335,7 @@ public class S7Tag implements PlcTag, Serializable {
                 throw new PlcInvalidTagException("A bit offset other than 0 is only supported for type BOOL");
             }
             String stringEncoding = matcher.group(STRING_ENCODING);
-            if (stringEncoding==null || "".equals(stringEncoding))
+            if (stringEncoding==null || stringEncoding.isEmpty())
             {
                 stringEncoding = "UTF-8";
                 if (dataType == TransportSize.WSTRING || dataType == TransportSize.WCHAR)

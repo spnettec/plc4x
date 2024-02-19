@@ -29,6 +29,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@Deprecated
 public class S7StringFixedLengthTag extends S7Tag {
 
     public static final Pattern DATA_BLOCK_STRING_FIXED_LENGTH_ADDRESS_PATTERN =

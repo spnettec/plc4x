@@ -19,7 +19,6 @@
 
 package org.apache.plc4x.java.s7.readwrite.optimizer;
 
-import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.spi.messages.DefaultPlcWriteRequest;
 import org.apache.plc4x.java.spi.messages.PlcWriter;
 import org.apache.plc4x.java.spi.messages.utils.TagValueItem;
