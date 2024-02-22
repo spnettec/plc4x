@@ -32,9 +32,9 @@ public class DatatypesTest {
             try (PlcConnection connection = plcConnectionManager.getConnection("s7://10.80.41.47")) {
                 final PlcReadRequest.Builder builder = connection.readRequestBuilder();
                 builder.addTagAddress("bool-value-1", "%DB1:0.0:BOOL"); // true
-                builder.addTagAddress("bool-value-2", "%DB1:2.1:BOOL"); // false
+                builder.addTagAddress("bool-value-2", "%DB1:0.1:BOOL"); // false
                 // It seems S7 PLCs ignores the array notation for BOOL
-                builder.addTagAddress("bool-array", "%DB1:2:BOOL[15]");
+                builder.addTagAddress("bool-array", "%DB1:2:BOOL[16]");
                 builder.addTagAddress("byte-value", "%DB1:4:BYTE");
                 builder.addTagAddress("byte-array", "%DB1:6:BYTE[2]");
                 builder.addTagAddress("word-value", "%DB1:8:WORD");
@@ -65,14 +65,8 @@ public class DatatypesTest {
 
                 System.out.println(readResponse.getAsPlcValue());
 
-            } catch (Exception e){
-                System.out.println("error:"+e.getMessage());
             }
-            try {
-                Thread.sleep(300);
-            } catch (InterruptedException e) {
-                System.out.println("sleep:"+e.getMessage());
-            }
+
 
         //}
 

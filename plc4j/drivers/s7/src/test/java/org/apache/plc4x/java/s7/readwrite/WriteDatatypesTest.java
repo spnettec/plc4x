@@ -36,11 +36,11 @@ import java.time.LocalTime;
 public class WriteDatatypesTest {
 
     public static void main(String[] args) throws Exception {
-        try (PlcConnection connection = new DefaultPlcDriverManager().getConnection("s7://10.166.11.19")) {
+        try (PlcConnection connection = new DefaultPlcDriverManager().getConnection("s7://10.80.41.47")) {
             final PlcWriteRequest.Builder builder = connection.writeRequestBuilder();
             builder.addTagAddress("bool-value-1", "%DB1:0.0:BOOL",true); // true
-            builder.addTagAddress("bool-value-2", "%DB1:2.1:BOOL",true); // false
-            //builder.addTagAddress("bool-array", "%DB100:2:BOOL[16]",true,false,true,true,false,true,true,false,true,true,false,true,true,false,true,true);
+            builder.addTagAddress("bool-value-2", "%DB1:0.1:BOOL",true); // false
+            //builder.addTagAddress("bool-array", "%DB1:2:BOOL[16]",true,false,true,true,false,true,true,false,true,true,false,true,true,false,true,true);
             builder.addTagAddress("byte-value", "%DB1:4:BYTE",'a');
             builder.addTagAddress("byte-array", "%DB1:6:BYTE[2]",'a','b');
             builder.addTagAddress("word-value", "%DB1:8:WORD",42424);
@@ -61,15 +61,17 @@ public class WriteDatatypesTest {
             builder.addTagAddress("date-array", "%DB1:838:DATE[2]",new PlcDATE(LocalDate.parse("1998-03-28")),new PlcDATE(LocalDate.parse("1998-04-28"))); // D#1990-03-28, D#2020-10-25
             builder.addTagAddress("time-of-day-value", "%DB1:842:TIME_OF_DAY",new PlcTIME_OF_DAY(LocalTime.parse("15:36:30.123"))); // TOD#12:34:56
             builder.addTagAddress("time-of-day-array", "%DB1:846:TIME_OF_DAY[2]",new PlcTIME_OF_DAY(LocalTime.parse("15:36:30.123")),new PlcTIME_OF_DAY(LocalTime.parse("15:36:30.124"))); // TOD#16:34:56, TOD#08:15:00
-            builder.addTagAddress("date-and-time-value", "%DB1:854:DATE_AND_TIME",new PlcDATE_AND_TIME(LocalDateTime.parse("1996-05-06T15:36:30"))); // DTL#1978-03-28-12:34:56
-            builder.addTagAddress("date-and-time-array", "%DB1:862:DATE_AND_TIME[2]",new PlcDATE_AND_TIME(LocalDateTime.parse("1996-05-06T15:36:30")),new PlcDATE_AND_TIME(LocalDateTime.parse("1996-06-06T15:36:30"))); // DTL#1978-03-28-12:34:56, DTL#1978-03-28-12:34:56
-            builder.addTagAddress("char-value", "%DB1:878:CHAR",new PlcCHAR("H")); // "H"
-            builder.addTagAddress("char-array", "%DB1:880:CHAR[2]",new PlcCHAR("K"),new PlcCHAR("v")); // "H", "u", "r", "z"
+            builder.addTagAddress("date-and-time-value", "%DB1:854:DTL",new PlcDATE_AND_TIME(LocalDateTime.parse("1996-05-06T15:36:30"))); // DTL#1978-03-28-12:34:56
+            builder.addTagAddress("date-and-time-array", "%DB1:866:DTL[2]",new PlcDATE_AND_TIME(LocalDateTime.parse("1996-05-06T15:36:30")),new PlcDATE_AND_TIME(LocalDateTime.parse("1996-06-06T15:36:30"))); // DTL#1978-03-28-12:34:56, DTL#1978-03-28-12:34:56
+            builder.addTagAddress("char-value", "%DB1:890:CHAR",new PlcCHAR("H")); // "H"
+            builder.addTagAddress("char-array", "%DB1:892:CHAR[2]",new PlcCHAR("K"),new PlcCHAR("v")); // "H", "u", "r", "z"
             final PlcWriteRequest writeRequest = builder.build();
 
             final PlcWriteResponse writeResponse = writeRequest.execute().get();
 
-            System.out.println(writeResponse);
+            writeResponse.getTagNames().forEach(name->{
+                System.out.println(name+":"+writeResponse.getResponseCode(name));
+            });
 
         }
     }

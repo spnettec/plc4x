@@ -109,7 +109,7 @@ public class S7Optimizer extends BaseOptimizer {
                 // Splitting of huge tags not yet implemented, throw an exception instead.
                 if (((curRequestSize + readRequestItemSize) > s7DriverContext.getPduSize()) ||
                     ((curResponseSize + readResponseItemSize) > s7DriverContext.getPduSize())) {
-                    processedRequests.add(new LargeTagPlcReadRequest(((DefaultPlcReadRequest) readRequest).getReader(),tagName, tag));
+                    processedRequests.add(new LargeTagPlcReadRequest(tagName, tag));
                     //throw new PlcRuntimeException("Tag size exceeds maximum payload for one item.");
                 } else {
                     curTags.put(tagName, tag);
@@ -194,8 +194,7 @@ public class S7Optimizer extends BaseOptimizer {
                 // Splitting of huge tags not yet implemented, throw an exception instead.
                 if (((curRequestSize + writeRequestItemSize) > s7DriverContext.getPduSize()) ||
                     ((curResponseSize + writeResponseItemSize) > s7DriverContext.getPduSize())) {
-                    processedRequests.add(new LargeTagPlcWriteRequest(
-                            ((DefaultPlcWriteRequest) writeRequest).getWriter(), tagName,new TagValueItem(tag,value)));
+                    processedRequests.add(new LargeTagPlcWriteRequest(tagName,value));
                     //throw new PlcRuntimeException("Tag size exceeds maximum payload for one item.");
                 }
             }

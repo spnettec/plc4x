@@ -76,8 +76,10 @@ import static org.apache.plc4x.java.s7.readwrite.optimizer.S7Optimizer.EMPTY_REA
 import static org.apache.plc4x.java.s7.readwrite.optimizer.S7Optimizer.EMPTY_READ_RESPONSE_SIZE;
 import static org.apache.plc4x.java.spi.codegen.fields.FieldReaderFactory.readReservedField;
 import static org.apache.plc4x.java.spi.codegen.fields.FieldReaderFactory.readSimpleField;
+import static org.apache.plc4x.java.spi.codegen.fields.FieldWriterFactory.writeSimpleField;
 import static org.apache.plc4x.java.spi.codegen.io.DataReaderFactory.readBoolean;
 import static org.apache.plc4x.java.spi.codegen.io.DataReaderFactory.readUnsignedByte;
+import static org.apache.plc4x.java.spi.codegen.io.DataWriterFactory.writeBoolean;
 import static org.apache.plc4x.java.spi.connection.AbstractPlcConnection.IS_CONNECTED;
 /**
  * The S7 Protocol states that there can not be more then {min(maxAmqCaller, maxAmqCallee} "ongoing" requests.
@@ -242,11 +244,8 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 			return future;
 		}
 		if(readRequest instanceof LargeTagPlcReadRequest){
-			final S7MessageRequest s7MessageRequest = new S7MessageRequest(-1, new S7ParameterReadVarRequest(new ArrayList<>(){{
-				add(new S7VarRequestParameterItemAddress(encodeS7Address(((LargeTagPlcReadRequest)readRequest).getTag())));
-			}}),
-					null);
-			return toLargePlcReadResponse((LargeTagPlcReadRequest)readRequest, readLargeInternal(s7MessageRequest));
+			final S7VarRequestParameterItem S7VarRequestParameterItem = new S7VarRequestParameterItemAddress(encodeS7Address(readRequest.getTags().get(0)));
+			return toLargePlcReadResponse((LargeTagPlcReadRequest)readRequest, readLargeInternal(S7VarRequestParameterItem));
 		}
 		DefaultPlcReadRequest request = (DefaultPlcReadRequest) readRequest;
 		CompletableFuture<S7Message> responseFuture;
@@ -340,7 +339,7 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 		}
 
 		DefaultPlcWriteRequest request = (DefaultPlcWriteRequest) writeRequest;
-		CompletableFuture<S7Message> responseFuture = new CompletableFuture<>();
+		CompletableFuture<S7Message> responseFuture;
 		// TODO: Write one or two lines on what happens here ... to me it looks as if there's at least on S7ClkTag, then all is handled by the writeClk method, but what happens if a request would contain mixed tag types?
 		if (request.getTagNames().stream().anyMatch(t -> request.getTag(t) instanceof S7ClkTag)) {
 			responseFuture = performClkSetRequest((DefaultPlcWriteRequest) writeRequest);
@@ -483,7 +482,7 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 		return response;
 	}
 
-	private List<CompletableFuture<S7Message>> readLargeInternal(S7Message request) {
+	private List<CompletableFuture<S7Message>> readLargeInternal(S7VarRequestParameterItem S7VarRequestParameterItem) {
 		List<CompletableFuture<S7Message>> futures = new ArrayList<>();
 		if (!isConnected()) {
 			CompletableFuture<S7Message> future = new CompletableFuture<>();
@@ -492,7 +491,7 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 			return futures;
 		}
 
-		List<S7Message> messages = splitLargeTagReadVarParameter(request, this.s7DriverContext.getPduSize());
+		List<S7Message> messages = splitLargeTagReadVarParameter(S7VarRequestParameterItem, this.s7DriverContext.getPduSize());
 		for (S7Message message:messages) {
 			CompletableFuture<S7Message> future = new CompletableFuture<>();
 			futures.add(future);
@@ -512,105 +511,68 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 		return futures;
 	}
 
-	private List<S7Message> splitLargeTagReadVarParameter(S7Message request, int pduSize) {
-		boolean isUserData = request instanceof S7MessageUserData;
-		final S7ParameterReadVarRequest readVarParameter = (S7ParameterReadVarRequest) request.getParameter();
-
+	private List<S7Message> splitLargeTagReadVarParameter(S7VarRequestParameterItem readVarParameterItem, int pduSize) {
 		List<S7Message> result = new LinkedList<>();
-
-		// Calculate the maximum size an item can consume.
 		int maxResponseSize = pduSize - EMPTY_READ_RESPONSE_SIZE - 4;
-
-		// This calculates the size of the header for the request and response.
-		int curRequestSize = EMPTY_READ_REQUEST_SIZE;
-		// An empty response has the same size as an empty request.
-		int curResponseSize = EMPTY_READ_RESPONSE_SIZE;
-		// List of all items in the current request.
 		List<S7VarRequestParameterItem> curRequestItems = new LinkedList<>();
 
-		for (S7VarRequestParameterItem readVarParameterItem : readVarParameter.getItems()) {
-			final S7AddressAny address = (S7AddressAny)
-					((S7VarRequestParameterItemAddress) readVarParameterItem).getAddress();
-			// Calculate the sizes in the request and response adding this item to the current request would add.
-			int readRequestItemSize = readVarParameterItem.getLengthInBytes();
-			// Constant size of the parameter item in the response (0 bytes) + Constant size of the payload item +
-			// payload data size.
-			int readResponseItemSize = 4 + (address.getNumberOfElements() * address.getTransportSize().getSizeInBytes());
-			// If it's an odd number of bytes, add one to make it even
-			if (readResponseItemSize % 2 == 1) {
-				readResponseItemSize++;
+		final S7AddressAny address = (S7AddressAny)
+				((S7VarRequestParameterItemAddress) readVarParameterItem).getAddress();
+		// Calculate the sizes in the request and response adding this item to the current request would add.
+		int readRequestItemSize = address.getLengthInBytes();
+		// Constant size of the parameter item in the response (0 bytes) + Constant size of the payload item +
+		// payload data size.
+		int readResponseItemSize = 4 + (address.getNumberOfElements() * address.getTransportSize().getSizeInBytes());
+		// If it's an odd number of bytes, add one to make it even
+		if (readResponseItemSize % 2 == 1) {
+			readResponseItemSize++;
+		}
+
+		// If the item would not fit into a separate message, we have to split it.
+		if (((EMPTY_READ_REQUEST_SIZE + readRequestItemSize) > pduSize) || (EMPTY_READ_RESPONSE_SIZE + readResponseItemSize > pduSize)) {
+			// Create a new sub message.
+			S7Message subMessage;
+			// Calculate the maximum number of items that would fit in a single request.
+			int maxNumElements = (int) Math.floor(
+					(double) maxResponseSize / (double) address.getTransportSize().getSizeInBytes());
+			int sizeMaxNumElementInBytes = maxNumElements * address.getTransportSize().getSizeInBytes();
+
+			// Initialize the loop with the total number of elements and the original address.
+			int remainingNumElements = address.getNumberOfElements();
+			int curByteAddress = address.getByteAddress();
+
+			// Keep on adding chunks of the original address until all have been added.
+			while (remainingNumElements > 0) {
+				int numCurElements = Math.min(remainingNumElements, maxNumElements);
+				S7VarRequestParameterItemAddress subVarParameterItem = new S7VarRequestParameterItemAddress(
+						new S7AddressAny(address.getTransportSize(), numCurElements,
+								address.getDbNumber(), address.getArea(), curByteAddress, (byte) 0));
+
+
+				subMessage = new S7MessageRequest((short) getTpduId(),
+						new S7ParameterReadVarRequest(Collections.singletonList(subVarParameterItem)),
+						null);
+
+				result.add(subMessage);
+
+				remainingNumElements -= maxNumElements;
+				curByteAddress += sizeMaxNumElementInBytes;
 			}
-
-			// If the item would not fit into a separate message, we have to split it.
-			if (((curRequestSize + readRequestItemSize) > pduSize) || (curResponseSize + readResponseItemSize > pduSize)) {
-				// Create a new sub message.
-				S7Message subMessage;
-
-				curRequestSize = EMPTY_READ_REQUEST_SIZE;
-				curResponseSize = EMPTY_READ_RESPONSE_SIZE;
-				curRequestItems = new LinkedList<>();
-
-				S7VarRequestParameterItemAddress addressItem = (S7VarRequestParameterItemAddress) readVarParameterItem;
-				S7AddressAny anyAddress = (S7AddressAny) addressItem.getAddress();
-
-				// Calculate the maximum number of items that would fit in a single request.
-				int maxNumElements = (int) Math.floor(
-						(double) maxResponseSize / (double) anyAddress.getTransportSize().getSizeInBytes());
-				int sizeMaxNumElementInBytes = maxNumElements * anyAddress.getTransportSize().getSizeInBytes();
-
-				// Initialize the loop with the total number of elements and the original address.
-				int remainingNumElements = anyAddress.getNumberOfElements();
-				int curByteAddress = anyAddress.getByteAddress();
-
-				// Keep on adding chunks of the original address until all have been added.
-				while (remainingNumElements > 0) {
-					int numCurElements = Math.min(remainingNumElements, maxNumElements);
-					S7VarRequestParameterItemAddress subVarParameterItem = new S7VarRequestParameterItemAddress(
-							new S7AddressAny(anyAddress.getTransportSize(), numCurElements,
-									anyAddress.getDbNumber(), anyAddress.getArea(), curByteAddress, (byte) 0));
-
-					// Create a new sub message.
-					if(isUserData) {
-						subMessage = new S7MessageUserData((short) getTpduId(),
-								new S7ParameterReadVarRequest(Collections.singletonList(subVarParameterItem)),
-								null);
-					} else {
-						subMessage = new S7MessageRequest((short) getTpduId(),
-								new S7ParameterReadVarRequest(Collections.singletonList(subVarParameterItem)),
-								null);
-					}
-					result.add(subMessage);
-
-					remainingNumElements -= maxNumElements;
-					curByteAddress += sizeMaxNumElementInBytes;
-				}
-			}
-
-			// If adding the item would not exceed the sizes, add it to the current request.
-			else {
-				// Increase the current request sizes.
-				curRequestSize += readRequestItemSize;
-				curResponseSize += readResponseItemSize;
-				// Add the item.
-				curRequestItems.add(readVarParameterItem);
-			}
+		}
+		else {
+			curRequestItems.add(readVarParameterItem);
 		}
 
 		// Add the remaining items to a final sub-request.
 		if (!curRequestItems.isEmpty()) {
 			// Create a new sub message.
 			S7Message subMessage;
-			if (isUserData) {
-				subMessage = new S7MessageUserData((short) getTpduId(),
-						new S7ParameterReadVarRequest(
-								curRequestItems),
-						null);
-			} else {
-				subMessage = new S7MessageRequest((short) getTpduId(),
-						new S7ParameterReadVarRequest(
-								curRequestItems),
-						null);
-			}
+
+			subMessage = new S7MessageRequest((short) getTpduId(),
+					new S7ParameterReadVarRequest(
+							curRequestItems),
+					null);
+
 
 			result.add(subMessage);
 		}
@@ -1652,8 +1614,6 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 		}
 		ResponseItem<PlcValue> result = new ResponseItem<>(responseCode, plcValue);
 		values.put(tagName, result);
-
-
 		return new DefaultPlcReadResponse(plcReadRequest, values);
 	}
 
@@ -1937,29 +1897,23 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 		try {
 			DataTransportSize transportSize = tag.getDataType().getDataTransportSize();
 			int stringLength = (tag instanceof S7StringTag) ? ((S7StringTag) tag).getStringLength() : 254;
-			ByteBuffer byteBuffer = null;
-			for (int i = 0; i < tag.getNumberOfElements(); i++) {
-				int lengthInBits = DataItem.getLengthInBits(plcValue.getIndex(i), tag.getDataType().getDataProtocolId(), s7DriverContext.getControllerType(), stringLength,tag.getStringEncoding());
-
-				// Cap the length of the string with the maximum allowed size.
-				if (tag.getDataType() == TransportSize.STRING) {
-					lengthInBits = Math.min(lengthInBits, (stringLength * 8) + 16);
-				} else if (tag.getDataType() == TransportSize.WSTRING) {
-					lengthInBits = Math.min(lengthInBits, (stringLength * 16) + 32);
-				} else if (tag.getDataType() == TransportSize.S5TIME) {
-					lengthInBits = lengthInBits * 8;
-				}
-				final WriteBufferByteBased writeBuffer = new WriteBufferByteBased((int) Math.ceil(((float) lengthInBits) / 8.0f));
-				DataItem.staticSerialize(writeBuffer, plcValue.getIndex(i), tag.getDataType().getDataProtocolId(), s7DriverContext.getControllerType(), stringLength,tag.getStringEncoding());
-				// Allocate enough space for all items.
-				if (byteBuffer == null) {
-					// TODO: This logic will cause problems when reading arrays of strings.
-					byteBuffer = ByteBuffer.allocate(writeBuffer.getBytes().length * tag.getNumberOfElements());
-				}
-				byteBuffer.put(writeBuffer.getBytes());
+			int lengthInBits = DataItem.getLengthInBits(plcValue.getIndex(0), tag.getDataType().getDataProtocolId(), s7DriverContext.getControllerType(), stringLength,tag.getStringEncoding());
+			// Cap the length of the string with the maximum allowed size.
+			if (tag.getDataType() == TransportSize.STRING) {
+				lengthInBits = Math.min(lengthInBits, (stringLength * 8) + 16);
+			} else if (tag.getDataType() == TransportSize.WSTRING) {
+				lengthInBits = Math.min(lengthInBits, (stringLength * 16) + 32);
+			} else if (tag.getDataType() == TransportSize.S5TIME) {
+				lengthInBits = lengthInBits * 8;
 			}
-			if (byteBuffer != null) {
-				byte[] data = byteBuffer.array();
+			lengthInBits = lengthInBits * tag.getNumberOfElements();
+			final WriteBufferByteBased writeBuffer = new WriteBufferByteBased((int) Math.ceil(((float) lengthInBits) / 8.0f));
+			for (int i = 0; i < tag.getNumberOfElements(); i++) {
+					DataItem.staticSerialize(writeBuffer, plcValue.getIndex(i), tag.getDataType().getDataProtocolId(),
+							s7DriverContext.getControllerType(), stringLength, tag.getStringEncoding());
+			}
+			byte[] data = writeBuffer.getBytes();
+			if (data!=null && data.length>0) {
 				return new S7VarPayloadDataItem(DataTransportErrorCode.OK, transportSize, data);
 			}
 		} catch (SerializationException e) {

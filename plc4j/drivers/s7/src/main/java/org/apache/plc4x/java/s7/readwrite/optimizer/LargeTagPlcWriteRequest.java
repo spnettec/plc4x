@@ -19,21 +19,20 @@
 
 package org.apache.plc4x.java.s7.readwrite.optimizer;
 
-import org.apache.plc4x.java.spi.messages.DefaultPlcWriteRequest;
-import org.apache.plc4x.java.spi.messages.PlcWriter;
-import org.apache.plc4x.java.spi.messages.utils.TagValueItem;
+import org.apache.plc4x.java.api.messages.PlcWriteRequest;
+import org.apache.plc4x.java.api.messages.PlcWriteResponse;
+import org.apache.plc4x.java.api.model.PlcTag;
+import org.apache.plc4x.java.api.value.PlcValue;
 
-import java.util.LinkedHashMap;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
 
-public class LargeTagPlcWriteRequest extends DefaultPlcWriteRequest {
+public class LargeTagPlcWriteRequest implements PlcWriteRequest {
 
-    private final TagValueItem tagValueItem;
-    public LargeTagPlcWriteRequest(PlcWriter writer, String tagName, TagValueItem tagValueItem) {
-        super(writer, new LinkedHashMap<>() {{
-            put(tagName, tagValueItem);
-        }});
+    private final PlcValue plcValue;
+    public LargeTagPlcWriteRequest(String tagName, PlcValue plcValue) {
         this.tagName = tagName;
-        this.tagValueItem = tagValueItem;
+        this.plcValue = plcValue;
     }
 
     private final String tagName;
@@ -42,7 +41,42 @@ public class LargeTagPlcWriteRequest extends DefaultPlcWriteRequest {
         return tagName;
     }
 
-    public TagValueItem getTagValueItem() {
-        return tagValueItem;
+    public PlcValue getPlcValue() {
+        return plcValue;
+    }
+
+    @Override
+    public int getNumberOfTags() {
+        return 1;
+    }
+
+    @Override
+    public LinkedHashSet<String> getTagNames() {
+        return new LinkedHashSet<>(Collections.singletonList(tagName));
+    }
+
+    @Override
+    public PlcTag getTag(String name) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public List<PlcTag> getTags() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public CompletableFuture<? extends PlcWriteResponse> execute() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public int getNumberOfValues(String name) {
+        return 1;
+    }
+
+    @Override
+    public PlcValue getPlcValue(String name) {
+        return plcValue;
     }
 }
