@@ -707,7 +707,7 @@ public enum BACnetVendorId {
   HOME_SYSTEMS_CONSULTING_SPA((int) 590, (int) 590, (String) "Home Systems Consulting SpA"),
   SOCOMEC((int) 591, (int) 591, (String) "Socomec"),
   EVEREX_COMMUNICATIONS_INC((int) 592, (int) 592, (String) "Everex Communications, Inc."),
-  CEIEC_ELECTRIC_TECHNOLOGY((int) 593, (int) 593, (String) "Ceiec Electric Technology"),
+  CET_ELECTRIC_TECHNOLOGY_INC((int) 593, (int) 593, (String) "CET Electric Technology, Inc."),
   ATRILA_GMBH((int) 594, (int) 594, (String) "Atrila GmbH"),
   WING_TECHS((int) 595, (int) 595, (String) "WingTechs"),
   SHENZHEN_MEK_INTELLISYS_PTE_LTD(

@@ -613,7 +613,7 @@
   ['590' HOME_SYSTEMS_CONSULTING_SPA ['590', '"Home Systems Consulting SpA"']]
   ['591' SOCOMEC ['591', '"Socomec"']]
   ['592' EVEREX_COMMUNICATIONS_INC ['592', '"Everex Communications, Inc."']]
-  ['593' CEIEC_ELECTRIC_TECHNOLOGY ['593', '"Ceiec Electric Technology"']]
+  ['593' CET_ELECTRIC_TECHNOLOGY_INC ['593', '"CET Electric Technology, Inc."']]
   ['594' ATRILA_GMBH ['594', '"Atrila GmbH"']]
   ['595' WING_TECHS ['595', '"WingTechs"']]
   ['596' SHENZHEN_MEK_INTELLISYS_PTE_LTD ['596', '"Shenzhen Mek Intellisys Pte Ltd."']]

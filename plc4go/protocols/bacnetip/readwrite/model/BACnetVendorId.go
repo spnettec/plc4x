@@ -635,7 +635,7 @@ const (
 	BACnetVendorId_HOME_SYSTEMS_CONSULTING_SPA                                                  BACnetVendorId = 590
 	BACnetVendorId_SOCOMEC                                                                      BACnetVendorId = 591
 	BACnetVendorId_EVEREX_COMMUNICATIONS_INC                                                    BACnetVendorId = 592
-	BACnetVendorId_CEIEC_ELECTRIC_TECHNOLOGY                                                    BACnetVendorId = 593
+	BACnetVendorId_CET_ELECTRIC_TECHNOLOGY_INC                                                  BACnetVendorId = 593
 	BACnetVendorId_ATRILA_GMBH                                                                  BACnetVendorId = 594
 	BACnetVendorId_WING_TECHS                                                                   BACnetVendorId = 595
 	BACnetVendorId_SHENZHEN_MEK_INTELLISYS_PTE_LTD                                              BACnetVendorId = 596
@@ -2097,7 +2097,7 @@ func init() {
 		BACnetVendorId_HOME_SYSTEMS_CONSULTING_SPA,
 		BACnetVendorId_SOCOMEC,
 		BACnetVendorId_EVEREX_COMMUNICATIONS_INC,
-		BACnetVendorId_CEIEC_ELECTRIC_TECHNOLOGY,
+		BACnetVendorId_CET_ELECTRIC_TECHNOLOGY_INC,
 		BACnetVendorId_ATRILA_GMBH,
 		BACnetVendorId_WING_TECHS,
 		BACnetVendorId_SHENZHEN_MEK_INTELLISYS_PTE_LTD,
@@ -12841,7 +12841,7 @@ func (e BACnetVendorId) VendorName() string {
 		}
 	case 593:
 		{ /* '593' */
-			return "Ceiec Electric Technology"
+			return "CET Electric Technology, Inc."
 		}
 	case 594:
 		{ /* '594' */
@@ -16659,7 +16659,7 @@ func BACnetVendorIdByValue(value uint16) (enum BACnetVendorId, ok bool) {
 	case 592:
 		return BACnetVendorId_EVEREX_COMMUNICATIONS_INC, true
 	case 593:
-		return BACnetVendorId_CEIEC_ELECTRIC_TECHNOLOGY, true
+		return BACnetVendorId_CET_ELECTRIC_TECHNOLOGY_INC, true
 	case 594:
 		return BACnetVendorId_ATRILA_GMBH, true
 	case 595:
@@ -19574,8 +19574,8 @@ func BACnetVendorIdByName(value string) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_SOCOMEC, true
 	case "EVEREX_COMMUNICATIONS_INC":
 		return BACnetVendorId_EVEREX_COMMUNICATIONS_INC, true
-	case "CEIEC_ELECTRIC_TECHNOLOGY":
-		return BACnetVendorId_CEIEC_ELECTRIC_TECHNOLOGY, true
+	case "CET_ELECTRIC_TECHNOLOGY_INC":
+		return BACnetVendorId_CET_ELECTRIC_TECHNOLOGY_INC, true
 	case "ATRILA_GMBH":
 		return BACnetVendorId_ATRILA_GMBH, true
 	case "WING_TECHS":
@@ -22551,8 +22551,8 @@ func (e BACnetVendorId) PLC4XEnumName() string {
 		return "SOCOMEC"
 	case BACnetVendorId_EVEREX_COMMUNICATIONS_INC:
 		return "EVEREX_COMMUNICATIONS_INC"
-	case BACnetVendorId_CEIEC_ELECTRIC_TECHNOLOGY:
-		return "CEIEC_ELECTRIC_TECHNOLOGY"
+	case BACnetVendorId_CET_ELECTRIC_TECHNOLOGY_INC:
+		return "CET_ELECTRIC_TECHNOLOGY_INC"
 	case BACnetVendorId_ATRILA_GMBH:
 		return "ATRILA_GMBH"
 	case BACnetVendorId_WING_TECHS:
