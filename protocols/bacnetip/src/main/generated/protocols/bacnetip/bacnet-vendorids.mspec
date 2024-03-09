@@ -1475,6 +1475,12 @@
   ['1460' DELTA_FIRE_LTDA ['1460', '"Delta Fire Ltda."']]
   ['1461' BOCK_WATER_HEATERS_INC ['1461', '"Bock Water Heaters, Inc."']]
   ['1462' CLEAVER_BROOKS ['1462', '"Cleaver-Brooks"']]
+  ['1463' SCANALYTICS_INC ['1463', '"Scanalytics, Inc."']]
+  ['1464' WILABS ['1464', '"WI6LABS"']]
+  ['1465' ACT_SYSTEM_CO_LTD ['1465', '"AC&T System Co., Ltd"']]
+  ['1466' VERGE_SENSE ['1466', '"VergeSense"']]
+  ['1467' SYSTEMAIR_MFG_INC ['1467', '"Systemair Mfg. Inc."']]
+  ['1468' SEELEY_INTERNATIONAL ['1468', '"Seeley International"']]
  
   ['0xFFFF' UNKNOWN_VENDOR ['0xFFFF', '"Unknown"']]
 ]

@@ -770,9 +770,10 @@ public enum KnxManufacturer {
       (int) 666, (int) 724, (String) "Shenzhen Haizhichuang Technology Co., Ltd"),
   M_SHENZHEN_EASYDETEK_TECHNOLOGY_CO_LTD(
       (int) 667, (int) 725, (String) "Shenzhen easydetek technology Co.Ltd"),
-  M_ABB___RESERVED((int) 668, (int) 43954, (String) "ABB - reserved"),
+  M_MUTLUSAN_ELECTRIC((int) 668, (int) 726, (String) "Mutlusan Electric"),
+  M_ABB___RESERVED((int) 669, (int) 43954, (String) "ABB - reserved"),
   M_BUSCH_JAEGER_ELEKTRO___RESERVED(
-      (int) 669, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
+      (int) 670, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
   private static final Map<Integer, KnxManufacturer> map;
 
   static {

@@ -1497,6 +1497,12 @@ const (
 	BACnetVendorId_DELTA_FIRE_LTDA                                                              BACnetVendorId = 1460
 	BACnetVendorId_BOCK_WATER_HEATERS_INC                                                       BACnetVendorId = 1461
 	BACnetVendorId_CLEAVER_BROOKS                                                               BACnetVendorId = 1462
+	BACnetVendorId_SCANALYTICS_INC                                                              BACnetVendorId = 1463
+	BACnetVendorId_WILABS                                                                       BACnetVendorId = 1464
+	BACnetVendorId_ACT_SYSTEM_CO_LTD                                                            BACnetVendorId = 1465
+	BACnetVendorId_VERGE_SENSE                                                                  BACnetVendorId = 1466
+	BACnetVendorId_SYSTEMAIR_MFG_INC                                                            BACnetVendorId = 1467
+	BACnetVendorId_SEELEY_INTERNATIONAL                                                         BACnetVendorId = 1468
 	BACnetVendorId_UNKNOWN_VENDOR                                                               BACnetVendorId = 0xFFFF
 )
 
@@ -2959,6 +2965,12 @@ func init() {
 		BACnetVendorId_DELTA_FIRE_LTDA,
 		BACnetVendorId_BOCK_WATER_HEATERS_INC,
 		BACnetVendorId_CLEAVER_BROOKS,
+		BACnetVendorId_SCANALYTICS_INC,
+		BACnetVendorId_WILABS,
+		BACnetVendorId_ACT_SYSTEM_CO_LTD,
+		BACnetVendorId_VERGE_SENSE,
+		BACnetVendorId_SYSTEMAIR_MFG_INC,
+		BACnetVendorId_SEELEY_INTERNATIONAL,
 		BACnetVendorId_UNKNOWN_VENDOR,
 	}
 }
@@ -5024,6 +5036,30 @@ func (e BACnetVendorId) VendorId() uint16 {
 	case 1462:
 		{ /* '1462' */
 			return 1462
+		}
+	case 1463:
+		{ /* '1463' */
+			return 1463
+		}
+	case 1464:
+		{ /* '1464' */
+			return 1464
+		}
+	case 1465:
+		{ /* '1465' */
+			return 1465
+		}
+	case 1466:
+		{ /* '1466' */
+			return 1466
+		}
+	case 1467:
+		{ /* '1467' */
+			return 1467
+		}
+	case 1468:
+		{ /* '1468' */
+			return 1468
 		}
 	case 147:
 		{ /* '147' */
@@ -10863,6 +10899,30 @@ func (e BACnetVendorId) VendorName() string {
 		{ /* '1462' */
 			return "Cleaver-Brooks"
 		}
+	case 1463:
+		{ /* '1463' */
+			return "Scanalytics, Inc."
+		}
+	case 1464:
+		{ /* '1464' */
+			return "WI6LABS"
+		}
+	case 1465:
+		{ /* '1465' */
+			return "AC&T System Co., Ltd"
+		}
+	case 1466:
+		{ /* '1466' */
+			return "VergeSense"
+		}
+	case 1467:
+		{ /* '1467' */
+			return "Systemair Mfg. Inc."
+		}
+	case 1468:
+		{ /* '1468' */
+			return "Seeley International"
+		}
 	case 147:
 		{ /* '147' */
 			return "Integrated Information Systems, Inc."
@@ -15670,6 +15730,18 @@ func BACnetVendorIdByValue(value uint16) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_BOCK_WATER_HEATERS_INC, true
 	case 1462:
 		return BACnetVendorId_CLEAVER_BROOKS, true
+	case 1463:
+		return BACnetVendorId_SCANALYTICS_INC, true
+	case 1464:
+		return BACnetVendorId_WILABS, true
+	case 1465:
+		return BACnetVendorId_ACT_SYSTEM_CO_LTD, true
+	case 1466:
+		return BACnetVendorId_VERGE_SENSE, true
+	case 1467:
+		return BACnetVendorId_SYSTEMAIR_MFG_INC, true
+	case 1468:
+		return BACnetVendorId_SEELEY_INTERNATIONAL, true
 	case 147:
 		return BACnetVendorId_INTEGRATED_INFORMATION_SYSTEMS_INC, true
 	case 148:
@@ -18586,6 +18658,18 @@ func BACnetVendorIdByName(value string) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_BOCK_WATER_HEATERS_INC, true
 	case "CLEAVER_BROOKS":
 		return BACnetVendorId_CLEAVER_BROOKS, true
+	case "SCANALYTICS_INC":
+		return BACnetVendorId_SCANALYTICS_INC, true
+	case "WILABS":
+		return BACnetVendorId_WILABS, true
+	case "ACT_SYSTEM_CO_LTD":
+		return BACnetVendorId_ACT_SYSTEM_CO_LTD, true
+	case "VERGE_SENSE":
+		return BACnetVendorId_VERGE_SENSE, true
+	case "SYSTEMAIR_MFG_INC":
+		return BACnetVendorId_SYSTEMAIR_MFG_INC, true
+	case "SEELEY_INTERNATIONAL":
+		return BACnetVendorId_SEELEY_INTERNATIONAL, true
 	case "INTEGRATED_INFORMATION_SYSTEMS_INC":
 		return BACnetVendorId_INTEGRATED_INFORMATION_SYSTEMS_INC, true
 	case "TEMCO_CONTROLS_LTD":
@@ -21563,6 +21647,18 @@ func (e BACnetVendorId) PLC4XEnumName() string {
 		return "BOCK_WATER_HEATERS_INC"
 	case BACnetVendorId_CLEAVER_BROOKS:
 		return "CLEAVER_BROOKS"
+	case BACnetVendorId_SCANALYTICS_INC:
+		return "SCANALYTICS_INC"
+	case BACnetVendorId_WILABS:
+		return "WILABS"
+	case BACnetVendorId_ACT_SYSTEM_CO_LTD:
+		return "ACT_SYSTEM_CO_LTD"
+	case BACnetVendorId_VERGE_SENSE:
+		return "VERGE_SENSE"
+	case BACnetVendorId_SYSTEMAIR_MFG_INC:
+		return "SYSTEMAIR_MFG_INC"
+	case BACnetVendorId_SEELEY_INTERNATIONAL:
+		return "SEELEY_INTERNATIONAL"
 	case BACnetVendorId_INTEGRATED_INFORMATION_SYSTEMS_INC:
 		return "INTEGRATED_INFORMATION_SYSTEMS_INC"
 	case BACnetVendorId_TEMCO_CONTROLS_LTD:

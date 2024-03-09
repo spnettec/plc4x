@@ -1676,6 +1676,12 @@ public enum BACnetVendorId {
   DELTA_FIRE_LTDA((int) 1460, (int) 1460, (String) "Delta Fire Ltda."),
   BOCK_WATER_HEATERS_INC((int) 1461, (int) 1461, (String) "Bock Water Heaters, Inc."),
   CLEAVER_BROOKS((int) 1462, (int) 1462, (String) "Cleaver-Brooks"),
+  SCANALYTICS_INC((int) 1463, (int) 1463, (String) "Scanalytics, Inc."),
+  WILABS((int) 1464, (int) 1464, (String) "WI6LABS"),
+  ACT_SYSTEM_CO_LTD((int) 1465, (int) 1465, (String) "AC&T System Co., Ltd"),
+  VERGE_SENSE((int) 1466, (int) 1466, (String) "VergeSense"),
+  SYSTEMAIR_MFG_INC((int) 1467, (int) 1467, (String) "Systemair Mfg. Inc."),
+  SEELEY_INTERNATIONAL((int) 1468, (int) 1468, (String) "Seeley International"),
   UNKNOWN_VENDOR((int) 0xFFFF, (int) 0xFFFF, (String) "Unknown");
   private static final Map<Integer, BACnetVendorId> map;
 
