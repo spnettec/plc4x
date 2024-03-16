@@ -129,6 +129,8 @@ public class GenericCANProtocolLogic extends Plc4xCANProtocolBase<GenericFrame> 
             WriteBufferByteBased writeBuffer = new WriteBufferByteBased(DataItem.getLengthInBytes(value, tag.getDataType(), value.getLength()), ByteOrder.LITTLE_ENDIAN);
             DataItem.staticSerialize(writeBuffer, value, tag.getDataType(), value.getLength(), ByteOrder.LITTLE_ENDIAN);
             buffer.writeByteArray(writeBuffer.getBytes());
+        } catch (Exception e){
+            logger.error("write exception",e);
         } finally {
             buffer.popContext("write-" + tag);
         }

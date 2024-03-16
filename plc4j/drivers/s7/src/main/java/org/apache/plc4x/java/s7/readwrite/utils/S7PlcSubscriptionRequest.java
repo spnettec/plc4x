@@ -25,9 +25,14 @@ import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
 import org.apache.plc4x.java.api.model.PlcSubscriptionTag;
 import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.types.PlcSubscriptionType;
+import org.apache.plc4x.java.s7.readwrite.TimeBase;
+import org.apache.plc4x.java.s7.readwrite.tag.S7SubscriptionTag;
+import org.apache.plc4x.java.s7.readwrite.tag.S7Tag;
+import org.apache.plc4x.java.s7.readwrite.types.S7SubscriptionType;
 import org.apache.plc4x.java.spi.connection.PlcTagHandler;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
+import org.apache.plc4x.java.spi.messages.PlcSubscriber;
 import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionTag;
 import org.apache.plc4x.java.spi.utils.Serializable;
 
@@ -36,13 +41,6 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-import org.apache.plc4x.java.s7.readwrite.TimeBase;
-import static org.apache.plc4x.java.s7.readwrite.TimeBase.B01SEC;
-import org.apache.plc4x.java.s7.readwrite.tag.S7SubscriptionTag;
-import org.apache.plc4x.java.s7.readwrite.tag.S7Tag;
-import org.apache.plc4x.java.s7.readwrite.types.S7SubscriptionType;
-import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionRequest;
-import org.apache.plc4x.java.spi.messages.PlcSubscriber;
 
 public class S7PlcSubscriptionRequest implements PlcSubscriptionRequest, Serializable {
 
@@ -173,7 +171,7 @@ public class S7PlcSubscriptionRequest implements PlcSubscriptionRequest, Seriali
             if (tags.containsKey(name)) {
                 throw new PlcRuntimeException("Duplicate tag definition '" + name + "'");
             }
-            if ((tag instanceof S7SubscriptionTag) == false){
+            if (!(tag instanceof S7SubscriptionTag)){
                 throw new PlcRuntimeException("Tag is not of type S7SubcriptionTag");                
             }                
             tags.put(name, new BuilderItem(() -> tag, PlcSubscriptionType.CYCLIC, pollingInterval));
@@ -185,12 +183,18 @@ public class S7PlcSubscriptionRequest implements PlcSubscriptionRequest, Seriali
         */
         @Override
         public PlcSubscriptionRequest.Builder addChangeOfStateTagAddress(String name, String tagAddress) {
+            return addChangeOfStateTagAddress(name, tagAddress, null);
+        }
+
+        @Override
+        public PlcSubscriptionRequest.Builder addChangeOfStateTagAddress(String name, String tagAddress,
+                Duration pollingInterval) {
             if (tags.containsKey(name)) {
                 throw new PlcRuntimeException("Duplicate tag definition '" + name + "'");
             }
-            S7Tag[] s7tags = new S7Tag[]{S7Tag.of(tagAddress)};   
-            S7SubscriptionTag tag = new S7SubscriptionTag(S7SubscriptionType.CYCLIC_SUBSCRIPTION, s7tags, TimeBase.B01SEC, (short) 1);            
-            tags.put(name, new BuilderItem(() -> tag, PlcSubscriptionType.CHANGE_OF_STATE));
+            S7Tag[] s7tags = new S7Tag[]{S7Tag.of(tagAddress)};
+            S7SubscriptionTag tag = new S7SubscriptionTag(S7SubscriptionType.CYCLIC_SUBSCRIPTION, s7tags, TimeBase.B01SEC, (short) 1);
+            tags.put(name, new BuilderItem(() -> tag, PlcSubscriptionType.CHANGE_OF_STATE, pollingInterval));
             return this;
         }
 
@@ -202,7 +206,7 @@ public class S7PlcSubscriptionRequest implements PlcSubscriptionRequest, Seriali
             if (tags.containsKey(name)) {
                 throw new PlcRuntimeException("Duplicate tag definition '" + name + "'");
             }
-            if ((tag instanceof S7SubscriptionTag) == false){
+            if (!(tag instanceof S7SubscriptionTag)){
                 throw new PlcRuntimeException("Tag is not of type S7SubcriptionTag");                
             }              
             tags.put(name, new BuilderItem(() -> tag, PlcSubscriptionType.CHANGE_OF_STATE));
@@ -243,7 +247,7 @@ public class S7PlcSubscriptionRequest implements PlcSubscriptionRequest, Seriali
                 throw new PlcRuntimeException("Duplicate tag definition '" + name + "'");
             }
             PlcTag tag = tagHandler.parseTag(tagAddress);
-            if ((tag instanceof S7SubscriptionTag) == false){
+            if (!(tag instanceof S7SubscriptionTag)){
                 throw new PlcRuntimeException("Tag address is not of type S7SubcriptionTag");                
             }              
             tags.put(name, new BuilderItem(() -> tagHandler.parseTag(tagAddress), PlcSubscriptionType.EVENT));
@@ -264,7 +268,7 @@ public class S7PlcSubscriptionRequest implements PlcSubscriptionRequest, Seriali
             if (tags.containsKey(name)) {
                 throw new PlcRuntimeException("Duplicate tag definition '" + name + "'");
             }
-            if ((tag instanceof S7SubscriptionTag) == false){
+            if (!(tag instanceof S7SubscriptionTag)){
                 throw new PlcRuntimeException("Tag is not of type S7SubcriptionTag");                
             }            
             tags.put(name, new BuilderItem(() -> tag, PlcSubscriptionType.EVENT));

@@ -71,6 +71,10 @@ public class GenericCANTag implements PlcTag {
         return Collections.emptyList();
     }
 
+    @Override
+    public int getNumberOfElements(){
+        return arraySize;
+    }
     public int getArraySize() {
         return arraySize;
     }

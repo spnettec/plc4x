@@ -173,6 +173,9 @@ public class PlcValueHandler implements org.apache.plc4x.java.api.value.PlcValue
                 String v = Arrays.stream(values).map(Objects::toString).collect(Collectors.joining());
                 return PlcSTRING.of(v);
             }
+            if (vo instanceof Byte) {
+                return PlcRawByteArray.of(getByteArray(values));
+            }
             PlcList list = new PlcList();
             for (Object value : values) {
                 list.add(of(new Object[]{value}));
@@ -421,6 +424,14 @@ public class PlcValueHandler implements org.apache.plc4x.java.api.value.PlcValue
     }
     private static String[] stringToStringArray(String strings) {
         return strings.substring(1, strings.length() - 1).split(",");
+    }
+    private static byte[] getByteArray(Object[] arrs){
+        byte[] bytes = new byte[arrs.length];
+        for (int i=0;i<arrs.length;i++)
+        {
+            bytes[i] = (byte) arrs[i];
+        }
+        return bytes;
     }
     private static Object[] getArray(Object val){
         if (val instanceof Object[]) {
