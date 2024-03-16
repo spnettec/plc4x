@@ -242,6 +242,11 @@ public class PlcLINT extends PlcIECValue<Long> {
         return Long.toString(value);
     }
 
+    @Override
+    public byte[] getRaw() {
+        return getBytes();
+    }    
+    
     public byte[] getBytes() {
         return new byte[]{
             (byte) ((value >> 56) & 0xff),

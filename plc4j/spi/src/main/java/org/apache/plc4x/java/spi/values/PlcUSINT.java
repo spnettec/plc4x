@@ -260,6 +260,11 @@ public class PlcUSINT extends PlcIECValue<Short> {
     public String toString() {
         return Short.toString(value);
     }
+    
+    @Override
+    public byte[] getRaw() {
+        return getBytes();
+    }    
 
     public byte[] getBytes() {
         byte[] bytes = new byte[1];

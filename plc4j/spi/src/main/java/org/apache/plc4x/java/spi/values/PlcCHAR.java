@@ -349,6 +349,11 @@ public class PlcCHAR extends PlcIECValue<Short> {
         return Character.toString((char) ((short) (value==null?0:value)));
     }
 
+    @Override
+    public byte[] getRaw() {
+        return getBytes();
+    }    
+    
     public byte[] getBytes() {
         byte[] bytes = new byte[1];
         bytes[0] = (byte) (value & 0xff);
