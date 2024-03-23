@@ -21,9 +21,8 @@ package org.apache.plc4x.java.opcua.protocol;
 import static java.util.concurrent.Executors.newSingleThreadExecutor;
 import static java.util.concurrent.Executors.newSingleThreadScheduledExecutor;
 
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
+
 import org.apache.plc4x.java.api.messages.PlcSubscriptionEvent;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
@@ -43,8 +42,6 @@ import org.slf4j.LoggerFactory;
 
 import java.time.Instant;
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
 
@@ -65,6 +62,8 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
 
     private final AtomicLong clientHandles = new AtomicLong(1L);
     private final RequestTransactionManager tm;
+
+    private final List<SubscriptionAcknowledgement> outstandingAcknowledgements = new CopyOnWriteArrayList<>();
     private ScheduledFuture<?> publishTask;
 
     public OpcuaSubscriptionHandle(OpcuaProtocolLogic plcSubscriber, RequestTransactionManager tm,
@@ -166,19 +165,19 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
      * @return
      */
     private void sendPublishRequest() {
-        List<ExtensionObjectDefinition> outstandingAcknowledgements = new LinkedList<>();
-        List<Long> outstandingRequests = new LinkedList<>();
+
+        //List<Long> outstandingRequests = new LinkedList<>();
 
         //If we are waiting on a response and haven't received one, just wait until we do. A keep alive will be sent out eventually
-        if (outstandingRequests.size() <= 1) {
+        //if (outstandingRequests.size() <= 1) {
             RequestHeader requestHeader = conversation.createRequestHeader(this.revisedCycleTime * 10);
 
             //Make a copy of the outstanding requests, so it isn't modified while we are putting the ack list together.
             List<ExtensionObjectDefinition> acks = new ArrayList<>(outstandingAcknowledgements);
             // do not send -1 when requesting publish, the -1 value indicates NULL value
             // which might result in corruption of subscription for some servers
-            int ackLength = acks.size();
-            outstandingAcknowledgements.removeAll(acks);
+            int ackLength = outstandingAcknowledgements.size();
+            //outstandingAcknowledgements.clear();
 
             PublishRequest publishRequest = new PublishRequest(requestHeader, ackLength, acks);
             // we work in external thread - we need to coordinate access to conversation pipeline
@@ -186,8 +185,8 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
             transaction.submit(() -> {
                 //  Create Consumer for the response message, error and timeout to be sent to the Secure Channel
                 conversation.submit(publishRequest, PublishResponse.class).thenAccept(responseMessage -> {
-                    outstandingRequests.remove(((ResponseHeader) responseMessage.getResponseHeader()).getRequestHandle());
-
+                    //outstandingRequests.remove(((ResponseHeader) responseMessage.getResponseHeader()).getRequestHandle());
+                    outstandingAcknowledgements.clear();
                     for (long availableSequenceNumber : responseMessage.getAvailableSequenceNumbers()) {
                         outstandingAcknowledgements.add(new SubscriptionAcknowledgement(this.subscriptionId, availableSequenceNumber));
                     }
@@ -211,9 +210,9 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
                         transaction.endRequest();
                     }
                 });
-                outstandingRequests.add(requestHeader.getRequestHandle());
+                //outstandingRequests.add(requestHeader.getRequestHandle());
             });
-        }
+        //}
     }
 
 
