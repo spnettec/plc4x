@@ -1622,11 +1622,11 @@
       </modules>
     </profile>
 
-    <!-- Build PLC4X including the Sandbox modules -->
+    <!-- Build PLC4X including the Python modules -->
     <profile>
-      <id>with-sandbox</id>
+      <id>with-python</id>
       <modules>
-        <module>sandbox</module>
+        <module>plc4py</module>
       </modules>
     </profile>
 
