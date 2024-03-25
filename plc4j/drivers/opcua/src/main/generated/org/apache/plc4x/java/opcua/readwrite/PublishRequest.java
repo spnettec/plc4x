@@ -45,12 +45,12 @@ public class PublishRequest extends ExtensionObjectDefinition implements Message
   // Properties.
   protected final ExtensionObjectDefinition requestHeader;
   protected final int noOfSubscriptionAcknowledgements;
-  protected final List<? extends ExtensionObjectDefinition> subscriptionAcknowledgements;
+  protected final List<ExtensionObjectDefinition> subscriptionAcknowledgements;
 
   public PublishRequest(
       ExtensionObjectDefinition requestHeader,
       int noOfSubscriptionAcknowledgements,
-      List<? extends ExtensionObjectDefinition> subscriptionAcknowledgements) {
+      List<ExtensionObjectDefinition> subscriptionAcknowledgements) {
     super();
     this.requestHeader = requestHeader;
     this.noOfSubscriptionAcknowledgements = noOfSubscriptionAcknowledgements;
@@ -65,7 +65,7 @@ public class PublishRequest extends ExtensionObjectDefinition implements Message
     return noOfSubscriptionAcknowledgements;
   }
 
-  public List<? extends ExtensionObjectDefinition> getSubscriptionAcknowledgements() {
+  public List<ExtensionObjectDefinition> getSubscriptionAcknowledgements() {
     return subscriptionAcknowledgements;
   }
 
