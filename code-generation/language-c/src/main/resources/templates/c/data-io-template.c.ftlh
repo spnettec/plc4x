@@ -192,6 +192,13 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4x_spi_context ctx,
                 *data_item = plc4c_data_create_string_data(strlen(value), ${manualField.name});
                             </#if>
                             <#break>
+
+                        <#case "CHAR">
+                *data_item = plc4c_data_create_${case.name?lower_case}_data(*${simpleField.name});
+                            <#break>
+                        <#case "WCHAR">
+                *data_item = plc4c_data_create_${case.name?lower_case}_data(*${simpleField.name});
+                            <#break>
                         <#default>
                 *data_item = plc4c_data_create_${case.name?lower_case}_data(${manualField.name});
                     </#switch>

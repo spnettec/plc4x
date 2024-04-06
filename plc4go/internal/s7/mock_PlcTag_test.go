@@ -413,6 +413,10 @@ func (_c *MockPlcTag_GetNumElements_Call) RunAndReturn(run func() uint16) *MockP
 func (_m *MockPlcTag) GetStringEncoding() string {
 	ret := _m.Called()
 
+	if len(ret) == 0 {
+		panic("no return value specified for GetStringEncoding")
+	}
+
 	var r0 string
 	if rf, ok := ret.Get(0).(func() string); ok {
 		r0 = rf()

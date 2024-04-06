@@ -41,7 +41,6 @@
     <module>capture-replay</module>
     <module>connection-cache</module>
     <module>connection-pool</module>
-    <module>opcua-server</module>
     <module>opm</module>
     <module>scraper</module>
     <module>scraper-ng</module>
