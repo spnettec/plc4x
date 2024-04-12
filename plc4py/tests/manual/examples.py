@@ -16,39 +16,24 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-aenum==3.1.15
-annotated-types==0.6.0
-bitarray==2.9.2
-black==24.3.0
-build==1.2.1
-cfgv==3.4.0
-click==8.1.7
-coverage==7.4.1
-distlib==0.3.8
-filelock==3.13.4
-flake8==7.0.0
-funkify==0.4.5
-identify==2.5.35
-iniconfig==2.0.0
-mccabe==0.7.0
-mock==5.1.0
-mypy==1.9.0
-mypy-extensions==1.0.0
-nodeenv==1.8.0
-packaging==24.0
-pathspec==0.12.1
-pip-tools==7.3.0
-platformdirs==4.2.0
-pluggy==1.4.0
-pre-commit==3.6.0
-pycodestyle==2.11.1
-pyflakes==3.2.0
-pyproject_hooks==1.0.0
-pytest==8.0.0
-pytest-asyncio==0.23.6
-pytest-mock==3.14.0
-PyYAML==6.0.1
-requires==0.10.5
-typing_extensions==4.11.0
-virtualenv==20.25.1
-xtyping==0.8.2
+
+import asyncio
+from plc4py.PlcDriverManager import PlcDriverManager
+
+connection_string = "modbus://127.0.0.1:5020"
+driver_manager = PlcDriverManager()
+
+
+async def communicate_with_plc():
+    async with driver_manager.connection(connection_string) as connection:
+        with connection.read_request_builder() as builder:
+            builder.add_item("Random Tag", "4x00001[10]")
+            request = builder.build()
+
+        future = connection.execute(request)
+        await future
+        response = future.result()
+        print(response)
+    pass
+
+asyncio.run(communicate_with_plc())
