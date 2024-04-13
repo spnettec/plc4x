@@ -161,11 +161,6 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
      */
     @Override
     public void close() throws PlcConnectionException {
-        if(channel == null)
-        {
-            connected = false;
-            return;
-        }
         logger.debug("Closing connection to PLC, await for disconnect = {}", awaitSessionDisconnectComplete);
         channel.pipeline().fireUserEventTriggered(new DisconnectEvent());
         try {
@@ -194,9 +189,9 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
 
         // Shutdown the Worker Group
         channelFactory.closeEventLoopForChannel(channel);
-        connected = false;
-        channel.attr(IS_CONNECTED).set(false);
+
         channel = null;
+        connected = false;
     }
 
     @Override
@@ -242,7 +237,7 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
                             super.userEventTriggered(ctx, evt);
                         } else if (evt instanceof DiscoveredEvent) {
                             sessionDiscoverCompleteFuture.complete(((DiscoveredEvent) evt).getConfiguration());
-                        } else if (evt instanceof ConnectEvent) {
+                        } else if (evt instanceof ConnectEvent || evt instanceof DiscoverEvent) {
                             // Fix for https://github.com/apache/plc4x/issues/801
                             if (!sessionSetupCompleteFuture.isCompletedExceptionally()) {
                                 if (awaitSessionSetupComplete) {
@@ -260,7 +255,7 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
                         new ChannelInboundHandlerAdapter() {
                             @Override
                             public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws PlcConnectionException {
-                                logger.error("unknown error, close the connection:{}", cause.getMessage());
+                                logger.error("unknown error, close the connection", cause);
                                 close();
                             }
                         }

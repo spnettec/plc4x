@@ -155,7 +155,7 @@
 
     <!-- Site properties -->
     <asciidoctor.maven.plugin.version>2.2.6</asciidoctor.maven.plugin.version>
-    <asciidoctorj.version>2.5.11</asciidoctorj.version>
+    <asciidoctorj.version>2.5.12</asciidoctorj.version>
     <asciidoctorj.diagram.version>2.3.0</asciidoctorj.diagram.version>
 
     <skip-code-generation>false</skip-code-generation>
@@ -287,7 +287,7 @@
       <dependency>
         <groupId>com.google.googlejavaformat</groupId>
         <artifactId>google-java-format</artifactId>
-        <version>1.21.0</version>
+        <version>1.22.0</version>
       </dependency>
 
       <dependency>
