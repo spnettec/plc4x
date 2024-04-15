@@ -18,86 +18,120 @@
  */
 package org.apache.plc4x.protocol.ads;
 
-import org.apache.plc4x.java.DefaultPlcDriverManager;
-import org.apache.plc4x.java.api.PlcConnection;
-import org.apache.plc4x.java.api.messages.*;
-import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.api.value.PlcValue;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.plc4x.java.spi.values.*;
+import org.apache.plc4x.test.manual.ManualTest;
 
-import java.util.function.Consumer;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.HashMap;
+import java.util.Map;
 
-public class ManualAdsDriverTest {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ManualAdsDriverTest.class);
-    public static void main(String[] args) throws Exception {
-        String ip = "10.80.41.238";
+public class ManualAdsDriverTest extends ManualTest {
 
-        String sourceAmsNetId = "10.211.55.4.1.1";
-        int sourceAmsPort = 65534;
-        String targetAmsNetId = "5.81.202.72.1.1";
-        int targetAmsPort = 851;
-        String connectionString = String.format("ads:tcp://%s?sourceAmsNetId=%s&sourceAmsPort=%d&targetAmsNetId=%s&targetAmsPort=%d", ip, sourceAmsNetId, sourceAmsPort, targetAmsNetId, targetAmsPort);
-        try (PlcConnection plcConnection = new DefaultPlcDriverManager().getConnection(connectionString)) {
+    /*
+     * Test program code on the PLC with the test-data.
+     *
+     * Located in "main"
+     *
 
-            final PlcReadRequest.Builder builder = plcConnection.readRequestBuilder();
-            builder.addTagAddress("errorMsg","GVLMES.sErrorMessage:STRING(20)|GBK");
-            builder.addTagAddress("sDrumID","GVLMES.sDrumID:STRING(20)");
-            builder.addTagAddress("status","GVLMES.iConnectionStatus:INT");
-            final PlcReadRequest readRequest = builder.build();
-            final PlcReadResponse readResponse = readRequest.execute().get();
-            System.out.println(readResponse.getAsPlcValue());
+    hurz_BOOL  := TRUE;
+	hurz_BYTE  := 42;
+	hurz_WORD  := 42424;
+	hurz_DWORD := 4242442424;
+	hurz_LWORD := 4242442424242424242;
+	hurz_SINT  := -42;
+	hurz_USINT := 42;
+	hurz_INT   := -2424;
+	hurz_UINT  := 42424;
+	hurz_DINT  := -242442424;
+	hurz_UDINT := 4242442424;
+	hurz_LINT  := -4242442424242424242;
+	hurz_ULINT := 4242442424242424242;
+	hurz_REAL  := 3.14159265359;
+	hurz_LREAL := 2.71828182846;
+	hurz_TIME  := T#1S234MS;
+	hurz_LTIME := LTIME#1000D15H23M12S34MS2US44NS;
+	hurz_DATE  := D#1978-03-28;
+	//hurz_LDATE:LDATE;
+	hurz_TIME_OF_DAY 	:= TIME_OF_DAY#15:36:30.123;
+	hurz_TOD         	:= TOD#16:17:18.123;
+	//hurz_LTIME_OF_DAY:LTIME_OF_DAY;
+	//hurz_LTOD:LTOD;
+	hurz_DATE_AND_TIME 	:= DATE_AND_TIME#1996-05-06-15:36:30;
+	hurz_DT				:= DT#1972-03-29-00:00:00;
+	//hurz_LDATE_AND_TIME:LDATE_AND_TIME;
+	//hurz_LDT:LDT;
+	hurz_STRING			:= 'hurz';
+	hurz_WSTRING		:= "wolf";
 
+     *
+     */
 
-            final PlcWriteRequest.Builder rbuilder = plcConnection.writeRequestBuilder();
-            rbuilder.addTagAddress("errorMsg", "GVLMES.sErrorMessage:STRING(20)|GBK", "啊啊啊啊");
-            rbuilder.addTagAddress("sDrumID", "GVLMES.sDrumID:STRING(20)", "bbbbb");
-            rbuilder.addTagAddress("status","GVLMES.iConnectionStatus:INT",2);
-            final PlcWriteRequest writeRequest = rbuilder.build();
-
-            final PlcWriteResponse writeResponse = writeRequest.execute().get();
-
-            System.out.println(writeResponse);
-
-
-            final PlcSubscriptionRequest.Builder sbuilder = plcConnection.subscriptionRequestBuilder();
-            sbuilder.addChangeOfStateTagAddress("errorMsg", "GVLMES.sErrorMessage:STRING(20)");
-            sbuilder.addChangeOfStateTagAddress("sDrumID", "GVLMES.sDrumID:STRING(20)");
-            sbuilder.addChangeOfStateTagAddress("status", "GVLMES.iConnectionStatus:INT");
-            PlcSubscriptionRequest subscriptionRequest = sbuilder.build();
-            final PlcSubscriptionResponse subscriptionResponse = subscriptionRequest.execute().get();
-            for (String subscriptionName : subscriptionResponse.getTagNames()) {
-                final PlcSubscriptionHandle subscriptionHandle = subscriptionResponse.getSubscriptionHandle(subscriptionName);
-                subscriptionHandle.register(new ValueChangeHandler());
-            }
-
-        }
-
+    public ManualAdsDriverTest(String connectionString) {
+        super(connectionString);
     }
-    private static class ValueChangeHandler implements Consumer<PlcSubscriptionEvent> {
 
-        @Override
-        public void accept(PlcSubscriptionEvent plcSubscriptionEvent) {
-            LOGGER.info("Incoming event:");
-            for (String fieldName : plcSubscriptionEvent.getTagNames()) {
-                final PlcValue plcValue = plcSubscriptionEvent.getPlcValue(fieldName);
-                if(plcValue.isList()) {
-                    StringBuilder sb = new StringBuilder(String.format("Field '%s' value:", fieldName));
-                    for (PlcValue value : plcValue.getList()) {
-                        sb.append(" ").append(value.getString());
-                    }
-                    LOGGER.info(sb.toString());
-                } else if (plcValue.isStruct()) {
-                    StringBuilder sb = new StringBuilder(String.format("Field '%s' value:", fieldName));
-                    plcValue.getStruct().forEach((name, value) ->
-                        sb.append(" ").append(name).append("=").append(value.getString())
-                    );
-                    LOGGER.info(sb.toString());
-                } else {
-                    LOGGER.info(String.format("Field '%s' value: %s", fieldName, plcValue.getString()));
-                }
-            }
-        }
+    public static void main(String[] args) throws Exception {
+        String spsIp = "192.168.23.20";
+        String clientIp = "192.168.23.220";
+        String sourceAmsNetId = clientIp + ".1.1";
+        int sourceAmsPort = 65534;
+        String targetAmsNetId = spsIp + ".1.1";
+        int targetAmsPort = 851;
+        String connectionString = String.format("ads:tcp://%s?source-ams-net-id=%s&source-ams-port=%d&target-ams-net-id=%s&target-ams-port=%d", spsIp, sourceAmsNetId, sourceAmsPort, targetAmsNetId, targetAmsPort);
+        ManualAdsDriverTest test = new ManualAdsDriverTest(connectionString);
+        test.addTestCase("MAIN.hurz_BOOL", new PlcBOOL(true));
+        test.addTestCase("MAIN.hurz_BYTE", new PlcBYTE(42));
+        test.addTestCase("MAIN.hurz_WORD", new PlcWORD(42424));
+        test.addTestCase("MAIN.hurz_DWORD", new PlcDWORD(4242442424L));
+        test.addTestCase("MAIN.hurz_LWORD", new PlcLWORD(4242442424242424242L));
+        test.addTestCase("MAIN.hurz_SINT", new PlcSINT(-42));
+        test.addTestCase("MAIN.hurz_USINT", new PlcUSINT(42));
+        test.addTestCase("MAIN.hurz_INT", new PlcINT(-2424));
+        test.addTestCase("MAIN.hurz_UINT", new PlcUINT(42424));
+        test.addTestCase("MAIN.hurz_DINT", new PlcDINT(-242442424));
+        test.addTestCase("MAIN.hurz_UDINT", new PlcUDINT(4242442424L));
+        test.addTestCase("MAIN.hurz_LINT", new PlcLINT(-4242442424242424242L));
+        test.addTestCase("MAIN.hurz_ULINT", new PlcULINT(4242442424242424242L));
+        test.addTestCase("MAIN.hurz_REAL", new PlcREAL(3.14159265359F));
+        test.addTestCase("MAIN.hurz_LREAL", new PlcLREAL(2.71828182846D));
+        test.addTestCase("MAIN.hurz_STRING", new PlcSTRING("hurz"));
+        test.addTestCase("MAIN.hurz_WSTRING", new PlcWSTRING("wolf"));
+        test.addTestCase("MAIN.hurz_Special_STRING", new PlcSTRING("€"));
+        test.addTestCase("MAIN.hurz_Special_WSTRING", new PlcWSTRING("€"));
+        test.addTestCase("MAIN.hurz_TIME", new PlcTIME(Duration.parse("PT1.234S")));
+        test.addTestCase("MAIN.hurz_LTIME", new PlcLTIME(Duration.parse("PT24015H23M12.034002044S")));
+        test.addTestCase("MAIN.hurz_DATE", new PlcDATE(LocalDate.parse("1978-03-28")));
+        test.addTestCase("MAIN.hurz_TIME_OF_DAY", new PlcTIME_OF_DAY(LocalTime.parse("15:36:30.123")));
+        test.addTestCase("MAIN.hurz_DATE_AND_TIME", new PlcDATE_AND_TIME(LocalDateTime.parse("1996-05-06T15:36:30")));
+        Map<String, PlcValue> children = new HashMap<>();
+        children.put("hurz_BOOL", new PlcBOOL(true));
+        children.put("hurz_BYTE", new PlcBYTE(1));
+        children.put("hurz_WORD", new PlcWORD(2));
+        children.put("hurz_DWORD", new PlcDWORD(3));
+        children.put("hurz_LWORD", new PlcLWORD(4));
+        children.put("hurz_SINT", new PlcSINT(5));
+        children.put("hurz_USINT", new PlcUSINT(6));
+        children.put("hurz_INT", new PlcINT(7));
+        children.put("hurz_UINT", new PlcUINT(8));
+        children.put("hurz_DINT", new PlcDINT(9));
+        children.put("hurz_UDINT", new PlcUDINT(10));
+        children.put("hurz_LINT", new PlcLINT(11));
+        children.put("hurz_ULINT", new PlcULINT(12));
+        children.put("hurz_REAL", new PlcREAL(13.0));
+        children.put("hurz_LREAL", new PlcLREAL(14.0));
+        children.put("hurz_STRING", new PlcSTRING("hurz"));
+        children.put("hurz_WSTRING", new PlcWSTRING("wolf"));
+        children.put("hurz_TIME", new PlcTIME(Duration.parse("PT1.234S")));
+        children.put("hurz_LTIME", new PlcLTIME(Duration.parse("PT24015H23M12.034002044S")));
+        children.put("hurz_DATE", new PlcDATE(LocalDate.parse("1978-03-28")));
+        children.put("hurz_TIME_OF_DAY", new PlcTIME_OF_DAY(LocalTime.parse("15:36:30.123")));
+        children.put("hurz_DATE_AND_TIME", new PlcDATE_AND_TIME(LocalDateTime.parse("1996-05-06T15:36:30")));
+        test.addTestCase("MAIN.hurz_Struct", new PlcStruct(children));
+        test.run();
     }
 
 }
