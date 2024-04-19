@@ -51,7 +51,8 @@ public enum Plc4xValueType {
   TIME_OF_DAY((short) 0x55),
   LTIME_OF_DAY((short) 0x56),
   DATE_AND_TIME((short) 0x57),
-  LDATE_AND_TIME((short) 0x58),
+  DATE_AND_LTIME((short) 0x58),
+  LDATE_AND_TIME((short) 0x59),
   Struct((short) 0x61),
   List((short) 0x62),
   RAW_BYTE_ARRAY((short) 0x71);

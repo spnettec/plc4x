@@ -142,6 +142,9 @@ plc4c_plc4x_read_write_plc4x_value_type plc4c_plc4x_read_write_plc4x_value_type_
     if(strcmp(value_string, "DATE_AND_TIME") == 0) {
         return plc4c_plc4x_read_write_plc4x_value_type_DATE_AND_TIME;
     }
+    if(strcmp(value_string, "DATE_AND_LTIME") == 0) {
+        return plc4c_plc4x_read_write_plc4x_value_type_DATE_AND_LTIME;
+    }
     if(strcmp(value_string, "LDATE_AND_TIME") == 0) {
         return plc4c_plc4x_read_write_plc4x_value_type_LDATE_AND_TIME;
     }
@@ -158,7 +161,7 @@ plc4c_plc4x_read_write_plc4x_value_type plc4c_plc4x_read_write_plc4x_value_type_
 }
 
 int plc4c_plc4x_read_write_plc4x_value_type_num_values() {
-  return 31;
+  return 32;
 }
 
 plc4c_plc4x_read_write_plc4x_value_type plc4c_plc4x_read_write_plc4x_value_type_value_for_index(int index) {
@@ -245,15 +248,18 @@ plc4c_plc4x_read_write_plc4x_value_type plc4c_plc4x_read_write_plc4x_value_type_
         return plc4c_plc4x_read_write_plc4x_value_type_DATE_AND_TIME;
       }
       case 27: {
-        return plc4c_plc4x_read_write_plc4x_value_type_LDATE_AND_TIME;
+        return plc4c_plc4x_read_write_plc4x_value_type_DATE_AND_LTIME;
       }
       case 28: {
-        return plc4c_plc4x_read_write_plc4x_value_type_Struct;
+        return plc4c_plc4x_read_write_plc4x_value_type_LDATE_AND_TIME;
       }
       case 29: {
-        return plc4c_plc4x_read_write_plc4x_value_type_List;
+        return plc4c_plc4x_read_write_plc4x_value_type_Struct;
       }
       case 30: {
+        return plc4c_plc4x_read_write_plc4x_value_type_List;
+      }
+      case 31: {
         return plc4c_plc4x_read_write_plc4x_value_type_RAW_BYTE_ARRAY;
       }
       default: {

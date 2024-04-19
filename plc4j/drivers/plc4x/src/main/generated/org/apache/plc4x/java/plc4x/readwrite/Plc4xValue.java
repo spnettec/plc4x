@@ -150,6 +150,11 @@ public class Plc4xValue {
           readSimpleField("secondsSinceEpoch", readUnsignedLong(readBuffer, 32));
       return PlcDATE_AND_TIME.ofSecondsSinceEpoch(secondsSinceEpoch);
     } else if (EvaluationHelper.equals(
+        valueType, Plc4xValueType.DATE_AND_LTIME)) { // DATE_AND_LTIME
+      BigInteger nanosecondsSinceEpoch =
+          readSimpleField("nanosecondsSinceEpoch", readUnsignedBigInteger(readBuffer, 64));
+      return PlcDATE_AND_LTIME.ofNanosecondsSinceEpoch(nanosecondsSinceEpoch);
+    } else if (EvaluationHelper.equals(
         valueType, Plc4xValueType.LDATE_AND_TIME)) { // LDATE_AND_TIME
       BigInteger nanosecondsSinceEpoch =
           readSimpleField("nanosecondsSinceEpoch", readUnsignedBigInteger(readBuffer, 64));
@@ -245,6 +250,10 @@ public class Plc4xValue {
     } else if (EvaluationHelper.equals(valueType, Plc4xValueType.DATE_AND_TIME)) { // DATE_AND_TIME
       // Simple field (secondsSinceEpoch)
       lengthInBits += 32;
+    } else if (EvaluationHelper.equals(
+        valueType, Plc4xValueType.DATE_AND_LTIME)) { // DATE_AND_LTIME
+      // Simple field (nanosecondsSinceEpoch)
+      lengthInBits += 64;
     } else if (EvaluationHelper.equals(
         valueType, Plc4xValueType.LDATE_AND_TIME)) { // LDATE_AND_TIME
       // Simple field (nanosecondsSinceEpoch)
@@ -385,6 +394,16 @@ public class Plc4xValue {
           "secondsSinceEpoch",
           (long) _value.getDateTime().toEpochSecond(ZoneOffset.UTC),
           writeUnsignedLong(writeBuffer, 32));
+    } else if (EvaluationHelper.equals(
+        valueType, Plc4xValueType.DATE_AND_LTIME)) { // DATE_AND_LTIME
+      // Simple Field (nanosecondsSinceEpoch)
+      writeSimpleField(
+          "nanosecondsSinceEpoch",
+          (BigInteger)
+              BigInteger.valueOf(_value.getDateTime().toEpochSecond(ZoneOffset.UTC))
+                  .multiply(BigInteger.valueOf(1000000000))
+                  .add(BigInteger.valueOf(_value.getDateTime().getNano())),
+          writeUnsignedBigInteger(writeBuffer, 64));
     } else if (EvaluationHelper.equals(
         valueType, Plc4xValueType.LDATE_AND_TIME)) { // LDATE_AND_TIME
       // Simple Field (nanosecondsSinceEpoch)

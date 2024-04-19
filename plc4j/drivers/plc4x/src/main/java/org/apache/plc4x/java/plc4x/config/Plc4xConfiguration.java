@@ -30,7 +30,7 @@ public class Plc4xConfiguration implements PlcConnectionConfiguration {
     private String remoteConnectionString;
 
     @ConfigurationParameter("request-timeout")
-    @IntDefaultValue(5_000)
+    @IntDefaultValue(10_000)
     @Description("Default timeout for all types of requests.")
     private int requestTimeout;
 

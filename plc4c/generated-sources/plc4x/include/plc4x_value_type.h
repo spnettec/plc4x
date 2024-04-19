@@ -57,7 +57,8 @@ enum plc4c_plc4x_read_write_plc4x_value_type {
   plc4c_plc4x_read_write_plc4x_value_type_TIME_OF_DAY = 0x55,
   plc4c_plc4x_read_write_plc4x_value_type_LTIME_OF_DAY = 0x56,
   plc4c_plc4x_read_write_plc4x_value_type_DATE_AND_TIME = 0x57,
-  plc4c_plc4x_read_write_plc4x_value_type_LDATE_AND_TIME = 0x58,
+  plc4c_plc4x_read_write_plc4x_value_type_DATE_AND_LTIME = 0x58,
+  plc4c_plc4x_read_write_plc4x_value_type_LDATE_AND_TIME = 0x59,
   plc4c_plc4x_read_write_plc4x_value_type_Struct = 0x61,
   plc4c_plc4x_read_write_plc4x_value_type_List = 0x62,
   plc4c_plc4x_read_write_plc4x_value_type_RAW_BYTE_ARRAY = 0x71

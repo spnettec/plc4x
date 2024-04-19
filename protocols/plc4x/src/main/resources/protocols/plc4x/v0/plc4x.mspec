@@ -204,6 +204,9 @@
         ['DATE_AND_TIME'  DATE_AND_TIME
             [simple uint 32 secondsSinceEpoch]
         ]
+        ['DATE_AND_LTIME' DATE_AND_LTIME
+            [simple uint 64 nanosecondsSinceEpoch]
+        ]
         ['LDATE_AND_TIME' LDATE_AND_TIME
             [simple uint 64 nanosecondsSinceEpoch]
         ]
@@ -283,7 +286,8 @@
     ['0x55' TIME_OF_DAY   ]
     ['0x56' LTIME_OF_DAY  ]
     ['0x57' DATE_AND_TIME ]
-    ['0x58' LDATE_AND_TIME]
+    ['0x58' DATE_AND_LTIME]
+    ['0x59' LDATE_AND_TIME]
 
     // Complex types
     ['0x61' Struct        ]
