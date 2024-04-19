@@ -33,7 +33,7 @@ func main() {
 	//var ip = "10.80.41.18"
 
 	// Get a connection to a remote PLC
-	var connectionString = "s7://10.166.11.19"
+	var connectionString = "s7://10.80.41.47"
 	crc := driverManager.GetConnection(connectionString)
 
 	// Wait for the driver to connect (or not)
@@ -49,8 +49,8 @@ func main() {
 
 	// Prepare a read-request
 	readRequest, err := connection.ReadRequestBuilder().
-		AddTagAddress("bool-value-1", "%DB1:0.0:BOOL").
-		AddTagAddress("bool-value-2", "%DB1:2.1:BOOL"). // false
+		AddTagAddress("bool-value-1", "%DB1:0.0:BOOL"). // true
+		AddTagAddress("bool-value-2", "%DB1:0.1:BOOL"). // false
 		// It seems S7 PLCs ignores the array notation for BOOL
 		//AddTagAddress("bool-array", "%DB1:2:BOOL[16]").
 		AddTagAddress("byte-value", "%DB1:4:BYTE").
@@ -73,10 +73,10 @@ func main() {
 		AddTagAddress("date-array", "%DB1:838:DATE[2]").               // D#1990-03-28, D#2020-10-25
 		AddTagAddress("time-of-day-value", "%DB1:842:TIME_OF_DAY").    // TOD#12:34:56
 		AddTagAddress("time-of-day-array", "%DB1:846:TIME_OF_DAY[2]"). // TOD#16:34:56, TOD#08:15:00
-		//AddTagAddress("date-and-time-value", "%DB1:854:DATE_AND_TIME"). // DTL#1978-03-28-12:34:56
-		//AddTagAddress("date-and-time-array", "%DB1:862:DATE_AND_TIME[2]"). // DTL#1978-03-28-12:34:56, DTL#1978-03-28-12:34:56
-		AddTagAddress("char-value", "%DB1:878:CHAR").    // "H"
-		AddTagAddress("char-array", "%DB1:880:CHAR[2]"). // "H", "u", "r", "z"
+		AddTagAddress("date-and-time-value", "%DB1:854:DTL").          // DTL#1978-03-28-12:34:56
+		AddTagAddress("date-and-time-array", "%DB1:866:DTL[2]").       // DTL#1978-03-28-12:34:56, DTL#1978-03-28-12:34:56
+		AddTagAddress("char-value", "%DB1:890:CHAR").                  // "H"
+		AddTagAddress("char-array", "%DB1:892:CHAR[2]").               // "H", "u", "r", "z"
 		Build()
 	if err != nil {
 		fmt.Printf("error preparing read-request: %s", connectionResult.GetErr().Error())
