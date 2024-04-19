@@ -707,7 +707,7 @@ const (
 	KnxManufacturer_M_ARKLYFE                                            KnxManufacturer = 661
 	KnxManufacturer_M_FOSHAN_HAYDN_TECHNOLOGY_LIGHTING_CO__LTD_          KnxManufacturer = 662
 	KnxManufacturer_M_KNXES_COMPANY_LIMITED                              KnxManufacturer = 663
-	KnxManufacturer_M_THE_AKUVOX_COMPANY                                 KnxManufacturer = 664
+	KnxManufacturer_M_AKUVOX                                             KnxManufacturer = 664
 	KnxManufacturer_M_NINGBO_YINZHOU_SHENGRUIJIE_ELECTRONICS_CO__LTD_    KnxManufacturer = 665
 	KnxManufacturer_M_SHENZHEN_HAIZHICHUANG_TECHNOLOGY_CO___LTD          KnxManufacturer = 666
 	KnxManufacturer_M_SHENZHEN_EASYDETEK_TECHNOLOGY_CO_LTD               KnxManufacturer = 667
@@ -1390,7 +1390,7 @@ func init() {
 		KnxManufacturer_M_ARKLYFE,
 		KnxManufacturer_M_FOSHAN_HAYDN_TECHNOLOGY_LIGHTING_CO__LTD_,
 		KnxManufacturer_M_KNXES_COMPANY_LIMITED,
-		KnxManufacturer_M_THE_AKUVOX_COMPANY,
+		KnxManufacturer_M_AKUVOX,
 		KnxManufacturer_M_NINGBO_YINZHOU_SHENGRUIJIE_ELECTRONICS_CO__LTD_,
 		KnxManufacturer_M_SHENZHEN_HAIZHICHUANG_TECHNOLOGY_CO___LTD,
 		KnxManufacturer_M_SHENZHEN_EASYDETEK_TECHNOLOGY_CO_LTD,
@@ -6643,7 +6643,7 @@ func (e KnxManufacturer) Name() string {
 		}
 	case 664:
 		{ /* '664' */
-			return "The Akuvox Company"
+			return "Akuvox"
 		}
 	case 665:
 		{ /* '665' */
@@ -8107,7 +8107,7 @@ func KnxManufacturerByValue(value uint16) (enum KnxManufacturer, ok bool) {
 	case 663:
 		return KnxManufacturer_M_KNXES_COMPANY_LIMITED, true
 	case 664:
-		return KnxManufacturer_M_THE_AKUVOX_COMPANY, true
+		return KnxManufacturer_M_AKUVOX, true
 	case 665:
 		return KnxManufacturer_M_NINGBO_YINZHOU_SHENGRUIJIE_ELECTRONICS_CO__LTD_, true
 	case 666:
@@ -9464,8 +9464,8 @@ func KnxManufacturerByName(value string) (enum KnxManufacturer, ok bool) {
 		return KnxManufacturer_M_FOSHAN_HAYDN_TECHNOLOGY_LIGHTING_CO__LTD_, true
 	case "M_KNXES_COMPANY_LIMITED":
 		return KnxManufacturer_M_KNXES_COMPANY_LIMITED, true
-	case "M_THE_AKUVOX_COMPANY":
-		return KnxManufacturer_M_THE_AKUVOX_COMPANY, true
+	case "M_AKUVOX":
+		return KnxManufacturer_M_AKUVOX, true
 	case "M_NINGBO_YINZHOU_SHENGRUIJIE_ELECTRONICS_CO__LTD_":
 		return KnxManufacturer_M_NINGBO_YINZHOU_SHENGRUIJIE_ELECTRONICS_CO__LTD_, true
 	case "M_SHENZHEN_HAIZHICHUANG_TECHNOLOGY_CO___LTD":
@@ -10883,8 +10883,8 @@ func (e KnxManufacturer) PLC4XEnumName() string {
 		return "M_FOSHAN_HAYDN_TECHNOLOGY_LIGHTING_CO__LTD_"
 	case KnxManufacturer_M_KNXES_COMPANY_LIMITED:
 		return "M_KNXES_COMPANY_LIMITED"
-	case KnxManufacturer_M_THE_AKUVOX_COMPANY:
-		return "M_THE_AKUVOX_COMPANY"
+	case KnxManufacturer_M_AKUVOX:
+		return "M_AKUVOX"
 	case KnxManufacturer_M_NINGBO_YINZHOU_SHENGRUIJIE_ELECTRONICS_CO__LTD_:
 		return "M_NINGBO_YINZHOU_SHENGRUIJIE_ELECTRONICS_CO__LTD_"
 	case KnxManufacturer_M_SHENZHEN_HAIZHICHUANG_TECHNOLOGY_CO___LTD:

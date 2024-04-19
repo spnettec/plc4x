@@ -83,6 +83,7 @@ public class ManualPLC4XOpcua {
                         } catch (InterruptedException | ExecutionException e) {
                             e.printStackTrace();
                         }
+                        System.out.println("Unsubscription request completed");
                     } catch (Exception e){
                         e.printStackTrace();
                     }

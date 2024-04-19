@@ -1412,7 +1412,7 @@
     ['661' M_ARKLYFE ['719', '"Arklyfe"']]
     ['662' M_FOSHAN_HAYDN_TECHNOLOGY_LIGHTING_CO__LTD_ ['720', '"Foshan Haydn Technology Lighting Co.,Ltd."']]
     ['663' M_KNXES_COMPANY_LIMITED ['721', '"KNXES COMPANY LIMITED"']]
-    ['664' M_THE_AKUVOX_COMPANY ['722', '"The Akuvox Company"']]
+    ['664' M_AKUVOX ['722', '"Akuvox"']]
     ['665' M_NINGBO_YINZHOU_SHENGRUIJIE_ELECTRONICS_CO__LTD_ ['723', '"NingBo Yinzhou ShengRuiJie Electronics Co. Ltd."']]
     ['666' M_SHENZHEN_HAIZHICHUANG_TECHNOLOGY_CO___LTD ['724', '"Shenzhen Haizhichuang Technology Co., Ltd"']]
     ['667' M_SHENZHEN_EASYDETEK_TECHNOLOGY_CO_LTD ['725', '"Shenzhen easydetek technology Co.Ltd"']]

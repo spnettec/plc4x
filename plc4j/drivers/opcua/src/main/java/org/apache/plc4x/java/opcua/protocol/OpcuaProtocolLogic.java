@@ -36,6 +36,7 @@ import org.apache.plc4x.java.opcua.context.Conversation;
 import org.apache.plc4x.java.opcua.context.OpcuaDriverContext;
 import org.apache.plc4x.java.opcua.context.SecureChannel;
 import org.apache.plc4x.java.opcua.readwrite.*;
+import org.apache.plc4x.java.opcua.security.SecurityPolicy;
 import org.apache.plc4x.java.opcua.tag.OpcuaTag;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
@@ -151,7 +152,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
 
     @Override
     public void onDiscover(ConversationContext<OpcuaAPU> context) {
-        if (!configuration.isDiscovery() || conversation.getSecurityPolicy() == SecurityPolicy.NONE) {
+        if (!configuration.isDiscovery() || configuration.getSecurityPolicy() == SecurityPolicy.NONE) {
             LOGGER.debug("not encrypted, ignoring onDiscover");
             context.fireDiscovered(configuration);
             return;

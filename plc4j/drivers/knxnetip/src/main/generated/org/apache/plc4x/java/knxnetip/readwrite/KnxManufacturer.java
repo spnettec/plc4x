@@ -763,7 +763,7 @@ public enum KnxManufacturer {
   M_FOSHAN_HAYDN_TECHNOLOGY_LIGHTING_CO__LTD_(
       (int) 662, (int) 720, (String) "Foshan Haydn Technology Lighting Co.,Ltd."),
   M_KNXES_COMPANY_LIMITED((int) 663, (int) 721, (String) "KNXES COMPANY LIMITED"),
-  M_THE_AKUVOX_COMPANY((int) 664, (int) 722, (String) "The Akuvox Company"),
+  M_AKUVOX((int) 664, (int) 722, (String) "Akuvox"),
   M_NINGBO_YINZHOU_SHENGRUIJIE_ELECTRONICS_CO__LTD_(
       (int) 665, (int) 723, (String) "NingBo Yinzhou ShengRuiJie Electronics Co. Ltd."),
   M_SHENZHEN_HAIZHICHUANG_TECHNOLOGY_CO___LTD(
