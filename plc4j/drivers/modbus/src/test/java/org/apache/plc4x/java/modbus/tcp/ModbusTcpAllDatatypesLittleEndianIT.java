@@ -16,22 +16,14 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.plc4x.java.modbus.tcp;
 
-package org.apache.plc4x.java.api.metadata;
+import org.apache.plc4x.test.driver.DriverTestsuiteRunner;
 
-import org.apache.plc4x.java.api.types.OptionType;
+public class ModbusTcpAllDatatypesLittleEndianIT extends DriverTestsuiteRunner {
 
-import java.util.Optional;
-
-public interface Option {
-
-    String getKey();
-
-    OptionType getType();
-
-    String getDescription();
-    boolean isRequired();
-    Optional<Object> getDefaultValue();
-    Optional<String> getSince();
+    public ModbusTcpAllDatatypesLittleEndianIT() {
+        super("/protocols/modbus/tcp/Modbus-all-datatypes-little-endian.xml");
+    }
 
 }

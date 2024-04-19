@@ -475,7 +475,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
         M_ONEHOME = 448,
         M_EOS_SAUNATECHNIK_GMBH = 449,
         M_KUSATEK_GMBH = 450,
-        M_EISBAER_SCADA = 451,
+        M_ALEXANDER_MAIER_GMBH = 451,
         M_AUTOMATISMI_BENINCA_S_P_A_ = 452,
         M_BLENDOM = 453,
         M_MADEL_AIR_TECHNICAL_DIFFUSION = 454,
@@ -528,7 +528,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
         M_AUTOMATIONPlus = 501,
         M_BLUE_AND_RED = 502,
         M_FROGBLUE = 503,
-        M_SAVESOR = 504,
+        M_LUXIO = 504,
         M_APP_TECH = 505,
         M_SENSORTEC_AG = 506,
         M_NYSA_TECHNOLOGY_AND_SOLUTIONS = 507,
@@ -697,8 +697,9 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
         M_MARLEY_DEUTSCHLAND_GMBH = 670,
         M_CREATROL = 671,
         M_EUTELSAT = 672,
-        M_ABB___RESERVED = 673,
-        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 674,
+        M_TECNIKABEL = 673,
+        M_ABB___RESERVED = 674,
+        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 675,
     }
 
     public static class KnxManufacturerInfo
@@ -1884,7 +1885,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_KUSATEK_GMBH: { /* '450' */
                     return 503;
                 }
-                case KnxManufacturer.M_EISBAER_SCADA: { /* '451' */
+                case KnxManufacturer.M_ALEXANDER_MAIER_GMBH: { /* '451' */
                     return 504;
                 }
                 case KnxManufacturer.M_AUTOMATISMI_BENINCA_S_P_A_: { /* '452' */
@@ -2061,7 +2062,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_FROGBLUE: { /* '503' */
                     return 558;
                 }
-                case KnxManufacturer.M_SAVESOR: { /* '504' */
+                case KnxManufacturer.M_LUXIO: { /* '504' */
                     return 559;
                 }
                 case KnxManufacturer.M_APP_TECH: { /* '505' */
@@ -2622,10 +2623,13 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_EUTELSAT: { /* '672' */
                     return 730;
                 }
-                case KnxManufacturer.M_ABB___RESERVED: { /* '673' */
+                case KnxManufacturer.M_TECNIKABEL: { /* '673' */
+                    return 731;
+                }
+                case KnxManufacturer.M_ABB___RESERVED: { /* '674' */
                     return 43954;
                 }
-                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '674' */
+                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '675' */
                     return 43959;
                 }
                 case KnxManufacturer.M_WAREMA_RENKHOFF_SE: { /* '68' */
@@ -3919,8 +3923,8 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_KUSATEK_GMBH: { /* '450' */
                     return "KUSATEK GmbH";
                 }
-                case KnxManufacturer.M_EISBAER_SCADA: { /* '451' */
-                    return "EisBär Scada";
+                case KnxManufacturer.M_ALEXANDER_MAIER_GMBH: { /* '451' */
+                    return "Alexander Maier GmbH";
                 }
                 case KnxManufacturer.M_AUTOMATISMI_BENINCA_S_P_A_: { /* '452' */
                     return "AUTOMATISMI BENINCA S.P.A.";
@@ -4096,8 +4100,8 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_FROGBLUE: { /* '503' */
                     return "frogblue";
                 }
-                case KnxManufacturer.M_SAVESOR: { /* '504' */
-                    return "SAVESOR";
+                case KnxManufacturer.M_LUXIO: { /* '504' */
+                    return "LUXIO";
                 }
                 case KnxManufacturer.M_APP_TECH: { /* '505' */
                     return "App Tech";
@@ -4657,10 +4661,13 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_EUTELSAT: { /* '672' */
                     return "EUTELSAT";
                 }
-                case KnxManufacturer.M_ABB___RESERVED: { /* '673' */
+                case KnxManufacturer.M_TECNIKABEL: { /* '673' */
+                    return "TECNIKABEL";
+                }
+                case KnxManufacturer.M_ABB___RESERVED: { /* '674' */
                     return "ABB - reserved";
                 }
-                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '674' */
+                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '675' */
                     return "Busch-Jaeger Elektro - reserved";
                 }
                 case KnxManufacturer.M_WAREMA_RENKHOFF_SE: { /* '68' */
