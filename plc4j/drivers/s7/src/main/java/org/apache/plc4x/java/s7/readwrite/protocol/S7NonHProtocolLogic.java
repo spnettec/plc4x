@@ -101,7 +101,7 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 	 * obtained from the response to the request. In the following,
 	 * the values sent PUSH from the PLC to the driver refer to this JobID.
 	 */
-	private final Map<Short, PlcSubscriptionRequest> cycRequests = new HashMap<>();
+	//private final Map<Short, PlcSubscriptionRequest> cycRequests = new HashMap<>();
 
 
 	private S7DriverContext s7DriverContext;
@@ -244,8 +244,8 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 			return future;
 		}
 		if(readRequest instanceof LargeTagPlcReadRequest){
-			final S7VarRequestParameterItem S7VarRequestParameterItem = new S7VarRequestParameterItemAddress(encodeS7Address(readRequest.getTags().get(0)));
-			return toLargePlcReadResponse((LargeTagPlcReadRequest)readRequest, readLargeInternal(S7VarRequestParameterItem));
+			final S7VarRequestParameterItem s7VarRequestParameterItem = new S7VarRequestParameterItemAddress(encodeS7Address(readRequest.getTags().get(0)));
+			return toLargePlcReadResponse((LargeTagPlcReadRequest)readRequest, readLargeInternal(s7VarRequestParameterItem));
 		}
 		DefaultPlcReadRequest request = (DefaultPlcReadRequest) readRequest;
 		CompletableFuture<S7Message> responseFuture;
@@ -482,7 +482,7 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 		return response;
 	}
 
-	private List<CompletableFuture<S7Message>> readLargeInternal(S7VarRequestParameterItem S7VarRequestParameterItem) {
+	private List<CompletableFuture<S7Message>> readLargeInternal(S7VarRequestParameterItem s7VarRequestParameterItem) {
 		List<CompletableFuture<S7Message>> futures = new ArrayList<>();
 		if (!isConnected()) {
 			CompletableFuture<S7Message> future = new CompletableFuture<>();
@@ -491,7 +491,7 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 			return futures;
 		}
 
-		List<S7Message> messages = splitLargeTagReadVarParameter(S7VarRequestParameterItem, this.s7DriverContext.getPduSize());
+		List<S7Message> messages = splitLargeTagReadVarParameter(s7VarRequestParameterItem, this.s7DriverContext.getPduSize());
 		for (S7Message message:messages) {
 			CompletableFuture<S7Message> future = new CompletableFuture<>();
 			futures.add(future);
@@ -1435,9 +1435,9 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 								(S7PayloadUserDataItemCyclicServicesPush)
 										payload.getItems().get(0);
 
-						S7CyclicEvent cycEvent = new S7CyclicEvent(cycRequests.get(parameterItem.getSequenceNumber()),
-								parameterItem.getSequenceNumber(),
-								payloadItem);
+						//S7CyclicEvent cycEvent = new S7CyclicEvent(cycRequests.get(parameterItem.getSequenceNumber()),
+						//		parameterItem.getSequenceNumber(),
+						//		payloadItem);
 						//eventQueue.add(cycEvent);
 
 					} else if ((myParameter.getCpuFunctionGroup() == 0x02) && (myParameter.getCpuFunctionType() == 0x00) && (myParameter.getCpuSubfunction() == 0x05)) { //(06)

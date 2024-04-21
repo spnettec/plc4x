@@ -18,7 +18,6 @@
  */
 package org.apache.plc4x.java.s7.readwrite.optimizer;
 
-import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.value.PlcValue;
