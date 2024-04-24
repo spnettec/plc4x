@@ -1422,8 +1422,10 @@
     ['671' M_CREATROL ['729', '"Creatrol"']]
     ['672' M_EUTELSAT ['730', '"EUTELSAT"']]
     ['673' M_TECNIKABEL ['731', '"TECNIKABEL"']]
-    ['674' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
-    ['675' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
+    ['674' M_ATIOS_AG ['732', '"Atios AG"']]
+    ['675' M_SMARTLICHT ['733', '"SmartLicht"']]
+    ['676' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
+    ['677' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
     
 ]
 

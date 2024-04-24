@@ -59,6 +59,14 @@ public class LeasedPlcConnection implements PlcConnection {
 
     @Override
     public synchronized void close() {
+        // In this case the connection was already closed (possibly by the timer)
+        if(connection.get() == null) {
+            if(invalidateConnection){
+                connectionContainer.returnConnection(null, true);
+            }
+            return;
+        }
+
         // Cancel automatically timing out.
         usageTimer.cancel();
 
@@ -66,11 +74,11 @@ public class LeasedPlcConnection implements PlcConnection {
         connection.set(null);
 
         // Tell the connection container that the connection is free to be reused.
-        if (connectionContainer != null) {
-            connectionContainer.returnConnection(this, invalidateConnection);
-        }
+        //if (connectionContainer != null) {
+        connectionContainer.returnConnection(this, invalidateConnection);
+        //}
 
-        connectionContainer = null;
+        //connectionContainer = null;
     }
 
     @Override

@@ -777,9 +777,11 @@ public enum KnxManufacturer {
   M_CREATROL((int) 671, (int) 729, (String) "Creatrol"),
   M_EUTELSAT((int) 672, (int) 730, (String) "EUTELSAT"),
   M_TECNIKABEL((int) 673, (int) 731, (String) "TECNIKABEL"),
-  M_ABB___RESERVED((int) 674, (int) 43954, (String) "ABB - reserved"),
+  M_ATIOS_AG((int) 674, (int) 732, (String) "Atios AG"),
+  M_SMARTLICHT((int) 675, (int) 733, (String) "SmartLicht"),
+  M_ABB___RESERVED((int) 676, (int) 43954, (String) "ABB - reserved"),
   M_BUSCH_JAEGER_ELEKTRO___RESERVED(
-      (int) 675, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
+      (int) 677, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
   private static final Map<Integer, KnxManufacturer> map;
 
   static {
