@@ -40,7 +40,6 @@ import java.util.function.Consumer;
  * The current version is tested against a public server, which is to be replaced later by a separate instance of the Milo framework.
  * Afterwards the code represented here will be used as an example for the introduction page.
  * <p>
- *
  */
 public class ManualPLC4XOpcua {
     private static final Logger LOGGER = LoggerFactory.getLogger(ManualPLC4XOpcua.class);
@@ -139,5 +138,4 @@ public class ManualPLC4XOpcua {
             }
         }
     }
-
 }

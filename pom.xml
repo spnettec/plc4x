@@ -107,7 +107,7 @@
     <awaitility.version>4.2.1</awaitility.version>
     <!-- The currently available version is 2.0.5 and anything above 1.4.3 is no longer compatible with our code -->
     <bit-io.version>1.4.3</bit-io.version>
-    <bouncycastle.version>1.77</bouncycastle.version>
+    <bouncycastle.version>1.78.1</bouncycastle.version>
     <byte-buddy.version>1.14.13</byte-buddy.version>
     <!-- Be sure to keep this version set to the version of the cmake-maven-plugin -->
     <cmake-version>3.22.1</cmake-version>
@@ -119,7 +119,7 @@
     <commons-configuration2.version>2.10.1</commons-configuration2.version>
     <commons-io.version>2.16.1</commons-io.version>
     <commons-lang3.version>3.14.0</commons-lang3.version>
-    <commons-logging.version>1.3.0</commons-logging.version>
+    <commons-logging.version>1.3.1</commons-logging.version>
     <commons-math3.version>3.6.1</commons-math3.version>
     <commons-net.version>3.10.0</commons-net.version>
     <commons-text.version>1.12.0</commons-text.version>
@@ -140,10 +140,10 @@
     <!-- Starting with Jetty 12 Java 17 is required -->
     <jetty-util.version>11.0.20</jetty-util.version>
     <jna.version>5.14.0</jna.version>
-    <jserialcom.version>2.10.4</jserialcom.version>
+    <jserialcom.version>2.11.0</jserialcom.version>
     <junit.jupiter.version>5.10.2</junit.jupiter.version>
     <junit.platform.version>1.8.2</junit.platform.version>
-    <logback.version>1.5.5</logback.version>
+    <logback.version>1.5.6</logback.version>
     <maven.clean.plugin.version>3.2.0</maven.clean.plugin.version>
     <milo.version>0.6.12</milo.version>
     <mockito.version>5.11.0</mockito.version>
@@ -529,7 +529,7 @@
       <dependency>
         <groupId>org.json</groupId>
         <artifactId>json</artifactId>
-        <version>20240205</version>
+        <version>20240303</version>
       </dependency>
 
       <dependency>
@@ -957,7 +957,7 @@
           <dependency>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>extra-enforcer-rules</artifactId>
-            <version>1.7.0</version>
+            <version>1.8.0</version>
           </dependency>
           <dependency>
             <groupId>org.apache.maven.shared</groupId>
@@ -1183,7 +1183,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-jar-plugin</artifactId>
-          <version>3.3.0</version>
+          <version>3.4.1</version>
         </plugin>
 
         <plugin>
