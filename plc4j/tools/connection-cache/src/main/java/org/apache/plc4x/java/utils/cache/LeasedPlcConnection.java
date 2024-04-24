@@ -34,6 +34,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
@@ -41,13 +42,11 @@ public class LeasedPlcConnection implements PlcConnection {
 
     private ConnectionContainer connectionContainer;
     private final AtomicReference<PlcConnection> connection;
-    private boolean invalidateConnection;
     private final Timer usageTimer;
 
     LeasedPlcConnection(ConnectionContainer connectionContainer, PlcConnection connection, Duration maxUseTime) {
         this.connectionContainer = connectionContainer;
         this.connection = new AtomicReference<>(connection);
-        this.invalidateConnection = false;
         this.usageTimer = new Timer();
         this.usageTimer.schedule(new TimerTask() {
             @Override
@@ -58,12 +57,13 @@ public class LeasedPlcConnection implements PlcConnection {
     }
 
     @Override
-    public synchronized void close() {
+    public void close() {
+        close(false);
+    }
+    public synchronized void close(boolean invalidateConnection) {
         // In this case the connection was already closed (possibly by the timer)
         if(connection.get() == null) {
-            if(invalidateConnection){
-                connectionContainer.returnConnection(null, true);
-            }
+            connectionContainer.returnConnection(null, true);
             return;
         }
 
@@ -74,11 +74,7 @@ public class LeasedPlcConnection implements PlcConnection {
         connection.set(null);
 
         // Tell the connection container that the connection is free to be reused.
-        //if (connectionContainer != null) {
         connectionContainer.returnConnection(this, invalidateConnection);
-        //}
-
-        //connectionContainer = null;
     }
 
     @Override
@@ -145,7 +141,9 @@ public class LeasedPlcConnection implements PlcConnection {
                                     responseFuture.complete(plcReadResponse);
                                 } else {
                                     // Mark the connection as invalid.
-                                    invalidateConnection = true;
+                                    if(throwable instanceof TimeoutException){
+                                        LeasedPlcConnection.this.close(true);
+                                    }
                                     responseFuture.completeExceptionally(throwable);
                                 }
                                 return plcReadResponse;
@@ -212,7 +210,9 @@ public class LeasedPlcConnection implements PlcConnection {
                                     responseFuture.complete(plcWriteResponse);
                                 } else {
                                     // Mark the connection as invalid.
-                                    invalidateConnection = true;
+                                    if(throwable instanceof TimeoutException){
+                                        LeasedPlcConnection.this.close(true);
+                                    }
                                     responseFuture.completeExceptionally(throwable);
                                 }
                                 return plcWriteResponse;
@@ -289,7 +289,9 @@ public class LeasedPlcConnection implements PlcConnection {
                                     responseFuture.complete(plcSubscriptionResponse);
                                 } else {
                                     // Mark the connection as invalid.
-                                    invalidateConnection = true;
+                                    if(throwable instanceof TimeoutException){
+                                        LeasedPlcConnection.this.close(true);
+                                    }
                                     responseFuture.completeExceptionally(throwable);
                                 }
                                 return plcSubscriptionResponse;
@@ -391,7 +393,9 @@ public class LeasedPlcConnection implements PlcConnection {
                                     responseFuture.complete(plcUnsubscriptionResponse);
                                 } else {
                                     // Mark the connection as invalid.
-                                    invalidateConnection = true;
+                                    if(throwable instanceof TimeoutException){
+                                        LeasedPlcConnection.this.close(true);
+                                    }
                                     responseFuture.completeExceptionally(throwable);
                                 }
                                 return plcUnsubscriptionResponse;
@@ -448,7 +452,9 @@ public class LeasedPlcConnection implements PlcConnection {
                                     responseFuture.complete(plcBrowseResponse);
                                 } else {
                                     // Mark the connection as invalid.
-                                    invalidateConnection = true;
+                                    if(throwable instanceof TimeoutException){
+                                        LeasedPlcConnection.this.close(true);
+                                    }
                                     responseFuture.completeExceptionally(throwable);
                                 }
                                 return plcBrowseResponse;
@@ -469,7 +475,6 @@ public class LeasedPlcConnection implements PlcConnection {
                                     responseFuture.complete(plcBrowseResponse);
                                 } else {
                                     // Mark the connection as invalid.
-                                    invalidateConnection = true;
                                     responseFuture.completeExceptionally(throwable);
                                 }
                                 return plcBrowseResponse;

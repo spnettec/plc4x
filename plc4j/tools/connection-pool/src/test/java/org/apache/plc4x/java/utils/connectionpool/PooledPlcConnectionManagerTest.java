@@ -29,6 +29,7 @@ import org.apache.plc4x.java.api.exceptions.PlcUnsupportedOperationException;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.metadata.PlcConnectionMetadata;
 import org.apache.plc4x.java.api.PlcDriver;
+import org.apache.plc4x.java.api.model.PlcTag;
 import org.assertj.core.api.WithAssertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -43,6 +44,7 @@ import org.slf4j.LoggerFactory;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.IntStream;
@@ -274,7 +276,7 @@ class PooledPlcConnectionManagerTest implements WithAssertions {
             PooledPlcConnectionManager.class.getClassLoader(), new PoolKeyFactory())).isNotNull();
     }
 
-    class DummyPlcConnection implements PlcConnection, PlcConnectionMetadata {
+    static class DummyPlcConnection implements PlcConnection, PlcConnectionMetadata {
 
         private final String url;
 
@@ -336,6 +338,11 @@ class PooledPlcConnectionManagerTest implements WithAssertions {
         @Override
         public void close() {
             connected = false;
+        }
+
+        @Override
+        public Optional<PlcTag> parseTagAddress(String tagAddress) {
+            return Optional.empty();
         }
 
         @Override

@@ -18,16 +18,11 @@
  */
 package org.apache.plc4x.java.modbus;
 
-import org.apache.plc4x.java.DefaultPlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
-import org.apache.plc4x.java.spi.values.*;
 import org.apache.plc4x.java.utils.cache.CachedPlcConnectionManager;
-import org.apache.plc4x.test.manual.ManualTest;
 import org.junit.jupiter.api.Disabled;
-
-import static java.lang.Thread.sleep;
 
 @Disabled("Manual Test")
 public class ManualModbusTCPDriverTest  {
@@ -39,7 +34,7 @@ public class ManualModbusTCPDriverTest  {
             try (PlcConnection plcConnection = plcConnectionManager.getConnection(
                     "modbus-rtu:tcp://10.100.10.11:6000")) {
                 final PlcReadRequest readRequest = plcConnection.readRequestBuilder()
-                        .addTagAddress("aa", "holding-register:2:UINT[6]").build();
+                        .addTagAddress("aa", "holding-register:2[6]").build();
 
                 // Execute the read request
                 try {
@@ -49,7 +44,6 @@ public class ManualModbusTCPDriverTest  {
                     e.printStackTrace();
                 }
             }
-            //sleep(100);
         }
     }
 
