@@ -93,7 +93,10 @@ class ConnectionContainer {
                 // Nevertheless, it is polite to say something in logs about this situation.
                 LOGGER.warn("Exception while closing connection", e);
             }
-
+            if(returnedLeasedConnection == null){
+                connection = null;
+                return;
+            }
             // Try to get a new connection.
             try {
                 connection = connectionManager.getConnection(connectionUrl);
