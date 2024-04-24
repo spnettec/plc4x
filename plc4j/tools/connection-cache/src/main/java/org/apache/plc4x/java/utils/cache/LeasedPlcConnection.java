@@ -141,9 +141,7 @@ public class LeasedPlcConnection implements PlcConnection {
                                     responseFuture.complete(plcReadResponse);
                                 } else {
                                     // Mark the connection as invalid.
-                                    if(throwable instanceof TimeoutException){
-                                        LeasedPlcConnection.this.close(true);
-                                    }
+                                    LeasedPlcConnection.this.close(true);
                                     responseFuture.completeExceptionally(throwable);
                                 }
                                 return plcReadResponse;
@@ -210,9 +208,7 @@ public class LeasedPlcConnection implements PlcConnection {
                                     responseFuture.complete(plcWriteResponse);
                                 } else {
                                     // Mark the connection as invalid.
-                                    if(throwable instanceof TimeoutException){
-                                        LeasedPlcConnection.this.close(true);
-                                    }
+                                    LeasedPlcConnection.this.close(true);
                                     responseFuture.completeExceptionally(throwable);
                                 }
                                 return plcWriteResponse;
@@ -289,9 +285,7 @@ public class LeasedPlcConnection implements PlcConnection {
                                     responseFuture.complete(plcSubscriptionResponse);
                                 } else {
                                     // Mark the connection as invalid.
-                                    if(throwable instanceof TimeoutException){
-                                        LeasedPlcConnection.this.close(true);
-                                    }
+                                    LeasedPlcConnection.this.close(true);
                                     responseFuture.completeExceptionally(throwable);
                                 }
                                 return plcSubscriptionResponse;
@@ -393,9 +387,7 @@ public class LeasedPlcConnection implements PlcConnection {
                                     responseFuture.complete(plcUnsubscriptionResponse);
                                 } else {
                                     // Mark the connection as invalid.
-                                    if(throwable instanceof TimeoutException){
-                                        LeasedPlcConnection.this.close(true);
-                                    }
+                                    LeasedPlcConnection.this.close(true);
                                     responseFuture.completeExceptionally(throwable);
                                 }
                                 return plcUnsubscriptionResponse;
@@ -452,9 +444,7 @@ public class LeasedPlcConnection implements PlcConnection {
                                     responseFuture.complete(plcBrowseResponse);
                                 } else {
                                     // Mark the connection as invalid.
-                                    if(throwable instanceof TimeoutException){
-                                        LeasedPlcConnection.this.close(true);
-                                    }
+                                    LeasedPlcConnection.this.close(true);
                                     responseFuture.completeExceptionally(throwable);
                                 }
                                 return plcBrowseResponse;
@@ -475,6 +465,7 @@ public class LeasedPlcConnection implements PlcConnection {
                                     responseFuture.complete(plcBrowseResponse);
                                 } else {
                                     // Mark the connection as invalid.
+                                    LeasedPlcConnection.this.close(true);
                                     responseFuture.completeExceptionally(throwable);
                                 }
                                 return plcBrowseResponse;
