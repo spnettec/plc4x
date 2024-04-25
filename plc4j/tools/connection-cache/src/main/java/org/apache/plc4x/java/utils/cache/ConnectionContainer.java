@@ -86,12 +86,14 @@ class ConnectionContainer {
         // If something happened while using the connection, invalidate this one and create a new connection.
         if(invalidateConnection) {
             // Close the old connection.
-            try {
-                connection.close();
-            } catch (Exception e) {
-                // We're ignoring this as we have no idea, what state the connection is in.
-                // Nevertheless, it is polite to say something in logs about this situation.
-                LOGGER.warn("Exception while closing connection", e);
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (Exception e) {
+                    // We're ignoring this as we have no idea, what state the connection is in.
+                    // Nevertheless, it is polite to say something in logs about this situation.
+                    LOGGER.warn("Exception while closing connection", e);
+                }
             }
             if(returnedLeasedConnection == null){
                 connection = null;

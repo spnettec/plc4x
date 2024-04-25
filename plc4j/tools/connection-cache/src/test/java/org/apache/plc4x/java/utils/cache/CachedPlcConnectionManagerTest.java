@@ -40,9 +40,6 @@ public class CachedPlcConnectionManagerTest {
     @Test
     public void testSingleConnectionRequestTest() throws PlcConnectionException {
         PlcConnectionManager mockConnectionManager = Mockito.mock(PlcConnectionManager.class);
-        PlcConnection plcConnection = Mockito.mock(PlcConnection.class);
-        Mockito.when(plcConnection.isConnected()).thenReturn(true);
-        Mockito.when(mockConnectionManager.getConnection("test")).thenReturn(plcConnection);
         CachedPlcConnectionManager connectionManager = CachedPlcConnectionManager.getBuilder(mockConnectionManager).build();
 
         // Get the connection for the first time.
@@ -97,10 +94,6 @@ public class CachedPlcConnectionManagerTest {
     @Test
     public void testDoubleConnectionRequestWithDifferentConnectionsTest() throws PlcConnectionException {
         PlcConnectionManager mockConnectionManager = Mockito.mock(PlcConnectionManager.class);
-        PlcConnection plcConnection = Mockito.mock(PlcConnection.class);
-        Mockito.when(plcConnection.isConnected()).thenReturn(true);
-        Mockito.when(mockConnectionManager.getConnection("test")).thenReturn(plcConnection);
-        Mockito.when(mockConnectionManager.getConnection("test-other")).thenReturn(plcConnection);
         CachedPlcConnectionManager connectionManager = CachedPlcConnectionManager.getBuilder(mockConnectionManager).build();
 
         // Get the connection for the first time.
@@ -172,9 +165,6 @@ public class CachedPlcConnectionManagerTest {
     @Test
     public void testSingleConnectionRequestWithTimeoutTest() throws PlcConnectionException {
         PlcConnectionManager mockConnectionManager = Mockito.mock(PlcConnectionManager.class);
-        PlcConnection plcConnection = Mockito.mock(PlcConnection.class);
-        Mockito.when(plcConnection.isConnected()).thenReturn(true);
-        Mockito.when(mockConnectionManager.getConnection("test")).thenReturn(plcConnection);
         CachedPlcConnectionManager connectionManager = CachedPlcConnectionManager.getBuilder(mockConnectionManager).withMaxLeaseTime(Duration.ofMillis(10)).build();
 
         // Get the connection for the first time.
