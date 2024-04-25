@@ -62,6 +62,7 @@ public class LeasedPlcConnection implements PlcConnection {
         // In this case the connection was already closed (possibly by the timer)
         if(connection.get() == null) {
             if(invalidateConnection && !hasInvalidateConnection){
+                hasInvalidateConnection = true;
                 connectionContainer.returnConnection(null, true);
             }
             return;
@@ -76,13 +77,8 @@ public class LeasedPlcConnection implements PlcConnection {
         if(invalidateConnection){
             hasInvalidateConnection = true;
         }
-
         // Tell the connection container that the connection is free to be reused.
-        //if (connectionContainer != null) {
         connectionContainer.returnConnection(this, invalidateConnection);
-        //}
-
-        //connectionContainer = null;
     }
 
     @Override

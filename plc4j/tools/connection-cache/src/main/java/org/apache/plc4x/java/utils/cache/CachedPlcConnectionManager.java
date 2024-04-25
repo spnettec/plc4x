@@ -78,6 +78,7 @@ public class CachedPlcConnectionManager implements PlcConnectionManager {
         }
     }
 
+    @Override
     public PlcConnection getConnection(String url) throws PlcConnectionException {
         ConnectionContainer connectionContainer;
         synchronized (connectionContainers) {
@@ -112,6 +113,7 @@ public class CachedPlcConnectionManager implements PlcConnectionManager {
         return connectionManager.getDriverManager();
     }
 
+    @Override
     public PlcConnection getConnection(String url, PlcAuthentication authentication) throws PlcConnectionException {
         throw new PlcConnectionException("the cached driver manager currently doesn't support authentication");
     }
