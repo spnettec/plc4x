@@ -2262,10 +2262,10 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
     }
 
     private int getTpduId() {
-        int tpduId = tpduGenerator.getAndIncrement();
-        // If we've reached the max value for a 16 bit transaction identifier, reset back to 1
-        if (tpduGenerator.get() == 0xFFFF) {
-            tpduGenerator.set(1);
+        int tpduId = 0;
+        if (this.s7DriverContext.getControllerType() != ControllerType.S7_200) {
+            tpduId = tpduGenerator.getAndIncrement();
+            tpduGenerator.compareAndExchange(0xFFFF, 1);
         }
         return tpduId;
     }

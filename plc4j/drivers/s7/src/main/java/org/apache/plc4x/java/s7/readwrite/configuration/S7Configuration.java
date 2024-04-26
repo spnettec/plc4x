@@ -29,14 +29,6 @@ import org.apache.plc4x.java.spi.configuration.annotations.defaults.StringDefaul
 
 public class S7Configuration implements PlcConnectionConfiguration {
 
-    @ConfigurationParameter("local-group")
-    @IntDefaultValue(3)
-    public int localGroup = 3;
-
-    @ConfigurationParameter("remote-group")
-    @IntDefaultValue(1)
-    public int remoteGroup = 1;
-
     @ConfigurationParameter("local-rack")
     @IntDefaultValue(1)
     @Description("Rack value for the client (PLC4X device).")
@@ -137,22 +129,6 @@ public class S7Configuration implements PlcConnectionConfiguration {
     @IntDefaultValue(0)
     @Description("Time value in seconds at which the execution of the PING will be scheduled. Generally set by developer experience, but generally should be the same as (read-timeout / 2).")
     public int retryTime = 0;
-
-    public int getLocalGroup() {
-        return localGroup;
-    }
-
-    public void setLocalGroup(int localGroup) {
-        this.localGroup = localGroup;
-    }
-
-    public int getRemoteGroup() {
-        return remoteGroup;
-    }
-
-    public void setRemoteGroup(int remoteGroup) {
-        this.remoteGroup = remoteGroup;
-    }
 
     public int getLocalRack() {
         return localRack;
