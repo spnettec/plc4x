@@ -25,7 +25,7 @@ cfgv==3.4.0
 click==8.1.7
 coverage==7.5.0
 distlib==0.3.8
-filelock==3.13.4
+filelock==3.14.0
 flake8==7.0.0
 funkify==0.4.5
 identify==2.5.36
@@ -43,12 +43,12 @@ pluggy==1.5.0
 pre-commit==3.7.0
 pycodestyle==2.11.1
 pyflakes==3.2.0
-pyproject_hooks==1.0.0
+pyproject_hooks==1.1.0
 pytest==8.2.0
 pytest-asyncio==0.23.6
 pytest-mock==3.14.0
 PyYAML==6.0.1
 requires==0.10.5
 typing_extensions==4.11.0
-virtualenv==20.26.0
+virtualenv==20.26.1
 xtyping==0.8.2
