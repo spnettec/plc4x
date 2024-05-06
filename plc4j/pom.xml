@@ -110,6 +110,8 @@
                 <ignoredDependency>org.apache.groovy:groovy</ignoredDependency>
                 <ignoredDependency>com.athaydes:spock-reports</ignoredDependency>
                 <ignoredDependency>org.apache.nifi:nifi-standard-nar</ignoredDependency>
+                <ignoredDependency>io.netty:netty-transport-classes-kqueue</ignoredDependency>
+                <ignoredDependency>io.netty:netty-transport-classes-epoll</ignoredDependency>
               </ignoredDependencies>
             </configuration>
           </execution>

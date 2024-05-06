@@ -180,12 +180,14 @@ public class LeasedPlcConnection implements PlcConnection {
 
             @Override
             public PlcReadRequest.Builder addTagAddress(String name, String tagAddress) {
-                return innerBuilder.addTagAddress(name, tagAddress);
+                innerBuilder.addTagAddress(name, tagAddress);
+                return this;
             }
 
             @Override
             public PlcReadRequest.Builder addTag(String name, PlcTag tag) {
-                return innerBuilder.addTag(name, tag);
+                innerBuilder.addTag(name, tag);
+                return this;
             }
         };
     }
@@ -257,12 +259,14 @@ public class LeasedPlcConnection implements PlcConnection {
 
             @Override
             public PlcWriteRequest.Builder addTagAddress(String name, String tagAddress, Object... values) {
-                return innerBuilder.addTagAddress(name, tagAddress, values);
+                innerBuilder.addTagAddress(name, tagAddress, values);
+                return this;
             }
 
             @Override
             public PlcWriteRequest.Builder addTag(String name, PlcTag tag, Object... values) {
-                return innerBuilder.addTag(name, tag, values);
+                innerBuilder.addTag(name, tag, values);
+                return this;
             }
         };
     }
@@ -329,42 +333,50 @@ public class LeasedPlcConnection implements PlcConnection {
 
             @Override
             public PlcSubscriptionRequest.Builder addCyclicTagAddress(String name, String tagAddress, Duration pollingInterval) {
-                return innerBuilder.addCyclicTagAddress(name, tagAddress, pollingInterval);
+                innerBuilder.addCyclicTagAddress(name, tagAddress, pollingInterval);
+                return this;
             }
 
             @Override
             public PlcSubscriptionRequest.Builder addCyclicTag(String name, PlcTag tag, Duration pollingInterval) {
-                return innerBuilder.addCyclicTag(name, tag, pollingInterval);
+                innerBuilder.addCyclicTag(name, tag, pollingInterval);
+                return this;
             }
 
             @Override
             public PlcSubscriptionRequest.Builder addChangeOfStateTagAddress(String name, String tagAddress) {
-                return innerBuilder.addChangeOfStateTagAddress(name, tagAddress);
+                innerBuilder.addChangeOfStateTagAddress(name, tagAddress);
+                return this;
             }
 
             @Override
             public PlcSubscriptionRequest.Builder addChangeOfStateTagAddress(String name, String tagAddress, Duration pollingInterval) {
-                return innerBuilder.addChangeOfStateTagAddress(name, tagAddress, pollingInterval);
+                innerBuilder.addChangeOfStateTagAddress(name, tagAddress, pollingInterval);
+                return this;
             }
 
             @Override
             public PlcSubscriptionRequest.Builder addChangeOfStateTag(String name, PlcTag tag) {
-                return innerBuilder.addChangeOfStateTag(name, tag);
+                innerBuilder.addChangeOfStateTag(name, tag);
+                return this;
             }
 
             @Override
             public PlcSubscriptionRequest.Builder addEventTagAddress(String name, String tagAddress) {
-                return innerBuilder.addEventTagAddress(name, tagAddress);
+                innerBuilder.addEventTagAddress(name, tagAddress);
+                return this;
             }
 
             @Override
             public PlcSubscriptionRequest.Builder addEventTag(String name, PlcTag tag) {
-                return innerBuilder.addEventTag(name, tag);
+                innerBuilder.addEventTag(name, tag);
+                return this;
             }
 
             @Override
             public PlcSubscriptionRequest.Builder addPreRegisteredConsumer(String name, Consumer<PlcSubscriptionEvent> preRegisteredConsumer) {
-                return innerBuilder.addPreRegisteredConsumer(name, preRegisteredConsumer);
+                innerBuilder.addPreRegisteredConsumer(name, preRegisteredConsumer);
+                return this;
             }
         };
     }
@@ -411,17 +423,20 @@ public class LeasedPlcConnection implements PlcConnection {
 
             @Override
             public PlcUnsubscriptionRequest.Builder addHandles(PlcSubscriptionHandle plcSubscriptionHandle) {
-                return innerBuilder.addHandles(plcSubscriptionHandle);
+                innerBuilder.addHandles(plcSubscriptionHandle);
+                return this;
             }
 
             @Override
             public PlcUnsubscriptionRequest.Builder addHandles(PlcSubscriptionHandle plcSubscriptionHandle1, PlcSubscriptionHandle... plcSubscriptionHandles) {
-                return innerBuilder.addHandles(plcSubscriptionHandle1, plcSubscriptionHandles);
+                innerBuilder.addHandles(plcSubscriptionHandle1, plcSubscriptionHandles);
+                return this;
             }
 
             @Override
             public PlcUnsubscriptionRequest.Builder addHandles(Collection<PlcSubscriptionHandle> plcSubscriptionHandle) {
-                return innerBuilder.addHandles(plcSubscriptionHandle);
+                innerBuilder.addHandles(plcSubscriptionHandle);
+                return this;
             }
         };
     }
@@ -494,7 +509,8 @@ public class LeasedPlcConnection implements PlcConnection {
 
             @Override
             public PlcBrowseRequest.Builder addQuery(String name, String query) {
-                return innerBuilder.addQuery(name, query);
+                innerBuilder.addQuery(name, query);
+                return this;
             }
         };
     }

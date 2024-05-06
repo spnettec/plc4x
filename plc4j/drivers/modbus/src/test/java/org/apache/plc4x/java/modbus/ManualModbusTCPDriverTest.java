@@ -18,7 +18,9 @@
  */
 package org.apache.plc4x.java.modbus;
 
+import org.apache.plc4x.java.DefaultPlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.api.PlcConnectionManager;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.utils.cache.CachedPlcConnectionManager;
@@ -29,12 +31,13 @@ public class ManualModbusTCPDriverTest  {
 
 
     public static void main(String[] args) throws Exception {
-        CachedPlcConnectionManager plcConnectionManager = CachedPlcConnectionManager.getBuilder().build();
+        CachedPlcConnectionManager plcConnectionManager = CachedPlcConnectionManager.getBuilder(new DefaultPlcDriverManager()).build();
+        //PlcConnectionManager plcConnectionManager = new DefaultPlcDriverManager();
         while(true) {
             try (PlcConnection plcConnection = plcConnectionManager.getConnection(
-                    "modbus-rtu:tcp://10.100.10.11:6000")) {
+                    "modbus-rtu:tcp://10.110.20.56:6000")) {
                 final PlcReadRequest readRequest = plcConnection.readRequestBuilder()
-                        .addTagAddress("aa", "holding-register:2[6]").build();
+                        .addTagAddress("aa", "holding-register:1:UINT[11]").build();
 
                 // Execute the read request
                 try {
