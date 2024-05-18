@@ -952,7 +952,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
             S7CyclicEvent cycEvent = new S7CyclicEvent(plcSubscriptionRequest,
                 msgParameter.getSequenceNumber(),
                 (S7PayloadUserDataItemCyclicServicesSubscribeResponse) payloadItems.get(0));
-
+            
             if (plcSubscriptionRequest.getTags().get(0).getPlcSubscriptionType() == PlcSubscriptionType.CHANGE_OF_STATE) {
                 cycChangeValueEvents.put(msgParameter.getSequenceNumber(), cycEvent);
             }
@@ -1540,14 +1540,14 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
                         S7CyclicEvent cycEvent = new S7CyclicEvent(cycRequests.get(parameterItem.getSequenceNumber()),
                             parameterItem.getSequenceNumber(),
                             payloadItem);
-
+                        
                         if (cycChangeValueEvents.containsKey(parameterItem.getSequenceNumber())){
                             S7CyclicEvent lastCycEvent = cycChangeValueEvents.get(parameterItem.getSequenceNumber());
                             if (cycEvent.equals(lastCycEvent ) == false) {
                                 cycChangeValueEvents.replace(parameterItem.getSequenceNumber(), cycEvent);
-                                eventQueue.add(cycEvent);
+                                eventQueue.add(cycEvent);                                
                             }
-
+                            
                         } else {
                             eventQueue.add(cycEvent);
                         }
@@ -1778,18 +1778,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
             }
         }
 
-        //TODO: Reassembling message.
-        if (responseMessage instanceof S7MessageResponseData) {
-            for (String tagName : plcReadRequest.getTagNames()) {
-                if (plcReadRequest.getTag(tagName) instanceof S7StringTag) {
-                    PlcValue plcValue = null;
-                    PlcResponseCode responseCode = PlcResponseCode.INTERNAL_ERROR;
-                    ResponseItem<PlcValue> result = new ResponseItem<>(responseCode, plcValue);
-                    values.put(tagName, result);
-                }
-            }
-        } else if (responseMessage instanceof S7MessageUserData) {
-
+        if (responseMessage instanceof S7MessageUserData) {
             S7PayloadUserData payload = (S7PayloadUserData) responseMessage.getPayload();
             if (plcReadRequest.getNumberOfTags() != payload.getItems().size()) {
                 throw new PlcProtocolException(
@@ -1967,6 +1956,14 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
                     "that PUT/GET is not enabled on the PLC.");
                 for (String tagName : plcWriteRequest.getTagNames()) {
                     responses.put(tagName, PlcResponseCode.ACCESS_DENIED);
+                }
+                return new DefaultPlcWriteResponse(plcWriteRequest, responses);
+            } else if ((errorClass == 0x85) && (errorCode == 0)) {
+                logger.warn("Got an error response from the PLC. This particular response code usually indicates " +
+                    "that we sent a too large packet or would be receiving a too large one. " +
+                    "Please report this, as this is most probably a bug.");
+                for (String tagName : plcWriteRequest.getTagNames()) {
+                    responses.put(tagName, PlcResponseCode.INTERNAL_ERROR);
                 }
                 return new DefaultPlcWriteResponse(plcWriteRequest, responses);
             } else {

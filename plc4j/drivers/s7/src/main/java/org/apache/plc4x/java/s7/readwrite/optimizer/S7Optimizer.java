@@ -58,10 +58,12 @@ public class S7Optimizer extends BaseOptimizer {
         int curResponseSize = EMPTY_READ_RESPONSE_SIZE;
 
         // List of all items in the current request.
+
         LinkedHashMap<String, PlcTag> curTags = new LinkedHashMap<>();
 
         for (String tagName : readRequest.getTagNames()) {
-
+           
+            //TODO: Individual processing of these types of tags. like S7StringTag
             if ((readRequest.getTag(tagName) instanceof S7SzlTag) ||
                 (readRequest.getTag(tagName) instanceof S7ClkTag)) {
                 curTags.put(tagName, readRequest.getTag(tagName));
