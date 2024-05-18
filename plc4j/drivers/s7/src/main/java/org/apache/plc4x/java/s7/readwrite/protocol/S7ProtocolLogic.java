@@ -1757,8 +1757,17 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
         if ((errorClass != 0) || (errorCode != 0)) {
             // This is usually the case if PUT/GET wasn't enabled on the PLC
             if ((errorClass == 129) && (errorCode == 4)) {
-                logger.warn("Got an error response from the PLC. This particular response code usually indicates " +
+                logger.warn("decodeReadResponse Got an error response from the PLC. This particular response code usually indicates " +
                     "that PUT/GET is not enabled on the PLC.");
+                for (String tagName : plcReadRequest.getTagNames()) {
+                    ResponseItem<PlcValue> result = new ResponseItem<>(PlcResponseCode.ACCESS_DENIED, new PlcNull());
+                    values.put(tagName, result);
+                }
+                return new DefaultPlcReadResponse(plcReadRequest, values);
+            } else if ((errorClass == 0x85) && (errorCode == 0)) {
+                logger.warn("decodeReadResponse Got an error response from the PLC. This particular response code usually indicates " +
+                    "that we sent a too large packet or would be receiving a too large one. " +
+                    "Please report this, as this is most probably a bug.");
                 for (String tagName : plcReadRequest.getTagNames()) {
                     ResponseItem<PlcValue> result = new ResponseItem<>(PlcResponseCode.ACCESS_DENIED, new PlcNull());
                     values.put(tagName, result);

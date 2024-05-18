@@ -188,9 +188,6 @@ public class DefaultPlcWriteRequest implements PlcWriteRequest, Serializable {
             tags.forEach((name, tagValues) -> {
                 // Compile the query string.
                 PlcTag tag = tagValues.getLeft().get();
-                if(tag.getPlcValueType() == PlcValueType.NULL){
-                    tag.setPlcValueType(plcValue.getPlcValueType());
-                }
                 PlcValue plcValue;
                 // If this is more than one element the value itself will definitely be a list.
                 if(tagValues.getRight().length > 1) {
@@ -212,6 +209,9 @@ public class DefaultPlcWriteRequest implements PlcWriteRequest, Serializable {
                 // In all other cases use the value-handler.
                 else {
                     plcValue = valueHandler.newPlcValue(tag, tagValues.getRight()[0]);
+                }
+                if(tag.getPlcValueType() == PlcValueType.NULL) {
+                    tag.setPlcValueType(plcValue.getPlcValueType());
                 }
                 parsedTags.put(name, new TagValueItem(tag, plcValue));
             });
