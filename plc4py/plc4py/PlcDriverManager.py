@@ -46,7 +46,8 @@ class PlcDriverManager:
         """
         # Log the class loader used
         logging.info(
-            f"Instantiating new PLC Driver Manager with class loader {self.class_loader}"
+            "Instantiating new PLC Driver Manager with class loader %s",
+            self.class_loader,
         )
 
         # Add the PlcDriverClassLoader hookspecs to the class loader
@@ -73,7 +74,7 @@ class PlcDriverManager:
 
         # Log the successful registration of each driver
         for driver in self._driver_map:
-            logging.info(f"... {driver} .. OK")
+            logging.info("... %s .. OK", driver)
 
         # Check for any pending plugins
         self.class_loader.check_pending()
