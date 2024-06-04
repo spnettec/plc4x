@@ -720,8 +720,9 @@ const (
 	KnxManufacturer_M_ATIOS_AG                                           KnxManufacturer = 674
 	KnxManufacturer_M_SMARTLICHT                                         KnxManufacturer = 675
 	KnxManufacturer_M_BEIJING_BEVONE_ELECTRIC_CO__LTD_                   KnxManufacturer = 676
-	KnxManufacturer_M_ABB___RESERVED                                     KnxManufacturer = 677
-	KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED                    KnxManufacturer = 678
+	KnxManufacturer_M_ELSMART                                            KnxManufacturer = 677
+	KnxManufacturer_M_ABB___RESERVED                                     KnxManufacturer = 678
+	KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED                    KnxManufacturer = 679
 )
 
 var KnxManufacturerValues []KnxManufacturer
@@ -1406,6 +1407,7 @@ func init() {
 		KnxManufacturer_M_ATIOS_AG,
 		KnxManufacturer_M_SMARTLICHT,
 		KnxManufacturer_M_BEIJING_BEVONE_ELECTRIC_CO__LTD_,
+		KnxManufacturer_M_ELSMART,
 		KnxManufacturer_M_ABB___RESERVED,
 		KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED,
 	}
@@ -3983,10 +3985,14 @@ func (e KnxManufacturer) Number() uint16 {
 		}
 	case 677:
 		{ /* '677' */
-			return 43954
+			return 735
 		}
 	case 678:
 		{ /* '678' */
+			return 43954
+		}
+	case 679:
+		{ /* '679' */
 			return 43959
 		}
 	case 68:
@@ -6717,10 +6723,14 @@ func (e KnxManufacturer) Name() string {
 		}
 	case 677:
 		{ /* '677' */
-			return "ABB - reserved"
+			return "ELSMART"
 		}
 	case 678:
 		{ /* '678' */
+			return "ABB - reserved"
+		}
+	case 679:
+		{ /* '679' */
 			return "Busch-Jaeger Elektro - reserved"
 		}
 	case 68:
@@ -8165,8 +8175,10 @@ func KnxManufacturerByValue(value uint16) (enum KnxManufacturer, ok bool) {
 	case 676:
 		return KnxManufacturer_M_BEIJING_BEVONE_ELECTRIC_CO__LTD_, true
 	case 677:
-		return KnxManufacturer_M_ABB___RESERVED, true
+		return KnxManufacturer_M_ELSMART, true
 	case 678:
+		return KnxManufacturer_M_ABB___RESERVED, true
+	case 679:
 		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED, true
 	case 68:
 		return KnxManufacturer_M_WAREMA_RENKHOFF_SE, true
@@ -9528,6 +9540,8 @@ func KnxManufacturerByName(value string) (enum KnxManufacturer, ok bool) {
 		return KnxManufacturer_M_SMARTLICHT, true
 	case "M_BEIJING_BEVONE_ELECTRIC_CO__LTD_":
 		return KnxManufacturer_M_BEIJING_BEVONE_ELECTRIC_CO__LTD_, true
+	case "M_ELSMART":
+		return KnxManufacturer_M_ELSMART, true
 	case "M_ABB___RESERVED":
 		return KnxManufacturer_M_ABB___RESERVED, true
 	case "M_BUSCH_JAEGER_ELEKTRO___RESERVED":
@@ -10953,6 +10967,8 @@ func (e KnxManufacturer) PLC4XEnumName() string {
 		return "M_SMARTLICHT"
 	case KnxManufacturer_M_BEIJING_BEVONE_ELECTRIC_CO__LTD_:
 		return "M_BEIJING_BEVONE_ELECTRIC_CO__LTD_"
+	case KnxManufacturer_M_ELSMART:
+		return "M_ELSMART"
 	case KnxManufacturer_M_ABB___RESERVED:
 		return "M_ABB___RESERVED"
 	case KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED:

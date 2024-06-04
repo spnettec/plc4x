@@ -1425,8 +1425,9 @@
     ['674' M_ATIOS_AG ['732', '"Atios AG"']]
     ['675' M_SMARTLICHT ['733', '"SmartLicht"']]
     ['676' M_BEIJING_BEVONE_ELECTRIC_CO__LTD_ ['734', '"Beijing Bevone Electric Co. Ltd."']]
-    ['677' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
-    ['678' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
+    ['677' M_ELSMART ['735', '"ELSMART"']]
+    ['678' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
+    ['679' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
     
 ]
 
