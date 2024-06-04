@@ -112,7 +112,7 @@
     <byte-buddy.version>1.14.16</byte-buddy.version>
     <cmake.version>3.29.3-b2</cmake.version>
     <commons-beanutils.version>1.9.4</commons-beanutils.version>
-    <commons-cli.version>1.7.0</commons-cli.version>
+    <commons-cli.version>1.8.0</commons-cli.version>
     <commons-codec.version>1.17.0</commons-codec.version>
     <commons-collections4.version>4.4</commons-collections4.version>
     <commons-compress.version>1.26.1</commons-compress.version>
@@ -155,7 +155,7 @@
 
     <!-- Site properties -->
     <asciidoctor.maven.plugin.version>2.2.6</asciidoctor.maven.plugin.version>
-    <asciidoctorj.version>2.5.12</asciidoctorj.version>
+    <asciidoctorj.version>2.5.13</asciidoctorj.version>
     <asciidoctorj.diagram.version>2.3.0</asciidoctorj.diagram.version>
 
     <skip-code-generation>false</skip-code-generation>
@@ -1329,7 +1329,7 @@
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>build-helper-maven-plugin</artifactId>
-          <version>3.5.0</version>
+          <version>3.6.0</version>
         </plugin>
 
         <plugin>
