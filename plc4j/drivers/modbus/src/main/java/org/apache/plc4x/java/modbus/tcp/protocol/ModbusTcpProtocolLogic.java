@@ -34,6 +34,8 @@ import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.messages.*;
 import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 import org.apache.plc4x.java.spi.transaction.RequestTransactionManager;
+import org.apache.plc4x.java.spi.transaction.TransactionErrorCallback;
+import org.apache.plc4x.java.spi.transaction.TransactionTimeOutCallback;
 
 import java.time.Duration;
 import java.util.Collections;
@@ -121,8 +123,8 @@ public class ModbusTcpProtocolLogic extends ModbusProtocolLogic<ModbusTcpADU> im
             RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
             transaction.submit(() -> context.sendRequest(modbusTcpADU)
                 .expectResponse(ModbusTcpADU.class, requestTimeout)
-                .onTimeout(future::completeExceptionally)
-                .onError((p, e) -> future.completeExceptionally(e))
+                .onTimeout(new TransactionTimeOutCallback<>(future, transaction,context.getChannel()))
+                .onError(new TransactionErrorCallback<>(future, transaction,context.getChannel()))
                 .check(p -> ((p.getTransactionIdentifier() == transactionIdentifier) &&
                     (p.getUnitIdentifier() == unitId)))
                 .unwrap(ModbusTcpADU::getPdu)

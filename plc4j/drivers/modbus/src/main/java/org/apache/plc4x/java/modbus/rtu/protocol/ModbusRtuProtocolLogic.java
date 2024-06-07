@@ -33,6 +33,8 @@ import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.messages.*;
 import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 import org.apache.plc4x.java.spi.transaction.RequestTransactionManager;
+import org.apache.plc4x.java.spi.transaction.TransactionErrorCallback;
+import org.apache.plc4x.java.spi.transaction.TransactionTimeOutCallback;
 
 import java.time.Duration;
 import java.util.Collections;
@@ -71,8 +73,8 @@ public class ModbusRtuProtocolLogic extends ModbusProtocolLogic<ModbusRtuADU> im
         RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
         transaction.submit(() -> context.sendRequest(modbusRtuADU)
             .expectResponse(ModbusRtuADU.class, requestTimeout)
-            .onTimeout(future::completeExceptionally)
-            .onError((p, e) -> future.completeExceptionally(e))
+            .onTimeout(new TransactionTimeOutCallback<>(future, transaction,context.getChannel()))
+            .onError(new TransactionErrorCallback<>(future, transaction,context.getChannel()))
             .unwrap(ModbusRtuADU::getPdu)
             .handle(responsePdu -> {
                 transaction.endRequest();
@@ -107,8 +109,8 @@ public class ModbusRtuProtocolLogic extends ModbusProtocolLogic<ModbusRtuADU> im
             RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
             transaction.submit(() -> context.sendRequest(modbusRtuADU)
                 .expectResponse(ModbusRtuADU.class, requestTimeout)
-                .onTimeout(future::completeExceptionally)
-                .onError((p, e) -> future.completeExceptionally(e))
+                .onTimeout(new TransactionTimeOutCallback<>(future, transaction,context.getChannel()))
+                .onError(new TransactionErrorCallback<>(future, transaction,context.getChannel()))
                 .unwrap(ModbusRtuADU::getPdu)
                 .handle(responsePdu -> {
                     // Try to decode the response data based on the corresponding request.
@@ -166,8 +168,8 @@ public class ModbusRtuProtocolLogic extends ModbusProtocolLogic<ModbusRtuADU> im
             RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
             transaction.submit(() -> context.sendRequest(modbusRtuADU)
                 .expectResponse(ModbusRtuADU.class, requestTimeout)
-                .onTimeout(future::completeExceptionally)
-                .onError((p, e) -> future.completeExceptionally(e))
+                .onTimeout(new TransactionTimeOutCallback<>(future, transaction,context.getChannel()))
+                .onError(new TransactionErrorCallback<>(future, transaction,context.getChannel()))
                 .unwrap(ModbusRtuADU::getPdu)
                 .handle(responsePdu -> {
                     // Try to decode the response data based on the corresponding request.
@@ -206,9 +208,9 @@ public class ModbusRtuProtocolLogic extends ModbusProtocolLogic<ModbusRtuADU> im
         return future;
     }
 
-    @Override
-    protected void decode(ConversationContext<ModbusRtuADU> context, ModbusRtuADU msg) throws Exception {
-        System.out.println(msg);
-    }
+    //@Override
+    //protected void decode(ConversationContext<ModbusRtuADU> context, ModbusRtuADU msg) throws Exception {
+    //    System.out.println(msg);
+    //}
 
 }

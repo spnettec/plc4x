@@ -52,6 +52,8 @@ import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 import org.apache.plc4x.java.spi.messages.utils.TagValueItem;
 import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionTag;
 import org.apache.plc4x.java.spi.transaction.RequestTransactionManager;
+import org.apache.plc4x.java.spi.transaction.TransactionErrorCallback;
+import org.apache.plc4x.java.spi.transaction.TransactionTimeOutCallback;
 import org.apache.plc4x.java.spi.values.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -436,7 +438,7 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 			// Start a new request-transaction (Is ended in the response-handler)
 			RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
 			transaction.submit(() -> context.sendRequest(tpktPacket)
-					.onTimeout(new TransactionErrorCallback<>(future, transaction,context.getChannel(),true,false))
+					.onTimeout(new TransactionTimeOutCallback<>(future, transaction,context.getChannel()))
 					.onError(new TransactionErrorCallback<>(future, transaction,context.getChannel()))
 					.expectResponse(TPKTPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
 					.unwrap(TPKTPacket::getPayload)
@@ -498,7 +500,7 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 			TPKTPacket tpktPacket = new TPKTPacket(new COTPPacketData(null, message, true, (byte) message.getTpduReference()));
 			tm.submit(transaction -> transaction.submit(
 					() -> context.sendRequest(tpktPacket)
-							.onTimeout(new TransactionErrorCallback<>(future, transaction, context.getChannel(), true, false))
+							.onTimeout(new TransactionTimeOutCallback<>(future, transaction, context.getChannel()))
 							.onError(new TransactionErrorCallback<>(future, transaction, context.getChannel()))
 							.expectResponse(TPKTPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
 							.check(p -> p.getPayload() instanceof COTPPacketData).unwrap(p -> (COTPPacketData) p.getPayload())
@@ -614,7 +616,7 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 		// Start a new request-transaction (Is ended in the response-handler)
 		RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
 		transaction.submit(() -> context.sendRequest(tpktPacket)
-				.onTimeout(new TransactionErrorCallback<>(future, transaction,context.getChannel(),true,false))
+				.onTimeout(new TransactionTimeOutCallback<>(future, transaction,context.getChannel()))
 				.onError(new TransactionErrorCallback<>(future, transaction,context.getChannel()))
 				.expectResponse(TPKTPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
 				.unwrap(TPKTPacket::getPayload)
@@ -1334,7 +1336,7 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 		RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
 		// Send the request.
 		transaction.submit(() -> context.sendRequest(tpktPacket)
-				.onTimeout(new TransactionErrorCallback<>(future, transaction,context.getChannel()))
+				.onTimeout(new TransactionTimeOutCallback<>(future, transaction,context.getChannel()))
 				.onError(new TransactionErrorCallback<>(future, transaction,context.getChannel()))
 				.expectResponse(TPKTPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
 				.unwrap(TPKTPacket::getPayload)
@@ -2146,63 +2148,5 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 			tpduGenerator.compareAndExchange(0xFFFF, 1);
 		}
 		return tpduId;
-	}
-
-
-	/**
-	 * A generic purpose error handler which terminates transaction and calls back given future with error message.
-	 */
-	static class TransactionErrorCallback<T, E extends Throwable>
-			implements Consumer<TimeoutException>, BiConsumer<TPKTPacket, E> {
-
-		private final CompletableFuture<T> future;
-		private final RequestTransactionManager.RequestTransaction transaction;
-		private final Channel channel;
-
-		private final boolean timeOutCloseChannel;
-		private final boolean errCloseChannel;
-
-		TransactionErrorCallback(CompletableFuture<T> future,
-				RequestTransactionManager.RequestTransaction transaction,Channel channel) {
-			this.future = future;
-			this.transaction = transaction;
-			this.channel = channel;
-			this.timeOutCloseChannel = false;
-			this.errCloseChannel = false;
-		}
-		TransactionErrorCallback(CompletableFuture<T> future,
-				RequestTransactionManager.RequestTransaction transaction,Channel channel,boolean timeOutCloseChannel,boolean errCloseChannel) {
-			this.future = future;
-			this.transaction = transaction;
-			this.channel = channel;
-			this.timeOutCloseChannel = timeOutCloseChannel;
-			this.errCloseChannel = errCloseChannel;
-		}
-
-		@Override
-		public void accept(TimeoutException e) {
-			try {
-				transaction.endRequest();
-				if(timeOutCloseChannel) {
-					channel.close();
-				}
-			} catch (Exception ex) {
-				logger.info(ex.getMessage());
-			}
-			future.completeExceptionally(e);
-		}
-
-		@Override
-		public void accept(TPKTPacket tpktPacket, E e) {
-			try {
-				if(errCloseChannel) {
-					channel.close();
-				}
-				transaction.endRequest();
-			} catch (Exception ex) {
-				logger.info(ex.getMessage());
-			}
-			future.completeExceptionally(e);
-		}
 	}
 }

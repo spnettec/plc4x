@@ -182,7 +182,7 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
         if (channel.isOpen()) {
             try {
                 channel.pipeline().fireUserEventTriggered(new CloseConnectionEvent());
-                channel.close().awaitUninterruptibly();
+                channel.close();
             } catch (RejectedExecutionException ex) {
                 if (channel.isOpen()) {
                     throw ex;

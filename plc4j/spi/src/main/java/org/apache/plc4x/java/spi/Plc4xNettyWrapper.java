@@ -186,7 +186,7 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
                 return;
             }
         }
-        logger.trace("None of {} registered handlers could handle message {}, using default decode method", this.registeredHandlers.size(), t);
+        logger.warn("None of {} registered handlers could handle message {}, using default decode method", this.registeredHandlers.size(), t);
         protocolBase.decode(new DefaultConversationContext<>(this::registerHandler, channelHandlerContext, authentication, passive), t);
     }
 

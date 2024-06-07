@@ -24,12 +24,14 @@ import io.netty.util.Timer;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.function.Consumer;
+
 import org.apache.plc4x.java.spi.TimedOperation;
 import org.apache.plc4x.java.spi.TimeoutManager;
 
 public class NettyHashTimerTimeoutManager implements TimeoutManager {
 
-    private final Timer timer;
+    private final HashedWheelTimer timer;
 
     public NettyHashTimerTimeoutManager() {
         this(100L);
@@ -40,20 +42,20 @@ public class NettyHashTimerTimeoutManager implements TimeoutManager {
      * @param tickInMilliseconds milliseconds between timeout checks.
      */
     public NettyHashTimerTimeoutManager(long tickInMilliseconds) {
-        HashedWheelTimer wheelTimer = new HashedWheelTimer(tickInMilliseconds, TimeUnit.MILLISECONDS);
-        timer = wheelTimer;
-        wheelTimer.start();
+        timer = new HashedWheelTimer(tickInMilliseconds, TimeUnit.MILLISECONDS);
+        timer.start();
     }
 
     @Override
     public CompletionCallback<?> register(TimedOperation operation) {
-        if (operation.getOnTimeoutConsumer() != null) {
+        Consumer<TimeoutException> timeoutConsumer = operation.getOnTimeoutConsumer();
+        if (timeoutConsumer != null) {
             Timeout newTimeout = timer.newTimeout(timeout -> {
                 if (timeout.isCancelled()) {
                     return;
                 }
                 TimeoutException exception = new TimeoutException("wait response timeout");
-                operation.getOnTimeoutConsumer().accept(exception);
+                timeoutConsumer.accept(exception);
             }, operation.getTimeout().toMillis(), TimeUnit.MILLISECONDS);
             return new TimeoutCompletionCallback<>(newTimeout);
         }
@@ -85,7 +87,9 @@ public class NettyHashTimerTimeoutManager implements TimeoutManager {
 
         @Override
         public void complete() {
-            timeout.cancel();
+            if(timeout != null) {
+                timeout.cancel();
+            }
         }
     }
 }
