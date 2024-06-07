@@ -54,7 +54,7 @@ public class TransactionTimeOutCallback<T>
     @Override
     public void accept(TimeoutException e) {
         try {
-            transaction.endRequest();
+            transaction.failRequest(e);
             if(timeOutCloseChannel) {
                 channel.close();
             }

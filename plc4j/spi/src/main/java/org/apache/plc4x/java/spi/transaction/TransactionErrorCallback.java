@@ -57,7 +57,7 @@ public class TransactionErrorCallback<T,E extends Throwable>
             if(errorCloseChannel) {
                 channel.close();
             }
-            transaction.endRequest();
+            transaction.failRequest(e);
         } catch (Exception ex) {
             logger.info(ex.getMessage());
         }
