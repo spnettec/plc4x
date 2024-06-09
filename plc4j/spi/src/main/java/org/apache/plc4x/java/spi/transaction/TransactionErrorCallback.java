@@ -40,7 +40,7 @@ public class TransactionErrorCallback<T,E extends Throwable>
         this.future = future;
         this.transaction = transaction;
         this.channel = channel;
-        this.errorCloseChannel = true;
+        this.errorCloseChannel = false;
     }
     public TransactionErrorCallback(CompletableFuture<?> future,
             RequestTransactionManager.RequestTransaction transaction,Channel channel,boolean timeOutCloseChannel) {
@@ -54,13 +54,17 @@ public class TransactionErrorCallback<T,E extends Throwable>
     @Override
     public void accept(T t, E e) {
         try {
-            if(errorCloseChannel) {
+            if (transaction != null) {
+                transaction.failRequest(e);
+            }
+            if(errorCloseChannel && channel != null && channel.isOpen()) {
                 channel.close();
             }
-            transaction.failRequest(e);
         } catch (Exception ex) {
             logger.info(ex.getMessage());
         }
-        future.completeExceptionally(e);
+        if (future != null) {
+            future.completeExceptionally(e);
+        }
     }
 }

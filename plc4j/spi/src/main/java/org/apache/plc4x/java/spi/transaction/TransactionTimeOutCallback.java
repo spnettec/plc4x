@@ -41,7 +41,7 @@ public class TransactionTimeOutCallback<T>
         this.future = future;
         this.transaction = transaction;
         this.channel = channel;
-        this.timeOutCloseChannel = true;
+        this.timeOutCloseChannel = false;
     }
     public TransactionTimeOutCallback(CompletableFuture<T> future,
             RequestTransactionManager.RequestTransaction transaction,Channel channel,boolean timeOutCloseChannel) {
@@ -54,13 +54,17 @@ public class TransactionTimeOutCallback<T>
     @Override
     public void accept(TimeoutException e) {
         try {
-            transaction.failRequest(e);
-            if(timeOutCloseChannel) {
+            if (transaction != null) {
+                transaction.failRequest(e);
+            }
+            if(timeOutCloseChannel && channel != null && channel.isOpen()) {
                 channel.close();
             }
         } catch (Exception ex) {
-            logger.info(ex.getMessage());
+            logger.error(ex.getMessage());
         }
-        future.completeExceptionally(e);
+        if (future != null) {
+            future.completeExceptionally(e);
+        }
     }
 }

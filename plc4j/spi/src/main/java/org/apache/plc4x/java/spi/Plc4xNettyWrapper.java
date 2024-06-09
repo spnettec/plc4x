@@ -59,6 +59,7 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
 
     private final Queue<HandlerRegistration> registeredHandlers;
     private final boolean passive;
+    private boolean closed;
     private final TimeoutManager timeoutManager;
 
     public Plc4xNettyWrapper(ChannelPipeline pipeline, boolean passive, Plc4xProtocolBase<T> protocol,
@@ -70,6 +71,7 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
                              PlcAuthentication authentication, Class<T> clazz) {
         super(clazz, Object.class);
         this.passive = passive;
+        this.closed = false;
         this.registeredHandlers = new ConcurrentLinkedQueue<>();
         this.protocolBase = protocol;
         this.authentication = authentication;
@@ -127,6 +129,11 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
     @Override
     public void close(ChannelHandlerContext ctx, ChannelPromise promise) throws Exception {
         super.close(ctx, promise);
+        if (!closed) {
+            logger.warn("can't receive close event!!");
+            this.protocolBase.close(new DefaultConversationContext<>(this::registerHandler, ctx, authentication, passive));
+            closed = true;
+        }
         timeoutManager.stop();
     }
 
@@ -202,8 +209,10 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
         } else if (evt instanceof DiscoverEvent) {
             this.protocolBase.onDiscover(new DefaultConversationContext<>(this::registerHandler, ctx, authentication, passive));
         } else if (evt instanceof CloseConnectionEvent) {
-            this.protocolBase.close(new DefaultConversationContext<>(this::registerHandler, ctx, authentication, passive));
-            this.timeoutManager.stop();
+            if (!closed) {
+                this.protocolBase.close(new DefaultConversationContext<>(this::registerHandler, ctx, authentication, passive));
+                closed = true;
+            }
         } else {
             super.userEventTriggered(ctx, evt);
         }

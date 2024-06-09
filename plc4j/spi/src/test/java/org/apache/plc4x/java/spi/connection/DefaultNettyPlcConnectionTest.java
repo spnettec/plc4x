@@ -104,6 +104,8 @@ class DefaultNettyPlcConnectionTest {
             try {
                 logger.info("Closing connection");
                 connection.close();
+                disconnect.reportExit();
+                close.reportExit();
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }

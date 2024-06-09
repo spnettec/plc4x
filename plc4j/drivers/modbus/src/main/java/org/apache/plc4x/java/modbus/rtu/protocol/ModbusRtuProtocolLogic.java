@@ -175,7 +175,7 @@ public class ModbusRtuProtocolLogic extends ModbusProtocolLogic<ModbusRtuADU> im
                     // Try to decode the response data based on the corresponding request.
                     PlcResponseCode responseCode;
 
-                    // Check if the response was an error response.
+                    // Check if the response was an error response.z
                     if (responsePdu instanceof ModbusPDUError) {
                         ModbusPDUError errorResponse = (ModbusPDUError) responsePdu;
                         responseCode = getErrorCode(errorResponse);

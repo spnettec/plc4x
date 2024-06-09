@@ -60,6 +60,8 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
 
     protected Channel channel;
     protected boolean connected;
+    protected boolean detectedClosed;
+    protected boolean closeExcuted;
 
     public DefaultNettyPlcConnection(boolean canPing,
                                      boolean canRead,
@@ -89,10 +91,11 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
         this.stackConfigurer = stackConfigurer;
 
         this.connected = false;
+        this.closeExcuted = false;
     }
 
     @Override
-    public void connect() throws PlcConnectionException {
+    public synchronized void connect() throws PlcConnectionException {
         try {
             // As we don't just want to wait till the connection is established,
             // define a future we can use to signal back that the s7 session is
@@ -140,6 +143,9 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
                     sessionSetupCompleteFuture.completeExceptionally(
                         new PlcIoException("Connection terminated by remote"));
                 }
+                if(!closeExcuted){
+                    close();
+                }
             });
             // Send an event to the pipeline telling the Protocol filters what's going on.
             sendChannelCreatedEvent();
@@ -167,7 +173,13 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
      * @throws PlcConnectionException when a error occurs while closing
      */
     @Override
-    public void close() throws PlcConnectionException {
+    public synchronized void close() throws PlcConnectionException {
+        if (closeExcuted)
+        {
+            logger.warn("connection is already closed!");
+            return;
+        }
+        closeExcuted = true;
         logger.debug("Closing connection to PLC, await for disconnect = {}", awaitSessionDisconnectComplete);
         channel.pipeline().fireUserEventTriggered(new DisconnectEvent());
         try {
@@ -241,7 +253,7 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
                             sessionDisconnectCompleteFuture.complete(null);
                             eventListeners.forEach(ConnectionStateListener::disconnected);
                             // Fix for https://github.com/apache/plc4x/issues/801
-                            super.userEventTriggered(ctx, evt);
+                            // super.userEventTriggered(ctx, evt);
                         } else if (evt instanceof DiscoveredEvent) {
                             sessionDiscoverCompleteFuture.complete(((DiscoveredEvent) evt).getConfiguration());
                         } else if (evt instanceof ConnectEvent || evt instanceof DiscoverEvent) {
@@ -250,8 +262,8 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
                                 if (awaitSessionSetupComplete) {
                                     setupProtocol(pipeline);
                                 }
-                                super.userEventTriggered(ctx, evt);
                             }
+                            super.userEventTriggered(ctx, evt);
                         } else {
                             super.userEventTriggered(ctx, evt);
                         }
