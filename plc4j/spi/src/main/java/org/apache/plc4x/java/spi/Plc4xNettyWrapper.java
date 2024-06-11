@@ -60,6 +60,7 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
     private final Queue<HandlerRegistration> registeredHandlers;
     private final boolean passive;
     private boolean closed;
+    private boolean disConnected;
     private final TimeoutManager timeoutManager;
 
     public Plc4xNettyWrapper(ChannelPipeline pipeline, boolean passive, Plc4xProtocolBase<T> protocol,
@@ -72,6 +73,7 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
         super(clazz, Object.class);
         this.passive = passive;
         this.closed = false;
+        this.disConnected = false;
         this.registeredHandlers = new ConcurrentLinkedQueue<>();
         this.protocolBase = protocol;
         this.authentication = authentication;
@@ -128,9 +130,17 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
 
     @Override
     public void close(ChannelHandlerContext ctx, ChannelPromise promise) throws Exception {
-        super.close(ctx, promise);
+        if(ctx.channel().isOpen()) {
+            super.close(ctx, promise);
+        }
+        if (!disConnected) {
+            logger.warn("Can't Disconnected event!!");
+            this.protocolBase.onDisconnect(
+                    new DefaultConversationContext<>(this::registerHandler, ctx, authentication, passive));
+            disConnected = true;
+        }
         if (!closed) {
-            logger.warn("can't receive close event!!");
+            logger.warn("Can't receive close event!!");
             this.protocolBase.close(new DefaultConversationContext<>(this::registerHandler, ctx, authentication, passive));
             closed = true;
         }
@@ -205,7 +215,11 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
         if (evt instanceof ConnectEvent) {
             this.protocolBase.onConnect(new DefaultConversationContext<>(this::registerHandler, ctx, authentication, passive));
         } else if (evt instanceof DisconnectEvent) {
-            this.protocolBase.onDisconnect(new DefaultConversationContext<>(this::registerHandler, ctx, authentication, passive));
+            if (!disConnected) {
+                this.protocolBase.onDisconnect(
+                        new DefaultConversationContext<>(this::registerHandler, ctx, authentication, passive));
+                disConnected = true;
+            }
         } else if (evt instanceof DiscoverEvent) {
             this.protocolBase.onDiscover(new DefaultConversationContext<>(this::registerHandler, ctx, authentication, passive));
         } else if (evt instanceof CloseConnectionEvent) {

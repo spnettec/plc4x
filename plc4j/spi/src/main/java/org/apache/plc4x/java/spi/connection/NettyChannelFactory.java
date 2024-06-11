@@ -178,8 +178,10 @@ public abstract class NettyChannelFactory implements ChannelFactory {
             eventLoops.remove(channel);
             if(!(eventExecutors.isShuttingDown() || eventExecutors.isTerminated())) {
                 eventExecutors.shutdownGracefully();
+                logger.info("Worker Group was closed successfully!");
+            } else {
+                logger.warn("Worker Group isShuttingDown or isTerminated");
             }
-            logger.info("Worker Group was closed successfully!");
         } else {
             logger.warn("Trying to remove EventLoop for Channel {} but have none stored", channel);
         }

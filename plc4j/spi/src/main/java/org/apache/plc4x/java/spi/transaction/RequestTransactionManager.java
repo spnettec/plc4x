@@ -95,6 +95,7 @@ public class RequestTransactionManager {
     */
     public void shutdown(){
         executor.shutdown();
+        runningRequests.forEach(RequestTransaction::failRequest);
     }
 
     public void submit(Consumer<RequestTransaction> context) {
@@ -104,17 +105,23 @@ public class RequestTransactionManager {
 
     void submit(RequestTransaction handle) {
         assert handle.operation != null;
-        workLog.add(handle);
-        processWorklog();
+        if (!executor.isShutdown()) {
+            workLog.add(handle);
+            processWorklog();
+        }
     }
 
     private synchronized void processWorklog() {
         while (runningRequests.size() < getNumberOfConcurrentRequests() && !workLog.isEmpty()) {
             RequestTransaction next = workLog.poll();
             if (next != null) {
-                runningRequests.add(next);
-                Future<?> completionFuture = executor.submit(next.operation);
-                next.setCompletionFuture(completionFuture);
+                if (executor.isShutdown()) {
+                    next.setCompletionFuture(CompletableFuture.failedFuture(new IllegalStateException("Executor is shut down")));
+                } else {
+                    runningRequests.add(next);
+                    Future<?> completionFuture = executor.submit(next.operation);
+                    next.setCompletionFuture(completionFuture);
+                }
             }
         }
     }
@@ -163,6 +170,10 @@ public class RequestTransactionManager {
         }
 
         public void failRequest(Throwable t) {
+            parent.failRequest(this);
+        }
+
+        public void failRequest() {
             parent.failRequest(this);
         }
 

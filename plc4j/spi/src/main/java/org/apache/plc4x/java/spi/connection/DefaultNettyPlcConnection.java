@@ -147,7 +147,7 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
                         sessionSetupCompleteFuture.completeExceptionally(
                             new PlcIoException("Connection terminated by remote"));
                     }
-                }finally {
+                } finally {
                     if (!closeExcuted) {
                         logger.warn("Connection terminated for some reason. Force close the connection");
                         close();
@@ -214,7 +214,8 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
         if (!sessionDisconnectCompleteFuture.isDone()) {
             sessionDisconnectCompleteFuture.complete(null);
         }
-        if(!detectedClosed) {
+        if (!detectedClosed) {
+            logger.warn("Can't fire CloseConnectionEvent, close manually");
             ChannelHandlerContext handleContext = channel.pipeline().context("WRAPPER");
             if (handleContext != null) {
                 try {
@@ -222,6 +223,8 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
                 } catch (Exception e) {
                     logger.error("Error while closing Plc4xNettyWrapper");
                 }
+            } else {
+                logger.warn("Can't get Plc4xNettyWrapper");
             }
         }
         // Shutdown the Worker Group
