@@ -118,7 +118,7 @@ public class SingleProtocolStackConfigurer<BASE_PACKET_CLASS extends Message> im
         }
         Plc4xNettyWrapper<BASE_PACKET_CLASS> context = new Plc4xNettyWrapper<>(new NettyHashTimerTimeoutManager(), pipeline, passive, protocol,
             authentication, basePacketClass);
-        pipeline.addLast(context);
+        pipeline.addLast("WRAPPER", context);
         return protocol;
     }
 

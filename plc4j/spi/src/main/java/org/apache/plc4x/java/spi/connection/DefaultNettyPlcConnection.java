@@ -22,6 +22,7 @@ import io.netty.channel.*;
 import java.util.concurrent.RejectedExecutionException;
 import org.apache.plc4x.java.api.EventPlcConnection;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
+import org.apache.plc4x.java.spi.Plc4xNettyWrapper;
 import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcIoException;
@@ -92,6 +93,7 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
 
         this.connected = false;
         this.closeExcuted = false;
+        this.detectedClosed = false;
     }
 
     @Override
@@ -116,6 +118,7 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
             if (fireDiscoverEvent) {
                 channel = channelFactory.createChannel(getChannelHandler(sessionSetupCompleteFuture, sessionDisconnectCompleteFuture, sessionDiscoveredCompleteFuture));
                 channel.closeFuture().addListener(future -> {
+                    detectedClosed = true;
                     if (!sessionDiscoveredCompleteFuture.isDone()) {
                         //Do Nothing
                         try {
@@ -139,12 +142,16 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
 
             channel = channelFactory.createChannel(getChannelHandler(sessionSetupCompleteFuture, sessionDisconnectCompleteFuture, sessionDiscoveredCompleteFuture));
             channel.closeFuture().addListener(future -> {
-                if (!sessionSetupCompleteFuture.isDone()) {
-                    sessionSetupCompleteFuture.completeExceptionally(
-                        new PlcIoException("Connection terminated by remote"));
-                }
-                if(!closeExcuted){
-                    close();
+                try{
+                    if (!sessionSetupCompleteFuture.isDone()) {
+                        sessionSetupCompleteFuture.completeExceptionally(
+                            new PlcIoException("Connection terminated by remote"));
+                    }
+                }finally {
+                    if (!closeExcuted) {
+                        logger.warn("Connection terminated for some reason. Force close the connection");
+                        close();
+                    }
                 }
             });
             // Send an event to the pipeline telling the Protocol filters what's going on.
@@ -200,15 +207,25 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
                     throw ex;
                 }
             }
+        } else {
+            logger.warn("Channel already closed");
         }
 
         if (!sessionDisconnectCompleteFuture.isDone()) {
             sessionDisconnectCompleteFuture.complete(null);
         }
-
+        if(!detectedClosed) {
+            ChannelHandlerContext handleContext = channel.pipeline().context("WRAPPER");
+            if (handleContext != null) {
+                try {
+                    ((Plc4xNettyWrapper<?>) handleContext.handler()).close(handleContext, channel.newPromise());
+                } catch (Exception e) {
+                    logger.error("Error while closing Plc4xNettyWrapper");
+                }
+            }
+        }
         // Shutdown the Worker Group
         channelFactory.closeEventLoopForChannel(channel);
-
         channel = null;
         connected = false;
     }
