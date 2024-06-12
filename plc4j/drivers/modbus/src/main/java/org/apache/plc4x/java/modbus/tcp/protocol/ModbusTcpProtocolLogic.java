@@ -140,7 +140,7 @@ public class ModbusTcpProtocolLogic extends ModbusProtocolLogic<ModbusTcpADU> im
                         try {
                             plcValue = toPlcValue(requestPdu, responsePdu, tag.getDataType());
                             responseCode = PlcResponseCode.OK;
-                        } catch (ParseException e) {
+                        } catch (Exception e) {
                             // Add an error response code ...
                             responseCode = PlcResponseCode.INTERNAL_ERROR;
                         }

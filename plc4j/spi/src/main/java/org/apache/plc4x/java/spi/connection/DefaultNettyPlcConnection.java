@@ -118,7 +118,6 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
             if (fireDiscoverEvent) {
                 channel = channelFactory.createChannel(getChannelHandler(sessionSetupCompleteFuture, sessionDisconnectCompleteFuture, sessionDiscoveredCompleteFuture));
                 channel.closeFuture().addListener(future -> {
-                    detectedClosed = true;
                     if (!sessionDiscoveredCompleteFuture.isDone()) {
                         //Do Nothing
                         try {
@@ -142,6 +141,7 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
 
             channel = channelFactory.createChannel(getChannelHandler(sessionSetupCompleteFuture, sessionDisconnectCompleteFuture, sessionDiscoveredCompleteFuture));
             channel.closeFuture().addListener(future -> {
+                detectedClosed = true;
                 try{
                     if (!sessionSetupCompleteFuture.isDone()) {
                         sessionSetupCompleteFuture.completeExceptionally(
@@ -196,12 +196,13 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
         } catch (Exception e) {
             logger.error("Timeout while trying to close connection");
         }
-
+        boolean sendClose = false;
         // The channel might have already been closed by the remote end.
         if (channel.isOpen()) {
             try {
                 channel.pipeline().fireUserEventTriggered(new CloseConnectionEvent());
                 channel.close();
+                sendClose = true;
             } catch (RejectedExecutionException ex) {
                 if (channel.isOpen()) {
                     throw ex;
@@ -214,8 +215,8 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
         if (!sessionDisconnectCompleteFuture.isDone()) {
             sessionDisconnectCompleteFuture.complete(null);
         }
-        if (!detectedClosed) {
-            logger.warn("Can't fire CloseConnectionEvent, close manually");
+        if (!detectedClosed || !sendClose) {
+            logger.warn("Can't detect Close Listener, close manually");
             ChannelHandlerContext handleContext = channel.pipeline().context("WRAPPER");
             if (handleContext != null) {
                 try {

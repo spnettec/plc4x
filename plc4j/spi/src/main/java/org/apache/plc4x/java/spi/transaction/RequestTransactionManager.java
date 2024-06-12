@@ -94,8 +94,9 @@ public class RequestTransactionManager {
     * It allows the sequential shutdown of the associated driver.
     */
     public void shutdown(){
-        executor.shutdown();
+        executor.shutdownNow();
         runningRequests.forEach(RequestTransaction::failRequest);
+        processWorklog();
     }
 
     public void submit(Consumer<RequestTransaction> context) {
@@ -108,6 +109,8 @@ public class RequestTransactionManager {
         if (!executor.isShutdown()) {
             workLog.add(handle);
             processWorklog();
+        } else {
+            handle.setCompletionFuture(CompletableFuture.failedFuture(new IllegalStateException("Executor is shut down. Can not submit")));
         }
     }
 
@@ -233,7 +236,7 @@ public class RequestTransactionManager {
                 delegate.run();
                 logger.trace("Completed execution of transaction {}", transactionId);
             }  catch (Exception ex) {
-                logger.info(ex.getMessage());
+                logger.error("execute traction error",ex);
             }
         }
     }
