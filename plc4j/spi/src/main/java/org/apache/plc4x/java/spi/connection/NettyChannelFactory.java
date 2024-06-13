@@ -50,10 +50,9 @@ public abstract class NettyChannelFactory implements ChannelFactory {
 
     private static final Logger logger = LoggerFactory.getLogger(NettyChannelFactory.class);
 
-    private final Map<Channel, EventLoopGroup> eventLoops = new ConcurrentHashMap<>();
-
     private final SocketAddress localAddress;
     private final SocketAddress remoteAddress;
+    private EventLoopGroup workerGroup;
 
     protected NettyChannelFactory(SocketAddress remoteAddress) {
         this(null, remoteAddress);
@@ -120,7 +119,7 @@ public abstract class NettyChannelFactory implements ChannelFactory {
         try {
             Bootstrap bootstrap = createBootstrap();
 
-            EventLoopGroup workerGroup = getEventLoopGroup();
+            workerGroup = getEventLoopGroup();
             if (workerGroup != null) {
                 bootstrap.group(workerGroup);
             }
@@ -144,13 +143,6 @@ public abstract class NettyChannelFactory implements ChannelFactory {
 
             final Channel channel = f.channel();
 
-            if (workerGroup != null) {
-                // Shut down the workerGroup when channel closing to avoid open too many files
-                channel.closeFuture().addListener(future -> workerGroup.shutdownGracefully());
-                // Add to event-loop group
-                eventLoops.put(channel, workerGroup);
-            }
-
             // It seems the embedded channel operates differently.
             // Intentionally using the class name as we don't want to require a
             // hard dependency on the test-channel.
@@ -172,18 +164,14 @@ public abstract class NettyChannelFactory implements ChannelFactory {
 
     @Override
     public void closeEventLoopForChannel(Channel channel) {
-        if (eventLoops.containsKey(channel)) {
-            logger.info("Channel is closed, closing worker Group also");
-            EventLoopGroup eventExecutors = eventLoops.get(channel);
-            eventLoops.remove(channel);
-            if(!(eventExecutors.isShuttingDown() || eventExecutors.isTerminated())) {
-                eventExecutors.shutdownGracefully();
-                logger.info("Worker Group was closed successfully!");
-            } else {
-                logger.warn("Worker Group isShuttingDown or isTerminated");
-            }
+        if(workerGroup == null) {
+            return;
+        }
+        if(!(workerGroup.isShuttingDown() || workerGroup.isTerminated())) {
+            workerGroup.shutdownGracefully();
+            logger.info("Worker Group was closed successfully!");
         } else {
-            logger.warn("Trying to remove EventLoop for Channel {} but have none stored", channel);
+            logger.warn("Worker Group isShuttingDown or isTerminated");
         }
     }
 

@@ -20,6 +20,7 @@ package org.apache.plc4x.java.spi.connection;
 
 import io.netty.channel.ChannelPipeline;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
+import org.apache.plc4x.java.spi.TimeoutManager;
 import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.api.listener.EventListener;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
@@ -29,6 +30,6 @@ import java.util.List;
 
 public interface ProtocolStackConfigurer<T extends Message> {
 
-    Plc4xProtocolBase<T> configurePipeline(PlcConnectionConfiguration configuration, ChannelPipeline pipeline, PlcAuthentication authentication, boolean passive, List<EventListener> listeners);
+    Plc4xProtocolBase<T> configurePipeline(PlcConnectionConfiguration configuration, ChannelPipeline pipeline, PlcAuthentication authentication, boolean passive, List<EventListener> listeners, TimeoutManager timeoutManager);
 
 }

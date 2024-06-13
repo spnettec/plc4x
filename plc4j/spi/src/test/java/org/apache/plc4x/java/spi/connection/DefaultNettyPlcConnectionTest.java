@@ -46,7 +46,7 @@ class DefaultNettyPlcConnectionTest {
     void checkInitializationSequence() throws Exception {
         ChannelFactory channelFactory = new TestChannelFactory();
 
-        ProtocolStackConfigurer<Message> stackConfigurer = (configuration, pipeline, authentication, passive, listeners) -> {
+        ProtocolStackConfigurer<Message> stackConfigurer = (configuration, pipeline, authentication, passive, listeners, timeoutManager) -> {
             TestProtocolBase base = new TestProtocolBase(discovery, connect, disconnect, close);
             Plc4xNettyWrapper<Message> context = new Plc4xNettyWrapper<>(new NettyHashTimerTimeoutManager(), pipeline, passive, base, authentication, Message.class);
             pipeline.addLast(context);

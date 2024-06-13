@@ -142,7 +142,6 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
             this.protocolBase.close(new DefaultConversationContext<>(this::registerHandler, ctx, authentication, passive));
             closed = true;
         }
-        timeoutManager.stop();
     }
 
     @Override

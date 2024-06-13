@@ -26,6 +26,7 @@ import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelPipeline;
 import io.netty.handler.codec.MessageToMessageCodec;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
+import org.apache.plc4x.java.spi.TimeoutManager;
 import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.api.listener.EventListener;
 import org.apache.plc4x.java.spi.EventListenerMessageCodec;
@@ -35,7 +36,6 @@ import org.apache.plc4x.java.spi.context.DriverContext;
 import org.apache.plc4x.java.spi.generation.ByteOrder;
 import org.apache.plc4x.java.spi.generation.Message;
 import org.apache.plc4x.java.spi.generation.MessageInput;
-import org.apache.plc4x.java.spi.netty.NettyHashTimerTimeoutManager;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -93,7 +93,7 @@ public class CustomProtocolStackConfigurer<BASE_PACKET_CLASS extends Message> im
     @Override
     public Plc4xProtocolBase<BASE_PACKET_CLASS> configurePipeline(PlcConnectionConfiguration configuration, ChannelPipeline pipeline,
                                                                   PlcAuthentication authentication, boolean passive,
-                                                                  List<EventListener> listeners) {
+                                                                  List<EventListener> listeners, TimeoutManager timeoutManager) {
         if (this.encryptionHandler != null) {
             pipeline.addLast(this.encryptionHandler);
         }
@@ -106,7 +106,7 @@ public class CustomProtocolStackConfigurer<BASE_PACKET_CLASS extends Message> im
         if(!listeners.isEmpty()) {
             pipeline.addLast(new EventListenerMessageCodec(listeners));
         }
-        Plc4xNettyWrapper<BASE_PACKET_CLASS> context = new Plc4xNettyWrapper<>(new NettyHashTimerTimeoutManager(), pipeline, passive, protocol, authentication, basePacketClass);
+        Plc4xNettyWrapper<BASE_PACKET_CLASS> context = new Plc4xNettyWrapper<>(timeoutManager, pipeline, passive, protocol, authentication, basePacketClass);
         pipeline.addLast("WRAPPER", context);
         return protocol;
     }
