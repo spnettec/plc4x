@@ -64,7 +64,7 @@ public class AbEthProtocolLogic extends Plc4xProtocolBase<CIPEncapsulationPacket
     public void setConfiguration(AbEthConfiguration configuration) {
         this.configuration = configuration;
         // Set the transaction manager to allow only one message at a time.
-        this.tm = new RequestTransactionManager(1);
+        this.tm = new RequestTransactionManager(1,"AbEthProtocolLogic");
     }
 
     @Override

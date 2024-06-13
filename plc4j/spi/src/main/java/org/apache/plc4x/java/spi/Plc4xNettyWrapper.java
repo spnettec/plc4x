@@ -132,13 +132,13 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
     public void close(ChannelHandlerContext ctx, ChannelPromise promise) throws Exception {
         super.close(ctx, promise);
         if (!disConnected) {
-            logger.warn("Can't receive DisconnectEvent event!!");
+            logger.warn("Can't receive DisconnectEvent event!! execute protocolBase.onDisconnect");
             this.protocolBase.onDisconnect(
                     new DefaultConversationContext<>(this::registerHandler, ctx, authentication, passive));
             disConnected = true;
         }
         if (!closed) {
-            logger.warn("Can't receive CloseConnectionEvent event!!");
+            logger.warn("Can't receive CloseConnectionEvent event!! execute protocolBase.close");
             this.protocolBase.close(new DefaultConversationContext<>(this::registerHandler, ctx, authentication, passive));
             closed = true;
         }

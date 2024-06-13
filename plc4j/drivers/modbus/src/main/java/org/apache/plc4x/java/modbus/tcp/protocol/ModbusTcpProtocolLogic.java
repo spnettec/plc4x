@@ -53,7 +53,7 @@ public class ModbusTcpProtocolLogic extends ModbusProtocolLogic<ModbusTcpADU> im
         this.unitIdentifier = (short) configuration.getDefaultUnitIdentifier();
         this.pingAddress = new ModbusTagHandler().parseTag(configuration.getPingAddress());
         this.defaultPayloadByteOrder = configuration.getDefaultPayloadByteOrder();
-        this.tm = new RequestTransactionManager(1);
+        this.tm = new RequestTransactionManager(1,"ModbusTcpProtocolLogic");
     }
 
     @Override

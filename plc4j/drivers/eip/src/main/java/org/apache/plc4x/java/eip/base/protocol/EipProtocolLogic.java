@@ -142,7 +142,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
         this.connectionPathSize = (short) (this.connectionPathSize / 2);
 
         // Set the transaction manager to allow only one message at a time.
-        this.tm = new RequestTransactionManager(1);
+        this.tm = new RequestTransactionManager(1,"EipProtocolLogic");
     }
 
     @Override

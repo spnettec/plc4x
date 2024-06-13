@@ -51,7 +51,7 @@ public class ModbusRtuProtocolLogic extends ModbusProtocolLogic<ModbusRtuADU> im
         this.requestTimeout = Duration.ofMillis(configuration.getRequestTimeout());
         this.unitIdentifier = (short) configuration.getDefaultUnitIdentifier();
         this.defaultPayloadByteOrder = configuration.getDefaultPayloadByteOrder();
-        this.tm = new RequestTransactionManager(1);
+        this.tm = new RequestTransactionManager(1,"ModbusRtuProtocolLogic");
     }
 
     @Override

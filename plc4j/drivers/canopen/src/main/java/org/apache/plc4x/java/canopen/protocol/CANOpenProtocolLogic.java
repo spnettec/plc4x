@@ -121,7 +121,7 @@ public class CANOpenProtocolLogic extends Plc4xCANProtocolBase<CANOpenFrame>
         // maximum of only one request being able to be sent at a time. During the login process
         // No concurrent requests can be sent anyway. It will be updated when receiving the
         // S7ParameterSetupCommunication response.
-        this.tm = new RequestTransactionManager(1);
+        this.tm = new RequestTransactionManager(1,"CANOpenProtocolLogic");
     }
 
     @Override

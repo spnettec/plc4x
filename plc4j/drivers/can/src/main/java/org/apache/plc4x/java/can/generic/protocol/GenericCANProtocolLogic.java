@@ -59,7 +59,7 @@ public class GenericCANProtocolLogic extends Plc4xCANProtocolBase<GenericFrame> 
     @Override
     public void setDriverContext(DriverContext driverContext) {
         super.setDriverContext(driverContext);
-        this.tm = new RequestTransactionManager(1);
+        this.tm = new RequestTransactionManager(1,"GenericCANProtocolLogic");
     }
 
     @Override

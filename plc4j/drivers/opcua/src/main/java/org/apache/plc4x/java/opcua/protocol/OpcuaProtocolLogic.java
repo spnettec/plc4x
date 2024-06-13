@@ -80,7 +80,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
 
     private static final long EPOCH_OFFSET = 116444736000000000L;         //Offset between OPC UA epoch time and linux epoch time.
     private final Map<Long, OpcuaSubscriptionHandle> subscriptions = new ConcurrentHashMap<>();
-    private final RequestTransactionManager tm = new RequestTransactionManager();
+    private final RequestTransactionManager tm = new RequestTransactionManager("OpcuaProtocolLogic");
 
     private OpcuaConfiguration configuration;
     private OpcuaDriverContext driverContext;

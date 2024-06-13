@@ -61,7 +61,7 @@ public class Iec608705104Protocol extends Plc4xProtocolBase<APDU> implements Has
 
     public Iec608705104Protocol() {
         // We're starting with allowing only one message in-flight.
-        this.tm = new RequestTransactionManager(1);
+        this.tm = new RequestTransactionManager(1,"Iec608705104Protocol");
         unconfirmedPackets = 0;
     }
 

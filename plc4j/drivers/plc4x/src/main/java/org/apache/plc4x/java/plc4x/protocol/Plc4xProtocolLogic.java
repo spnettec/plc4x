@@ -54,7 +54,7 @@ public class Plc4xProtocolLogic extends Plc4xProtocolBase<Plc4xMessage> implemen
 
     @Override
     public void setConfiguration(Plc4xConfiguration configuration) {
-        this.tm = new RequestTransactionManager(1);
+        this.tm = new RequestTransactionManager(1,"Plc4xProtocolLogic");
         this.remoteConnectionString = configuration.getRemoteConnectionString();
         this.requestTimeout = Duration.ofMillis(configuration.getRequestTimeout());
         this.connectionId = 0;

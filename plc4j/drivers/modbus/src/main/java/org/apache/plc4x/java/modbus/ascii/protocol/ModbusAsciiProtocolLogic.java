@@ -49,7 +49,7 @@ public class ModbusAsciiProtocolLogic extends ModbusProtocolLogic<ModbusAsciiADU
         this.requestTimeout = Duration.ofMillis(configuration.getRequestTimeout());
         this.unitIdentifier = configuration.getDefaultUnitIdentifier();
         this.defaultPayloadByteOrder = configuration.getDefaultPayloadByteOrder();
-        this.tm = new RequestTransactionManager(1);
+        this.tm = new RequestTransactionManager(1,"ModbusAsciiProtocolLogic");
     }
 
     @Override

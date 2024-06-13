@@ -18,16 +18,20 @@
  */
 package org.apache.plc4x.java.spi.transaction;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Objects;
 import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
+import java.util.logging.SimpleFormatter;
 
 /**
  * This is a limited Queue of Requests, a Protocol can use.
@@ -53,14 +57,14 @@ public class RequestTransactionManager {
     /** Important, this is a FIFO Queue for Fairness! */
     private final Queue<RequestTransaction> workLog = new ConcurrentLinkedQueue<>();
 
-    public RequestTransactionManager(int numberOfConcurrentRequests) {
+    public RequestTransactionManager(int numberOfConcurrentRequests, String name) {
         this.numberOfConcurrentRequests = numberOfConcurrentRequests;
         // Immutable Map
         executor = new ThreadPoolExecutor(numberOfConcurrentRequests, numberOfConcurrentRequests,
             0L, TimeUnit.MILLISECONDS,
             new LinkedBlockingQueue<>(10),
             new BasicThreadFactory.Builder()
-                    .namingPattern("RequestTransactionManager-pool-%d")
+                    .namingPattern("RequestTransactionManager-pool-" + (new SimpleDateFormat("yyMMddHHmmss")).format(new Date()) + (StringUtils.isEmpty(name)?"":"-" + name) + "-%d")
                     .daemon(true)
                     .priority(Thread.MAX_PRIORITY)
                     .build(),
@@ -70,7 +74,11 @@ public class RequestTransactionManager {
     }
 
     public RequestTransactionManager() {
-        this(1);
+        this(1,null);
+    }
+
+    public RequestTransactionManager(String name) {
+        this(1, name);
     }
 
     public int getNumberOfConcurrentRequests() {
@@ -95,6 +103,7 @@ public class RequestTransactionManager {
     */
     public void shutdown(){
         executor.shutdownNow();
+        logger.info("Shutdown RequestTransactionManager....");
         runningRequests.forEach(RequestTransaction::failRequest);
         processWorklog();
     }
