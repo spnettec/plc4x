@@ -101,10 +101,10 @@ public class RequestTransactionManager {
     /*
     * It allows the sequential shutdown of the associated driver.
     */
-    public void shutdown(){
+    public synchronized void shutdown(){
+        runningRequests.forEach(requestTransaction->requestTransaction.getCompletionFuture().cancel(true));
+        runningRequests.clear();
         executor.shutdownNow();
-        logger.info("Shutdown RequestTransactionManager....");
-        runningRequests.forEach(RequestTransaction::failRequest);
         processWorklog();
     }
 
@@ -156,7 +156,9 @@ public class RequestTransactionManager {
 
     private void endRequest(RequestTransaction transaction) {
         if (!runningRequests.contains(transaction)) {
-            throw new IllegalArgumentException("Unknown Transaction or Transaction already finished!");
+            if (!executor.isShutdown()) {
+                throw new IllegalArgumentException("Unknown Transaction or Transaction already finished!");
+            }
         }
         runningRequests.remove(transaction);
         // Process the worklog, a slot should be free now

@@ -143,6 +143,11 @@ public abstract class NettyChannelFactory implements ChannelFactory {
 
             final Channel channel = f.channel();
 
+            if (workerGroup != null) {
+                // Shut down the workerGroup when channel closing to avoid open too many files
+                channel.closeFuture().addListener(future -> workerGroup.shutdownGracefully());
+            }
+
             // It seems the embedded channel operates differently.
             // Intentionally using the class name as we don't want to require a
             // hard dependency on the test-channel.

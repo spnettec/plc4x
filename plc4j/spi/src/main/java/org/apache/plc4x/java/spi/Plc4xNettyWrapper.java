@@ -129,8 +129,10 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
     }
 
     @Override
-    public void close(ChannelHandlerContext ctx, ChannelPromise promise) throws Exception {
-        super.close(ctx, promise);
+    public synchronized void close(ChannelHandlerContext ctx, ChannelPromise promise) throws Exception {
+        if (promise!=null) {
+            super.close(ctx, promise);
+        }
         if (!disConnected) {
             logger.warn("Can't receive DisconnectEvent event!! execute protocolBase.onDisconnect");
             this.protocolBase.onDisconnect(
