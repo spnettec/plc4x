@@ -113,12 +113,15 @@ public class RequestTransactionManager {
         context.accept(transaction);
     }
 
-    void submit(RequestTransaction handle) {
+    synchronized void submit(RequestTransaction handle) {
         assert handle.operation != null;
         if (!executor.isShutdown()) {
             workLog.add(handle);
             processWorklog();
         } else {
+            if (getNumberOfActiveRequests()>0) {
+                runningRequests.forEach(requestTransaction -> requestTransaction.getCompletionFuture().cancel(true));
+            }
             handle.setCompletionFuture(CompletableFuture.failedFuture(new IllegalStateException("Executor is shut down. Can not submit")));
         }
     }
