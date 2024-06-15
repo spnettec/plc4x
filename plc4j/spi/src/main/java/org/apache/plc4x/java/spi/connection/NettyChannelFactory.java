@@ -173,7 +173,7 @@ public abstract class NettyChannelFactory implements ChannelFactory {
             return;
         }
         if(!(workerGroup.isShuttingDown() || workerGroup.isTerminated())) {
-            workerGroup.shutdownGracefully();
+            workerGroup.shutdownGracefully().awaitUninterruptibly(2000);
             logger.info("Worker Group was closed successfully!");
         } else {
             logger.warn("Worker Group isShuttingDown or isTerminated");

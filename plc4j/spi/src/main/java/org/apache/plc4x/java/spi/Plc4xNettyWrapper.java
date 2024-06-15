@@ -28,6 +28,7 @@ import io.vavr.control.Either;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicReference;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.spi.TimeoutManager.CompletionCallback;
 import org.apache.plc4x.java.spi.events.*;
@@ -203,7 +204,11 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
             }
         }
         logger.warn("None of {} registered handlers could handle message {}, using default decode method", this.registeredHandlers.size(), t);
-        protocolBase.decode(new DefaultConversationContext<>(this::registerHandler, channelHandlerContext, authentication, passive), t);
+        try {
+            protocolBase.decode(new DefaultConversationContext<>(this::registerHandler, channelHandlerContext, authentication, passive), t);
+        }catch (Exception e) {
+            throw new PlcRuntimeException("Error while decoding Plc4x protocolBase.decode", e);
+        }
     }
 
     @Override
