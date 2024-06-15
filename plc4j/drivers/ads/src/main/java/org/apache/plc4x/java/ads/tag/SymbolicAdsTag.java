@@ -37,7 +37,7 @@ import java.util.regex.Pattern;
 public class SymbolicAdsTag implements AdsTag {
 
     // TODO: Model the end of this address to allow usage of multi-dimensional arrays.
-    private static final Pattern SYMBOLIC_ADDRESS_PATTERN = Pattern.compile("^(?<symbolicAddress>.+)");
+    private static final Pattern SYMBOLIC_ADDRESS_PATTERN = Pattern.compile("^(?<symbolicAddress>.+)(\\|(?<stringEncoding>[a-z0-9A-Z_-]+))?");
 
     private final String symbolicAddress;
 

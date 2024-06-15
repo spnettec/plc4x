@@ -721,8 +721,9 @@ const (
 	KnxManufacturer_M_SMARTLICHT                                         KnxManufacturer = 675
 	KnxManufacturer_M_BEIJING_BEVONE_ELECTRIC_CO__LTD_                   KnxManufacturer = 676
 	KnxManufacturer_M_ELSMART                                            KnxManufacturer = 677
-	KnxManufacturer_M_ABB___RESERVED                                     KnxManufacturer = 678
-	KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED                    KnxManufacturer = 679
+	KnxManufacturer_M_MIDDLE_EAST_SPECIALIZED_CABLES_CO__MESC            KnxManufacturer = 678
+	KnxManufacturer_M_ABB___RESERVED                                     KnxManufacturer = 679
+	KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED                    KnxManufacturer = 680
 )
 
 var KnxManufacturerValues []KnxManufacturer
@@ -1408,6 +1409,7 @@ func init() {
 		KnxManufacturer_M_SMARTLICHT,
 		KnxManufacturer_M_BEIJING_BEVONE_ELECTRIC_CO__LTD_,
 		KnxManufacturer_M_ELSMART,
+		KnxManufacturer_M_MIDDLE_EAST_SPECIALIZED_CABLES_CO__MESC,
 		KnxManufacturer_M_ABB___RESERVED,
 		KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED,
 	}
@@ -3989,15 +3991,19 @@ func (e KnxManufacturer) Number() uint16 {
 		}
 	case 678:
 		{ /* '678' */
-			return 43954
+			return 736
 		}
 	case 679:
 		{ /* '679' */
-			return 43959
+			return 43954
 		}
 	case 68:
 		{ /* '68' */
 			return 107
+		}
+	case 680:
+		{ /* '680' */
+			return 43959
 		}
 	case 69:
 		{ /* '69' */
@@ -6727,15 +6733,19 @@ func (e KnxManufacturer) Name() string {
 		}
 	case 678:
 		{ /* '678' */
-			return "ABB - reserved"
+			return "Middle East Specialized Cables Co. (MESC)"
 		}
 	case 679:
 		{ /* '679' */
-			return "Busch-Jaeger Elektro - reserved"
+			return "ABB - reserved"
 		}
 	case 68:
 		{ /* '68' */
 			return "WAREMA Renkhoff SE"
+		}
+	case 680:
+		{ /* '680' */
+			return "Busch-Jaeger Elektro - reserved"
 		}
 	case 69:
 		{ /* '69' */
@@ -8177,11 +8187,13 @@ func KnxManufacturerByValue(value uint16) (enum KnxManufacturer, ok bool) {
 	case 677:
 		return KnxManufacturer_M_ELSMART, true
 	case 678:
-		return KnxManufacturer_M_ABB___RESERVED, true
+		return KnxManufacturer_M_MIDDLE_EAST_SPECIALIZED_CABLES_CO__MESC, true
 	case 679:
-		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED, true
+		return KnxManufacturer_M_ABB___RESERVED, true
 	case 68:
 		return KnxManufacturer_M_WAREMA_RENKHOFF_SE, true
+	case 680:
+		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED, true
 	case 69:
 		return KnxManufacturer_M_EELECTRON, true
 	case 7:
@@ -9542,12 +9554,14 @@ func KnxManufacturerByName(value string) (enum KnxManufacturer, ok bool) {
 		return KnxManufacturer_M_BEIJING_BEVONE_ELECTRIC_CO__LTD_, true
 	case "M_ELSMART":
 		return KnxManufacturer_M_ELSMART, true
+	case "M_MIDDLE_EAST_SPECIALIZED_CABLES_CO__MESC":
+		return KnxManufacturer_M_MIDDLE_EAST_SPECIALIZED_CABLES_CO__MESC, true
 	case "M_ABB___RESERVED":
 		return KnxManufacturer_M_ABB___RESERVED, true
-	case "M_BUSCH_JAEGER_ELEKTRO___RESERVED":
-		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED, true
 	case "M_WAREMA_RENKHOFF_SE":
 		return KnxManufacturer_M_WAREMA_RENKHOFF_SE, true
+	case "M_BUSCH_JAEGER_ELEKTRO___RESERVED":
+		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED, true
 	case "M_EELECTRON":
 		return KnxManufacturer_M_EELECTRON, true
 	case "M_GIRA_GIERSIEPEN":
@@ -10969,12 +10983,14 @@ func (e KnxManufacturer) PLC4XEnumName() string {
 		return "M_BEIJING_BEVONE_ELECTRIC_CO__LTD_"
 	case KnxManufacturer_M_ELSMART:
 		return "M_ELSMART"
+	case KnxManufacturer_M_MIDDLE_EAST_SPECIALIZED_CABLES_CO__MESC:
+		return "M_MIDDLE_EAST_SPECIALIZED_CABLES_CO__MESC"
 	case KnxManufacturer_M_ABB___RESERVED:
 		return "M_ABB___RESERVED"
-	case KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED:
-		return "M_BUSCH_JAEGER_ELEKTRO___RESERVED"
 	case KnxManufacturer_M_WAREMA_RENKHOFF_SE:
 		return "M_WAREMA_RENKHOFF_SE"
+	case KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED:
+		return "M_BUSCH_JAEGER_ELEKTRO___RESERVED"
 	case KnxManufacturer_M_EELECTRON:
 		return "M_EELECTRON"
 	case KnxManufacturer_M_GIRA_GIERSIEPEN:
