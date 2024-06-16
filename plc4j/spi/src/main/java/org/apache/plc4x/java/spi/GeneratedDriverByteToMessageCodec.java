@@ -73,7 +73,12 @@ public abstract class GeneratedDriverByteToMessageCodec<T extends Message> exten
             byte[] bytes = null;
             try {
                 // Check if enough data is present to process the entire package.
-                int packetSize = getPacketSize(byteBuf);
+                int packetSize = -1;
+                try{
+                    packetSize = getPacketSize(byteBuf);
+                } catch (Exception e) {
+
+                }
                 if (packetSize == -1 || packetSize > byteBuf.readableBytes()) {
                     return;
                 }
