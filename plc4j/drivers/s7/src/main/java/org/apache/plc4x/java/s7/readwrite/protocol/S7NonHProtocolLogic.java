@@ -631,7 +631,7 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 		byte subsEvent = 0x00;
 		for (String tagName : request.getTagNames()) {
 			if (request.getTag(tagName) instanceof DefaultPlcSubscriptionTag) {
-				PlcTag event = ((DefaultPlcSubscriptionTag) request.getTag(tagName)).getTag();
+				PlcTag event = request.getTag(tagName).getTag();
 				if (event instanceof S7SubscriptionTag) {
 					if (((S7SubscriptionTag) event).getTagType() == S7SubscriptionType.EVENT_SUBSCRIPTION)
 						subsEvent = (byte) (subsEvent | ((S7SubscriptionTag) event).getEventType().getValue());

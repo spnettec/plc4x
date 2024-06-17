@@ -77,7 +77,7 @@ public abstract class GeneratedDriverByteToMessageCodec<T extends Message> exten
                 try{
                     packetSize = getPacketSize(byteBuf);
                 } catch (Exception e) {
-
+                    removeRestOfCorruptPackage(byteBuf);
                 }
                 if (packetSize == -1 || packetSize > byteBuf.readableBytes()) {
                     return;

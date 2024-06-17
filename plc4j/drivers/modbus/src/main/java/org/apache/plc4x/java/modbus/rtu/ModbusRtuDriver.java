@@ -155,7 +155,7 @@ public class ModbusRtuDriver extends GeneratedDriverBase<ModbusRtuADU> {
 
                     // Theoretically, the buffer could contain more than one message.
                     return modbusADU.getLengthInBytes();
-                } catch (Exception e) {
+                } catch (ParseException e) {
                     return -1;
                 }
             }
