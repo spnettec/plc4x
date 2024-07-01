@@ -697,12 +697,19 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 		short errorClass = 0;
 		short errorCode = 0;
 		if (responseMessage instanceof S7MessageUserData) {
-			// TODO: Payload and messageUserData are ignored?
-			//S7MessageUserData messageUserData = (S7MessageUserData) responseMessage;
+			S7MessageUserData messageUserData = (S7MessageUserData) responseMessage;
+			S7Parameter s7Parameter = messageUserData.getParameter();
+			if(s7Parameter instanceof S7ParameterUserData) {
+				S7ParameterUserData s7ParameterUserData = (S7ParameterUserData) s7Parameter;
+				S7ParameterUserDataItem s7ParameterUserDataItem = s7ParameterUserData.getItems().get(0);
+				if(s7ParameterUserDataItem instanceof S7ParameterUserDataItemCPUFunctions) {
+					S7ParameterUserDataItemCPUFunctions s7ParameterUserDataItemCPUFunctions = (S7ParameterUserDataItemCPUFunctions) s7ParameterUserDataItem;
+					errorCode = s7ParameterUserDataItemCPUFunctions.getErrorCode().shortValue();
+				}
+			}
 			//S7PayloadUserData payload = (S7PayloadUserData) messageUserData.getPayload();
-			// errorClass = payload.getItems()[0].
-			// errorCode = messageUserData.getParameter().
-
+			//errorClass = payload.getItems()[0]
+			//errorCode = messageUserData.getParameter().
 		} else if (responseMessage instanceof S7MessageResponse) {
 			S7MessageResponse messageResponse = (S7MessageResponse) responseMessage;
 			errorClass = messageResponse.getErrorClass();
