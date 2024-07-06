@@ -187,6 +187,7 @@ public class CachedPlcConnectionManagerTest {
     public void testClosingConnectionCache() throws Exception {
         PlcConnection mockConnection = Mockito.mock(PlcConnection.class);
         PlcConnectionManager mockConnectionManager = Mockito.mock(PlcConnectionManager.class);
+        Mockito.when(mockConnection.isConnected()).thenReturn(true);
         Mockito.when(mockConnectionManager.getConnection("test")).thenReturn(mockConnection);
 
         CachedPlcConnectionManager connectionManager = CachedPlcConnectionManager.getBuilder(mockConnectionManager).withMaxLeaseTime(Duration.ofMillis(30)).build();
