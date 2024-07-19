@@ -722,8 +722,14 @@ const (
 	KnxManufacturer_M_BEIJING_BEVONE_ELECTRIC_CO__LTD_                   KnxManufacturer = 676
 	KnxManufacturer_M_ELSMART                                            KnxManufacturer = 677
 	KnxManufacturer_M_MIDDLE_EAST_SPECIALIZED_CABLES_CO__MESC            KnxManufacturer = 678
-	KnxManufacturer_M_ABB___RESERVED                                     KnxManufacturer = 679
-	KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED                    KnxManufacturer = 680
+	KnxManufacturer_M_HANGZHOU_SANYUAN_CABLE_CO___LTD                    KnxManufacturer = 679
+	KnxManufacturer_M_BEIJING_HAILIN_CONTROL_TECHNOLOGY_INC_             KnxManufacturer = 680
+	KnxManufacturer_M_HANGZHOU_SNOWYI_TECHNOLOGY_CO__LTD_                KnxManufacturer = 681
+	KnxManufacturer_M_XIAMEN_E_TOP_CONTROLS_TECHNOLOGY_CO__LTD           KnxManufacturer = 682
+	KnxManufacturer_M_VITRUM_DESIGN                                      KnxManufacturer = 683
+	KnxManufacturer_M_DETRONS                                            KnxManufacturer = 684
+	KnxManufacturer_M_ABB___RESERVED                                     KnxManufacturer = 685
+	KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED                    KnxManufacturer = 686
 )
 
 var KnxManufacturerValues []KnxManufacturer
@@ -1410,6 +1416,12 @@ func init() {
 		KnxManufacturer_M_BEIJING_BEVONE_ELECTRIC_CO__LTD_,
 		KnxManufacturer_M_ELSMART,
 		KnxManufacturer_M_MIDDLE_EAST_SPECIALIZED_CABLES_CO__MESC,
+		KnxManufacturer_M_HANGZHOU_SANYUAN_CABLE_CO___LTD,
+		KnxManufacturer_M_BEIJING_HAILIN_CONTROL_TECHNOLOGY_INC_,
+		KnxManufacturer_M_HANGZHOU_SNOWYI_TECHNOLOGY_CO__LTD_,
+		KnxManufacturer_M_XIAMEN_E_TOP_CONTROLS_TECHNOLOGY_CO__LTD,
+		KnxManufacturer_M_VITRUM_DESIGN,
+		KnxManufacturer_M_DETRONS,
 		KnxManufacturer_M_ABB___RESERVED,
 		KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED,
 	}
@@ -3995,7 +4007,7 @@ func (e KnxManufacturer) Number() uint16 {
 		}
 	case 679:
 		{ /* '679' */
-			return 43954
+			return 737
 		}
 	case 68:
 		{ /* '68' */
@@ -4003,6 +4015,30 @@ func (e KnxManufacturer) Number() uint16 {
 		}
 	case 680:
 		{ /* '680' */
+			return 738
+		}
+	case 681:
+		{ /* '681' */
+			return 739
+		}
+	case 682:
+		{ /* '682' */
+			return 740
+		}
+	case 683:
+		{ /* '683' */
+			return 741
+		}
+	case 684:
+		{ /* '684' */
+			return 742
+		}
+	case 685:
+		{ /* '685' */
+			return 43954
+		}
+	case 686:
+		{ /* '686' */
 			return 43959
 		}
 	case 69:
@@ -6737,7 +6773,7 @@ func (e KnxManufacturer) Name() string {
 		}
 	case 679:
 		{ /* '679' */
-			return "ABB - reserved"
+			return "HANGZHOU SANYUAN CABLE CO., LTD"
 		}
 	case 68:
 		{ /* '68' */
@@ -6745,6 +6781,30 @@ func (e KnxManufacturer) Name() string {
 		}
 	case 680:
 		{ /* '680' */
+			return "Beijing HaiLin Control Technology Inc."
+		}
+	case 681:
+		{ /* '681' */
+			return "HangZhou Snowyi Technology Co.,LTD."
+		}
+	case 682:
+		{ /* '682' */
+			return "Xiamen E-Top Controls Technology Co.,Ltd"
+		}
+	case 683:
+		{ /* '683' */
+			return "Vitrum Design"
+		}
+	case 684:
+		{ /* '684' */
+			return "DETRONS"
+		}
+	case 685:
+		{ /* '685' */
+			return "ABB - reserved"
+		}
+	case 686:
+		{ /* '686' */
 			return "Busch-Jaeger Elektro - reserved"
 		}
 	case 69:
@@ -8189,10 +8249,22 @@ func KnxManufacturerByValue(value uint16) (enum KnxManufacturer, ok bool) {
 	case 678:
 		return KnxManufacturer_M_MIDDLE_EAST_SPECIALIZED_CABLES_CO__MESC, true
 	case 679:
-		return KnxManufacturer_M_ABB___RESERVED, true
+		return KnxManufacturer_M_HANGZHOU_SANYUAN_CABLE_CO___LTD, true
 	case 68:
 		return KnxManufacturer_M_WAREMA_RENKHOFF_SE, true
 	case 680:
+		return KnxManufacturer_M_BEIJING_HAILIN_CONTROL_TECHNOLOGY_INC_, true
+	case 681:
+		return KnxManufacturer_M_HANGZHOU_SNOWYI_TECHNOLOGY_CO__LTD_, true
+	case 682:
+		return KnxManufacturer_M_XIAMEN_E_TOP_CONTROLS_TECHNOLOGY_CO__LTD, true
+	case 683:
+		return KnxManufacturer_M_VITRUM_DESIGN, true
+	case 684:
+		return KnxManufacturer_M_DETRONS, true
+	case 685:
+		return KnxManufacturer_M_ABB___RESERVED, true
+	case 686:
 		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED, true
 	case 69:
 		return KnxManufacturer_M_EELECTRON, true
@@ -9556,10 +9628,22 @@ func KnxManufacturerByName(value string) (enum KnxManufacturer, ok bool) {
 		return KnxManufacturer_M_ELSMART, true
 	case "M_MIDDLE_EAST_SPECIALIZED_CABLES_CO__MESC":
 		return KnxManufacturer_M_MIDDLE_EAST_SPECIALIZED_CABLES_CO__MESC, true
-	case "M_ABB___RESERVED":
-		return KnxManufacturer_M_ABB___RESERVED, true
+	case "M_HANGZHOU_SANYUAN_CABLE_CO___LTD":
+		return KnxManufacturer_M_HANGZHOU_SANYUAN_CABLE_CO___LTD, true
 	case "M_WAREMA_RENKHOFF_SE":
 		return KnxManufacturer_M_WAREMA_RENKHOFF_SE, true
+	case "M_BEIJING_HAILIN_CONTROL_TECHNOLOGY_INC_":
+		return KnxManufacturer_M_BEIJING_HAILIN_CONTROL_TECHNOLOGY_INC_, true
+	case "M_HANGZHOU_SNOWYI_TECHNOLOGY_CO__LTD_":
+		return KnxManufacturer_M_HANGZHOU_SNOWYI_TECHNOLOGY_CO__LTD_, true
+	case "M_XIAMEN_E_TOP_CONTROLS_TECHNOLOGY_CO__LTD":
+		return KnxManufacturer_M_XIAMEN_E_TOP_CONTROLS_TECHNOLOGY_CO__LTD, true
+	case "M_VITRUM_DESIGN":
+		return KnxManufacturer_M_VITRUM_DESIGN, true
+	case "M_DETRONS":
+		return KnxManufacturer_M_DETRONS, true
+	case "M_ABB___RESERVED":
+		return KnxManufacturer_M_ABB___RESERVED, true
 	case "M_BUSCH_JAEGER_ELEKTRO___RESERVED":
 		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED, true
 	case "M_EELECTRON":
@@ -10985,10 +11069,22 @@ func (e KnxManufacturer) PLC4XEnumName() string {
 		return "M_ELSMART"
 	case KnxManufacturer_M_MIDDLE_EAST_SPECIALIZED_CABLES_CO__MESC:
 		return "M_MIDDLE_EAST_SPECIALIZED_CABLES_CO__MESC"
-	case KnxManufacturer_M_ABB___RESERVED:
-		return "M_ABB___RESERVED"
+	case KnxManufacturer_M_HANGZHOU_SANYUAN_CABLE_CO___LTD:
+		return "M_HANGZHOU_SANYUAN_CABLE_CO___LTD"
 	case KnxManufacturer_M_WAREMA_RENKHOFF_SE:
 		return "M_WAREMA_RENKHOFF_SE"
+	case KnxManufacturer_M_BEIJING_HAILIN_CONTROL_TECHNOLOGY_INC_:
+		return "M_BEIJING_HAILIN_CONTROL_TECHNOLOGY_INC_"
+	case KnxManufacturer_M_HANGZHOU_SNOWYI_TECHNOLOGY_CO__LTD_:
+		return "M_HANGZHOU_SNOWYI_TECHNOLOGY_CO__LTD_"
+	case KnxManufacturer_M_XIAMEN_E_TOP_CONTROLS_TECHNOLOGY_CO__LTD:
+		return "M_XIAMEN_E_TOP_CONTROLS_TECHNOLOGY_CO__LTD"
+	case KnxManufacturer_M_VITRUM_DESIGN:
+		return "M_VITRUM_DESIGN"
+	case KnxManufacturer_M_DETRONS:
+		return "M_DETRONS"
+	case KnxManufacturer_M_ABB___RESERVED:
+		return "M_ABB___RESERVED"
 	case KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED:
 		return "M_BUSCH_JAEGER_ELEKTRO___RESERVED"
 	case KnxManufacturer_M_EELECTRON:

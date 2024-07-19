@@ -784,9 +784,19 @@ public enum KnxManufacturer {
   M_ELSMART((int) 677, (int) 735, (String) "ELSMART"),
   M_MIDDLE_EAST_SPECIALIZED_CABLES_CO__MESC(
       (int) 678, (int) 736, (String) "Middle East Specialized Cables Co. (MESC)"),
-  M_ABB___RESERVED((int) 679, (int) 43954, (String) "ABB - reserved"),
+  M_HANGZHOU_SANYUAN_CABLE_CO___LTD(
+      (int) 679, (int) 737, (String) "HANGZHOU SANYUAN CABLE CO., LTD"),
+  M_BEIJING_HAILIN_CONTROL_TECHNOLOGY_INC_(
+      (int) 680, (int) 738, (String) "Beijing HaiLin Control Technology Inc."),
+  M_HANGZHOU_SNOWYI_TECHNOLOGY_CO__LTD_(
+      (int) 681, (int) 739, (String) "HangZhou Snowyi Technology Co.,LTD."),
+  M_XIAMEN_E_TOP_CONTROLS_TECHNOLOGY_CO__LTD(
+      (int) 682, (int) 740, (String) "Xiamen E-Top Controls Technology Co.,Ltd"),
+  M_VITRUM_DESIGN((int) 683, (int) 741, (String) "Vitrum Design"),
+  M_DETRONS((int) 684, (int) 742, (String) "DETRONS"),
+  M_ABB___RESERVED((int) 685, (int) 43954, (String) "ABB - reserved"),
   M_BUSCH_JAEGER_ELEKTRO___RESERVED(
-      (int) 680, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
+      (int) 686, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
   private static final Map<Integer, KnxManufacturer> map;
 
   static {

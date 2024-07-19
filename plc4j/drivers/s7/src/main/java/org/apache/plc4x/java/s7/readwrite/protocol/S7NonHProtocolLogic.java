@@ -1325,7 +1325,7 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 		// Get the tpduId from the S7 message.
 		int tpduId = request.getTpduReference();
 
-		TPKTPacket tpktPacket = new TPKTPacket(new COTPPacketData(null, request, true, (byte) tpduId));
+		TPKTPacket tpktPacket = new TPKTPacket(new COTPPacketData(null, request, true, (byte) 0));
 
 		// Start a new request-transaction (Is ended in the response-handler)
 		RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
@@ -1533,7 +1533,7 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 		{
 			tpduId = 0;
 		}
-		COTPPacketData cotpPacketData = new COTPPacketData(null, s7Message, true, (byte) tpduId);
+		COTPPacketData cotpPacketData = new COTPPacketData(null, s7Message, true, (byte) 0);
 		return new TPKTPacket(cotpPacketData);
 	}
 
