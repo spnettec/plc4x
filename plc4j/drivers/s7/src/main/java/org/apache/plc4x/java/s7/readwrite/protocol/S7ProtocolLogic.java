@@ -30,29 +30,24 @@ import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.api.model.PlcSubscriptionTag;
 import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
-import org.apache.plc4x.java.api.types.PlcSubscriptionType;
 import org.apache.plc4x.java.api.value.PlcValue;
-import org.apache.plc4x.java.s7.events.*;
+import org.apache.plc4x.java.s7.events.S7CyclicEvent;
+import org.apache.plc4x.java.s7.events.S7Event;
 import org.apache.plc4x.java.s7.readwrite.*;
-import org.apache.plc4x.java.s7.readwrite.configuration.S7Configuration;
 import org.apache.plc4x.java.s7.readwrite.context.S7DriverContext;
-import org.apache.plc4x.java.s7.readwrite.optimizer.LargeTagPlcReadRequest;
 import org.apache.plc4x.java.s7.readwrite.tag.*;
 import org.apache.plc4x.java.s7.readwrite.types.S7SubscriptionType;
 import org.apache.plc4x.java.s7.readwrite.utils.S7PlcSubscriptionHandle;
-import org.apache.plc4x.java.s7.readwrite.utils.S7PlcSubscriptionRequest;
 import org.apache.plc4x.java.s7.utils.S7ParamErrorCode;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
-import org.apache.plc4x.java.spi.configuration.HasConfiguration;
 import org.apache.plc4x.java.spi.context.DriverContext;
 import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.java.spi.messages.*;
 import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
+import org.apache.plc4x.java.spi.messages.utils.TagValueItem;
 import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionTag;
 import org.apache.plc4x.java.spi.transaction.RequestTransactionManager;
-import org.apache.plc4x.java.spi.transaction.TransactionErrorCallback;
-import org.apache.plc4x.java.spi.transaction.TransactionTimeOutCallback;
 import org.apache.plc4x.java.spi.values.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,25 +59,28 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import org.apache.plc4x.java.api.types.PlcSubscriptionType;
+import org.apache.plc4x.java.s7.events.S7AlarmEvent;
+import org.apache.plc4x.java.s7.events.S7ModeEvent;
+import org.apache.plc4x.java.s7.events.S7SysEvent;
+import org.apache.plc4x.java.s7.events.S7UserEvent;
+import org.apache.plc4x.java.s7.readwrite.utils.S7PlcSubscriptionRequest;
 
-import static org.apache.plc4x.java.s7.readwrite.optimizer.S7Optimizer.EMPTY_READ_REQUEST_SIZE;
-import static org.apache.plc4x.java.s7.readwrite.optimizer.S7Optimizer.EMPTY_READ_RESPONSE_SIZE;
-import static org.apache.plc4x.java.spi.codegen.io.DataReaderFactory.readUnsignedByte;
-import static org.apache.plc4x.java.spi.connection.AbstractPlcConnection.IS_CONNECTED;
 /**
  * The S7 Protocol states that there can not be more then {min(maxAmqCaller, maxAmqCallee} "ongoing" requests.
  * So we need to limit those.
  * Thus, each request goes to a Work Queue and this Queue ensures, that only 3 are open at the same time.
  */
-public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements HasConfiguration<S7Configuration> {
+public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
 
     private static final Logger logger = LoggerFactory.getLogger(S7ProtocolLogic.class);
 
-    private final AtomicInteger tpduGenerator = new AtomicInteger(1);
-
-    private S7Configuration configuration;
+    public static final Duration REQUEST_TIMEOUT = Duration.ofMillis(10000);
+    private final AtomicInteger tpduGenerator = new AtomicInteger(10);
 
     /*
      * Task group for managing connection redundancy.
@@ -1446,16 +1444,16 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
 
         // Get the tpduId from the S7 message.
         int tpduId = request.getTpduReference();
-
-        TPKTPacket tpktPacket = new TPKTPacket(new COTPPacketData(null, request, true, (byte) tpduId));
+        //The "COTP - TPDU nnumber" field must always be zero.
+        TPKTPacket tpktPacket = new TPKTPacket(new COTPPacketData(null, request, true, (byte) 0));
 
         // Start a new request-transaction (Is ended in the response-handler)
         RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
         // Send the request.
         transaction.submit(() -> context.sendRequest(tpktPacket)
-            .onTimeout(new TransactionTimeOutCallback<>(future, transaction,context.getChannel()))
-            .onError(new TransactionErrorCallback<>(future, transaction,context.getChannel()))
-            .expectResponse(TPKTPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
+            .onTimeout(new TransactionErrorCallback<>(future, transaction))
+            .onError(new TransactionErrorCallback<>(future, transaction))
+            .expectResponse(TPKTPacket.class, REQUEST_TIMEOUT)
             .unwrap(TPKTPacket::getPayload)
             .only(COTPPacketData.class)
             .check(p -> p.getPayload() != null)
@@ -1665,7 +1663,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
         {
             tpduId = 0;
         }
-        COTPPacketData cotpPacketData = new COTPPacketData(null, s7Message, true, (byte) tpduId);
+        COTPPacketData cotpPacketData = new COTPPacketData(null, s7Message, true, (byte) 0);
         return new TPKTPacket(cotpPacketData);
     }
 
