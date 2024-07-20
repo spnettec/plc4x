@@ -30,9 +30,11 @@ import java.util.concurrent.CompletableFuture;
 public class LargeTagPlcWriteRequest implements PlcWriteRequest {
 
     private final PlcValue plcValue;
-    public LargeTagPlcWriteRequest(String tagName, PlcValue plcValue) {
+    private final PlcTag tag;
+    public LargeTagPlcWriteRequest(String tagName, PlcValue plcValue, PlcTag tag) {
         this.tagName = tagName;
         this.plcValue = plcValue;
+        this.tag = tag;
     }
 
     private final String tagName;
@@ -57,12 +59,12 @@ public class LargeTagPlcWriteRequest implements PlcWriteRequest {
 
     @Override
     public PlcTag getTag(String name) {
-        throw new UnsupportedOperationException();
+        return tag;
     }
 
     @Override
     public List<PlcTag> getTags() {
-        throw new UnsupportedOperationException();
+        return Collections.singletonList(tag);
     }
 
     @Override

@@ -328,14 +328,13 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 			return future;
 		}
 
-		DefaultPlcWriteRequest request = (DefaultPlcWriteRequest) writeRequest;
 		CompletableFuture<S7Message> responseFuture;
 		// TODO: Write one or two lines on what happens here ... to me it looks as if there's at least on S7ClkTag, then all is handled by the writeClk method, but what happens if a request would contain mixed tag types?
-		if (request.getTagNames().stream().anyMatch(t -> request.getTag(t) instanceof S7ClkTag)) {
-			responseFuture = performClkSetRequest((DefaultPlcWriteRequest) writeRequest);
+		if (writeRequest.getTagNames().stream().anyMatch(t -> writeRequest.getTag(t) instanceof S7ClkTag)) {
+			responseFuture = performClkSetRequest(writeRequest);
 		}
 		else {
-			responseFuture = performOrdinaryWriteRequest(request);
+			responseFuture = performOrdinaryWriteRequest(writeRequest);
 		}
 
 		return toPlcWriteResponse(writeRequest, responseFuture);
@@ -1246,7 +1245,7 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 	/*
 	 *
 	 */
-	private CompletableFuture<S7Message> performClkSetRequest(DefaultPlcWriteRequest request) {
+	private CompletableFuture<S7Message> performClkSetRequest(PlcWriteRequest request) {
 		List<S7ParameterUserDataItem> parameterItems = new ArrayList<>(request.getNumberOfTags());
 		List<S7PayloadUserDataItem> payloadItems = new ArrayList<>(request.getNumberOfTags());
 
@@ -1294,7 +1293,7 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 		return sendInternal(requestMessage);
 	}
 
-	private CompletableFuture<S7Message> performOrdinaryWriteRequest(DefaultPlcWriteRequest request) {
+	private CompletableFuture<S7Message> performOrdinaryWriteRequest(PlcWriteRequest request) {
 		List<S7VarRequestParameterItem> parameterItems = new ArrayList<>(request.getNumberOfTags());
 		List<S7VarPayloadDataItem> payloadItems = new ArrayList<>(request.getNumberOfTags());
 

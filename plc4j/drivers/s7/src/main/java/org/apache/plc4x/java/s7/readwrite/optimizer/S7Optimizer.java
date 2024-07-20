@@ -62,7 +62,7 @@ public class S7Optimizer extends BaseOptimizer {
         LinkedHashMap<String, PlcTag> curTags = new LinkedHashMap<>();
 
         for (String tagName : readRequest.getTagNames()) {
-           
+
             //TODO: Individual processing of these types of tags. like S7StringTag
             if ((readRequest.getTag(tagName) instanceof S7SzlTag) ||
                 (readRequest.getTag(tagName) instanceof S7ClkTag)) {
@@ -195,7 +195,7 @@ public class S7Optimizer extends BaseOptimizer {
                 // Splitting of huge tags not yet implemented, throw an exception instead.
                 if (((curRequestSize + writeRequestItemSize) > s7DriverContext.getPduSize()) ||
                     ((curResponseSize + writeResponseItemSize) > s7DriverContext.getPduSize())) {
-                    processedRequests.add(new LargeTagPlcWriteRequest(tagName,value));
+                    processedRequests.add(new LargeTagPlcWriteRequest(tagName,value,tag));
                     //throw new PlcRuntimeException("Tag size exceeds maximum payload for one item.");
                 }
             }
