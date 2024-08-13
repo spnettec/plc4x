@@ -417,7 +417,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
             } else {
                 StatusCode statusCode = results.get(count).getStatusCode();
                 responseCode = mapOpcStatusCode(statusCode.getStatusCode(), PlcResponseCode.UNSUPPORTED);
-                LOGGER.error("Error while reading value from OPC UA server error code:- " + results.get(count).getStatusCode().toString());
+                LOGGER.error("Error while reading value from OPC UA server error code: {}", results.get(count).getStatusCode().toString());
             }
             count++;
             response.put(tagName, new ResponseItem<>(responseCode, value));
@@ -451,7 +451,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
 
     private Variant fromPlcValue(String tagName, OpcuaTag tag, PlcWriteRequest request) {
         PlcList valueObject;
-        if (request.getPlcValue(tagName).getObject() instanceof ArrayList) {
+        if (request.getPlcValue(tagName).getObject() instanceof List) {
             valueObject = (PlcList) request.getPlcValue(tagName);
         } else {
             List<PlcValue> list = new ArrayList<>();
