@@ -24,6 +24,10 @@ import (
 	"regexp"
 )
 
+func Btox(data []byte) string {
+	return hex.EncodeToString(data)
+}
+
 func Xtob(hexString string) ([]byte, error) {
 	compile, err := regexp.Compile("[^0-9a-fA-F]")
 	if err != nil {
@@ -35,4 +39,8 @@ func Xtob(hexString string) ([]byte, error) {
 		return nil, err
 	}
 	return decodeString, nil
+}
+
+type DebugContents struct {
+	// TODO: implement me
 }

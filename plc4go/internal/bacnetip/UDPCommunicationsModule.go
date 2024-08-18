@@ -56,9 +56,9 @@ func NewUDPActor(localLog zerolog.Logger, director *UDPDirector, peer string) *U
 	// Add a timer
 	a.timeout = director.timeout
 	if a.timeout > 0 {
-		a.timer = FunctionTask(a.idleTimeout)
+		a.timer = FunctionTask(a.idleTimeout, NoArgs, NoKWArgs)
 		when := time.Now().Add(time.Duration(a.timeout) * time.Millisecond)
-		a.timer.InstallTask(&when, nil)
+		a.timer.InstallTask(InstallTaskOptions{When: &when})
 	}
 
 	// tell the director this is a new actor
@@ -66,7 +66,7 @@ func NewUDPActor(localLog zerolog.Logger, director *UDPDirector, peer string) *U
 	return a
 }
 
-func (a *UDPActor) idleTimeout() error {
+func (a *UDPActor) idleTimeout(_ Args, _ KWArgs) error {
 	a.log.Debug().Msg("idleTimeout")
 
 	// tell the director this is gone
@@ -81,7 +81,7 @@ func (a *UDPActor) Indication(args Args, kwargs KWArgs) error {
 	// reschedule the timer
 	if a.timer != nil {
 		when := time.Now().Add(time.Duration(a.timeout) * time.Millisecond)
-		a.timer.InstallTask(&when, nil)
+		a.timer.InstallTask(InstallTaskOptions{When: &when})
 	}
 
 	// put it in the outbound queue for the director
@@ -95,7 +95,7 @@ func (a *UDPActor) Response(args Args, kwargs KWArgs) error {
 	// reschedule the timer
 	if a.timer != nil {
 		when := time.Now().Add(time.Duration(a.timeout) * time.Millisecond)
-		a.timer.InstallTask(&when, nil)
+		a.timer.InstallTask(InstallTaskOptions{When: &when})
 	}
 
 	// process this as a response from the director
@@ -131,11 +131,15 @@ type UDPDirector struct {
 func NewUDPDirector(localLog zerolog.Logger, address AddressTuple[string, uint16], timeout *int, reuse *bool, sid *int, sapID *int) (*UDPDirector, error) {
 	d := &UDPDirector{}
 	var err error
-	d.Server, err = NewServer(localLog, sid, d)
+	d.Server, err = NewServer(localLog, d, func(server *Server) {
+		server.serverID = sid
+	})
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating server")
 	}
-	d.ServiceAccessPoint, err = NewServiceAccessPoint(localLog, sapID, d)
+	d.ServiceAccessPoint, err = NewServiceAccessPoint(localLog, d, func(point *ServiceAccessPoint) {
+		point.serviceID = sapID
+	})
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating service access point")
 	}
