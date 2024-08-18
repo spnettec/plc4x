@@ -445,78 +445,74 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
 
     private CompletableFuture<PlcReadResponse> readWithoutMessageRouter(PlcReadRequest readRequest) {
         CompletableFuture<PlcReadResponse> future = new CompletableFuture<>();
-        Map<String, ResponseItem<PlcValue>> values = new HashMap<>();
-        List<CompletableFuture<Void>> internalFutures = new ArrayList<>();
+        RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
+
         PathSegment classSegment = new LogicalSegment(new ClassID((byte) 0, (short) 6));
         PathSegment instanceSegment = new LogicalSegment(new InstanceID((byte) 0, (short) 1));
 
         DefaultPlcReadRequest request = (DefaultPlcReadRequest) readRequest;
-        for (String tagName : request.getTagNames()) {
-            CompletableFuture<Void> internalFuture = new CompletableFuture<>();
-            EipTag eipTag = (EipTag) request.getTag(tagName);
-            String tag = eipTag.getTag();
+        List<CipService> requests = new ArrayList<>(request.getNumberOfTags());
+        for (PlcTag field : request.getTags()) {
+            EipTag plcField = (EipTag) field;
+            String tag = plcField.getTag();
 
             try {
                 CipReadRequest req = new CipReadRequest(
                     toAnsi(tag),
                     1);
-
-                CipUnconnectedRequest requestItem = new CipUnconnectedRequest(
-                    classSegment,
-                    instanceSegment,
-                    req,
-                    (byte) this.configuration.getBackplane(),
-                    (byte) this.configuration.getSlot());
-
-                List<TypeId> typeIds = Arrays.asList(
-                    nullAddressItem,
-                    new UnConnectedDataItem(requestItem));
-
-                CipRRData rrdata = new CipRRData(
-                    sessionHandle,
-                    CIPStatus.Success.getValue(),
-                    DEFAULT_SENDER_CONTEXT,
-                    0L,
-                    EMPTY_INTERFACE_HANDLE,
-                    0,
-                    typeIds);
-
-                RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
-                transaction.submit(() -> context.sendRequest(rrdata)
-                    .expectResponse(EipPacket.class, REQUEST_TIMEOUT)
-                    .onTimeout(internalFuture::completeExceptionally)
-                    .onError((p, e) -> internalFuture.completeExceptionally(e))
-                    .check(p -> p instanceof CipRRData)
-                    .unwrap(p -> (CipRRData) p)
-                    .check(p -> p.getSessionHandle() == sessionHandle)
-                    .handle(p -> {
-                        List<TypeId> responseTypeIds = p.getTypeIds();
-                        UnConnectedDataItem dataItem = (UnConnectedDataItem) responseTypeIds.get(1);
-                        // If the response indicates an error, handle this.
-                        if((dataItem.getService() instanceof CipConnectedResponse) && (((CipConnectedResponse) dataItem.getService()).getStatus() == 0x03)) {
-                            values.put(tagName, new ResponseItem<>(PlcResponseCode.INVALID_ADDRESS, null));
-                        }
-                        // Otherwise process the response.
-                        else {
-                            Map<String, ResponseItem<PlcValue>> readResponse = decodeSingleReadResponse(dataItem.getService(), tagName, eipTag);
-                            values.putAll(readResponse);
-                        }
-                        internalFuture.complete(null);
-                        transaction.endRequest();
-                    }));
-                internalFutures.add(internalFuture);
+                requests.add(req);
             } catch (SerializationException e) {
-                internalFuture.completeExceptionally(new PlcRuntimeException("Failed to read field"));
+                e.printStackTrace();
             }
         }
 
-        CompletableFuture.allOf(internalFutures.toArray(new CompletableFuture[0])).thenRun(() -> {
-            PlcReadResponse readResponse = new DefaultPlcReadResponse(readRequest, values);
-            future.complete(readResponse);
-        }).exceptionally(e -> {
-            future.completeExceptionally(e);
-            return null;
-        });
+        List<TypeId> typeIds =new ArrayList<>();
+
+        short nb = (short) requests.size();
+        List<Integer> offsets = new ArrayList<>(nb);
+        int offset = 2 + nb * 2;
+        for (int i = 0; i < nb; i++) {
+            offsets.add(offset);
+            offset += requests.get(i).getLengthInBytes();
+        }
+
+        MultipleServiceRequest serviceRequest = new MultipleServiceRequest(new Services(offsets, requests));
+        CipUnconnectedRequest unreq = new CipUnconnectedRequest(
+            classSegment,
+            instanceSegment,
+            serviceRequest,
+            (byte) this.configuration.getBackplane(),
+            (byte) this.configuration.getSlot());
+        typeIds.add(new UnConnectedDataItem(unreq));
+
+        CipRRData rrdata = new CipRRData(
+            sessionHandle,
+            CIPStatus.Success.getValue(),
+            DEFAULT_SENDER_CONTEXT,
+            0L,
+            EMPTY_INTERFACE_HANDLE,
+            0,
+            typeIds);
+
+        transaction.submit(() -> context.sendRequest(rrdata)
+            .expectResponse(EipPacket.class, REQUEST_TIMEOUT)
+            .onTimeout(future::completeExceptionally)
+            .onError((p, e) -> future.completeExceptionally(e))
+            .check(p -> p instanceof CipRRData)
+            .unwrap(p -> (CipRRData) p)
+            .check(p -> p.getSessionHandle() == sessionHandle)
+            .handle(p -> {
+                List<TypeId> responseTypeIds = p.getTypeIds();
+                TypeId typeId = responseTypeIds.get(0);
+                if (typeId instanceof NullAddressItem) {
+                    typeId = responseTypeIds.get(1);
+                }
+                UnConnectedDataItem dataItem = (UnConnectedDataItem) typeId;
+                PlcReadResponse readResponse = decodeReadResponse(dataItem.getService(), request);
+                future.complete(readResponse);
+                // Finish the request-transaction.
+                transaction.endRequest();
+            }));
 
         return future;
     }
