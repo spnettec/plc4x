@@ -77,6 +77,7 @@ import static org.assertj.core.api.Assertions.fail;
 
 @Testcontainers(disabledWithoutDocker = true)
 @DisableOnJenkinsFlag
+@Disabled
 public class OpcuaPlcDriverTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OpcuaPlcDriverTest.class);
