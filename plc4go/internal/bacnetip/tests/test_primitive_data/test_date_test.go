@@ -44,21 +44,21 @@ func Date(arg ...any) *bacnetip.Date {
 }
 
 // Convert a hex string to a character_string application tag.
-func DateTag(x string) *bacnetip.Tag {
+func DateTag(x string) bacnetip.Tag {
 	b := xtob(x)
 	tag := Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_DATE, len(b), b)
 	return tag
 }
 
 // Encode a Date object into a tag.
-func DateEncode(obj *bacnetip.Date) *bacnetip.Tag {
+func DateEncode(obj *bacnetip.Date) bacnetip.Tag {
 	tag := Tag()
 	obj.Encode(tag)
 	return tag
 }
 
 // Decode a Date application tag into a Date.
-func DateDecode(tag *bacnetip.Tag) *bacnetip.Date {
+func DateDecode(tag bacnetip.Tag) *bacnetip.Date {
 	obj := Date(tag)
 
 	return obj
@@ -78,9 +78,7 @@ func DateEndec(t *testing.T, v string, x string) {
 
 func TestDate(t *testing.T) {
 	obj := Date()
-	assert.Equal(t, int64(0), obj.GetValue())
-	year, month, day, week := obj.GetTupleValue()
-	assert.Equal(t, []any{0xff, 0xff, 0xff, 0xff}, []any{year, month, day, week})
+	assert.Equal(t, bacnetip.DateTuple{Year: 0xff, Month: 0xff, Day: 0xff, DayOfWeek: 0xff}, obj.GetValue())
 
 	assert.Panics(t, func() {
 		Date("some string")
@@ -89,16 +87,14 @@ func TestDate(t *testing.T) {
 
 func TestDateTuple(t *testing.T) {
 	obj := Date(bacnetip.DateTuple{Year: 1, Month: 2, Day: 3, DayOfWeek: 4})
-	year, month, day, week := obj.GetTupleValue()
-	assert.Equal(t, []any{1, 2, 3, 4}, []any{year, month, day, week})
+	assert.Equal(t, bacnetip.DateTuple{Year: 1, Month: 2, Day: 3, DayOfWeek: 4}, obj.GetValue())
 	assert.Equal(t, "Date(1901-2-3 thu)", obj.String())
 }
 
 func TestDateTag(t *testing.T) {
 	tag := Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_DATE, 4, xtob("01020304"))
 	obj := Date(tag)
-	year, month, day, week := obj.GetTupleValue()
-	assert.Equal(t, []any{1, 2, 3, 4}, []any{year, month, day, week})
+	assert.Equal(t, bacnetip.DateTuple{Year: 1, Month: 2, Day: 3, DayOfWeek: 4}, obj.GetValue())
 
 	tag = Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_BOOLEAN, 0, xtob(""))
 	assert.Panics(t, func() {
