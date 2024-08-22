@@ -30,6 +30,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/apache/plc4x/plc4go/internal/bacnetip/globals"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/utils"
@@ -638,9 +639,29 @@ func (a *Address) Equals(other any) bool {
 		if a == other {
 			return true
 		}
-		return a.String() == other.String()
+		thisString := a.String()
+		otherString := other.String()
+		equals := thisString == otherString
+		if !equals {
+			a.log.Debug().Str("thisString", thisString).Str("otherString", otherString).Msg("Mismatch")
+		}
+		return equals
 	case Address:
-		return a.String() == other.String()
+		thisString := a.String()
+		otherString := other.String()
+		equals := thisString == otherString
+		if !equals {
+			a.log.Debug().Str("thisString", thisString).Str("otherString", otherString).Msg("Mismatch")
+		}
+		return equals
+	case *AddressTuple[string, uint16]:
+		thisString := a.AddrTuple.String()
+		otherString := other.String()
+		equals := thisString == otherString
+		if !equals {
+			a.log.Debug().Str("thisString", thisString).Str("otherString", otherString).Msg("Mismatch")
+		}
+		return equals
 	default:
 		return false
 	}
@@ -778,6 +799,22 @@ func uint32ToIpv4(number uint32) net.IP {
 	return ipv4
 }
 
+// PackIpAddr Given an IP address tuple like ('1.2.3.4', 47808) return the six-octet string
+// useful for a BACnet address.
+func PackIpAddr(addrTuple *AddressTuple[string, uint16]) (octetString []byte) {
+	addr, port := addrTuple.Left, addrTuple.Right
+	octetString = append(net.ParseIP(addr).To4(), uint16ToPort(port)...)
+	return
+}
+
+// UnpackIpAddr Given a six-octet BACnet address, return an IP address tuple.
+func UnpackIpAddr(addr []byte) (addrTuple *AddressTuple[string, uint16]) {
+	ip := ipv4ToUint32(addr[:4])
+	port := portToUint16(addr[4:])
+
+	return &AddressTuple[string, uint16]{uint32ToIpv4(ip).String(), port}
+}
+
 func NewLocalStation(localLog zerolog.Logger, addr any, route *Address) (*Address, error) {
 	l := &Address{
 		log: localLog,
@@ -853,18 +890,48 @@ func NewGlobalBroadcast(route *Address) *Address {
 	return g
 }
 
+type PCI interface {
+	IPCI
+	GetExpectingReply() bool
+	GetNetworkPriority() readWriteModel.NPDUNetworkPriority
+}
+
 type _PCI struct {
 	*__PCI
 	expectingReply  bool
 	networkPriority readWriteModel.NPDUNetworkPriority
 }
 
-func newPCI(msg spi.Message, pduSource *Address, pduDestination *Address, expectingReply bool, networkPriority readWriteModel.NPDUNetworkPriority) *_PCI {
+var _ PCI = (*_PCI)(nil)
+
+func newPCI(pduUserData spi.Message, pduSource *Address, pduDestination *Address, expectingReply bool, networkPriority readWriteModel.NPDUNetworkPriority) *_PCI {
 	return &_PCI{
-		new__PCI(msg, pduSource, pduDestination),
+		new__PCI(pduUserData, pduSource, pduDestination),
 		expectingReply,
 		networkPriority,
 	}
+}
+
+func (p *_PCI) Update(pci Arg) error {
+	if err := p.__PCI.Update(pci); err != nil {
+		return errors.Wrap(err, "error updating __PCI")
+	}
+	switch pci := pci.(type) {
+	case PCI:
+		p.expectingReply = pci.GetExpectingReply()
+		p.networkPriority = pci.GetNetworkPriority()
+		return nil
+	default:
+		return errors.Errorf("invalid PCI type %T", pci)
+	}
+}
+
+func (p *_PCI) GetExpectingReply() bool {
+	return p.expectingReply
+}
+
+func (p *_PCI) GetNetworkPriority() readWriteModel.NPDUNetworkPriority {
+	return p.networkPriority
 }
 
 func (p *_PCI) deepCopy() *_PCI {
@@ -879,6 +946,7 @@ func (p *_PCI) String() string {
 }
 
 type PDUData interface {
+	SetPduData([]byte)
 	GetPduData() []byte
 	Get() (byte, error)
 	GetShort() (int16, error)
@@ -886,8 +954,8 @@ type PDUData interface {
 	GetData(dlen int) ([]byte, error)
 	Put(byte)
 	PutData(...byte)
-	PutShort(int16)
-	PutLong(int64)
+	PutShort(uint16)
+	PutLong(uint32)
 }
 
 type _PDUDataRequirements interface {
@@ -912,6 +980,10 @@ func newPDUData(requirements _PDUDataRequirements) *_PDUData {
 
 func NewPDUData(args Args) PDUData {
 	return newPDUData(args[0].(_PDUDataRequirements))
+}
+
+func (d *_PDUData) SetPduData(data []byte) {
+	d.cachedData = data
 }
 
 func (d *_PDUData) GetPduData() []byte {
@@ -976,17 +1048,17 @@ func (d *_PDUData) PutData(n ...byte) {
 	d.cachedData = append(d.cachedData, n...)
 }
 
-func (d *_PDUData) PutShort(n int16) {
+func (d *_PDUData) PutShort(n uint16) {
 	d.checkCache()
 	ba := make([]byte, 2)
-	binary.BigEndian.PutUint16(ba, uint16(n))
+	binary.BigEndian.PutUint16(ba, n)
 	d.cachedData = append(d.cachedData, ba...)
 }
 
-func (d *_PDUData) PutLong(n int64) {
+func (d *_PDUData) PutLong(n uint32) {
 	d.checkCache()
 	ba := make([]byte, 4)
-	binary.BigEndian.PutUint64(ba, uint64(n))
+	binary.BigEndian.PutUint32(ba, n)
 	d.cachedData = append(d.cachedData, ba...)
 }
 
@@ -1002,26 +1074,28 @@ func (d *_PDUData) deepCopy() *_PDUData {
 }
 
 type PDU interface {
-	fmt.Stringer
-	GetMessage() spi.Message
-	GetPDUSource() *Address
-	SetPDUSource(source *Address)
-	GetPDUDestination() *Address
-	SetPDUDestination(*Address)
-	GetExpectingReply() bool
-	GetNetworkPriority() readWriteModel.NPDUNetworkPriority
+	PCI
+	PDUData
+	GetMessage() spi.Message // TODO: check if we still need that... ()
 	DeepCopy() PDU
+}
+
+// PDUContract provides a set of functions which can be overwritten by a sub struct
+type PDUContract interface {
+	GetName() string
 }
 
 type _PDU struct {
 	*_PCI
 	*_PDUData
+	PDUContract
 }
 
-func NewPDU(msg spi.Message, pduOptions ...PDUOption) PDU {
+func NewPDU(pduUserData spi.Message, pduOptions ...PDUOption) PDU {
 	p := &_PDU{
-		_PCI: newPCI(msg, nil, nil, false, readWriteModel.NPDUNetworkPriority_NORMAL_MESSAGE),
+		_PCI: newPCI(pduUserData, nil, nil, false, readWriteModel.NPDUNetworkPriority_NORMAL_MESSAGE),
 	}
+	p.PDUContract = p
 	for _, option := range pduOptions {
 		option(p)
 	}
@@ -1029,32 +1103,13 @@ func NewPDU(msg spi.Message, pduOptions ...PDUOption) PDU {
 	return p
 }
 
-func NewPDUFromPDU(pdu PDU, pduOptions ...PDUOption) PDU {
-	msg := pdu.(*_PDU).pduUserData
+func NewPDUFromPDUWithNewMessage(pdu PDU, pduUserData spi.Message, pduOptions ...PDUOption) PDU {
 	p := &_PDU{
-		_PCI: newPCI(msg, pdu.GetPDUSource(), pdu.GetPDUDestination(), pdu.GetExpectingReply(), pdu.GetNetworkPriority()),
+		_PCI: newPCI(pduUserData, pdu.GetPDUSource(), pdu.GetPDUDestination(), pdu.GetExpectingReply(), pdu.GetNetworkPriority()),
 	}
+	p.PDUContract = p
 	for _, option := range pduOptions {
 		option(p)
-	}
-	p._PDUData = newPDUData(p)
-	return p
-}
-
-func NewPDUFromPDUWithNewMessage(pdu PDU, msg spi.Message, pduOptions ...PDUOption) PDU {
-	p := &_PDU{
-		_PCI: newPCI(msg, pdu.GetPDUSource(), pdu.GetPDUDestination(), pdu.GetExpectingReply(), pdu.GetNetworkPriority()),
-	}
-	for _, option := range pduOptions {
-		option(p)
-	}
-	p._PDUData = newPDUData(p)
-	return p
-}
-
-func NewPDUWithAllOptions(msg spi.Message, pduSource *Address, pduDestination *Address, expectingReply bool, networkPriority readWriteModel.NPDUNetworkPriority) *_PDU {
-	p := &_PDU{
-		_PCI: newPCI(msg, pduSource, pduDestination, expectingReply, networkPriority),
 	}
 	p._PDUData = newPDUData(p)
 	return p
@@ -1087,6 +1142,9 @@ func WithPDUNetworkPriority(networkPriority readWriteModel.NPDUNetworkPriority) 
 }
 
 func (p *_PDU) getPDUData() []byte {
+	if p.GetMessage() == nil {
+		return nil
+	}
 	writeBufferByteBased := utils.NewWriteBufferByteBased()
 	if err := p.GetMessage().SerializeWithWriteBuffer(context.Background(), writeBufferByteBased); err != nil {
 		panic(err) // TODO: graceful handle
@@ -1098,38 +1156,23 @@ func (p *_PDU) GetMessage() spi.Message {
 	return p.pduUserData
 }
 
-func (p *_PDU) GetPDUSource() *Address {
-	return p.pduSource
-}
-
-func (p *_PDU) SetPDUSource(source *Address) {
-	p.pduSource = source
-}
-
-func (p *_PDU) GetPDUDestination() *Address {
-	return p.pduDestination
-}
-
-func (p *_PDU) SetPDUDestination(destination *Address) {
-	p.pduDestination = destination
-}
-
-func (p *_PDU) GetExpectingReply() bool {
-	return p.expectingReply
-}
-
-func (p *_PDU) GetNetworkPriority() readWriteModel.NPDUNetworkPriority {
-	return p.networkPriority
-}
-
 func (p *_PDU) deepCopy() *_PDU {
-	return &_PDU{_PCI: p._PCI.deepCopy(), _PDUData: p._PDUData.deepCopy()}
+	pduCopy := &_PDU{_PCI: p._PCI.deepCopy(), _PDUData: p._PDUData.deepCopy()}
+	pduCopy.PDUContract = pduCopy
+	return pduCopy
 }
 
 func (p *_PDU) DeepCopy() PDU {
 	return p.deepCopy()
 }
 
+func (p *_PDU) GetName() string {
+	return "PDU"
+}
+
 func (p *_PDU) String() string {
-	return fmt.Sprintf("_PDU{%s}", p._PCI)
+	if globals.ExtendedPDUOutput {
+		return fmt.Sprintf("_PDU{%s}", p._PCI)
+	}
+	return fmt.Sprintf("<%s %s -> %s : %s>", p.PDUContract.GetName(), p.GetPDUSource(), p.GetPDUDestination(), Btox(p.GetPduData(), "."))
 }

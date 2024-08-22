@@ -20,6 +20,7 @@
 package bacnetip
 
 import (
+	"context"
 	"fmt"
 	"time"
 
@@ -217,7 +218,7 @@ func (m *UDPMultiplexer) Indication(args Args, kwargs KWArgs) error {
 		return errors.New("invalid destination address type")
 	}
 
-	return m.directPort.Indication(NewArgs(NewPDUFromPDU(pdu, WithPDUDestination(dest))), NoKWArgs)
+	return m.directPort.Indication(NewArgs(NewPDU(pdu, WithPDUDestination(dest))), NoKWArgs)
 }
 
 func (m *UDPMultiplexer) Confirmation(args Args, kwargs KWArgs) error {
@@ -322,13 +323,45 @@ func (b *AnnexJCodec) String() string {
 }
 
 func (b *AnnexJCodec) Indication(args Args, kwargs KWArgs) error {
-	// Note: our BVLC are all annexJ at the moment
-	return b.Request(args, kwargs)
+	b.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("Indication")
+
+	rpdu := args.Get0PDU()
+
+	// encode it as a generic BVLL PDU
+	bvlpdu := NewBVLPDU(nil)
+	if err := rpdu.(interface{ Encode(Arg) error }).Encode(bvlpdu); err != nil {
+		return errors.Wrap(err, "error encoding PDU")
+	}
+
+	// encode it as a PDU
+	pdu := NewPDU(nil)
+	if err := bvlpdu.Encode(pdu); err != nil {
+		return errors.Wrap(err, "error encoding PDU")
+	}
+
+	// send it downstream
+	return b.Request(NewArgs(pdu), NoKWArgs)
 }
 
 func (b *AnnexJCodec) Confirmation(args Args, kwargs KWArgs) error {
-	// Note: our BVLC are all annexJ at the moment
-	return b.Response(args, kwargs)
+	b.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("Confirmation")
+
+	pdu := args.Get0PDU()
+
+	// interpret as a BVLL PDU
+	bvlpdu := NewBVLPDU(nil)
+	if err := bvlpdu.Decode(pdu); err != nil {
+		return errors.Wrap(err, "error decoding pdu")
+	}
+
+	// get the class related to the function
+	rpdu := BVLPDUTypes[bvlpdu.GetBvlcFunction()]()
+	if err := rpdu.Decode(bvlpdu); err != nil {
+		return errors.Wrap(err, "error decoding PDU")
+	}
+
+	// send it upstream
+	return b.Response(NewArgs(rpdu), NoKWArgs)
 }
 
 type _BIPSAP interface {
@@ -457,19 +490,26 @@ func (b *BIPSimple) Indication(args Args, kwargs KWArgs) error {
 	switch pdu.GetPDUDestination().AddrType {
 	case LOCAL_STATION_ADDRESS:
 		// make an original unicast _PDU
-		xpdu := readWriteModel.NewBVLCOriginalUnicastNPDU(pdu.GetMessage().(readWriteModel.NPDU), 0)
+		xpdu, err := NewOriginalUnicastNPDU(pdu, WithOriginalUnicastNPDUDestination(pdu.GetPDUDestination()), WithOriginalUnicastNPDUUserData(pdu.GetPDUUserData()))
+		if err != nil {
+			return errors.Wrap(err, "error creating original unicastNPDU")
+		}
+		// TODO: route aware stuff missing here
 		b.log.Debug().Stringer("xpdu", xpdu).Msg("xpdu")
 
 		// send it downstream
-		return b.Request(NewArgs(NewPDUFromPDUWithNewMessage(pdu, xpdu)), NoKWArgs)
+		return b.Request(NewArgs(xpdu), NoKWArgs)
 	case LOCAL_BROADCAST_ADDRESS:
 		// make an original broadcast _PDU
-		xpdu := readWriteModel.NewBVLCOriginalBroadcastNPDU(pdu.GetMessage().(readWriteModel.NPDU), 0)
-
+		xpdu, err := NewOriginalBroadcastNPDU(pdu, WithOriginalBroadcastNPDUDestination(pdu.GetPDUDestination()), WithOriginalBroadcastNPDUUserData(pdu.GetPDUUserData()))
+		if err != nil {
+			return errors.Wrap(err, "error creating original BroadcastNPDU")
+		}
+		// TODO: route aware stuff missing here
 		b.log.Debug().Stringer("xpdu", xpdu).Msg("xpdu")
 
 		// send it downstream
-		return b.Request(NewArgs(NewPDUFromPDUWithNewMessage(pdu, xpdu)), NoKWArgs)
+		return b.Request(NewArgs(xpdu), NoKWArgs)
 	default:
 		return errors.Errorf("invalid destination address: %s", pdu.GetPDUDestination())
 	}
@@ -479,7 +519,19 @@ func (b *BIPSimple) Confirmation(args Args, kwargs KWArgs) error {
 	b.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Confirmation")
 	pdu := args.Get0PDU()
 
-	switch msg := pdu.GetMessage().(type) {
+	// TODO: come up with a better way to check that... this is hugely inefficient
+	_data := pdu.GetPDUUserData()
+	_ = _data
+	data := pdu.GetPduData()
+	bvlcParse, err := readWriteModel.NPDUParse(context.Background(), data, uint16(len(data)))
+	if err != nil {
+		panic(err)
+	}
+
+	// TODO: we need to work with the inner types here....
+	panic("todo")
+
+	switch msg := bvlcParse.(type) {
 	// some kind of response to a request
 	case readWriteModel.BVLCResultExactly:
 		// send this to the service access point

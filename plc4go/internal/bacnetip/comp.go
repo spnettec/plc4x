@@ -45,6 +45,10 @@ func (a Args) Get1PDU() PDU {
 	return a[1].(PDU)
 }
 
+func (a Args) Get0NPDU() NPDU {
+	return a[0].(NPDU)
+}
+
 func (a Args) Get0NetworkAdapter() *NetworkAdapter {
 	return a[0].(*NetworkAdapter)
 }
@@ -60,6 +64,10 @@ func (a Args) Get0MultiplexServer() *_MultiplexServer {
 func (a Args) String() string {
 	r := ""
 	for i, ea := range a {
+		switch tea := ea.(type) {
+		case []byte:
+			ea = Btox(tea, ".")
+		}
 		r += fmt.Sprintf("%d: %v, ", i, ea)
 	}
 	if r != "" {
@@ -68,7 +76,7 @@ func (a Args) String() string {
 	return r
 }
 
-type KWArgs map[knownKey]any
+type KWArgs map[KnownKey]any
 
 var NoKWArgs = NewKWArgs()
 
@@ -78,9 +86,9 @@ func NewKWArgs(kw ...any) KWArgs {
 	}
 	r := make(KWArgs)
 	for i := 0; i < len(kw)-1; i += 2 {
-		key, ok := kw[i].(knownKey)
+		key, ok := kw[i].(KnownKey)
 		if !ok {
-			panic("keys must be of type knownKey")
+			panic("keys must be of type KnownKey")
 		}
 		r[key] = kw[i+1]
 	}
@@ -89,21 +97,66 @@ func NewKWArgs(kw ...any) KWArgs {
 func (k KWArgs) String() string {
 	r := ""
 	for kk, ea := range k {
+		switch tea := ea.(type) {
+		case []byte:
+			ea = Btox(tea, ".")
+		}
 		r += fmt.Sprintf("%s=%v, ", kk, ea)
 	}
 	if r != "" {
 		r = r[:len(r)-2]
 	}
-	return r
+	return "{" + r + "}"
 }
 
-type knownKey string
+type KnownKey string
 
 const (
-	kwAddActor   = knownKey("addActor")
-	kwDelActor   = knownKey("delActor")
-	kwActorError = knownKey("actorError")
-	kwError      = knownKey("error")
+	////
+	// General keys
+
+	KWAddActor   = KnownKey("addActor")
+	KWDelActor   = KnownKey("delActor")
+	KWActorError = KnownKey("actorError")
+	KWError      = KnownKey("error")
+
+	////
+	// PDU related Keys
+
+	KWPPDUSource     = KnownKey("pduSource")
+	KWPDUDestination = KnownKey("pduDestination")
+	KWPDUData        = KnownKey("pduData")
+
+	////
+	// NPDU related keys
+
+	KWWirtnNetwork           = KnownKey("wirtnNetwork")
+	KWIartnNetworkList       = KnownKey("iartnNetworkList")
+	KWIcbrtnNetwork          = KnownKey("icbrtnNetwork")
+	KWIcbrtnPerformanceIndex = KnownKey("icbrtnPerformanceIndex")
+	KWRmtnRejectionReason    = KnownKey("rmtnRejectionReason")
+	KWRmtnDNET               = KnownKey("rmtnDNET")
+	KWRbtnNetworkList        = KnownKey("rbtnNetworkList")
+	KWRatnNetworkList        = KnownKey("ratnNetworkList")
+	KWIrtTable               = KnownKey("irtTable")
+	KWIrtaTable              = KnownKey("irtaTable")
+	KWEctnDNET               = KnownKey("ectnDNET")
+	KWEctnTerminationTime    = KnownKey("ectnTerminationTime")
+	KWDctnDNET               = KnownKey("dctnDNET")
+	KWNniNet                 = KnownKey("nniNet")
+	KWNniFlag                = KnownKey("nniFlag")
+
+	////
+	// BVLL related keys
+
+	KWBvlciResultCode = KnownKey("bvlciResultCode")
+	KWBvlciBDT        = KnownKey("bvlciBDT")
+	KWBvlciAddress    = KnownKey("bvlciAddress")
+	KWFdAddress       = KnownKey("fdAddress")
+	KWFdTTL           = KnownKey("fdTTL")
+	KWFdRemain        = KnownKey("fdRemain")
+	KWBvlciTimeToLive = KnownKey("bvlciTimeToLive")
+	KWBvlciFDT        = KnownKey("bvlciFDT")
 )
 
 type MessageBridge struct {
@@ -114,7 +167,7 @@ var _ spi.Message = (*MessageBridge)(nil)
 var _ _PDUDataRequirements = (*MessageBridge)(nil)
 
 func (m *MessageBridge) String() string {
-	return Btox(m.Bytes)
+	return Btox(m.Bytes, "")
 }
 
 func (m *MessageBridge) Serialize() ([]byte, error) {

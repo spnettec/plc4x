@@ -22,12 +22,14 @@ package bacnetip
 import (
 	"bytes"
 	"fmt"
-	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
-	"github.com/pkg/errors"
-	"github.com/rs/zerolog"
 	"math"
 	"slices"
 	"time"
+
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
+
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 )
 
 type RouterStatus uint8
@@ -520,6 +522,7 @@ func (n *NetworkServiceAccessPoint) Indication(args Args, kwargs KWArgs) error {
 	panic("not implemented yet")
 }
 
+// TODO: should us the one in NPDU
 func buildNPDU(hopCount uint8, source *Address, destination *Address, expectingReply bool, networkPriority readWriteModel.NPDUNetworkPriority, nlm readWriteModel.NLM, apdu readWriteModel.APDU) (readWriteModel.NPDU, error) {
 	switch {
 	case nlm != nil && apdu != nil:
@@ -538,7 +541,7 @@ func buildNPDU(hopCount uint8, source *Address, destination *Address, expectingR
 		if sourceLengthValue > math.MaxUint8 {
 			return nil, errors.New("source address length overflows")
 		}
-		sourceLengthValueUint8 := uint8(sourceLengthValue)
+		sourceLengthValueUint8 := sourceLengthValue
 		sourceLength = &sourceLengthValueUint8
 		sourceAddress = source.AddrAddress
 		if sourceLengthValueUint8 == 0 {
@@ -558,7 +561,7 @@ func buildNPDU(hopCount uint8, source *Address, destination *Address, expectingR
 		if destinationLengthValue > math.MaxUint8 {
 			return nil, errors.New("source address length overflows")
 		}
-		destinationLengthValueUint8 := uint8(destinationLengthValue)
+		destinationLengthValueUint8 := destinationLengthValue
 		destinationLength = &destinationLengthValueUint8
 		destinationAddress = destination.AddrAddress
 		if destinationLengthValueUint8 == 0 {
@@ -753,7 +756,7 @@ func (n *NetworkServiceAccessPoint) ProcessNPDU(adapter *NetworkAdapter, pdu PDU
 	}
 
 	// build a new NPDU to send to other adapters
-	newpdu := NewPDUFromPDU(pdu).(*_PDU)
+	newpdu := NewPDU(pdu).(*_PDU)
 
 	// decrease the hop count
 	newNpduHopCount := *npdu.GetHopCount() - 1
@@ -801,7 +804,7 @@ func (n *NetworkServiceAccessPoint) ProcessNPDU(adapter *NetworkAdapter, pdu PDU
 
 		for _, xadapter := range n.adapters {
 			if xadapter != adapter {
-				if err := xadapter.ProcessNPDU(NewPDUFromPDU(newpdu)); err != nil {
+				if err := xadapter.ProcessNPDU(NewPDU(newpdu)); err != nil {
 					n.log.Warn().Err(err).Msg("Error processing npdu")
 				}
 			}
@@ -858,7 +861,7 @@ func (n *NetworkServiceAccessPoint) ProcessNPDU(adapter *NetworkAdapter, pdu PDU
 				0,
 			)
 
-			return xadapter.ProcessNPDU(NewPDUFromPDU(newpdu))
+			return xadapter.ProcessNPDU(NewPDU(newpdu))
 		}
 
 		// look for routing information from the network of one of our adapters to the destination network
@@ -880,7 +883,10 @@ func (n *NetworkServiceAccessPoint) ProcessNPDU(adapter *NetworkAdapter, pdu PDU
 			pduDestination := routerInfo.address
 
 			//  send the packet downstream
-			return snetAdapter.ProcessNPDU(NewPDUFromPDU(newpdu, WithPDUDestination(&pduDestination)))
+			if snetAdapter == nil {
+				return errors.New("snetAdapter nil")
+			}
+			return snetAdapter.ProcessNPDU(NewPDU(newpdu, WithPDUDestination(&pduDestination)))
 		}
 
 		n.log.Debug().Msg("No router info found")
@@ -1034,15 +1040,15 @@ func (n *NetworkServiceElement) Indication(args Args, kwargs KWArgs) error {
 			n.IAmRouterToNetwork(adapter, nlm)
 		case readWriteModel.NLMICouldBeRouterToNetwork:
 			n.ICouldBeRouterToNetwork(adapter, nlm)
-		case readWriteModel.NLMRejectRouterToNetwork:
+		case readWriteModel.NLMRejectMessageToNetwork:
 			n.RejectRouterToNetwork(adapter, nlm)
 		case readWriteModel.NLMRouterBusyToNetwork:
 			n.RouterBusyToNetwork(adapter, nlm)
 		case readWriteModel.NLMRouterAvailableToNetwork:
 			n.RouterAvailableToNetwork(adapter, nlm)
-		case readWriteModel.NLMInitalizeRoutingTable:
+		case readWriteModel.NLMInitializeRoutingTable:
 			n.InitalizeRoutingTable(adapter, nlm)
-		case readWriteModel.NLMInitalizeRoutingTableAck:
+		case readWriteModel.NLMInitializeRoutingTableAck:
 			n.InitalizeRoutingTableAck(adapter, nlm)
 		case readWriteModel.NLMEstablishConnectionToNetwork:
 			n.EstablishConnectionToNetwork(adapter, nlm)
@@ -1076,15 +1082,15 @@ func (n *NetworkServiceElement) Confirmation(args Args, kwargs KWArgs) error {
 			n.IAmRouterToNetwork(adapter, nlm)
 		case readWriteModel.NLMICouldBeRouterToNetwork:
 			n.ICouldBeRouterToNetwork(adapter, nlm)
-		case readWriteModel.NLMRejectRouterToNetwork:
+		case readWriteModel.NLMRejectMessageToNetwork:
 			n.RejectRouterToNetwork(adapter, nlm)
 		case readWriteModel.NLMRouterBusyToNetwork:
 			n.RouterBusyToNetwork(adapter, nlm)
 		case readWriteModel.NLMRouterAvailableToNetwork:
 			n.RouterAvailableToNetwork(adapter, nlm)
-		case readWriteModel.NLMInitalizeRoutingTable:
+		case readWriteModel.NLMInitializeRoutingTable:
 			n.InitalizeRoutingTable(adapter, nlm)
-		case readWriteModel.NLMInitalizeRoutingTableAck:
+		case readWriteModel.NLMInitializeRoutingTableAck:
 			n.InitalizeRoutingTableAck(adapter, nlm)
 		case readWriteModel.NLMEstablishConnectionToNetwork:
 			n.EstablishConnectionToNetwork(adapter, nlm)
@@ -1229,7 +1235,7 @@ func (n *NetworkServiceElement) ICouldBeRouterToNetwork(adapter *NetworkAdapter,
 	// TODO: implement me
 }
 
-func (n *NetworkServiceElement) RejectRouterToNetwork(adapter *NetworkAdapter, nlm readWriteModel.NLMRejectRouterToNetwork) {
+func (n *NetworkServiceElement) RejectRouterToNetwork(adapter *NetworkAdapter, nlm readWriteModel.NLMRejectMessageToNetwork) {
 	// TODO: implement me
 }
 
@@ -1241,11 +1247,11 @@ func (n *NetworkServiceElement) RouterAvailableToNetwork(adapter *NetworkAdapter
 	// TODO: implement me
 }
 
-func (n *NetworkServiceElement) InitalizeRoutingTable(adapter *NetworkAdapter, nlm readWriteModel.NLMInitalizeRoutingTable) {
+func (n *NetworkServiceElement) InitalizeRoutingTable(adapter *NetworkAdapter, nlm readWriteModel.NLMInitializeRoutingTable) {
 	// TODO: implement me
 }
 
-func (n *NetworkServiceElement) InitalizeRoutingTableAck(adapter *NetworkAdapter, nlm readWriteModel.NLMInitalizeRoutingTableAck) {
+func (n *NetworkServiceElement) InitalizeRoutingTableAck(adapter *NetworkAdapter, nlm readWriteModel.NLMInitializeRoutingTableAck) {
 	// TODO: implement me
 }
 
