@@ -22,56 +22,13 @@ package test_primitive_data
 import (
 	"testing"
 
-	"github.com/apache/plc4x/plc4go/internal/bacnetip"
-	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
-
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	"github.com/apache/plc4x/plc4go/internal/bacnetip"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/constructors"
+	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 )
-
-func ApplicationTag(args ...any) *bacnetip.ApplicationTag {
-	tag, err := bacnetip.NewApplicationTag(args)
-	if err != nil {
-		panic(err)
-	}
-	return tag
-}
-
-func ContextTag(args ...any) *bacnetip.ContextTag {
-	tag, err := bacnetip.NewContextTag(args)
-	if err != nil {
-		panic(err)
-	}
-	return tag
-}
-
-func OpeningTag(context any) *bacnetip.OpeningTag {
-	openingTag, err := bacnetip.NewOpeningTag(context)
-	if err != nil {
-		panic(err)
-	}
-	return openingTag
-}
-
-func ClosingTag(context any) *bacnetip.ClosingTag {
-	closingTag, err := bacnetip.NewClosingTag(context)
-	if err != nil {
-		panic(err)
-	}
-	return closingTag
-}
-
-func TagList(tags ...bacnetip.Tag) *bacnetip.TagList {
-	return bacnetip.NewTagList(tags)
-}
-
-func PDUData(args ...any) bacnetip.PDUData {
-	if args == nil {
-		return bacnetip.NewPDUData(bacnetip.NewArgs(&bacnetip.MessageBridge{}))
-	} else {
-		return bacnetip.NewPDUData(bacnetip.NewArgs(&bacnetip.MessageBridge{Bytes: args[0].([]byte)}))
-	}
-}
 
 func TagTuple(tag bacnetip.Tag) (tagClass model.TagClass, tagNumber uint, tagLVT int, tagData []byte) {
 	return tag.GetTagClass(), tag.GetTagNumber(), tag.GetTagLvt(), tag.GetTagData()
@@ -478,8 +435,7 @@ func TestEndec0(t *testing.T) { // Test bracketed application tagged integer enc
 
 	data := PDUData()
 	tagList.Encode(data)
-	var nothing []byte
-	assert.Equal(t, nothing, data.GetPduData())
+	assert.Equal(t, []byte{}, data.GetPduData())
 
 	tagList = TagList()
 	err := tagList.Decode(data)

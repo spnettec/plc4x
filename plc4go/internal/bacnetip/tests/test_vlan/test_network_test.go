@@ -23,14 +23,14 @@ import (
 	"testing"
 	"time"
 
-	"github.com/apache/plc4x/plc4go/internal/bacnetip"
-	"github.com/apache/plc4x/plc4go/internal/bacnetip/tests"
-	"github.com/apache/plc4x/plc4go/spi/testutils"
-
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	"github.com/apache/plc4x/plc4go/internal/bacnetip"
+	"github.com/apache/plc4x/plc4go/internal/bacnetip/tests"
+	"github.com/apache/plc4x/plc4go/spi/testutils"
 )
 
 type TNetwork struct {
@@ -59,7 +59,7 @@ func NewTNetwork(t *testing.T, nodeCount int, promiscuous bool, spoofing bool) *
 	for i := range nodeCount {
 		nodeAddress, err := bacnetip.NewAddress(localLog, i+1)
 		require.NoError(t, err)
-		node, err := bacnetip.NewNode(localLog, nodeAddress, tn.vlan, bacnetip.WithNodePromiscuous(promiscuous), bacnetip.WithNodeSpoofing(spoofing))
+		node, err := bacnetip.NewNode(localLog, nodeAddress, bacnetip.WithNodeLan(tn.vlan), bacnetip.WithNodePromiscuous(promiscuous), bacnetip.WithNodeSpoofing(spoofing))
 		require.NoError(t, err)
 
 		// bind a client state machine to the ndoe
@@ -82,7 +82,6 @@ func (t *TNetwork) Run(timeLimit time.Duration) error {
 	}
 	t.log.Debug().Dur("time_limit", timeLimit).Msg("run")
 
-	tests.NewGlobalTimeMachine(t.log) // TODO: this is really stupid because of concurrency...
 	// reset the time machine
 	tests.ResetTimeMachine(tests.StartTime)
 	t.log.Trace().Msg("time machine reset")
@@ -109,7 +108,7 @@ func (t *TNetwork) Run(timeLimit time.Duration) error {
 
 func TestVLAN(t *testing.T) {
 	t.Run("test_idle", func(t *testing.T) { // Test that a very quiet network can exist. This is not a network test so much as a state machine group test
-		tests.LockGlobalTimeMachine(t)
+		tests.ExclusiveGlobalTimeMachine(t)
 
 		// two element network
 		tnet := NewTNetwork(t, 2, false, false)
@@ -126,10 +125,8 @@ func TestVLAN(t *testing.T) {
 		assert.NoError(t, err)
 	})
 	t.Run("test_send_receive", func(t *testing.T) { // Test that a node can send a message to another node.
-		// TODO: figure out why it is failing
-		t.Skip("not ready yet")
 		testingLogger := testutils.ProduceTestingLogger(t)
-		tests.LockGlobalTimeMachine(t)
+		tests.ExclusiveGlobalTimeMachine(t)
 
 		// two element network
 		tnet := NewTNetwork(t, 2, false, false)
@@ -156,10 +153,8 @@ func TestVLAN(t *testing.T) {
 		assert.NoError(t, err)
 	})
 	t.Run("test_broadcast", func(t *testing.T) { // Test that a node can send out a 'local broadcast' message which will be received by every other node.
-		// TODO: figure out why it is failing
-		t.Skip("not ready yet")
 		testingLogger := testutils.ProduceTestingLogger(t)
-		tests.LockGlobalTimeMachine(t)
+		tests.ExclusiveGlobalTimeMachine(t)
 
 		// three element network
 		tnet := NewTNetwork(t, 3, false, false)
@@ -190,7 +185,7 @@ func TestVLAN(t *testing.T) {
 	})
 	t.Run("test_spoof_fail", func(t *testing.T) { // Test verifying that a node cannot send out packets with a source address other than its own, see also test_spoof_pass().
 		testingLogger := testutils.ProduceTestingLogger(t)
-		tests.LockGlobalTimeMachine(t)
+		tests.ExclusiveGlobalTimeMachine(t)
 
 		// one element network
 		tnet := NewTNetwork(t, 1, false, false)
@@ -214,10 +209,8 @@ func TestVLAN(t *testing.T) {
 		assert.Error(t, err)
 	})
 	t.Run("test_spoof_pass", func(t *testing.T) { // Test allowing a node to send out packets with a source address other than its own, see also test_spoof_fail().
-		// TODO: figure out why it is failing
-		t.Skip("not ready yet")
 		testingLogger := testutils.ProduceTestingLogger(t)
-		tests.LockGlobalTimeMachine(t)
+		tests.ExclusiveGlobalTimeMachine(t)
 
 		// one element network
 		tnet := NewTNetwork(t, 1, false, true)
@@ -246,10 +239,8 @@ func TestVLAN(t *testing.T) {
 		assert.NoError(t, err)
 	})
 	t.Run("test_promiscuous_pass", func(t *testing.T) { // Test 'promiscuous mode' of a node which allows it to receive every packet sent on the network.  This is like the network is a hub, or the node is connected to a 'monitor' port on a managed switch.
-		// TODO: figure out why it is failing
-		t.Skip("not ready yet")
 		testingLogger := testutils.ProduceTestingLogger(t)
-		tests.LockGlobalTimeMachine(t)
+		tests.ExclusiveGlobalTimeMachine(t)
 
 		// three element network
 		tnet := NewTNetwork(t, 3, true, false)
@@ -279,10 +270,8 @@ func TestVLAN(t *testing.T) {
 		assert.NoError(t, err)
 	})
 	t.Run("test_promiscuous_fail", func(t *testing.T) {
-		// TODO: figure out why it is failing
-		t.Skip("not ready yet")
 		testingLogger := testutils.ProduceTestingLogger(t)
-		tests.LockGlobalTimeMachine(t)
+		tests.ExclusiveGlobalTimeMachine(t)
 
 		// three element network
 		tnet := NewTNetwork(t, 3, true, false)
@@ -315,9 +304,8 @@ func TestVLAN(t *testing.T) {
 
 func TestVLANEvents(t *testing.T) {
 	t.Run("test_send_receive", func(t *testing.T) { // Test that a node can send a message to another node and use events to continue with the messages.
-		t.Skip("not yet read") // TODO: fix
 		testingLogger := testutils.ProduceTestingLogger(t)
-		tests.LockGlobalTimeMachine(t)
+		tests.ExclusiveGlobalTimeMachine(t)
 
 		// two element network
 		tnet := NewTNetwork(t, 2, false, false)

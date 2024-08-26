@@ -25,12 +25,12 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
+
 	"github.com/apache/plc4x/plc4go/internal/bacnetip/globals"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/utils"
-
-	"github.com/pkg/errors"
-	"github.com/rs/zerolog"
 )
 
 // maps of named clients and servers
@@ -50,6 +50,8 @@ func init() {
 
 type IPCI interface {
 	spi.Message
+	// GetRootMessage returns this. (TODO: check if type switch works without that, as this is spi.Message which delegates)
+	GetRootMessage() spi.Message
 	SetPDUUserData(spi.Message)
 	GetPDUUserData() spi.Message
 	GetPDUSource() *Address
@@ -60,6 +62,7 @@ type IPCI interface {
 }
 
 type __PCI struct {
+	rootMessage    spi.Message
 	pduUserData    spi.Message
 	pduSource      *Address
 	pduDestination *Address
@@ -67,8 +70,12 @@ type __PCI struct {
 
 var _ IPCI = (*__PCI)(nil)
 
-func new__PCI(pduUserData spi.Message, pduSource *Address, pduDestination *Address) *__PCI {
-	return &__PCI{pduUserData, pduSource, pduDestination}
+func new__PCI(rootMessage spi.Message, pduUserData spi.Message, pduSource *Address, pduDestination *Address) *__PCI {
+	return &__PCI{rootMessage, pduUserData, pduSource, pduDestination}
+}
+
+func (p *__PCI) GetRootMessage() spi.Message {
+	return p.rootMessage
 }
 
 func (p *__PCI) SetPDUUserData(pduUserData spi.Message) {
@@ -98,6 +105,7 @@ func (p *__PCI) SetPDUDestination(destination *Address) {
 func (p *__PCI) Update(pci Arg) error {
 	switch pci := pci.(type) {
 	case IPCI:
+		p.rootMessage = pci.GetRootMessage()
 		p.pduUserData = pci.GetPDUUserData()
 		p.pduSource = pci.GetPDUSource()
 		p.pduDestination = pci.GetPDUDestination()
@@ -108,6 +116,7 @@ func (p *__PCI) Update(pci Arg) error {
 }
 
 func (p *__PCI) deepCopy() *__PCI {
+	rootMessage := p.rootMessage // those are immutable so no copy needed
 	pduUserData := p.pduUserData // those are immutable so no copy needed
 	pduSource := p.pduSource
 	if pduSource != nil {
@@ -119,53 +128,65 @@ func (p *__PCI) deepCopy() *__PCI {
 		copyPduDestination := *pduDestination
 		pduDestination = &copyPduDestination
 	}
-	return &__PCI{pduUserData, pduSource, pduDestination}
+	return &__PCI{rootMessage, pduUserData, pduSource, pduDestination}
 }
 
 func (p *__PCI) Serialize() ([]byte, error) {
-	if p.pduUserData == nil {
+	if p.rootMessage == nil {
 		return nil, errors.New("no pdu userdata")
 	}
-	return p.pduUserData.Serialize()
+	return p.rootMessage.Serialize()
 }
 
 func (p *__PCI) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
-	if p.pduUserData == nil {
+	if p.rootMessage == nil {
 		return errors.New("no pdu userdata")
 	}
-	return p.pduUserData.SerializeWithWriteBuffer(ctx, writeBuffer)
+	return p.rootMessage.SerializeWithWriteBuffer(ctx, writeBuffer)
 }
 
 func (p *__PCI) GetLengthInBytes(ctx context.Context) uint16 {
-	if p.pduUserData == nil {
+	if p.rootMessage == nil {
 		return 0
 	}
-	return p.pduUserData.GetLengthInBytes(ctx)
+	return p.rootMessage.GetLengthInBytes(ctx)
 }
 
 func (p *__PCI) GetLengthInBits(ctx context.Context) uint16 {
-	if p.pduUserData == nil {
+	if p.rootMessage == nil {
 		return 0
 	}
-	return p.pduUserData.GetLengthInBits(ctx)
+	return p.rootMessage.GetLengthInBits(ctx)
 }
 
 func (p *__PCI) String() string {
-	pduUserDataString := ""
+	rootMessageString := "nil"
+	if p.rootMessage != nil && globals.ExtendedPDUOutput {
+		rootMessageString = p.rootMessage.String()
+		if strings.Contains(rootMessageString, "\n") {
+			rootMessageString = "\n" + rootMessageString + "\n"
+		}
+	} else if p.rootMessage != nil {
+		if bytes, err := p.rootMessage.Serialize(); err != nil {
+			rootMessageString = err.Error()
+		} else {
+			rootMessageString = Btox(bytes, ".")
+		}
+	}
+	pduUserDataString := "nil"
 	if p.pduUserData != nil && globals.ExtendedPDUOutput {
 		pduUserDataString = p.pduUserData.String()
 		if strings.Contains(pduUserDataString, "\n") {
 			pduUserDataString = "\n" + pduUserDataString + "\n"
 		}
-		pduUserDataString = "pduUserData: " + pduUserDataString + " ,"
 	} else if p.pduUserData != nil {
 		if bytes, err := p.pduUserData.Serialize(); err != nil {
-			pduUserDataString = "pduUserData: " + err.Error() + " ,"
+			pduUserDataString = err.Error()
 		} else {
-			pduUserDataString = "pduUserData: " + Btox(bytes, ".") + " ,"
+			pduUserDataString = Btox(bytes, ".")
 		}
 	}
-	return fmt.Sprintf("__PCI{%spduSource: %s, pduDestination: %s}", pduUserDataString, p.pduSource, p.pduDestination)
+	return fmt.Sprintf("__PCI{rootMessage: %s, pduUserData: %s, pduSource: %s, pduDestination: %s}", rootMessageString, pduUserDataString, p.pduSource, p.pduDestination)
 }
 
 // _Client is an interface used for documentation
@@ -330,8 +351,7 @@ func (s *Server) String() string {
 	return fmt.Sprintf("Server(cid:%d%s)", s.serverID, serverPeer)
 }
 
-// _ServiceAccessPoint is an interface used for documentation
-type _ServiceAccessPoint interface {
+type ServiceAccessPointRequirements interface {
 	SapConfirmation(Args, KWArgs) error
 	SapRequest(Args, KWArgs) error
 	SapIndication(Args, KWArgs) error
@@ -346,7 +366,7 @@ type ServiceAccessPoint struct {
 	log zerolog.Logger
 }
 
-func NewServiceAccessPoint(localLog zerolog.Logger, rootStruct _ServiceAccessPoint, opts ...func(point *ServiceAccessPoint)) (*ServiceAccessPoint, error) {
+func NewServiceAccessPoint(localLog zerolog.Logger, serviceAccessPointRequirements ServiceAccessPointRequirements, opts ...func(point *ServiceAccessPoint)) (*ServiceAccessPoint, error) {
 	s := &ServiceAccessPoint{
 		log: localLog,
 	}
@@ -367,7 +387,7 @@ func NewServiceAccessPoint(localLog zerolog.Logger, rootStruct _ServiceAccessPoi
 			}
 
 			// Note: we need to pass the rootStruct (which should contain s as delegate) here
-			if err := Bind(localLog, element, rootStruct); err != nil {
+			if err := Bind(localLog, element, serviceAccessPointRequirements); err != nil {
 				return nil, errors.Wrap(err, "error binding")
 			}
 		}
@@ -425,12 +445,12 @@ type _ApplicationServiceElement interface {
 	Indication(args Args, kwargs KWArgs) error
 	Response(args Args, kwargs KWArgs) error
 	Confirmation(args Args, kwargs KWArgs) error
-	_setElementService(elementService _ServiceAccessPoint)
+	_setElementService(elementService ServiceAccessPointRequirements)
 }
 
 type ApplicationServiceElement struct {
 	elementID      *int
-	elementService _ServiceAccessPoint
+	elementService ServiceAccessPointRequirements
 
 	log zerolog.Logger
 }
@@ -499,7 +519,7 @@ func (a *ApplicationServiceElement) Confirmation(Args, KWArgs) error {
 	panic("this should be implemented by outer struct")
 }
 
-func (a *ApplicationServiceElement) _setElementService(elementService _ServiceAccessPoint) {
+func (a *ApplicationServiceElement) _setElementService(elementService ServiceAccessPointRequirements) {
 	a.elementService = elementService
 }
 
@@ -589,7 +609,7 @@ func Bind(localLog zerolog.Logger, args ...any) error {
 		clientCast, okClient := left.(_Client)
 		serverCast, okServer := right.(_Server)
 		elementServiceCast, okElementService := left.(_ApplicationServiceElement)
-		serviceAccessPointCast, okServiceAccessPoint := right.(_ServiceAccessPoint)
+		serviceAccessPointCast, okServiceAccessPoint := right.(ServiceAccessPointRequirements)
 		if okClient && okServer {
 			localLog.Trace().Msg("linking client-server")
 			clientCast._setClientPeer(serverCast)

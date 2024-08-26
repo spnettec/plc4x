@@ -460,6 +460,53 @@ func (_c *MockBVLCI_GetPDUUserData_Call) RunAndReturn(run func() spi.Message) *M
 	return _c
 }
 
+// GetRootMessage provides a mock function with given fields:
+func (_m *MockBVLCI) GetRootMessage() spi.Message {
+	ret := _m.Called()
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetRootMessage")
+	}
+
+	var r0 spi.Message
+	if rf, ok := ret.Get(0).(func() spi.Message); ok {
+		r0 = rf()
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(spi.Message)
+		}
+	}
+
+	return r0
+}
+
+// MockBVLCI_GetRootMessage_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetRootMessage'
+type MockBVLCI_GetRootMessage_Call struct {
+	*mock.Call
+}
+
+// GetRootMessage is a helper method to define mock.On call
+func (_e *MockBVLCI_Expecter) GetRootMessage() *MockBVLCI_GetRootMessage_Call {
+	return &MockBVLCI_GetRootMessage_Call{Call: _e.mock.On("GetRootMessage")}
+}
+
+func (_c *MockBVLCI_GetRootMessage_Call) Run(run func()) *MockBVLCI_GetRootMessage_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run()
+	})
+	return _c
+}
+
+func (_c *MockBVLCI_GetRootMessage_Call) Return(_a0 spi.Message) *MockBVLCI_GetRootMessage_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockBVLCI_GetRootMessage_Call) RunAndReturn(run func() spi.Message) *MockBVLCI_GetRootMessage_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // Serialize provides a mock function with given fields:
 func (_m *MockBVLCI) Serialize() ([]byte, error) {
 	ret := _m.Called()

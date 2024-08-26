@@ -49,6 +49,10 @@ func (a Args) Get0NPDU() NPDU {
 	return a[0].(NPDU)
 }
 
+func (a Args) Get0APDU() APDU {
+	return a[0].(APDU)
+}
+
 func (a Args) Get0NetworkAdapter() *NetworkAdapter {
 	return a[0].(*NetworkAdapter)
 }
@@ -159,33 +163,33 @@ const (
 	KWBvlciFDT        = KnownKey("bvlciFDT")
 )
 
-type MessageBridge struct {
-	Bytes []byte
+type MessageBridge interface {
+	spi.Message
+	PDUData
 }
 
-var _ spi.Message = (*MessageBridge)(nil)
-var _ _PDUDataRequirements = (*MessageBridge)(nil)
-
-func (m *MessageBridge) String() string {
-	return Btox(m.Bytes, "")
+type messageBridge struct {
+	*_PDUData
 }
 
-func (m *MessageBridge) Serialize() ([]byte, error) {
-	return m.Bytes, nil
+func NewMessageBridge(bytes ...byte) MessageBridge {
+	return &messageBridge{&_PDUData{data: bytes}}
 }
 
-func (m *MessageBridge) SerializeWithWriteBuffer(_ context.Context, writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteByteArray("Bytes", m.Bytes)
+var _ MessageBridge = (*messageBridge)(nil)
+
+func (m *messageBridge) Serialize() ([]byte, error) {
+	return m.data, nil
 }
 
-func (m *MessageBridge) GetLengthInBytes(_ context.Context) uint16 {
-	return uint16(len(m.Bytes))
+func (m *messageBridge) SerializeWithWriteBuffer(_ context.Context, writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteByteArray("Bytes", m.data)
 }
 
-func (m *MessageBridge) GetLengthInBits(ctx context.Context) uint16 {
+func (m *messageBridge) GetLengthInBytes(_ context.Context) uint16 {
+	return uint16(len(m.data))
+}
+
+func (m *messageBridge) GetLengthInBits(ctx context.Context) uint16 {
 	return m.GetLengthInBytes(ctx) * 8
-}
-
-func (m *MessageBridge) getPDUData() []byte {
-	return m.Bytes
 }

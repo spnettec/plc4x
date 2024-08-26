@@ -20,10 +20,10 @@
 package test_npdu
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/bacnetip"
-
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
+
+	"github.com/apache/plc4x/plc4go/internal/bacnetip"
 )
 
 type NPDUCodec struct {
@@ -64,7 +64,7 @@ func (n *NPDUCodec) Indication(args bacnetip.Args, kwargs bacnetip.KWArgs) error
 	}
 
 	// Now as a vanilla PDU
-	ypdu := bacnetip.NewPDU(&bacnetip.MessageBridge{})
+	ypdu := bacnetip.NewPDU(bacnetip.NewMessageBridge())
 	if err := xpdu.Encode(ypdu); err != nil {
 		return errors.Wrap(err, "error decoding xpdu")
 	}

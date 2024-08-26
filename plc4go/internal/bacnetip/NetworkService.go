@@ -26,10 +26,10 @@ import (
 	"slices"
 	"time"
 
-	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
-
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
+
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 )
 
 type RouterStatus uint8
@@ -362,7 +362,7 @@ func (n *NetworkServiceAccessPoint) Indication(args Args, kwargs KWArgs) error {
 
 	pdu := args.Get0PDU()
 	// get the apdu
-	apdu := pdu.GetMessage().(readWriteModel.APDU)
+	apdu := pdu.GetRootMessage().(readWriteModel.APDU)
 
 	// build a npdu
 	pduDestination := pdu.GetPDUDestination()
@@ -590,7 +590,7 @@ func (n *NetworkServiceAccessPoint) ProcessNPDU(adapter *NetworkAdapter, pdu PDU
 		forwardMessage bool
 	)
 
-	npdu := pdu.GetMessage().(readWriteModel.NPDU)
+	npdu := pdu.GetRootMessage().(readWriteModel.NPDU)
 	sourceAddress := &Address{AddrType: NULL_ADDRESS}
 	if npdu.GetControl().GetSourceSpecified() {
 		snet := npdu.GetSourceNetworkAddress()
@@ -946,16 +946,25 @@ type NetworkServiceElement struct {
 
 	networkNumberIsTask time.Time
 
+	// regular args
+	argStartupDisabled bool
+
+	// pass through args
+	argEID *int
+
 	log zerolog.Logger
 }
 
-func NewNetworkServiceElement(localLog zerolog.Logger, eid *int, startupDisabled bool) (*NetworkServiceElement, error) {
+func NewNetworkServiceElement(localLog zerolog.Logger, opts ...func(*NetworkServiceElement)) (*NetworkServiceElement, error) {
 	n := &NetworkServiceElement{
 		log: localLog,
 	}
+	for _, opt := range opts {
+		opt(n)
+	}
 	var err error
 	n.ApplicationServiceElement, err = NewApplicationServiceElement(localLog, n, func(element *ApplicationServiceElement) {
-		element.elementID = eid
+		element.elementID = n.argEID
 	})
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating application service element")
@@ -965,10 +974,22 @@ func NewNetworkServiceElement(localLog zerolog.Logger, eid *int, startupDisabled
 	n.networkNumberIsTask = time.Time{}
 
 	// if starting up is enabled defer our startup function
-	if !startupDisabled {
+	if !n.argStartupDisabled {
 		Deferred(n.Startup, NoArgs, NoKWArgs)
 	}
 	return n, nil
+}
+
+func WithNetworkServiceElementEID(eid int) func(*NetworkServiceElement) {
+	return func(n *NetworkServiceElement) {
+		n.argEID = &eid
+	}
+}
+
+func WithNetworkServiceElementStartupDisabled(startupDisabled bool) func(*NetworkServiceElement) {
+	return func(n *NetworkServiceElement) {
+		n.argStartupDisabled = startupDisabled
+	}
 }
 
 func (n *NetworkServiceElement) String() string {
@@ -1031,7 +1052,7 @@ func (n *NetworkServiceElement) Indication(args Args, kwargs KWArgs) error {
 	adapter := args.Get0NetworkAdapter()
 	npdu := args.Get1PDU()
 
-	switch message := npdu.GetMessage().(type) {
+	switch message := npdu.GetRootMessage().(type) {
 	case readWriteModel.NPDUExactly:
 		switch nlm := message.GetNlm().(type) {
 		case readWriteModel.NLMWhoIsRouterToNetwork:
@@ -1073,7 +1094,7 @@ func (n *NetworkServiceElement) Confirmation(args Args, kwargs KWArgs) error {
 	adapter := args.Get0NetworkAdapter()
 	npdu := args.Get1PDU()
 
-	switch message := npdu.GetMessage().(type) {
+	switch message := npdu.GetRootMessage().(type) {
 	case readWriteModel.NPDUExactly:
 		switch nlm := message.GetNlm().(type) {
 		case readWriteModel.NLMWhoIsRouterToNetwork:

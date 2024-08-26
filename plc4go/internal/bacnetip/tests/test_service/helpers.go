@@ -22,12 +22,12 @@ package test_service
 import (
 	"time"
 
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
+
 	"github.com/apache/plc4x/plc4go/internal/bacnetip"
 	"github.com/apache/plc4x/plc4go/internal/bacnetip/tests"
 	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
-
-	"github.com/pkg/errors"
-	"github.com/rs/zerolog"
 )
 
 // This struct turns off the deferred startup function call that broadcasts I-Am-Router-To-Network and Network-Number-Is
@@ -40,20 +40,14 @@ type _NetworkServiceElement struct {
 func new_NetworkServiceElement(localLog zerolog.Logger) (*_NetworkServiceElement, error) {
 	n := &_NetworkServiceElement{}
 	var err error
-	n.NetworkServiceElement, err = bacnetip.NewNetworkServiceElement(localLog, nil, true)
+	n.NetworkServiceElement, err = bacnetip.NewNetworkServiceElement(localLog, bacnetip.WithNetworkServiceElementStartupDisabled(true))
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating network service element")
 	}
 	return n, nil
 }
 
-type ApplicationNetworkRequirements interface {
-	Indication(args bacnetip.Args, kwargs bacnetip.KWArgs) error
-	Confirmation(args bacnetip.Args, kwargs bacnetip.KWArgs) error
-}
-
 type ApplicationNetwork struct {
-	ApplicationNetworkRequirements
 	*tests.StateMachineGroup
 
 	trafficLog      *tests.TrafficLog
@@ -66,10 +60,9 @@ type ApplicationNetwork struct {
 	log zerolog.Logger
 }
 
-func NewApplicationNetwork(localLog zerolog.Logger, applicationNetworkRequirements ApplicationNetworkRequirements) (*ApplicationNetwork, error) {
+func NewApplicationNetwork(localLog zerolog.Logger) (*ApplicationNetwork, error) {
 	a := &ApplicationNetwork{
-		ApplicationNetworkRequirements: applicationNetworkRequirements,
-		log:                            localLog,
+		log: localLog,
 	}
 	a.StateMachineGroup = tests.NewStateMachineGroup(localLog)
 
@@ -95,7 +88,7 @@ func NewApplicationNetwork(localLog zerolog.Logger, applicationNetworkRequiremen
 
 	// test device
 	var err error
-	a.td, err = NewApplicationStateMachine(localLog, a.tdDeviceObject, a.vlan, a)
+	a.td, err = NewApplicationStateMachine(localLog, a.tdDeviceObject, a.vlan)
 	if err != nil {
 		return nil, errors.Wrap(err, "error building application state machine")
 	}
@@ -113,7 +106,7 @@ func NewApplicationNetwork(localLog zerolog.Logger, applicationNetworkRequiremen
 	}
 
 	// implementation under test
-	a.iut, err = NewApplicationStateMachine(localLog, a.iutDeviceObject, a.vlan, a)
+	a.iut, err = NewApplicationStateMachine(localLog, a.iutDeviceObject, a.vlan)
 	if err != nil {
 		return nil, errors.Wrap(err, "error building application state machine")
 	}
@@ -186,7 +179,7 @@ func NewSnifferNode(localLog zerolog.Logger, vlan *bacnetip.Network) (*SnifferNo
 	}
 
 	// create a promiscuous node, added to the network
-	s.node, err = bacnetip.NewNode(localLog, s.address, vlan, bacnetip.WithNodePromiscuous(true))
+	s.node, err = bacnetip.NewNode(localLog, s.address, bacnetip.WithNodeLan(vlan), bacnetip.WithNodePromiscuous(true))
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating node")
 	}
@@ -210,7 +203,7 @@ func (s *SnifferNode) Confirmation(args bacnetip.Args, kwargs bacnetip.KWArgs) e
 	pdu := args.Get0PDU()
 
 	// it's and NPDU
-	npdu := pdu.GetMessage().(model.NPDU)
+	npdu := pdu.GetRootMessage().(model.NPDU)
 
 	// filter out network layer traffic if there is any, probably not
 	if nlm := npdu.GetNlm(); nlm != nil {
@@ -269,7 +262,7 @@ func NewSnifferStateMachine(localLog zerolog.Logger, vlan *bacnetip.Network) (*S
 	init()
 
 	// create a promiscuous node, added to the network
-	s.node, err = bacnetip.NewNode(localLog, s.address, vlan, bacnetip.WithNodePromiscuous(true))
+	s.node, err = bacnetip.NewNode(localLog, s.address, bacnetip.WithNodeLan(vlan), bacnetip.WithNodePromiscuous(true))
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating node")
 	}
@@ -293,7 +286,7 @@ func (s *SnifferStateMachine) Confirmation(args bacnetip.Args, kwargs bacnetip.K
 	pdu := args.Get0PDU()
 
 	// it's and NPDU
-	npdu := pdu.GetMessage().(model.NPDU)
+	npdu := pdu.GetRootMessage().(model.NPDU)
 
 	// filter out network layer traffic if there is any, probably not
 	if nlm := npdu.GetNlm(); nlm != nil {
@@ -328,13 +321,7 @@ func (s *SnifferStateMachine) String() string {
 	return "SnifferStateMachine" //TODO
 }
 
-type ApplicationStateMachineRequirements interface {
-	Indication(args bacnetip.Args, kwargs bacnetip.KWArgs) error
-	Confirmation(args bacnetip.Args, kwargs bacnetip.KWArgs) error
-}
-
 type ApplicationStateMachine struct {
-	ApplicationStateMachineRequirements
 	*bacnetip.ApplicationIOController
 	tests.StateMachine
 
@@ -348,10 +335,9 @@ type ApplicationStateMachine struct {
 	log zerolog.Logger
 }
 
-func NewApplicationStateMachine(localLog zerolog.Logger, localDevice *bacnetip.LocalDeviceObject, vlan *bacnetip.Network, applicationStateMachineRequirements ApplicationStateMachineRequirements) (*ApplicationStateMachine, error) {
+func NewApplicationStateMachine(localLog zerolog.Logger, localDevice *bacnetip.LocalDeviceObject, vlan *bacnetip.Network) (*ApplicationStateMachine, error) {
 	a := &ApplicationStateMachine{
-		ApplicationStateMachineRequirements: applicationStateMachineRequirements,
-		log:                                 localLog,
+		log: localLog,
 	}
 
 	// build and address and save it
@@ -412,7 +398,7 @@ func NewApplicationStateMachine(localLog zerolog.Logger, localDevice *bacnetip.L
 	}
 
 	// create a node, added to the network
-	a.node, err = bacnetip.NewNode(a.log, a.address, vlan)
+	a.node, err = bacnetip.NewNode(a.log, a.address, bacnetip.WithNodeLan(vlan))
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating node")
 	}
@@ -451,7 +437,7 @@ func (a *ApplicationStateMachine) Indication(args bacnetip.Args, kwargs bacnetip
 	}
 
 	// allow the application to process it
-	return a.ApplicationStateMachineRequirements.Indication(args, kwargs)
+	return a.Application.Indication(args, kwargs)
 }
 
 func (a *ApplicationStateMachine) Confirmation(args bacnetip.Args, kwargs bacnetip.KWArgs) error {
@@ -464,7 +450,7 @@ func (a *ApplicationStateMachine) Confirmation(args bacnetip.Args, kwargs bacnet
 	}
 
 	// allow the application to process it
-	return a.ApplicationStateMachineRequirements.Confirmation(args, kwargs)
+	return a.Application.Confirmation(args, kwargs)
 }
 
 type COVTestClientServicesRequirements interface {

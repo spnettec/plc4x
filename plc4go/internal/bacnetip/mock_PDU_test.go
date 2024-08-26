@@ -397,53 +397,6 @@ func (_c *MockPDU_GetLong_Call) RunAndReturn(run func() (int64, error)) *MockPDU
 	return _c
 }
 
-// GetMessage provides a mock function with given fields:
-func (_m *MockPDU) GetMessage() spi.Message {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for GetMessage")
-	}
-
-	var r0 spi.Message
-	if rf, ok := ret.Get(0).(func() spi.Message); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(spi.Message)
-		}
-	}
-
-	return r0
-}
-
-// MockPDU_GetMessage_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetMessage'
-type MockPDU_GetMessage_Call struct {
-	*mock.Call
-}
-
-// GetMessage is a helper method to define mock.On call
-func (_e *MockPDU_Expecter) GetMessage() *MockPDU_GetMessage_Call {
-	return &MockPDU_GetMessage_Call{Call: _e.mock.On("GetMessage")}
-}
-
-func (_c *MockPDU_GetMessage_Call) Run(run func()) *MockPDU_GetMessage_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockPDU_GetMessage_Call) Return(_a0 spi.Message) *MockPDU_GetMessage_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockPDU_GetMessage_Call) RunAndReturn(run func() spi.Message) *MockPDU_GetMessage_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // GetNetworkPriority provides a mock function with given fields:
 func (_m *MockPDU) GetNetworkPriority() model.NPDUNetworkPriority {
 	ret := _m.Called()
@@ -673,6 +626,53 @@ func (_c *MockPDU_GetPduData_Call) Return(_a0 []byte) *MockPDU_GetPduData_Call {
 }
 
 func (_c *MockPDU_GetPduData_Call) RunAndReturn(run func() []byte) *MockPDU_GetPduData_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetRootMessage provides a mock function with given fields:
+func (_m *MockPDU) GetRootMessage() spi.Message {
+	ret := _m.Called()
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetRootMessage")
+	}
+
+	var r0 spi.Message
+	if rf, ok := ret.Get(0).(func() spi.Message); ok {
+		r0 = rf()
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(spi.Message)
+		}
+	}
+
+	return r0
+}
+
+// MockPDU_GetRootMessage_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetRootMessage'
+type MockPDU_GetRootMessage_Call struct {
+	*mock.Call
+}
+
+// GetRootMessage is a helper method to define mock.On call
+func (_e *MockPDU_Expecter) GetRootMessage() *MockPDU_GetRootMessage_Call {
+	return &MockPDU_GetRootMessage_Call{Call: _e.mock.On("GetRootMessage")}
+}
+
+func (_c *MockPDU_GetRootMessage_Call) Run(run func()) *MockPDU_GetRootMessage_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run()
+	})
+	return _c
+}
+
+func (_c *MockPDU_GetRootMessage_Call) Return(_a0 spi.Message) *MockPDU_GetRootMessage_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockPDU_GetRootMessage_Call) RunAndReturn(run func() spi.Message) *MockPDU_GetRootMessage_Call {
 	_c.Call.Return(run)
 	return _c
 }

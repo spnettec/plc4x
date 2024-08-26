@@ -21,11 +21,10 @@ package bacnetip
 
 import (
 	"fmt"
+	"math/rand"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
-
-	"math/rand"
 )
 
 type TrafficLogger interface {
@@ -174,13 +173,16 @@ type Node struct {
 	promiscuous bool
 	spoofing    bool
 
+	// args
+	argLan NodeNetworkReference
+
 	// pass through args
 	argSid *int
 
 	log zerolog.Logger
 }
 
-func NewNode(localLog zerolog.Logger, addr *Address, lan NodeNetworkReference, opts ...func(*Node)) (*Node, error) {
+func NewNode(localLog zerolog.Logger, addr *Address, opts ...func(*Node)) (*Node, error) {
 	n := &Node{
 		address: addr,
 		log:     localLog,
@@ -188,7 +190,7 @@ func NewNode(localLog zerolog.Logger, addr *Address, lan NodeNetworkReference, o
 	for _, opt := range opts {
 		opt(n)
 	}
-	if n.name == "" {
+	if n.name != "" {
 		n.log = n.log.With().Str("name", n.name).Logger()
 	}
 	var err error
@@ -200,8 +202,8 @@ func NewNode(localLog zerolog.Logger, addr *Address, lan NodeNetworkReference, o
 	}
 
 	// bind to a lan if it was provided
-	if lan != nil {
-		n.bind(lan)
+	if n.argLan != nil {
+		n.bind(n.argLan)
 	}
 
 	return n, nil
@@ -210,6 +212,12 @@ func NewNode(localLog zerolog.Logger, addr *Address, lan NodeNetworkReference, o
 func WithNodeName(name string) func(*Node) {
 	return func(n *Node) {
 		n.name = name
+	}
+}
+
+func WithNodeLan(lan NodeNetworkReference) func(*Node) {
+	return func(n *Node) {
+		n.argLan = lan
 	}
 }
 
@@ -259,10 +267,6 @@ func (n *Node) SetSpoofing(spoofing bool) {
 	n.spoofing = spoofing
 }
 
-func (n *Node) String() string {
-	return fmt.Sprintf("Node: %s(%v)", n.name, n.serverID)
-}
-
 func (n *Node) bind(lan NodeNetworkReference) {
 	n.log.Debug().Interface("lan", lan).Msg("binding lan")
 	lan.AddNode(n)
@@ -291,6 +295,10 @@ func (n *Node) Indication(args Args, kwargs KWArgs) error {
 		return n.lan.ProcessPDU(pdu)
 	}, args, NoKWArgs)
 	return nil
+}
+
+func (n *Node) String() string {
+	return fmt.Sprintf("Node: %s(%v)", n.name, n.serverID)
 }
 
 // IPNetwork instances are Network objects where the addresses on the
@@ -346,7 +354,7 @@ func NewIPNode(localLog zerolog.Logger, addr *Address, lan *IPNetwork, opts ...f
 		addrBroadcastTuple: addr.AddrBroadcastTuple,
 	}
 	var err error
-	i.Node, err = NewNode(localLog, addr, nil, opts...)
+	i.Node, err = NewNode(localLog, addr, opts...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating node")
 	}

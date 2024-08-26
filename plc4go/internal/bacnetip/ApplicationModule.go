@@ -24,10 +24,10 @@ import (
 	"fmt"
 	"hash/fnv"
 
-	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
-
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
+
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 )
 
 //go:generate go run ../../tools/plc4xgenerator/gen.go -type=DeviceInfo
@@ -407,7 +407,7 @@ func (a *Application) Request(args Args, kwargs KWArgs) error {
 	apdu := args.Get0PDU()
 
 	// double-check the input is the right kind of APDU
-	switch apdu.GetMessage().(type) {
+	switch apdu.GetRootMessage().(type) {
 	case readWriteModel.APDUUnconfirmedRequestExactly, readWriteModel.APDUConfirmedRequestExactly:
 	default:
 		return errors.New("APDU expected")
@@ -536,7 +536,7 @@ func (a *ApplicationIOController) _AppComplete(address *Address, apdu PDU) error
 	}
 
 	// this request is complete
-	switch apdu.GetMessage().(type) {
+	switch apdu.GetRootMessage().(type) {
 	case readWriteModel.APDUSimpleAckExactly, readWriteModel.APDUComplexAckExactly:
 		if err := queue.CompleteIO(queue.activeIOCB, apdu); err != nil {
 			return err
@@ -655,7 +655,7 @@ func NewBIPSimpleApplication(localLog zerolog.Logger, localDevice *LocalDeviceOb
 	}
 
 	// give the NSAP a generic network layer service element
-	b.nse, err = NewNetworkServiceElement(localLog, nil, false)
+	b.nse, err = NewNetworkServiceElement(localLog)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating new network service element")
 	}
@@ -760,7 +760,7 @@ func NewBIPForeignApplication(localLog zerolog.Logger, localDevice *LocalDeviceO
 	}
 
 	// give the NSAP a generic network layer service element
-	b.nse, err = NewNetworkServiceElement(localLog, nil, false)
+	b.nse, err = NewNetworkServiceElement(localLog)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating new network service element")
 	}
@@ -774,7 +774,7 @@ func NewBIPForeignApplication(localLog zerolog.Logger, localDevice *LocalDeviceO
 	}
 
 	// create a generic BIP stack, bound to the Annex J server on the UDP multiplexer
-	b.bip, err = NewBIPForeign(localLog, bbmdAddress, bbmdTTL)
+	b.bip, err = NewBIPForeign(localLog, WithBIPForeignAddress(bbmdAddress), WithBIPForeignTTL(*bbmdTTL))
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating new bip")
 	}
@@ -815,15 +815,25 @@ type BIPNetworkApplication struct {
 	annexj       *AnnexJCodec
 	mux          *UDPMultiplexer
 
+	// passThroughArgs
+	argBBMDAddress *Address
+	argBBMDTTL     *int
+	argEID         *int
+
 	log zerolog.Logger
 }
 
-func NewBIPNetworkApplication(localLog zerolog.Logger, localAddress Address, bbmdAddress *Address, bbmdTTL *int, eID *int) (*BIPNetworkApplication, error) {
+func NewBIPNetworkApplication(localLog zerolog.Logger, localAddress Address, opts ...func(*BIPNetworkApplication)) (*BIPNetworkApplication, error) {
 	n := &BIPNetworkApplication{
 		log: localLog,
 	}
+	for _, opt := range opts {
+		opt(n)
+	}
 	var err error
-	n.NetworkServiceElement, err = NewNetworkServiceElement(localLog, eID, false)
+	n.NetworkServiceElement, err = NewNetworkServiceElement(localLog, func(nse *NetworkServiceElement) {
+		nse.argEID = n.argEID
+	})
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating new network service element")
 	}
@@ -843,13 +853,16 @@ func NewBIPNetworkApplication(localLog zerolog.Logger, localAddress Address, bbm
 
 	// create a generic BIP stack, bound to the Annex J server
 	// on the UDP multiplexer
-	if bbmdAddress == nil && bbmdTTL == nil {
+	if n.argBBMDAddress == nil && n.argBBMDTTL == nil {
 		n.bip, err = NewBIPSimple(localLog)
 		if err != nil {
 			return nil, errors.Wrap(err, "error creating BIPSimple")
 		}
 	} else {
-		n.bip, err = NewBIPForeign(localLog, bbmdAddress, bbmdTTL)
+		n.bip, err = NewBIPForeign(localLog, func(bf *BIPForeign) {
+			bf.argAddr = n.argBBMDAddress
+			bf.argTTL = n.argBBMDTTL
+		})
 		if err != nil {
 			return nil, errors.Wrap(err, "error creating BIPForeign")
 		}

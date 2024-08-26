@@ -25,15 +25,15 @@ import (
 	"testing"
 	"time"
 
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+
 	"github.com/apache/plc4x/plc4go/internal/bacnetip"
 	"github.com/apache/plc4x/plc4go/internal/bacnetip/tests"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
 	"github.com/apache/plc4x/plc4go/spi/utils"
-
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 type TPDU struct {
@@ -69,7 +69,8 @@ func (t TPDU) String() string {
 	return fmt.Sprintf("<TPDU%v>", content)
 }
 
-func (t TPDU) GetMessage() spi.Message {
+func (t TPDU) GetRootMessage() spi.Message {
+	//TODO implement me
 	panic("implement me")
 }
 
@@ -108,7 +109,6 @@ func (t TPDU) Serialize() ([]byte, error) {
 }
 
 func (t TPDU) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
-	//TODO implement me
 	panic("implement me")
 }
 
@@ -121,6 +121,7 @@ func (t TPDU) GetLengthInBits(ctx context.Context) uint16 {
 	//TODO implement me
 	panic("implement me")
 }
+
 func (t TPDU) GetPDUUserData() spi.Message {
 	//TODO implement me
 	panic("implement me")
@@ -549,7 +550,7 @@ func TestStateMachine(t *testing.T) {
 }
 
 func TestStateMachineTimeout1(t *testing.T) {
-	tests.LockGlobalTimeMachine(t)
+	tests.ExclusiveGlobalTimeMachine(t)
 	testingLogger := testutils.ProduceTestingLogger(t)
 
 	// create a state machine
@@ -558,7 +559,6 @@ func TestStateMachineTimeout1(t *testing.T) {
 	// make a timeout transition from start to success
 	tsm.GetStartState().Timeout(1*time.Second, nil).Success("")
 
-	tests.NewGlobalTimeMachine(testingLogger) // TODO: this is really stupid because of concurrency...
 	// reset the time machine
 	tests.ResetTimeMachine(tests.StartTime)
 	t.Log("time machine reset")
@@ -575,9 +575,8 @@ func TestStateMachineTimeout1(t *testing.T) {
 }
 
 func TestStateMachineTimeout2(t *testing.T) {
-	t.Skip("not ready yet") // TODO: figure out why it is failing
-	tests.LockGlobalTimeMachine(t)
 	testingLogger := testutils.ProduceTestingLogger(t)
+	tests.ExclusiveGlobalTimeMachine(t)
 
 	// make some pdus
 	firstPdu := TPDU{a: 1}
@@ -596,7 +595,6 @@ func TestStateMachineTimeout2(t *testing.T) {
 	s4 := s3.Timeout(1*time.Millisecond, nil).Success("")
 	_ = s4
 
-	tests.NewGlobalTimeMachine(testingLogger) // TODO: this is really stupid because of concurrency...
 	// reset the time machine
 	tests.ResetTimeMachine(tests.StartTime)
 	t.Log("time machine reset")
@@ -619,6 +617,8 @@ func TestStateMachineTimeout2(t *testing.T) {
 
 func TestStateMachineGroup(t *testing.T) {
 	t.Run("test_state_machine_group_success", func(t *testing.T) {
+		tests.ExclusiveGlobalTimeMachine(t)
+
 		testingLogger := testutils.ProduceTestingLogger(t)
 
 		// create a state machine group
@@ -631,7 +631,6 @@ func TestStateMachineGroup(t *testing.T) {
 		// add it to the group
 		smg.Append(tsm)
 
-		tests.NewGlobalTimeMachine(testingLogger) // TODO: this is really stupid because of concurrency...
 		// reset the time machine
 		tests.ResetTimeMachine(tests.StartTime)
 		t.Log("time machine reset")
@@ -650,6 +649,8 @@ func TestStateMachineGroup(t *testing.T) {
 		assert.True(t, smg.IsSuccessState())
 	})
 	t.Run("test_state_machine_group_success", func(t *testing.T) {
+		tests.ExclusiveGlobalTimeMachine(t)
+
 		testingLogger := testutils.ProduceTestingLogger(t)
 
 		// create a state machine group
@@ -662,7 +663,6 @@ func TestStateMachineGroup(t *testing.T) {
 		// add it to the group
 		smg.Append(tsm)
 
-		tests.NewGlobalTimeMachine(testingLogger) // TODO: this is really stupid because of concurrency...
 		// reset the time machine
 		tests.ResetTimeMachine(tests.StartTime)
 		t.Log("time machine reset")
@@ -684,6 +684,8 @@ func TestStateMachineGroup(t *testing.T) {
 
 func TestStateMachineEvents(t *testing.T) {
 	t.Run("test_state_machine_event_01", func(t *testing.T) {
+		tests.ExclusiveGlobalTimeMachine(t)
+
 		testingLogger := testutils.ProduceTestingLogger(t)
 
 		// create a state machine group
@@ -699,7 +701,6 @@ func TestStateMachineEvents(t *testing.T) {
 		tsm2.GetStartState().WaitEvent("e", nil).Success("")
 		smg.Append(tsm2)
 
-		tests.NewGlobalTimeMachine(testingLogger) // TODO: this is really stupid because of concurrency...
 		// reset the time machine
 		tests.ResetTimeMachine(tests.StartTime)
 		t.Log("time machine reset")
@@ -718,6 +719,8 @@ func TestStateMachineEvents(t *testing.T) {
 		assert.True(t, smg.IsSuccessState())
 	})
 	t.Run("test_state_machine_event_02", func(t *testing.T) {
+		tests.ExclusiveGlobalTimeMachine(t)
+
 		testingLogger := testutils.ProduceTestingLogger(t)
 
 		// create a state machine group
@@ -733,7 +736,6 @@ func TestStateMachineEvents(t *testing.T) {
 		tsm2.GetStartState().SetEvent("e").Success("")
 		smg.Append(tsm2)
 
-		tests.NewGlobalTimeMachine(testingLogger) // TODO: this is really stupid because of concurrency...
 		// reset the time machine
 		tests.ResetTimeMachine(tests.StartTime)
 		t.Log("time machine reset")

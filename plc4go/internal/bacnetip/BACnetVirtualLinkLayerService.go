@@ -20,14 +20,14 @@
 package bacnetip
 
 import (
-	"context"
 	"fmt"
+	"slices"
 	"time"
-
-	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
+
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 )
 
 type _MultiplexClient struct {
@@ -238,8 +238,11 @@ func (m *UDPMultiplexer) Confirmation(args Args, kwargs KWArgs) error {
 		return nil
 	}
 
-	// TODO: upstream this is a tuple but we don't have that here so we can work with what we have
-	src := pduSource
+	// the PDU source is a tuple, convert it to an Address instance
+	src, err := NewAddress(m.log, pdu.GetPDUSource())
+	if err != nil {
+		return errors.Wrap(err, "error creating address")
+	}
 	var dest *Address
 
 	// match the destination in case the stack needs it
@@ -255,14 +258,14 @@ func (m *UDPMultiplexer) Confirmation(args Args, kwargs KWArgs) error {
 	m.log.Debug().Stringer("dest", dest).Msg("dest")
 
 	// must have at least one octet
-	if pdu.GetMessage() == nil {
+	if pdu.GetRootMessage() == nil {
 		m.log.Debug().Msg("no data")
 		return nil
 	}
 
 	// TODO: we only support 0x81 at the moment
 	if m.annexJ != nil {
-		return m.annexJ.Response(NewArgs(NewPDU(pdu.GetMessage(), WithPDUSource(src), WithPDUDestination(dest))), NoKWArgs)
+		return m.annexJ.Response(NewArgs(NewPDU(pdu.GetRootMessage(), WithPDUSource(src), WithPDUDestination(dest))), NoKWArgs)
 	}
 
 	return nil
@@ -318,10 +321,6 @@ func WithAnnexJCodecSid(sid int) func(*AnnexJCodec) {
 	}
 }
 
-func (b *AnnexJCodec) String() string {
-	return fmt.Sprintf("AnnexJCodec(client: %s, server: %s)", b.Client, b.Server)
-}
-
 func (b *AnnexJCodec) Indication(args Args, kwargs KWArgs) error {
 	b.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("Indication")
 
@@ -364,14 +363,18 @@ func (b *AnnexJCodec) Confirmation(args Args, kwargs KWArgs) error {
 	return b.Response(NewArgs(rpdu), NoKWArgs)
 }
 
-type _BIPSAP interface {
-	_ServiceAccessPoint
+func (b *AnnexJCodec) String() string {
+	return fmt.Sprintf("AnnexJCodec(client: %s, server: %s)", b.Client, b.Server)
+}
+
+type BIPSAPRequirements interface {
+	ServiceAccessPointRequirements
 	_Client
 }
 
 type BIPSAP struct {
 	*ServiceAccessPoint
-	rootStruct _BIPSAP
+	rootStruct BIPSAPRequirements
 
 	// pass through args
 	argSapID *int
@@ -379,7 +382,7 @@ type BIPSAP struct {
 	log zerolog.Logger
 }
 
-func NewBIPSAP(localLog zerolog.Logger, rootStruct _BIPSAP, opts ...func(*BIPSAP)) (*BIPSAP, error) {
+func NewBIPSAP(localLog zerolog.Logger, bipSapRequirements BIPSAPRequirements, opts ...func(*BIPSAP)) (*BIPSAP, error) {
 	b := &BIPSAP{
 		log: localLog,
 	}
@@ -388,16 +391,16 @@ func NewBIPSAP(localLog zerolog.Logger, rootStruct _BIPSAP, opts ...func(*BIPSAP
 	}
 	localLog.Debug().
 		Interface("sapID", b.argSapID).
-		Interface("rootStruct", rootStruct).
+		Interface("bipSapRequirements", bipSapRequirements).
 		Msg("NewBIPSAP")
-	serviceAccessPoint, err := NewServiceAccessPoint(localLog, rootStruct, func(point *ServiceAccessPoint) {
+	serviceAccessPoint, err := NewServiceAccessPoint(localLog, bipSapRequirements, func(point *ServiceAccessPoint) {
 		point.serviceID = b.argSapID
 	})
 	if err != nil {
 		return nil, errors.Wrap(err, "Error creating service access point")
 	}
 	b.ServiceAccessPoint = serviceAccessPoint
-	b.rootStruct = rootStruct
+	b.rootStruct = bipSapRequirements
 	return b, nil
 }
 
@@ -519,19 +522,7 @@ func (b *BIPSimple) Confirmation(args Args, kwargs KWArgs) error {
 	b.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Confirmation")
 	pdu := args.Get0PDU()
 
-	// TODO: come up with a better way to check that... this is hugely inefficient
-	_data := pdu.GetPDUUserData()
-	_ = _data
-	data := pdu.GetPduData()
-	bvlcParse, err := readWriteModel.NPDUParse(context.Background(), data, uint16(len(data)))
-	if err != nil {
-		panic(err)
-	}
-
-	// TODO: we need to work with the inner types here....
-	panic("todo")
-
-	switch msg := bvlcParse.(type) {
+	switch msg := pdu.GetRootMessage().(type) {
 	// some kind of response to a request
 	case readWriteModel.BVLCResultExactly:
 		// send this to the service access point
@@ -571,44 +562,62 @@ func (b *BIPSimple) Confirmation(args Args, kwargs KWArgs) error {
 		return b.Response(NewArgs(xpdu), kwargs)
 	case readWriteModel.BVLCWriteBroadcastDistributionTableExactly:
 		// build a response
-		result := readWriteModel.NewBVLCResult(readWriteModel.BVLCResultCode_WRITE_BROADCAST_DISTRIBUTION_TABLE_NAK)
-		xpdu := NewPDU(result, WithPDUDestination(pdu.GetPDUSource()))
+		xpdu, err := NewResult(WithResultBvlciResultCode(readWriteModel.BVLCResultCode_WRITE_BROADCAST_DISTRIBUTION_TABLE_NAK))
+		if err != nil {
+			return errors.Wrap(err, "error building result")
+		}
+		xpdu.SetPDUDestination(pdu.GetPDUSource())
 
 		// send it downstream
 		return b.Request(NewArgs(xpdu), kwargs)
 	case readWriteModel.BVLCReadBroadcastDistributionTableExactly:
 		// build a response
-		result := readWriteModel.NewBVLCResult(readWriteModel.BVLCResultCode_READ_BROADCAST_DISTRIBUTION_TABLE_NAK)
-		xpdu := NewPDU(result, WithPDUDestination(pdu.GetPDUSource()))
+		xpdu, err := NewResult(WithResultBvlciResultCode(readWriteModel.BVLCResultCode_READ_BROADCAST_DISTRIBUTION_TABLE_NAK))
+		if err != nil {
+			return errors.Wrap(err, "error building result")
+		}
+		xpdu.SetPDUDestination(pdu.GetPDUSource())
 
 		// send it downstream
 		return b.Request(NewArgs(xpdu), kwargs)
 		// build a response
 	case readWriteModel.BVLCRegisterForeignDeviceExactly:
 		// build a response
-		result := readWriteModel.NewBVLCResult(readWriteModel.BVLCResultCode_REGISTER_FOREIGN_DEVICE_NAK)
-		xpdu := NewPDU(result, WithPDUDestination(pdu.GetPDUSource()))
+		xpdu, err := NewResult(WithResultBvlciResultCode(readWriteModel.BVLCResultCode_REGISTER_FOREIGN_DEVICE_NAK))
+		if err != nil {
+			return errors.Wrap(err, "error building result")
+		}
+		xpdu.SetPDUDestination(pdu.GetPDUSource())
 
 		// send it downstream
 		return b.Request(NewArgs(xpdu), kwargs)
 	case readWriteModel.BVLCReadForeignDeviceTableExactly:
 		// build a response
-		result := readWriteModel.NewBVLCResult(readWriteModel.BVLCResultCode_READ_FOREIGN_DEVICE_TABLE_NAK)
-		xpdu := NewPDU(result, WithPDUDestination(pdu.GetPDUSource()))
+		xpdu, err := NewResult(WithResultBvlciResultCode(readWriteModel.BVLCResultCode_READ_FOREIGN_DEVICE_TABLE_NAK))
+		if err != nil {
+			return errors.Wrap(err, "error building result")
+		}
+		xpdu.SetPDUDestination(pdu.GetPDUSource())
 
 		// send it downstream
 		return b.Request(NewArgs(xpdu), kwargs)
 	case readWriteModel.BVLCDeleteForeignDeviceTableEntryExactly:
 		// build a response
-		result := readWriteModel.NewBVLCResult(readWriteModel.BVLCResultCode_DELETE_FOREIGN_DEVICE_TABLE_ENTRY_NAK)
-		xpdu := NewPDU(result, WithPDUDestination(pdu.GetPDUSource()))
+		xpdu, err := NewResult(WithResultBvlciResultCode(readWriteModel.BVLCResultCode_DELETE_FOREIGN_DEVICE_TABLE_ENTRY_NAK))
+		if err != nil {
+			return errors.Wrap(err, "error building result")
+		}
+		xpdu.SetPDUDestination(pdu.GetPDUSource())
 
 		// send it downstream
 		return b.Request(NewArgs(xpdu), kwargs)
 	case readWriteModel.BVLCDistributeBroadcastToNetworkExactly:
 		// build a response
-		result := readWriteModel.NewBVLCResult(readWriteModel.BVLCResultCode_DISTRIBUTE_BROADCAST_TO_NETWORK_NAK)
-		xpdu := NewPDU(result, WithPDUDestination(pdu.GetPDUSource()))
+		xpdu, err := NewResult(WithResultBvlciResultCode(readWriteModel.BVLCResultCode_DISTRIBUTE_BROADCAST_TO_NETWORK_NAK))
+		if err != nil {
+			return errors.Wrap(err, "error building result")
+		}
+		xpdu.SetPDUDestination(pdu.GetPDUSource())
 
 		// send it downstream
 		return b.Request(NewArgs(xpdu), kwargs)
@@ -629,6 +638,10 @@ type BIPForeign struct {
 	bbmdTimeToLive          *int
 	registrationTimeoutTask *OneShotFunctionTask
 
+	// regular args
+	argAddr *Address
+	argTTL  *int
+
 	// pass through args
 	argSapID *int
 	argCid   *int
@@ -637,7 +650,7 @@ type BIPForeign struct {
 	log zerolog.Logger
 }
 
-func NewBIPForeign(localLog zerolog.Logger, addr *Address, ttl *int, opts ...func(*BIPForeign)) (*BIPForeign, error) {
+func NewBIPForeign(localLog zerolog.Logger, opts ...func(*BIPForeign)) (*BIPForeign, error) {
 	b := &BIPForeign{
 		log: localLog,
 	}
@@ -645,8 +658,8 @@ func NewBIPForeign(localLog zerolog.Logger, addr *Address, ttl *int, opts ...fun
 		opt(b)
 	}
 	localLog.Debug().
-		Stringer("addrs", addr).
-		Interface("ttls", ttl).
+		Stringer("addrs", b.argAddr).
+		Interface("ttls", b.argTTL).
 		Interface("sapID", b.argSapID).
 		Interface("cid", b.argCid).
 		Interface("sid", b.argSid).
@@ -682,21 +695,33 @@ func NewBIPForeign(localLog zerolog.Logger, addr *Address, ttl *int, opts ...fun
 	b.bbmdTimeToLive = nil
 
 	// used in tracking active registration timeouts
-	b.registrationTimeoutTask = OneShotFunction(b._registration_expired, NoArgs, NoKWArgs)
+	b.registrationTimeoutTask = OneShotFunction(b.registrationExpired, NoArgs, NoKWArgs)
 
 	// registration provided
-	if addr != nil {
+	if b.argAddr != nil {
 		// a little error checking
-		if ttl == nil {
+		if b.argTTL == nil {
 			return nil, errors.New("BBMD address and time-to-live must both be specified")
 		}
 
-		if err := b.register(*addr, *ttl); err != nil {
+		if err := b.Register(b.argAddr, *b.argTTL); err != nil {
 			return nil, errors.Wrap(err, "error registering")
 		}
 	}
 
 	return b, nil
+}
+
+func WithBIPForeignAddress(addr *Address) func(*BIPForeign) {
+	return func(b *BIPForeign) {
+		b.argAddr = addr
+	}
+}
+
+func WithBIPForeignTTL(ttl int) func(*BIPForeign) {
+	return func(b *BIPForeign) {
+		b.argTTL = &ttl
+	}
 }
 
 func (b *BIPForeign) Indication(args Args, kwargs KWArgs) error {
@@ -707,11 +732,14 @@ func (b *BIPForeign) Indication(args Args, kwargs KWArgs) error {
 	switch pdu.GetPDUDestination().AddrType {
 	case LOCAL_STATION_ADDRESS:
 		// make an original unicast _PDU
-		xpdu := readWriteModel.NewBVLCOriginalUnicastNPDU(pdu.GetMessage().(readWriteModel.NPDU), 0)
+		xpdu, err := NewOriginalUnicastNPDU(pdu, WithOriginalUnicastNPDUDestination(pdu.GetPDUDestination()), WithOriginalUnicastNPDUUserData(pdu.GetPDUUserData()))
+		if err != nil {
+			return errors.Wrap(err, "error creating original unicast NPDU")
+		}
 		b.log.Debug().Stringer("xpdu", xpdu).Msg("xpdu")
 
 		// send it downstream
-		return b.Request(NewArgs(NewPDUFromPDUWithNewMessage(pdu, xpdu)), NoKWArgs)
+		return b.Request(NewArgs(xpdu), NoKWArgs)
 	case LOCAL_BROADCAST_ADDRESS:
 		// check the BBMD registration status, we may not be registered
 		if b.registrationStatus != 0 {
@@ -720,8 +748,10 @@ func (b *BIPForeign) Indication(args Args, kwargs KWArgs) error {
 		}
 
 		// make an original broadcast _PDU
-		xpdu := readWriteModel.NewBVLCOriginalBroadcastNPDU(pdu.GetMessage().(readWriteModel.NPDU), 0)
-
+		xpdu, err := NewOriginalBroadcastNPDU(pdu, WithOriginalBroadcastNPDUDestination(b.bbmdAddress), WithOriginalBroadcastNPDUUserData(pdu.GetPDUUserData()))
+		if err != nil {
+			return errors.Wrap(err, "error creating original unicast NPDU")
+		}
 		b.log.Debug().Stringer("xpdu", xpdu).Msg("xpdu")
 
 		// send it downstream
@@ -731,15 +761,11 @@ func (b *BIPForeign) Indication(args Args, kwargs KWArgs) error {
 	}
 }
 
-func (b *BIPForeign) String() string {
-	return fmt.Sprintf("BIPForeign(TBD...)") // TODO: fill some info here
-}
-
 func (b *BIPForeign) Confirmation(args Args, kwargs KWArgs) error {
 	b.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Confirmation")
 	pdu := args.Get0PDU()
 
-	switch msg := pdu.GetMessage().(type) {
+	switch msg := pdu.GetRootMessage().(type) {
 	// check for a registration request result
 	case readWriteModel.BVLCResultExactly:
 		// if we are unbinding, do nothing
@@ -760,7 +786,7 @@ func (b *BIPForeign) Confirmation(args Args, kwargs KWArgs) error {
 
 		// If successful, track registration timeout
 		if b.registrationStatus == 0 {
-			b._start_track_registration()
+			b.startTrackRegistration()
 		}
 
 		return nil
@@ -804,43 +830,67 @@ func (b *BIPForeign) Confirmation(args Args, kwargs KWArgs) error {
 		return b.SapResponse(args, NoKWArgs)
 	case readWriteModel.BVLCWriteBroadcastDistributionTableExactly:
 		// build a response
-		result := readWriteModel.NewBVLCResult(readWriteModel.BVLCResultCode_WRITE_BROADCAST_DISTRIBUTION_TABLE_NAK)
-		xpdu := NewPDU(result, WithPDUDestination(pdu.GetPDUSource()))
+		xpdu, err := NewResult(WithResultBvlciResultCode(readWriteModel.BVLCResultCode_WRITE_BROADCAST_DISTRIBUTION_TABLE_NAK))
+		if err != nil {
+			return errors.Wrap(err, "error building a result")
+		}
+		xpdu.SetPDUUserData(pdu.GetPDUUserData()) // TODO: upstream sets this in the constructor
+		xpdu.SetPDUDestination(pdu.GetPDUSource())
 
 		// send it downstream
 		return b.Request(NewArgs(xpdu), NoKWArgs)
 	case readWriteModel.BVLCReadBroadcastDistributionTableExactly:
 		// build a response
-		result := readWriteModel.NewBVLCResult(readWriteModel.BVLCResultCode_READ_BROADCAST_DISTRIBUTION_TABLE_NAK)
-		xpdu := NewPDU(result, WithPDUDestination(pdu.GetPDUSource()))
+		xpdu, err := NewResult(WithResultBvlciResultCode(readWriteModel.BVLCResultCode_READ_BROADCAST_DISTRIBUTION_TABLE_NAK))
+		if err != nil {
+			return errors.Wrap(err, "error building a result")
+		}
+		xpdu.SetPDUUserData(pdu.GetPDUUserData()) // TODO: upstream sets this in the constructor
+		xpdu.SetPDUDestination(pdu.GetPDUSource())
 
 		// send it downstream
 		return b.Request(NewArgs(xpdu), NoKWArgs)
 	case readWriteModel.BVLCRegisterForeignDeviceExactly:
 		// build a response
-		result := readWriteModel.NewBVLCResult(readWriteModel.BVLCResultCode_REGISTER_FOREIGN_DEVICE_NAK)
-		xpdu := NewPDU(result, WithPDUDestination(pdu.GetPDUSource()))
+		xpdu, err := NewResult(WithResultBvlciResultCode(readWriteModel.BVLCResultCode_REGISTER_FOREIGN_DEVICE_NAK))
+		if err != nil {
+			return errors.Wrap(err, "error building a result")
+		}
+		xpdu.SetPDUUserData(pdu.GetPDUUserData()) // TODO: upstream sets this in the constructor
+		xpdu.SetPDUDestination(pdu.GetPDUSource())
 
 		// send it downstream
 		return b.Request(NewArgs(xpdu), NoKWArgs)
 	case readWriteModel.BVLCReadForeignDeviceTableExactly:
 		// build a response
-		result := readWriteModel.NewBVLCResult(readWriteModel.BVLCResultCode_READ_FOREIGN_DEVICE_TABLE_NAK)
-		xpdu := NewPDU(result, WithPDUDestination(pdu.GetPDUSource()))
+		xpdu, err := NewResult(WithResultBvlciResultCode(readWriteModel.BVLCResultCode_READ_FOREIGN_DEVICE_TABLE_NAK))
+		if err != nil {
+			return errors.Wrap(err, "error building a result")
+		}
+		xpdu.SetPDUUserData(pdu.GetPDUUserData()) // TODO: upstream sets this in the constructor
+		xpdu.SetPDUDestination(pdu.GetPDUSource())
 
 		// send it downstream
 		return b.Request(NewArgs(xpdu), NoKWArgs)
 	case readWriteModel.BVLCDeleteForeignDeviceTableEntryExactly:
 		// build a response
-		result := readWriteModel.NewBVLCResult(readWriteModel.BVLCResultCode_DELETE_FOREIGN_DEVICE_TABLE_ENTRY_NAK)
-		xpdu := NewPDU(result, WithPDUDestination(pdu.GetPDUSource()))
+		xpdu, err := NewResult(WithResultBvlciResultCode(readWriteModel.BVLCResultCode_DELETE_FOREIGN_DEVICE_TABLE_ENTRY_NAK))
+		if err != nil {
+			return errors.Wrap(err, "error building a result")
+		}
+		xpdu.SetPDUUserData(pdu.GetPDUUserData()) // TODO: upstream sets this in the constructor
+		xpdu.SetPDUDestination(pdu.GetPDUSource())
 
 		// send it downstream
 		return b.Request(NewArgs(xpdu), NoKWArgs)
 	case readWriteModel.BVLCDistributeBroadcastToNetworkExactly:
 		// build a response
-		result := readWriteModel.NewBVLCResult(readWriteModel.BVLCResultCode_DISTRIBUTE_BROADCAST_TO_NETWORK_NAK)
-		xpdu := NewPDU(result, WithPDUDestination(pdu.GetPDUSource()))
+		xpdu, err := NewResult(WithResultBvlciResultCode(readWriteModel.BVLCResultCode_DISTRIBUTE_BROADCAST_TO_NETWORK_NAK))
+		if err != nil {
+			return errors.Wrap(err, "error building a result")
+		}
+		xpdu.SetPDUUserData(pdu.GetPDUUserData()) // TODO: upstream sets this in the constructor
+		xpdu.SetPDUDestination(pdu.GetPDUSource())
 
 		// send it downstream
 		return b.Request(NewArgs(xpdu), NoKWArgs)
@@ -853,33 +903,33 @@ func (b *BIPForeign) Confirmation(args Args, kwargs KWArgs) error {
 	}
 }
 
-// register starts the foreign device registration process with the given BBMD.
+// Register starts the foreign device registration process with the given BBMD.
 //
 //	Registration will be renewed periodically according to the ttl value
 //	until explicitly stopped by a call to `unregister`.
-func (b *BIPForeign) register(addr Address, ttl int) error {
+func (b *BIPForeign) Register(addr *Address, ttl int) error {
 	// a little error checking
 	if ttl <= 0 {
 		return errors.New("time-to-live must be greater than zero")
 	}
 
 	// save the BBMD address and time-to-live
-	b.bbmdAddress = &addr
+	b.bbmdAddress = addr
 	b.bbmdTimeToLive = &ttl
 
 	// install this task to do registration renewal according to the TTL
 	// and stop tracking any active registration timeouts
 	var taskTime time.Time
 	b.InstallTask(InstallTaskOptions{When: &taskTime})
-	b._stop_track_registration()
+	b.stopTrackRegistration()
 	return nil
 }
 
-// unregister stops the foreign device registration process.
+// Unregister stops the foreign device registration process.
 //
 // Immediately drops active foreign device registration and stops further
 // registration renewals.
-func (b *BIPForeign) unregister() {
+func (b *BIPForeign) Unregister() {
 	pdu := NewPDU(readWriteModel.NewBVLCRegisterForeignDevice(0), WithPDUDestination(b.bbmdAddress))
 
 	// send it downstream
@@ -898,12 +948,16 @@ func (b *BIPForeign) unregister() {
 	// unschedule registration renewal & timeout tracking if previously
 	// scheduled
 	b.SuspendTask()
-	b._stop_track_registration()
+	b.stopTrackRegistration()
 }
 
 // ProcessTask is called when the registration request should be sent to the BBMD.
 func (b *BIPForeign) ProcessTask() error {
-	pdu := NewPDU(readWriteModel.NewBVLCRegisterForeignDevice(uint16(*b.bbmdTimeToLive)), WithPDUDestination(b.bbmdAddress))
+	pdu, err := NewRegisterForeignDevice(WithRegisterForeignDeviceBvlciTimeToLive(uint16(*b.bbmdTimeToLive)))
+	if err != nil {
+		return errors.Wrap(err, "")
+	}
+	pdu.SetPDUDestination(b.bbmdAddress)
 
 	// send it downstream
 	if err := b.Request(NewArgs(pdu), NoKWArgs); err != nil {
@@ -923,18 +977,536 @@ func (b *BIPForeign) ProcessTask() error {
 // Thus, if we're registered and don't get a response to a subsequent
 // renewal request 30 seconds after our TTL expired then we're
 // definitely not registered anymore.
-func (b *BIPForeign) _start_track_registration() {
+func (b *BIPForeign) startTrackRegistration() {
 	var delta = time.Duration(*b.bbmdTimeToLive)*time.Second + (30 * time.Second)
 	b.registrationTimeoutTask.InstallTask(InstallTaskOptions{Delta: &delta})
 }
 
-func (b *BIPForeign) _stop_track_registration() {
+func (b *BIPForeign) stopTrackRegistration() {
 	b.registrationTimeoutTask.SuspendTask()
 }
 
 // _registration_expired is called when detecting that foreign device registration has definitely expired.
-func (b *BIPForeign) _registration_expired(_ Args, _ KWArgs) error {
+func (b *BIPForeign) registrationExpired(_ Args, _ KWArgs) error {
 	b.registrationStatus = -1 // Unregistered
-	b._stop_track_registration()
+	b.stopTrackRegistration()
 	return nil
+}
+
+func (b *BIPForeign) String() string {
+	return fmt.Sprintf("BIPForeign(taskTime: %v, isScheduled: %t, registrationStatus: %d, bbmdAddress: %s, bbmdTimeToLive: %d)", b.taskTime, b.isScheduled, b.registrationStatus, b.bbmdAddress, b.bbmdTimeToLive)
+}
+
+type BIPBBMD struct {
+	*BIPSAP
+	*Client
+	*Server
+	*RecurringTask
+	*DebugContents
+
+	bbmdAddress *Address
+	bbmdBDT     []*Address
+	bbmdFDT     []*FDTEntry
+
+	// Pass Through args
+	argSapID *int
+	argCID   *int
+	argSID   *int
+
+	log zerolog.Logger
+}
+
+func NewBIPBBMD(localLog zerolog.Logger, addr *Address) (*BIPBBMD, error) {
+	b := &BIPBBMD{log: localLog}
+	var err error
+	b.BIPSAP, err = NewBIPSAP(localLog, b, func(bipsap *BIPSAP) {
+		bipsap.argSapID = b.argSapID
+	})
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating BIPSAP")
+	}
+	b.Client, err = NewClient(localLog, b, func(client *Client) {
+		client.clientID = b.argCID
+	})
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating Client")
+	}
+	b.Server, err = NewServer(localLog, b, func(Server *Server) {
+		Server.serverID = b.argSID
+	})
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating Server")
+	}
+	b.RecurringTask = NewRecurringTask(localLog, b, WithRecurringTaskInterval(1*time.Second))
+
+	b.bbmdAddress = addr
+
+	// install so process_task runs
+	b.InstallTask(InstallTaskOptions{})
+
+	return b, nil
+}
+
+func (b *BIPBBMD) Indication(args Args, kwargs KWArgs) error {
+	b.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Indication")
+
+	pdu := args.Get0PDU()
+
+	// check for local stations
+	if pdu.GetPDUDestination().AddrType == LOCAL_STATION_ADDRESS {
+		// make an original unicast PDU
+		var err error
+		xpdu, err := NewOriginalUnicastNPDU(pdu, WithOriginalUnicastNPDUDestination(pdu.GetPDUDestination()), WithOriginalUnicastNPDUUserData(pdu.GetPDUUserData()))
+		if err != nil {
+			return errors.Wrap(err, "error creating OriginalUnicastNPDU")
+		}
+		//           if settings.route_aware and pdu.pduDestination.addrRoute:
+		//               xpdu.pduDestination = pdu.pduDestination.addrRoute
+		b.log.Debug().Stringer("xpdu", xpdu).Msg("original unicast xpdu")
+
+		// send it downstream
+		return b.Request(NewArgs(xpdu), NoKWArgs)
+	} else if pdu.GetPDUDestination().AddrType == LOCAL_BROADCAST_ADDRESS { // check for broadcaste
+		// make an original unicast PDU
+		var xpdu PDU
+		var err error
+		xpdu, err = NewOriginalBroadcastNPDU(pdu, WithOriginalBroadcastNPDUDestination(pdu.GetPDUDestination()), WithOriginalBroadcastNPDUUserData(pdu.GetPDUUserData()))
+		if err != nil {
+			return errors.Wrap(err, "error creating OriginalUnicastNPDU")
+		}
+		//           if settings.route_aware and pdu.pduDestination.addrRoute:
+		//               xpdu.pduDestination = pdu.pduDestination.addrRoute
+		b.log.Debug().Stringer("xpdu", xpdu).Msg("original broadcast xpdu")
+
+		// send it downstream
+		err = b.Request(NewArgs(xpdu), NoKWArgs)
+		if err != nil {
+			return errors.Wrap(err, "error sending request downstream")
+		}
+
+		// skip other processing if the route was provided
+		//           if settings.route_aware and pdu.pduDestination.addrRoute:
+		//               return
+
+		// make a forwarded PDU
+		xpdu, err = NewForwardedNPDU(pdu, WithForwardedNPDUAddress(b.bbmdAddress), WithForwardedNPDUUserData(pdu.GetPDUUserData()))
+		if err != nil {
+			return errors.Wrap(err, "error creating ForwardedNPDU")
+		}
+		b.log.Debug().Stringer("xpdu", xpdu).Msg("forwarded xpdu")
+
+		// send it to the peers
+		for _, bdte := range b.bbmdBDT {
+			if !bdte.Equals(b.bbmdAddress) {
+				dest, err := NewAddress(b.log, &AddressTuple[int, uint16]{int(*bdte.AddrIP | ^*bdte.AddrMask), *bdte.AddrPort})
+				if err != nil {
+					return errors.Wrap(err, "error creating address tuple")
+				}
+				xpdu.SetPDUDestination(dest)
+				b.log.Debug().Stringer("pduDestination", xpdu.GetPDUDestination()).Msg("sending to peer")
+				if err := b.Request(NewArgs(xpdu), NoKWArgs); err != nil {
+					return errors.Wrap(err, "error sending request")
+				}
+			}
+		}
+
+		// send it to the registered foreign devies
+		for _, fdte := range b.bbmdFDT {
+			xpdu.SetPDUDestination(fdte.FDAddress)
+			b.log.Debug().Stringer("pduDestination", xpdu.GetPDUDestination()).Msg("sending to foreign device")
+			if err := b.Request(NewArgs(xpdu), NoKWArgs); err != nil {
+				return errors.Wrap(err, "error sending request")
+			}
+		}
+		return err
+	} else {
+		return errors.Errorf("invalid destination address: %s", pdu.GetPDUDestination())
+	}
+}
+
+func (b *BIPBBMD) Confirmation(args Args, kwargs KWArgs) error {
+	b.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Confirmation")
+
+	pdu := args.Get0PDU()
+	switch pdu.GetRootMessage().(type) {
+	case readWriteModel.BVLCResultExactly: //some kind of response to a request
+		// send this to the service access point
+		return b.SapResponse(NewArgs(pdu), NoKWArgs)
+	case readWriteModel.BVLCWriteBroadcastDistributionTableExactly:
+		// build a response
+		xpdu, err := NewResult(WithResultBvlciResultCode(readWriteModel.BVLCResultCode_WRITE_BROADCAST_DISTRIBUTION_TABLE_NAK))
+		if err != nil {
+			return errors.Wrap(err, "error creating Result")
+		}
+		xpdu.SetPDUUserData(pdu.GetPDUUserData())
+
+		// send it downstream
+		return b.Request(NewArgs(pdu), NoKWArgs)
+	case readWriteModel.BVLCReadBroadcastDistributionTableExactly:
+		// build a response
+		xpdu, err := NewReadBroadcastDistributionTableAck(WithReadBroadcastDistributionTableAckBDT(b.bbmdBDT...))
+		if err != nil {
+			return errors.Wrap(err, "error creating Result")
+		}
+		xpdu.SetPDUUserData(pdu.GetPDUUserData())
+
+		// send it downstream
+		return b.Request(NewArgs(pdu), NoKWArgs)
+	case readWriteModel.BVLCReadBroadcastDistributionTableAckExactly:
+		// send it to the service access point
+		return b.SapResponse(NewArgs(pdu), NoKWArgs)
+	case readWriteModel.BVLCForwardedNPDUExactly:
+		pdu := pdu.(*ForwardedNPDU) // TODO: check if this cast is fine
+		// send it upstream if there is a network layer
+		if b.serverPeer != nil {
+			xpdu := NewPDU(NewMessageBridge(pdu.GetPduData()...), WithPDUSource(pdu.GetBvlciAddress()), WithPDUDestination(NewLocalBroadcast(nil)), WithPDUUserData(pdu.GetPDUUserData()))
+			//               if settings.route_aware:
+			//                   xpdu.pduSource.addrRoute = pdu.pduSource
+			b.log.Debug().Stringer("xpdu", xpdu).Msg("upstream xpdu")
+
+			return b.Response(NewArgs(xpdu), NoKWArgs)
+		}
+
+		// build a forwarded NPDU to send out
+		xpdu, err := NewForwardedNPDU(pdu, WithForwardedNPDUAddress(pdu.GetBvlciAddress()), WithForwardedNPDUUserData(pdu.GetPDUUserData()))
+		if err != nil {
+			return errors.Wrap(err, "error creating ForwardedNPDU")
+		}
+		b.log.Debug().Stringer("xpdu", xpdu).Msg("forwarded xpdu")
+
+		// if this was unicast to us, do next hop
+		if pdu.GetPDUDestination().AddrType == LOCAL_STATION_ADDRESS {
+			b.log.Trace().Msg("unicast message")
+
+			// if this BBMD is listed in its BDT, send a local broadcast
+			if slices.ContainsFunc(b.bbmdBDT, func(address *Address) bool {
+				return address.Equals(b.bbmdAddress)
+			}) {
+				b.log.Trace().Msg("local broadcast")
+				return b.Request(NewArgs(xpdu), NoKWArgs)
+			}
+		} else if pdu.GetPDUDestination().AddrType == LOCAL_BROADCAST_ADDRESS {
+			b.log.Trace().Msg("directed broadcast message")
+		} else {
+			b.log.Warn().Stringer("destination", pdu.GetPDUDestination()).Msg("invalid destination address")
+		}
+
+		// send it to the registered foreign devices
+		for _, fdte := range b.bbmdFDT {
+			xpdu.SetPDUDestination(fdte.FDAddress)
+			b.log.Warn().Stringer("destination", xpdu.GetPDUDestination()).Msg("sending to foreign device")
+			if err := b.Request(NewArgs(xpdu), NoKWArgs); err != nil {
+				return errors.Wrapf(err, "error sending request to destination %s", xpdu.GetPDUDestination())
+			}
+		}
+		return nil
+	case readWriteModel.BVLCRegisterForeignDeviceExactly:
+		pdu := pdu.(*RegisterForeignDevice) // TODO: check if this cast is fine
+		// process the request
+		stat, err := b.RegisterForeignDevice(pdu.GetPDUSource(), pdu.GetBvlciTimeToLive())
+		if err != nil {
+			return errors.Wrap(err, "error registering device")
+		}
+
+		// build a response
+		xpdu, err := NewResult(WithResultBvlciResultCode(stat))
+		if err != nil {
+			return errors.Wrap(err, "error creating Result")
+		}
+		xpdu.SetPDUDestination(pdu.GetPDUSource())
+		xpdu.SetPDUUserData(pdu.GetPDUUserData())
+		b.log.Debug().Stringer("xpdu", xpdu).Msg("xpdu")
+
+		// send it downstream
+		return b.Request(NewArgs(xpdu), NoKWArgs)
+	case readWriteModel.BVLCReadForeignDeviceTable:
+		// build a response
+		xpdu, err := NewReadForeignDeviceTableAck(WithReadForeignDeviceTableAckFDT(b.bbmdFDT...))
+		if err != nil {
+			return errors.Wrap(err, "error creating ack")
+		}
+		xpdu.SetPDUDestination(pdu.GetPDUSource())
+		xpdu.SetPDUUserData(pdu.GetPDUUserData())
+
+		// send it downstream
+		return b.Request(NewArgs(xpdu), NoKWArgs)
+	case readWriteModel.BVLCReadForeignDeviceTableAckExactly:
+		// send this to the service access point
+		return b.SapResponse(NewArgs(pdu), NoKWArgs)
+	case readWriteModel.BVLCDeleteForeignDeviceTableEntryExactly:
+		pdu := pdu.(*DeleteForeignDeviceTableEntry) // TODO: check if this cast is fine
+		// process the request
+		stat, err := b.DeleteForeignDeviceTableEntry(pdu.GetBvlciAddress())
+		if err != nil {
+			return errors.Wrap(err, "error deleting entry")
+		}
+
+		// build a response
+		xpdu, err := NewResult(WithResultBvlciResultCode(stat))
+		if err != nil {
+			return errors.Wrap(err, "error creating Result")
+		}
+		xpdu.SetPDUDestination(pdu.GetPDUSource()) // upstream does this in the constructor
+
+		// send it downstream
+		return b.Request(NewArgs(xpdu), NoKWArgs)
+	case readWriteModel.BVLCDistributeBroadcastToNetworkExactly:
+		// send it upstream if there is a network layer
+		if b.serverPeer != nil {
+			xpdu := NewPDU(NewMessageBridge(pdu.GetPduData()...), WithPDUSource(pdu.GetPDUSource()), WithPDUDestination(NewLocalBroadcast(nil)), WithPDUUserData(pdu.GetPDUUserData()))
+			//               if settings.route_aware:
+			//                   xpdu.pduSource.addrRoute = pdu.pduSource
+			b.log.Debug().Stringer("xpdu", xpdu).Msg("upstream xpdu")
+
+			return b.Response(NewArgs(xpdu), NoKWArgs)
+		}
+
+		// build a forwarded NPDU to send out
+		xpdu, err := NewForwardedNPDU(pdu, WithForwardedNPDUAddress(pdu.GetPDUSource()), WithForwardedNPDUUserData(pdu.GetPDUUserData()))
+		if err != nil {
+			return errors.Wrap(err, "error creating ForwardedNPDU")
+		}
+		b.log.Debug().Stringer("xpdu", xpdu).Msg("forwarded xpdu")
+
+		// send it to the peers
+		for _, bdte := range b.bbmdBDT {
+			if bdte.Equals(b.bbmdAddress) {
+				xpdu.SetPDUDestination(NewLocalBroadcast(nil))
+				b.log.Trace().Msg("local broadcast")
+				err = b.Request(NewArgs(xpdu), NoKWArgs)
+				if err != nil {
+					return errors.Wrap(err, "error sending local broadcast")
+				}
+			} else {
+				address, err := NewAddress(b.log, &AddressTuple[int, uint16]{int(*bdte.AddrIP | ^*bdte.AddrMask), *bdte.AddrPort})
+				if err != nil {
+					return errors.Wrap(err, "error creating address")
+				}
+				xpdu.SetPDUDestination(address)
+				b.log.Debug().Stringer("designation", xpdu.GetPDUDestination()).Msg("sending to peer")
+				err = b.Request(NewArgs(xpdu), NoKWArgs)
+				if err != nil {
+					return errors.Wrap(err, "error sending")
+				}
+			}
+		}
+
+		// send it to the registered foreign devices
+		for _, fdte := range b.bbmdFDT {
+			if !fdte.Equals(pdu.GetPDUSource()) {
+				xpdu.SetPDUDestination(fdte.FDAddress)
+				b.log.Warn().Stringer("destination", xpdu.GetPDUDestination()).Msg("sending to foreign device")
+				if err := b.Request(NewArgs(xpdu), NoKWArgs); err != nil {
+					return errors.Wrapf(err, "error sending request to destination %s", xpdu.GetPDUDestination())
+				}
+			}
+		}
+		return nil
+	case readWriteModel.BVLCOriginalUnicastNPDUExactly:
+		// send it upstream if there is a network layer
+		if b.serverPeer != nil {
+			// build a PDU
+			xpdu := NewPDU(NewMessageBridge(pdu.GetPduData()...), WithPDUSource(pdu.GetPDUSource()), WithPDUDestination(pdu.GetPDUDestination()), WithPDUUserData(pdu.GetPDUUserData()))
+			//               if settings.route_aware:
+			//                   xpdu.pduSource.addrRoute = pdu.pduSource
+			b.log.Debug().Stringer("xpdu", xpdu).Msg("upstream xpdu")
+
+			return b.Response(NewArgs(xpdu), NoKWArgs)
+		}
+	case readWriteModel.BVLCOriginalBroadcastNPDUExactly:
+		// send it upstream if there is a network layer
+		if b.serverPeer != nil {
+			// build a PDU with a local broadcast address
+			xpdu := NewPDU(NewMessageBridge(pdu.GetPduData()...), WithPDUSource(pdu.GetPDUSource()), WithPDUDestination(NewLocalBroadcast(nil)), WithPDUUserData(pdu.GetPDUUserData()))
+			//               if settings.route_aware:
+			//                   xpdu.pduSource.addrRoute = pdu.pduSource
+			b.log.Debug().Stringer("xpdu", xpdu).Msg("upstream xpdu")
+
+			return b.Response(NewArgs(xpdu), NoKWArgs)
+		}
+
+		// build a forwarded NPDU
+		xpdu, err := NewForwardedNPDU(pdu, WithForwardedNPDUAddress(pdu.GetPDUSource()), WithForwardedNPDUUserData(pdu.GetPDUUserData()))
+		if err != nil {
+			return errors.Wrap(err, "error creating ForwardedNPDU")
+		}
+		b.log.Debug().Stringer("xpdu", xpdu).Msg("forwarded xpdu")
+
+		// send it to the peers
+		for _, bdte := range b.bbmdBDT {
+			if !bdte.Equals(b.bbmdAddress) {
+				address, err := NewAddress(b.log, &AddressTuple[int, uint16]{int(*bdte.AddrIP | ^*bdte.AddrMask), *bdte.AddrPort})
+				if err != nil {
+					return errors.Wrap(err, "error creating address")
+				}
+				xpdu.SetPDUDestination(address)
+				b.log.Debug().Stringer("designation", xpdu.GetPDUDestination()).Msg("sending to peer")
+				err = b.Request(NewArgs(xpdu), NoKWArgs)
+				if err != nil {
+					return errors.Wrap(err, "error sending")
+				}
+			}
+		}
+
+		// send it to the registered foreign devices
+		for _, fdte := range b.bbmdFDT {
+			xpdu.SetPDUDestination(fdte.FDAddress)
+			b.log.Warn().Stringer("destination", xpdu.GetPDUDestination()).Msg("sending to foreign device")
+			if err := b.Request(NewArgs(xpdu), NoKWArgs); err != nil {
+				return errors.Wrapf(err, "error sending request to destination %s", xpdu.GetPDUDestination())
+			}
+		}
+		return nil
+	default:
+		return errors.Errorf("invalid pdu type: %s", pdu.GetRootMessage())
+	}
+	return nil
+}
+
+func (b *BIPBBMD) RegisterForeignDevice(address Arg, ttl uint16) (readWriteModel.BVLCResultCode, error) {
+	b.log.Debug().Interface("address", address).Uint16("ttl", ttl).Msg("registering foreign device")
+
+	var addr *Address
+	// see if it is an address or make it one
+	switch address := address.(type) {
+	case *Address:
+		addr = address
+	case string:
+		var err error
+		addr, err = NewAddress(b.log, address)
+		if err != nil {
+			return readWriteModel.BVLCResultCode_REGISTER_FOREIGN_DEVICE_NAK, errors.Wrap(err, "error creating address")
+		}
+	default:
+		return readWriteModel.BVLCResultCode_REGISTER_FOREIGN_DEVICE_NAK, errors.Errorf("invalid address type: %T", address)
+	}
+
+	var fdte *FDTEntry
+	for _, fdtEntry := range b.bbmdFDT {
+		if addr.Equals(fdtEntry.FDAddress) {
+			fdte = fdtEntry
+			break
+		}
+	}
+	if fdte == nil {
+		fdte = &FDTEntry{
+			FDAddress: addr,
+		}
+		b.bbmdFDT = append(b.bbmdFDT, fdte)
+	}
+
+	fdte.FDTTL = ttl
+	fdte.FDRemain = ttl + 5
+	return readWriteModel.BVLCResultCode_SUCCESSFUL_COMPLETION, nil
+}
+
+func (b *BIPBBMD) DeleteForeignDeviceTableEntry(address Arg) (readWriteModel.BVLCResultCode, error) {
+	b.log.Debug().Interface("address", address).Msg("delete foreign device")
+
+	var addr *Address
+	// see if it is an address or make it one
+	switch address := address.(type) {
+	case *Address:
+		addr = address
+	case string:
+		var err error
+		addr, err = NewAddress(b.log, address)
+		if err != nil {
+			return readWriteModel.BVLCResultCode_REGISTER_FOREIGN_DEVICE_NAK, errors.Wrap(err, "error creating address")
+		}
+	default:
+		return readWriteModel.BVLCResultCode_REGISTER_FOREIGN_DEVICE_NAK, errors.Errorf("invalid address type: %T", address)
+	}
+
+	// find it and delete it
+	stat := readWriteModel.BVLCResultCode_SUCCESSFUL_COMPLETION
+	deleted := false
+	b.bbmdFDT = slices.DeleteFunc(b.bbmdFDT, func(entry *FDTEntry) bool {
+		if addr.Equals(entry.FDAddress) {
+			deleted = true
+			return true
+		}
+		return false
+	})
+	if !deleted {
+		stat = readWriteModel.BVLCResultCode_DELETE_FOREIGN_DEVICE_TABLE_ENTRY_NAK
+	}
+
+	return stat, nil
+}
+
+func (b *BIPBBMD) ProcessTask() error {
+	// look for foreign device registrations that have expired
+	b.bbmdFDT = slices.DeleteFunc(b.bbmdFDT, func(fdte *FDTEntry) bool {
+		fdte.FDRemain -= 1
+
+		// delete it if expired
+		if fdte.FDRemain <= 0 {
+			b.log.Debug().Stringer("addr", fdte.FDAddress).Msg("foreign device expired")
+			return true
+		}
+		return false
+	})
+	return nil
+}
+
+func (b *BIPBBMD) AddPeer(address Arg) error {
+	b.log.Debug().Interface("adddress", address).Msg("addr")
+
+	var addr *Address
+	// see if it is an address or make it one
+	switch address := address.(type) {
+	case *Address:
+		addr = address
+	case string:
+		var err error
+		addr, err = NewAddress(b.log, address)
+		if err != nil {
+			return errors.Wrap(err, "error creating address")
+		}
+	default:
+		return errors.Errorf("invalid address type: %T", address)
+	}
+
+	// see if it's already there
+	found := false
+	for _, bdte := range b.bbmdBDT {
+		if addr.Equals(bdte) {
+			found = true
+			break
+		}
+	}
+	if !found {
+		b.bbmdBDT = append(b.bbmdBDT, addr)
+	}
+	return nil
+}
+
+func (b *BIPBBMD) DeletePeer(address Arg) error {
+	b.log.Debug().Interface("adddress", address).Msg("addr")
+
+	var addr *Address
+	// see if it is an address or make it one
+	switch address := address.(type) {
+	case *Address:
+		addr = address
+	case string:
+		var err error
+		addr, err = NewAddress(b.log, address)
+		if err != nil {
+			return errors.Wrap(err, "error creating address")
+		}
+	default:
+		return errors.Errorf("invalid address type: %T", address)
+	}
+
+	// look for the peer address
+	b.bbmdBDT = slices.DeleteFunc(b.bbmdBDT, func(bdte *Address) bool {
+		return addr.Equals(bdte)
+	})
+	return nil
+}
+
+func (b *BIPBBMD) String() string {
+	return "BIPBBMD" // TODO: improve output
 }

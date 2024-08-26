@@ -25,11 +25,10 @@ import (
 	"fmt"
 	"math"
 
+	"github.com/pkg/errors"
+
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
-	"github.com/apache/plc4x/plc4go/spi/utils"
-
-	"github.com/pkg/errors"
 )
 
 // NPDUTypes is a dictionary of message type values and structs
@@ -60,7 +59,7 @@ func NewNPCI(pduUserData spi.Message, nlm readWriteModel.NLM) NPCI {
 	n := &_NPCI{
 		nlm: nlm,
 	}
-	n._PCI = newPCI(pduUserData, nil, nil, false, readWriteModel.NPDUNetworkPriority_NORMAL_MESSAGE)
+	n._PCI = newPCI(pduUserData, nil, nil, nil, false, readWriteModel.NPDUNetworkPriority_NORMAL_MESSAGE)
 	switch nlm := pduUserData.(type) {
 	case readWriteModel.NLMExactly:
 		n.nlm = nlm
@@ -95,7 +94,7 @@ func (n *_NPCI) Update(npci Arg) error {
 		// TODO: update coordinates...
 		return nil
 	default:
-		return errors.Errorf("invalid APCI type %T", npci)
+		return errors.Errorf("invalid NPCI type %T", npci)
 	}
 }
 
@@ -132,7 +131,9 @@ type _NPDU struct {
 	*_NPCI
 	*_PDUData
 
+	// Deprecated: this is the rootMessage so no need to store it here
 	npdu readWriteModel.NPDU
+	// Deprecated: this is the rootMessage so no need to store it here
 	apdu readWriteModel.APDU
 }
 
@@ -149,10 +150,11 @@ func NewNPDU(nlm readWriteModel.NLM, apdu readWriteModel.APDU) (NPDU, error) {
 		//return nil, errors.Wrap(err, "error building NPDU")
 	}
 	n._NPCI = NewNPCI(n.npdu, nlm).(*_NPCI)
-	n._PDUData = newPDUData(n)
+	n._PDUData = NewPDUData(NoArgs).(*_PDUData)
 	return n, nil
 }
 
+// Deprecated: this is the rootMessage so no need to store it here
 func (n *_NPDU) setNPDU(npdu readWriteModel.NPDU) {
 	n.npdu = npdu
 }
@@ -221,7 +223,11 @@ func (n *_NPDU) Encode(pdu Arg) error {
 	if err != nil {
 		return errors.Wrap(err, "error building NPDU")
 	}
-	n.SetPDUUserData(n.npdu)
+	serialize, err := n.npdu.Serialize()
+	if err != nil {
+		return errors.Wrap(err, "error serializing NPDU")
+	}
+	pdu.(interface{ PutData(n ...byte) }).PutData(serialize...) // TODO: ugly cast...
 	return nil
 }
 
@@ -232,31 +238,21 @@ func (n *_NPDU) Decode(pdu Arg) error {
 	switch pdu := pdu.(type) {
 	case PDUData:
 		data := pdu.GetPduData()
+		n.PutData(data...)
 		var err error
 		n.npdu, err = readWriteModel.NPDUParse(context.Background(), data, uint16(len(data)))
 		if err != nil {
 			return errors.Wrap(err, "error parsing NPDU")
 		}
-		n.pduUserData = n.npdu
+		n.rootMessage = n.npdu
 		n.nlm = n.npdu.GetNlm()
 		n.apdu = n.npdu.GetApdu()
 	}
 	return nil
 }
 
-func (n *_NPDU) GetMessage() spi.Message {
+func (n *_NPDU) GetRootMessage() spi.Message {
 	return n.npdu
-}
-
-func (n *_NPDU) getPDUData() []byte {
-	if n.GetMessage() == nil {
-		return nil
-	}
-	writeBufferByteBased := utils.NewWriteBufferByteBased()
-	if err := n.GetMessage().SerializeWithWriteBuffer(context.Background(), writeBufferByteBased); err != nil {
-		panic(err) // TODO: graceful handle
-	}
-	return writeBufferByteBased.GetBytes()
 }
 
 func (n *_NPDU) GetProtocolVersionNumber() uint8 {
@@ -422,7 +418,7 @@ func (n *WhoIsRouterToNetwork) Decode(npdu Arg) error {
 		if err := n.Update(npdu); err != nil {
 			return errors.Wrap(err, "error updating _NPCI")
 		}
-		switch pduUserData := npdu.GetPDUUserData().(type) {
+		switch pduUserData := npdu.GetRootMessage().(type) {
 		case readWriteModel.NPDUExactly:
 			switch nlm := pduUserData.GetNlm().(type) {
 			case readWriteModel.NLMWhoIsRouterToNetworkExactly:
@@ -493,7 +489,7 @@ func (i *IAmRouterToNetwork) Decode(npdu Arg) error {
 		if err := i.Update(npdu); err != nil {
 			return errors.Wrap(err, "error updating _NPCI")
 		}
-		switch pduUserData := npdu.GetPDUUserData().(type) {
+		switch pduUserData := npdu.GetRootMessage().(type) {
 		case readWriteModel.NPDUExactly:
 			switch nlm := pduUserData.GetNlm().(type) {
 			case readWriteModel.NLMIAmRouterToNetworkExactly:
@@ -573,7 +569,7 @@ func (i *ICouldBeRouterToNetwork) Decode(npdu Arg) error {
 		if err := i.Update(npdu); err != nil {
 			return errors.Wrap(err, "error updating _NPCI")
 		}
-		switch pduUserData := npdu.GetPDUUserData().(type) {
+		switch pduUserData := npdu.GetRootMessage().(type) {
 		case readWriteModel.NPDUExactly:
 			switch nlm := pduUserData.GetNlm().(type) {
 			case readWriteModel.NLMICouldBeRouterToNetworkExactly:
@@ -655,7 +651,7 @@ func (n *RejectMessageToNetwork) Decode(npdu Arg) error {
 		if err := n.Update(npdu); err != nil {
 			return errors.Wrap(err, "error updating _NPCI")
 		}
-		switch pduUserData := npdu.GetPDUUserData().(type) {
+		switch pduUserData := npdu.GetRootMessage().(type) {
 		case readWriteModel.NPDUExactly:
 			switch nlm := pduUserData.GetNlm().(type) {
 			case readWriteModel.NLMRejectMessageToNetworkExactly:
@@ -727,7 +723,7 @@ func (r *RouterBusyToNetwork) Decode(npdu Arg) error {
 		if err := r.Update(npdu); err != nil {
 			return errors.Wrap(err, "error updating _NPCI")
 		}
-		switch pduUserData := npdu.GetPDUUserData().(type) {
+		switch pduUserData := npdu.GetRootMessage().(type) {
 		case readWriteModel.NPDUExactly:
 			switch nlm := pduUserData.GetNlm().(type) {
 			case readWriteModel.NLMRouterBusyToNetwork:
@@ -798,7 +794,7 @@ func (r *RouterAvailableToNetwork) Decode(npdu Arg) error {
 		if err := r.Update(npdu); err != nil {
 			return errors.Wrap(err, "error updating _NPCI")
 		}
-		switch pduUserData := npdu.GetPDUUserData().(type) {
+		switch pduUserData := npdu.GetRootMessage().(type) {
 		case readWriteModel.NPDUExactly:
 			switch nlm := pduUserData.GetNlm().(type) {
 			case readWriteModel.NLMRouterAvailableToNetwork:
@@ -950,7 +946,7 @@ func (r *InitializeRoutingTable) Decode(npdu Arg) error {
 		if err := r.Update(npdu); err != nil {
 			return errors.Wrap(err, "error updating _NPCI")
 		}
-		switch pduUserData := npdu.GetPDUUserData().(type) {
+		switch pduUserData := npdu.GetRootMessage().(type) {
 		case readWriteModel.NPDUExactly:
 			switch nlm := pduUserData.GetNlm().(type) {
 			case readWriteModel.NLMInitializeRoutingTable:
@@ -1045,7 +1041,7 @@ func (r *InitializeRoutingTableAck) Decode(npdu Arg) error {
 		if err := r.Update(npdu); err != nil {
 			return errors.Wrap(err, "error updating _NPCI")
 		}
-		switch pduUserData := npdu.GetPDUUserData().(type) {
+		switch pduUserData := npdu.GetRootMessage().(type) {
 		case readWriteModel.NPDUExactly:
 			switch nlm := pduUserData.GetNlm().(type) {
 			case readWriteModel.NLMInitializeRoutingTableAck:
@@ -1126,7 +1122,7 @@ func (n *EstablishConnectionToNetwork) Decode(npdu Arg) error {
 		if err := n.Update(npdu); err != nil {
 			return errors.Wrap(err, "error updating _NPCI")
 		}
-		switch pduUserData := npdu.GetPDUUserData().(type) {
+		switch pduUserData := npdu.GetRootMessage().(type) {
 		case readWriteModel.NPDUExactly:
 			switch nlm := pduUserData.GetNlm().(type) {
 			case readWriteModel.NLMEstablishConnectionToNetworkExactly:
@@ -1196,7 +1192,7 @@ func (n *DisconnectConnectionToNetwork) Decode(npdu Arg) error {
 		if err := n.Update(npdu); err != nil {
 			return errors.Wrap(err, "error updating _NPCI")
 		}
-		switch pduUserData := npdu.GetPDUUserData().(type) {
+		switch pduUserData := npdu.GetRootMessage().(type) {
 		case readWriteModel.NPDUExactly:
 			switch nlm := pduUserData.GetNlm().(type) {
 			case readWriteModel.NLMDisconnectConnectionToNetworkExactly:
@@ -1252,7 +1248,7 @@ func (n *WhatIsNetworkNumber) Decode(npdu Arg) error {
 		if err := n.Update(npdu); err != nil {
 			return errors.Wrap(err, "error updating _NPCI")
 		}
-		switch pduUserData := npdu.GetPDUUserData().(type) {
+		switch pduUserData := npdu.GetRootMessage().(type) {
 		case readWriteModel.NPDUExactly:
 			switch nlm := pduUserData.GetNlm().(type) {
 			case readWriteModel.NLMWhatIsNetworkNumberExactly:
@@ -1336,7 +1332,7 @@ func (n *NetworkNumberIs) Decode(npdu Arg) error {
 		if err := n.Update(npdu); err != nil {
 			return errors.Wrap(err, "error updating _NPCI")
 		}
-		switch pduUserData := npdu.GetPDUUserData().(type) {
+		switch pduUserData := npdu.GetRootMessage().(type) {
 		case readWriteModel.NPDUExactly:
 			switch nlm := pduUserData.GetNlm().(type) {
 			case readWriteModel.NLMNetworkNumberIsExactly:

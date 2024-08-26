@@ -23,13 +23,13 @@ import (
 	"testing"
 	"time"
 
-	"github.com/apache/plc4x/plc4go/internal/bacnetip"
-	"github.com/apache/plc4x/plc4go/internal/bacnetip/tests"
-	"github.com/apache/plc4x/plc4go/spi/testutils"
-
 	"github.com/rs/zerolog"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
+
+	"github.com/apache/plc4x/plc4go/internal/bacnetip"
+	"github.com/apache/plc4x/plc4go/internal/bacnetip/tests"
+	"github.com/apache/plc4x/plc4go/spi/testutils"
 )
 
 type TimeMachineSuite struct {
@@ -41,18 +41,15 @@ type TimeMachineSuite struct {
 	log zerolog.Logger
 }
 
-func (suite *TimeMachineSuite) SetupSuite() {
-	suite.log = testutils.ProduceTestingLogger(suite.T())
-}
-
 func (suite *TimeMachineSuite) SetupTest() {
 	t := suite.T()
+	suite.log = testutils.ProduceTestingLogger(t)
 	tests.LockGlobalTimeMachine(t)
-	tests.NewGlobalTimeMachine(suite.log) // TODO: this is really stupid because of concurrency...
+	tests.NewGlobalTimeMachine(t)
 }
 
 func (suite *TimeMachineSuite) TearDownTest() {
-	tests.ClearGlobalTimeMachine(suite.log)
+	tests.ClearGlobalTimeMachine(suite.T())
 }
 
 type SampleOneShotTask struct {
@@ -101,8 +98,7 @@ func NewSampleRecurringTask(localLog zerolog.Logger) *SampleRecurringTask {
 	s := &SampleRecurringTask{
 		log: localLog,
 	}
-	interval := 1 * time.Nanosecond
-	s.RecurringTask = bacnetip.NewRecurringTask(localLog, s, &interval, nil)
+	s.RecurringTask = bacnetip.NewRecurringTask(localLog, s, bacnetip.WithRecurringTaskInterval(1*time.Nanosecond))
 	return s
 }
 
