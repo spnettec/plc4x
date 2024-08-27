@@ -755,7 +755,7 @@ func (b *BIPForeign) Indication(args Args, kwargs KWArgs) error {
 		b.log.Debug().Stringer("xpdu", xpdu).Msg("xpdu")
 
 		// send it downstream
-		return b.Request(NewArgs(NewPDUFromPDUWithNewMessage(pdu, xpdu)), NoKWArgs)
+		return b.Request(NewArgs(xpdu), NoKWArgs)
 	default:
 		return errors.Errorf("invalid destination address: %s", pdu.GetPDUDestination())
 	}
@@ -919,8 +919,7 @@ func (b *BIPForeign) Register(addr *Address, ttl int) error {
 
 	// install this task to do registration renewal according to the TTL
 	// and stop tracking any active registration timeouts
-	var taskTime time.Time
-	b.InstallTask(InstallTaskOptions{When: &taskTime})
+	b.InstallTask(WithInstallTaskOptionsWhen(time.Time{}))
 	b.stopTrackRegistration()
 	return nil
 }
@@ -965,8 +964,7 @@ func (b *BIPForeign) ProcessTask() error {
 	}
 
 	// schedule the next registration renewal
-	var delta = time.Duration(*b.bbmdTimeToLive) * time.Second
-	b.InstallTask(InstallTaskOptions{Delta: &delta})
+	b.InstallTask(WithInstallTaskOptionsDelta(time.Duration(*b.bbmdTimeToLive) * time.Second))
 	return nil
 }
 
@@ -978,8 +976,7 @@ func (b *BIPForeign) ProcessTask() error {
 // renewal request 30 seconds after our TTL expired then we're
 // definitely not registered anymore.
 func (b *BIPForeign) startTrackRegistration() {
-	var delta = time.Duration(*b.bbmdTimeToLive)*time.Second + (30 * time.Second)
-	b.registrationTimeoutTask.InstallTask(InstallTaskOptions{Delta: &delta})
+	b.registrationTimeoutTask.InstallTask(WithInstallTaskOptionsDelta(time.Duration(*b.bbmdTimeToLive)*time.Second + (30 * time.Second)))
 }
 
 func (b *BIPForeign) stopTrackRegistration() {
@@ -994,7 +991,15 @@ func (b *BIPForeign) registrationExpired(_ Args, _ KWArgs) error {
 }
 
 func (b *BIPForeign) String() string {
-	return fmt.Sprintf("BIPForeign(taskTime: %v, isScheduled: %t, registrationStatus: %d, bbmdAddress: %s, bbmdTimeToLive: %d)", b.taskTime, b.isScheduled, b.registrationStatus, b.bbmdAddress, b.bbmdTimeToLive)
+	taskTime := "unscheduled"
+	if b.taskTime != nil {
+		taskTime = b.taskTime.String()
+	}
+	bbmdTimeToLive := "unknown"
+	if b.bbmdTimeToLive != nil {
+		bbmdTimeToLive = fmt.Sprintf("%ds", *b.bbmdTimeToLive)
+	}
+	return fmt.Sprintf("BIPForeign(taskTime: %s, isScheduled: %t, registrationStatus: %d, bbmdAddress: %s, bbmdTimeToLive: %s)", taskTime, b.isScheduled, b.registrationStatus, b.bbmdAddress, bbmdTimeToLive)
 }
 
 type BIPBBMD struct {
@@ -1042,7 +1047,7 @@ func NewBIPBBMD(localLog zerolog.Logger, addr *Address) (*BIPBBMD, error) {
 	b.bbmdAddress = addr
 
 	// install so process_task runs
-	b.InstallTask(InstallTaskOptions{})
+	b.InstallTask(WithInstallTaskOptionsNone())
 
 	return b, nil
 }
