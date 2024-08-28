@@ -22,10 +22,12 @@ package bacnetip
 import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
+
+	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 )
 
 type NetworkAdapter struct {
-	*Client
+	Client
 	adapterSAP           *NetworkServiceAccessPoint
 	adapterNet           *uint16
 	adapterAddr          *Address
@@ -49,7 +51,7 @@ func NewNetworkAdapter(localLog zerolog.Logger, sap *NetworkServiceAccessPoint, 
 		opt(n)
 	}
 	var err error
-	n.Client, err = NewClient(localLog, n, func(client *Client) {
+	n.Client, err = NewClient(localLog, n, func(client *client) {
 		client.clientID = n.argCid
 	})
 	if err != nil {
@@ -75,13 +77,31 @@ func (n *NetworkAdapter) Confirmation(args Args, kwargs KWArgs) error {
 		Stringer("Args", args).Stringer("KWArgs", kwargs).
 		Interface("adapterNet", n.adapterNet).
 		Msg("confirmation")
-	npdu := args.Get0PDU()
 
+	pdu := args.Get0PDU()
+
+	var nlm model.NLM
+	var apdu model.APDU
+	switch pdu := pdu.GetRootMessage().(type) {
+	case model.NPDUExactly:
+		nlm = pdu.GetNlm()
+		apdu = pdu.GetApdu()
+	default:
+		return errors.Errorf("Unmapped type %T", pdu)
+	}
+	npdu, err := NewNPDU(nlm, apdu)
+	if err != nil {
+		return errors.Wrap(err, "error creating NPDU")
+	}
+	npdu.SetPDUUserData(pdu.GetPDUUserData())
+	if err := npdu.Decode(pdu); err != nil {
+		return errors.Wrap(err, "error decoding NPDU")
+	}
 	return n.adapterSAP.ProcessNPDU(n, npdu)
 }
 
 // ProcessNPDU Encode NPDUs from the service access point and send them downstream.
-func (n *NetworkAdapter) ProcessNPDU(npdu PDU) error {
+func (n *NetworkAdapter) ProcessNPDU(npdu NPDU) error {
 	n.log.Debug().
 		Stringer("npdu", npdu).
 		Interface("adapterNet", n.adapterNet).

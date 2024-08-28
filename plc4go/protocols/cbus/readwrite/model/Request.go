@@ -22,6 +22,7 @@ package model
 import (
 	"context"
 	"fmt"
+	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
@@ -220,11 +221,17 @@ func RequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cB
 		if pullErr := readBuffer.PullContext("startingCR"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for startingCR")
 		}
+		currentPos = positionAware.GetPos()
 		_val, _err := RequestTypeParseWithBuffer(ctx, readBuffer)
-		if _err != nil {
+		switch {
+		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			readBuffer.Reset(currentPos)
+		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'startingCR' field of Request")
+		default:
+			startingCR = &_val
 		}
-		startingCR = &_val
 		if closeErr := readBuffer.CloseContext("startingCR"); closeErr != nil {
 			return nil, errors.Wrap(closeErr, "Error closing for startingCR")
 		}
@@ -236,11 +243,17 @@ func RequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cB
 		if pullErr := readBuffer.PullContext("resetMode"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for resetMode")
 		}
+		currentPos = positionAware.GetPos()
 		_val, _err := RequestTypeParseWithBuffer(ctx, readBuffer)
-		if _err != nil {
+		switch {
+		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			readBuffer.Reset(currentPos)
+		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'resetMode' field of Request")
+		default:
+			resetMode = &_val
 		}
-		resetMode = &_val
 		if closeErr := readBuffer.CloseContext("resetMode"); closeErr != nil {
 			return nil, errors.Wrap(closeErr, "Error closing for resetMode")
 		}

@@ -67,7 +67,7 @@ func NewTNetwork1(t *testing.T) *TNetwork1 {
 	require.NoError(t, err)
 
 	// make a little LAN
-	tn.vlan1 = bacnetip.NewNetwork(localLog)
+	tn.vlan1 = bacnetip.NewNetwork(localLog, bacnetip.WithNetworkName("vlan1"), bacnetip.WithNetworkBroadcastAddress(bacnetip.NewLocalBroadcast(nil)))
 
 	// Test devices
 	tn.td, err = NewNetworkLayerStateMachine(localLog, "1", tn.vlan1)
@@ -96,7 +96,7 @@ func NewTNetwork1(t *testing.T) *TNetwork1 {
 	require.NoError(t, err)
 
 	//  make another little LAN
-	tn.vlan3 = bacnetip.NewNetwork(tn.log, bacnetip.WithNetworkName("vlan23"), bacnetip.WithNetworkBroadcastAddress(bacnetip.NewLocalBroadcast(nil)))
+	tn.vlan3 = bacnetip.NewNetwork(tn.log, bacnetip.WithNetworkName("vlan3"), bacnetip.WithNetworkBroadcastAddress(bacnetip.NewLocalBroadcast(nil)))
 
 	//  sniffer node
 	tn.sniffer3, err = NewSnifferStateMachine(localLog, "6", tn.vlan2)
@@ -124,10 +124,7 @@ func (t *TNetwork1) Run(timeLimit time.Duration) {
 	tests.RunTimeMachine(t.log, timeLimit, time.Time{})
 	t.log.Trace().Msg("time machine finished")
 	for _, machine := range t.StateMachineGroup.GetStateMachines() {
-		t.log.Debug().Stringer("machine", machine).Msg("Machine:")
-		for _, s := range machine.GetTransactionLog() {
-			t.log.Debug().Str("logEntry", s).Msg("logEntry")
-		}
+		t.log.Debug().Stringer("machine", machine).Strs("transactionLog", machine.GetTransactionLog()).Msg("Machine:")
 	}
 
 	// check for success
@@ -155,10 +152,10 @@ func TestSimple1(t *testing.T) {
 }
 
 func TestWhoIsRouterToNetwork(t *testing.T) {
-	t.Skip("Not yet ready") // TODO: finish me
 	tests.ExclusiveGlobalTimeMachine(t)
 
 	t.Run("test_01", func(t *testing.T) {
+		//Test broadcast for any router.
 		// create a network
 		tnet := NewTNetwork1(t)
 
@@ -198,6 +195,33 @@ func TestWhoIsRouterToNetwork(t *testing.T) {
 		tnet.sniffer3.GetStartState().Doc("1-4-0").
 			Timeout(3*time.Second, nil).Doc("1-4-1").
 			Success("")
+
+		// run the group
+		tnet.Run(0)
+	})
+	t.Run("test_02", func(t *testing.T) {
+		//Test broadcast for existing router.
+		// create a network
+		tnet := NewTNetwork1(t)
+
+		// test device sends request, sees response
+		whois, err := bacnetip.NewWhoIsRouterToNetwork(bacnetip.WithWhoIsRouterToNetworkNet(2))
+		require.NoError(t, err)
+		whois.SetPDUDestination(bacnetip.NewLocalBroadcast(nil)) // TODO: upstream does this inline
+		tnet.td.GetStartState().Doc("2-1-0").
+			Send(whois, nil).Doc("2-1-1").
+			Receive(bacnetip.NewArgs((*bacnetip.IAmRouterToNetwork)(nil)), bacnetip.NewKWArgs(bacnetip.KWIartnNetworkList, []uint16{2})).Doc("2-1-2").
+			Success("")
+
+		// sniffer on network 1 sees the request and the response
+		tnet.sniffer1.GetStartState().Success("")
+
+		// nothing received on network 2
+		tnet.sniffer2.GetStartState().Doc("2-2-0").
+			Timeout(3*time.Second, nil).Doc("2-2-1").
+			Success("")
+
+		tnet.sniffer3.GetStartState().Success("")
 
 		// run the group
 		tnet.Run(0)

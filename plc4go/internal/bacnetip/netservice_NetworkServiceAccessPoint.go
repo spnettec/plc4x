@@ -32,10 +32,10 @@ import (
 
 type NetworkServiceAccessPoint struct {
 	*ServiceAccessPoint
-	*Server
-	adapters        map[*uint16]*NetworkAdapter
+	Server
+	adapters        map[netKey]*NetworkAdapter
 	routerInfoCache *RouterInfoCache
-	pendingNets     map[*uint16][]PDU
+	pendingNets     map[netKey][]NPDU
 	localAdapter    *NetworkAdapter
 
 	// pass through args
@@ -59,7 +59,7 @@ func NewNetworkServiceAccessPoint(localLog zerolog.Logger, opts ...func(*Network
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating network service access point")
 	}
-	n.Server, err = NewServer(localLog, n, func(server *Server) {
+	n.Server, err = NewServer(localLog, n, func(server *server) {
 		server.serverID = n.argSid
 	})
 	if err != nil {
@@ -67,7 +67,7 @@ func NewNetworkServiceAccessPoint(localLog zerolog.Logger, opts ...func(*Network
 	}
 
 	// map of directly connected networks
-	n.adapters = make(map[*uint16]*NetworkAdapter)
+	n.adapters = make(map[netKey]*NetworkAdapter)
 
 	// use the provided cache or make a default one
 	if n.routerInfoCache == nil {
@@ -75,7 +75,7 @@ func NewNetworkServiceAccessPoint(localLog zerolog.Logger, opts ...func(*Network
 	}
 
 	// map to a list of application layer packets waiting for a path
-	n.pendingNets = make(map[*uint16][]PDU)
+	n.pendingNets = make(map[netKey][]NPDU)
 
 	return n, nil
 }
@@ -120,7 +120,7 @@ Bind creates a network adapter object and bind.
 	    Called for applications or routers, bind to the network, send up
 	    APDUs with a metching address.
 */
-func (n *NetworkServiceAccessPoint) Bind(server _Server, net *uint16, address *Address) error {
+func (n *NetworkServiceAccessPoint) Bind(server Server, net *uint16, address *Address) error {
 	n.log.Debug().
 		Interface("server", server).
 		Interface("net", net).
@@ -128,15 +128,15 @@ func (n *NetworkServiceAccessPoint) Bind(server _Server, net *uint16, address *A
 		Msg("bind")
 
 	// make sure this hasn't already been called with this network
-	if _, ok := n.adapters[net]; ok {
-		return errors.Errorf("Allready bound: %v", net)
+	if _, ok := n.adapters[nk(net)]; ok {
+		return errors.Errorf("Allready bound: %v", nk(net))
 	}
 	// create an adapter object, add it to our map
 	adapter, err := NewNetworkAdapter(n.log, n, net, address)
 	if err != nil {
 		return errors.Wrap(err, "error creating adapter")
 	}
-	n.adapters[net] = adapter
+	n.adapters[nk(net)] = adapter
 	n.log.Debug().
 		Interface("net", net).
 		Stringer("adapter", adapter).
@@ -171,13 +171,13 @@ func (n *NetworkServiceAccessPoint) UpdateRouterReference(snet *uint16, address,
 		Msg("UpdateRouterReference")
 
 	// see if we have an adapter for the snet
-	_, ok := n.adapters[snet]
+	_, ok := n.adapters[nk(snet)]
 	if !ok {
 		return errors.Errorf("no adapter for network: %d", snet)
 	}
 
 	// pass this along to the cache
-	return n.routerInfoCache.UpdateRouterInfo(snet, address, dnets)
+	return n.routerInfoCache.UpdateRouterInfo(nk(snet), address, dnets)
 }
 
 // DeleteRouterReference Delete references to routers/networks.
@@ -189,7 +189,7 @@ func (n *NetworkServiceAccessPoint) DeleteRouterReference(snet *uint16, address,
 		Msg("NetworkServiceAccessPoint")
 
 	// see if we have an adapter for the snet
-	_, ok := n.adapters[snet]
+	_, ok := n.adapters[nk(snet)]
 	if !ok {
 		return errors.Errorf("no adapter for network: %d", snet)
 	}
@@ -201,6 +201,8 @@ func (n *NetworkServiceAccessPoint) DeleteRouterReference(snet *uint16, address,
 func (n *NetworkServiceAccessPoint) Indication(args Args, kwargs KWArgs) error {
 	n.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Indication")
 
+	pdu := args.Get0PDU()
+
 	// make sure our configuration is OK
 	if len(n.adapters) == 0 {
 		return errors.New("no adapters")
@@ -210,68 +212,66 @@ func (n *NetworkServiceAccessPoint) Indication(args Args, kwargs KWArgs) error {
 	localAdapter := n.localAdapter
 	n.log.Debug().Stringer("localAdapter", localAdapter).Msg("localAdapter")
 
-	pdu := args.Get0PDU()
-	// get the apdu
-	apdu := pdu.GetRootMessage().(model.APDU)
+	// build a generic APDU
+	apdu, err := new_APDU()
+	if err != nil {
+		return errors.Wrap(err, "error creating _APDU")
+	}
+	if err := pdu.(interface{ Encode(Arg) error }).Encode(apdu); err != nil { // TODO: check hard cast
+		return errors.Wrap(err, "error encoding APDU")
+	}
+	n.log.Debug().Stringer("_APDU", apdu).Msg("apdu")
 
-	// build a npdu
-	pduDestination := pdu.GetPDUDestination()
+	// build an NPDU specific to where it is going
+	npdu, err := NewNPDU(nil, apdu)
+	if err != nil {
+		return errors.Wrap(err, "error creating NPDU")
+	}
+	if err = apdu.Encode(npdu); err != nil {
+		return errors.Wrap(err, "error encoding NPDU")
+	}
+	n.log.Debug().Stringer("npdu", npdu).Msg("npdu")
 
 	// the hop count always starts out big
 	hopCount := uint8(0xff)
+	npdu.setNpduHopCount(&hopCount)
 
 	// if this is route aware, use it for the destination
-	if Settings.RouteAware && pduDestination.AddrRoute != nil {
+	if Settings.RouteAware && npdu.GetPDUDestination().AddrRoute != nil {
 		// always a local station for now, in theory this could also be
 		// a local broadcast address, remote station, or remote broadcast
 		// but that is not supported by the patterns
-		if pduDestination.AddrRoute.AddrType != LOCAL_STATION_ADDRESS {
+		if npdu.GetPDUDestination().AddrRoute.AddrType != LOCAL_STATION_ADDRESS {
 			panic("Route must be of type local station")
 		}
 
-		var dadr *Address
-		switch pduDestination.AddrType {
+		switch pdu.GetPDUDestination().AddrType {
 		case REMOTE_STATION_ADDRESS, REMOTE_BROADCAST_ADDRESS, GLOBAL_BROADCAST_ADDRESS:
-			dadr = pduDestination.AddrRoute
+			npdu.setNpduDADR(apdu.GetPDUDestination())
 		}
 
-		pdu.SetPDUDestination(pduDestination.AddrRoute)
-		npdu, err := buildNPDU(hopCount, nil, dadr, pdu.GetExpectingReply(), pdu.GetNetworkPriority(), nil, apdu)
-		if err != nil {
-			return errors.Wrap(err, "error building NPDU")
-		}
-		return localAdapter.ProcessNPDU(NewPDUFromPDUWithNewMessage(pdu, npdu))
+		npdu.SetPDUDestination(npdu.GetPDUDestination().AddrRoute)
+		return localAdapter.ProcessNPDU(npdu)
 	}
 
 	// local stations given to local adapter
-	if pduDestination.AddrType == LOCAL_STATION_ADDRESS {
-		npdu, err := buildNPDU(hopCount, nil, nil, pdu.GetExpectingReply(), pdu.GetNetworkPriority(), nil, apdu)
-		if err != nil {
-			return errors.Wrap(err, "error building NPDU")
-		}
-		return localAdapter.ProcessNPDU(NewPDUFromPDUWithNewMessage(pdu, npdu))
+	if npdu.GetPDUDestination().AddrType == LOCAL_STATION_ADDRESS {
+		return localAdapter.ProcessNPDU(npdu)
 	}
 
 	// local broadcast given to local adapter
-	if pduDestination.AddrType == LOCAL_BROADCAST_ADDRESS {
-		npdu, err := buildNPDU(hopCount, nil, nil, pdu.GetExpectingReply(), pdu.GetNetworkPriority(), nil, apdu)
-		if err != nil {
-			return errors.Wrap(err, "error building NPDU")
-		}
-		return localAdapter.ProcessNPDU(NewPDUFromPDUWithNewMessage(pdu, npdu))
+	if npdu.GetPDUDestination().AddrType == LOCAL_BROADCAST_ADDRESS {
+		return localAdapter.ProcessNPDU(npdu)
 	}
 
 	// global broadcast
-	if pduDestination.AddrType == GLOBAL_BROADCAST_ADDRESS {
-		pdu.SetPDUDestination(NewLocalBroadcast(nil))
-		npdu, err := buildNPDU(hopCount, nil, pduDestination, pdu.GetExpectingReply(), pdu.GetNetworkPriority(), nil, apdu)
-		if err != nil {
-			return errors.Wrap(err, "error building NPDU")
-		}
+	if npdu.GetPDUDestination().AddrType == GLOBAL_BROADCAST_ADDRESS {
+		npdu.SetPDUDestination(NewLocalBroadcast(nil))
+		npdu.setNpduDADR(apdu.GetPDUDestination())
 
 		// send it to all of connected adapters
 		for _, xadapter := range n.adapters {
-			if err := xadapter.ProcessNPDU(NewPDUFromPDUWithNewMessage(pdu, npdu)); err != nil {
+			if err := xadapter.ProcessNPDU(npdu); err != nil {
 				return errors.Wrap(err, "error processing NPDU")
 			}
 		}
@@ -279,21 +279,21 @@ func (n *NetworkServiceAccessPoint) Indication(args Args, kwargs KWArgs) error {
 	}
 
 	// remote broadcast
-	switch pduDestination.AddrType {
+	switch npdu.GetPDUDestination().AddrType {
 	case REMOTE_BROADCAST_ADDRESS, REMOTE_STATION_ADDRESS:
 	default:
-		return errors.Errorf("invalid destination address type: %s", pduDestination.AddrType)
+		return errors.Errorf("invalid destination address type: %s", npdu.GetPDUDestination().AddrType)
 	}
 
-	dnet := pduDestination.AddrNet
+	dnet := npdu.GetPDUDestination().AddrNet
 	n.log.Debug().Interface("dnet", dnet).Msg("using dnet")
 
 	// if the network matches the local adapter it's local
 	if dnet == localAdapter.adapterNet {
-		switch pduDestination.AddrType {
+		switch npdu.GetPDUDestination().AddrType {
 		case REMOTE_STATION_ADDRESS:
 			n.log.Debug().Msg("mapping remote station to local station")
-			localStation, err := NewLocalStation(n.log, pduDestination.AddrAddress, nil)
+			localStation, err := NewLocalStation(n.log, npdu.GetPDUDestination().AddrAddress, nil)
 			if err != nil {
 				return errors.Wrap(err, "error building local station")
 			}
@@ -303,27 +303,17 @@ func (n *NetworkServiceAccessPoint) Indication(args Args, kwargs KWArgs) error {
 		default:
 			return errors.New("Addressing problem")
 		}
-		npdu, err := buildNPDU(hopCount, nil, pduDestination, pdu.GetExpectingReply(), pdu.GetNetworkPriority(), nil, apdu)
-		if err != nil {
-			return errors.Wrap(err, "error building NPDU")
-		}
-
-		return localAdapter.ProcessNPDU(NewPDUFromPDUWithNewMessage(pdu, npdu))
+		return localAdapter.ProcessNPDU(npdu)
 	}
 
 	// get it ready to send when the path is found
-	pdu.SetPDUDestination(nil)
-
-	npdu, err := buildNPDU(hopCount, nil, pduDestination, pdu.GetExpectingReply(), pdu.GetNetworkPriority(), nil, apdu)
-	if err != nil {
-		return errors.Wrap(err, "error building NPDU")
-	}
+	npdu.SetPDUDestination(nil)
+	npdu.setNpduDADR(apdu.GetPDUDestination())
 
 	// we might already be waiting for a path for this network
-	if pendingNet, ok := n.pendingNets[dnet]; ok {
+	if pendingNet, ok := n.pendingNets[nk(dnet)]; ok {
 		n.log.Debug().Msg("already waiting for a path")
-		var pdu = NewPDUFromPDUWithNewMessage(pdu, npdu)
-		n.pendingNets[dnet] = append(pendingNet, pdu)
+		n.pendingNets[nk(dnet)] = append(pendingNet, npdu)
 		return nil
 	}
 
@@ -331,7 +321,7 @@ func (n *NetworkServiceAccessPoint) Indication(args Args, kwargs KWArgs) error {
 	var routerInfo *RouterInfo
 	var snetAdapter *NetworkAdapter
 	for snet, adapter := range n.adapters {
-		routerInfo = n.routerInfoCache.GetRouterInfo(snet, dnet)
+		routerInfo = n.routerInfoCache.GetRouterInfo(snet, nk(dnet))
 		if routerInfo != nil {
 			snetAdapter = adapter
 			break
@@ -347,29 +337,34 @@ func (n *NetworkServiceAccessPoint) Indication(args Args, kwargs KWArgs) error {
 		n.log.Debug().Stringer("dnetStatus", dnetStatus).Msg("dnetStatus")
 
 		// fix the destination
-		pdu.SetPDUDestination(&routerInfo.address)
+		npdu.SetPDUDestination(routerInfo.address)
 
 		// send it along
-		return snetAdapter.ProcessNPDU(NewPDUFromPDUWithNewMessage(pdu, npdu))
+		return snetAdapter.ProcessNPDU(npdu)
 	} else {
 		n.log.Debug().Msg("no known path to network")
 
 		// add it to the list of packets waiting for the network
-		netList := append(n.pendingNets[dnet], NewPDUFromPDUWithNewMessage(pdu, npdu))
-		n.pendingNets[dnet] = netList
+		netList, _ := n.pendingNets[nk(dnet)]
+		netList = append(netList, npdu)
+		n.pendingNets[nk(dnet)] = netList
 
 		// build a request for the network and send it to all the adapters
-		whoIsRouterToNetwork := model.NewNLMWhoIsRouterToNetwork(dnet, 0)
+		xnpdu, err := NewWhoIsRouterToNetwork(WithWhoIsRouterToNetworkNet(*dnet))
+		if err != nil {
+			return errors.Wrap(err, "error building WhoIsRouterToNetwork")
+		}
+		xnpdu.SetPDUDestination(NewLocalBroadcast(nil))
 
 		// send it to all the adapters
 		for _, adapter := range n.adapters {
-			if err := n.SapIndication(NewArgs(adapter, NewPDU(whoIsRouterToNetwork, WithPDUDestination(NewLocalBroadcast(nil)))), NoKWArgs); err != nil {
+			if err := n.SapIndication(NewArgs(adapter, xnpdu), NoKWArgs); err != nil {
 				return errors.Wrap(err, "error doing SapIndication")
 			}
 		}
+		return nil
 	}
-
-	panic("not implemented yet")
+	return nil
 }
 
 // TODO: should us the one in NPDU
@@ -424,10 +419,10 @@ func buildNPDU(hopCount uint8, source *Address, destination *Address, expectingR
 	return model.NewNPDU(1, control, destinationNetworkAddress, destinationLength, destinationAddress, sourceNetworkAddress, sourceLength, sourceAddress, destinationHopCount, nlm, apdu, 0), nil
 }
 
-func (n *NetworkServiceAccessPoint) ProcessNPDU(adapter *NetworkAdapter, pdu PDU) error {
+func (n *NetworkServiceAccessPoint) ProcessNPDU(adapter *NetworkAdapter, npdu NPDU) error {
 	n.log.Debug().
 		Stringer("adapter", adapter).
-		Stringer("pdu", pdu).
+		Stringer("npdu", npdu).
 		Msg("ProcessNPDU")
 
 	// make sure our configuration is OK
@@ -440,7 +435,6 @@ func (n *NetworkServiceAccessPoint) ProcessNPDU(adapter *NetworkAdapter, pdu PDU
 		forwardMessage bool
 	)
 
-	npdu := pdu.GetRootMessage().(model.NPDU)
 	sourceAddress := &Address{AddrType: NULL_ADDRESS}
 	if npdu.GetControl().GetSourceSpecified() {
 		snet := npdu.GetSourceNetworkAddress()
@@ -468,13 +462,13 @@ func (n *NetworkServiceAccessPoint) ProcessNPDU(adapter *NetworkAdapter, pdu PDU
 
 		// see if this is attempting to spoof a directly connected network
 		snet := npdu.GetSourceNetworkAddress()
-		if _, ok := n.adapters[snet]; !ok {
+		if _, ok := n.adapters[nk(snet)]; !ok {
 			n.log.Warn().Msg("path error (1)")
 			return nil
 		}
 
 		// pass this new path along to the cache
-		n.routerInfoCache.UpdateRouterStatus(adapter.adapterNet, pdu.GetPDUSource(), []*uint16{snet})
+		n.routerInfoCache.UpdateRouterStatus(adapter.adapterNet, npdu.GetPDUSource(), []*uint16{snet})
 	// check for destination routing
 	case !npdu.GetControl().GetDestinationSpecified() || destinationAddress.AddrType == NULL_ADDRESS:
 		n.log.Debug().Msg("no DADR")
@@ -526,7 +520,7 @@ func (n *NetworkServiceAccessPoint) ProcessNPDU(adapter *NetworkAdapter, pdu PDU
 		if len(n.adapters) > 1 && adapter != n.localAdapter {
 			// combine the source address
 			if !npdu.GetControl().GetSourceSpecified() {
-				remoteStationAddress, err := NewAddress(n.log, adapter.adapterNet, pdu.GetPDUSource().AddrAddress)
+				remoteStationAddress, err := NewAddress(n.log, adapter.adapterNet, npdu.GetPDUSource().AddrAddress)
 				if err != nil {
 					return errors.Wrap(err, "error creating remote address")
 				}
@@ -535,7 +529,7 @@ func (n *NetworkServiceAccessPoint) ProcessNPDU(adapter *NetworkAdapter, pdu PDU
 				apdu.pduSource = sourceAddress
 			}
 			if Settings.RouteAware {
-				apdu.pduSource.AddrRoute = pdu.GetPDUSource()
+				apdu.pduSource.AddrRoute = npdu.GetPDUSource()
 			}
 
 			// map the destination
@@ -554,17 +548,17 @@ func (n *NetworkServiceAccessPoint) ProcessNPDU(adapter *NetworkAdapter, pdu PDU
 				apdu.pduSource = sourceAddress
 				if Settings.RouteAware {
 					n.log.Debug().Msg("adding route")
-					apdu.pduSource = pdu.GetPDUSource()
+					apdu.pduSource = npdu.GetPDUSource()
 				}
 			} else {
-				apdu.pduSource = pdu.GetPDUSource()
+				apdu.pduSource = npdu.GetPDUSource()
 			}
 
 			// pass along global broadcast
 			if npdu.GetControl().GetDestinationSpecified() && destinationAddress.AddrType == GLOBAL_BROADCAST_ADDRESS {
 				apdu.pduDestination = NewGlobalBroadcast(nil)
 			} else {
-				apdu.pduDestination = pdu.GetPDUDestination()
+				apdu.pduDestination = npdu.GetPDUDestination()
 			}
 		}
 
@@ -578,10 +572,21 @@ func (n *NetworkServiceAccessPoint) ProcessNPDU(adapter *NetworkAdapter, pdu PDU
 		n.log.Debug().Msg("network layer message")
 
 		if processLocally {
+			np, ok := NPDUTypes[npdu.GetNlm().GetMessageType()]
+			if !ok {
+				n.log.Debug().Uint8("messageType", npdu.GetNlm().GetMessageType()).Msg("unknown npdu type")
+				return nil
+			}
 			n.log.Debug().Msg("processing NPDU locally")
 
+			// do a deeper decode of the NPDU
+			xpdu := np()
+			if err := xpdu.Decode(npdu); err != nil {
+				return errors.Wrap(err, "error decoding NPDU")
+			}
+
 			// pass to the service element
-			if err := n.SapRequest(NewArgs(adapter, pdu), NoKWArgs); err != nil {
+			if err := n.SapRequest(NewArgs(adapter, xpdu), NoKWArgs); err != nil {
 				return errors.Wrap(err, "error passing sap _request")
 			}
 		}
@@ -606,7 +611,7 @@ func (n *NetworkServiceAccessPoint) ProcessNPDU(adapter *NetworkAdapter, pdu PDU
 	}
 
 	// build a new NPDU to send to other adapters
-	newpdu := NewPDU(pdu).(*_PDU)
+	newpdu := DeepCopy[NPDU](npdu)
 
 	// decrease the hop count
 	newNpduHopCount := *npdu.GetHopCount() - 1
@@ -631,30 +636,32 @@ func (n *NetworkServiceAccessPoint) ProcessNPDU(adapter *NetworkAdapter, pdu PDU
 		newDADR = NewLocalBroadcast(nil)
 		newSADRLength := uint8(len(newSADR.AddrAddress))
 		newDADRLength := uint8(len(newDADR.AddrAddress))
-		newpdu.pduUserData = model.NewNPDU(
-			npdu.GetProtocolVersionNumber(),
-			model.NewNPDUControl(
-				false,
-				true,
-				true,
-				false,
-				model.NPDUNetworkPriority_NORMAL_MESSAGE,
+		newpdu.SetPDUUserData(
+			model.NewNPDU(
+				npdu.GetProtocolVersionNumber(),
+				model.NewNPDUControl(
+					false,
+					true,
+					true,
+					false,
+					model.NPDUNetworkPriority_NORMAL_MESSAGE,
+				),
+				newDADR.AddrNet,
+				&newDADRLength,
+				newDADR.AddrAddress,
+				newSADR.AddrNet,
+				&newSADRLength,
+				newSADR.AddrAddress,
+				&newNpduHopCount,
+				nil,
+				npdu.GetApdu(),
+				0,
 			),
-			newDADR.AddrNet,
-			&newDADRLength,
-			newDADR.AddrAddress,
-			newSADR.AddrNet,
-			&newSADRLength,
-			newSADR.AddrAddress,
-			&newNpduHopCount,
-			nil,
-			npdu.GetApdu(),
-			0,
 		)
 
 		for _, xadapter := range n.adapters {
 			if xadapter != adapter {
-				if err := xadapter.ProcessNPDU(NewPDU(newpdu)); err != nil {
+				if err := xadapter.ProcessNPDU(DeepCopy[NPDU](newpdu)); err != nil {
 					n.log.Warn().Err(err).Msg("Error processing npdu")
 				}
 			}
@@ -667,7 +674,7 @@ func (n *NetworkServiceAccessPoint) ProcessNPDU(adapter *NetworkAdapter, pdu PDU
 		n.log.Debug().Msg("remote station/broadcast")
 
 		// see if this a locally connected network
-		if xadapter, ok := n.adapters[dnet]; ok {
+		if xadapter, ok := n.adapters[nk(dnet)]; ok {
 			if xadapter == adapter {
 				n.log.Debug().Msg("path error (4)")
 				return nil
@@ -690,7 +697,7 @@ func (n *NetworkServiceAccessPoint) ProcessNPDU(adapter *NetworkAdapter, pdu PDU
 
 			// send the packet downstream
 			newSADRLength := uint8(len(newSADR.AddrAddress))
-			newpdu.pduUserData = model.NewNPDU(
+			newpdu.SetPDUUserData(model.NewNPDU(
 				npdu.GetProtocolVersionNumber(),
 				model.NewNPDUControl(
 					false,
@@ -709,16 +716,17 @@ func (n *NetworkServiceAccessPoint) ProcessNPDU(adapter *NetworkAdapter, pdu PDU
 				nil,
 				npdu.GetApdu(),
 				0,
+			),
 			)
 
-			return xadapter.ProcessNPDU(NewPDU(newpdu))
+			return xadapter.ProcessNPDU(DeepCopy[NPDU](newpdu))
 		}
 
 		// look for routing information from the network of one of our adapters to the destination network
 		var routerInfo *RouterInfo
 		var snetAdapter *NetworkAdapter
 		for snet, _snetAdapter := range n.adapters {
-			if _routerInfo := n.routerInfoCache.GetRouterInfo(snet, dnet); _routerInfo != nil {
+			if _routerInfo := n.routerInfoCache.GetRouterInfo(snet, nk(dnet)); _routerInfo != nil {
 				routerInfo = _routerInfo
 				snetAdapter = _snetAdapter
 				break
@@ -730,13 +738,13 @@ func (n *NetworkServiceAccessPoint) ProcessNPDU(adapter *NetworkAdapter, pdu PDU
 			n.log.Debug().Stringer("routerInfo", routerInfo).Msg("found path via routerInfo")
 
 			// the destination is the address of the router
-			pduDestination := routerInfo.address
+			newpdu.SetPDUDestination(routerInfo.address)
 
 			//  send the packet downstream
 			if snetAdapter == nil {
 				return errors.New("snetAdapter nil")
 			}
-			return snetAdapter.ProcessNPDU(NewPDU(newpdu, WithPDUDestination(&pduDestination)))
+			return snetAdapter.ProcessNPDU(DeepCopy[NPDU](newpdu))
 		}
 
 		n.log.Debug().Msg("No router info found")
@@ -771,7 +779,7 @@ func (n *NetworkServiceAccessPoint) ProcessNPDU(adapter *NetworkAdapter, pdu PDU
 func (n *NetworkServiceAccessPoint) SapIndication(args Args, kwargs KWArgs) error {
 	n.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("SapIndication")
 	adapter := args.Get0NetworkAdapter()
-	npdu := args.Get1PDU()
+	npdu := args.Get1NPDU()
 
 	// encode it as a generic NPDU
 	// TODO: we don't need that as a npdu is a npdu
@@ -783,7 +791,7 @@ func (n *NetworkServiceAccessPoint) SapIndication(args Args, kwargs KWArgs) erro
 func (n *NetworkServiceAccessPoint) SapConfirmation(args Args, kwargs KWArgs) error {
 	n.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("SapConfirmation")
 	adapter := args.Get0NetworkAdapter()
-	npdu := args.Get1PDU()
+	npdu := args.Get1NPDU()
 
 	// encode it as a generic NPDU
 	// TODO: we don't need that as a npdu is a npdu
