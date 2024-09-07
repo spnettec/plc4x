@@ -27,6 +27,7 @@ import io.vavr.control.Either;
 
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.BiConsumer;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
@@ -60,8 +61,8 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
 
     private final Queue<HandlerRegistration> registeredHandlers;
     private final boolean passive;
-    private boolean closed;
-    private boolean disConnected;
+    private boolean closed = false;
+    private boolean disConnected = false;
     private final TimeoutManager timeoutManager;
 
     public Plc4xNettyWrapper(ChannelPipeline pipeline, boolean passive, Plc4xProtocolBase<T> protocol,
@@ -73,8 +74,6 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
                              PlcAuthentication authentication, Class<T> clazz) {
         super(clazz, Object.class);
         this.passive = passive;
-        this.closed = false;
-        this.disConnected = false;
         this.registeredHandlers = new ConcurrentLinkedQueue<>();
         this.protocolBase = protocol;
         this.authentication = authentication;
@@ -137,7 +136,7 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
         if (!disConnected) {
             logger.warn("Can't receive DisconnectEvent event!! execute protocolBase.onDisconnect");
             this.protocolBase.onDisconnect(
-                    new DefaultConversationContext<>(this::registerHandler, ctx, authentication, passive));
+                new DefaultConversationContext<>(this::registerHandler, ctx, authentication, passive));
             disConnected = true;
         }
         if (!closed) {
@@ -145,6 +144,7 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
             this.protocolBase.close(new DefaultConversationContext<>(this::registerHandler, ctx, authentication, passive));
             closed = true;
         }
+        //timeoutManager.stop();
     }
 
     @Override
@@ -154,8 +154,8 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
     }
 
     @Override
-    protected void decode(ChannelHandlerContext channelHandlerContext, T t, List<Object> list) throws Exception {
-        logger.trace("Decoding {}", t);
+    protected void decode(ChannelHandlerContext channelHandlerContext, T payload, List<Object> list) throws Exception {
+        logger.trace("Decoding {}", payload);
         // Just iterate the list to find a suitable  Handler
 
         registrations:
@@ -174,38 +174,45 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
                 iter.remove();
                 continue;
             }
-            logger.trace("Checking handler {} for Object of type {}", registration, t.getClass().getSimpleName());
-            if (registration.getExpectClazz().isInstance(t)) {
+            logger.trace("Checking handler {} for Object of type {}", registration, payload.getClass().getSimpleName());
+            if (registration.getExpectClazz().isInstance(payload)) {
                 logger.trace("Handler {} has right expected type {}, checking condition", registration, registration.getExpectClazz().getSimpleName());
-                // Check all Commands / Functions
-                Deque<Either<Function<?, ?>, Predicate<?>>> commands = registration.getCommands();
-                Object instance = t;
-                for (Either<Function<?, ?>, Predicate<?>> either : commands) {
-                    if (either.isLeft()) {
-                        Function unwrap = either.getLeft();
-                        instance = unwrap.apply(instance);
-                    } else {
-                        Predicate predicate = either.get();
-                        if (!predicate.test(instance)) {
-                            // We do not match -> cannot handle
-                            logger.trace("Registration {} with predicate {} does not match object {} (currently wrapped to {})", registration, predicate,
-                                t.getClass().getSimpleName(), instance.getClass().getSimpleName());
-                            continue registrations;
+                Object message = payload;
+                try {
+                    // Check all Commands / Functions
+                    Deque<Either<Function<?, ?>, Predicate<?>>> commands = registration.getCommands();
+                    for (Either<Function<?, ?>, Predicate<?>> either : commands) {
+                        if (either.isLeft()) {
+                            Function unwrap = either.getLeft();
+                            message = unwrap.apply(message);
+                        } else {
+                            Predicate predicate = either.get();
+                            if (!predicate.test(message)) {
+                                // We do not match -> cannot handle
+                                logger.trace("Registration {} with predicate {} does not match object {} (currently wrapped to {})", registration, predicate,
+                                    payload.getClass().getSimpleName(), message.getClass().getSimpleName());
+                                continue registrations;
+                            }
                         }
                     }
+                    logger.trace("Handler {} accepts element {}, calling handle method", registration, payload);
+                    this.registeredHandlers.remove(registration);
+                    Consumer handler = registration.getPacketConsumer();
+                    handler.accept(message);
+                    // Confirm that it was handled!
+                    registration.confirmHandled();
+                } catch (Exception e) {
+                    logger.trace("Failure while processing payload {} with handler {}", message, registration, e);
+                    BiConsumer biConsumer = registration.getErrorConsumer();
+                    biConsumer.accept(message, e);
+                    registration.confirmError();
                 }
-                logger.trace("Handler {} accepts element {}, calling handle method", registration, t);
-                this.registeredHandlers.remove(registration);
-                Consumer handler = registration.getPacketConsumer();
-                handler.accept(instance);
-                // Confirm that it was handled!
-                registration.confirmHandled();
                 return;
             }
         }
-        logger.warn("None of {} registered handlers could handle message {}, using default decode method", this.registeredHandlers.size(), t);
+        logger.warn("None of {} registered handlers could handle message {}, using default decode method", this.registeredHandlers.size(), payload);
         try {
-            protocolBase.decode(new DefaultConversationContext<>(this::registerHandler, channelHandlerContext, authentication, passive), t);
+            protocolBase.decode(new DefaultConversationContext<>(this::registerHandler, channelHandlerContext, authentication, passive), payload);
         }catch (Exception e) {
             throw new PlcRuntimeException("Error while decoding Plc4x protocolBase.decode", e);
         }

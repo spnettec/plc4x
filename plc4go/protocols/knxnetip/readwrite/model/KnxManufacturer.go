@@ -4196,13 +4196,13 @@ func (e KnxManufacturer) Number() uint16 {
 	}
 }
 
-func KnxManufacturerFirstEnumForFieldNumber(value uint16) (KnxManufacturer, error) {
+func KnxManufacturerFirstEnumForFieldNumber(value uint16) (enum KnxManufacturer, ok bool) {
 	for _, sizeValue := range KnxManufacturerValues {
 		if sizeValue.Number() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing Number not found", value)
+	return 0, false
 }
 
 func (e KnxManufacturer) Name() string {
@@ -6970,13 +6970,13 @@ func (e KnxManufacturer) Name() string {
 	}
 }
 
-func KnxManufacturerFirstEnumForFieldName(value string) (KnxManufacturer, error) {
+func KnxManufacturerFirstEnumForFieldName(value string) (enum KnxManufacturer, ok bool) {
 	for _, sizeValue := range KnxManufacturerValues {
 		if sizeValue.Name() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing Name not found", value)
+	return 0, false
 }
 func KnxManufacturerByValue(value uint16) (enum KnxManufacturer, ok bool) {
 	switch value {
@@ -9780,7 +9780,7 @@ func KnxManufacturerParse(ctx context.Context, theBytes []byte) (KnxManufacturer
 func KnxManufacturerParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (KnxManufacturer, error) {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	val, err := readBuffer.ReadUint16("KnxManufacturer", 16)
+	val, err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("KnxManufacturer", 16)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading KnxManufacturer")
 	}
@@ -9803,7 +9803,18 @@ func (e KnxManufacturer) Serialize() ([]byte, error) {
 func (e KnxManufacturer) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	return writeBuffer.WriteUint16("KnxManufacturer", 16, uint16(uint16(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+	return /*TODO: migrate me*/ writeBuffer.WriteUint16("KnxManufacturer", 16, uint16(uint16(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+}
+
+func (e KnxManufacturer) GetValue() uint16 {
+	return uint16(e)
+}
+
+func (e KnxManufacturer) GetNumber() uint16 {
+	return e.Number()
+}
+func (e KnxManufacturer) GetName() string {
+	return e.Name()
 }
 
 // PLC4XEnumName returns the name that is used in code to identify this enum
