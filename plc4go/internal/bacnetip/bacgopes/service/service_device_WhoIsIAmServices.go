@@ -25,13 +25,12 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
-	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
-
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/apdu"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/capability"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/local/device"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 )
 
 type WhoIsIAmServicesRequirements interface {
@@ -42,7 +41,7 @@ type WhoIsIAmServicesRequirements interface {
 //go:generate plc4xGenerator -type=WhoIsIAmServices -prefix=service_device_
 type WhoIsIAmServices struct {
 	_requirements WhoIsIAmServicesRequirements
-	*Capability
+	Capability
 
 	localDevice *LocalDeviceObject
 
@@ -180,10 +179,10 @@ func (w *WhoIsIAmServices) IAm(address *Address) error {
 	iAm, err := NewIAmRequest(
 		NoArgs,
 		NewKWArgs(
-			"iAmDeviceIdentifier", w.localDevice.ObjectIdentifier,
-			"maxAPDULengthAccepted", w.localDevice.MaximumApduLengthAccepted,
-			"segmentationSupported", w.localDevice.SegmentationSupported,
-			"vendorID", w.localDevice.VendorIdentifier,
+			KnownKey("iAmDeviceIdentifier"), w.localDevice.ObjectIdentifier,
+			KnownKey("maxAPDULengthAccepted"), w.localDevice.MaximumApduLengthAccepted,
+			KnownKey("segmentationSupported"), w.localDevice.SegmentationSupported,
+			KnownKey("vendorID"), w.localDevice.VendorIdentifier,
 		),
 	)
 	if err != nil {

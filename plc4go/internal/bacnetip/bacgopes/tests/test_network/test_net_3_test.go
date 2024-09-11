@@ -28,13 +28,12 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/apache/plc4x/plc4go/spi/testutils"
-
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/apdu"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/vlan"
+	"github.com/apache/plc4x/plc4go/spi/testutils"
 )
 
 type TNetwork3 struct {
@@ -131,7 +130,6 @@ func (t *TNetwork3) Run(timeLimit time.Duration) {
 }
 
 func TestNet3(t *testing.T) {
-	t.Skip("needs more work") //TODO: fix
 	t.Run("TestSimple", func(t *testing.T) {
 		t.Run("testIdle", func(t *testing.T) {
 			// create a network
@@ -183,6 +181,7 @@ func TestNet3(t *testing.T) {
 			tnet.Run(0)
 		})
 		t.Run("test_remote_broadcast_2", func(t *testing.T) {
+			t.Skip("needs more work before it can do something") // TODO: implement me
 			//Test broadcast, matching device.
 			ExclusiveGlobalTimeMachine(t)
 
@@ -284,6 +283,7 @@ func TestNet3(t *testing.T) {
 			tnet.Run(0)
 		})
 		t.Run("test_global_broadcast", func(t *testing.T) {
+			t.Skip("needs more work before it can do something") // TODO: implement me
 			//Test broadcast, matching device.
 			ExclusiveGlobalTimeMachine(t)
 

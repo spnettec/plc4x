@@ -28,10 +28,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
-	"github.com/apache/plc4x/plc4go/spi/testutils"
-	"github.com/apache/plc4x/plc4go/spi/utils"
-
+	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/apdu"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/app"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/appservice"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comm"
@@ -43,6 +40,9 @@ import (
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests"
 	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests/quick"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/vlan"
+	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi/testutils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 // This struct turns off the deferred startup function call that broadcasts I-Am-Router-To-Network and Network-Number-Is
@@ -360,7 +360,8 @@ func (a *ApplicationStateMachine) doConfirmedPrivateTransferRequest(_ struct{}) 
 }
 
 func SegmentationTest(t *testing.T, prefix string, cLen, sLen int) {
-	t.Skip("to many things missing here... TODO: finish me") // TODO: finish me
+	t.Skip("needs much more work") // TODO: finish me
+	t.Helper()
 	ExclusiveGlobalTimeMachine(t)
 	testingLogger := testutils.ProduceTestingLogger(t)
 
@@ -426,15 +427,15 @@ func SegmentationTest(t *testing.T, prefix string, cLen, sLen int) {
 		anet.iut.confirmedPrivateResult = quick.Any(quick.CharacterString(utils.RandomString(sLen)))
 	}
 
-	var trq model.BACnetServiceAckConfirmedPrivateTransfer
 	// send the request, get it acked
 	anet.td.GetStartState().Doc(prefix+"-0").
-		Send(NewPDU(quick.ConfirmedPrivateTransferRequest(NewKWArgs(
-			"vendorId", 999, "serviceNumber", 1,
-			"serviceParameters", requestString,
-			"destination", anet.iut.address,
-		)), nil), nil).Doc(prefix+"-1").
-		Receive(NewArgs(trq), NoKWArgs).Doc(prefix + "-2").
+		Send(quick.ConfirmedPrivateTransferRequest(NewKWArgs(
+			KnownKey("vendorId"), 999,
+			KnownKey("serviceNumber"), 1,
+			KnownKey("serviceParameters"), requestString,
+			KnownKey("destination"), anet.iut.address,
+		)), nil).Doc(prefix+"-1").
+		Receive(NewArgs((*apdu.ConfirmedPrivateTransferRequest)(nil)), NoKWArgs).Doc(prefix + "-2").
 		Success("")
 
 	// no IUT application layer matching

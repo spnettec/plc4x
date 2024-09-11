@@ -25,8 +25,6 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
-	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
-
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/apdu"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/appservice"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/capability"
@@ -35,6 +33,7 @@ import (
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/core"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/local/device"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 )
 
 type ApplicationRequirements interface {
@@ -106,11 +105,13 @@ func NewApplication(localLog zerolog.Logger, localDevice *LocalDeviceObject, opt
 	a.controllers = map[string]any{}
 
 	// now set up the rest of the capabilities
-	a.Collector = Collector{}
+	var init func()
+	a.Collector, init = NewCollector(a.log) // TODO: pass a if it has stuff to collect
+	init()
 
 	// if starting up is enabled, find all the startup functions
 	if !a._startupDisabled {
-		for _, fn := range a.CapabilityFunctions("startup") {
+		for fn := range a.CapabilityFunctions("startup") {
 			localLog.Debug().Interface("fn", fn).Msg("startup fn")
 			Deferred(fn, NoArgs, NoKWArgs)
 		}
@@ -237,10 +238,10 @@ func (a *Application) GetServicesSupported() []string {
 
 func (a *Application) Request(args Args, kwargs KWArgs) error {
 	a.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Request")
-	apdu := Get[APDU](args, 0)
+	pdu := Get[PDU](args, 0)
 
 	// double-check the input is the right kind of APDU
-	switch apdu.GetRootMessage().(type) {
+	switch pdu.GetRootMessage().(type) {
 	case readWriteModel.APDUUnconfirmedRequest, readWriteModel.APDUConfirmedRequest:
 	default:
 		return errors.New("APDU expected")

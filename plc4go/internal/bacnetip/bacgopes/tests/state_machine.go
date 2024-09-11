@@ -27,13 +27,12 @@ import (
 
 	"github.com/rs/zerolog"
 
-	"github.com/apache/plc4x/plc4go/spi/utils"
-
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/bvll"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/npdu"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/task"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 // Transition Instances of this class are transitions betweeen getStates of a state machine.
@@ -91,7 +90,7 @@ func (t TimeoutTransition) String() string {
 }
 
 type fnargs struct {
-	fn     func(args Args, kwargs KWArgs) error
+	fn     GenericFunction
 	args   Args
 	kwargs KWArgs
 }
@@ -502,12 +501,12 @@ func MatchPdu(localLog zerolog.Logger, pdu any, pduType any, pduAttrs map[KnownK
 type TimeoutTask struct {
 	*OneShotTask
 
-	fn     func(args Args, kwargs KWArgs) error `ignore:"true"`
+	fn     GenericFunction `ignore:"true"`
 	args   Args
 	kwargs KWArgs
 }
 
-func NewTimeoutTask(fn func(args Args, kwargs KWArgs) error, args Args, kwargs KWArgs, when *time.Time) *TimeoutTask {
+func NewTimeoutTask(fn GenericFunction, args Args, kwargs KWArgs, when *time.Time) *TimeoutTask {
 	_task := &TimeoutTask{
 		fn:     fn,
 		args:   args,

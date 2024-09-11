@@ -24,11 +24,10 @@ import (
 
 	"github.com/pkg/errors"
 
-	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
-	"github.com/apache/plc4x/plc4go/spi"
-
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/globals"
+	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi"
 )
 
 type PCI interface {
@@ -97,6 +96,10 @@ func (p *_PCI) deepCopy() *_PCI {
 	expectingReply := p.expectingReply
 	networkPriority := p.networkPriority // Those are immutable so no copy needed
 	return &_PCI{__pci, expectingReply, networkPriority}
+}
+
+func (p *_PCI) DeepCopy() any {
+	return p.deepCopy()
 }
 
 func (p *_PCI) String() string {

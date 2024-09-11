@@ -25,14 +25,13 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/apache/plc4x/plc4go/spi/testutils"
-
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/service"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests"
+	"github.com/apache/plc4x/plc4go/spi/testutils"
 )
 
 func TestBasic(t *testing.T) {
-	t.Skip("finish me") // TODO: finish me
+	t.Skip("needs capability to work") // TODO: fixme
 	testingLogger := testutils.ProduceTestingLogger(t)
 	ExclusiveGlobalTimeMachine(t)
 

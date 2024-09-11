@@ -24,10 +24,9 @@ import (
 
 	"github.com/pkg/errors"
 
-	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
-
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
+	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 )
 
 type RegisterForeignDevice struct {
@@ -99,5 +98,5 @@ func (r *RegisterForeignDevice) String() string {
 	if r == nil {
 		return "(*RegisterForeignDevice)(nil)"
 	}
-	return fmt.Sprintf("RegisterForeignDevice{%v, bvlciTimeToLive: %v}", r._BVLPDU, r.bvlciTimeToLive)
+	return fmt.Sprintf("RegisterForeignDevice{\n%v, bvlciTimeToLive: %v}", r._BVLPDU, r.bvlciTimeToLive)
 }
