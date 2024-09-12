@@ -106,7 +106,9 @@ func (m S7XmlParserHelper) Parse(typeName string, xmlString string, parserArgume
 			return nil, err
 		}
 		stringLength := int32(parsedInt2)
-		return DataItemParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), dataProtocolId, controllerType, stringLength)
+		// TODO: find a way to parse the sub types
+		var stringEncoding string
+		return DataItemParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), dataProtocolId, controllerType, stringLength, stringEncoding)
 	case "SubItem":
 		return SubItemParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "CycServiceItemType":

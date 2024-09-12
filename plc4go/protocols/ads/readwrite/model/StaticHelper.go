@@ -34,7 +34,7 @@ func ParseAmsString(ctx context.Context, io utils.ReadBuffer, stringLength int32
 	case "UTF-16":
 		multiplier = 16
 	}
-	return io.ReadString("", uint32(stringLength*multiplier), encoding)
+	return io.ReadString("", uint32(stringLength*multiplier))
 }
 
 func SerializeAmsString(ctx context.Context, io utils.WriteBuffer, value values.PlcValue, stringLength int32, encoding string, stringEncoding string) error {
@@ -45,7 +45,7 @@ func SerializeAmsString(ctx context.Context, io utils.WriteBuffer, value values.
 	case "UTF-16":
 		multiplier = 16
 	}
-	return io.WriteString("", uint32(stringLength*multiplier), encoding, value.GetString())
+	return io.WriteString("", uint32(stringLength*multiplier), encoding)
 }
 
 func STR_LEN(str string) int {
