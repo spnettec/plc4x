@@ -75,7 +75,7 @@ func NewApplication(localLog zerolog.Logger, localDevice *LocalDeviceObject, opt
 		Interface("aseID", a.argAseID).
 		Msg("NewApplication")
 	var err error
-	a.ApplicationServiceElementContract, err = NewApplicationServiceElement(localLog, OptionalOptionDual(a.argAseID, a.argAse, WithApplicationServiceElementAseID))
+	a.ApplicationServiceElementContract, err = NewApplicationServiceElement(localLog, OptionalOption2(a.argAseID, a.argAse, WithApplicationServiceElementAseID))
 	if err != nil {
 		return nil, err
 	}
@@ -113,7 +113,7 @@ func NewApplication(localLog zerolog.Logger, localDevice *LocalDeviceObject, opt
 	if !a._startupDisabled {
 		for fn := range a.CapabilityFunctions("startup") {
 			localLog.Debug().Interface("fn", fn).Msg("startup fn")
-			Deferred(fn, NoArgs, NoKWArgs)
+			Deferred(fn, NoArgs, NoKWArgs())
 		}
 	}
 	return a, nil
@@ -236,9 +236,9 @@ func (a *Application) GetServicesSupported() []string {
 	return servicesSupported
 }
 
-func (a *Application) Request(args Args, kwargs KWArgs) error {
-	a.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Request")
-	pdu := Get[PDU](args, 0)
+func (a *Application) Request(args Args, kwArgs KWArgs) error {
+	a.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwArgs).Msg("Request")
+	pdu := GA[PDU](args, 0)
 
 	// double-check the input is the right kind of APDU
 	switch pdu.GetRootMessage().(type) {
@@ -246,12 +246,12 @@ func (a *Application) Request(args Args, kwargs KWArgs) error {
 	default:
 		return errors.New("APDU expected")
 	}
-	return a.ApplicationServiceElementContract.Request(args, kwargs)
+	return a.ApplicationServiceElementContract.Request(args, kwArgs)
 }
 
-func (a *Application) Indication(args Args, kwargs KWArgs) error {
-	a.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Indication")
-	apdu := Get[APDU](args, 0)
+func (a *Application) Indication(args Args, kwArgs KWArgs) error {
+	a.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwArgs).Msg("Indication")
+	apdu := GA[APDU](args, 0)
 
 	// get a helper function
 	helperName := fmt.Sprintf("Do_%T", apdu)
@@ -273,7 +273,7 @@ func (a *Application) Indication(args Args, kwargs KWArgs) error {
 		a.log.Debug().Err(err).Msg("err result")
 		panic("do it")
 		// TODO: do proper mapping
-		if err := a.Response(NewArgs(NewPDU(readWriteModel.NewAPDUError(0, readWriteModel.BACnetConfirmedServiceChoice_CREATE_OBJECT, nil, 0))), kwargs); err != nil {
+		if err := a.Response(NA(NewPDU(NoArgs, NKW(KWCompRootMessage, readWriteModel.NewAPDUError(0, readWriteModel.BACnetConfirmedServiceChoice_CREATE_OBJECT, nil, 0)))), NoKWArgs()); err != nil {
 			return err
 		}
 	}

@@ -23,8 +23,7 @@ import (
 	"fmt"
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/globals"
-	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/debugging"
 	"github.com/apache/plc4x/plc4go/spi"
 )
 
@@ -34,59 +33,21 @@ type PDU interface {
 	DeepCopy() any
 }
 
-// PDUContract provides a set of functions which can be overwritten by a sub struct
-type PDUContract interface {
-	GetName() string
-}
-
 type _PDU struct {
-	PDUContract
+	*DefaultRFormatter
 	*_PCI
 	*_PDUData
 }
 
-func NewPDU(pdu spi.Message, pduOptions ...PDUOption) PDU {
-	p := &_PDU{
-		_PCI: NewPCI(pdu, nil, nil, nil, false, model.NPDUNetworkPriority_NORMAL_MESSAGE),
+func NewPDU(args Args, kwArgs KWArgs) PDU {
+	if _debug != nil {
+		_debug("__init__ %r %r", args, kwArgs)
 	}
-	p.PDUContract = p
-	for _, option := range pduOptions {
-		option(p)
-	}
-	p._PDUData = NewPDUData(NewArgs(pdu)).(*_PDUData)
+	p := &_PDU{}
+	p._PCI = NewPCI(args, kwArgs)
+	p._PDUData = NewPDUData(args, kwArgs).(*_PDUData)
+	p.DefaultRFormatter = NewDefaultRFormatter(p._PCI, p._PDUData)
 	return p
-}
-
-type PDUOption func(pdu *_PDU)
-
-func WithPDUUserData(message spi.Message) PDUOption {
-	return func(pdu *_PDU) {
-		pdu.rootMessage = message
-	}
-}
-
-func WithPDUSource(pduSource *Address) PDUOption {
-	return func(pdu *_PDU) {
-		pdu.pduSource = pduSource
-	}
-}
-
-func WithPDUDestination(pduDestination *Address) PDUOption {
-	return func(pdu *_PDU) {
-		pdu.pduDestination = pduDestination
-	}
-}
-
-func WithPDUExpectingReply(expectingReply bool) PDUOption {
-	return func(pdu *_PDU) {
-		pdu.expectingReply = expectingReply
-	}
-}
-
-func WithPDUNetworkPriority(networkPriority model.NPDUNetworkPriority) PDUOption {
-	return func(pdu *_PDU) {
-		pdu.networkPriority = networkPriority
-	}
 }
 
 func (p *_PDU) GetRootMessage() spi.Message {
@@ -94,8 +55,7 @@ func (p *_PDU) GetRootMessage() spi.Message {
 }
 
 func (p *_PDU) deepCopy() *_PDU {
-	pduCopy := &_PDU{_PCI: p._PCI.deepCopy(), _PDUData: p._PDUData.deepCopy()}
-	pduCopy.PDUContract = pduCopy
+	pduCopy := &_PDU{p.DefaultRFormatter, p._PCI.deepCopy(), p._PDUData.deepCopy()}
 	return pduCopy
 }
 
@@ -103,13 +63,15 @@ func (p *_PDU) DeepCopy() any {
 	return p.deepCopy()
 }
 
-func (p *_PDU) GetName() string {
-	return "PDU"
+func (p *_PDU) Format(s fmt.State, v rune) {
+	switch v {
+	case 's':
+		_, _ = fmt.Fprint(s, p.String())
+	default:
+		p.DefaultRFormatter.Format(s, v)
+	}
 }
 
 func (p *_PDU) String() string {
-	if ExtendedPDUOutput {
-		return fmt.Sprintf("_PDU{%s}", p._PCI)
-	}
-	return fmt.Sprintf("<%s %s -> %s : %s>", p.PDUContract.GetName(), p.GetPDUSource(), p.GetPDUDestination(), p._PDUData)
+	return fmt.Sprintf("<%T %s -> %s : %s>", p, p.GetPDUSource(), p.GetPDUDestination(), p._PDUData)
 }

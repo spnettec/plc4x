@@ -53,7 +53,7 @@ func NewUDPActor(localLog zerolog.Logger, director *UDPDirector, peer string) *U
 	// Add a timer
 	a.timeout = director.timeout
 	if a.timeout > 0 {
-		a.timer = FunctionTask(a.idleTimeout, NoArgs, NoKWArgs)
+		a.timer = FunctionTask(a.idleTimeout, NoArgs, NoKWArgs())
 		a.timer.InstallTask(WithInstallTaskOptionsWhen(GetTaskManagerTime().Add(time.Duration(a.timeout) * time.Millisecond)))
 	}
 
@@ -70,9 +70,9 @@ func (a *UDPActor) idleTimeout(_ Args, _ KWArgs) error {
 	return nil
 }
 
-func (a *UDPActor) Indication(args Args, kwargs KWArgs) error {
-	a.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Indication")
-	pdu := Get[PDU](args, 0)
+func (a *UDPActor) Indication(args Args, kwArgs KWArgs) error {
+	a.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwArgs).Msg("Indication")
+	pdu := GA[PDU](args, 0)
 
 	// reschedule the timer
 	if a.timer != nil {
@@ -84,8 +84,8 @@ func (a *UDPActor) Indication(args Args, kwargs KWArgs) error {
 	return nil
 }
 
-func (a *UDPActor) Response(args Args, kwargs KWArgs) error {
-	a.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Response")
+func (a *UDPActor) Response(args Args, kwArgs KWArgs) error {
+	a.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwArgs).Msg("Response")
 
 	// reschedule the timer
 	if a.timer != nil {
@@ -93,7 +93,7 @@ func (a *UDPActor) Response(args Args, kwargs KWArgs) error {
 	}
 
 	// process this as a response from the director
-	return a.director.Response(args, kwargs)
+	return a.director.Response(args, kwArgs)
 }
 
 func (a *UDPActor) HandleError(err error) {

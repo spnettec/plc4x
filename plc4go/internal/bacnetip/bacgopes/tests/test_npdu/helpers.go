@@ -31,8 +31,8 @@ import (
 
 //go:generate plc4xGenerator -type=NPDUCodec -prefix=
 type NPDUCodec struct {
-	Client
-	Server
+	ClientContract
+	ServerContract
 
 	log zerolog.Logger
 }
@@ -42,21 +42,21 @@ func NewNPDUCodec(localLog zerolog.Logger) (*NPDUCodec, error) {
 		log: localLog,
 	}
 	var err error
-	n.Client, err = NewClient(localLog, n)
+	n.ClientContract, err = NewClient(localLog)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating client")
 	}
-	n.Server, err = NewServer(localLog, n)
+	n.ServerContract, err = NewServer(localLog)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating client")
 	}
 	return n, nil
 }
 
-func (n *NPDUCodec) Indication(args Args, kwargs KWArgs) error {
-	n.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Indication")
+func (n *NPDUCodec) Indication(args Args, kwArgs KWArgs) error {
+	n.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwArgs).Msg("Indication")
 
-	npdu := Get[NPDU](args, 0)
+	npdu := GA[NPDU](args, 0)
 
 	// first a generic _NPDU
 	xpdu, err := NewNPDU(nil, nil)
@@ -68,20 +68,20 @@ func (n *NPDUCodec) Indication(args Args, kwargs KWArgs) error {
 	}
 
 	// Now as a vanilla PDU
-	ypdu := NewPDU(nil)
+	ypdu := NewPDU(Nothing())
 	if err := xpdu.Encode(ypdu); err != nil {
 		return errors.Wrap(err, "error decoding xpdu")
 	}
 	n.log.Debug().Stringer("ypdu", ypdu).Msg("encoded")
 
 	// send it downstream
-	return n.Request(NewArgs(ypdu), NoKWArgs)
+	return n.Request(NA(ypdu), NoKWArgs())
 }
 
-func (n *NPDUCodec) Confirmation(args Args, kwargs KWArgs) error {
-	n.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Indication")
+func (n *NPDUCodec) Confirmation(args Args, kwArgs KWArgs) error {
+	n.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwArgs).Msg("Indication")
 
-	pdu := Get[PDU](args, 0)
+	pdu := GA[PDU](args, 0)
 
 	// decode as generic _NPDU
 	xpdu, err := NewNPDU(nil, nil)
@@ -104,5 +104,5 @@ func (n *NPDUCodec) Confirmation(args Args, kwargs KWArgs) error {
 		return errors.Wrap(err, "error decoding ypdu")
 	}
 
-	return n.Response(NewArgs(ypdu), NoKWArgs)
+	return n.Response(NA(ypdu), NoKWArgs())
 }

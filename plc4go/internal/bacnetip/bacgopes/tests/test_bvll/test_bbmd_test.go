@@ -36,6 +36,8 @@ import (
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests"
 	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests/quick"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests/state_machine"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests/time_machine"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/vlan"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
@@ -102,7 +104,7 @@ func (t *TBNetwork) Run(timeLimit time.Duration) {
 	for _, machine := range t.StateMachineGroup.GetStateMachines() {
 		t.log.Debug().Stringer("machine", machine).Msg("Machine:")
 		for _, s := range machine.GetTransactionLog() {
-			t.log.Debug().Str("logEntry", s).Msg("logEntry")
+			t.log.Debug().Stringer("logEntry", s).Msg("logEntry")
 		}
 	}
 
@@ -147,7 +149,7 @@ func (suite *NonBBMDSuite) TestWriteBDTFail() {
 	writeBroadcastDistributionTable.SetPDUDestination(suite.iut.address) // TODO: upstream does this inline
 	suite.td.GetStartState().Doc("1-1-0").
 		Send(writeBroadcastDistributionTable, nil).Doc("1-1-1").
-		Receive(NewArgs((*Result)(nil)), NewKWArgs(KWBvlciResultCode, readWriteModel.BVLCResultCode(0x0010))).Doc("1-1-2").
+		Receive(NA((*Result)(nil)), NKW(KWBvlciResultCode, readWriteModel.BVLCResultCode(0x0010))).Doc("1-1-2").
 		Success("")
 
 	// run group
@@ -160,7 +162,7 @@ func (suite *NonBBMDSuite) TestReadBDTFail() {
 	readBroadcastDistributionTable.SetPDUDestination(suite.iut.address) // TODO: upstream does this inline
 	suite.td.GetStartState().Doc("1-2-0").
 		Send(readBroadcastDistributionTable, nil).Doc("1-2-1").
-		Receive(NewArgs((*Result)(nil)), NewKWArgs(KWBvlciResultCode, readWriteModel.BVLCResultCode(0x0020))).Doc("1-2-2").
+		Receive(NA((*Result)(nil)), NKW(KWBvlciResultCode, readWriteModel.BVLCResultCode(0x0020))).Doc("1-2-2").
 		Success("")
 
 	// run group
@@ -173,7 +175,7 @@ func (suite *NonBBMDSuite) TestRegisterFail() {
 	registerForeignDevice.SetPDUDestination(suite.iut.address) // TODO: upstream does this inline
 	suite.td.GetStartState().Doc("1-3-0").
 		Send(registerForeignDevice, nil).Doc("1-3-1").
-		Receive(NewArgs((*Result)(nil)), NewKWArgs(KWBvlciResultCode, readWriteModel.BVLCResultCode(0x0030))).Doc("1-3-2").
+		Receive(NA((*Result)(nil)), NKW(KWBvlciResultCode, readWriteModel.BVLCResultCode(0x0030))).Doc("1-3-2").
 		Success("")
 
 	// run group
@@ -182,11 +184,11 @@ func (suite *NonBBMDSuite) TestRegisterFail() {
 
 func (suite *NonBBMDSuite) TestReadFail() {
 	// read the broadcast distribution table, get a nack
-	readForeignDeviceTable := quick.ReadForeignDeviceTable()
+	readForeignDeviceTable := quick.ReadForeignDeviceTable(nil)
 	readForeignDeviceTable.SetPDUDestination(suite.iut.address) // TODO: upstream does this inline
 	suite.td.GetStartState().Doc("1-4-0").
 		Send(readForeignDeviceTable, nil).Doc("1-4-1").
-		Receive(NewArgs((*Result)(nil)), NewKWArgs(KWBvlciResultCode, readWriteModel.BVLCResultCode(0x0040))).Doc("1-4-2").
+		Receive(NA((*Result)(nil)), NKW(KWBvlciResultCode, readWriteModel.BVLCResultCode(0x0040))).Doc("1-4-2").
 		Success("")
 
 	// run group
@@ -199,7 +201,7 @@ func (suite *NonBBMDSuite) TestDeleteFail() {
 	deleteForeignDeviceTableEntry.SetPDUDestination(suite.iut.address) // TODO: upstream does this inline
 	suite.td.GetStartState().Doc("1-5-0").
 		Send(deleteForeignDeviceTableEntry, nil).Doc("1-5-1").
-		Receive(NewArgs((*Result)(nil)), NewKWArgs(KWBvlciResultCode, readWriteModel.BVLCResultCode(0x0050))).Doc("1-5-2").
+		Receive(NA((*Result)(nil)), NKW(KWBvlciResultCode, readWriteModel.BVLCResultCode(0x0050))).Doc("1-5-2").
 		Success("")
 
 	// run group
@@ -209,17 +211,14 @@ func (suite *NonBBMDSuite) TestDeleteFail() {
 func (suite *NonBBMDSuite) TestDistributeFail() {
 	// read the broadcast distribution table, get a nack
 	pduBytes, err := Xtob(
-		// "deadbeef", // forwarded PDU // TODO: this is not a ndpu so we just exploded with that. We use the iartn for that for now
-		// TODO: this below is from us as upstream message is not parsable
-		"01.80" + // version, network layer message
-			"01 0001 0002 0003", // message type and network list
+		"deadbeef", // forwarded PDU
 	)
 	suite.Require().NoError(err)
 	distributeBroadcastToNetwork := quick.DistributeBroadcastToNetwork(pduBytes)
 	distributeBroadcastToNetwork.SetPDUDestination(suite.iut.address) // TODO: upstream does this inline
 	suite.td.GetStartState().Doc("1-6-0").
 		Send(distributeBroadcastToNetwork, nil).Doc("1-6-1").
-		Receive(NewArgs((*Result)(nil)), NewKWArgs(KWBvlciResultCode, readWriteModel.BVLCResultCode(0x0060))).Doc("1-6-2").
+		Receive(NA((*Result)(nil)), NKW(KWBvlciResultCode, readWriteModel.BVLCResultCode(0x0060))).Doc("1-6-2").
 		Success("")
 
 	// run group
@@ -231,8 +230,8 @@ func TestNonBBMD(t *testing.T) {
 }
 
 func TestBBMD(t *testing.T) {
-	t.Skip("big WIP")                           // TODO: too much needs to be done in APDU to get something to run here at all
 	t.Run("test_14_2_1_1", func(t *testing.T) { //14.2.1.1 Execute Forwarded-NPDU (One-hop Distribution).
+		t.Skip("needs more work before it can do something") // TODO: implement me
 		ExclusiveGlobalTimeMachine(t)
 		testLogger := testutils.ProduceTestingLogger(t)
 
@@ -265,15 +264,15 @@ func TestBBMD(t *testing.T) {
 
 		// broadcast a forwarded NPDU
 		td.GetStartState().Doc("2-1-0").
-			Send(quick.WhoIsRequest(NewKWArgs(KWPDUDestination, NewLocalBroadcast(nil))), nil).Doc("2-1-1").
-			Receive(NewArgs((*IAmRequest)(nil)), NoKWArgs).Doc("2-1-2").
+			Send(quick.WhoIsRequest(NKW(KWCPCIDestination, NewLocalBroadcast(nil))), nil).Doc("2-1-1").
+			Receive(NA((*IAmRequest)(nil)), NoKWArgs()).Doc("2-1-2").
 			Success("")
 
 		// listen for the directed broadcast, then the original unicast,
 		// then fail if there's anything else
 		listener.GetStartState().Doc("2-2-0").
-			Receive(NewArgs((*ForwardedNPDU)(nil)), NoKWArgs).Doc("2-2-1").
-			Receive(NewArgs((*OriginalUnicastNPDU)(nil)), NoKWArgs).Doc("2-2-2").
+			Receive(NA((*ForwardedNPDU)(nil)), NoKWArgs()).Doc("2-2-1").
+			Receive(NA((*OriginalUnicastNPDU)(nil)), NoKWArgs()).Doc("2-2-2").
 			Timeout(3*time.Second, nil).Doc("2-2-3").
 			Success("")
 
@@ -282,6 +281,7 @@ func TestBBMD(t *testing.T) {
 
 	})
 	t.Run("test_14_2_1_1", func(t *testing.T) { // 14.2.1.1 Execute Forwarded-NPDU (Two-hop Distribution).
+		t.Skip("needs more work before it can do something") // TODO: implement me
 		ExclusiveGlobalTimeMachine(t)
 		testLogger := testutils.ProduceTestingLogger(t)
 
@@ -314,29 +314,29 @@ func TestBBMD(t *testing.T) {
 
 		// broadcast a forwarded NPDU
 		td.GetStartState().Doc("2-3-0").
-			Send(quick.WhoIsRequest(NewKWArgs(KWPDUDestination, NewLocalBroadcast(nil))), nil).Doc("2-3-1").
-			Receive(NewArgs((*IAmRequest)(nil)), NoKWArgs).Doc("2-3-2").
+			Send(quick.WhoIsRequest(NKW(KWCPCIDestination, NewLocalBroadcast(nil))), nil).Doc("2-3-1").
+			Receive(NA((*IAmRequest)(nil)), NoKWArgs()).Doc("2-3-2").
 			Success("")
 
 		// listen for the forwarded NPDU.  The packet will be sent upstream which
 		// will generate the original unicast going back, then it will be
 		// re-broadcast on the local LAN.  Fail if there's anything after that.
 		s241 := listener.GetStartState().Doc("2-4-0").
-			Receive(NewArgs((*ForwardedNPDU)(nil)), NoKWArgs).Doc("2-4-1")
+			Receive(NA((*ForwardedNPDU)(nil)), NoKWArgs()).Doc("2-4-1")
 
 		// look for the original unicast going back, followed by the rebroadcast
 		// of the forwarded NPDU on the local LAN
 		both := s241.
-			Receive(NewArgs((*OriginalUnicastNPDU)(nil)), NoKWArgs).Doc("2-4-1-a").
-			Receive(NewArgs((*ForwardedNPDU)(nil)), NoKWArgs).Doc("2-4-1-b")
+			Receive(NA((*OriginalUnicastNPDU)(nil)), NoKWArgs()).Doc("2-4-1-a").
+			Receive(NA((*ForwardedNPDU)(nil)), NoKWArgs()).Doc("2-4-1-b")
 
 		// fail if anything is received after both packets
 		both.Timeout(3*time.Second, nil).Doc("2-4-4").
 			Success("")
 
 		// allow the two packets in either order
-		s241.Receive(NewArgs((*ForwardedNPDU)(nil)), NoKWArgs).Doc("2-4-2-a").
-			Receive(NewArgs((*OriginalUnicastNPDU)(nil)), NewKWArgs("nextState", both)).Doc("2-4-2-b")
+		s241.Receive(NA((*ForwardedNPDU)(nil)), NoKWArgs()).Doc("2-4-2-a").
+			Receive(NA((*OriginalUnicastNPDU)(nil)), NKW("nextState", both)).Doc("2-4-2-b")
 
 		// run the group
 		tnet.Run(0)

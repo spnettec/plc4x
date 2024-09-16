@@ -34,13 +34,13 @@ import (
 )
 
 type WhoIsIAmServicesRequirements interface {
-	Request(args Args, kwargs KWArgs) error
+	Request(args Args, kwArgs KWArgs) error
 	RegisterHelperFn(name string, fn func(apdu APDU) error) error
 }
 
 //go:generate plc4xGenerator -type=WhoIsIAmServices -prefix=service_device_
 type WhoIsIAmServices struct {
-	_requirements WhoIsIAmServicesRequirements
+	_requirements WhoIsIAmServicesRequirements `ignore:"true"`
 	Capability
 
 	localDevice *LocalDeviceObject
@@ -108,7 +108,7 @@ func (w *WhoIsIAmServices) WhoIs(lowLimit, highLimit *uint, address *Address) er
 
 	w.log.Debug().Stringer("whoIs", whoIs).Msg("WhoIs")
 
-	return w._requirements.Request(NewArgs(NewPDU(whoIs, WithPDUDestination(address))), NoKWArgs)
+	return w._requirements.Request(NA(NewPDU(NoArgs, NKW(KWCompRootMessage, whoIs, KWCPCIDestination, address))), NoKWArgs())
 }
 
 // DoWhoIsRequest respond to a Who-Is request.
@@ -178,7 +178,7 @@ func (w *WhoIsIAmServices) IAm(address *Address) error {
 
 	iAm, err := NewIAmRequest(
 		NoArgs,
-		NewKWArgs(
+		NKW(
 			KnownKey("iAmDeviceIdentifier"), w.localDevice.ObjectIdentifier,
 			KnownKey("maxAPDULengthAccepted"), w.localDevice.MaximumApduLengthAccepted,
 			KnownKey("segmentationSupported"), w.localDevice.SegmentationSupported,
@@ -196,7 +196,7 @@ func (w *WhoIsIAmServices) IAm(address *Address) error {
 	iAm.SetPDUDestination(address)
 	w.log.Debug().Stringer("iAm", iAm).Msg("IAm")
 
-	return w._requirements.Request(NewArgs(NewPDU(iAm, WithPDUDestination(address))), NoKWArgs)
+	return w._requirements.Request(NA(NewPDU(NoArgs, NKW(KWCompRootMessage, iAm, KWCPCIDestination, address))), NoKWArgs())
 }
 
 // DoIAmRequest responds to an I-Am request.

@@ -312,6 +312,13 @@ public class NPDU implements Message {
             "destinationLength",
             readUnsignedShort(readBuffer, 8),
             control.getDestinationSpecified());
+    // Validation
+    if (!(((((control.getDestinationSpecified()) && ((destinationNetworkAddress) != (null)))
+            && ((destinationLength) != (null))))
+        || ((((!(control.getDestinationSpecified())) && ((destinationNetworkAddress) == (null)))
+            && ((destinationLength) == (null)))))) {
+      throw new ParseValidationException("inconsistent control");
+    }
 
     List<Short> destinationAddress =
         readCountArrayField(
@@ -331,6 +338,13 @@ public class NPDU implements Message {
     Short sourceLength =
         readOptionalField(
             "sourceLength", readUnsignedShort(readBuffer, 8), control.getSourceSpecified());
+    // Validation
+    if (!(((((control.getSourceSpecified()) && ((sourceNetworkAddress) != (null)))
+            && ((sourceLength) != (null))))
+        || ((((!(control.getSourceSpecified())) && ((sourceNetworkAddress) == (null)))
+            && ((sourceLength) == (null)))))) {
+      throw new ParseValidationException("inconsistent control");
+    }
 
     List<Short> sourceAddress =
         readCountArrayField(

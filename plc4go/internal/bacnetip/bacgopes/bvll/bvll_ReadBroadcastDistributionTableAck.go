@@ -24,11 +24,10 @@ import (
 	"fmt"
 
 	"github.com/pkg/errors"
-	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
-	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 )
 
 type ReadBroadcastDistributionTableAck struct {
@@ -39,26 +38,36 @@ type ReadBroadcastDistributionTableAck struct {
 
 var _ BVLPDU = (*ReadBroadcastDistributionTableAck)(nil)
 
-func NewReadBroadcastDistributionTableAck(opts ...func(*ReadBroadcastDistributionTableAck)) (*ReadBroadcastDistributionTableAck, error) {
-	b := &ReadBroadcastDistributionTableAck{}
-	for _, opt := range opts {
-		opt(b)
+func NewReadBroadcastDistributionTableAck(bdt []*Address, args Args, kwArgs KWArgs) (*ReadBroadcastDistributionTableAck, error) {
+	r := &ReadBroadcastDistributionTableAck{}
+	r._BVLPDU = NewBVLPDU(args, kwArgs).(*_BVLPDU)
+	r.AddDebugContents(r, "bvlciBDT")
+	if r.GetRootMessage() == nil {
+		r.SetRootMessage(readWriteModel.NewBVLCReadBroadcastDistributionTableAck(r.produceBroadcastDistributionTable()))
 	}
-	b._BVLPDU = NewBVLPDU(model.NewBVLCReadBroadcastDistributionTableAck(b.produceBroadcastDistributionTable(), 0)).(*_BVLPDU)
-	return b, nil
+	r.bvlciFunction = BVLCIReadBroadcastDistributionTableAck
+	r.bvlciLength = uint16(4 + 10*len(bdt))
+	r.bvlciBDT = bdt
+	return r, nil
 }
 
-func WithReadBroadcastDistributionTableAckBDT(bdt ...*Address) func(*ReadBroadcastDistributionTableAck) {
-	return func(b *ReadBroadcastDistributionTableAck) {
-		b.bvlciBDT = bdt
+func (r *ReadBroadcastDistributionTableAck) GetDebugAttr(attr string) any {
+	switch attr {
+	case "bvlciBDT":
+		if r.bvlciBDT != nil {
+			return r.bvlciBDT
+		}
+	default:
+		return nil
 	}
+	return nil
 }
 
 func (r *ReadBroadcastDistributionTableAck) GetBvlciBDT() []*Address {
 	return r.bvlciBDT
 }
 
-func (r *ReadBroadcastDistributionTableAck) produceBroadcastDistributionTable() (entries []model.BVLCBroadcastDistributionTableEntry) {
+func (r *ReadBroadcastDistributionTableAck) produceBroadcastDistributionTable() (entries []readWriteModel.BVLCBroadcastDistributionTableEntry, _ uint16) {
 	for _, address := range r.bvlciBDT {
 		addr := address.AddrAddress[:4]
 		port := uint16(47808)
@@ -69,18 +78,18 @@ func (r *ReadBroadcastDistributionTableAck) produceBroadcastDistributionTable() 
 		if address.AddrMask != nil {
 			binary.BigEndian.PutUint32(mask, *address.AddrMask)
 		}
-		entries = append(entries, model.NewBVLCBroadcastDistributionTableEntry(addr, port, mask))
+		entries = append(entries, readWriteModel.NewBVLCBroadcastDistributionTableEntry(addr, port, mask))
 	}
 	return
 }
 
-func (r *ReadBroadcastDistributionTableAck) produceBvlciBDT(entries []model.BVLCBroadcastDistributionTableEntry) (bvlciBDT []*Address) {
+func (r *ReadBroadcastDistributionTableAck) produceBvlciBDT(entries []readWriteModel.BVLCBroadcastDistributionTableEntry) (bvlciBDT []*Address) {
 	for _, entry := range entries {
 		addr := entry.GetIp()
 		port := entry.GetPort()
 		var portArray = make([]byte, 2)
 		binary.BigEndian.PutUint16(portArray, port)
-		address, _ := NewAddress(zerolog.Nop(), append(addr, portArray...))
+		address, _ := NewAddress(NA(append(addr, portArray...)))
 		mask := binary.BigEndian.Uint32(entry.GetBroadcastDistributionMap())
 		address.AddrMask = &mask
 		bvlciBDT = append(bvlciBDT, address)
@@ -114,9 +123,9 @@ func (r *ReadBroadcastDistributionTableAck) Decode(bvlpdu Arg) error {
 	switch bvlpdu := bvlpdu.(type) {
 	case BVLPDU:
 		switch rm := bvlpdu.GetRootMessage().(type) {
-		case model.BVLCReadBroadcastDistributionTableAck:
+		case readWriteModel.BVLCReadBroadcastDistributionTableAck:
 			switch bvlc := rm.(type) {
-			case model.BVLCReadBroadcastDistributionTableAck:
+			case readWriteModel.BVLCReadBroadcastDistributionTableAck:
 				r.bvlciBDT = r.produceBvlciBDT(bvlc.GetTable())
 				r.SetRootMessage(rm)
 			}

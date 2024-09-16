@@ -24,7 +24,6 @@ import (
 	"fmt"
 
 	"github.com/pkg/errors"
-	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
@@ -39,26 +38,36 @@ type WriteBroadcastDistributionTable struct {
 
 var _ BVLPDU = (*WriteBroadcastDistributionTable)(nil)
 
-func NewWriteBroadcastDistributionTable(opts ...func(*WriteBroadcastDistributionTable)) (*WriteBroadcastDistributionTable, error) {
-	b := &WriteBroadcastDistributionTable{}
-	for _, opt := range opts {
-		opt(b)
+func NewWriteBroadcastDistributionTable(bdt []*Address, args Args, kwArgs KWArgs) (*WriteBroadcastDistributionTable, error) {
+	w := &WriteBroadcastDistributionTable{}
+	w._BVLPDU = NewBVLPDU(args, kwArgs).(*_BVLPDU)
+	w.AddDebugContents(w, "bvlciBDT")
+	if w.GetRootMessage() == nil {
+		w.SetRootMessage(readWriteModel.NewBVLCWriteBroadcastDistributionTable(w.produceBroadcastDistributionTable()))
 	}
-	b._BVLPDU = NewBVLPDU(readWriteModel.NewBVLCWriteBroadcastDistributionTable(b.produceBroadcastDistributionTable(), 0)).(*_BVLPDU)
-	return b, nil
+	w.bvlciFunction = BVLCIWriteBroadcastDistributionTable
+	w.bvlciLength = uint16(4 + 10*len(bdt))
+	w.bvlciBDT = bdt
+	return w, nil
 }
 
-func WithWriteBroadcastDistributionTableBDT(bdt ...*Address) func(*WriteBroadcastDistributionTable) {
-	return func(b *WriteBroadcastDistributionTable) {
-		b.bvlciBDT = bdt
+func (w *WriteBroadcastDistributionTable) GetDebugAttr(attr string) any {
+	switch attr {
+	case "bvlciBDT":
+		if w.bvlciBDT != nil {
+			return w.bvlciBDT
+		}
+	default:
+		return nil
 	}
+	return nil
 }
 
 func (w *WriteBroadcastDistributionTable) GetBvlciBDT() []*Address {
 	return w.bvlciBDT
 }
 
-func (w *WriteBroadcastDistributionTable) produceBroadcastDistributionTable() (entries []readWriteModel.BVLCBroadcastDistributionTableEntry) {
+func (w *WriteBroadcastDistributionTable) produceBroadcastDistributionTable() (entries []readWriteModel.BVLCBroadcastDistributionTableEntry, _ uint16) {
 	for _, address := range w.bvlciBDT {
 		addr := address.AddrAddress[:4]
 		port := uint16(47808)
@@ -80,7 +89,7 @@ func (w *WriteBroadcastDistributionTable) produceBvlciBDT(entries []readWriteMod
 		port := entry.GetPort()
 		var portArray = make([]byte, 2)
 		binary.BigEndian.PutUint16(portArray, port)
-		address, _ := NewAddress(zerolog.Nop(), append(addr, portArray...))
+		address, _ := NewAddress(NA(append(addr, portArray...)))
 		mask := binary.BigEndian.Uint32(entry.GetBroadcastDistributionMap())
 		address.AddrMask = &mask
 		bvlciBDT = append(bvlciBDT, address)

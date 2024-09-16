@@ -81,19 +81,19 @@ func (s *ServerSSM) setState(newState SSMState, timer *uint) error {
 }
 
 // Request This function is called by transaction functions to send to the application
-func (s *ServerSSM) Request(args Args, kwargs KWArgs) error {
-	s.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Request")
+func (s *ServerSSM) Request(args Args, kwArgs KWArgs) error {
+	s.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwArgs).Msg("Request")
 	// TODO: ensure apdu has destination, otherwise
 	// TODO: we would need a BVLC to send something or not... maybe the todo above is nonsense, as we are in a connection context
-	return s.ssmSAP.SapRequest(args, kwargs)
+	return s.ssmSAP.SapRequest(args, kwArgs)
 }
 
 // Indication This function is called for each downstream packet related to
 //
 //	the transaction
-func (s *ServerSSM) Indication(args Args, kwargs KWArgs) error { // TODO: maybe use another name for that
-	s.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Indication")
-	apdu := Get[PDU](args, 0)
+func (s *ServerSSM) Indication(args Args, kwArgs KWArgs) error { // TODO: maybe use another name for that
+	s.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwArgs).Msg("Indication")
+	apdu := GA[PDU](args, 0)
 	// make sure we're getting confirmed requests
 
 	switch s.state {
@@ -111,28 +111,28 @@ func (s *ServerSSM) Indication(args Args, kwargs KWArgs) error { // TODO: maybe 
 }
 
 // Response This function is called by client transaction functions when they want to send a message to the application.
-func (s *ServerSSM) Response(args Args, kwargs KWArgs) error {
-	s.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Response")
+func (s *ServerSSM) Response(args Args, kwArgs KWArgs) error {
+	s.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwArgs).Msg("Response")
 	// make sure it has a good source and destination
 	// TODO: check if source == none
 	// TODO: check if destnation = s.pduAddress
 
 	// send it via the device
-	return s.ssmSAP.Request(args, kwargs)
+	return s.ssmSAP.Request(args, kwArgs)
 }
 
 // Confirmation This function is called when the application has provided a response and needs it to be sent to the
 //
 //	client.
-func (s *ServerSSM) Confirmation(args Args, kwargs KWArgs) error {
-	s.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Confirmation")
+func (s *ServerSSM) Confirmation(args Args, kwArgs KWArgs) error {
+	s.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwArgs).Msg("Confirmation")
 
 	// check to see we are in the correct state
 	if s.state != SSMState_AWAIT_RESPONSE {
 		s.log.Debug().Msg("warning: no expecting a response")
 	}
 
-	apdu := Get[PDU](args, 0)
+	apdu := GA[PDU](args, 0)
 
 	switch _apdu := apdu.GetRootMessage().(type) {
 	// abort response
@@ -144,7 +144,7 @@ func (s *ServerSSM) Confirmation(args Args, kwargs KWArgs) error {
 		}
 
 		// end the response to the device
-		return s.Response(args, kwargs)
+		return s.Response(args, kwArgs)
 	// simple response
 	case readWriteModel.APDUSimpleAck, readWriteModel.APDUError, readWriteModel.APDUReject:
 		s.log.Debug().Msg("simple ack, error or reject")
@@ -155,7 +155,7 @@ func (s *ServerSSM) Confirmation(args Args, kwargs KWArgs) error {
 		}
 
 		// send the response to the device
-		return s.Response(args, kwargs)
+		return s.Response(args, kwArgs)
 	// complex ack
 	case readWriteModel.APDUComplexAck:
 		s.log.Debug().Msg("complex ack")
@@ -197,7 +197,7 @@ func (s *ServerSSM) Confirmation(args Args, kwargs KWArgs) error {
 					if err != nil {
 						return errors.Wrap(err, "Error creating abort")
 					}
-					return s.Response(NewArgs(abort), NoKWArgs)
+					return s.Response(NA(abort), NoKWArgs())
 				}
 
 				// make sure client supports segmented receive
@@ -207,7 +207,7 @@ func (s *ServerSSM) Confirmation(args Args, kwargs KWArgs) error {
 					if err != nil {
 						return errors.Wrap(err, "Error creating abort")
 					}
-					return s.Response(NewArgs(abort), NoKWArgs)
+					return s.Response(NA(abort), NoKWArgs())
 				}
 
 				// make sure we don't exceed the number of segments in our response that the client said it was willing to accept
@@ -218,7 +218,7 @@ func (s *ServerSSM) Confirmation(args Args, kwargs KWArgs) error {
 					if err != nil {
 						return errors.Wrap(err, "Error creating abort")
 					}
-					return s.Response(NewArgs(abort), NoKWArgs)
+					return s.Response(NA(abort), NoKWArgs())
 				}
 			}
 
@@ -229,7 +229,7 @@ func (s *ServerSSM) Confirmation(args Args, kwargs KWArgs) error {
 
 			// send out the first segment (or the whole thing)
 			if s.segmentCount == 1 {
-				if err := s.Response(args, NoKWArgs); err != nil {
+				if err := s.Response(args, NoKWArgs()); err != nil {
 					s.log.Debug().Err(err).Msg("error sending response")
 				}
 				if err := s.setState(SSMState_COMPLETED, nil); err != nil {
@@ -240,7 +240,7 @@ func (s *ServerSSM) Confirmation(args Args, kwargs KWArgs) error {
 				if err != nil {
 					return errors.Wrap(err, "error getting first segment")
 				}
-				if err := s.Response(NewArgs(segment), NoKWArgs); err != nil {
+				if err := s.Response(NA(segment), NoKWArgs()); err != nil {
 					s.log.Debug().Err(err).Msg("error sending response")
 				}
 				if err := s.setState(SSMState_SEGMENTED_RESPONSE, nil); err != nil {
@@ -286,7 +286,7 @@ func (s *ServerSSM) abort(reason readWriteModel.BACnetAbortReason) (PDU, error) 
 	// build an abort _PDU to return
 	abortApdu := readWriteModel.NewAPDUAbort(true, s.invokeId, readWriteModel.NewBACnetAbortReasonTagged(reason, uint32(reason), 0), 0)
 	// return it
-	return NewPDU(abortApdu), nil
+	return NewPDU(NoArgs, NKW(KWCompRootMessage, abortApdu)), nil
 }
 
 func (s *ServerSSM) idle(apdu PDU) error {
@@ -352,7 +352,7 @@ func (s *ServerSSM) idle(apdu PDU) error {
 		if err := s.setState(SSMState_AWAIT_RESPONSE, nil); err != nil {
 			return errors.Wrap(err, "Error setting state to aborted")
 		}
-		return s.Request(NewArgs(apdu), NoKWArgs)
+		return s.Request(NA(apdu), NoKWArgs())
 	}
 
 	// make sure we support segmented requests
@@ -361,7 +361,7 @@ func (s *ServerSSM) idle(apdu PDU) error {
 		if err != nil {
 			return errors.Wrap(err, "error creating abort")
 		}
-		return s.Response(NewArgs(abort), NoKWArgs)
+		return s.Response(NA(abort), NoKWArgs())
 	}
 
 	// save the response and set the segmentation context
@@ -390,7 +390,7 @@ func (s *ServerSSM) idle(apdu PDU) error {
 	// send back a segment ack
 	segack := readWriteModel.NewAPDUSegmentAck(false, true, s.invokeId, s.initialSequenceNumber, *s.actualWindowSize, 0)
 	s.log.Debug().Stringer("segack", segack).Msg("segAck")
-	return s.Response(NewArgs(NewPDU(segack)), NoKWArgs)
+	return s.Response(NA(NewPDU(NoArgs, NKW(KWCompRootMessage, segack))), NoKWArgs())
 }
 
 func (s *ServerSSM) segmentedRequest(apdu PDU) error {
@@ -401,7 +401,7 @@ func (s *ServerSSM) segmentedRequest(apdu PDU) error {
 		if err := s.setState(SSMState_COMPLETED, nil); err != nil {
 			return errors.Wrap(err, "Error setting state to aborted")
 		}
-		return s.Response(NewArgs(apdu), NoKWArgs)
+		return s.Response(NA(apdu), NoKWArgs())
 	}
 
 	// the only messages we should be getting are confirmed requests
@@ -411,10 +411,10 @@ func (s *ServerSSM) segmentedRequest(apdu PDU) error {
 		if err != nil {
 			return errors.Wrap(err, "error creating abort")
 		}
-		if err := s.Request(NewArgs(abort), NoKWArgs); err != nil { // send it ot the device
+		if err := s.Request(NA(abort), NoKWArgs()); err != nil { // send it ot the device
 			s.log.Debug().Err(err).Msg("error sending request")
 		}
-		if err := s.Response(NewArgs(abort), NoKWArgs); err != nil { // send it ot the application
+		if err := s.Response(NA(abort), NoKWArgs()); err != nil { // send it ot the application
 			s.log.Debug().Err(err).Msg("error sending response")
 		}
 	} else {
@@ -427,10 +427,10 @@ func (s *ServerSSM) segmentedRequest(apdu PDU) error {
 		if err != nil {
 			return errors.Wrap(err, "error creating abort")
 		}
-		if err := s.Request(NewArgs(abort), NoKWArgs); err != nil { // send it ot the device
+		if err := s.Request(NA(abort), NoKWArgs()); err != nil { // send it ot the device
 			s.log.Debug().Err(err).Msg("error sending request")
 		}
-		if err := s.Response(NewArgs(abort), NoKWArgs); err != nil { // send it ot the application
+		if err := s.Response(NA(abort), NoKWArgs()); err != nil { // send it ot the application
 			s.log.Debug().Err(err).Msg("error sending response")
 		}
 	}
@@ -447,7 +447,7 @@ func (s *ServerSSM) segmentedRequest(apdu PDU) error {
 
 		// send back a segment ack
 		segack := readWriteModel.NewAPDUSegmentAck(true, true, s.invokeId, s.initialSequenceNumber, *s.actualWindowSize, 0)
-		return s.Response(NewArgs(NewPDU(segack)), NoKWArgs)
+		return s.Response(NA(NewPDU(NoArgs, NKW(KWCompRootMessage, segack))), NoKWArgs())
 	}
 
 	// add the data
@@ -464,7 +464,7 @@ func (s *ServerSSM) segmentedRequest(apdu PDU) error {
 
 		// send back the final segment ack
 		segack := readWriteModel.NewAPDUSegmentAck(false, true, s.invokeId, s.lastSequenceNumber, *s.actualWindowSize, 0)
-		if err := s.Response(NewArgs(NewPDU(segack)), NoKWArgs); err != nil {
+		if err := s.Response(NA(NewPDU(NoArgs, NKW(KWCompRootMessage, segack))), NoKWArgs()); err != nil {
 			s.log.Debug().Err(err).Msg("error sending response")
 		}
 
@@ -481,7 +481,7 @@ func (s *ServerSSM) segmentedRequest(apdu PDU) error {
 		if err != nil {
 			return errors.Wrap(err, "error parsing apdu")
 		}
-		if err := s.Request(NewArgs(NewPDU(parse)), NoKWArgs); err != nil {
+		if err := s.Request(NA(NewPDU(NoArgs, NKW(KWCompRootMessage, parse))), NoKWArgs()); err != nil {
 			s.log.Debug().Err(err).Msg("error sending request")
 		}
 	} else if *apduConfirmedRequest.GetSequenceNumber() == s.initialSequenceNumber+*s.actualWindowSize {
@@ -492,7 +492,7 @@ func (s *ServerSSM) segmentedRequest(apdu PDU) error {
 
 		// send back a segment ack
 		segack := readWriteModel.NewAPDUSegmentAck(false, true, s.invokeId, s.initialSequenceNumber, *s.actualWindowSize, 0)
-		if err := s.Response(NewArgs(NewPDU(segack)), NoKWArgs); err != nil {
+		if err := s.Response(NA(NewPDU(NoArgs, NKW(KWCompRootMessage, segack))), NoKWArgs()); err != nil {
 			s.log.Debug().Err(err).Msg("error sending response")
 		}
 	} else {
@@ -526,7 +526,7 @@ func (s *ServerSSM) awaitResponse(apdu PDU) error {
 		if err := s.setState(SSMState_ABORTED, nil); err != nil {
 			return errors.Wrap(err, "Error setting state to aborted")
 		}
-		if err := s.Request(NewArgs(apdu), NoKWArgs); err != nil { // send it ot the device
+		if err := s.Request(NA(apdu), NoKWArgs()); err != nil { // send it ot the device
 			s.log.Debug().Err(err).Msg("error sending request")
 		}
 	default:
@@ -545,7 +545,7 @@ func (s *ServerSSM) awaitResponseTimeout() error {
 	if err != nil {
 		return errors.Wrap(err, "error creating abort")
 	}
-	if err := s.Request(NewArgs(abort), NoKWArgs); err != nil {
+	if err := s.Request(NA(abort), NoKWArgs()); err != nil {
 		s.log.Debug().Err(err).Msg("error sending request")
 	}
 	return nil
@@ -590,7 +590,7 @@ func (s *ServerSSM) segmentedResponse(apdu PDU) error {
 		if err := s.setState(SSMState_COMPLETED, nil); err != nil {
 			return errors.Wrap(err, "Error setting state to aborted")
 		}
-		if err := s.Response(NewArgs(apdu), NoKWArgs); err != nil { // send it ot the application
+		if err := s.Response(NA(apdu), NoKWArgs()); err != nil { // send it ot the application
 			s.log.Debug().Err(err).Msg("error sending response")
 		}
 	default:

@@ -22,6 +22,7 @@ package vlan
 import (
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 )
 
@@ -35,6 +36,9 @@ type IPNetwork struct {
 }
 
 func NewIPNetwork(localLog zerolog.Logger, opts ...func(*Network)) *IPNetwork {
+	if _debug != nil {
+		_debug("__init__")
+	}
 	return &IPNetwork{
 		Network: NewNetwork(localLog, opts...),
 	}
@@ -42,11 +46,14 @@ func NewIPNetwork(localLog zerolog.Logger, opts ...func(*Network)) *IPNetwork {
 
 // AddNode Add a node to this network, let the node know which network it's on.
 func (n *IPNetwork) AddNode(node NetworkNode) {
+	if _debug != nil {
+		_debug("add_node %r", node)
+	}
 	n.log.Debug().Stringer("node", node).Msg("Adding node")
 
 	ipNode := node.(*IPNode)
 
-	address, err := NewAddress(n.log, ipNode.addrBroadcastTuple)
+	address, err := NewAddress(NA(ipNode.addrBroadcastTuple))
 	if err != nil {
 		panic(err) // TODO: check that we do the right thing here. Originally the tuple gets assigned but that makes trouble downstream
 	}

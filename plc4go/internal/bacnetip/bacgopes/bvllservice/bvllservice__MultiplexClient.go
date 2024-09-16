@@ -29,7 +29,7 @@ import (
 
 //go:generate plc4xGenerator -type=_MultiplexClient -prefix=appservice_
 type _MultiplexClient struct {
-	Client
+	ClientContract
 	multiplexer *UDPMultiplexer
 }
 
@@ -38,13 +38,13 @@ func _New_MultiplexClient(localLog zerolog.Logger, multiplexer *UDPMultiplexer) 
 		multiplexer: multiplexer,
 	}
 	var err error
-	m.Client, err = NewClient(localLog, m)
+	m.ClientContract, err = NewClient(localLog) // TODO: do we need to pass cid?
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating client")
 	}
 	return m, nil
 }
 
-func (m *_MultiplexClient) Confirmation(args Args, kwargs KWArgs) error {
-	return m.multiplexer.Confirmation(NewArgs(m, args), NoKWArgs)
+func (m *_MultiplexClient) Confirmation(args Args, kwArgs KWArgs) error {
+	return m.multiplexer.Confirmation(NA(m, args), NoKWArgs())
 }

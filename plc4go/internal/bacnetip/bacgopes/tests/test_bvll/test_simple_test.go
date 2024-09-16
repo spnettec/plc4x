@@ -30,9 +30,10 @@ import (
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/bvll"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/debugging"
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/deleteme"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests/state_machine"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests/time_machine"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/vlan"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
 )
@@ -98,7 +99,7 @@ func (t *TNetwork) Run(timeLimit time.Duration) {
 	for _, machine := range t.StateMachineGroup.GetStateMachines() {
 		t.log.Debug().Stringer("machine", machine).Msg("Machine:")
 		for _, s := range machine.GetTransactionLog() {
-			t.log.Debug().Str("logEntry", s).Msg("logEntry")
+			t.log.Debug().Stringer("logEntry", s).Msg("logEntry")
 		}
 	}
 
@@ -126,26 +127,22 @@ func TestSimple(t *testing.T) {
 		tnet := NewTNetwork(t)
 
 		//make a PDU from node 1 to node 2
-		pduData, err := Xtob(
-			//"dead.beef", // TODO: upstream is using invalid data to send around, so we just use a IAm
-			"01.80" + // version, network layer message
-				"02 0001 02", // message type, network, performance
-		)
+		pduData, err := Xtob("dead.beef")
 		require.NoError(t, err)
-		pdu := NewPDU(NewMessageBridge(pduData...), WithPDUSource(tnet.td.address), WithPDUDestination(tnet.iut.address))
+		pdu := NewPDU(NA(pduData), NKW(KWCPCISource, tnet.td.address, KWCPCIDestination, tnet.iut.address))
 		t.Logf("pdu: %v", pdu)
 
 		// test device sends it, iut gets it
 		tnet.td.GetStartState().Send(pdu, nil).Success("")
-		tnet.iut.GetStartState().Receive(NewArgs((PDU)(nil)), NewKWArgs(
-			KWPPDUSource, tnet.td.address,
+		tnet.iut.GetStartState().Receive(NA((PDU)(nil)), NKW(
+			KWCPCISource, tnet.td.address,
 		)).Success("")
 
 		// sniffer sees message on the wire
-		tnet.sniffer.GetStartState().Receive(NewArgs((PDU)(nil)), NewKWArgs(
-			KWPPDUSource, tnet.td.address.AddrTuple,
-			KWPDUDestination, tnet.iut.address.AddrTuple,
-			KWPDUData, pduData,
+		tnet.sniffer.GetStartState().Receive(NA((PDU)(nil)), NKW(
+			KWCPCISource, tnet.td.address.AddrTuple,
+			KWCPCIDestination, tnet.iut.address.AddrTuple,
+			KWTestPDUData, pduData,
 		)).Timeout(1.0*time.Millisecond, nil).Success("")
 
 		// run the group
@@ -156,26 +153,22 @@ func TestSimple(t *testing.T) {
 		tnet := NewTNetwork(t)
 
 		//make a PDU from node 1 to node 2
-		pduData, err := Xtob(
-			//"dead.beef", // TODO: upstream is using invalid data to send around, so we just use a IAm
-			"01.80" + // version, network layer message
-				"02 0001 02", // message type, network, performance
-		)
+		pduData, err := Xtob("dead.beef")
 		require.NoError(t, err)
-		pdu := NewPDU(NewMessageBridge(pduData...), WithPDUSource(tnet.td.address), WithPDUDestination(tnet.iut.address))
+		pdu := NewPDU(NA(pduData), NKW(KWCPCISource, tnet.td.address, KWCPCIDestination, NewLocalBroadcast(nil)))
 		t.Logf("pdu: %v", pdu)
 
 		// test device sends it, iut gets it
-		tnet.td.GetStartState().Send(NewPDU(pdu, WithPDUSource(tnet.td.address), WithPDUDestination(NewLocalBroadcast(nil))), nil).Success("")
-		tnet.iut.GetStartState().Receive(NewArgs((PDU)(nil)), NewKWArgs(
-			KWPPDUSource, tnet.td.address,
+		tnet.td.GetStartState().Send(pdu, nil).Success("")
+		tnet.iut.GetStartState().Receive(NA((PDU)(nil)), NKW(
+			KWCPCISource, tnet.td.address,
 		)).Success("")
 
 		// sniffer sees message on the wire
-		tnet.sniffer.GetStartState().Receive(NewArgs((*OriginalBroadcastNPDU)(nil)), NewKWArgs(
-			KWPPDUSource, tnet.td.address.AddrTuple,
-			//bacgopes.KWPDUDestination, tnet.iut.address.AddrTuple,
-			KWPDUData, pduData,
+		tnet.sniffer.GetStartState().Receive(NA((*OriginalBroadcastNPDU)(nil)), NKW(
+			KWCPCISource, tnet.td.address.AddrTuple,
+			//bacgopes.KWCPCIDestination, tnet.iut.address.AddrTuple,
+			KWTestPDUData, pduData,
 		)).Timeout(1.0*time.Second, nil).Success("")
 
 		// run the group

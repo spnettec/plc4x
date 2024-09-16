@@ -31,7 +31,7 @@ import (
 
 //go:generate plc4xGenerator -type=NetworkAdapter -prefix=netservice_
 type NetworkAdapter struct {
-	Client
+	ClientContract
 	adapterSAP           *NetworkServiceAccessPoint `asPtr:"true"`
 	adapterNet           *uint16
 	adapterAddr          *Address
@@ -56,7 +56,7 @@ func NewNetworkAdapter(localLog zerolog.Logger, sap *NetworkServiceAccessPoint, 
 	}
 	n.log.Trace().Stringer("sap", sap).Interface("net", net).Stringer("addr", addr).Interface("cid", n.argCid).Msg("NewNetworkAdapter")
 	var err error
-	n.Client, err = NewClient(n.log, n, OptionalOption(n.argCid, WithClientCID))
+	n.ClientContract, err = NewClient(n.log, OptionalOption2(n.argCid, ToPtr[ClientRequirements](n), WithClientCID))
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating client")
 	}
@@ -75,13 +75,13 @@ func WithNetworkAdapterCid(cid int) func(*NetworkAdapter) {
 }
 
 // Confirmation Decode upstream PDUs and pass them up to the service access point.
-func (n *NetworkAdapter) Confirmation(args Args, kwargs KWArgs) error {
+func (n *NetworkAdapter) Confirmation(args Args, kwArgs KWArgs) error {
 	n.log.Debug().
-		Stringer("Args", args).Stringer("KWArgs", kwargs).
+		Stringer("Args", args).Stringer("KWArgs", kwArgs).
 		Interface("adapterNet", n.adapterNet).
 		Msg("confirmation")
 
-	pdu := Get[PDU](args, 0)
+	pdu := GA[PDU](args, 0)
 
 	npdu, err := NewNPDU(nil, nil)
 	if err != nil {
@@ -101,11 +101,11 @@ func (n *NetworkAdapter) ProcessNPDU(npdu NPDU) error {
 		Interface("adapterNet", n.adapterNet).
 		Msg("ProcessNPDU")
 
-	pdu := NewPDU(nil, WithPDUUserData(npdu.GetPDUUserData()))
+	pdu := NewPDU(NoArgs, NKW(KWCPCIUserData, npdu.GetPDUUserData()))
 	if err := npdu.Encode(pdu); err != nil {
 		return errors.Wrap(err, "error encoding NPDU")
 	}
-	return n.Request(NewArgs(pdu), NoKWArgs)
+	return n.Request(NA(pdu), NoKWArgs())
 }
 
 func (n *NetworkAdapter) EstablishConnectionToNetwork(net any) error {

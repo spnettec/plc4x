@@ -51,11 +51,14 @@ func NewUDPMultiplexer(localLog zerolog.Logger, address any, noBroadcast bool) (
 		Bool("noBroadcast", noBroadcast).
 		Msg("NewUDPMultiplexer")
 	u := &UDPMultiplexer{}
+	if _debug != nil {
+		_debug("__init__ %r noBroadcast=%r", address, noBroadcast)
+	}
 
 	// check for some options
 	specialBroadcast := false
 	if address == nil {
-		address, _ := NewAddress(localLog)
+		address, _ := NewAddress(NoArgs)
 		u.address = address
 		u.addrTuple = &AddressTuple[string, uint16]{"", 47808}
 		u.addrBroadcastTuple = &AddressTuple[string, uint16]{"255.255.255.255", 47808}
@@ -66,7 +69,7 @@ func NewUDPMultiplexer(localLog zerolog.Logger, address any, noBroadcast bool) (
 		} else if caddress, ok := address.(Address); ok {
 			u.address = &caddress
 		} else {
-			newAddress, err := NewAddress(localLog, address)
+			newAddress, err := NewAddress(NA(address))
 			if err != nil {
 				return nil, errors.Wrap(err, "error parsing address")
 			}
@@ -87,7 +90,12 @@ func NewUDPMultiplexer(localLog zerolog.Logger, address any, noBroadcast bool) (
 			specialBroadcast = true
 		}
 	}
-
+	if _debug != nil {
+		_debug("    - address: %r", u.address)
+		_debug("    - addrTuple: %r", u.addrTuple)
+		_debug("    - addrBroadcastTuple: %r", u.addrBroadcastTuple)
+		_debug("    - route_aware: %r", Settings.RouteAware)
+	}
 	localLog.Debug().
 		Stringer("address", u.address).
 		Stringer("addrTuple", u.addrTuple).
@@ -132,6 +140,9 @@ func NewUDPMultiplexer(localLog zerolog.Logger, address any, noBroadcast bool) (
 
 func (m *UDPMultiplexer) Close() error {
 	m.log.Debug().Msg("Close")
+	if _debug != nil {
+		_debug("close_socket")
+	}
 
 	// pass along the close to the director(s)
 	if err := m.directPort.Close(); err != nil {
@@ -145,10 +156,13 @@ func (m *UDPMultiplexer) Close() error {
 	return nil
 }
 
-func (m *UDPMultiplexer) Indication(args Args, kwargs KWArgs) error {
-	m.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Indication")
-	server := Get[*_MultiplexServer](args, 0)
-	pdu := Get[PDU](args, 1)
+func (m *UDPMultiplexer) Indication(args Args, kwArgs KWArgs) error {
+	m.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwArgs).Msg("Indication")
+	server := GA[*_MultiplexServer](args, 0)
+	pdu := GA[PDU](args, 1)
+	if _debug != nil {
+		_debug("indication %r %r", server, pdu)
+	}
 	m.log.Debug().
 		Stringer("server", server).
 		Stringer("pdu", pdu).
@@ -164,25 +178,38 @@ func (m *UDPMultiplexer) Indication(args Args, kwargs KWArgs) error {
 			return nil
 		}
 
-		address, err := NewAddress(m.log, *m.addrBroadcastTuple)
+		address, err := NewAddress(NA(*m.addrBroadcastTuple))
 		if err != nil {
 			return errors.Wrap(err, "error getting address from tuple")
 		}
 		dest = address
+		if _debug != nil {
+			_debug("    - requesting local broadcast: %r", dest)
+		}
 		m.log.Debug().Stringer("dest", dest).Msg("requesting local broadcast")
 	} else if pduDestination.AddrType == LOCAL_STATION_ADDRESS {
+		// unicast  message
+		if _debug != nil {
+			_debug("    - requesting local station: %r", dest)
+		}
 		dest = pduDestination
 	} else {
 		return errors.New("invalid destination address type")
 	}
 
-	return m.directPort.Indication(NewArgs(NewPDU(pdu, WithPDUDestination(dest))), NoKWArgs)
+	return m.directPort.Indication(NA(NewPDU(NoArgs, NKW(KWCompRootMessage, pdu, KWCPCIDestination, dest))), NoKWArgs())
 }
 
-func (m *UDPMultiplexer) Confirmation(args Args, kwargs KWArgs) error {
-	m.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Confirmation")
-	client := Get[*_MultiplexClient](args, 0)
-	pdu := Get[PDU](args, 1)
+func (m *UDPMultiplexer) Confirmation(args Args, kwArgs KWArgs) error {
+	m.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwArgs).Msg("Confirmation")
+	client := GA[*_MultiplexClient](args, 0)
+	pdu := GA[PDU](args, 1)
+	if _debug != nil {
+		_debug("confirmation %r %r", client, pdu)
+	}
+	if _debug != nil {
+		_debug("    - client address: %r", client.multiplexer.address)
+	}
 	m.log.Debug().
 		Stringer("client", client).
 		Stringer("pdu", pdu).
@@ -192,12 +219,15 @@ func (m *UDPMultiplexer) Confirmation(args Args, kwargs KWArgs) error {
 	// if this came from ourselves, dump it
 	pduSource := pdu.GetPDUSource()
 	if pduSource.Equals(m.address) {
+		if _debug != nil {
+			_debug("    - from us!")
+		}
 		m.log.Debug().Msg("from us")
 		return nil
 	}
 
 	// the PDU source is a tuple, convert it to an Address instance
-	src, err := NewAddress(m.log, pdu.GetPDUSource())
+	src, err := NewAddress(NA(pdu.GetPDUSource()))
 	if err != nil {
 		return errors.Wrap(err, "error creating address")
 	}
@@ -205,25 +235,37 @@ func (m *UDPMultiplexer) Confirmation(args Args, kwargs KWArgs) error {
 
 	// match the destination in case the stack needs it
 	if client == m.direct {
+		if _debug != nil {
+			_debug("    - direct to us")
+		}
 		m.log.Debug().Msg("direct to us")
 		dest = m.address
 	} else if client == m.broadcast {
+		if _debug != nil {
+			_debug("    - broadcast to us")
+		}
 		m.log.Debug().Msg("broadcast to us")
 		dest = NewLocalBroadcast(nil)
 	} else {
 		return errors.New("Confirmation missmatch")
 	}
+	if _debug != nil {
+		_debug("    - dest: %r", dest)
+	}
 	m.log.Debug().Stringer("dest", dest).Msg("dest")
 
 	// must have at least one octet
 	if pdu.GetRootMessage() == nil {
+		if _debug != nil {
+			_debug("    - no data")
+		}
 		m.log.Debug().Msg("no data")
 		return nil
 	}
 
 	// TODO: we only support 0x81 at the moment
 	if m.AnnexJ != nil {
-		return m.AnnexJ.Response(NewArgs(NewPDU(pdu.GetRootMessage(), WithPDUSource(src), WithPDUDestination(dest))), NoKWArgs)
+		return m.AnnexJ.Response(NA(NewPDU(NoArgs, NKW(KWCompRootMessage, pdu.GetRootMessage(), KWCPCISource, src, KWCPCIDestination, dest))), NoKWArgs())
 	}
 
 	return nil

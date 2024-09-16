@@ -46,8 +46,8 @@ func NewNameValue(args Args) (*NameValue, error) {
 		},
 	}
 	// default to no value
-	s.name = GetOptional[string](args, 0, "")
-	s.value = GetOptional[any](args, 1, nil)
+	s.name, _ = GAO[string](args, 0, "")
+	s.value, _ = GAO[any](args, 1, nil)
 
 	if s.value == nil {
 		return s, nil

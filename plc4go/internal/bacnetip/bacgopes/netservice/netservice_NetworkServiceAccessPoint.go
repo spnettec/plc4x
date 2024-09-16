@@ -37,7 +37,7 @@ import (
 //go:generate plc4xGenerator -type=NetworkServiceAccessPoint -prefix=netservice_
 type NetworkServiceAccessPoint struct {
 	ServiceAccessPointContract
-	Server
+	ServerContract
 	adapters        map[netKey]*NetworkAdapter
 	routerInfoCache *RouterInfoCache `stringer:"true"`
 	pendingNets     map[netKey][]NPDU
@@ -59,11 +59,11 @@ func NewNetworkServiceAccessPoint(localLog zerolog.Logger, opts ...func(*Network
 		opt(n)
 	}
 	var err error
-	n.ServiceAccessPointContract, err = NewServiceAccessPoint(localLog, OptionalOptionDual(n.argSapID, n.argSap, WithServiceAccessPointSapID))
+	n.ServiceAccessPointContract, err = NewServiceAccessPoint(localLog, OptionalOption2(n.argSapID, n.argSap, WithServiceAccessPointSapID))
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating network service access point")
 	}
-	n.Server, err = NewServer(localLog, n, OptionalOption(n.argSid, WithServerSID))
+	n.ServerContract, err = NewServer(localLog, OptionalOption2(n.argSid, ToPtr[ServerRequirements](n), WithServerSID))
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating server")
 	}
@@ -197,10 +197,10 @@ func (n *NetworkServiceAccessPoint) DeleteRouterReference(snet *uint16, address 
 	return n.routerInfoCache.DeleteRouterInfo(nk(snet), address, dnets)
 }
 
-func (n *NetworkServiceAccessPoint) Indication(args Args, kwargs KWArgs) error {
-	n.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Indication")
+func (n *NetworkServiceAccessPoint) Indication(args Args, kwArgs KWArgs) error {
+	n.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwArgs).Msg("Indication")
 
-	pdu := Get[PDU](args, 0)
+	pdu := GA[PDU](args, 0)
 
 	// make sure our configuration is OK
 	if len(n.adapters) == 0 {
@@ -292,7 +292,7 @@ func (n *NetworkServiceAccessPoint) Indication(args Args, kwargs KWArgs) error {
 		switch npdu.GetPDUDestination().AddrType {
 		case REMOTE_STATION_ADDRESS:
 			n.log.Debug().Msg("mapping remote station to local station")
-			localStation, err := NewLocalStation(n.log, npdu.GetPDUDestination().AddrAddress, nil)
+			localStation, err := NewLocalStation(npdu.GetPDUDestination().AddrAddress, nil)
 			if err != nil {
 				return errors.Wrap(err, "error building local station")
 			}
@@ -357,7 +357,7 @@ func (n *NetworkServiceAccessPoint) Indication(args Args, kwargs KWArgs) error {
 
 		// send it to all the adapters
 		for _, adapter := range n.adapters {
-			if err := n.SapIndication(NewArgs(adapter, xnpdu), NoKWArgs); err != nil {
+			if err := n.SapIndication(NA(adapter, xnpdu), NoKWArgs()); err != nil {
 				return errors.Wrap(err, "error doing SapIndication")
 			}
 		}
@@ -458,7 +458,7 @@ func (n *NetworkServiceAccessPoint) ProcessNPDU(adapter *NetworkAdapter, npdu NP
 			if len(n.adapters) > 1 && adapter != n.localAdapter {
 				// combine the source address
 				if !npdu.GetControl().GetSourceSpecified() {
-					remoteStationAddress, err := NewAddress(n.log, adapter.adapterNet, npdu.GetPDUSource().AddrAddress)
+					remoteStationAddress, err := NewAddress(NA(adapter.adapterNet))
 					if err != nil {
 						return errors.Wrap(err, "error creating remote address")
 					}
@@ -504,7 +504,7 @@ func (n *NetworkServiceAccessPoint) ProcessNPDU(adapter *NetworkAdapter, npdu NP
 			n.log.Debug().Stringer("pduDestination", apdu.GetPDUDestination()).Msg("apdu.pduDestination")
 
 			// pass upstream to the application layer
-			if err := n.Response(NewArgs(apdu), NoKWArgs); err != nil {
+			if err := n.Response(NA(apdu), NoKWArgs()); err != nil {
 				return errors.Wrap(err, "error passing response")
 			}
 		}
@@ -526,7 +526,7 @@ func (n *NetworkServiceAccessPoint) ProcessNPDU(adapter *NetworkAdapter, npdu NP
 			}
 
 			// pass to the service element
-			if err := n.SapRequest(NewArgs(adapter, xpdu), NoKWArgs); err != nil {
+			if err := n.SapRequest(NA(adapter, xpdu), NoKWArgs()); err != nil {
 				return errors.Wrap(err, "error passing sap _request")
 			}
 		}
@@ -564,7 +564,7 @@ func (n *NetworkServiceAccessPoint) ProcessNPDU(adapter *NetworkAdapter, npdu NP
 
 	// set the source address
 	if !npdu.GetControl().GetSourceSpecified() {
-		newSADR, err := NewRemoteStation(n.log, adapter.adapterNet, npdu.GetPDUSource().AddrAddress, nil)
+		newSADR, err := NewRemoteStation(adapter.adapterNet, npdu.GetPDUSource().AddrAddress, nil)
 		if err != nil {
 			return errors.Wrap(err, "error creating remote station")
 		}
@@ -605,7 +605,7 @@ func (n *NetworkServiceAccessPoint) ProcessNPDU(adapter *NetworkAdapter, npdu NP
 			if npdu.GetNpduDADR().AddrType == REMOTE_BROADCAST_ADDRESS {
 				newpdu.SetPDUDestination(NewLocalBroadcast(nil))
 			} else {
-				newDADR, err := NewLocalStation(n.log, npdu.GetNpduDADR().AddrAddress, nil)
+				newDADR, err := NewLocalStation(npdu.GetNpduDADR().AddrAddress, nil)
 				if err != nil {
 					return errors.Wrap(err, "error building local station")
 				}
@@ -658,7 +658,7 @@ func (n *NetworkServiceAccessPoint) ProcessNPDU(adapter *NetworkAdapter, npdu NP
 			}
 
 			// pass this along as if it came from the NSE
-			if err := n.SapIndication(NewArgs(xadapter, NewPDU(xnpdu, WithPDUDestination(pduDestination))), NoKWArgs); err != nil {
+			if err := n.SapIndication(NA(xadapter, NewPDU(NoArgs, NKW(KWCompRootMessage, xnpdu, KWCPCIDestination, pduDestination))), NoKWArgs()); err != nil {
 				return errors.Wrap(err, "error sending indication")
 			}
 		}
@@ -673,10 +673,10 @@ func (n *NetworkServiceAccessPoint) ProcessNPDU(adapter *NetworkAdapter, npdu NP
 	return nil
 }
 
-func (n *NetworkServiceAccessPoint) SapIndication(args Args, kwargs KWArgs) error {
-	n.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("SapIndication")
-	adapter := Get[*NetworkAdapter](args, 0)
-	npdu := Get[NPDU](args, 1)
+func (n *NetworkServiceAccessPoint) SapIndication(args Args, kwArgs KWArgs) error {
+	n.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwArgs).Msg("SapIndication")
+	adapter := GA[*NetworkAdapter](args, 0)
+	npdu := GA[NPDU](args, 1)
 
 	// encode it as a generic NPDU
 	xpdu, err := NewNPDU(nil, nil) // TODO: add with user data thingy...
@@ -692,10 +692,10 @@ func (n *NetworkServiceAccessPoint) SapIndication(args Args, kwargs KWArgs) erro
 	return adapter.ProcessNPDU(xpdu)
 }
 
-func (n *NetworkServiceAccessPoint) SapConfirmation(args Args, kwargs KWArgs) error {
-	n.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("SapConfirmation")
-	adapter := Get[*NetworkAdapter](args, 0)
-	npdu := Get[NPDU](args, 1)
+func (n *NetworkServiceAccessPoint) SapConfirmation(args Args, kwArgs KWArgs) error {
+	n.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwArgs).Msg("SapConfirmation")
+	adapter := GA[*NetworkAdapter](args, 0)
+	npdu := GA[NPDU](args, 1)
 
 	// encode it as a generic NPDU
 	xpdu, err := NewNPDU(nil, nil) // TODO: add with user data thingy...

@@ -24,13 +24,14 @@ import (
 	"container/heap"
 	"fmt"
 	"iter"
+	"reflect"
 	"sort"
 	"strings"
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/debugging"
 )
 
-type GenericFunction = func(args Args, kwargs KWArgs) error
+type GenericFunction = func(args Args, kwArgs KWArgs) error
 
 type Arg any
 
@@ -42,15 +43,11 @@ func NewArgs(args ...any) Args {
 	return args
 }
 
-func Get[T any](args Args, index int) T {
-	return argsGetOrPanic[T](args, index)
-}
+// NA is a shortcut for NewArgs
+var NA = NewArgs
 
-func GetOptional[T any](args Args, index int, defaultValue T) T {
-	return argsGetOrDefault(args, index, defaultValue)
-}
-
-func argsGetOrPanic[T any](args Args, index int) T {
+// GetFromArgs gets a value fromArgs and if not present panics
+func GetFromArgs[T any](args Args, index int) T {
 	if index > len(args)-1 {
 		panic(fmt.Sprintf("index out of bounds: %d(len %d of %s)", index, len(args), args))
 	}
@@ -62,11 +59,29 @@ func argsGetOrPanic[T any](args Args, index int) T {
 	return v
 }
 
-func argsGetOrDefault[T any](args Args, index int, defaultValue T) T {
+// GA is a shortcut for GetFromArgs
+func GA[T any](args Args, index int) T {
+	return GetFromArgs[T](args, index)
+}
+
+// GetFromArgsOptional gets a value from Args or return default if not present
+func GetFromArgsOptional[T any](args Args, index int, defaultValue T) (T, bool) {
 	if index > len(args)-1 {
-		return defaultValue
+		return defaultValue, false
 	}
-	return args[index].(T)
+	return args[index].(T), true
+}
+
+// GAO is a shortcut for GetFromArgsOptional
+func GAO[T any](args Args, index int, defaultValue T) (T, bool) {
+	return GetFromArgsOptional(args, index, defaultValue)
+}
+
+func (a Args) Format(s fmt.State, verb rune) {
+	switch verb {
+	case 's', 'v', 'r':
+		_, _ = fmt.Fprintf(s, "(%s)", a.String()[1:len(a.String())-1])
+	}
 }
 
 func (a Args) String() string {
@@ -77,7 +92,7 @@ func (a Args) String() string {
 		case []byte:
 			ea = Btox(tea, ".")
 		case fmt.Stringer:
-			if tea != nil {
+			if !IsNil(tea) {
 				teaString := tea.String()
 				ea = teaString
 				if strings.Contains(teaString, "\n") {
@@ -95,7 +110,7 @@ func (a Args) String() string {
 
 type KWArgs map[KnownKey]any
 
-var NoKWArgs = NewKWArgs()
+var NoKWArgs = NewKWArgs
 
 func NewKWArgs(kw ...any) KWArgs {
 	if len(kw)%2 != 0 {
@@ -112,19 +127,56 @@ func NewKWArgs(kw ...any) KWArgs {
 	return r
 }
 
+// NKW is a shortcut for NewKWArgs
+var NKW = NewKWArgs
+
+func (k KWArgs) Format(f fmt.State, verb rune) {
+	switch verb {
+	case 'r':
+		_, _ = fmt.Fprint(f, k.String())
+	}
+}
+
 func (k KWArgs) String() string {
 	r := ""
 	for kk, ea := range k {
+		switch kk {
+		case KWCompRootMessage, KWCompBVLCIRequirements:
+			// TODO: figure out if we want to control that for the %r above and do something different here
+			continue
+		}
 		switch tea := ea.(type) {
 		case []byte:
 			ea = Btox(tea, ".")
 		}
-		r += fmt.Sprintf("%s=%v, ", kk, ea)
+		r += fmt.Sprintf("'%s'=%v, ", kk, ea)
 	}
 	if r != "" {
 		r = r[:len(r)-2]
 	}
 	return "{" + r + "}"
+}
+
+// KW gets a value from KWArgs and if not present panics
+func KW[T any](kwArgs KWArgs, key KnownKey) T {
+	r, ok := kwArgs[key]
+	if !ok {
+		panic(fmt.Sprintf("key %v not found in kwArgs", key))
+	}
+	return r.(T)
+}
+
+// KWO gets a value from KWArgs and if not present returns the supplied default value
+func KWO[T any](kwArgs KWArgs, key KnownKey, defaultValue T) T {
+	r, ok := kwArgs[key]
+	if !ok {
+		return defaultValue
+	}
+	v, ok := r.(T)
+	if !ok {
+		return defaultValue
+	}
+	return v
 }
 
 type KnownKey string
@@ -139,11 +191,17 @@ const (
 	KWError      = KnownKey("error")
 
 	////
-	// PDU related Keys
+	// comm.PCI related keys
 
-	KWPPDUSource     = KnownKey("pduSource")
-	KWPDUDestination = KnownKey("pduDestination")
-	KWPDUData        = KnownKey("pduData")
+	KWCPCIUserData    = KnownKey("user_data")
+	KWCPCISource      = KnownKey("source")
+	KWCPCIDestination = KnownKey("destination")
+
+	////
+	// PCI related keys
+
+	KWPCIExpectingReply  = KnownKey("expecting_reply")
+	KWPCINetworkPriority = KnownKey("network_priority")
 
 	////
 	// NPDU related keys
@@ -175,7 +233,18 @@ const (
 	KWFdRemain        = KnownKey("fdRemain")
 	KWBvlciTimeToLive = KnownKey("bvlciTimeToLive")
 	KWBvlciFDT        = KnownKey("bvlciFDT")
+
+	////
+	// Compability layer keys
+
+	KWCompRootMessage       = KnownKey("compRootMessage")
+	KWCompBVLCIRequirements = KnownKey("compBVLCIRequirements")
 )
+
+// Nothing give NoArgs and NoKWArgs()
+func Nothing() (Args, KWArgs) {
+	return NoArgs, NoKWArgs()
+}
 
 // An PriorityItem is something we manage in a priority queue.
 type PriorityItem[P cmp.Ordered, V any] struct {
@@ -193,7 +262,7 @@ func (p *PriorityItem[P, V]) String() string {
 	return fmt.Sprintf("[%v: prio %v - value %s], ", p.Index, p.Priority, v)
 }
 
-// A PriorityQueue implements heap.Interface and holds Items.
+// GA PriorityQueue implements heap.Interface and holds Items.
 type PriorityQueue[P cmp.Ordered, V any] []*PriorityItem[P, V]
 
 //goland:noinspection GoMixedReceiverTypes
@@ -331,12 +400,12 @@ func OptionalOption[V any, T any](value *V, opt func(V) func(*T)) func(*T) {
 	return func(c *T) {}
 }
 
-// OptionalOptionDual allows options to be applied that might be optional
-func OptionalOptionDual[V1 any, V2 any, T any](value1 *V1, value2 *V2, opt func(V1, V2) func(*T)) func(*T) {
+// OptionalOption2 allows options to be applied that might be optional
+func OptionalOption2[V1 any, V2 any, T any](value1 *V1, value2 *V2, opt func(V1, V2) func(*T)) func(*T) {
 	v1Set := value1 != nil
 	v2Set := value2 != nil
 	if (v1Set && !v2Set) || (!v1Set && v2Set) {
-		panic("Dual options must be both set together")
+		return func(c *T) {}
 	}
 	if v1Set {
 		return opt(*value1, *value2)
@@ -368,4 +437,64 @@ func SortedMapIterator[K cmp.Ordered, V any](m map[K]V) iter.Seq2[K, V] {
 			}
 		}
 	}
+}
+
+// OR returns a or b
+func OR[T comparable](a T, b T) T {
+	if reflect.ValueOf(a).IsNil() || (reflect.ValueOf(a).Kind() == reflect.Ptr && reflect.ValueOf(a).IsNil()) { // TODO: check if there is another way than using reflect
+		return b
+	} else {
+		return a
+	}
+}
+
+// ToPtr gives a Ptr
+func ToPtr[T any](value T) *T {
+	return &value
+}
+
+// Try something and return panic as error
+func Try(f func() error) (err error) {
+	defer func() {
+		if r := recover(); r != nil {
+			err = fmt.Errorf("panic: %v", r)
+		}
+	}()
+	return f()
+}
+
+// Try1 something and return panic as error
+func Try1[T any](f func() (T, error)) (v T, err error) {
+	defer func() {
+		if r := recover(); r != nil {
+			err = fmt.Errorf("panic: %v", r)
+		}
+	}()
+	return f()
+}
+
+// IsNil when nil checks aren'T enough
+func IsNil(v interface{}) bool {
+	if v == nil {
+		return true
+	}
+	valueOf := reflect.ValueOf(v)
+	switch valueOf.Kind() {
+	case reflect.Ptr, reflect.Interface, reflect.Slice, reflect.Map, reflect.Func, reflect.Chan:
+		return valueOf.IsNil()
+	default:
+		return false
+	}
+}
+
+func ToStringers[I any](in []I) []fmt.Stringer {
+	return ConvertSlice[I, fmt.Stringer](in)
+}
+
+func ConvertSlice[I any, O any](in []I) (out []O) {
+	out = make([]O, len(in))
+	for i, v := range in {
+		out[i] = any(v).(O)
+	}
+	return
 }

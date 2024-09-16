@@ -27,13 +27,13 @@ import (
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comm"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/globals"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/debugging"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 )
 
 //go:generate plc4xGenerator -type=IPRouterNode -prefix=vlan_
 type IPRouterNode struct {
-	Client
+	ClientContract
 
 	router     *IPRouter
 	lan        *IPNetwork
@@ -58,8 +58,11 @@ func NewIPRouterNode(localLog zerolog.Logger, router *IPRouter, addr *Address, l
 	for _, opt := range opts {
 		opt(i)
 	}
+	if _debug != nil {
+		_debug("__init__ %r %r lan=%r", router, addr, lan)
+	}
 	var err error
-	i.Client, err = NewClient(localLog, i, OptionalOption(i.argCid, WithClientCID))
+	i.ClientContract, err = NewClient(localLog, OptionalOption2(i.argCid, ToPtr[ClientRequirements](i), WithClientCID))
 	if err != nil {
 		return nil, errors.Wrap(err, "error building client")
 	}
@@ -84,21 +87,27 @@ func WithIPRouterNodeCid(cid int) func(*IPRouterNode) {
 	}
 }
 
-func (n *IPRouterNode) Confirmation(args Args, kwargs KWArgs) error {
-	pdu := Get[PDU](args, 0)
+func (n *IPRouterNode) Confirmation(args Args, kwArgs KWArgs) error {
+	pdu := GA[PDU](args, 0)
+	if _debug != nil {
+		_debug("confirmation %r", pdu)
+	}
 	n.log.Debug().Stringer("pdu", pdu).Msg("confirmation")
 	n.router.ProcessPDU(n, pdu)
 	return nil
 }
 
 func (n *IPRouterNode) ProcessPDU(pdu PDU) error {
+	if _debug != nil {
+		_debug("process_pdu %r", pdu)
+	}
 	n.log.Debug().Stringer("pdu", pdu).Msg("ProcessPDU")
-	return n.Request(NewArgs(pdu), NoKWArgs)
+	return n.Request(NA(pdu), NoKWArgs())
 }
 
-func (n *IPRouterNode) AlternateString() (string, bool) {
-	if ExtendedGeneralOutput {
-		return "", false
+func (n *IPRouterNode) Format(s fmt.State, v rune) {
+	switch v {
+	case 's', 'v', 'r':
+		_, _ = fmt.Fprintf(s, "<%s for %s>", StructName(), n.lan.name)
 	}
-	return fmt.Sprintf("IPRouterNode for '%s' (@%p)", n.lan.name, n.lan), true
 }

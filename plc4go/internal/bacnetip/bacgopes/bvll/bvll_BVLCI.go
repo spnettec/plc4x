@@ -50,34 +50,50 @@ type BVLCI interface {
 	getBVLCI() BVLCI
 }
 
-//go:generate plc4xGenerator -type=_BVLCI -prefix=bvll
 type _BVLCI struct {
 	PCI
-	*DebugContents `ignore:"true"`
+	*DebugContents
 
-	requirements BVLCIRequirements `ignore:"true"`
+	requirements BVLCIRequirements
 
 	bvlciType     uint8
 	bvlciFunction uint8
 	bvlciLength   uint16
 
 	// Deprecated: hacky workaround
-	bytesToDiscard int `ignore:"true"`
+	bytesToDiscard int
 }
 
 var _ BVLCI = (*_BVLCI)(nil)
 
-func NewBVLCI(requirements BVLCIRequirements, bvlc readWriteModel.BVLC) BVLCI {
+func NewBVLCI(args Args, kwArgs KWArgs) BVLCI {
+	if _debug != nil {
+		_debug("__init__ %r %r", args, kwArgs)
+	}
 	b := &_BVLCI{
 		bvlciType:    0x81,
-		requirements: requirements,
+		requirements: KW[BVLCIRequirements](kwArgs, KWCompBVLCIRequirements),
 	}
-	b.PCI = NewPCI(bvlc, nil, nil, nil, false, readWriteModel.NPDUNetworkPriority_NORMAL_MESSAGE)
-	if bvlc != nil {
+	b.DebugContents = NewDebugContents(b, "bvlciType", "bvlciFunction", "bvlciLength")
+	b.PCI = NewPCI(args, kwArgs)
+	b.AddExtraPrinters(b.PCI.(DebugContentPrinter))
+	if bvlc := KWO[readWriteModel.BVLC](kwArgs, KWCompRootMessage, nil); bvlc != nil {
 		b.bvlciFunction = bvlc.GetBvlcFunction()
 		b.bvlciLength = bvlc.GetLengthInBytes(context.Background())
 	}
 	return b
+}
+
+func (b *_BVLCI) GetDebugAttr(attr string) any {
+	switch attr {
+	case "bvlciType":
+		return b.bvlciType
+	case "bvlciFunction":
+		return b.bvlciFunction
+	case "bvlciLength":
+		return b.bvlciLength
+	}
+	return nil
 }
 
 func (b *_BVLCI) Update(bvlci Arg) error {
@@ -96,6 +112,9 @@ func (b *_BVLCI) Update(bvlci Arg) error {
 }
 
 func (b *_BVLCI) Encode(pdu Arg) error {
+	if _debug != nil {
+		_debug("encode %s", pdu)
+	}
 	switch pdu := pdu.(type) {
 	case PCI:
 		if err := pdu.GetPCI().Update(b); err != nil {
@@ -117,6 +136,9 @@ func (b *_BVLCI) Encode(pdu Arg) error {
 }
 
 func (b *_BVLCI) Decode(pdu Arg) error {
+	if _debug != nil {
+		_debug("decode %s", pdu)
+	}
 	if err := b.PCI.Update(pdu); err != nil {
 		return errors.Wrap(err, "error updating pdu")
 	}

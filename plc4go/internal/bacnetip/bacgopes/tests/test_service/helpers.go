@@ -35,7 +35,8 @@ import (
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/netservice"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/service"
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests/state_machine"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests/time_machine"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/vlan"
 	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 )
@@ -143,10 +144,7 @@ func (a *ApplicationNetwork) Run(timeLimit time.Duration) error {
 	if a.log.Debug().Enabled() {
 		a.log.Debug().Msg("time machine finished")
 		for _, machine := range a.GetStateMachines() {
-			a.log.Debug().Stringer("machine", machine).Msg("machine")
-			for _, entry := range machine.GetTransactionLog() {
-				a.log.Debug().Str("entry", entry).Msg("transaction log entry")
-			}
+			a.log.Debug().Stringer("machine", machine).Stringers("entries", ToStringers(machine.GetTransactionLog())).Msg("machine")
 		}
 
 		a.trafficLog.Dump(a._debug)
@@ -178,7 +176,7 @@ func (a *ApplicationNetwork) Close() error {
 
 //go:generate plc4xGenerator -type=SnifferNode
 type SnifferNode struct {
-	Client
+	ClientContract
 
 	name    string
 	address *Address
@@ -192,9 +190,9 @@ func NewSnifferNode(localLog zerolog.Logger, vlan *Network) (*SnifferNode, error
 		name: "sniffer",
 		log:  localLog,
 	}
-	s.address, _ = NewAddress(localLog)
+	s.address, _ = NewAddress(NoArgs)
 	var err error
-	s.Client, err = NewClient(localLog, s)
+	s.ClientContract, err = NewClient(localLog)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating client")
 	}
@@ -214,14 +212,14 @@ func NewSnifferNode(localLog zerolog.Logger, vlan *Network) (*SnifferNode, error
 	return s, nil
 }
 
-func (s *SnifferNode) Request(args Args, kwargs KWArgs) error {
-	s.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("request")
+func (s *SnifferNode) Request(args Args, kwArgs KWArgs) error {
+	s.log.Debug().Stringer("args", args).Stringer("kwArgs", kwArgs).Msg("request")
 	return errors.New("sniffers don't request")
 }
 
-func (s *SnifferNode) Confirmation(args Args, kwargs KWArgs) error {
-	s.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("confirmation")
-	pdu := Get[PDU](args, 0)
+func (s *SnifferNode) Confirmation(args Args, kwArgs KWArgs) error {
+	s.log.Debug().Stringer("args", args).Stringer("kwArgs", kwArgs).Msg("confirmation")
+	pdu := GA[PDU](args, 0)
 
 	// it's and NPDU
 	npdu := pdu.GetRootMessage().(model.NPDU)
@@ -256,7 +254,7 @@ func (s *SnifferNode) Confirmation(args Args, kwargs KWArgs) error {
 
 //go:generate plc4xGenerator -type=SnifferStateMachine
 type SnifferStateMachine struct {
-	Client
+	ClientContract
 	StateMachineContract
 
 	name    string
@@ -271,11 +269,11 @@ func NewSnifferStateMachine(localLog zerolog.Logger, vlan *Network) (*SnifferSta
 		name: "sniffer",
 		log:  localLog,
 	}
-	s.address, _ = NewAddress(localLog)
+	s.address, _ = NewAddress(NoArgs)
 
 	// continue with initialization
 	var err error
-	s.Client, err = NewClient(localLog, s)
+	s.ClientContract, err = NewClient(localLog)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating client")
 	}
@@ -298,14 +296,14 @@ func NewSnifferStateMachine(localLog zerolog.Logger, vlan *Network) (*SnifferSta
 	return s, nil
 }
 
-func (s *SnifferStateMachine) Send(args Args, kwargs KWArgs) error {
-	s.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("request")
+func (s *SnifferStateMachine) Send(args Args, kwArgs KWArgs) error {
+	s.log.Debug().Stringer("args", args).Stringer("kwArgs", kwArgs).Msg("request")
 	return errors.New("sniffers don't send")
 }
 
-func (s *SnifferStateMachine) Confirmation(args Args, kwargs KWArgs) error {
-	s.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("confirmation")
-	pdu := Get[PDU](args, 0)
+func (s *SnifferStateMachine) Confirmation(args Args, kwArgs KWArgs) error {
+	s.log.Debug().Stringer("args", args).Stringer("kwArgs", kwArgs).Msg("confirmation")
+	pdu := GA[PDU](args, 0)
 
 	// it's and NPDU
 	npdu := pdu.GetRootMessage().(model.NPDU)
@@ -336,7 +334,7 @@ func (s *SnifferStateMachine) Confirmation(args Args, kwargs KWArgs) error {
 	// TODO: print etc
 
 	// pass to the state machine
-	return s.Receive(args, NoKWArgs)
+	return s.Receive(args, NoKWArgs())
 }
 
 //go:generate plc4xGenerator -type=ApplicationStateMachine
@@ -362,7 +360,7 @@ func NewApplicationStateMachine(localLog zerolog.Logger, localDevice *LocalDevic
 	// build and address and save it
 	_, instance := ObjectIdentifierStringToTuple(localDevice.ObjectIdentifier)
 	var err error
-	a.address, err = NewAddress(a.log, instance)
+	a.address, err = NewAddress(NA(instance))
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating address")
 	}
@@ -430,42 +428,42 @@ func NewApplicationStateMachine(localLog zerolog.Logger, localDevice *LocalDevic
 	return a, nil
 }
 
-func (a *ApplicationStateMachine) Send(args Args, kwargs KWArgs) error {
-	a.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("Send")
+func (a *ApplicationStateMachine) Send(args Args, kwArgs KWArgs) error {
+	a.log.Debug().Stringer("args", args).Stringer("kwArgs", kwArgs).Msg("Send")
 
-	pdu := Get[PDU](args, 0)
+	pdu := GA[PDU](args, 0)
 	// build a IOCB to wrap the request
 	iocb, err := NewIOCB(a.log, pdu, nil)
 	if err != nil {
 		return errors.Wrap(err, "error creating iocb")
 	}
-	return a.Request(NewArgs(iocb), NoKWArgs)
+	return a.Request(NA(iocb), NoKWArgs())
 }
 
-func (a *ApplicationStateMachine) Indication(args Args, kwargs KWArgs) error {
-	a.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("Indication")
+func (a *ApplicationStateMachine) Indication(args Args, kwArgs KWArgs) error {
+	a.log.Debug().Stringer("args", args).Stringer("kwArgs", kwArgs).Msg("Indication")
 
 	// let the state machine know the request was received
-	err := a.Receive(args, NoKWArgs)
+	err := a.Receive(args, NoKWArgs())
 	if err != nil {
 		return errors.Wrap(err, "error receiving indication")
 	}
 
 	// allow the application to process it
-	return a.Application.Indication(args, kwargs)
+	return a.Application.Indication(args, kwArgs)
 }
 
-func (a *ApplicationStateMachine) Confirmation(args Args, kwargs KWArgs) error {
-	a.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("Confirmation")
+func (a *ApplicationStateMachine) Confirmation(args Args, kwArgs KWArgs) error {
+	a.log.Debug().Stringer("args", args).Stringer("kwArgs", kwArgs).Msg("Confirmation")
 
 	// forward the confirmation to the state machine
-	err := a.Receive(args, NoKWArgs)
+	err := a.Receive(args, NoKWArgs())
 	if err != nil {
 		return errors.Wrap(err, "error receiving indication")
 	}
 
 	// allow the application to process it
-	return a.ApplicationIOController.Confirmation(args, kwargs)
+	return a.ApplicationIOController.Confirmation(args, kwArgs)
 }
 
 type COVTestClientServicesRequirements interface {
@@ -478,15 +476,15 @@ type COVTestClientServices struct {
 	log zerolog.Logger
 }
 
-func (c *COVTestClientServices) doConfirmedCOVNotificationRequest(args Args, kwargs KWArgs) error {
-	c.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("doConfirmedCOVNotificationRequest")
+func (c *COVTestClientServices) doConfirmedCOVNotificationRequest(args Args, kwArgs KWArgs) error {
+	c.log.Debug().Stringer("args", args).Stringer("kwArgs", kwArgs).Msg("doConfirmedCOVNotificationRequest")
 
 	panic("TODO: implement me") // TODO:implement me
 	return nil
 }
 
-func (c *COVTestClientServices) doUnconfirmedCOVNotificationRequest(args Args, kwargs KWArgs) error {
-	c.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("doUnconfirmedCOVNotificationRequest")
+func (c *COVTestClientServices) doUnconfirmedCOVNotificationRequest(args Args, kwArgs KWArgs) error {
+	c.log.Debug().Stringer("args", args).Stringer("kwArgs", kwArgs).Msg("doUnconfirmedCOVNotificationRequest")
 
 	panic("TODO: implement me") // TODO:implement me
 	return nil

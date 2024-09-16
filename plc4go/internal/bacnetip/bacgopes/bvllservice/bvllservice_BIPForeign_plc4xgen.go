@@ -51,10 +51,10 @@ func (d *BIPForeign) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 	if err := d.BIPSAP.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
 		return err
 	}
-	if err := d.Client.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
+	if err := d.ClientContract.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
 		return err
 	}
-	if err := d.Server.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
+	if err := d.ServerContract.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
 		return err
 	}
 	if err := d.OneShotTask.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
@@ -74,7 +74,7 @@ func (d *BIPForeign) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 		}
 	}
 	if d.bbmdTimeToLive != nil {
-		if err := writeBuffer.WriteInt64("bbmdTimeToLive", 64, int64(*d.bbmdTimeToLive)); err != nil {
+		if err := writeBuffer.WriteUint16("bbmdTimeToLive", 16, *d.bbmdTimeToLive); err != nil {
 			return err
 		}
 	}

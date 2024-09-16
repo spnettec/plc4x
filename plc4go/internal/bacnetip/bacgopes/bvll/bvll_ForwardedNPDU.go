@@ -20,17 +20,14 @@
 package bvll
 
 import (
-	"context"
 	"encoding/binary"
 	"fmt"
 
 	"github.com/pkg/errors"
-	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
-	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
-	"github.com/apache/plc4x/plc4go/spi"
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 )
 
 type ForwardedNPDU struct {
@@ -41,48 +38,38 @@ type ForwardedNPDU struct {
 
 var _ BVLPDU = (*ForwardedNPDU)(nil)
 
-func NewForwardedNPDU(pdu PDU, opts ...func(*ForwardedNPDU)) (*ForwardedNPDU, error) {
-	b := &ForwardedNPDU{}
-	for _, opt := range opts {
-		opt(b)
+func NewForwardedNPDU(addr *Address, args Args, kwArgs KWArgs) (*ForwardedNPDU, error) {
+	f := &ForwardedNPDU{}
+	f._BVLPDU = NewBVLPDU(args, kwArgs).(*_BVLPDU)
+	f.AddDebugContents(f, "bvlciAddress")
+	switch npdu := f.GetRootMessage().(type) {
+	case readWriteModel.NPDU:
+		// Repackage
+		f.SetRootMessage(readWriteModel.NewBVLCForwardedNPDU(f.produceInnerNPDU(npdu)))
 	}
-	switch npdu := pdu.(type) {
-	case model.NPDU:
-		b._BVLPDU = NewBVLPDU(model.NewBVLCForwardedNPDU(b.produceInnerNPDU(npdu))).(*_BVLPDU)
-	case nil:
-		b._BVLPDU = NewBVLPDU(nil).(*_BVLPDU)
-	default:
-		data := pdu.GetPduData()
-		parsedNPDU, err := model.NPDUParse(context.Background(), data, uint16(len(data)))
-		if err != nil {
-			b._BVLPDU = NewBVLPDU(model.NewBVLCForwardedNPDU(b.produceInnerNPDU(parsedNPDU))).(*_BVLPDU)
-		} else {
-			b._BVLPDU = NewBVLPDU(nil).(*_BVLPDU)
-			b._BVLPDU.SetPduData(data)
+	f.bvlciFunction = BVLCIForwardedNPDU
+	f.bvlciLength = uint16(10 + len(f.GetPduData()))
+	f.bvlciAddress = addr
+	return f, nil
+}
+
+func (f *ForwardedNPDU) GetDebugAttr(attr string) any {
+	switch attr {
+	case "bvlciAddress":
+		if f.bvlciAddress != nil {
+			return f.bvlciAddress
 		}
+	default:
+		return nil
 	}
-	b.bvlciFunction = 0x04
-	b.bvlciLength = uint16(10 + len(b.GetPduData()))
-	return b, nil
-}
-
-func WithForwardedNPDUAddress(addr *Address) func(*ForwardedNPDU) {
-	return func(b *ForwardedNPDU) {
-		b.bvlciAddress = addr
-	}
-}
-
-func WithForwardedNPDUUserData(userData spi.Message) func(*ForwardedNPDU) {
-	return func(b *ForwardedNPDU) {
-		b.SetPDUUserData(userData)
-	}
+	return nil
 }
 
 func (f *ForwardedNPDU) GetBvlciAddress() *Address {
 	return f.bvlciAddress
 }
 
-func (f *ForwardedNPDU) produceInnerNPDU(inNpdu model.NPDU) (ip []uint8, port uint16, npdu model.NPDU, bvlcPayloadLength uint16) {
+func (f *ForwardedNPDU) produceInnerNPDU(inNpdu readWriteModel.NPDU) (ip []uint8, port uint16, npdu readWriteModel.NPDU, bvlcPayloadLength uint16) {
 	ip = f.bvlciAddress.AddrAddress[:4]
 	port = uint16(47808)
 	if f.bvlciAddress.AddrPort != nil {
@@ -123,19 +110,28 @@ func (f *ForwardedNPDU) Decode(bvlpdu Arg) error {
 	switch bvlpdu := bvlpdu.(type) {
 	case BVLPDU:
 		switch rm := bvlpdu.GetRootMessage().(type) {
-		case model.BVLCForwardedNPDU:
-			_, _ = bvlpdu.GetData(6) // TODO: do we really want to discard that?
+		case readWriteModel.BVLCForwardedNPDU:
 			addr := rm.GetIp()
 			port := rm.GetPort()
 			var portArray = make([]byte, 2)
 			binary.BigEndian.PutUint16(portArray, port)
 			var err error
-			address, err := NewAddress(zerolog.Nop(), append(addr, portArray...))
+			address, err := NewAddress(NA(append(addr, portArray...)))
 			if err != nil {
 				return errors.Wrap(err, "error creating address")
 			}
 			f.bvlciAddress = address
 			f.SetRootMessage(rm)
+		}
+
+		// get the address
+		data, err := bvlpdu.GetData(6)
+		if err != nil {
+			return errors.Wrap(err, "error reading data")
+		}
+		f.bvlciAddress, err = NewAddress(NA(UnpackIpAddr(data)))
+		if err != nil {
+			return errors.Wrap(err, "error creating address")
 		}
 	}
 	switch bvlpdu := bvlpdu.(type) {

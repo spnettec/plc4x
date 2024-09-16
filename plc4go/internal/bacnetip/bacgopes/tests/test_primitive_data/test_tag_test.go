@@ -439,7 +439,7 @@ func TestEndec0(t *testing.T) { // Test bracketed application tagged integer enc
 
 	data := quick.PDUData()
 	tagList.Encode(data)
-	assert.Equal(t, []byte{}, data.GetPduData())
+	assert.Nil(t, data.GetPduData())
 
 	tagList = quick.TagList()
 	err := tagList.Decode(data)

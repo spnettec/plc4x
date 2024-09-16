@@ -52,11 +52,11 @@ func NewApplicationServiceAccessPoint(localLog zerolog.Logger, opts ...func(*App
 		opt(a)
 	}
 	var err error
-	a.ApplicationServiceElementContract, err = NewApplicationServiceElement(localLog, OptionalOptionDual(a.argAseID, a.argASEExtension, WithApplicationServiceElementAseID))
+	a.ApplicationServiceElementContract, err = NewApplicationServiceElement(localLog, OptionalOption2(a.argAseID, a.argASEExtension, WithApplicationServiceElementAseID))
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating application service element")
 	}
-	a.ServiceAccessPointContract, err = NewServiceAccessPoint(localLog, OptionalOptionDual(a.argSapID, a.argSap, WithServiceAccessPointSapID))
+	a.ServiceAccessPointContract, err = NewServiceAccessPoint(localLog, OptionalOption2(a.argSapID, a.argSap, WithServiceAccessPointSapID))
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating service access point")
 	}
@@ -77,9 +77,9 @@ func WithApplicationServiceAccessPointSapID(sapID int, sap ServiceAccessPoint) f
 	}
 }
 
-func (a *ApplicationServiceAccessPoint) Indication(args Args, kwargs KWArgs) error {
-	a.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Indication")
-	apdu := Get[APDU](args, 0)
+func (a *ApplicationServiceAccessPoint) Indication(args Args, kwArgs KWArgs) error {
+	a.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwArgs).Msg("Indication")
+	apdu := GA[APDU](args, 0)
 
 	switch _apdu := apdu.GetRootMessage().(type) {
 	case readWriteModel.APDUConfirmedRequest:
@@ -114,7 +114,7 @@ func (a *ApplicationServiceAccessPoint) Indication(args Args, kwargs KWArgs) err
 		// no error so far, keep going
 		if errorFound == nil {
 			a.log.Trace().Msg("no decoding error")
-			if err := a.SapRequest(NewArgs(xpdu), NoKWArgs); err != nil {
+			if err := a.SapRequest(NA(xpdu), NoKWArgs()); err != nil {
 				panic("if no abort or reject bubble up")
 				errorFound = err
 			}
@@ -126,7 +126,7 @@ func (a *ApplicationServiceAccessPoint) Indication(args Args, kwargs KWArgs) err
 			a.log.Debug().Err(errorFound).Msg("got error")
 
 			// TODO: map it to a error... code temporary placeholder
-			return a.Response(NewArgs(NewPDU(readWriteModel.NewAPDUReject(_apdu.GetInvokeId(), nil, 0))), NoKWArgs)
+			return a.Response(NA(NewPDU(NoArgs, NKW(KWCompRootMessage, readWriteModel.NewAPDUReject(_apdu.GetInvokeId(), nil, 0)))), NoKWArgs())
 		}
 	case readWriteModel.APDUUnconfirmedRequest:
 		var apduService readWriteModel.BACnetUnconfirmedServiceChoice
@@ -147,7 +147,7 @@ func (a *ApplicationServiceAccessPoint) Indication(args Args, kwargs KWArgs) err
 		}
 
 		// forward the decoded packet
-		if err := a.SapRequest(NewArgs(xpdu), NoKWArgs); err != nil {
+		if err := a.SapRequest(NA(xpdu), NoKWArgs()); err != nil {
 			panic("if no abort or reject bubble up")
 		}
 	default:
@@ -157,10 +157,10 @@ func (a *ApplicationServiceAccessPoint) Indication(args Args, kwargs KWArgs) err
 }
 
 // TODO: big WIP
-func (a *ApplicationServiceAccessPoint) SapIndication(args Args, kwargs KWArgs) error {
-	a.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("SapIndication")
+func (a *ApplicationServiceAccessPoint) SapIndication(args Args, kwArgs KWArgs) error {
+	a.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwArgs).Msg("SapIndication")
 
-	apdu := Get[APDU](args, 0)
+	apdu := GA[APDU](args, 0)
 
 	isConfirmed := false
 	var xpdu APDU
@@ -189,7 +189,7 @@ func (a *ApplicationServiceAccessPoint) SapIndication(args Args, kwargs KWArgs) 
 	}
 
 	// forward the encoded packet
-	err := a.Request(NewArgs(xpdu), NoKWArgs)
+	err := a.Request(NA(xpdu), NoKWArgs())
 	if err != nil {
 		return errors.Wrap(err, "error forwarding the request ")
 	}
@@ -203,20 +203,20 @@ func (a *ApplicationServiceAccessPoint) SapIndication(args Args, kwargs KWArgs) 
 }
 
 // TODO: big WIP
-func (a *ApplicationServiceAccessPoint) Confirmation(args Args, kwargs KWArgs) error {
-	a.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Confirmation")
+func (a *ApplicationServiceAccessPoint) Confirmation(args Args, kwArgs KWArgs) error {
+	a.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwArgs).Msg("Confirmation")
 
 	// TODO: check if we need to check apdu here
 
 	// forward the decoded packet
-	return a.SapResponse(args, kwargs)
+	return a.SapResponse(args, kwArgs)
 }
 
 // TODO: big WIP
-func (a *ApplicationServiceAccessPoint) SapConfirmation(args Args, kwargs KWArgs) error {
-	a.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("SapConfirmation")
+func (a *ApplicationServiceAccessPoint) SapConfirmation(args Args, kwArgs KWArgs) error {
+	a.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwArgs).Msg("SapConfirmation")
 
 	// TODO: check if we need to check apdu here
 
-	return a.Response(args, kwargs)
+	return a.Response(args, kwArgs)
 }

@@ -26,13 +26,15 @@ import (
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/bvll"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comm"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/debugging"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 )
 
 //go:generate plc4xGenerator -type=AnnexJCodec -prefix=bvllservice_
 type AnnexJCodec struct {
-	Client
-	Server
+	*DefaultRFormatter `ignore:"true"`
+	ClientContract
+	ServerContract
 
 	// pass through args
 	argCid *int `ignore:"true"`
@@ -43,25 +45,28 @@ type AnnexJCodec struct {
 
 func NewAnnexJCodec(localLog zerolog.Logger, opts ...func(*AnnexJCodec)) (*AnnexJCodec, error) {
 	a := &AnnexJCodec{
-		log: localLog,
+		DefaultRFormatter: NewDefaultRFormatter(),
+		log:               localLog,
 	}
 	for _, opt := range opts {
 		opt(a)
+	}
+	if _debug != nil {
+		_debug("__init__ cid=%r sid=%r", a.argCid, a.argSid)
 	}
 	localLog.Debug().
 		Interface("cid", a.argCid).
 		Interface("sid", a.argSid).
 		Msg("NewAnnexJCodec")
-	client, err := NewClient(localLog, a, OptionalOption(a.argCid, WithClientCID))
+	var err error
+	a.ClientContract, err = NewClient(localLog, OptionalOption2(a.argCid, ToPtr[ClientRequirements](a), WithClientCID))
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating client")
 	}
-	a.Client = client
-	server, err := NewServer(localLog, a, OptionalOption(a.argSid, WithServerSID))
+	a.ServerContract, err = NewServer(localLog, OptionalOption2(a.argSid, ToPtr[ServerRequirements](a), WithServerSID))
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating server")
 	}
-	a.Server = server
 	return a, nil
 }
 
@@ -77,34 +82,38 @@ func WithAnnexJCodecSid(sid int) func(*AnnexJCodec) {
 	}
 }
 
-func (b *AnnexJCodec) Indication(args Args, kwargs KWArgs) error {
-	b.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("Indication")
-
-	rpdu := Get[PDU](args, 0)
+func (b *AnnexJCodec) Indication(args Args, kwArgs KWArgs) error {
+	b.log.Debug().Stringer("args", args).Stringer("kwArgs", kwArgs).Msg("Indication")
+	rpdu := GA[PDU](args, 0)
+	if _debug != nil {
+		_debug("indication %r", rpdu)
+	}
 
 	// encode it as a generic BVLL PDU
-	bvlpdu := NewBVLPDU(nil)
+	bvlpdu := NewBVLPDU(Nothing())
 	if err := rpdu.(Encoder).Encode(bvlpdu); err != nil {
 		return errors.Wrap(err, "error encoding PDU")
 	}
 
 	// encode it as a PDU
-	pdu := NewPDU(nil)
+	pdu := NewPDU(Nothing())
 	if err := bvlpdu.Encode(pdu); err != nil {
 		return errors.Wrap(err, "error encoding PDU")
 	}
 
 	// send it downstream
-	return b.Request(NewArgs(pdu), NoKWArgs)
+	return b.Request(NA(pdu), NoKWArgs())
 }
 
-func (b *AnnexJCodec) Confirmation(args Args, kwargs KWArgs) error {
-	b.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("Confirmation")
-
-	pdu := Get[PDU](args, 0)
+func (b *AnnexJCodec) Confirmation(args Args, kwArgs KWArgs) error {
+	b.log.Debug().Stringer("args", args).Stringer("kwArgs", kwArgs).Msg("Confirmation")
+	pdu := GA[PDU](args, 0)
+	if _debug != nil {
+		_debug("confirmation %r", pdu)
+	}
 
 	// interpret as a BVLL PDU
-	bvlpdu := NewBVLPDU(nil)
+	bvlpdu := NewBVLPDU(Nothing())
 	if err := bvlpdu.Decode(pdu); err != nil {
 		return errors.Wrap(err, "error decoding pdu")
 	}
@@ -116,5 +125,5 @@ func (b *AnnexJCodec) Confirmation(args Args, kwargs KWArgs) error {
 	}
 
 	// send it upstream
-	return b.Response(NewArgs(rpdu), NoKWArgs)
+	return b.Response(NA(rpdu), NoKWArgs())
 }

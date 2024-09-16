@@ -26,11 +26,9 @@ import (
 	"strconv"
 
 	"github.com/pkg/errors"
-	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/debugging"
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/deleteme"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/globals"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
@@ -84,9 +82,48 @@ func NewNPCI(nlm readWriteModel.NLM, apdu readWriteModel.APDU) NPCI {
 	n := &_NPCI{
 		npduVersion: 1,
 	}
+	n.DebugContents = NewDebugContents(n, "npduVersion", "npduControl", "npduDADR", "npduSADR",
+		"npduHopCount", "npduNetMessage", "npduVendorID")
 	npdu, _ := n.buildNPDU(0, nil, nil, false, readWriteModel.NPDUNetworkPriority_NORMAL_MESSAGE, nlm, apdu)
-	n.PCI = NewPCI(npdu, nil, nil, nil, false, readWriteModel.NPDUNetworkPriority_NORMAL_MESSAGE)
+	nkw := NKW(KWCompRootMessage, npdu)
+	if npdu == nil {
+		nkw = NoKWArgs()
+	}
+	n.PCI = NewPCI(NoArgs, nkw) // TODO: convert to args so we can solve all those todos
+	n.AddExtraPrinters(n.PCI.(DebugContentPrinter))
 	return n
+}
+
+func (n *_NPCI) GetDebugAttr(attr string) any {
+	switch attr {
+	case "npduVersion":
+		return n.npduVersion
+	case "npduControl":
+		return n.npduControl
+	case "npduDADR":
+		if n.npduDADR != nil {
+			return *n.npduDADR
+		}
+	case "npduSADR":
+		if n.npduSADR != nil {
+			return *n.npduSADR
+		}
+	case "npduHopCount":
+		if n.npduHopCount != nil {
+			return *n.npduHopCount
+		}
+	case "npduNetMessage":
+		if n.npduNetMessage != nil {
+			return *n.npduNetMessage
+		}
+	case "npduVendorID":
+		if n.npduVendorID != nil {
+			return *n.npduVendorID
+		}
+	default:
+		return nil
+	}
+	return nil
 }
 
 func (n *_NPCI) Update(npci Arg) error {
@@ -194,15 +231,13 @@ func (n *_NPCI) Decode(pdu Arg) error {
 	if err := n.PCI.Update(pdu); err != nil {
 		return errors.Wrap(err, "error updating pdu")
 	}
-	switch rm := n.GetRootMessage().(type) {
-	case MessageBridge:
-		data := rm.GetPduData()
-		parse, err := readWriteModel.NPDUParse(context.Background(), data, uint16(len(data)))
-		if err != nil {
-			return errors.Wrap(err, "error parsing npdu")
-		}
-		n.SetRootMessage(parse)
+	// TODO: check if we want to stay with parsing or ditch that for now
+	data := pdu.(PDUData).GetPduData()
+	parse, err := readWriteModel.NPDUParse(context.Background(), data, uint16(len(data)))
+	if err != nil {
+		return errors.Wrap(err, "error parsing npdu")
 	}
+	n.SetRootMessage(parse)
 	readBytes := 0
 	switch rm := n.GetRootMessage().(type) {
 	case readWriteModel.NPDU:
@@ -233,7 +268,7 @@ func (n *_NPCI) Decode(pdu Arg) error {
 				n.npduDADR = NewRemoteBroadcast(dnet, nil)
 			} else {
 				var err error
-				n.npduDADR, err = NewRemoteStation(zerolog.Nop(), &dnet, dadr, nil)
+				n.npduDADR, err = NewRemoteStation(&dnet, dadr, nil)
 				if err != nil {
 					return errors.Wrap(err, "error creating remote station")
 				}
@@ -256,7 +291,7 @@ func (n *_NPCI) Decode(pdu Arg) error {
 			}
 
 			var err error
-			n.npduSADR, err = NewRemoteStation(zerolog.Nop(), &snet, sadr, nil)
+			n.npduSADR, err = NewRemoteStation(&snet, sadr, nil)
 			if err != nil {
 				return errors.Wrap(err, "error creating remote station")
 			}

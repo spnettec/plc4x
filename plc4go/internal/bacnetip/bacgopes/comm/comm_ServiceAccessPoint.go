@@ -26,7 +26,6 @@ import (
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/globals"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -52,8 +51,8 @@ type ServiceAccessPointRequirements interface {
 }
 
 type ServiceElement interface {
-	Indication(args Args, kwargs KWArgs) error
-	Confirmation(args Args, kwargs KWArgs) error
+	Indication(args Args, kwArgs KWArgs) error
+	Confirmation(args Args, kwArgs KWArgs) error
 }
 
 //go:generate plc4xGenerator -type=serviceAccessPoint -prefix=comm_
@@ -76,6 +75,9 @@ func NewServiceAccessPoint(localLog zerolog.Logger, opts ...func(point *serviceA
 	for _, opt := range opts {
 		opt(s)
 	}
+	if _debug != nil {
+		_debug("__init__(%v)", s.serviceID)
+	}
 	if s.serviceID != nil {
 		sapID := *s.serviceID
 		if _, ok := serviceMap[sapID]; ok {
@@ -95,9 +97,6 @@ func NewServiceAccessPoint(localLog zerolog.Logger, opts ...func(point *serviceA
 			}
 		}
 	}
-	if !LogComm {
-		s.log = zerolog.Nop()
-	}
 	return s, nil
 }
 
@@ -111,22 +110,28 @@ func WithServiceAccessPointSapID(sapID int, sap ServiceAccessPoint) func(*servic
 	}
 }
 
-func (s *serviceAccessPoint) SapRequest(args Args, kwargs KWArgs) error {
-	s.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Interface("serviceID", s.serviceID).Msg("SapRequest")
+func (s *serviceAccessPoint) SapRequest(args Args, kwArgs KWArgs) error {
+	if _debug != nil {
+		_debug("sap_request(%v) %r %r", s.serviceID, args, kwArgs)
+	}
+	s.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwArgs).Interface("serviceID", s.serviceID).Msg("SapRequest")
 
 	if s.serviceElement == nil {
 		return errors.New("unbound service access point")
 	}
-	return s.serviceElement.Indication(args, kwargs)
+	return s.serviceElement.Indication(args, kwArgs)
 }
 
-func (s *serviceAccessPoint) SapResponse(args Args, kwargs KWArgs) error {
-	s.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Interface("serviceID", s.serviceID).Msg("SapResponse")
+func (s *serviceAccessPoint) SapResponse(args Args, kwArgs KWArgs) error {
+	if _debug != nil {
+		_debug("sap_response(%v) %r %r", s.serviceID, args, kwArgs)
+	}
+	s.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwArgs).Interface("serviceID", s.serviceID).Msg("SapResponse")
 
 	if s.serviceElement == nil {
 		return errors.New("unbound service access point")
 	}
-	return s.serviceElement.Confirmation(args, kwargs)
+	return s.serviceElement.Confirmation(args, kwArgs)
 }
 
 func (s *serviceAccessPoint) _setServiceElement(serviceElement ServiceElement) {

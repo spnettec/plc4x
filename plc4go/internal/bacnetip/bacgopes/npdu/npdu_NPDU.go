@@ -52,7 +52,8 @@ var _ = (NPDU)(nil)
 func NewNPDU(nlm readWriteModel.NLM, apdu readWriteModel.APDU) (NPDU, error) {
 	n := &_NPDU{}
 	n._NPCI = NewNPCI(nlm, apdu).(*_NPCI)
-	n.PDUData = NewPDUData(NoArgs)
+	n.PDUData = NewPDUData(NoArgs, NoKWArgs())
+	n.AddExtraPrinters(n.PDUData.(DebugContentPrinter))
 	if n.GetRootMessage() != nil {
 		data, _ := n.GetRootMessage().Serialize()
 		n.SetPduData(data)
@@ -225,18 +226,6 @@ func (n *_NPDU) deepCopy() *_NPDU {
 
 func (n *_NPDU) DeepCopy() any {
 	return n.deepCopy()
-}
-
-func (n *_NPDU) Serialize() ([]byte, error) {
-	nPCI, err := n._NPCI.Serialize()
-	if err != nil {
-		return nil, errors.Wrap(err, "error serializing NPDU")
-	}
-	pduData, err := n.PDUData.Serialize()
-	if err != nil {
-		return nil, errors.Wrap(err, "error serializing PDU data")
-	}
-	return append(nPCI, pduData...), nil
 }
 
 func (n *_NPDU) String() string {

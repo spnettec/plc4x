@@ -31,6 +31,9 @@ import (
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests/state_machine"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests/time_machine"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests/trapped_classes"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
@@ -335,7 +338,7 @@ func TestStateMachine(t *testing.T) {
 		tsm := NewTrappedStateMachine(testingLogger)
 
 		// Make a pdu object
-		pdu := NewPDU(nil)
+		pdu := NewPDU(Nothing())
 
 		// make a send transition from start to success, run the machine
 		tsm.GetStartState().Send(pdu, nil).Success("")
@@ -347,15 +350,15 @@ func TestStateMachine(t *testing.T) {
 		assert.True(t, tsm.GetCurrentState().IsSuccessState())
 
 		// check the callbacks
-		assert.IsType(t, NewPDU(nil), tsm.GetBeforeSendPdu())
-		assert.IsType(t, NewPDU(nil), tsm.GetAfterSendPdu())
+		assert.IsType(t, NewPDU(Nothing()), tsm.GetBeforeSendPdu())
+		assert.IsType(t, NewPDU(Nothing()), tsm.GetAfterSendPdu())
 
 		// make sure pdu was sent
 		assert.Same(t, pdu, tsm.GetSent())
 
 		// check the transaction log
 		require.Equal(t, 1, len(tsm.GetTransactionLog()))
-		assert.Contains(t, tsm.GetTransactionLog()[0], "PDU")
+		assert.Equal(t, tsm.GetTransactionLog()[0].Pdu, pdu)
 	})
 	t.Run("test_state_machine_receive", func(t *testing.T) {
 		testingLogger := testutils.ProduceTestingLogger(t)
@@ -367,7 +370,7 @@ func TestStateMachine(t *testing.T) {
 		pdu := TPDU{}
 
 		// make a send transition from start to success, run the machine
-		tsm.GetStartState().Receive(NewArgs(pdu), NoKWArgs).Success("")
+		tsm.GetStartState().Receive(NA(pdu), NoKWArgs()).Success("")
 		err := tsm.Run()
 		assert.NoError(t, err)
 
@@ -375,7 +378,7 @@ func TestStateMachine(t *testing.T) {
 		assert.True(t, tsm.IsRunning())
 
 		// tell the machine it is receiving the pdu
-		err = tsm.Receive(NewArgs(pdu), NoKWArgs)
+		err = tsm.Receive(NA(pdu), NoKWArgs())
 		require.NoError(t, err)
 
 		// check for success
@@ -388,7 +391,7 @@ func TestStateMachine(t *testing.T) {
 
 		// check the transaction log
 		require.Equal(t, 1, len(tsm.GetTransactionLog()))
-		assert.Contains(t, tsm.GetTransactionLog()[0], pdu.String())
+		assert.Equal(t, tsm.GetTransactionLog()[0].Pdu, pdu)
 	})
 	t.Run("test_state_machine_unexpected", func(t *testing.T) {
 		testingLogger := testutils.ProduceTestingLogger(t)
@@ -402,7 +405,7 @@ func TestStateMachine(t *testing.T) {
 		badPdu := TPDU{b: 2}
 
 		// make a send transition from start to success, run the machine
-		tsm.GetStartState().Receive(NewArgs(TPDU{}), NewKWArgs(KnownKey("a"), 1)).Success("")
+		tsm.GetStartState().Receive(NA(TPDU{}), NKW(KnownKey("a"), 1)).Success("")
 		err := tsm.Run()
 		assert.NoError(t, err)
 
@@ -410,7 +413,7 @@ func TestStateMachine(t *testing.T) {
 		assert.True(t, tsm.IsRunning())
 
 		// give the machine a bad pdu
-		err = tsm.Receive(NewArgs(badPdu), NoKWArgs)
+		err = tsm.Receive(NA(badPdu), NoKWArgs())
 		require.NoError(t, err)
 
 		// check for fail
@@ -423,14 +426,14 @@ func TestStateMachine(t *testing.T) {
 
 		// check the transaction log
 		require.Equal(t, 1, len(tsm.GetTransactionLog()))
-		assert.Contains(t, tsm.GetTransactionLog()[0], badPdu.String())
+		assert.Equal(t, tsm.GetTransactionLog()[0].Pdu, badPdu)
 	})
 	t.Run("test_state_machine_call", func(t *testing.T) {
 		testingLogger := testutils.ProduceTestingLogger(t)
 
 		// simpleHook
 		called := false
-		_called := func(args Args, kwargs KWArgs) error {
+		_called := func(args Args, kwArgs KWArgs) error {
 			called = args[0].(bool)
 			return nil
 		}
@@ -439,7 +442,7 @@ func TestStateMachine(t *testing.T) {
 		tsm := NewTrappedStateMachine(testingLogger)
 
 		// make a send transition from start to success, run the machine
-		tsm.GetStartState().Call(_called, NewArgs(true), NoKWArgs).Success("")
+		tsm.GetStartState().Call(_called, NA(true), NoKWArgs()).Success("")
 		err := tsm.Run()
 		assert.NoError(t, err)
 
@@ -455,7 +458,7 @@ func TestStateMachine(t *testing.T) {
 
 		// simpleHook
 		called := false
-		_called := func(args Args, kwargs KWArgs) error {
+		_called := func(args Args, kwArgs KWArgs) error {
 			called = args[0].(bool)
 			return AssertionError{Message: "error"}
 		}
@@ -464,7 +467,7 @@ func TestStateMachine(t *testing.T) {
 		tsm := NewTrappedStateMachine(testingLogger)
 
 		// make a send transition from start to success, run the machine
-		tsm.GetStartState().Call(_called, NewArgs(true), NoKWArgs)
+		tsm.GetStartState().Call(_called, NA(true), NoKWArgs())
 		err := tsm.Run()
 		assert.NoError(t, err)
 
@@ -490,7 +493,7 @@ func TestStateMachine(t *testing.T) {
 		// after sending the first pdu, wait for the second
 		s0 := tsm.GetStartState()
 		s1 := s0.Send(firstPdu, nil)
-		s2 := s1.Receive(NewArgs(TPDU{}), NewKWArgs(KnownKey("a"), 2))
+		s2 := s1.Receive(NA(TPDU{}), NKW(KnownKey("a"), 2))
 		s2.Success("")
 
 		// run the machine
@@ -502,7 +505,7 @@ func TestStateMachine(t *testing.T) {
 		assert.Same(t, s1, tsm.GetCurrentState())
 
 		// give the machine the second pdu
-		err = tsm.Receive(NewArgs(secondPdu), NoKWArgs)
+		err = tsm.Receive(NA(secondPdu), NoKWArgs())
 		require.NoError(t, err)
 
 		// check for success
@@ -518,8 +521,8 @@ func TestStateMachine(t *testing.T) {
 		t.Log("callbacks passed")
 
 		// check the transaction log
-		assert.Contains(t, tsm.GetTransactionLog()[0], firstPdu.String())
-		assert.Contains(t, tsm.GetTransactionLog()[1], secondPdu.String())
+		assert.Equal(t, tsm.GetTransactionLog()[0].Pdu, firstPdu)
+		assert.Equal(t, tsm.GetTransactionLog()[1].Pdu, secondPdu)
 	})
 	t.Run("test_state_machine_loop_02", func(t *testing.T) {
 		testingLogger := testutils.ProduceTestingLogger(t)
@@ -535,7 +538,7 @@ func TestStateMachine(t *testing.T) {
 
 		// when the first pdu is received, send the second
 		s0 := tsm.GetStartState()
-		s1 := s0.Receive(NewArgs(TPDU{}), NewKWArgs(KnownKey("a"), 1))
+		s1 := s0.Receive(NA(TPDU{}), NKW(KnownKey("a"), 1))
 		s2 := s1.Send(secondPdu, nil)
 		s2.Success("")
 
@@ -547,7 +550,7 @@ func TestStateMachine(t *testing.T) {
 		assert.True(t, tsm.IsRunning())
 
 		// give the machine the first pdu
-		err = tsm.Receive(NewArgs(firstPdu), NoKWArgs)
+		err = tsm.Receive(NA(firstPdu), NoKWArgs())
 		require.NoError(t, err)
 
 		// check for success
@@ -563,8 +566,8 @@ func TestStateMachine(t *testing.T) {
 		t.Log("callbacks passed")
 
 		// check the transaction log
-		assert.Contains(t, tsm.GetTransactionLog()[0], firstPdu.String())
-		assert.Contains(t, tsm.GetTransactionLog()[1], secondPdu.String())
+		assert.Equal(t, tsm.GetTransactionLog()[0].Pdu, firstPdu)
+		assert.Equal(t, tsm.GetTransactionLog()[1].Pdu, secondPdu)
 	})
 }
 
@@ -630,8 +633,8 @@ func TestStateMachineTimeout2(t *testing.T) {
 
 	// check the transaction log
 	assert.Len(t, tsm.GetTransactionLog(), 2)
-	assert.Contains(t, tsm.GetTransactionLog()[0], firstPdu.String())
-	assert.Contains(t, tsm.GetTransactionLog()[1], secondPdu.String())
+	assert.Equal(t, tsm.GetTransactionLog()[0].Pdu, firstPdu)
+	assert.Equal(t, tsm.GetTransactionLog()[1].Pdu, secondPdu)
 }
 
 func TestStateMachineGroup(t *testing.T) {

@@ -33,8 +33,8 @@ import (
 //go:generate plc4xGenerator -type=BIPSimple -prefix=bvllservice_
 type BIPSimple struct {
 	*BIPSAP
-	Client
-	Server
+	ClientContract
+	ServerContract
 
 	// pass through args
 	argSapID *int `ignore:"true"`
@@ -51,6 +51,9 @@ func NewBIPSimple(localLog zerolog.Logger, opts ...func(simple *BIPSimple)) (*BI
 	for _, opt := range opts {
 		opt(b)
 	}
+	if _debug != nil {
+		_debug("__init__ sapID=%r cid=%r sid=%r", b.argSapID, b.argCid, b.argSid)
+	}
 	localLog.Debug().
 		Interface("sapID", b.argSapID).
 		Interface("cid", b.argCid).
@@ -63,22 +66,23 @@ func NewBIPSimple(localLog zerolog.Logger, opts ...func(simple *BIPSimple)) (*BI
 		return nil, errors.Wrap(err, "error creating bisap")
 	}
 	b.BIPSAP = bipsap
-	client, err := NewClient(localLog, b, OptionalOption(b.argCid, WithClientCID))
+	b.ClientContract, err = NewClient(localLog, OptionalOption2(b.argCid, ToPtr[ClientRequirements](b), WithClientCID))
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating client")
 	}
-	b.Client = client
-	server, err := NewServer(localLog, b, OptionalOption(b.argSid, WithServerSID))
+	b.ServerContract, err = NewServer(localLog, OptionalOption2(b.argSid, ToPtr[ServerRequirements](b), WithServerSID))
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating server")
 	}
-	b.Server = server
 	return b, nil
 }
 
-func (b *BIPSimple) Indication(args Args, kwargs KWArgs) error {
-	b.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Indication")
-	pdu := Get[PDU](args, 0)
+func (b *BIPSimple) Indication(args Args, kwArgs KWArgs) error {
+	b.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwArgs).Msg("Indication")
+	pdu := GA[PDU](args, 0)
+	if _debug != nil {
+		_debug("indication %r", pdu)
+	}
 	if pdu == nil {
 		return errors.New("no pdu")
 	}
@@ -90,136 +94,148 @@ func (b *BIPSimple) Indication(args Args, kwargs KWArgs) error {
 	switch pdu.GetPDUDestination().AddrType {
 	case LOCAL_STATION_ADDRESS:
 		// make an original unicast _PDU
-		xpdu, err := NewOriginalUnicastNPDU(pdu, WithOriginalUnicastNPDUDestination(pdu.GetPDUDestination()), WithOriginalUnicastNPDUUserData(pdu.GetPDUUserData()))
+		xpdu, err := NewOriginalUnicastNPDU(NA(pdu), NKW(KWCPCIDestination, pdu.GetPDUDestination(), KWCPCIUserData, pdu.GetPDUUserData()))
 		if err != nil {
 			return errors.Wrap(err, "error creating original unicastNPDU")
 		}
 		// TODO: route aware stuff missing here
+		if _debug != nil {
+			_debug("    - xpdu: %r", xpdu)
+		}
 		b.log.Debug().Stringer("xpdu", xpdu).Msg("xpdu")
 
 		// send it downstream
-		return b.Request(NewArgs(xpdu), NoKWArgs)
+		return b.Request(NA(xpdu), NoKWArgs())
 	case LOCAL_BROADCAST_ADDRESS:
 		// make an original broadcast _PDU
-		xpdu, err := NewOriginalBroadcastNPDU(pdu, WithOriginalBroadcastNPDUDestination(pdu.GetPDUDestination()), WithOriginalBroadcastNPDUUserData(pdu.GetPDUUserData()))
+		xpdu, err := NewOriginalBroadcastNPDU(NA(pdu), NKW(KWCPCIDestination, pdu.GetPDUDestination(), KWCPCIUserData, pdu.GetPDUUserData()))
 		if err != nil {
 			return errors.Wrap(err, "error creating original BroadcastNPDU")
 		}
 		// TODO: route aware stuff missing here
+		if _debug != nil {
+			_debug("    - xpdu: %r", xpdu)
+		}
 		b.log.Debug().Stringer("xpdu", xpdu).Msg("xpdu")
 
 		// send it downstream
-		return b.Request(NewArgs(xpdu), NoKWArgs)
+		return b.Request(NA(xpdu), NoKWArgs())
 	default:
 		return errors.Errorf("invalid destination address: %s", pdu.GetPDUDestination())
 	}
 }
 
-func (b *BIPSimple) Confirmation(args Args, kwargs KWArgs) error {
-	b.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Confirmation")
-	pdu := Get[PDU](args, 0)
+func (b *BIPSimple) Confirmation(args Args, kwArgs KWArgs) error {
+	b.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwArgs).Msg("Confirmation")
+	pdu := GA[PDU](args, 0)
+	if _debug != nil {
+		_debug("confirmation %r", pdu)
+	}
 
-	switch msg := pdu.GetRootMessage().(type) {
+	switch pdu := pdu.(type) {
 	// some kind of response to a request
-	case model.BVLCResult:
+	case *Result:
 		// send this to the service access point
-		return b.SapResponse(args, kwargs)
-	case model.BVLCReadBroadcastDistributionTableAck:
+		return b.SapResponse(args, kwArgs)
+	case *ReadBroadcastDistributionTableAck:
 		// send this to the service access point
-		return b.SapResponse(args, kwargs)
-	case model.BVLCReadForeignDeviceTableAck:
+		return b.SapResponse(args, kwArgs)
+	case *ReadForeignDeviceTableAck:
 		// send this to the service access point
-		return b.SapResponse(args, kwargs)
-	case model.BVLCOriginalUnicastNPDU:
+		return b.SapResponse(args, kwArgs)
+	case *OriginalUnicastNPDU:
 		// build a vanilla _PDU
-		xpdu := NewPDU(msg.GetNpdu(), WithPDUSource(pdu.GetPDUSource()), WithPDUDestination(pdu.GetPDUDestination()))
+		xpdu := NewPDU(NA(pdu.GetPduData()), NKW(KWCPCISource, pdu.GetPDUSource(), KWCPCIDestination, pdu.GetPDUDestination(), KWCPCIUserData, pdu.GetPDUUserData()))
+		if _debug != nil {
+			_debug("    - xpdu: %r", xpdu)
+		}
 		b.log.Debug().Stringer("xpdu", xpdu).Msg("xpdu")
 
 		// send it upstream
-		return b.Response(NewArgs(xpdu), kwargs)
-	case model.BVLCOriginalBroadcastNPDU:
+		return b.Response(NA(xpdu), kwArgs)
+	case *OriginalBroadcastNPDU:
 		// build a _PDU with a local broadcast address
-		xpdu := NewPDU(msg.GetNpdu(), WithPDUSource(pdu.GetPDUSource()), WithPDUDestination(NewLocalBroadcast(nil)))
+		xpdu := NewPDU(NA(pdu.GetPduData()), NKW(KWCPCISource, pdu.GetPDUSource(), KWCPCIDestination, NewLocalBroadcast(nil), KWCPCIUserData, pdu.GetPDUUserData()))
+		if _debug != nil {
+			_debug("    - xpdu: %r", xpdu)
+		}
 		b.log.Debug().Stringer("xpdu", xpdu).Msg("xpdu")
 
 		// send it upstream
-		return b.Response(NewArgs(xpdu), kwargs)
-	case model.BVLCForwardedNPDU:
+		return b.Response(NA(xpdu), kwArgs)
+	case *ForwardedNPDU:
 		// build a _PDU with the source from the real source
-		ip := msg.GetIp()
-		port := msg.GetPort()
-		source, err := NewAddress(b.log, append(ip, Uint16ToPort(port)...))
-		if err != nil {
-			return errors.Wrap(err, "error building a ip")
+		xpdu := NewPDU(NA(pdu.GetPduData()), NKW(KWCPCISource, pdu.GetBvlciAddress(), KWCPCIDestination, NewLocalBroadcast(nil), KWCPCIUserData, pdu.GetPDUUserData()))
+		if _debug != nil {
+			_debug("    - xpdu: %r", xpdu)
 		}
-		xpdu := NewPDU(msg.GetNpdu(), WithPDUSource(source), WithPDUDestination(NewLocalBroadcast(nil)))
 		b.log.Debug().Stringer("xpdu", xpdu).Msg("xpdu")
 
 		// send it upstream
-		return b.Response(NewArgs(xpdu), kwargs)
-	case model.BVLCWriteBroadcastDistributionTable:
+		return b.Response(NA(xpdu), kwArgs)
+	case *WriteBroadcastDistributionTable:
 		// build a response
-		xpdu, err := NewResult(WithResultBvlciResultCode(model.BVLCResultCode_WRITE_BROADCAST_DISTRIBUTION_TABLE_NAK))
+		xpdu, err := NewResult(ToPtr(model.BVLCResultCode_WRITE_BROADCAST_DISTRIBUTION_TABLE_NAK), NoArgs, NKW(KWCPCIUserData, pdu.GetPDUUserData()))
 		if err != nil {
 			return errors.Wrap(err, "error building result")
 		}
 		xpdu.SetPDUDestination(pdu.GetPDUSource())
 
 		// send it downstream
-		return b.Request(NewArgs(xpdu), kwargs)
-	case model.BVLCReadBroadcastDistributionTable:
+		return b.Request(NA(xpdu), kwArgs)
+	case *ReadBroadcastDistributionTable:
 		// build a response
-		xpdu, err := NewResult(WithResultBvlciResultCode(model.BVLCResultCode_READ_BROADCAST_DISTRIBUTION_TABLE_NAK))
+		xpdu, err := NewResult(ToPtr(model.BVLCResultCode_READ_BROADCAST_DISTRIBUTION_TABLE_NAK), NoArgs, NKW(KWCPCIUserData, pdu.GetPDUUserData()))
 		if err != nil {
 			return errors.Wrap(err, "error building result")
 		}
 		xpdu.SetPDUDestination(pdu.GetPDUSource())
 
 		// send it downstream
-		return b.Request(NewArgs(xpdu), kwargs)
+		return b.Request(NA(xpdu), kwArgs)
 		// build a response
-	case model.BVLCRegisterForeignDevice:
+	case *RegisterForeignDevice:
 		// build a response
-		xpdu, err := NewResult(WithResultBvlciResultCode(model.BVLCResultCode_REGISTER_FOREIGN_DEVICE_NAK))
+		xpdu, err := NewResult(ToPtr(model.BVLCResultCode_REGISTER_FOREIGN_DEVICE_NAK), NoArgs, NKW(KWCPCIUserData, pdu.GetPDUUserData()))
 		if err != nil {
 			return errors.Wrap(err, "error building result")
 		}
 		xpdu.SetPDUDestination(pdu.GetPDUSource())
 
 		// send it downstream
-		return b.Request(NewArgs(xpdu), kwargs)
-	case model.BVLCReadForeignDeviceTable:
+		return b.Request(NA(xpdu), kwArgs)
+	case *ReadForeignDeviceTable:
 		// build a response
-		xpdu, err := NewResult(WithResultBvlciResultCode(model.BVLCResultCode_READ_FOREIGN_DEVICE_TABLE_NAK))
+		xpdu, err := NewResult(ToPtr(model.BVLCResultCode_READ_FOREIGN_DEVICE_TABLE_NAK), NoArgs, NKW(KWCPCIUserData, pdu.GetPDUUserData()))
 		if err != nil {
 			return errors.Wrap(err, "error building result")
 		}
 		xpdu.SetPDUDestination(pdu.GetPDUSource())
 
 		// send it downstream
-		return b.Request(NewArgs(xpdu), kwargs)
-	case model.BVLCDeleteForeignDeviceTableEntry:
+		return b.Request(NA(xpdu), kwArgs)
+	case *DeleteForeignDeviceTableEntry:
 		// build a response
-		xpdu, err := NewResult(WithResultBvlciResultCode(model.BVLCResultCode_DELETE_FOREIGN_DEVICE_TABLE_ENTRY_NAK))
+		xpdu, err := NewResult(ToPtr(model.BVLCResultCode_DELETE_FOREIGN_DEVICE_TABLE_ENTRY_NAK), NoArgs, NKW(KWCPCIUserData, pdu.GetPDUUserData()))
 		if err != nil {
 			return errors.Wrap(err, "error building result")
 		}
 		xpdu.SetPDUDestination(pdu.GetPDUSource())
 
 		// send it downstream
-		return b.Request(NewArgs(xpdu), kwargs)
-	case model.BVLCDistributeBroadcastToNetwork:
+		return b.Request(NA(xpdu), kwArgs)
+	case *DistributeBroadcastToNetwork:
 		// build a response
-		xpdu, err := NewResult(WithResultBvlciResultCode(model.BVLCResultCode_DISTRIBUTE_BROADCAST_TO_NETWORK_NAK))
+		xpdu, err := NewResult(ToPtr(model.BVLCResultCode_DISTRIBUTE_BROADCAST_TO_NETWORK_NAK), NoArgs, NKW(KWCPCIUserData, pdu.GetPDUUserData()))
 		if err != nil {
 			return errors.Wrap(err, "error building result")
 		}
 		xpdu.SetPDUDestination(pdu.GetPDUSource())
 
 		// send it downstream
-		return b.Request(NewArgs(xpdu), kwargs)
+		return b.Request(NA(xpdu), kwArgs)
 	default:
-		b.log.Warn().Type("msg", msg).Msg("invalid pdu type")
+		b.log.Warn().Type("pduType", pdu).Msg("invalid pdu type")
 		return nil
 	}
 }

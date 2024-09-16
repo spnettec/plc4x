@@ -24,7 +24,6 @@ import (
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/globals"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -35,23 +34,23 @@ type ApplicationServiceElement interface {
 
 // ApplicationServiceElementRequirements provides a set of functions which must be overwritten by a sub struct
 type ApplicationServiceElementRequirements interface {
-	Confirmation(args Args, kwargs KWArgs) error
-	Indication(args Args, kwargs KWArgs) error
+	Confirmation(args Args, kwArgs KWArgs) error
+	Indication(args Args, kwArgs KWArgs) error
 }
 
 // ApplicationServiceElementContract provides a set of functions which can be overwritten by a sub struct
 type ApplicationServiceElementContract interface {
 	utils.Serializable
-	Request(args Args, kwargs KWArgs) error
-	Response(args Args, kwargs KWArgs) error
+	Request(args Args, kwArgs KWArgs) error
+	Response(args Args, kwArgs KWArgs) error
 	_setElementService(elementService ElementService)
 	GetElementService() ElementService
 }
 
 // ElementService is required by ApplicationServiceElementContract to work properly
 type ElementService interface {
-	SapIndication(args Args, kwargs KWArgs) error
-	SapConfirmation(args Args, kwargs KWArgs) error
+	SapIndication(args Args, kwArgs KWArgs) error
+	SapConfirmation(args Args, kwArgs KWArgs) error
 }
 
 //go:generate plc4xGenerator -type=applicationServiceElement -prefix=comm_
@@ -72,8 +71,8 @@ func NewApplicationServiceElement(localLog zerolog.Logger, opts ...func(*applica
 	for _, opt := range opts {
 		opt(a)
 	}
-	if LogComm {
-		a.log.Trace().Msg("NewApplicationServiceElement")
+	if _debug != nil {
+		_debug("__init__(%v)", a.argASEExtension)
 	}
 	if a.elementID != nil {
 		aseID := *a.elementID
@@ -94,9 +93,6 @@ func NewApplicationServiceElement(localLog zerolog.Logger, opts ...func(*applica
 			}
 		}
 	}
-	if !LogComm {
-		a.log = zerolog.Nop()
-	}
 	return a, nil
 }
 
@@ -110,24 +106,30 @@ func WithApplicationServiceElementAseID(aseID int, ase ApplicationServiceElement
 	}
 }
 
-func (a *applicationServiceElement) Request(args Args, kwargs KWArgs) error {
-	a.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Request")
+func (a *applicationServiceElement) Request(args Args, kwArgs KWArgs) error {
+	if _debug != nil {
+		_debug("request(%v) %r %r", a.elementID, args, kwArgs)
+	}
+	a.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwArgs).Msg("Request")
 
 	if a.elementService == nil {
 		return errors.New("unbound application service element")
 	}
 
-	return a.elementService.SapIndication(args, kwargs)
+	return a.elementService.SapIndication(args, kwArgs)
 }
 
-func (a *applicationServiceElement) Response(args Args, kwargs KWArgs) error {
-	a.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Response")
+func (a *applicationServiceElement) Response(args Args, kwArgs KWArgs) error {
+	if _debug != nil {
+		_debug("response(%v) %r %r", a.elementID, args, kwArgs)
+	}
+	a.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwArgs).Msg("Response")
 
 	if a.elementService == nil {
 		return errors.New("unbound application service element")
 	}
 
-	return a.elementService.SapConfirmation(args, kwargs)
+	return a.elementService.SapConfirmation(args, kwArgs)
 }
 
 func (a *applicationServiceElement) _setElementService(elementService ElementService) {

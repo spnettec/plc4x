@@ -26,8 +26,10 @@ import (
 	"github.com/stretchr/testify/require"
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comm"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests/state_machine"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests/trapped_classes"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
 )
 
@@ -42,7 +44,7 @@ func TestServerStateMachine(t *testing.T) {
 	require.NoError(t, err)
 
 	// make pdu object
-	pdu := NewPDU(NewDummyMessage())
+	pdu := NewPDU(Nothing())
 
 	// make a send transition from start to success, run the machine
 	server.GetStartState().Send(pdu, nil).Success("")
@@ -60,5 +62,5 @@ func TestServerStateMachine(t *testing.T) {
 
 	// check the transaction log
 	assert.Len(t, server.GetTransactionLog(), 1)
-	assert.Contains(t, server.GetTransactionLog()[0], pdu.String())
+	assert.Equal(t, server.GetTransactionLog()[0].Pdu, pdu)
 }

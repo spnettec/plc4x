@@ -52,7 +52,7 @@ type ElementKlass interface {
 
 // V2E accepts a function which takes an Arg and maps it to a ElementKlass
 func V2E[T any](b func(arg Arg) (*T, error)) func(Args, KWArgs) (ElementKlass, error) {
-	return func(args Args, kwargs KWArgs) (ElementKlass, error) {
+	return func(args Args, kwArgs KWArgs) (ElementKlass, error) {
 		var arg any
 		if len(args) == 1 {
 			arg = args[0]
@@ -64,7 +64,7 @@ func V2E[T any](b func(arg Arg) (*T, error)) func(Args, KWArgs) (ElementKlass, e
 
 // Vs2E accepts a function which takes an Args and maps it to a ElementKlass
 func Vs2E[T any](b func(args Args) (*T, error)) func(Args, KWArgs) (ElementKlass, error) {
-	return func(args Args, kwargs KWArgs) (ElementKlass, error) {
+	return func(args Args, kwArgs KWArgs) (ElementKlass, error) {
 		r, err := b(args)
 		return any(r).(ElementKlass), err
 	}
@@ -144,7 +144,7 @@ type Sequence struct {
 }
 
 // NewSequence Create a sequence element, optionally providing attribute/property values.
-func NewSequence(args Args, kwargs KWArgs, opts ...func(*Sequence)) (*Sequence, error) {
+func NewSequence(args Args, kwArgs KWArgs, opts ...func(*Sequence)) (*Sequence, error) {
 	s := &Sequence{
 		attr: make(map[string]any),
 	}
@@ -160,11 +160,11 @@ func NewSequence(args Args, kwargs KWArgs, opts ...func(*Sequence)) (*Sequence, 
 	var myKWArgs = make(KWArgs)
 	var otherKWArgs = make(KWArgs)
 	for _, element := range s._contract.GetSequenceElements() {
-		if a, ok := kwargs[KnownKey(element.GetName())]; ok {
+		if a, ok := kwArgs[KnownKey(element.GetName())]; ok {
 			myKWArgs[KnownKey(element.GetName())] = a
 		}
 	}
-	for key, a := range kwargs {
+	for key, a := range kwArgs {
 		if _, ok := myKWArgs[key]; !ok {
 			otherKWArgs[key] = a
 		}
@@ -208,7 +208,7 @@ func (a *Sequence) Encode(arg Arg) error {
 		if !element.IsOptional() && !ok {
 			return errors.Errorf("%s is a missing required element of %T", element.GetName(), a)
 		}
-		elementKlass, err := element.GetKlass()(NoArgs, NoKWArgs)
+		elementKlass, err := element.GetKlass()(Nothing())
 		if err != nil {
 			return errors.New("can't get zero object")
 		}
@@ -231,7 +231,7 @@ func (a *Sequence) Encode(arg Arg) error {
 				tagList.Append(openingTag)
 			}
 
-			helper, err := element.GetKlass()(NewArgs(value), NoKWArgs)
+			helper, err := element.GetKlass()(NA(value), NoKWArgs())
 			if err != nil {
 				return errors.Wrap(err, "error klass element")
 			}
@@ -250,7 +250,7 @@ func (a *Sequence) Encode(arg Arg) error {
 				tagList.Append(closingTag)
 			}
 		} else if isAtomic {
-			helper, err := element.GetKlass()(NewArgs(value), NoKWArgs)
+			helper, err := element.GetKlass()(NA(value), NoKWArgs())
 			if err != nil {
 				return errors.Wrap(err, "error klass element")
 			}
@@ -310,7 +310,7 @@ func (a *Sequence) Decode(arg Arg) error {
 	for _, element := range a._contract.GetSequenceElements() {
 		tag := tagList.Peek()
 
-		elementKlass, err := element.GetKlass()(NoArgs, NoKWArgs)
+		elementKlass, err := element.GetKlass()(Nothing())
 		if err != nil {
 			return errors.New("can't get zero object")
 		}
@@ -383,7 +383,7 @@ func (a *Sequence) Decode(arg Arg) error {
 			tagList.Pop()
 
 			// a helper cooperates between the atomic value and the tag
-			helper, err := element.GetKlass()(NewArgs(tag), NoKWArgs)
+			helper, err := element.GetKlass()(NA(tag), NoKWArgs())
 			if err != nil {
 				return errors.Wrap(err, "error creating helper")
 			}
@@ -407,7 +407,7 @@ func SequenceOfs[T any](b func(args Args) (*T, error)) func(Args, KWArgs) (Eleme
 	panic("finish me")
 }
 
-// TODO: finish // convert to kwargs and check wtf we are doing here...
+// TODO: finish // convert to kwArgs and check wtf we are doing here...
 func ArrayOf[T any](b func(arg Arg) (*T, error), fixedLength int, prototype any) func(Args, KWArgs) (ElementKlass, error) {
 	panic("finish me")
 }
