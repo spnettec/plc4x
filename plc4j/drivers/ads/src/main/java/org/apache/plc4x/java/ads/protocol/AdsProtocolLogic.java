@@ -513,8 +513,8 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                     itemArrayInfo.add(new DefaultPlcBrowseItemArrayInfo(
                         adsDataTypeArrayInfo.getLowerBound(), adsDataTypeArrayInfo.getUpperBound()));
                 }
-                DefaultListPlcBrowseItem item = new DefaultListPlcBrowseItem(new SymbolicAdsTag(symbol.getName(), plc4xPlcValueType, arrayInfo,"AUTO"), symbol.getName(),
-                    true, !symbol.getFlagReadOnly(), true, childMap, options, itemArrayInfo);
+                DefaultListPlcBrowseItem item = new DefaultListPlcBrowseItem(new SymbolicAdsTag(symbol.getName(), plc4xPlcValueType, arrayInfo, "AUTO"), symbol.getName(),
+                    true, !symbol.getFlagReadOnly(), true, false, childMap, options, itemArrayInfo);
 
                 // Check if this item should be added to the result
                 if (interceptor.intercept(item)) {
@@ -578,7 +578,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
             // Add the type itself.
             values.add(new DefaultListPlcBrowseItem(new SymbolicAdsTag(
                 basePath + "." + child.getPropertyName(), plc4xPlcValueType, arrayInfo,"AUTO"), child.getPropertyName(),
-                true, parentWritable, true, childMap, options, itemArrayInfo));
+                true, parentWritable, true, false, childMap, options, itemArrayInfo));
         }
         return values;
     }
@@ -1503,7 +1503,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
         Map<String, ResponseItem<PlcValue>> values = new HashMap<>();
         ReadBufferByteBased readBuffer = new ReadBufferByteBased(data, ByteOrder.LITTLE_ENDIAN);
         values.put(subscriptionHandle.getTagName(), new ResponseItem<>(PlcResponseCode.OK,
-            DataItem.staticParse(readBuffer, getPlcValueTypeForAdsDataType(subscriptionHandle.getAdsDataType()), data.length)));
+            DataItem.staticParse(readBuffer, getPlcValueTypeForAdsDataType(subscriptionHandle.getAdsDataType()), data.length, "")));
         return values;
     }
 
